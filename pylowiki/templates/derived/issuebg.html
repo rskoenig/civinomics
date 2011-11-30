@@ -1,0 +1,249 @@
+<%inherit file = "/base/template.html"/>        
+        
+<%namespace file="/lib/mako_lib.mako" import="return_to" />
+<%namespace file="/derived/commentsCustom.mako" import="comments" />
+<% counter = 0 %>
+
+	    	<div class="banner_div">
+	        	<h2 class="banner"><a href = "/issue/${c.url}">${c.title}</a></h2>
+        	</div>
+        	<div id="img">
+            	<img src = "/images/${c.slideshowDirectory}/${c.slideshow[0]['hash']}.slideshow" />
+            	<p>
+            		<a href="#" class="slideshow_launch"><img src="/images/slideshow.png" class="left" width="40" height="40" style="padding-right:10px;" /></a>
+            		<strong>Slideshow</strong> | <strong>Issue Background</strong>
+            		<br />
+            		##Description goes here.
+            	</p>
+        	</div><!-- img -->
+        	<ul class="left gray">
+        		<li><a href="${h.url_for('/issue/%s'%c.url.encode('latin-1'))}">Issue Home</a></li>
+        		<li><a href="${h.url_for('/issue/%s/background'%c.url.encode('latin-1'))}"><strong class="darkgray">Background</strong></a></li>
+                <%doc>
+        		<li><a href="#">Discussion</a></li>
+        		<li><a href="#">Leaderboard</a></li>
+                </%doc>
+        	</ul>
+        	<div id="bgmain" class="left clr">
+        		<h3>Summary</h3>
+        		
+                % if "user" in session:
+                    ${ h.form( url( controller = "wiki", action ="handler", id = c.url ), method="put" ) }
+
+                    % for row in c.wikilist:
+                    <div id="wiki-section-break">
+                    <% numrows = len(row[1].split( "\r\n" )) %>
+                    
+                        % if c.authuser.id in c.owners or c.authuser.accessLevel >= 200:
+                            <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                            <div id = "section${counter}" ondblclick="toggle('textareadiv${counter}', 'edit${counter}')">${row[0]}</div>
+                            </td></tr></table>
+                        % else:
+                            <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                            <div id = "section${counter}" >${row[0]}</div>
+                            </td></tr></table>
+                        % endif
+
+                        <div style="display:none; text-align:center;" id="textareadiv${counter}">
+                            <br />
+                            <textarea rows="${numrows}" id="textarea${counter}" name="textarea${counter}" onkeyup="previewAjax( 'textarea${counter}', 'section${counter}' )" class="markitup">${row[1]}</textarea>
+                            <div style="align:right;text-align:right;">
+                                Optional remark: <input type="text" id="remark${counter}"  name="remark${counter}" class="text tiny" placeholder="optional remark"/> 
+
+                                ${h.submit('submit', 'Save')}
+                                <input type="text" id="sremark"  name="sremark" class="text" />
+                            </div>
+                        </div>
+                        % if c.authuser.id in c.owners or c.authuser.accessLevel >= 200:
+                            <div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv${counter}', 'edit${counter}', 'edit')" id="edit${counter}" style="font-size: 12px;">edit</a></div>
+                        % endif
+                    </div>
+                    <% counter += 1 %>
+                    % endfor
+
+                    ${h.hidden("count",counter)}
+
+                    ${h.end_form()}
+
+                    ##<div class="lastmodified"><br/>${c.title} <i>(last modified ${c.lastmoddate} by ${c.lastmoduser})</i></div>
+                % else:
+                    ${c.content}
+                % endif
+                
+                ${h.form(h.url(controller = "issue", action = "readThis"), method = "post")}
+    			<button type="submit" class="green" id="readbutton" name = "readThis" value = "readThis"><img src="/images/book_icon.png" />I Read This</button>
+                ${h.end_form()}
+                
+                    ${comments("background")}
+		            </ul>
+	            </div><!-- comments -->
+        	</div><!-- bgmain -->
+        	
+        	<div id="bgside" class="left">
+        		<h3>Media <span class="right">add media<a href="#" class="plus">+</a></span></h3>
+				<ul class="related_media">
+					<li>
+						<img src="/images/map.jpg" />
+						<br />
+						<img src="/images/arrow_turn_right.png" style="padding-right: 5px" /><a href="#"><strong>Interactive map:</strong> Depleted zones</a>
+						<br />
+						Description goes here.
+						<br />
+						<span class="gray">Posted by <a href="profile.html">User Name</a> on Aug 20, 2011</span>
+					</li>
+					<hr />
+					<li>
+						<img src="/images/map.jpg" />
+						<br />
+						<img src="/images/arrow_turn_right.png" style="padding-right: 5px;"/><a href="#"><strong>Interactive map:</strong> Depleted zones</a>
+						<br />
+						Description goes here.
+						<br />
+						<span class="gray">Posted by <a href="profile.html">User Name</a> on Aug 20, 2011</span>
+					</li>
+					<a href="#" class="right">see all</a>
+				</ul>
+        		<h3>Articles <span class="right">add an article<a href="#" class="plus">+</a></span></h3>
+					<ul class="related_links gray">
+						<li>
+							<strong class="issue_name"><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+							<br />
+							via <a href="#">Source</a>
+						</li>
+						<hr />
+						<li>
+							<strong class="issue_name"><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+							<br />
+							via <a href="#">Source</a>
+						</li>
+						<hr />
+						<li>
+							<strong class="issue_name"><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+							<br />
+							via <a href="#">Source</a>
+						</li>
+						<a href="#" class="right">see all</a>
+					</ul>
+        		<h3>References</h3>
+        		<ol id="references">
+        			<li>Reference</li>
+        			<li>Reference</li>
+        			<li>Reference</li>
+        			<li>Reference</li>
+        		</ol>
+        	</div>
+            
+            
+        </div>
+    </div><!-- main -->
+    
+<%def name = 'extraHTML()'>
+    <div id="pop">
+        <div id="slideshow">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="slidetitle right">${c.title}</p>
+                <p class="right">Slideshow</p>
+            </h2>
+            
+            <div id="photo_container" class="left">
+            	<div class="slides_container">
+            		% for item in c.slideshow:
+                        <div>
+                            <img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" />
+                            <p class="caption">
+                                <strong>${item["title"]}</strong>
+                                <br />
+                                ${item["caption"]}
+                            </p>
+                        </div>
+                    % endfor
+	            </div><!-- slides_container -->   
+				<a href="#" class="prev"><img src="/images/left_arrow_75%.png" /></a>
+				<a href="#" class="next"><img src="/images/right_arrow_75%.png" /></a>
+				<ul class="pagination">
+					<a href="#" class="prev">&#x25C2;</a>
+					<a href="#" class="next">&#x25B8;</a>
+					<% i = 0 %>
+                    % for item in c.slideshow:
+                        <li><a href="#${i}"><img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" height="50" /></a></li>
+                        <% i += 1 %>
+                    % endfor
+				</ul>
+            </div><!-- photo_container -->
+        </div><!-- slideshow -->
+        
+        <div id="suggestion">
+			<h2 class="clr left">
+				<p class="right close">close <button>X</button></p>
+				<p class="left">Add a Suggestion</p>
+			</h2>
+			<form class="left" id="suggestiondata">
+				<div id="suggestionform" class="left">
+					Title:
+					<br />
+					<input type="text" id="suggestiontitle" />
+					<br />
+					<br />
+					Description:
+					<br />
+					<textarea id="suggestiontext"></textarea>
+					<br />
+					<br />
+					Tags:
+					<br />
+					<input type="text" id="suggestiontags" />
+					<br />
+					<span class="gray"><em>Popular tags in this issue: water, conservation, government</em></span>
+				</div>
+				<div id="suggestionshare" class="left">
+					Also share on:
+					<ul>
+						<li><input type="checkbox" /> Facebook</li>
+						<li><input type="checkbox" /> Twitter</li>
+					</ul>
+					<button type="submit" class="gold">Submit</button>
+				</div>
+			</form>
+        </div><!-- suggestion -->
+    </div><!-- pop -->
+</%def>
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/issuebg.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/comments.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/css/pygments/pygments-tango.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="/js/slides.js" type="text/javascript"></script>
+    <script src="/js/h2banner.js" type="text/javascript"></script>
+    <script src="/js/comment.js" type="text/javascript"></script>
+    <script src="/js/slides.min.jquery.js"></script>
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+    <script src = "/js/javascript.js" type="text/javascript"></script>
+    
+    <script language="javascript">
+        $(document).ready(function()	{
+            $('.markitup').markItUp(mySettings);
+        });
+    </script>
+    
+    <script>
+		$(function(){
+			$('#photo_container').slides({
+				preload: true,
+				generatePagination: false
+			});
+		});
+	</script>
+</%def>
