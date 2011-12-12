@@ -49,10 +49,13 @@ class ActionlistController(BaseController):
             c.list = get_all_pages()
         """
         c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
+        if c.count > 0:
+            c.paginator = paginate.Page(
+                c.list, page=int(request.params.get('page', 1)),
+                items_per_page = 25, item_count = c.count
+            )
 
-        return render('/derived/top_issues.html')
-        return render( "/derived/ActionList.mako" )
+            return render('/derived/top_issues.html')
+            return render( "/derived/ActionList.mako" )
+        else:
+            return render('/derived/splash.html')
