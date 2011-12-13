@@ -49,7 +49,6 @@ class IssueController(BaseController):
             c.govtSphere = {'name': 'No sphere!', 'image': 'sphere'}
         suggestions = i.suggestions
         c.suggestions = []
-        c.titles = ['Ehh...', 'Not Bad', 'O.K.', 'Pretty Good', 'Excellent!']
 
         for item in suggestions:
             if not item.pending and not item.disabled:
@@ -61,6 +60,7 @@ class IssueController(BaseController):
                 entry['author'] = user.name
                 entry['date'] = item.events[0].date
                 entry['numComments'] = len([comment for comment in item.comments if comment.disabled == 0 and comment.pending == 0])
+                entry['suggestionID'] = item.id
 
                 """ Grab first 250 chars as a summary """
                 if len(item.revisions[0].data) <= 250:
@@ -70,13 +70,14 @@ class IssueController(BaseController):
 
                 """ Populate ratings, if they've already been rated """
                 rating = getRatingForSuggestion(item.id, c.authuser.id)
-                log.info('suggestion id = %s, user id = %s' %(item.id, c.authuser.id))
                 if rating:
                     entry['rating'] = rating.rating
-                    log.info('rating was found for %s!' %item.title )
                 else:
-                    entry['rating'] = 0
-                    log.info('no rating found for %s!' %item.title )
+                    entry['rating'] = -1
+                if item.avgRating == None:
+                    entry['avgRating'] = 0
+                else:
+                    entry['avgRating'] = item.avgRating
 
                 c.suggestions.append(entry)
 

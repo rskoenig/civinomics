@@ -272,3 +272,29 @@ width: 100px;
     color : #b7b6b6;
     font-size: 14px;
 }
+
+.features_img {
+    display:block;
+    float:right;
+    margin-top:5px;
+    padding:0px;
+    width:350px;
+}
+
+#features {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#features_text {
+    display:block;
+    float:left;
+    margin:0px;
+    margin-left:20px;
+    padding:0px;
+    width:300px;
+    text-align : left;
+    color : #b7b6b6;
+    font-size: 14px;
+}
+

@@ -36,7 +36,8 @@
 					<h2 class="banner">Top Issues</h2>
 				</div>
 				<div id="featured_issue">
-                <% mainIssue = c.list.pop() %>
+                % if len(c.list) > 0:
+                    <% mainIssue = c.list.pop() %>
 					<img src="/images/slideshows/${mainIssue.issue[0].slideshow[-1].pictureHash}.slideshow" />
 					<div id="featured_caption">
 						<p><strong>Featured Issue: ${mainIssue.title}</strong></p>
@@ -44,6 +45,7 @@
 					</div><!-- featured_caption -->
 					<div style="background: green">|</div>
 				</div><!-- featured_issue -->
+                % endif
 				<ul id="issue_list">
                     % for item in c.list:
                         <li>

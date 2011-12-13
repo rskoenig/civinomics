@@ -2,9 +2,11 @@ import logging
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
-from pylowiki.model import get_page, getSuggestion, getIssueByID, getUserByID, Rating, Event, getSuggestionByURL
-from pylowiki.model import get_user, commit, get_page, getIssueByName
+from pylowiki.model import get_page, getSuggestion, getIssueByID, getUserByID, Rating, Event, getSuggestionByID
+from pylowiki.model import get_user, commit, get_page, getIssueByID, getAvgRatingForSuggestion, getRatingForSuggestion
 from pylowiki.lib.base import BaseController, render
+
+import simplejson as json
 
 import pylowiki.lib.helpers as h
 
@@ -35,28 +37,51 @@ class SuggestionController(BaseController):
 
         return render('/derived/suggestion.html')
 
-    def rate(self, id1, id2, id3):
-        issueURL = id1
-        suggestionURL = id2
-        rating = id3
-       
-        p = get_page(issueURL)
-        i = getIssueByName(p.title)
+    def rate(self):
+        issueID = request.params['issueID']
+        suggestionID = request.params['suggestionID']
+        rating = request.params['rate']
+
+        i = getIssueByID(issueID)
         if i == False:
             log.info('i = false')
             return
 
-        s = getSuggestionByURL(suggestionURL, i.id)
+        s = getSuggestionByID(suggestionID)
         if s == False:
             log.info('s = false')
             return
 
-        r = Rating('suggestion', rating)
-        e = Event('rate_Su', 'User rated a suggestion')
-        u = get_user(session['user'])
-        u.ratings.append(r)
-        u.events.append(e)
-        s.ratings.append(r)
-        if commit(e) and commit(r):
-            log.info('User %s just rated %s in %s as %s' %(c.authuser.name, suggestionURL, issueURL, rating))
-            return
+        r = getRatingForSuggestion(suggestionID, c.authuser.id)
+        u = get_user(c.authuser.name)
+
+        """ If a rating doesn't exist """
+        if r == False:
+            r = Rating('suggestion', rating)
+            e = Event('rate_Su', 'User rated a suggestion')
+            u.ratings.append(r)
+            u.events.append(e)
+            i.events.append(e)
+            s.ratings.append(r)
+            s.events.append(e)
+            e.rating = r
+            if commit(e) and commit(r):
+                log.info('User %s just rated %s in %s as %s' %(c.authuser.name, s.title, i.name, rating))
+                s.avgRating = getAvgRatingForSuggestion(s.id)
+                if commit(s):
+                    log.info('avg rating is now %s' % s.avgRating)
+                    return json.dumps({'avgRating':s.avgRating})
+        else:
+            e = Event('rateSuCh', 'User changed a rating')
+            r.rating = float(rating)
+            u.events.append(e)
+            s.events.append(e)
+            i.events.append(e)
+            s.avgRating = getAvgRatingForSuggestion(s.id)
+            e.rating = r
+            try: 
+                commit(e)
+                return json.dumps({'avgRating':s.avgRating})
+            except:
+                log.info('error in commiting change to rating.  User: %s, rating: %s, suggestion: %s'%(c.authuser.name, rating, suggestionID))
+                return

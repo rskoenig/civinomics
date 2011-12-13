@@ -18,8 +18,11 @@ class ActivateController(BaseController):
         hash, sep, email = id.partition('__')
         user = get_user_by_email(email)
         if user:
+            log.info('user exists')
             if user.activated == 0:
+                log.info('user inactive')
                 if user.activationHash == hash:
+                    log.info('hashes match')
                     user.activated = 1
                     user.laston = time.time()
                     if commit(user):

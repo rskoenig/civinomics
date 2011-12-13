@@ -57,20 +57,20 @@ Robert is a grassroots political expert. He has led and assembled multiple stude
         <img class="about_profile_img" src="/images/edolfo.png">
         <div id="about_profile_text">
         <h4>Edolfo Garza-Licudine - CTO</h4>
-Edolfo has 10 years experience programming and 2 years experience managing databases and leading a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010.        </div>
+Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010.        </div>
         </div>
         <div id="about_profile" class="grid_8">
         <img class="about_profile_img" src="/images/monty.png">
         <div id="about_profile_text">
         <h4> Monty Suwannukul - Design </h4>
- Edolfo has 10 years experience programming and 2 years experience managing databases and leading a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010.        </div>
+        </div>
         </div>
        <div id="about_profile" class="grid_8">
         <img class="about_profile_img" src="/images/evante.png">
         <div id="about_profile_text">
         <h4>Evante Garza-Licudine - Engineer </h4>
-       Edolfo has 10 years experience programming and 2 years experience managing databases and leading a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010.
-       </div>
+       
+           </div>
         </div>
        <div id="about_profile" class="grid_8">
         <img class="about_profile_img" src="/images/karthik.png">

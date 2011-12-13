@@ -189,13 +189,14 @@ t_suggestion = sa.Table( 'suggestion', meta.metadata,
     sa.Column( 'deleted', sa.types.Boolean, default = False),
     sa.Column( 'pending', sa.types.Boolean, default = True),
     sa.Column( 'disabled', sa.types.Boolean, default = False),
-    sa.Column( 'type', sa.types.String(20), nullable = True)
+    sa.Column( 'type', sa.types.String(20), nullable = True),
+    sa.Column( 'avgRating', sa.types.Float, nullable = True)
 )
 
 t_rating = sa.Table( 'rating', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True),
     sa.Column( 'type', sa.types.String(64), nullable = True),
-    sa.Column( 'rating', sa.types.Integer, nullable = True),
+    sa.Column( 'rating', sa.types.Float, nullable = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id'), nullable = True),
     sa.Column( 'article_id', sa.types.Integer, sa.ForeignKey('article.id'), nullable = True),
@@ -365,7 +366,8 @@ orm.mapper(Page, t_page, properties = {
 orm.mapper(Event, t_event,
 properties = {
     'comment':orm.relation(Comment, uselist=False, backref='event'),
-    'revision':orm.relation(Revision, uselist=False, backref='event')
+    'revision':orm.relation(Revision, uselist=False, backref='event'),
+    'rating':orm.relation(Rating, uselist=False, backref='event')
 })
 
 
@@ -904,6 +906,16 @@ def getSuggestionByURL(url, issue_id):
 def getRatingForSuggestion(suggestion_id, user_id):
     try:
         return meta.Session.query(Rating).filter_by(user_id = user_id, suggestion_id = suggestion_id).one()
+    except:
+        return False
+
+def getAvgRatingForSuggestion(suggestion_id):
+    try:
+        cols = meta.Session.query(Rating).filter_by(suggestion_id = suggestion_id).all()
+        l = []
+        for item in cols:
+            l.append(item.rating)
+        return sum(l)/len(l)
     except:
         return False
 
