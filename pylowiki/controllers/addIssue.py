@@ -105,8 +105,10 @@ class AddissueController(BaseController):
                 else:
                     govtSphere = request.params['governmentSpheres']
                 issueName = request.params['issueName']
+                issueName = issueName.strip()
                 p = Page(issueName.lower().replace(" ", "-"), 'issue', c.authuser.id)
-                p.title = request.params['issueName']
+                #p.title = request.params['issueName']
+                p.title = issueName
                 u = get_user(session['user'])
                 r = Revision(request.params['backgroundWiki'])
 
@@ -130,7 +132,7 @@ class AddissueController(BaseController):
                     year = request.params['suggestionYear']
                 else:
                     year = '0'
-                suggestionEnd = "%s/%s/%s" %(day, month, year)
+                suggestionEnd = "%s/%s/%s" %(month, day, year)
 
                 """ Set the end date for the solution phase """
                 if request.params['solutionMonth']:
@@ -145,7 +147,7 @@ class AddissueController(BaseController):
                     year = request.params['solutionYear']
                 else:
                     year = '0'
-                solutionEnd = "%s/%s/%s" %(day, month, year)
+                solutionEnd = "%s/%s/%s" %(month, day, year)
 
                 """ Set the end date for the solution package phase """
                 if request.params['solutionPkgMonth']:
@@ -160,7 +162,7 @@ class AddissueController(BaseController):
                     year = request.params['solutionPkgYear']
                 else:
                     year = '0'
-                solPkgEnd = "%s/%s/%s" %(day, month, year)
+                solPkgEnd = "%s/%s/%s" %(month, day, year)
                 
                 if p.url == "" or r.data == "":
                     h.flash("Page was not created.  Please fill all fields.", "warning")
@@ -207,10 +209,9 @@ class AddissueController(BaseController):
             thisImage = request.POST['image%d'%i]
             thisCaption = request.params['caption%d'%i]
             thisTitle = request.params['title%d'%i]
-            
+             
             try:
                 hash = md5("%s%f"%(thisImage.filename, time())).hexdigest()
-                
                 """ The slideshow """
                 saveImage(thisImage.filename, hash, thisImage.file, 'slideshow')
                 resizeImage(thisImage.filename, hash, 835, 550, 'slideshow', 'slideshow')

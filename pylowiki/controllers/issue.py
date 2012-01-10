@@ -4,13 +4,16 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylons import config
 from pylowiki.lib.base import BaseController, render
-from pylowiki.model import get_page, get_all_pages, getSlideshow, getIssueByName, getSphere, getPageByID, getUserByID
-from pylowiki.model import getParticipantsByID, getArticlesByIssueID, getRatingForSuggestion
+from pylowiki.lib.images import saveImage, resizeImage
+from pylowiki.model import get_page, get_all_pages, getSlideshow, countSlideshow, getIssueByName, get_user, GovtSphere, getAllSpheres, getSphere, getPageByID, getUserByID
+from pylowiki.model import Revision, Page, Event, Article, commit, getParticipantsByID, getArticlesByIssueID, getIssueByID, getRatingForSuggestion
 from pylowiki.lib.points import readThisPage
 
 import pylowiki.lib.helpers as h
 import re
 from operator import itemgetter
+from time import time
+from hashlib import md5
 
 log = logging.getLogger(__name__)
 
@@ -49,6 +52,7 @@ class IssueController(BaseController):
             c.govtSphere = {'name': 'No sphere!', 'image': 'sphere'}
         suggestions = i.suggestions
         c.suggestions = []
+        c.titles = ['Ehh...', 'Not Bad', 'O.K.', 'Pretty Good', 'Excellent!']
 
         for item in suggestions:
             if not item.pending and not item.disabled:
@@ -70,14 +74,13 @@ class IssueController(BaseController):
 
                 """ Populate ratings, if they've already been rated """
                 rating = getRatingForSuggestion(item.id, c.authuser.id)
+                log.info('suggestion id = %s, user id = %s' %(item.id, c.authuser.id))
                 if rating:
                     entry['rating'] = rating.rating
+                    log.info('rating was found for %s!' %item.title )
                 else:
-                    entry['rating'] = -1
-                if item.avgRating == None:
-                    entry['avgRating'] = 0
-                else:
-                    entry['avgRating'] = item.avgRating
+                    entry['rating'] = 0
+                    log.info('no rating found for %s!' %item.title )
 
                 c.suggestions.append(entry)
 
@@ -215,6 +218,206 @@ class IssueController(BaseController):
     """ Renders the leaderborad page for a given issue.  Takes in the issue URL as the id argument. """
     def leaderboard(self, id):
         return render('/derived/leaderboard.html')
+        
+    @h.login_required
+    def edit(self, id):
+        if c.authuser.accessLevel >= 300:
+            c.p = get_page(id)
+            c.pId = id
+            if c.p == False:
+                abort(404, h.literal("That page does not exist!"))
+
+            c.title = c.p.title.decode('latin-1')
+            c.url = c.p.url.decode('latin-1')
+            i = getIssueByName(c.p.title)
+
+            c.issue = i
+            c.issueID = i.id
+            
+            c.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+            c.days = range(1, 32)
+            c.years = range(2011, 2021)
+            c.maxSlideshowEntries = 10
+
+            if getAllSpheres():
+                c.governmentSpheres = []
+                for item in getAllSpheres():
+                    entry = {}
+                    entry['id'] = item.id
+                    entry['name'] = item.name
+                    c.governmentSpheres.append(entry)
+            else:
+                c.governmentSpheres = []
+
+            c.goals = h.literal(i.goals)
+            sphere = getSphere(i.govtSphere)
+            c.currentSphere = i.govtSphere
+            if sphere:
+                c.govtSphere = {'name': sphere.name, 'image': sphere.pictureHash}
+            else:
+                c.govtSphere = {'name': 'No sphere!', 'image': 'sphere'}
+
+            c.monthSug, c.daySug, c.yearSug = (int(xSug) for xSug in i.suggestionEnd.split('/')) 
+            c.monthSol, c.daySol, c.yearSol = (int(xSol) for xSol in i.solutionEnd.split('/'))
+            c.monthPkg, c.dayPkg, c.yearPkg = (int(xPkg) for xPkg in i.solPkgEnd.split('/'))
+
+            r = c.p.revisions[0]
+            reST = r.data       #-- it is assumed the user is logged in
+            reSTlist = self.get_reSTlist(reST)
+            HTMLlist = self.get_HTMLlist(reST)
+            c.wikilist = zip(HTMLlist, reSTlist)
+            c.owners = [int(owner) for owner in c.p.owners.split(',')]
+
+            c.slideCount = countSlideshow(c.p.id)
+
+            return render('/derived/issue_edit.html')
+        else:
+            h.flash("You are not authorized to view that page", "warning")
+            return redirect('/')
+
+    @h.login_required
+    def edit_handler(self):
+        #if self._checkAccess(300):
+        if c.authuser.accessLevel >= 300:
+            #if (1):
+            try:
+                request.params['submit']
+                if request.params['newGovtSphereName']:
+                    newGovtSphereName = request.params['newGovtSphereName']
+                    photo = request.POST['newGovtSpherePhoto']
+                    #return photo.filename
+                    try:
+                        hash = md5("%s%f"%(photo.filename, time())).hexdigest()
+                        saveImage(photo.filename, hash, photo.file, 'govtSphere')
+                        resizeImage(photo.filename, hash, 40, 40, 'thumbnail', 'govtSphere')
+                        log.info('photo filename = %s' %photo.filename)
+                    except: #No photo for the government sphere
+                        hash = 'earth'
+                    gS = GovtSphere(newGovtSphereName, hash)
+                    if not commit(gS):
+                        h.flash("Government Sphere not created", "warning")
+                    else:
+                        govtSphere = gS.id
+                else:
+                    govtSphere = request.params['governmentSpheres']
+                issueName = request.params['issueName']
+                issueName = issueName.strip()
+                #p = getPageByID(session['editIssueById'])
+                p = get_page(request.params['pId']) 
+                #p = get_page(id)
+                if p == False:
+                    abort(404, h.literal("That page does not exist!"))
+                p.url = issueName.lower().replace(" ", "-")
+                #p.title = request.params['issueName']
+                p.title = issueName
+                u = get_user(session['user'])
+                r = Revision(request.params['backgroundWiki'])
+
+                e = Event('create', 'Edited issue %s' %issueName[:50] )
+                p.events.append(e)
+                u.events.append(e)
+                r.event = e
+                p.revisions.append(r)
+                #issue = Issue(issueName, p.id)
+
+                """ Set the end date for the suggestion phase """
+                if request.params['suggestionMonth']:
+                    month = request.params['suggestionMonth']
+                else:
+                    month = '0'
+                if request.params['suggestionDay']:
+                    day = request.params['suggestionDay']
+                else:
+                    day = '0'
+                if request.params['suggestionYear']:
+                    year = request.params['suggestionYear']
+                else:
+                    year = '0'
+                suggestionEnd = "%s/%s/%s" %(month, day, year)
+
+                """ Set the end date for the solution phase """
+                if request.params['solutionMonth']:
+                    month = request.params['solutionMonth']
+                else:
+                    month = '0'
+                if request.params['solutionDay']:
+                    day = request.params['solutionDay']
+                else:
+                    day = '0'
+                if request.params['solutionYear']:
+                    year = request.params['solutionYear']
+                else:
+                    year = '0'
+                solutionEnd = "%s/%s/%s" %(month, day, year)
+
+                """ Set the end date for the solution package phase """
+                if request.params['solutionPkgMonth']:
+                    month = request.params['solutionPkgMonth']
+                else:
+                    month = '0'
+                if request.params['solutionPkgDay']:
+                    day = request.params['solutionPkgDay']
+                else:
+                    day = '0'
+                if request.params['solutionPkgYear']:
+                    year = request.params['solutionPkgYear']
+                else:
+                    year = '0'
+                solPkgEnd = "%s/%s/%s" %(month, day, year)
+
+                if p.url == "" or r.data == "":
+                    h.flash("Page was not created.  Please fill all fields.", "warning")
+                elif commit(e):
+                    i = getIssueByID(p.id)
+                    i.name = issueName
+                    u.issues.append(i)
+                    p.issue.append(i)
+                    i.govtSphere = govtSphere
+                    if request.params['goals']:
+                        i.goals = request.params['goals']
+                    i.suggestionEnd = suggestionEnd
+                    i.solutionEnd = solutionEnd
+                    i.solPkgEnd = solPkgEnd
+                    a = Article(p.url, issueName)
+                    a.pending = False
+                    a.type = 'background'
+                    i.articles.append(a)
+                    i.events.append(e)
+
+                    if commit(i):
+                        c.iId = i.id;
+                        s = getSlideshow(i.id)
+                        c.slideshow = []
+                        c.slideshowDirectory = 'slideshows'
+                        for item in s:
+                            entry = {}
+                            entry['id'] = item.id
+                            entry['hash'] = item.pictureHash
+                            entry['caption'] = item.caption
+                            entry['title'] = item.title
+                            c.slideshow.append(entry)
+                        #-- display each of these slides with an input that will give me the info needed to update/delete any of these
+                        #-- slideshow id
+                        #-- next step will be to update an input that gives the order of all slides' ids as they are rearranged
+
+                        h.flash( "The issue has been updated!", "success" )
+                        c.numSlideshowEntries = request.params['numSlideshowEntries']
+                        c.title = 'Edit Slideshow'
+                        session['issueID'] = i.id
+                        #h.flash("The issue was created!", "success")
+                        #return redirect('/issue/' + str(p.url))
+                        return render('/derived/editSlideshow.html')
+                    else:
+                        h.flash("Background wiki created, issue information was not", "warning")
+                else:
+                    h.flash("Page was not created. URL or title might be in use.", "warning")
+            except KeyError:
+                h.flash("Do not attempt to access a handler directly", "error")
+            return redirect('/issue/%s' % p.url.decode('latin-1'))
+        else:
+            h.flash("You are not authorized to view that page", "warning")
+            return redirect('/')
+
 
     # ------------------------------------------
     #    Helper functions for wiki controller

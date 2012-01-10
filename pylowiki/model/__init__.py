@@ -85,6 +85,7 @@ t_revision = sa.Table( 'revision', meta.metadata,
 t_comment = sa.Table( 'comment', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True ),
     sa.Column( 'page_id', sa.types.Integer, sa.ForeignKey( 'page.id' ), nullable = True),
+    sa.Column( 'event_id', sa.types.Integer, sa.ForeignKey( 'event.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id' ), nullable = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
     sa.Column( 'data', sa.types.Text, nullable = False),
@@ -170,7 +171,8 @@ t_slideshow = sa.Table ( 'slideshow', meta.metadata,
     sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey( 'issue.id' ), nullable = True),
     sa.Column( 'pictureHash', sa.types.String(128), nullable = True),
     sa.Column( 'caption', sa.types.Text, nullable = True),
-    sa.Column( 'title', sa.types.Text, nullable = True)
+    sa.Column( 'title', sa.types.Text, nullable = True),
+    sa.Column( 'deleted', sa.types.Boolean, default = False )
 )
 
 t_govtSphere = sa.Table( 'govtSphere', meta.metadata,
@@ -334,6 +336,19 @@ class Slideshow(object):
         self.pictureHash = pictureHash
         self.caption = caption
         self.title = title
+
+    def delete( self ):
+        """delete this slide"""
+        self.deleted = True 
+        meta.Session.commit( )
+        #event = Event( "disable" )
+        #user.events.append( event )
+        #self.page.events.append( event )
+        #self.event = event  
+    def undelete( self ):
+        """undelete this slide"""
+        self.deleted = False
+        meta.Session.commit( )
 
 class GovtSphere(object):
     def __init__(self, name, pictureHash):
@@ -869,9 +884,15 @@ def getSphere(id):
 # slideshow functions
 ##########################
 
-def getSlideshow(issueID):
+def getSlideshow(issueID, deleted = False):
     try:
-        return meta.Session.query(Slideshow).filter_by(issue_id = issueID).order_by(Slideshow.id.asc()).all()
+        return meta.Session.query(Slideshow).filter_by(issue_id = issueID, deleted = deleted).order_by(Slideshow.id.asc()).all()
+    except:
+        return False
+
+def countSlideshow(issueID, deleted = False):
+    try:
+        return meta.Session.query(Slideshow).filter_by(issue_id = issueID, deleted = deleted).count()
     except:
         return False
 
