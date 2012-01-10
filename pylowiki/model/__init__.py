@@ -85,13 +85,13 @@ t_revision = sa.Table( 'revision', meta.metadata,
 t_comment = sa.Table( 'comment', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True ),
     sa.Column( 'page_id', sa.types.Integer, sa.ForeignKey( 'page.id' ), nullable = True),
+    sa.Column( 'event_id', sa.types.Integer, sa.ForeignKey( 'event.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id' ), nullable = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
     sa.Column( 'data', sa.types.Text, nullable = False),
     sa.Column( 'disabled', sa.types.Boolean, default = False ),
     sa.Column( 'pending', sa.types.Boolean, default = True),
     sa.Column( 'parent', sa.types.Integer, nullable = True),
-    sa.Column( 'avgRating', sa.types.Float, nullable = True),
     mysql_charset='utf8'
 )
 
@@ -103,7 +103,6 @@ t_event = sa.Table( 'event', meta.metadata,
     sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey( 'issue.id' ), nullable = True),
     sa.Column( 'article_id', sa.types.Integer, sa.ForeignKey( 'article.id' ), nullable = True),
     sa.Column( 'rating_id', sa.types.Integer, sa.ForeignKey( 'rating.id' ), nullable = True),
-    sa.Column( 'comment_id', sa.types.Integer, sa.ForeignKey( 'comment.id' ), nullable = True),
     sa.Column( 'type', sa.types.String(8), nullable = False),
     sa.Column( 'remark', sa.types.String(64), nullable = True),
     sa.Column( 'date', sa.types.DateTime, default = d.datetime.now )    
@@ -170,7 +169,8 @@ t_slideshow = sa.Table ( 'slideshow', meta.metadata,
     sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey( 'issue.id' ), nullable = True),
     sa.Column( 'pictureHash', sa.types.String(128), nullable = True),
     sa.Column( 'caption', sa.types.Text, nullable = True),
-    sa.Column( 'title', sa.types.Text, nullable = True)
+    sa.Column( 'title', sa.types.Text, nullable = True),
+    sa.Column( 'deleted', sa.types.Boolean, default = False )
 )
 
 t_govtSphere = sa.Table( 'govtSphere', meta.metadata,
@@ -190,19 +190,17 @@ t_suggestion = sa.Table( 'suggestion', meta.metadata,
     sa.Column( 'deleted', sa.types.Boolean, default = False),
     sa.Column( 'pending', sa.types.Boolean, default = True),
     sa.Column( 'disabled', sa.types.Boolean, default = False),
-    sa.Column( 'type', sa.types.String(20), nullable = True),
-    sa.Column( 'avgRating', sa.types.Float, nullable = True)
+    sa.Column( 'type', sa.types.String(20), nullable = True)
 )
 
 t_rating = sa.Table( 'rating', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True),
     sa.Column( 'type', sa.types.String(64), nullable = True),
-    sa.Column( 'rating', sa.types.Float, nullable = True),
+    sa.Column( 'rating', sa.types.Integer, nullable = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id'), nullable = True),
     sa.Column( 'article_id', sa.types.Integer, sa.ForeignKey('article.id'), nullable = True),
-    sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey('issue.id'), nullable = True),
-    sa.Column( 'comment_id', sa.types.Integer, sa.ForeignKey('comment.id'), nullable = True)
+    sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey('issue.id'), nullable = True)
 )
 
 class Suggestion(object):
@@ -335,6 +333,19 @@ class Slideshow(object):
         self.caption = caption
         self.title = title
 
+    def delete( self ):
+        """delete this slide"""
+        self.deleted = True 
+        meta.Session.commit( )
+        #event = Event( "disable" )
+        #user.events.append( event )
+        #self.page.events.append( event )
+        #self.event = event  
+    def undelete( self ):
+        """undelete this slide"""
+        self.deleted = False
+        meta.Session.commit( )
+
 class GovtSphere(object):
     def __init__(self, name, pictureHash):
         self.name = name
@@ -367,15 +378,13 @@ orm.mapper(Page, t_page, properties = {
 
 orm.mapper(Event, t_event,
 properties = {
-    'revision':orm.relation(Revision, uselist=False, backref='event'),
-    'rating':orm.relation(Rating, uselist=False, backref='event')
+    'comment':orm.relation(Comment, uselist=False, backref='event'),
+    'revision':orm.relation(Revision, uselist=False, backref='event')
 })
 
+
 orm.mapper(Revision, t_revision)
-orm.mapper(Comment, t_comment, properties = {
-    'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref = 'comment'),
-    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'comment')
-})
+orm.mapper(Comment, t_comment)
 orm.mapper(Points, t_points)
 orm.mapper(UserTypes, t_userTypes)
 orm.mapper(Article, t_article, properties = {
@@ -502,7 +511,7 @@ def commit_comment( url, user, data, type ):
         s.events.append(e)
     u.events.append(e)
     u.comments.append(c)
-    c.events.append(e)
+    c.event = e
     
     try:
         commit( e ) 
@@ -869,9 +878,15 @@ def getSphere(id):
 # slideshow functions
 ##########################
 
-def getSlideshow(issueID):
+def getSlideshow(issueID, deleted = False):
     try:
-        return meta.Session.query(Slideshow).filter_by(issue_id = issueID).order_by(Slideshow.id.asc()).all()
+        return meta.Session.query(Slideshow).filter_by(issue_id = issueID, deleted = deleted).order_by(Slideshow.id.asc()).all()
+    except:
+        return False
+
+def countSlideshow(issueID, deleted = False):
+    try:
+        return meta.Session.query(Slideshow).filter_by(issue_id = issueID, deleted = deleted).count()
     except:
         return False
 
@@ -909,33 +924,6 @@ def getSuggestionByURL(url, issue_id):
 def getRatingForSuggestion(suggestion_id, user_id):
     try:
         return meta.Session.query(Rating).filter_by(user_id = user_id, suggestion_id = suggestion_id).one()
-    except:
-        return False
-
-def getAvgRatingForSuggestion(suggestion_id):
-    try:
-        cols = meta.Session.query(Rating).filter_by(suggestion_id = suggestion_id).all()
-        l = []
-        for item in cols:
-            l.append(item.rating)
-        return sum(l)/len(l)
-    except:
-        return False
-
-def getRatingForComment(comment_id, user_id):
-    try:
-        return meta.Session.query(Rating).filter_by(comment_id = comment_id, user_id = user_id).one()
-    except:
-        return False
-
-def getAvgRatingForComment(comment_id):
-    try:
-        cols = meta.Session.query(Rating).filter_by(comment_id = comment_id).all()
-        l = []
-        for item in cols:
-            l.append(item.rating)
-            ##log.info('item = %s' % item)
-        return sum(l)/len(l)
     except:
         return False
 

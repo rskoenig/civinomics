@@ -25,12 +25,17 @@ def make_map():
     map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation
     map.connect('/issue/{id}/background', controller = 'issue', action = 'background', id = '{id}')
     map.connect('/issue/readThis', controller = 'issue', action = 'readThis')
+    map.connect('/issue/{id}/edit', controller = 'issue', action = 'edit', id = '{id}')
+    map.connect('/issue/edit_handler', controller = 'issue', action = 'edit_handler')
+    map.connect('/issue/edit_slideshow', controller = 'issue', action = 'edit_slideshow')
     map.connect('/issue/{id}', controller = 'issue', action = 'home', id = '{id}')
-    map.connect('/issue/{id}/leaderboard', controller = 'issue', action = 'leaderboard', id = '{id}')
     map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/issue/{id1}/suggestion/{id2}/rate/{id3}', controller = 'suggestion', action = 'rate', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/issue/{id1}/suggestion/{id2}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id}', controller = 'home', action = 'mainPage', id = '{id}')
     #map.connect('/php/{id}', '/php/{id}')
+    #map.connect('/commentModeration', controller = 'commentModeration', action = 'index')
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
     map.connect('/moderation/{id1}/{id2}', controller = 'moderation', action = 'index', id1 = '{id1}', id2 = '{id2}')
@@ -38,9 +43,7 @@ def make_map():
     map.connect('/addSuggestion/{id}', controller = 'addSuggestion', action = 'handler', id = '{id}')
     map.connect('/rating', controller = 'rating', action = 'index')
     map.connect('/admin', controller = 'admin', action = 'index')
-    map.connect('/corp/', controller = 'corp', action = 'index', id = 'None')
-    map.connect('/corp/{id}', controller = 'corp', action = 'index', id = '{id}')
-    map.connect('/suggestion/rate', controller = 'suggestion', action = 'rate')
+
     ################
     # Action Lists #
     ################
