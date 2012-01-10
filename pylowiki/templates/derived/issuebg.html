@@ -17,10 +17,7 @@
             	</p>
         	</div><!-- img -->
         	<ul class="left gray">
-        	    % if c.authuser.accessLevel >= 300:
-                    <li><a href="${h.url_for('/issue/%s/edit'%c.url.encode('latin-1'))}">Edit Issue</a></li>
-                % endif
-                <li><a href="${h.url_for('/issue/%s'%c.url.encode('latin-1'))}">Issue Home</a></li>
+        		<li><a href="${h.url_for('/issue/%s'%c.url.encode('latin-1'))}">Issue Home</a></li>
         		<li><a href="${h.url_for('/issue/%s/background'%c.url.encode('latin-1'))}"><strong class="darkgray">Background</strong></a></li>
                 <%doc>
         		<li><a href="#">Discussion</a></li>
