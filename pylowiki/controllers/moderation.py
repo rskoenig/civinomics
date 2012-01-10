@@ -65,7 +65,7 @@ class ModerationController(BaseController):
                     comment.pending = 0
                     comment.disabled = value
                     e = Event('C_enable', 'Enabled by %s'%c.authuser.name)
-                    comment.event = e
+                    comment.events.append(e)
                     u.events.append(e)
                     commit(e)
             elif id == 'suggestion':

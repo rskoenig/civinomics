@@ -124,9 +124,7 @@ div.rating {
 	margin: 0;
 	padding: 0;
 	width: 80px;
-	height: 15px;
 	position: relative;
-	background: url('../images/star_grey.png') repeat-x;
 }
 
 .star-rating li {
@@ -149,7 +147,6 @@ div.rating {
 	overflow: hidden;
 }
 .star-rating li a:hover {
-	background: url('../images/star_orange.png');
 	z-index: 2;
 	left: 0;
 	border: none;
@@ -182,7 +179,6 @@ div.rating {
 }
 
 .star-rating li.no-rating, .star-rating li.clicked, .average li {
-	background: url('../images/star_green.png');
 	position: absolute;
 	height: 15px;
 	display: block;

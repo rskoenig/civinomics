@@ -14,7 +14,7 @@
 	margin-right: -7px;
 }
 
-#comments form#add_comment textarea {
+#comment {
 	width: 100%;
 	height: 60px;
 	max-width: 105%;
@@ -26,14 +26,17 @@
 }
 
 #featuredComments {padding-top: 4px;}
-#featuredComments li {
+#featuredComments>li {
 	float: left;
+	clear: left;
 	padding-top: 15px;
 }
+#featuredComments ol {list-style-position: inside;}
 
 /* comment data - note: some styling done in js/comment.js */
 .comment_data {
 	padding-top: 5px;
+    width: 550px;
 }
 .comment_data p {
 	float:left;
@@ -51,19 +54,19 @@
 	margin: 0 5px;
 }
 .thumbs.up a {
-	background: url('../images/thumb_up_grey.png');
+	background: url('../img/thumb_up_grey.png');
 	top: 1px;
 }
 .thumbs.up a:hover {
-	background: url('../images/thumb_up_green.gif');
+	background: url('../img/thumb_up_green.gif');
 }
 
 .thumbs.down a {
-	background: url('../images/thumb_down_grey.png');
+	background: url('../img/thumb_down_grey.png');
 	top: -1px;
 }
 .thumbs.down a:hover {
-	background: url('../images/thumb_down_red.gif');
+	background: url('../img/thumb_down_red.gif');
 }
 
 /* flag comment + create reply */

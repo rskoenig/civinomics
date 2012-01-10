@@ -1,10 +1,11 @@
 <%inherit file = "/base/template.html"/>
-<%namespace file="/derived/commentsCustom.mako" import="comments" />
+<%namespace file="/derived/commentsCustom2.mako" import="comments" />
         
         	<div class="left headline banner_div">
-	        	<h2 class="banner">${c.title}</h2>
+	        	<h2 class="banner"><a href = "/issue/${c.p.url}">${c.title}</a></h2> 
+                <br/>
         	</div> <!-- left headline -->
-        	<div id="suggestion_main" class="left">
+        	<div id="suggestion_main" class="left clr">
         		<h3>Suggestion <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span></h3>
         		<div class="left" id="suggestion_info">
 					<p class="left">
@@ -12,8 +13,8 @@
 						<br />
 						Issue: <a href="/issue/${c.p.url}">${c.title}</a>
 						<br />
-						Tags: No tags!
-                        ##Tags: <a href="#">water,</a> <a href="#">government,</a> <a href="#">etc.</a>
+                        Tags: No tags!
+						##Tags: <a href="#">water,</a> <a href="#">government,</a> <a href="#">etc.</a>
 					</p>
 					<p class="right"><img src="/images/avatars/${c.u.pictureHash}.thumbnail" alt="avatar" class="right" /><br /><span class="right">Author: <a href="/profile/${c.u.name}">${c.u.name}</a></span></p>
 		            <p class="clr suggestion_summary">
@@ -22,17 +23,45 @@
 					<br />
 		            <br />
                     
+                    % if "user" in session:
+                        % if c.rating:
+                            <div class = "gray rating wide">
+                                <div class="basic_1 star-rating" data="${c.s.avgRating}_${c.i.id}_${c.s.id}_${c.rating.rating}"></div> 
+                                <script type="text/javascript">
+                                $(document).ready(function(){
+                                    $(".basic_1").jRating({
+                                        ##isDisabled : true
+                                    });
+                                });
+                                </script>
+                                <br/>
+                                <br/>
+                                <div class = "avgSRating_${c.s.id} right">Average rating: ${c.s.avgRating}</div>
+                                <br/>
+                                <div class = "yourSRating_${c.s.id} right">Your rating: ${c.rating.rating} </div>
+                                <br/>
+                            </div>
+                        % else:
+                            <div class = "gray rating wide">
+                                <div class="basic_1" data="0_${c.i.id}_${c.s.id}_0"></div> 
+                                <script type="text/javascript">
+                                $(document).ready(function(){
+                                    $(".basic_1").jRating();
+                                });
+                                </script>
+                            </div>
+                        % endif
+                    % endif
+                    
+                    <%doc>
 						<div class="gray rating wide">
-                        <%doc>
 							<ul class="star-rating">
-                            
 								<li class="no-rating">Not yet voted.</li>
 								<li><a href="#" class="one-star">1</a></li>
 								<li><a href="#" class="two-star">2</a></li>
 								<li><a href="#" class="three-star">3</a></li>
 								<li><a href="#" class="four-star">4</a></li>
 								<li><a href="#" class="five-star">5</a></li>
-                            
 							</ul>
 							<p class="right you-rate">Rate this suggestion</p>
 							<div class="average clr">
@@ -41,10 +70,9 @@
 								</ul>
 								<p class="right they-rate">Avg rating</p>
 							</div>
-                            </%doc>
 						</div>
-                        
-		            ##<span class="gray right">Posted on ${c.s.events[0].date} | <a href="#featuredComments">9 comments</a> | <a href="#comments">Leave a comment</a></span>
+                    </%doc>
+		            ##<span class="gray right">Posted on 18 August 2011 | <a href="#featuredComments">9 comments</a> | <a href="#comments">Leave a comment</a></span>
                 </div>
                 ${comments("suggestion")}
                 <%doc>
@@ -173,7 +201,7 @@
 						</li>
 		            </ul>
 	            </div><!-- comments -->
-                </%doc>
+            </%doc>
         	</div> <!-- suggestion_main -->
         	
         	<div id="suggestion_side" class="left">
@@ -209,58 +237,66 @@
                     </li>
                 </ul>
         	</div>
-            
+
 <%def name = 'extraHTML()'>
-    	<div id="pop">
-		
-			<div id="suggestion">
-				<h2 class="clr left">
-					<p class="right close"><a href="#" class="x">X</a>close</p>
-					<p class="left">Add a Suggestion</p>
-				</h2>
-				<form class="left" id="suggestiondata">
-					<div id="suggestionform" class="left">
-						Title:
-						<br />
-						<input type="text" id="suggestiontitle" />
-						<br />
-						<br />
-						Description:
-						<br />
-						<textarea id="suggestiontext"></textarea>
-						<br />
-						<br />
-						Tags:
-						<br />
-						<input type="text" id="suggestiontags" />
-						<br />
-						<span class="gray"><em>Popular tags in this issue: water, conservation, government</em></span>
-					</div>
-					<div id="suggestionshare" class="left">
-						Also share on:
-						<ul>
-							<li><input type="checkbox" /> Facebook</li>
-							<li><input type="checkbox" /> Twitter</li>
-						</ul>
-						<button type="submit" class="gold">Submit</button>
-					</div>
-				</form>
-			</div><!-- suggestion -->
-			
-        </div><!-- pop -->
+    <div id="pop">
+        <div id="suggestion">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="left">Add a Suggestion</p>
+            </h2>
+            <form class="left" id="suggestiondata">
+                <div id="suggestionform" class="left">
+                    Title:
+                    <br />
+                    <input type="text" id="suggestiontitle" />
+                    <br />
+                    <br />
+                    Description:
+                    <br />
+                    <textarea id="suggestiontext"></textarea>
+                    <br />
+                    <br />
+                    Tags:
+                    <br />
+                    <input type="text" id="suggestiontags" />
+                    <br />
+                    <span class="gray"><em>Popular tags in this issue: water, conservation, government</em></span>
+                </div>
+                <div id="suggestionshare" class="left">
+                    Also share on:
+                    <ul>
+                        <li><input type="checkbox" /> Facebook</li>
+                        <li><input type="checkbox" /> Twitter</li>
+                    </ul>
+                    <button type="submit" class="gold">Submit</button>
+                </div>
+            </form>
+        </div><!-- suggestion -->
+    </div><!-- pop -->
 </%def>
 
 <%def name = 'extraStyles()'>
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/js/markitup/skins/simple/style.css')}" />
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/js/markitup/sets/rst/style.css')}" />
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/css/pygments/pygments-tango.css')}" />
     <link type="text/css" rel="stylesheet" href="/styles/suggestion.css" />
     <link type="text/css" rel="stylesheet" href="/styles/comments.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jRating.jquery.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
 </%def>
 
 <%def name = 'extraScripts()'>
-    <script src="/js/slides.js" type="text/javascript"></script>
-    <script src="/js/comment.js" type="text/javascript"></script>
-    <script src="/js/rating.js" type="text/javascript"></script>
-    <script src="/js/h2banner.js" type="text/javascript"></script>
+    <script src = "/js/slides.js" type="text/javascript"></script>
+    <script src = "/js/comment.js" type="text/javascript"></script>
+    ##<script src = "/js/rating.js" type="text/javascript"></script>
+    <script src = "/js/h2banner.js" type="text/javascript"></script>
+    <script src = "/js/javascript.js" type="text/javascript"></script>
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+    <script src = "/js/jRating.jquery.js" type="text/javascript"></script>
+    
+    <script language="javascript">
+        $(document).ready(function()	{
+            $(".markitup").markItUp(mySettings);
+        });
+    </script>
 </%def>

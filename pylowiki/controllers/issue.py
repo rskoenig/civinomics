@@ -212,6 +212,10 @@ class IssueController(BaseController):
         p = getPageByID(session['pageID'])
         return redirect('/issue/%s/background' % p.url.decode('latin-1'))
 
+    """ Renders the leaderborad page for a given issue.  Takes in the issue URL as the id argument. """
+    def leaderboard(self, id):
+        return render('/derived/leaderboard.html')
+
     # ------------------------------------------
     #    Helper functions for wiki controller
     #-------------------------------------------

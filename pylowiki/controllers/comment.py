@@ -18,7 +18,7 @@ class CommentController(BaseController):
     def index(self, id):
         type = request.params['type']
         try:
-            request.params['submit'] #Try submit, if false redirect back.
+            #request.params['submit'] #Try submit, if false redirect back.
             data = request.params['comment-textarea']
             if type == "suggestion":
                 url = [request.params['suggestionTitle'], int(request.params['issueID'])]

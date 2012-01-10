@@ -38,14 +38,14 @@
         % if c.type == "disabled":
             % if comment.disabled:
                 ${session['comments'].append(comment.id)}
-                <span><img src="/images/avatars/${comment.event.user.pictureHash}.thumbnail" /> <a href = "/account/${comment.event.user.name}">${comment.event.user.name}</a> said:</span>
+                <span><img src="/images/avatars/${comment.events[-1].user.pictureHash}.thumbnail" /> <a href = "/account/${comment.events[-1].user.name}">${comment.events[-1].user.name}</a> said:</span>
                 
                 <p>
                 <br />
                     ${h.literal(h.reST2HTML(comment.data))}
                 </p>
                 <br />
-                <span class="time">${comment.event.date.strftime("%I:%M %p   %m-%d-%Y")}</span>
+                <span class="time">${comment.events[-1].date.strftime("%I:%M %p   %m-%d-%Y")}</span>
                 <br />
                 ${h.radio(comment.id, '0')} Allow <br />
                 ${h.radio(comment.id, '1')} Deny <br />
@@ -54,14 +54,14 @@
         % elif c.type == "pending":
             % if comment.pending:
                 ${session['comments'].append(comment.id)}
-                <span><img src="/images/avatars/${comment.event.user.pictureHash}.thumbnail" /> <a href = "/account/${comment.event.user.name}">${comment.event.user.name}</a> said:</span>
+                <span><img src="/images/avatars/${comment.events[-1].user.pictureHash}.thumbnail" /> <a href = "/account/${comment.events[-1].user.name}">${comment.events[-1].user.name}</a> said:</span>
                 
                 <p>
                 <br />
                     ${h.literal(h.reST2HTML(comment.data))}
                 </p>
                 <br />
-                <span class="time">${comment.event.date.strftime("%I:%M %p   %m-%d-%Y")}</span>
+                <span class="time">${comment.events[-1].date.strftime("%I:%M %p   %m-%d-%Y")}</span>
                 <br />
                 ${h.radio(comment.id, '0')} Allow <br />
                 ${h.radio(comment.id, '1')} Deny <br />
@@ -101,14 +101,14 @@
         % if c.type == "disabled":
             % if comment.disabled:
                 ${session['comments'].append(comment.id)}
-                <span><img src="/images/avatars/${comment.event.user.pictureHash}.thumbnail" /> <a href = "/account/${comment.event.user.name}">${comment.event.user.name}</a> said:</span>
+                <span><img src="/images/avatars/${comment.events[-1].user.pictureHash}.thumbnail" /> <a href = "/account/${comment.events[-1].user.name}">${comment.events[-1].user.name}</a> said:</span>
                 
                 <p>
                 <br />
                     ${h.literal(h.reST2HTML(comment.data))}
                 </p>
                 <br />
-                <span class="time">${comment.event.date.strftime("%I:%M %p   %m-%d-%Y")}</span>
+                <span class="time">${comment.events[-1].date.strftime("%I:%M %p   %m-%d-%Y")}</span>
                 <br />
                 ${h.radio(comment.id, '0')} Allow <br />
                 ${h.radio(comment.id, '1')} Deny <br />
@@ -117,14 +117,14 @@
         % elif c.type == "pending":
             % if comment.pending:
                 ${session['comments'].append(comment.id)}
-                <span><img src="/images/avatars/${comment.event.user.pictureHash}.thumbnail" /> <a href = "/account/${comment.event.user.name}">${comment.event.user.name}</a> said:</span>
+                <span><img src="/images/avatars/${comment.events[-1].user.pictureHash}.thumbnail" /> <a href = "/account/${comment.events[-1].user.name}">${comment.events[-1].user.name}</a> said:</span>
                 
                 <p>
                 <br />
                     ${h.literal(h.reST2HTML(comment.data))}
                 </p>
                 <br />
-                <span class="time">${comment.event.date.strftime("%I:%M %p   %m-%d-%Y")}</span>
+                <span class="time">${comment.events[-1].date.strftime("%I:%M %p   %m-%d-%Y")}</span>
                 <br />
                 ${h.radio(comment.id, '0')} Allow <br />
                 ${h.radio(comment.id, '1')} Deny <br />

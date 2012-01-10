@@ -35,7 +35,7 @@ input[type="checkbox"] {
 .darkgray {color: #555;}
 .darkorange {color: #ff9900;}
 
-button {
+button, *[type="submit"] {
 	border-radius: 3px;
 	border: 1px solid #b9b9b9;
 	background: #ddd;
@@ -79,7 +79,7 @@ h2.banner {
 	z-index: inherit;
 }
 div.banner_div {
-	background-image: url('../images/slash.png');
+	background-image: url('/images/slash.png');
 	background-repeat: no-repeat;
 	background-position: right top;
 	float: left;
@@ -92,7 +92,7 @@ div.banner_div {
 .search_form button[type="submit"] {
 	text-indent: -5000px;
 	border: none;
-	background: transparent url('../images/magnifying_glass_lt_grey.png');
+	background: transparent url('/images/magnifying_glass_lt_grey.png');
 	background-repeat: no-repeat;
 	width: 13px;
 	position: absolute;

@@ -39,7 +39,7 @@
         <div id="nav" class="left">
             <ul id="navtab" class="left">
                 <a href="/"><li title="Home">Home</li></a>
-                % if 'user' in session:
+                % if "user" in session:
                     <a href = "${h.url_for('#')}"><li title="Inbox">Inbox</li></a>
                     <a href = "/account/${c.authuser.name}"><li title="Profile">Profile</li></a>
                     <a href = "/account/edit"><li title="Account">Account</li></a>

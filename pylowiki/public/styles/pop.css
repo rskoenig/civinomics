@@ -2,8 +2,12 @@
 #pop {
     display: none;
     position: absolute;
+    top: 0;
+    left: 0;
     z-index: 4;
     background: rgba(22,22,22,.4);
+    width: 100%;
+    height: 100%;
 }
 
 /* title bar on popups */
@@ -14,9 +18,7 @@
     font-weight: normal;
 }
 
-#pop h2>p {
-    padding: 5px;
-}
+#pop h2>p {padding: 5px;}
 
 #pop h2 p+p {
     text-transform: uppercase;
@@ -28,33 +30,22 @@
 
 #slideshow {
     height: 700px;
-    width: 840px;
+    width: 1000px;
     background: #000;
-    margin: 100px 80px;
+    margin: 0 auto;
     color: #fff;
     display: none;
 }
 
-.slideshow_launch {
-	cursor: pointer;
-}
+.slideshow_launch {cursor: pointer;}
 
-#slideshow h2 {
-	border-bottom: 1px inset #aaa;
-}
+#slideshow h2 {border-bottom: 1px inset #aaa;}
 
-.slidetitle {
-    text-align: center;
-}
+.slidetitle {text-align: center;}
 
-#pop h2>p:first-child {
-    width: auto;
-}
+#pop h2>p:first-child {width: auto;}
 
-#close {
-	text-align: right;
-    
-}
+#close {text-align: right;}
 
 #close button {
     width: 30px;
@@ -63,7 +54,7 @@
 
 /* photos in slideshow */
 #photo_container {
-    width: 840px;
+    width: 1000px;
     height: 550px;
     position: relative;
 }
@@ -73,14 +64,20 @@
 	height: inherit;
 }
 
+.slides_container>div {width: 1000px;}
+.slides_container>div img {margin: 0 auto; display: block;}
+
 #photo_container p.caption {
     position: absolute;
-    bottom: 0px;
-    left: 0px;
-    width: 350px;
+    bottom: -10px;
+    left: 125px;
+    width: 730px;
     height: 150px;
     padding: 10px;
+	z-index: 100;
     background: rgba(0,0,0,.6);
+	border: 1px solid rgba(200,200,200,.6);
+	border-bottom: none;
 }
 
 /* navigation arrows */
@@ -89,17 +86,10 @@ a.next, a.prev {
 	float: left;
 	position: absolute;
 	z-index: 10000;
-}
-
-a.next {
 	top: 50%;
-	right: 0;
 }
-
-a.prev {
-	top: 50%;
-	left: 0;
-}
+a.next {right: 0;}
+a.prev {left: 0;}
 
 /* pagination - thumbnails on bottom */
 
@@ -108,13 +98,15 @@ ul.pagination {
 	position: relative;
 	top: 20px;
 	padding: 0;
-	float: left;
-	width: 100%;
+	width: 750px;
+	height: 75px;
+	margin: 0 auto;
 	background: #303030;
 }
 
 ul.pagination>li {
 	display: block;
+	height: inherit;
 	float: left;
 	padding: 10px 20px;
 }
@@ -125,20 +117,16 @@ ul.pagination>li {
 }
 
 /* pagination arrows */
-.pagination a, .pagination a:hover {
-	color: inherit;
+
+a.small, a.small:hover {
+	top: 600px;
+	color: white;
 	text-decoration: none;
 }
-.pagination .prev {
-	left: 5px;
-}
-.pagination .next {
-	right: 5px;
-}
+.prev.small {left: 130px;}
+.next.small {right: 130px;}
 
-ul.pagination .current {
-	background: rgba(0,0,0,.5);
-}
+ul.pagination li.activeSlide {background: rgba(0,0,0,.5);}
 
 /**** END SLIDESHOW ****/
 
@@ -157,31 +145,23 @@ ul.pagination .current {
 	width: 600px;
 }
 
-form#suggestiondata {
-	padding: 80px 0 0 80px;
-}
+form#suggestiondata {padding: 80px 0 0 80px;}
 
 #suggestion form input[type="text"], #suggestion form textarea {
 	border: 1px solid #b9b9b9;
 	width: 400px
 }
 
-#suggestion form textarea {
-	height: 150px;
-}
+#suggestion form textarea {height: 150px;}
 
-#suggestionform {
-	width: 410px;
-}
+#suggestionform {width: 410px;}
 
 #suggestionshare {
 	width: 150px;
 	padding: 200px 0 0 30px;
 }
 
-#suggestion form button {
-	width: 80px;
-}
+#suggestion form button {width: 80px;}
 
 /** invite friends **/
 
@@ -192,33 +172,16 @@ form#suggestiondata {
 	margin: 50px 250px;
 	position: fixed;
 }
-
-#invite_pop h2 {
-	margin-bottom: 20px
-}
-
-#invite_pop>div {
-	padding: 20px;
-}
-
-#invite_pop h4 {
-	font-size: 1.4em;
-}
-
-#invite_pop form {
-	padding: 10px;
-}
-
-#invite_pop a, #invite_pop a:hover {
-	color: blue;
-}
-
+#invite_pop h2 {margin-bottom: 20px}
+#invite_pop>div {padding: 20px;}
+#invite_pop h4 {font-size: 1.4em;}
+#invite_pop form {padding: 10px;}
+#invite_pop a, #invite_pop a:hover {color: blue;}
 #invite_pop p.wide, #invite_pop textarea {
 	padding: 5px;
 	margin-top: 10px;
 	border: 1px solid black;
 }
-
 #invite_pop button[type="submit"] {
 	width: 75px;
 	color: #454545;
@@ -233,36 +196,19 @@ form#suggestiondata {
 	background: white;
 }
 
-#compose_message_popup h2 {
-	border-bottom: 1px solid #ccc;
-}
-
+#compose_message_popup h2 {border-bottom: 1px solid #ccc;}
 #message_form {
 	font-size: .7em;
 	margin: 20px 60px;
 }
-
-#message_form textarea {
-	width: 400px;
-}
-
-#message_form>div>p.left {
-	padding-right: 5px;
-}
-
-#message_form>div+div.right.clr {
-	padding-top: 20px;
-}
-
-#message_form>div+div>textarea {
-	min-height: 120px;
-}
-
+#message_form textarea {width: 400px;}
+#message_form>div>p.left {padding-right: 5px;}
+#message_form>div+div.right.clr {padding-top: 20px;}
+#message_form>div+div>textarea {min-height: 120px;}
 #message_form>div>div.right {
 	width: 400px;
 	padding-top: 5px;
 }
-
 #message_form button[type="submit"] {
 	width: 60px;
 	height: 25px;
@@ -276,36 +222,23 @@ form#suggestiondata {
 	margin: 50px 250px;
 	position: fixed;
 }
-
 #add_media>div {
 	padding: 20px;
 	font-size: .75em;
 }
-
 #add_media form div {
 	text-align: right;
 	float: left;
 	padding-bottom: 10px;
 }
-
-#add_media form div>div {
-	padding-right: 10px;
-}
-
-#add_media form>div>div+div {
-	width: 440px;
-}
-
-#add_media form>div>div:first-child {
-	width: 100px;
-}
-
+#add_media form div>div {padding-right: 10px;}
+#add_media form>div>div+div {width: 440px;}
+#add_media form>div>div:first-child {width: 100px;}
 #add_media textarea, #add_media input[type="text"] {
 	width: 100%;
 	min-width: 100%;
 	max-width: 100%;
 }
-
 #add_media form button[type="submit"] {
 	width: 70px;
 	margin: 0 245px;
@@ -330,13 +263,9 @@ form#suggestiondata {
 	margin: 0 10px 20px 0;
 }
 
-.paypal {
-	padding-left: 10px;
-}
+.paypal {padding-left: 10px;}
 
-#contribute>form {
-	width: 620px;
-}
+#contribute>form {width: 620px;}
 #contribute>form input.wide {
 	width: 510px;
 	margin: 5px 0 5px 0;
@@ -357,9 +286,7 @@ form#suggestiondata {
 	margin-right: 3px;
 	line-height: 30px;
 }
-.citystate {
-	text-align: left;
-}
+.citystate {text-align: left;}
 #contribute>form button[type="submit"] {
 	width: 100px;
 	margin: 10px 260px;

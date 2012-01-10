@@ -131,25 +131,27 @@
                             <br />                            
                             
                             ## data: "<average>_<issueID>_<suggestionID>"
-                            % if item["rating"] != -1:
-                                <div class="basic_${counter}" data="${item['avgRating']}_${c.issueID}_${item['suggestionID']}_${item['rating']}"></div> 
-                                <script type="text/javascript">
-                                $(document).ready(function(){
-                                    $(".basic_${counter}").jRating({
-                                        ##isDisabled : true
+                            % if "user" in session:
+                                % if item["rating"] != -1:
+                                    <div class="basic_${counter}" data="${item['avgRating']}_${c.issueID}_${item['suggestionID']}_${item['rating']}"></div> 
+                                    <script type="text/javascript">
+                                    $(document).ready(function(){
+                                        $(".basic_${counter}").jRating({
+                                            ##isDisabled : true
+                                        });
                                     });
-                                });
-                                </script>
-                                <div class = "avgRating_${item['suggestionID']}">Average rating: ${item["avgRating"]}</div>
-                                <div class = "yourRating_${item['suggestionID']}">Your rating: ${item["rating"]} </div>
-                                <br/>
-                            % else:
-                                <div class="basic_${counter}" data="0_${c.issueID}_${item['suggestionID']}_0"></div> 
-                                <script type="text/javascript">
-                                $(document).ready(function(){
-                                    $(".basic_${counter}").jRating();
-                                });
-                                </script>
+                                    </script>
+                                    <div class = "avgRating_${item['suggestionID']}">Average rating: ${item["avgRating"]}</div>
+                                    <div class = "yourRating_${item['suggestionID']}">Your rating: ${item["rating"]} </div>
+                                    <br/>
+                                % else:
+                                    <div class="basic_${counter}" data="0_${c.issueID}_${item['suggestionID']}_0"></div> 
+                                    <script type="text/javascript">
+                                    $(document).ready(function(){
+                                        $(".basic_${counter}").jRating();
+                                    });
+                                    </script>
+                                % endif
                             % endif
                             
                             <span class="gray">Posted on ${item["date"]} | <a href="/issue/${c.url}/suggestion/${item['title']}">${item["numComments"]} comments</a> | <a href="/issue/${c.url}/suggestion/${item['title']}">Leave a comment</a></span>
@@ -263,6 +265,31 @@
 
 <%def name = 'extraHTML()'>
     <div id="pop">
+    
+    
+        <div id="slideshow" class="pop">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="slidetitle right">${c.title}</p>
+                <p class="right">Slideshow</p>
+            </h2>
+            
+            <div id="photo_container" class="left">
+            	<div class="slides_container">                
+                    % for item in c.slideshow:
+                        <div><img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" alt="<strong>${item['title']}</strong><br/>${item['caption']}"/></div>
+                    % endfor
+	            </div><!-- slides_container -->
+				<a href="#" class="prev small">&#x25C2;</a>
+				<a href="#" class="next small">&#x25B8;</a>
+				<p class="caption">
+				</p>
+				<a href="#" class="prev"><img src="/images/left_arrow_75%.png" /></a>
+				<a href="#" class="next"><img src="/images/right_arrow_75%.png" /></a>
+            </div><!-- photo_container -->
+        </div><!-- slideshow -->
+        
+        <%doc>
         <div id="slideshow">
             <h2 class="clr left">
                 <p class="right close"><a href="#" class="x">X</a>close</p>
@@ -296,6 +323,7 @@
 				</ul>
             </div><!-- photo_container -->
         </div><!-- slideshow -->
+        </%doc>
         
         <div id="suggestion">
 			<h2 class="clr left">
@@ -460,12 +488,24 @@
     <script src="/js/h2banner.js" type="text/javascript"></script>
     <script src="/js/slides.min.jquery.js" type="text/javascript"></script>
     <script src="/js/jRating.jquery.js" type="text/javascript"></script>
-	
-    <script>
-		$(function(){
-			$('#photo_container').slides({
-				preload: true,
-				generatePagination: false
+	<script src="/js/jquery.cycle.all.js"></script>
+    
+    <script type="text/javascript">
+		$(function() {
+			$('.slides_container').after('<ul class="pagination">').cycle({
+				fx: 'scrollHorz',
+				prev: 'a.prev',
+				next: 'a.next',
+				timeout: 0,
+				pager: '.pagination',
+				pagerAnchorBuilder: function(idx, slide) {
+					var imgSrc = $(slide).find('img').attr('src');
+					return '<li><a href="#"><img src="' + imgSrc + '" height="50" /></a></li>';
+				},
+				after: function() {
+					var caption = $(this).find('img').attr('alt');
+					$('#photo_container p.caption').html(caption);
+				}
 			});
 		});
 	</script>

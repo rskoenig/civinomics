@@ -1,10 +1,6 @@
 $(document).ready(function() {
     
     $('.slideshow_launch').click(function(event){
-        $('#pop').css({
-            'height':$(document).height(),
-            'width':$(document).width()
-        });
         $('#slideshow,#pop').css({
 			'display':'block'
 		});

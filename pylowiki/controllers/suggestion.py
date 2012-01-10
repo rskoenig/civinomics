@@ -4,7 +4,10 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 from pylowiki.model import get_page, getSuggestion, getIssueByID, getUserByID, Rating, Event, getSuggestionByID
 from pylowiki.model import get_user, commit, get_page, getIssueByID, getAvgRatingForSuggestion, getRatingForSuggestion
+from pylowiki.model import getRatingForComment
+
 from pylowiki.lib.base import BaseController, render
+from pylowiki.lib.fuzzyTime import timeSince
 
 import simplejson as json
 
@@ -24,6 +27,8 @@ class SuggestionController(BaseController):
             abort(404, h.literal("That page does not exist!"))
 
         c.s = getSuggestion(id2, c.p.id)
+        if 'user' in session:
+            c.rating = getRatingForSuggestion(c.s.id, c.authuser.id)
         if c.s == False:
             abort(404, h.literal("That page does not exist!"))
 
@@ -34,7 +39,7 @@ class SuggestionController(BaseController):
 
         r = c.s.revisions[0]
         c.content = h.literal(h.reST2HTML(r.data))
-
+        c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
         return render('/derived/suggestion.html')
 
     def rate(self):

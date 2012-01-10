@@ -16,8 +16,9 @@
 			/** String vars **/
 			bigStarsPath : '/images/stars.png', // path of the icon stars.png
 			smallStarsPath : '/images/small.png', // path of the icon small.png
-			phpPath : '/suggestion/rate', // path of the php file jRating.php
+			phpPath : '/rating/rate', // path of the php file jRating.php
 			type : 'big', // can be set to 'small' or 'big'
+            ratingType: 'suggestion', // Either suggestion or comment
 			
 			/** Boolean vars **/
 			step:false, // if true,  mouseover binded star by star,
@@ -28,8 +29,8 @@
 			length:5, // number of star to display
 			decimalLength : 1, // number of decimals.. Max 3, but you can complete the function 'getNote'
 			rateMax : 5, // maximal rate - integer from 0 to 9999 (or more)
-			rateInfosX : -45, // relative position in X axis of the info box when mouseover
-			rateInfosY : -50, // relative position in Y axis of the info box when mouseover
+            rateInfosX : -45, // relative position in X axis of the info box when mouseover
+            rateInfosY : -50, // relative position in Y axis of the info box when mouseover
 			
 			/** Functions **/
 			onSuccess : null,
@@ -52,11 +53,20 @@
 			getStarWidth();
 			$(this).height(starHeight);
 
-			var average = parseFloat($(this).attr('data').split('_')[0]), // get the site-wide average rating
-			issueID = parseInt($(this).attr('data').split('_')[1]), // get the id of the issue
-            suggestionID = parseInt($(this).attr('data').split('_')[2]), // get the id of the suggestion
-            myRating = parseFloat($(this).attr('data').split('_')[3]), // get the user's rating
-			widthRatingContainer = starWidth*opts.length, // Width of the Container
+            if (opts.ratingType == "suggestion")
+            {
+                var average = parseFloat($(this).attr('data').split('_')[0]), // get the site-wide average rating
+                issueID = parseInt($(this).attr('data').split('_')[1]), // get the id of the issue
+                suggestionID = parseInt($(this).attr('data').split('_')[2]), // get the id of the suggestion
+                myRating = parseFloat($(this).attr('data').split('_')[3]); // get the user's rating
+            }
+            else if (opts.ratingType == "comment")
+            {
+                var average = parseFloat($(this).attr('data').split('_')[0]), // get the site-wide average rating
+                commentID = parseInt($(this).attr('data').split('_')[1]), // get the id of the comment
+                myRating = parseFloat($(this).attr('data').split('_')[2]); // get the user's rating
+            }
+			var widthRatingContainer = starWidth*opts.length, // Width of the Container
 			widthColor = average/opts.rateMax*widthRatingContainer, // Width of the color Container
             myRatingWidth = myRating/opts.rateMax*widthRatingContainer // Width of the red star (my rating)
             rated = 0;  //Used in determining state of the mouseout function
@@ -167,49 +177,83 @@
 					average.width(newWidth);
 					
                     // Update your rating, displayed
-                    $(".yourRating_" + suggestionID).html("Your rating: " + rate);
+                    if (opts.ratingType == "suggestion")
+                    {
+                        $(".yourSRating_" + suggestionID).html("Your rating: " + rate);
+                    }
+                    else if (opts.ratingType == "comment")
+                    {
+                        $(".yourCRating_" + commentID).html("Your rating: " + rate);
+                    }
                     
 					/** ONLY FOR THE DEMO, YOU CAN REMOVE THIS CODE **/
 					/**	$('.datasSent p').html('<strong>issueID : </strong>'+issueID+'<br /><strong>rate : </strong>'+rate+'<br /><strong>action :</strong> rating');
 						$('.serverResponse p').html('<strong>Loading...</strong>'); **/
 					/** END ONLY FOR THE DEMO **/
 						
-					$.post(opts.phpPath,{
-							issueID : issueID,
-                            suggestionID : suggestionID,
-							rate : rate,
-							action : 'rating'
-						},
+                    if (opts.ratingType == "suggestion")
+                    {
+                        $.post(opts.phpPath,{
+                                issueID : issueID,
+                                suggestionID : suggestionID,
+                                rate : rate,
+                                action : 'rating',
+                                type : opts.ratingType
+                            },
+                            
+                            function(data) {
+                            	if(!data.error)
+                            	{
+                            		/** ONLY FOR THE DEMO, YOU CAN REMOVE THIS CODE **/
+                            			/** $('.serverResponse p').html(data.server); **/
+                            		/** END ONLY FOR THE DEMO **/
+                                    $(".avgSRating_" + suggestionID).html("Average rating: " + data.avgRating);
+                            		/** Here you can display an alert box, 
+                            			or use the jNotify Plugin :) http://www.myqjqueryplugins.com/jNotify
+                            			exemple :	*/
+                            		if(opts.onSuccess) opts.onSuccess();
+                            	}
+                            	else
+                            	{
+                            		
+                            		/** ONLY FOR THE DEMO, YOU CAN REMOVE THIS CODE **/
+                            			/** $('.serverResponse p').html(data.server); **/
+                            		/** END ONLY FOR THE DEMO **/
+                            		
+                            		/** Here you can display an alert box, 
+                            			or use the jNotify Plugin :) http://www.myqjqueryplugins.com/jNotify
+                            			exemple :	*/
+                            		if(opts.onError) opts.onError();
+                            	}
+                            }, 
+                            
+                            'json'
+                        );
+                    }
+                    else if (opts.ratingType == "comment")
+                    {
+                        $.post(opts.phpPath, {
+                            commentID : commentID,
+                            rate : rate,
+                            type : opts.ratingType,
+                            action : 'rating'
+                        },
                         
-						function(data) {
-							if(!data.error)
-							{
-								/** ONLY FOR THE DEMO, YOU CAN REMOVE THIS CODE **/
-									/** $('.serverResponse p').html(data.server); **/
-								/** END ONLY FOR THE DEMO **/
-								$(".avgRating_" + suggestionID).html("Average rating: " + data.avgRating);
-								
-								/** Here you can display an alert box, 
-									or use the jNotify Plugin :) http://www.myqjqueryplugins.com/jNotify
-									exemple :	*/
-								if(opts.onSuccess) opts.onSuccess();
-							}
-							else
-							{
-								
-								/** ONLY FOR THE DEMO, YOU CAN REMOVE THIS CODE **/
-									/** $('.serverResponse p').html(data.server); **/
-								/** END ONLY FOR THE DEMO **/
-								
-								/** Here you can display an alert box, 
-									or use the jNotify Plugin :) http://www.myqjqueryplugins.com/jNotify
-									exemple :	*/
-								if(opts.onError) opts.onError();
-							}
-						}, 
+                        function(data) {
+                            	if(!data.error)
+                            	{
+                                    $(".avgCRating_" + commentID).html("Average rating: " + data.avgRating);
+                            		if(opts.onSuccess) opts.onSuccess();
+                            	}
+                            	else
+                            	{
+                            		if(opts.onError) opts.onError();
+                            	}
+                            },
                         
-						'json'
-					);
+                        'json'
+                        );
+                    }
 				}
 			});
 

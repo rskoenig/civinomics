@@ -105,7 +105,7 @@ class AddissueController(BaseController):
                 else:
                     govtSphere = request.params['governmentSpheres']
                 issueName = request.params['issueName']
-                p = Page(issueName.lower().strip().replace(" ", "-"), 'issue', c.authuser.id)
+                p = Page(issueName.lower().replace(" ", "-"), 'issue', c.authuser.id)
                 p.title = request.params['issueName']
                 u = get_user(session['user'])
                 r = Revision(request.params['backgroundWiki'])

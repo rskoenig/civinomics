@@ -22,8 +22,9 @@
             % if "user" in session:
             add a comment
             <br />
-            <div id="comment-preview-div"></div>
+            
             <textarea rows="4" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup"></textarea>  
+            <div id="comment-preview-div"></div>
             <div style="align:right;text-align:right;">${h.submit('submit', 'Comment')}</div>
             <br />
             % else:
@@ -65,14 +66,14 @@
             ${h.literal(h.reST2HTML(comment.data))}
         </p>
         <br />
-        <span class="time">${comment.event.date.strftime("%I:%M %p   %m-%d-%Y")}</span><span class="gray"> </span>
+        <span class="time">${comment.events[-1].date.strftime("%I:%M %p   %m-%d-%Y")}</span><span class="gray"> </span>
      </li>
      
      <%doc>
      <div id="comment" name="comment">
-       ${gravatar(comment.event.user.email, 60, float='right')}
-       <a href="/account/${comment.event.user.name}">${comment.event.user.name}</a>
-       ${comment.event.date.strftime("%I:%M %p   %m-%d-%Y")}
+       ${gravatar(comment.events[-1].user.email, 60, float='right')}
+       <a href="/account/${comment.event.user.name}">${comment.events[-1].user.name}</a>
+       ${comment.events[-1].date.strftime("%I:%M %p   %m-%d-%Y")}
        % try:
          % if session['user'] == comment.event.user.name:
            <a href="/comment/disable/${comment.id}">disable comment</a>

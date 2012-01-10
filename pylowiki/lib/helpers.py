@@ -16,6 +16,7 @@ from webhelpers.html.tags import *
 #from webhelpers.util import *
 
 from webhelpers.html import literal
+from webhelpers.html import lit_sub
 from webhelpers.html.tools import mail_to
 
 from pylons import url

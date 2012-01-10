@@ -26,6 +26,7 @@ def make_map():
     map.connect('/issue/{id}/background', controller = 'issue', action = 'background', id = '{id}')
     map.connect('/issue/readThis', controller = 'issue', action = 'readThis')
     map.connect('/issue/{id}', controller = 'issue', action = 'home', id = '{id}')
+    map.connect('/issue/{id}/leaderboard', controller = 'issue', action = 'leaderboard', id = '{id}')
     map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/issue/{id1}/suggestion/{id2}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id}', controller = 'home', action = 'mainPage', id = '{id}')
