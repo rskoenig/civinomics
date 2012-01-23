@@ -52,42 +52,7 @@ t_user = sa.Table( 'user', meta.metadata,
     sa.Column( 'bio', sa.types.Text, nullable = True),
     sa.Column( 'connections', sa.types.Text, nullable = True),
     sa.Column( 'accessLevel', sa.types.Integer, nullable = True),
-    #sa.Column( 'signupType', sa.types.Integer, default = 0),
-    #sa.Column( 'signupPlatformID', sa.types.Integer, nullable = True),
     mysql_charset='utf8'
-)
-
-t_canvasser = sa.Table( 'canvasser', meta.metadata,
-    sa.Column( 'id', sa.types.Integer, primary_key = True),
-    sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey('user.id'), nullable = True),
-    mysql_charset='utf8'
-)
-
-t_canvasserMetadata = sa.Table( 'canvasserMetadata', meta.metadata,
-    sa.Column(' id', sa.types.Integer, primary_key = True),
-    sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey('user.id'), nullable = True),
-    sa.Column( 'canvasser_id', sa.types.Integer, sa.ForeignKey('canvasser.id'), nullable = True),
-    sa.Column( 'eventTime', sa.types.DateTime, default = d.datetime.now),
-    sa.Column( 'surveyAns_id', sa.types.Integer, sa.ForeignKey('surveyAns.id'), nullable = True),
-    mysql_charset = 'utf8'
-)
-
-t_surveyAns = sa.Table( 'surveyAns', meta.metadata,
-    sa.Column( 'id', sa.types.Integer, primary_key = True),
-    sa.Column( 'canvasser_id', sa.types.Integer, sa.ForeignKey('canvasser.id'), nullable = True),
-    sa.Column( 'survey_id', sa.types.Integer, sa.ForeignKey('survey.id'), nullable = True),
-    sa.Column( 'questionNum', sa.types.Text, nullable = True),
-    sa.Column( 'answer', sa.types.Text, nullable = True),
-    mysql_charset = 'utf8'
-)
-
-t_survey = sa.Table( 'survey', meta.metadata,
-    sa.Column('id', sa.types.Integer, primary_key = True),
-    sa.Column('creator_id', sa.types.Integer, sa.ForeignKey('user.id'), nullable = True),
-    sa.Column('title', sa.types.Text, nullable = True),
-    sa.Column('description', sa.types.Text, nullable = True),
-    sa.Column('lastEdited', sa.types.DateTime, default = d.datetime.now),
-    mysql_charset = 'utf8'
 )
 
 t_userWork = sa.Table( 'userWork', meta.metadata,
@@ -120,13 +85,13 @@ t_revision = sa.Table( 'revision', meta.metadata,
 t_comment = sa.Table( 'comment', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True ),
     sa.Column( 'page_id', sa.types.Integer, sa.ForeignKey( 'page.id' ), nullable = True),
+    sa.Column( 'event_id', sa.types.Integer, sa.ForeignKey( 'event.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id' ), nullable = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
     sa.Column( 'data', sa.types.Text, nullable = False),
     sa.Column( 'disabled', sa.types.Boolean, default = False ),
     sa.Column( 'pending', sa.types.Boolean, default = True),
     sa.Column( 'parent', sa.types.Integer, nullable = True),
-    sa.Column( 'avgRating', sa.types.Float, nullable = True),
     mysql_charset='utf8'
 )
 
@@ -138,7 +103,6 @@ t_event = sa.Table( 'event', meta.metadata,
     sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey( 'issue.id' ), nullable = True),
     sa.Column( 'article_id', sa.types.Integer, sa.ForeignKey( 'article.id' ), nullable = True),
     sa.Column( 'rating_id', sa.types.Integer, sa.ForeignKey( 'rating.id' ), nullable = True),
-    sa.Column( 'comment_id', sa.types.Integer, sa.ForeignKey( 'comment.id' ), nullable = True),
     sa.Column( 'type', sa.types.String(8), nullable = False),
     sa.Column( 'remark', sa.types.String(64), nullable = True),
     sa.Column( 'date', sa.types.DateTime, default = d.datetime.now )    
@@ -206,7 +170,7 @@ t_slideshow = sa.Table ( 'slideshow', meta.metadata,
     sa.Column( 'pictureHash', sa.types.String(128), nullable = True),
     sa.Column( 'caption', sa.types.Text, nullable = True),
     sa.Column( 'title', sa.types.Text, nullable = True),
-    sa.Column( 'deleted', sa.types.Boolean, default = False)
+    sa.Column( 'deleted', sa.types.Boolean, default = False )
 )
 
 t_govtSphere = sa.Table( 'govtSphere', meta.metadata,
@@ -226,19 +190,17 @@ t_suggestion = sa.Table( 'suggestion', meta.metadata,
     sa.Column( 'deleted', sa.types.Boolean, default = False),
     sa.Column( 'pending', sa.types.Boolean, default = True),
     sa.Column( 'disabled', sa.types.Boolean, default = False),
-    sa.Column( 'type', sa.types.String(20), nullable = True),
-    sa.Column( 'avgRating', sa.types.Float, nullable = True)
+    sa.Column( 'type', sa.types.String(20), nullable = True)
 )
 
 t_rating = sa.Table( 'rating', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True),
     sa.Column( 'type', sa.types.String(64), nullable = True),
-    sa.Column( 'rating', sa.types.Float, nullable = True),
+    sa.Column( 'rating', sa.types.Integer, nullable = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id'), nullable = True),
     sa.Column( 'article_id', sa.types.Integer, sa.ForeignKey('article.id'), nullable = True),
-    sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey('issue.id'), nullable = True),
-    sa.Column( 'comment_id', sa.types.Integer, sa.ForeignKey('comment.id'), nullable = True)
+    sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey('issue.id'), nullable = True)
 )
 
 class Suggestion(object):
@@ -379,7 +341,6 @@ class Slideshow(object):
         #user.events.append( event )
         #self.page.events.append( event )
         #self.event = event  
-
     def undelete( self ):
         """undelete this slide"""
         self.deleted = False
@@ -400,25 +361,6 @@ class Rating(object):
         self.type = type
         self.rating = rating
 
-class Canvasser(object):
-    def __init__(self):
-        self = self
-
-class CanvasserMetadata(object):
-    def __init__(self, checkInTime):
-        self.checkInTime = d.datetime.now
-
-class SurveyAns(object):
-    def __init__(self, questionNum, answer):
-        self.questionNum = questionNum
-        self.answer = answer
-
-class Survey(object):
-    def __init__(self, title, description):
-        self.title = title
-        self.description = description
-        self.lastEdited = d.datetime.now
-
 # orm.mapper(class, table, ...)
 orm.mapper(User, t_user, properties = {
     'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref='user'),
@@ -431,20 +373,18 @@ orm.mapper(Page, t_page, properties = {
     'revisions':orm.relation(Revision, order_by=(sa.desc('revision.id')), backref='page'),
     'comments':orm.relation(Comment, order_by=(sa.desc('comment.id')), backref='page'),
     'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref='page'),
-    'issue':orm.relation(Issue, uselist=False, backref='page')
+    'issue':orm.relation(Issue, order_by=(sa.desc('issue.id')), backref='page')
 })
 
 orm.mapper(Event, t_event,
 properties = {
-    'revision':orm.relation(Revision, uselist=False, backref='event'),
-    'rating':orm.relation(Rating, uselist=False, backref='event')
+    'comment':orm.relation(Comment, uselist=False, backref='event'),
+    'revision':orm.relation(Revision, uselist=False, backref='event')
 })
 
+
 orm.mapper(Revision, t_revision)
-orm.mapper(Comment, t_comment, properties = {
-    'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref = 'comment'),
-    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'comment')
-})
+orm.mapper(Comment, t_comment)
 orm.mapper(Points, t_points)
 orm.mapper(UserTypes, t_userTypes)
 orm.mapper(Article, t_article, properties = {
@@ -477,26 +417,6 @@ properties = {
 
 orm.mapper(Rating, t_rating)
 
-orm.mapper(Canvasser, t_canvasser,
-properties = {
-    'user':orm.relation(User, uselist = False, backref = 'canvasser'),
-    'canvasserMetadata':orm.relation(CanvasserMetadata, order_by=(sa.desc('canvasserMetadata.id')), backref = 'canvasser')
-})
-
-orm.mapper(CanvasserMetadata, t_canvasserMetadata,
-properties = {
-    'user':orm.relation(User, uselist = False, backref = 'canvasserMetadata'),
-    'surveyAns':orm.relation(SurveyAns, uselist = False, backref = 'canvasserMetadata')
-})
-
-orm.mapper(SurveyAns, t_surveyAns)
-
-orm.mapper(Survey, t_survey,
-properties = {
-    'creator':orm.relation(User, uselist = False),
-    'answers':orm.relation(SurveyAns, order_by=(sa.desc('surveyAns.id')), backref = 'survey')
-})
-
 ##########################
 # Commit Helpers
 ##########################
@@ -528,7 +448,7 @@ def commit_edit( url, user, data, type, remark ):
     r.event = e  
 
     try:
-        commit( e ) 
+	commit( e ) 
         return True
     except:
         return False
@@ -537,16 +457,16 @@ def commit_trash( url, user, action, remark):
     """commit delete or restore to database."""
 
     if action == "delete":
-        p = get_page( url )
-    if p == False: # Do not delete a deleted page.
-        return False
-    p.deleted = True
-    
+	p = get_page( url )
+	if p == False: # Do not delete a deleted page.
+	    return False
+	p.deleted = True
+	
     if action == "restore":
-        p = get_page( url, True )
-    if p == False: # Do not restore a page not deleted.
-        return False
-    p.deleted = False  
+	p = get_page( url, True )
+	if p == False: # Do not restore a page not deleted.
+	    return False
+	p.deleted = False  
 
     u = get_user( user )
     e = Event( action, remark )
@@ -591,7 +511,7 @@ def commit_comment( url, user, data, type ):
         s.events.append(e)
     u.events.append(e)
     u.comments.append(c)
-    c.events.append(e)
+    c.event = e
     
     try:
         commit( e ) 
@@ -820,8 +740,8 @@ def get_search_results( needle ):
 
             SELECT 
                 page.id AS page_id, page.url as page_url, avg(MATCH(data) AGAINST ('"""+needle+"""')) as score
-            FROM 
-                revision JOIN event ON revision.event_id = event.id JOIN page ON page.id = event.page_id
+		    FROM 
+	            revision JOIN event ON revision.event_id = event.id JOIN page ON page.id = event.page_id
             WHERE 
                 page.deleted = 0
             GROUP BY
@@ -970,12 +890,6 @@ def countSlideshow(issueID, deleted = False):
     except:
         return False
 
-def getSlide(slideID, deleted = False):
-    try:
-        return meta.Session.query(Slideshow).filter_by(id = slideID, deleted = deleted).one()
-    except:
-        return False
-
 ##########################
 # suggestion functions
 ##########################
@@ -1013,45 +927,3 @@ def getRatingForSuggestion(suggestion_id, user_id):
     except:
         return False
 
-def getAvgRatingForSuggestion(suggestion_id):
-    try:
-        cols = meta.Session.query(Rating).filter_by(suggestion_id = suggestion_id).all()
-        l = []
-        for item in cols:
-            l.append(item.rating)
-        return sum(l)/len(l)
-    except:
-        return False
-
-def getRatingForComment(comment_id, user_id):
-    try:
-        return meta.Session.query(Rating).filter_by(comment_id = comment_id, user_id = user_id).one()
-    except:
-        return False
-
-def getAvgRatingForComment(comment_id):
-    try:
-        cols = meta.Session.query(Rating).filter_by(comment_id = comment_id).all()
-        l = []
-        for item in cols:
-            l.append(item.rating)
-            ##log.info('item = %s' % item)
-        return sum(l)/len(l)
-    except:
-        return False
-
-##########################
-# survey functions
-##########################
-
-def getSurvey(title):
-    try:
-        return meta.Session.query(Survey).filter_by(title = title).one()
-    except:
-        return False
-
-def getCanvasser(user_id):
-    try:
-        return meta.Session.query(Canvasser).filter_by(user_id = user_id).one()
-    except:
-        return False

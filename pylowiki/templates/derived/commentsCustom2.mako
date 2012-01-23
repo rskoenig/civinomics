@@ -62,9 +62,11 @@
                             % if "user" in session:
                                 <% userRating = getRatingForComment(comment.id, c.authuser.id) %>
                                 % if not userRating:
-                                    <% userRating = 0 %>
+                                    <% thisRating = 0 %>
+                                % else:
+                                    <% thisRating = userRating.rating %>
                                 % endif
-                                <div class="comment_${counter} star-rating" data="${comment.avgRating}_${comment.id}_${userRating.rating}"></div> 
+                                <div class="comment_${counter} star-rating" data="${comment.avgRating}_${comment.id}_${thisRating}"></div> 
                                 <script type="text/javascript">
                                 $(document).ready(function(){
                                     $(".comment_${counter}").jRating({

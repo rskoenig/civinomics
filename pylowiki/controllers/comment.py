@@ -6,6 +6,8 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
+from pylowiki.model import commit, Event
+
 log = logging.getLogger(__name__)
 
 #from pylowiki.model import commit_comment, disable_comment, get_comment
@@ -48,3 +50,19 @@ class CommentController(BaseController):
         else:
             h.flash( "Invalid comment id", "error" )
         return redirect( session['return_to'] )
+
+    @h.login_required
+    def edit(self, id):
+        comment = get_comment(id)
+        start = 1000 # starting of counter in commentsCustom.mako
+        thisID = start + int(id)
+        data = request.params['textarea' + str(thisID)]
+        comment.data = data
+        e = Event('edtCmt', 'User %s edited %s' %(c.authuser.id, comment.id))
+        comment.events.append(e)
+        if not commit(e):
+            h.flash('Comment edit was NOT saved!', 'error')
+            return redirect('/issue/%s' % comment.page.url)
+        h.flash('Comment edit saved!', 'success')
+        return redirect('/issue/%s' % comment.page.url)
+        

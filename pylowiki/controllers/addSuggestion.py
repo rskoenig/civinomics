@@ -12,9 +12,6 @@ log = logging.getLogger(__name__)
 
 class AddsuggestionController(BaseController):
 
-    def index(self):
-        return 'Hello World'
-
     @h.login_required
     def handler(self, id):
         title = request.params['title']

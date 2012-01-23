@@ -38,7 +38,7 @@
 				<div id="featured_issue">
                 % if len(c.list) > 0:
                     <% mainIssue = c.list.pop() %>
-					<img src="/images/slideshows/${mainIssue.issue[0].slideshow[-1].pictureHash}.slideshow" />
+					<a href = '/issue/${mainIssue.url}'> <img src="/images/slideshows/${mainIssue.issue.slideshow[-1].pictureHash}.slideshow" /></a>
 					<div id="featured_caption">
 						<p><strong>Featured Issue: ${mainIssue.title}</strong></p>
 						<p><strong><a href="/issue/${mainIssue.url}">View Issue</a></strong></p>
@@ -49,7 +49,7 @@
 				<ul id="issue_list">
                     % for item in c.list:
                         <li>
-                            <a href="/issue/${item.url}"><img src="/images/slideshows/${item.issue[0].slideshow[-1].pictureHash}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
+                            <a href="/issue/${item.url}"><img src="/images/slideshows/${item.issue.slideshow[-1].pictureHash}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
                             <h4><a href="/issue/${item.url}">${item.title}</a></h4>
                             <span>Phase: Suggestion</span>
                             <br />

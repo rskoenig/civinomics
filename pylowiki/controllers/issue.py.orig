@@ -7,7 +7,6 @@ from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.model import get_page, get_all_pages, getSlideshow, countSlideshow, getIssueByName, get_user, GovtSphere, getAllSpheres, getSphere, getPageByID, getUserByID
 from pylowiki.model import Revision, Page, Event, Article, commit, getParticipantsByID, getArticlesByIssueID, getIssueByID, getRatingForSuggestion
-from pylowiki.model import getSlide
 from pylowiki.lib.points import readThisPage
 
 import pylowiki.lib.helpers as h
@@ -33,18 +32,16 @@ class IssueController(BaseController):
         c.lastmoddate = r.event.date
         c.lastmoduser = r.event.user.name
         s = getSlideshow(c.p.id)
-        i = getIssueByName(c.p.title)
-        slideshowOrder = i.slideshowOrder.split(',')
         c.slideshow = []
         c.slideshowDirectory = 'slideshows'
-        for slideID in slideshowOrder:
-            slide = getSlide(slideID)
+        for item in s:
             entry = {}
-            entry['hash'] = slide.pictureHash
-            entry['caption'] = slide.caption
-            entry['title'] = slide.title
+            entry['hash'] = item.pictureHash
+            entry['caption'] = item.caption
+            entry['title'] = item.title
             c.slideshow.append(entry)
 
+        i = getIssueByName(c.p.title)
         c.issue = i
         c.issueID = i.id
         c.goals = h.literal(h.reST2HTML(i.goals))
@@ -67,7 +64,6 @@ class IssueController(BaseController):
                 entry['author'] = user.name
                 entry['date'] = item.events[0].date
                 entry['numComments'] = len([comment for comment in item.comments if comment.disabled == 0 and comment.pending == 0])
-                entry['suggestionID'] = item.id
 
                 """ Grab first 250 chars as a summary """
                 if len(item.revisions[0].data) <= 250:
@@ -80,13 +76,10 @@ class IssueController(BaseController):
                 log.info('suggestion id = %s, user id = %s' %(item.id, c.authuser.id))
                 if rating:
                     entry['rating'] = rating.rating
+                    log.info('rating was found for %s!' %item.title )
                 else:
-                    entry['rating'] = -1
-
-                if item.avgRating == None:
-                    entry['avgRating'] = 0
-                else:
-                    entry['avgRating'] = item.avgRating
+                    entry['rating'] = 0
+                    log.info('no rating found for %s!' %item.title )
 
                 c.suggestions.append(entry)
 
@@ -171,7 +164,7 @@ class IssueController(BaseController):
             HTMLlist = self.get_HTMLlist(reST)
 
             c.wikilist = zip(HTMLlist, reSTlist)
-            log.info('%s' %c.wikilist)
+
             c.owners = [int(owner) for owner in c.p.owners.split(',')]
             #return render('/derived/wiki.mako')
             return render('/derived/issuebg.html')
@@ -221,10 +214,6 @@ class IssueController(BaseController):
         p = getPageByID(session['pageID'])
         return redirect('/issue/%s/background' % p.url.decode('latin-1'))
 
-    """ Renders the leaderborad page for a given issue.  Takes in the issue URL as the id argument. """
-    def leaderboard(self, id):
-        return render('/derived/leaderboard.html')
-        
     @h.login_required
     def edit(self, id):
         if c.authuser.accessLevel >= 300:
@@ -282,14 +271,16 @@ class IssueController(BaseController):
             return redirect('/')
 
     @h.login_required
-    def edit_handler(self, id):
+    def edit_handler(self):
         #if self._checkAccess(300):
         if c.authuser.accessLevel >= 300:
+            #if (1):
             try:
                 request.params['submit']
                 if request.params['newGovtSphereName']:
                     newGovtSphereName = request.params['newGovtSphereName']
                     photo = request.POST['newGovtSpherePhoto']
+                    #return photo.filename
                     try:
                         hash = md5("%s%f"%(photo.filename, time())).hexdigest()
                         saveImage(photo.filename, hash, photo.file, 'govtSphere')
@@ -304,16 +295,25 @@ class IssueController(BaseController):
                         govtSphere = gS.id
                 else:
                     govtSphere = request.params['governmentSpheres']
-                p = get_page(id) # Take in URL from passed in id argument, use to get the correct page.
+                issueName = request.params['issueName']
+                issueName = issueName.strip()
+                #p = getPageByID(session['editIssueById'])
+                p = get_page(request.params['pId']) 
+                #p = get_page(id)
                 if p == False:
                     abort(404, h.literal("That page does not exist!"))
-
-                i = p.issue
-                issueName = i.name
+                p.url = issueName.lower().replace(" ", "-")
+                #p.title = request.params['issueName']
+                p.title = issueName
                 u = get_user(session['user'])
+                r = Revision(request.params['backgroundWiki'])
+
                 e = Event('create', 'Edited issue %s' %issueName[:50] )
                 p.events.append(e)
                 u.events.append(e)
+                r.event = e
+                p.revisions.append(r)
+                #issue = Issue(issueName, p.id)
 
                 """ Set the end date for the suggestion phase """
                 if request.params['suggestionMonth']:
@@ -360,13 +360,23 @@ class IssueController(BaseController):
                     year = '0'
                 solPkgEnd = "%s/%s/%s" %(month, day, year)
 
-                if commit(e):
+                if p.url == "" or r.data == "":
+                    h.flash("Page was not created.  Please fill all fields.", "warning")
+                elif commit(e):
+                    i = getIssueByID(p.id)
+                    i.name = issueName
+                    u.issues.append(i)
+                    p.issue.append(i)
                     i.govtSphere = govtSphere
                     if request.params['goals']:
                         i.goals = request.params['goals']
                     i.suggestionEnd = suggestionEnd
                     i.solutionEnd = solutionEnd
                     i.solPkgEnd = solPkgEnd
+                    a = Article(p.url, issueName)
+                    a.pending = False
+                    a.type = 'background'
+                    i.articles.append(a)
                     i.events.append(e)
 
                     if commit(i):
@@ -390,41 +400,18 @@ class IssueController(BaseController):
                         c.title = 'Edit Slideshow'
                         session['issueID'] = i.id
                         #h.flash("The issue was created!", "success")
-                        return redirect('/issue/' + str(p.url))
-                        #return render('/derived/editSlideshow.html')
+                        #return redirect('/issue/' + str(p.url))
+                        return render('/derived/editSlideshow.html')
                     else:
                         h.flash("Background wiki created, issue information was not", "warning")
                 else:
                     h.flash("Page was not created. URL or title might be in use.", "warning")
-                log.info('p.url = %s' % p.url)
-                return redirect('/issue/%s' %p.url)
             except KeyError:
                 h.flash("Do not attempt to access a handler directly", "error")
-            #return redirect('/issue/%s' % p.url)
+            return redirect('/issue/%s' % p.url.decode('latin-1'))
         else:
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
-
-    @h.login_required
-    def editSlideshow(self, id):
-        p = get_page(id)
-        c.url = p.url
-        i = p.issue
-
-        if c.authuser.accessLevel < 200 or c.authuser.id not in map(int, p.owners.split(',')):
-            h.flash('You are not authorized to view that page', 'warning')
-            return redirect('/')
-
-        slideshowOrder = i.slideshowOrder.split(',')
-        c.slideshow = []
-        for slideID in slideshowOrder:
-            slide = getSlide(slideID)
-            c.slideshow.append(slide)
-
-        c.slideshowDirectory = 'slideshows'
-        c.title = 'Edit slideshow for %s' % i.name
-        c.colors = ['yellow', 'red', 'blue', 'white', 'orange', 'green']
-        return render('/derived/editSlideshowEdolfo.html')
 
 
     # ------------------------------------------

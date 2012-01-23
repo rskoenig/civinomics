@@ -169,7 +169,7 @@ class AddissueController(BaseController):
                 elif commit(e):
                     i = Issue(issueName, p.id)
                     u.issues.append(i)
-                    p.issue = i
+                    p.issue.append(i)
                     i.govtSphere = govtSphere
                     if request.params['goals']:
                         i.goals = request.params['goals']
@@ -205,7 +205,6 @@ class AddissueController(BaseController):
         numEntries = int(session['numEntries'])
         issueID = session['issueID']
         issue = getIssueByID(issueID)
-        slideIDs = []
         for i in range(1, numEntries):
             thisImage = request.POST['image%d'%i]
             thisCaption = request.params['caption%d'%i]
@@ -233,10 +232,8 @@ class AddissueController(BaseController):
             """
             try:
                 commit(s)
-                slideIDs.append(s.id)
             except:
                 log.info('Failed to commit slideshow with caption %s' % thisCaption)
 
-        issue.slideshowOrder = ','.join(map(str, slideIDs))
         p = getPageByID(issue.pageID)
         return redirect('/issue/%s'%p.url)

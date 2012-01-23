@@ -56,6 +56,7 @@
         ${h.end_form()}
         </%doc>
         
+        <% counter = 1000 %>
    %for comment in reversed(comments):
    % if not comment.disabled and not comment.pending:
    
@@ -63,7 +64,27 @@
         <span><img src="/images/avatars/${comment.user.pictureHash}.thumbnail" /> <a href = "/account/${comment.user.name}">${comment.user.name}</a> says ...</span>
         <p>
         <br />
-            ${h.literal(h.reST2HTML(comment.data))}
+        	% if c.authuser.accessLevel >= 200:
+        	<% thisID = comment.id + counter %>
+        		${ h.form( url( controller = "comment", action ="edit", id = comment.id ), method="put" ) }
+		        	<table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+	                <div id = "section${thisID}" ondblclick="toggle('textareadiv${thisID}', 'edit${thisID}')">${comment.data}</div>
+	                </td></tr></table>
+	                <div style="display:none; text-align:center;" id="textareadiv${thisID}">
+	                    <br />
+	                    <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment.data}</textarea>
+	                    <div style="align:right;text-align:right;">
+	                        Optional remark: <input type="text" id="remark${thisID}"  name="remark${thisID}" class="text tiny" placeholder="optional remark"/> 
+	
+	                        ${h.submit('submit', 'Save')}
+	                        <input type="text" id="sremark"  name="sremark" class="text" />
+	                    </div>
+	                </div>
+	                <div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv${thisID}', 'edit${thisID}', 'edit')" id="edit${thisID}" style="font-size: 12px;">edit</a></div>
+	            ${h.end_form()}
+        	% else:
+            	${h.literal(h.reST2HTML(comment.data))}
+            % endif
         </p>
         <br />
         <span class="time">${comment.events[-1].date.strftime("%I:%M %p   %m-%d-%Y")}</span><span class="gray"> </span>
@@ -84,6 +105,7 @@
      </div>
      </%doc>
    % endif
+   <%counter += 1 %>
   % endfor
   
   <%doc>

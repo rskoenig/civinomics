@@ -25,7 +25,7 @@ class LoginController(BaseController):
         try:
             email = request.params["email"].lower()
             password = request.params["password"]
-
+            log.info('user %s attempting to log in' % email)
             if email and password:
                 user = get_user_by_email( email )
          
@@ -38,6 +38,10 @@ class LoginController(BaseController):
                         user.laston = time.time()
                         commit(user)
                         session["user"] = user.name
+                        session.save()
+                        log.info('session of user: %s' % session['user'])
+                        c.authuser = user
+                        
                         log.info( "Successful login attempt with credentials - " + email )
                         h.flash( "Welcome " + session["user"] + "!", "success" )
                         try:
@@ -65,7 +69,7 @@ class LoginController(BaseController):
                 return redirect( "/" )
             else:
                 #return render( "/derived/login.mako" )
-                return render('/')
+                return redirect('/')
 
     @login_required
     def logout(self):

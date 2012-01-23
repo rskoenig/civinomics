@@ -18,7 +18,28 @@
 					</p>
 					<p class="right"><img src="/images/avatars/${c.u.pictureHash}.thumbnail" alt="avatar" class="right" /><br /><span class="right">Author: <a href="/profile/${c.u.name}">${c.u.name}</a></span></p>
 		            <p class="clr suggestion_summary">
-		                ${c.content}
+		            	% if c.authuser.id in c.p.owners.split(',') or c.authuser.accessLevel >= 200 or c.authuser.id in c.s.owners.split(','):
+                            ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.i.id, c.s.id) ), method="put" ) }
+                            <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                            <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
+                            </td></tr></table>
+                            
+                            <div style="display:none; text-align:center;" id="textareadiv0">
+                            <br />
+                            <textarea rows="5" id="textarea0" name="textarea0" onkeyup="previewAjax( 'textarea0', 'section0' )" class="markitup">${c.s.revisions[0].data}</textarea>
+                            <div style="align:right;text-align:right;">
+                                Optional remark: <input type="text" id="remark0"  name="remark0" class="text tiny" placeholder="optional remark"/> 
+
+                                ${h.submit('submit', 'Save')}
+                                <input type="text" id="sremark"  name="sremark" class="text" />
+                            </div>
+                        </div>
+                        
+                        <div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv0', 'edit0', 'edit')" id="edit0" style="font-size: 12px;">edit</a></div>
+                        ${h.end_form()}
+                        % else:
+                        	${c.content}
+                        % endif
 		            </p>
 					<br />
 		            <br />
@@ -43,12 +64,18 @@
                             </div>
                         % else:
                             <div class = "gray rating wide">
-                                <div class="basic_1" data="0_${c.i.id}_${c.s.id}_0"></div> 
+                                <div class="basic_1 star-rating" data="0_${c.i.id}_${c.s.id}_0"></div> 
                                 <script type="text/javascript">
                                 $(document).ready(function(){
                                     $(".basic_1").jRating();
                                 });
                                 </script>
+                                <br/>
+                                <br/>
+                                <div class = "avgSRating_${c.s.id} right">Average rating: Unrated!</div>
+                                <br/>
+                                <div class = "yourSRating_${c.s.id} right">Your rating: Unrated! </div>
+                                <br/>
                             </div>
                         % endif
                     % endif
@@ -226,12 +253,12 @@
     				<span class="right"><a href="#">all suggestions</a></span>
         		</ul> <!-- related_suggestion -->
                 <ul class="share suggest invite">
-                    <li><img src="img/handdove.png" /> <a href="#">Invite to greenocracy</a></li>
-                    <li><img src="img/suggest_an_issue.png" /> <a href="#">Suggest an issue</a></li>
-                    <li><img src="img/pen.png" /> <a href="#">Share this page</a></li>
+                    <li><img src="/images/handdove.png" /> <a href="#">Invite to greenocracy</a></li>
+                    <li><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest an issue</a></li>
+                    <li><img src="/images/pen.png" /> <a href="#">Share this page</a></li>
                     <li>
                         <form method="get" action="issuehome.html">
-                            <img src="img/magnifying_glass.png" class="left"/>
+                            <img src="/images/magnifying_glass.png" class="left"/>
                             <input type="text" value="search...">
                         </form>
                     </li>

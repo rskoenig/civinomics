@@ -26,16 +26,15 @@ def make_map():
     map.connect('/issue/{id}/background', controller = 'issue', action = 'background', id = '{id}')
     map.connect('/issue/readThis', controller = 'issue', action = 'readThis')
     map.connect('/issue/{id}/edit', controller = 'issue', action = 'edit', id = '{id}')
-    map.connect('/issue/{id}/edit_handler', controller = 'issue', action = 'edit_handler', id = '{id}')
-    map.connect('/issue/{id}/editSlideshow', controller = 'issue', action = 'editSlideshow', id = '{id}')
+    map.connect('/issue/edit_handler', controller = 'issue', action = 'edit_handler')
+    map.connect('/issue/edit_slideshow', controller = 'issue', action = 'edit_slideshow')
     map.connect('/issue/{id}', controller = 'issue', action = 'home', id = '{id}')
-    map.connect('/issue/{id}/leaderboard', controller = 'issue', action = 'leaderboard', id = '{id}')
     map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/issue/{id1}/suggestion/{id2}/rate/{id3}', controller = 'suggestion', action = 'rate', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/issue/{id1}/suggestion/{id2}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}')
     #map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id}', controller = 'home', action = 'mainPage', id = '{id}')
-    
+    #map.connect('/php/{id}', '/php/{id}')
     #map.connect('/commentModeration', controller = 'commentModeration', action = 'index')
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
@@ -44,14 +43,6 @@ def make_map():
     map.connect('/addSuggestion/{id}', controller = 'addSuggestion', action = 'handler', id = '{id}')
     map.connect('/rating', controller = 'rating', action = 'index')
     map.connect('/admin', controller = 'admin', action = 'index')
-    map.connect('/corp/', controller = 'corp', action = 'index', id = 'None')
-    map.connect('/corp/{id}', controller = 'corp', action = 'index', id = '{id}')
-    map.connect('/suggestion/rate', controller = 'suggestion', action = 'rate')
-
-    map.connect('/slideshow/edit', controller = 'slideshow', action = 'edit')
-    
-    map.connect('/ipadListener/sendSurveyData', controller = 'ipadListener', action = 'sendSurveyData')
-    map.connect('/ipadListener/sendSurveyData/', controller = 'ipadListener', action = 'sendSurveyData')
 
     ################
     # Action Lists #
@@ -111,9 +102,7 @@ def make_map():
     map.connect('/comment/disable/{id}', controller='comment', action='disable') # set comment to disabled
     
     map.connect('/{controller}', controller='{controller}', action='index') # Maps url to controller index
-    map.connect('/{controller}/', controller = '{controller}', action = 'index')
     map.connect('/{controller}/{action}', controller='{controller}', action='{action}')
-    map.connect('/{controller}/{action}/', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/{id}')
 
     map.connect('/random', controller='wiki', action='random') # selects a random page
