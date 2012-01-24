@@ -77,7 +77,6 @@ class IssueController(BaseController):
 
                 """ Populate ratings, if they've already been rated """
                 rating = getRatingForSuggestion(item.id, c.authuser.id)
-                log.info('suggestion id = %s, user id = %s' %(item.id, c.authuser.id))
                 if rating:
                     entry['rating'] = rating.rating
                 else:
