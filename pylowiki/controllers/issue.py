@@ -25,15 +25,16 @@ class IssueController(BaseController):
         if c.p == False:
             abort(404, h.literal("That page does not exist!"))
 
-        c.title = c.p.title.decode('latin-1')
-        c.url = c.p.url.decode('latin-1')
+        c.title = c.p.title
+        c.url = c.p.url
         
         r = c.p.revisions[0]
 
         c.lastmoddate = r.event.date
         c.lastmoduser = r.event.user.name
         s = getSlideshow(c.p.id)
-        i = getIssueByName(c.p.title)
+        i = c.p.issue
+        c.i = i
         slideshowOrder = i.slideshowOrder.split(',')
         c.slideshow = []
         c.slideshowDirectory = 'slideshows'
@@ -45,7 +46,7 @@ class IssueController(BaseController):
             entry['title'] = slide.title
             c.slideshow.append(entry)
 
-        c.issue = i
+        c.i = i
         c.issueID = i.id
         c.goals = h.literal(h.reST2HTML(i.goals))
         sphere = getSphere(i.govtSphere)
@@ -142,12 +143,13 @@ class IssueController(BaseController):
 
     def background(self, id):
         c.p = get_page(id)
+        c.i = c.p.issue
         session['pageID'] = c.p.id
         if c.p == False:
             abort(404, h.literal("That page does not exist!"))
 
-        c.title = c.p.title.decode('latin-1')
-        c.url = c.p.url.decode('latin-1')
+        c.title = c.p.title
+        c.url = c.p.url
         
         r = c.p.revisions[0]
 
@@ -170,7 +172,6 @@ class IssueController(BaseController):
             HTMLlist = self.get_HTMLlist(reST)
 
             c.wikilist = zip(HTMLlist, reSTlist)
-            log.info('%s' %c.wikilist)
             c.owners = [int(owner) for owner in c.p.owners.split(',')]
             #return render('/derived/wiki.mako')
             return render('/derived/issuebg.html')
@@ -186,8 +187,8 @@ class IssueController(BaseController):
         if c.p == False:
             abort(404, h.literal("That page does not exist!"))
 
-        c.title = c.p.title.decode('latin-1')
-        c.url = c.p.url.decode('latin-1')
+        c.title = c.p.title
+        c.url = c.p.url
         
         r = c.p.revisions[0]
 
@@ -218,22 +219,22 @@ class IssueController(BaseController):
         else:
             h.flash("You have already read this!", "warning")
         p = getPageByID(session['pageID'])
-        return redirect('/issue/%s/background' % p.url.decode('latin-1'))
+        return redirect('/issue/%s/background' % p.url)
 
-    """ Renders the leaderborad page for a given issue.  Takes in the issue URL as the id argument. """
+    """ Renders the leaderboard page for a given issue.  Takes in the issue URL as the id argument. """
     def leaderboard(self, id):
         return render('/derived/leaderboard.html')
         
     @h.login_required
     def edit(self, id):
-        if c.authuser.accessLevel >= 300:
+        if c.authuser.accessLevel >= 200:
             c.p = get_page(id)
             c.pId = id
             if c.p == False:
                 abort(404, h.literal("That page does not exist!"))
 
-            c.title = c.p.title.decode('latin-1')
-            c.url = c.p.url.decode('latin-1')
+            c.title = c.p.title
+            c.url = c.p.url
             i = getIssueByName(c.p.title)
 
             c.issue = i
@@ -283,7 +284,7 @@ class IssueController(BaseController):
     @h.login_required
     def edit_handler(self, id):
         #if self._checkAccess(300):
-        if c.authuser.accessLevel >= 300:
+        if c.authuser.accessLevel >= 200:
             try:
                 request.params['submit']
                 if request.params['newGovtSphereName']:

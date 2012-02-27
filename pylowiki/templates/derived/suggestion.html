@@ -1,5 +1,6 @@
 <%inherit file = "/base/template.html"/>
-<%namespace file="/derived/commentsCustom2.mako" import="comments" />
+##<%namespace file="/derived/commentsCustom2.mako" import="comments" />
+<%namespace file="/derived/commentsCustom.mako" import="comments" />
         
         	<div class="left headline banner_div">
 	        	<h2 class="banner"><a href = "/issue/${c.p.url}">${c.title}</a></h2> 
@@ -101,7 +102,7 @@
                     </%doc>
 		            ##<span class="gray right">Posted on 18 August 2011 | <a href="#featuredComments">9 comments</a> | <a href="#comments">Leave a comment</a></span>
                 </div>
-                ${comments("suggestion")}
+                ${comments("suggestionMain")} </div>
                 <%doc>
                 <h3 class="clr">Comments</h3>
                 <div id="comments" class="left">

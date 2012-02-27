@@ -5,6 +5,9 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.images import saveImage, resizeImage
+from pylowiki.lib.utils import urlify
+from pylowiki.lib.comments import addDiscussion
+
 from pylowiki.model import Revision, Page, Event, commit, get_user, getAllSpheres, GovtSphere, Issue, getIssueByID
 from pylowiki.model import Slideshow, getPageByID, Article
 
@@ -52,16 +55,17 @@ class AddissueController(BaseController):
 
     @h.login_required
     def addIssue(self):
-        #if self._checkAccess(100):
         if c.authuser.accessLevel >= 100:
             try:
                 request.params['submit']
-                p = Page(request.params['issue_url'].lower().replace(" ", "-"), 'issue', c.authuser.id)
+                url = request.params['issue_url']
+                url = urlify(url)
+                p = Page(url, 'issue', c.authuser.id)
                 p.title = request.params['issue_url']
                 u = get_user(session['user'])
                 r = Revision(request.params['textarea'])
 
-                e = Event('create', request.params.get('remark', None))
+                e = Event('create issue', request.params.get('remark', None))
                 p.events.append(e)
                 u.events.append(e)
                 r.event = e
@@ -81,16 +85,15 @@ class AddissueController(BaseController):
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
 
+    # Todd's editing function?  Check if new page was created on editing
     @h.login_required
     def handler(self):
-        #if self._checkAccess(100):
         if c.authuser.accessLevel >= 100:
             try:
                 #request.params['submit']
                 if request.params['newGovtSphereName']:
                     newGovtSphereName = request.params['newGovtSphereName']
                     photo = request.POST['newGovtSpherePhoto']
-                    #return photo.filename
                     try:
                         hash = md5("%s%f"%(photo.filename, time())).hexdigest()
                         saveImage(photo.filename, hash, photo.file, 'govtSphere')
@@ -105,14 +108,15 @@ class AddissueController(BaseController):
                 else:
                     govtSphere = request.params['governmentSpheres']
                 issueName = request.params['issueName']
-                issueName = issueName.strip()
-                p = Page(issueName.lower().replace(" ", "-"), 'issue', c.authuser.id)
+                issueName = urlify(issueName)
+                
+                p = Page(issueName, 'issue', c.authuser.id)
                 #p.title = request.params['issueName']
                 p.title = issueName
                 u = get_user(session['user'])
                 r = Revision(request.params['backgroundWiki'])
 
-                e = Event('create', 'Added issue %s' %issueName[:50] )
+                e = Event('create issue', 'Added issue %s' %issueName[:50] )
                 p.events.append(e)
                 u.events.append(e)
                 r.event = e
@@ -168,6 +172,9 @@ class AddissueController(BaseController):
                     h.flash("Page was not created.  Please fill all fields.", "warning")
                 elif commit(e):
                     i = Issue(issueName, p.id)
+                    discussion = addDiscussion('wikiDiscussion')
+                    i.mainDiscussion = discussion
+                    discussion.events.append(e)
                     u.issues.append(i)
                     p.issue = i
                     i.govtSphere = govtSphere

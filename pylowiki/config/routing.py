@@ -29,13 +29,14 @@ def make_map():
     map.connect('/issue/{id}/edit_handler', controller = 'issue', action = 'edit_handler', id = '{id}')
     map.connect('/issue/{id}/editSlideshow', controller = 'issue', action = 'editSlideshow', id = '{id}')
     map.connect('/issue/{id}', controller = 'issue', action = 'home', id = '{id}')
-    map.connect('/issue/{id}/leaderboard', controller = 'issue', action = 'leaderboard', id = '{id}')
+    map.connect('/issue/{id}/leaderboard', controller = 'leaderboard', action = 'index', id = '{id}')
+    map.connect('/issue/{id}/discussion', controller = 'discussion', action = 'index', id = '{id}')
     map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/issue/{id1}/suggestion/{id2}/rate/{id3}', controller = 'suggestion', action = 'rate', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/issue/{id1}/suggestion/{id2}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}')
     #map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id}', controller = 'home', action = 'mainPage', id = '{id}')
-    
+    map.connect('/comment/{id}', controller = 'comment', action = 'index', id = '{id}')
     #map.connect('/commentModeration', controller = 'commentModeration', action = 'index')
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
@@ -52,6 +53,7 @@ def make_map():
     
     map.connect('/ipadListener/sendSurveyData', controller = 'ipadListener', action = 'sendSurveyData')
     map.connect('/ipadListener/sendSurveyData/', controller = 'ipadListener', action = 'sendSurveyData')
+
 
     ################
     # Action Lists #

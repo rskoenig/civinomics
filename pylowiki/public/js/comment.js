@@ -2,13 +2,13 @@ $(document).ready(function() {
 	
 	$('.thumbs').children('a').toggle(function(event) { // change thumb images on click
 		var thumb = $(this).parents('div.comment_data');
-		thumb.find('.thumbs.up>a').css("background","url('images/thumb_up_green.gif')");
-		thumb.find('.thumbs.down>a').css("background","url('images/thumb_down_red.gif')");
+		thumb.find('.thumbs.up>a').css("background","url('/images/thumb_up_green.gif')");
+		thumb.find('.thumbs.down>a').css("background","url('/images/thumb_down_red.gif')");
 		event.preventDefault();
 	}, function(event) {
 		var thumb = $(this).parents('div.comment_data');
-		thumb.find('.thumbs.up>a').css("background","url('images/thumb_up_grey.png')");
-		thumb.find('.thumbs.down>a').css("background","url('images/thumb_down_grey.png')");
+		thumb.find('.thumbs.up>a').css("background","url('/images/thumb_up_grey.png')");
+		thumb.find('.thumbs.down>a').css("background","url('/images/thumb_down_grey.png')");
 	});
 	
 	$('a.flag').toggle(function(event) { //show and hide the flag content dialog

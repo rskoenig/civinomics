@@ -3,7 +3,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-from pylowiki.model import get_all_pages, commit, get_comment, getAllSuggestions, getSuggestionByID
+from pylowiki.model import get_all_pages, commit, getComment, getAllSuggestions, getSuggestionByID
 from pylowiki.model import Event, get_user, getAllArticles, getArticle
 
 import pylowiki.lib.helpers as h
@@ -61,7 +61,7 @@ class ModerationController(BaseController):
                     value = request.params[str(id)]
                     if value == '2':
                         continue
-                    comment = get_comment(id)
+                    comment = getComment(id)
                     comment.pending = 0
                     comment.disabled = value
                     e = Event('C_enable', 'Enabled by %s'%c.authuser.name)

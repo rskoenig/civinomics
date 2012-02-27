@@ -15,12 +15,12 @@
             	</div><!-- img -->
             	<ul class="left gray">
                     % if c.authuser.accessLevel >= 200 or c.authuser.id in c.p.owners.split(','):
-                        <li><a href="${h.url_for('/issue/%s/edit'%c.url.encode('latin-1'))}">Edit Issue</a></li>
+                        <li><a href="/issue/${c.url}/edit">Edit Issue</a></li>
                     % endif
-            		<li><a href="${h.url_for('/issue/%s'%c.url.encode('latin-1'))}"><strong class="darkgray">Issue Home</strong></a></li>
-            		<li><a href="${h.url_for('/issue/%s/background'%c.url.encode('latin-1'))}">Background</a></li>
+            		<li><a href="/issue/${c.i.page.url}"><strong class="darkgray">Issue Home</strong></a></li>
+            		<li><a href="/issue/${c.i.page.url}/background">Background</a></li>
             		##<li><a href="#">Discussion</a></li>
-            		##<li><a href="#">Leaderboard</a></li>
+            		<li><a href="/issue/${c.i.page.url}/leaderboard">Leaderboard</a></li>
             	</ul>
             </div> <!-- slide -->
             <div id="glance" class="right">
@@ -64,25 +64,27 @@
             <div class="col one left">
                 <h3>news <span class="right">add photo, article or video<a href="#" class="media plus">+</a></span></h3>
                 <ul>
-                    % if c.news == None:
+                    ## Each issue has one article - the background wiki
+                    % if len(c.i.articles) == 1:
                         <p class="clr">
                             No news!
                         </p>
                     % else:
-                        % for item in c.news:
-                            % if item["type"] == "post":
+                        % for item in c.i.articles:
+                            % if item.type == "post":
                                 <li class="post">
-                                    <span class="colhd"><a href="/issue/${c.url}/news/${item['title']}">${item["title"]}</a></span>
+                                    <span class="colhd"><a href="/issue/${c.url}/news/${item.title}">${item.title}</a></span>
                                     <br />
                                     <p class="clr">
-                                         <img src="/images/${item['directory']}/${item['hash']}.thumbnail" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item["summary"]}
-                                         <span class="right"><a href="/issue/${c.url}/news/${item['title']}">more</a></span>
+                                         <img src="/images/news/news.thumbnail" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item.comment[:50]}...
+                                         <span class="right"><a href="/issue/${c.url}/news/${item.title}">more</a></span>
                                     </p>
                                     <div class="clr">
-                                        <span class="gray">posted by <a href="/profile/${item['user']}">${item["user"]}</a></span> on <span class="time">${item["time"]}</span>
+                                        <span class="gray">posted by <a href="/profile/${item.user.name}">${item.user.name}</a></span> on <span class="time">${item.events[-1].date}</span>
                                     </div>
                                 </li>
-                            % elif item["type"] == "video":
+                            ## TODO: Move away from setting up a dictionary and into object style
+                            % elif item.type == "video":
                                 <li class="video">
                                     <span class="colhd"><a href="item['url']">VIDEO: ${item["title"]}</a></span>
                                     <embed type="application/x-shockwave-flash" width="200" height="150" src="${item['url']}" allowscriptaccess="always" allowfullscreen="true">
@@ -90,7 +92,8 @@
                                         <span class="gray">posted by</span> <a href="/profile/${['user']}">${item["user"]}</a> at <span class="time">${item["time"]}</span>
                                     </div>
                                 </li>
-                            % elif item["type"] == "photo":
+                            ## TODO: Move away from setting up a dictionary and into object style
+                            % elif item.type == "photo":
                                 <li class="photo">
                                     <span class="colhd"><a href="#">PHOTO: ${item["title"]}</a></span>
                                     <img src="/images/${item['directory']}/${item['hash']}.${item['postfix']}" height="150" width="200" />
@@ -182,10 +185,10 @@
                 <%doc>
                 <% 
                     users = {}
-                    if len(c.issue.events) == 1:
-                        users[c.issue.events[0].user.id] = 1
+                    if len(c.i.events) == 1:
+                        users[c.i.events[0].user.id] = 1
                     else:
-                        for event in c.issue.events:
+                        for event in c.i.events:
                             for user in event:
                                 if user.id in users:
                                     users[user.id] += 1

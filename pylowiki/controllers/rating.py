@@ -5,7 +5,7 @@ from pylons.controllers.util import abort, redirect_to
 
 from pylowiki.lib.base import BaseController, render
 from pylowiki.model import getIssueByID, getSuggestionByID, getRatingForSuggestion, get_user, Rating, Event, commit, getAvgRatingForSuggestion
-from pylowiki.model import get_comment, getRatingForComment, getAvgRatingForComment, getRatingForComment
+from pylowiki.model import getComment, getRatingForComment, getAvgRatingForComment, getRatingForComment
 
 import pylowiki.lib.helpers as h
 
@@ -28,7 +28,7 @@ class RatingController(BaseController):
         if type == "comment":
             commentID = request.params['commentID']
             
-            comment = get_comment(commentID)
+            comment = getComment(commentID)
             r = getRatingForComment(commentID, c.authuser.id)
             
             """ if a rating doesn't exist """

@@ -1,20 +1,22 @@
 <%inherit file = "/base/template.html"/>
         
-        
 			<div class="banner_div">
-				<h2 class="banner">Santa Cruz and Soquel Water Planning</h2>
+				<h2 class="banner">${c.i.name}</h2>
 			</div>
 			
 			<ul class="left gray clr">
-				<li><a href="#">Issue Home</a></li>
-				<li><a href="issuebg.html">Background</a></li>
-				<li><a href="#">Discussion</a></li>
-				<li><a href="#"><strong class="darkgray">Leaderboard</strong></a></li>
+				<li><a href="/issue/${c.i.page.url}">Issue Home</a></li>
+				<li><a href="/issue/${c.i.page.url}/background">Background</a></li>
+				##<li><a href="#">Discussion</a></li>
+				<li><a href="/issue/${c.i.page.url}/leaderboard"><strong class="darkgray">Leaderboard</strong></a></li>
 			</ul>
 			
 			<div class="left clr-lft">
 				<div id="stats">
 					<h3>Suggestion Stats</h3>
+					% if c.i.suggestions == None:
+						No suggestions!
+					% else:
 					<div id="table-wrapper">
 						<table class="gray">
 							<tr>
@@ -24,6 +26,75 @@
 								<th><a href="#">Total Votes</a></th>
 								<th>Author</th>
 							</tr>
+							<% counter = 1 %>
+							% for s in c.i.suggestions:
+								<tr>
+									<td>${counter}</td>
+									<td><a href="/issue/${c.i.page.url}/suggestion/${s.url}">${s.title}</a></td>
+									<td>
+										% if s.avgRating:
+											${s.avgRating}
+										% else:
+											Unrated!
+										% endif
+										<%doc>
+										<div class="gray rating wide">
+											<div class="average clr">
+												<ul class="star-rating">
+													<li>Average rating.</li>
+												</ul>
+											</div>
+										</div>
+										</%doc>
+									</td>
+									## Not optimized at all, this should be saved in the cached DB and updated by a cron job
+									##<% 
+									##	events = s.events
+									##	unique = []
+									##	for e in events:
+									##		if e.user_id not in unique:
+									##			unique.append(e.user_id)
+									##	numParticipants = len(unique)
+									##%>
+									##<td>${numParticipants}</td>
+									<td> ${len(s.ratings)} </td>
+									<td><a href="/account/${s.user.name}">${s.user.name}</a></td>
+								</tr>
+								<% counter += 1 %>
+							% endfor
+							
+							<%doc>
+							<tr>
+								<td>1</td>
+								<td><a href="issuebg.html">Cistern Mandates</a><span class="right"><img src="/images/checkbox.png" alt="check" /></span></td>
+								<td>
+									<div class="gray rating wide">
+										<div class="average clr">
+											<ul class="star-rating">
+												<li>Average rating.</li>
+												
+											</ul>
+										</div>
+									</div>
+								</td>
+								<td>4,087</td>
+								<td><a href="profile.html">Sarah Ferguson</a></td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td><a href="issuebg.html">Cistern Mandates</a></td>
+								<td>
+									<div class="gray rating wide">
+										<div class="average clr">
+											<ul class="star-rating">
+												<li>Average rating.</li>
+											</ul>
+										</div>
+									</div>
+								</td>
+								<td>4,087</td>
+								<td><a href="profile.html">Sarah Ferguson</a></td>
+							</tr>
 							<tr>
 								<td>1</td>
 								<td><a href="issuebg.html">Cistern Mandates</a><span class="right"><img src="/images/checkbox.png" alt="check" /></span></td>
@@ -56,36 +127,6 @@
 							</tr>
 							<tr>
 								<td>1</td>
-								<td><a href="issuebg.html">Cistern Mandates</a><span class="right"><img src="/images/checkbox.png" alt="check" /></span></td>
-								<td>
-									<div class="gray rating wide">
-										<div class="average clr">
-											<ul class="star-rating">
-												<li>Average rating.</li>
-											</ul>
-										</div>
-									</div>
-								</td>
-								<td>4,087</td>
-								<td><a href="profile.html">Sarah Ferguson</a></td>
-							</tr>
-							<tr>
-								<td>1</td>
-								<td><a href="issuebg.html">Cistern Mandates</a></td>
-								<td>
-									<div class="gray rating wide">
-										<div class="average clr">
-											<ul class="star-rating">
-												<li>Average rating.</li>
-											</ul>
-										</div>
-									</div>
-								</td>
-								<td>4,087</td>
-								<td><a href="profile.html">Sarah Ferguson</a></td>
-							</tr>
-							<tr>
-								<td>1</td>
 								<td><a href="issuebg.html">Cistern Mandates</a></td>
 								<td>
 									<div class="gray rating wide">
@@ -264,9 +305,12 @@
 								<td>4,087</td>
 								<td><a href="profile.html">Sarah Ferguson</a></td>
 							</tr>
+							</%doc>
 						</table>
 					</div><!-- table-wrapper -->
+					% endif
 				</div>
+				<%doc>
 				<div id="leaders" class="left">
 					<h3>Leaders</h3>
 					<div class="left">
@@ -384,7 +428,7 @@
 					</div> <!-- leaders right -->
 				</div> <!-- leaders -->
 			</div> <!-- non-sidebar div -->
-			
+			</%doc>
             <div class="left sidebar">
             <%doc>
 				<h3>Top funders</h3>
@@ -464,5 +508,5 @@
 </%def>
     
 <%def name = 'extraScripts()'>
-    <script src="js/h2banner.js" type="text/javascript"></script>
+    <script src="/js/h2banner.js" type="text/javascript"></script>
 </%def>

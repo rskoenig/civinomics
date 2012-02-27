@@ -22,14 +22,14 @@ t_user = sa.Table( 'user', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True ),
     sa.Column( 'firstName', sa.types.String(50), unique = False, nullable = False ),
     sa.Column( 'lastName', sa.types.String(50), unique = False, nullable = False ),
-    sa.Column( 'name', sa.types.String(100), unique = True, nullable = False ),
+    sa.Column( 'name', sa.types.String(256), unique = True, nullable = False ),
     sa.Column( 'password', sa.types.String(50), nullable = False ),
     sa.Column( 'email', sa.types.String(50), unique=True, nullable = False),
     sa.Column( 'regdate', sa.types.DateTime, default = d.datetime.now ),
     sa.Column( 'laston', sa.types.Integer, default = 0),
     sa.Column( 'disabled', sa.types.Boolean, default = False ),
     sa.Column( 'zipCode', sa.types.Integer, nullable = True),
-    sa.Column( 'pictureHash', sa.types.String(100), nullable = True),
+    sa.Column( 'pictureHash', sa.types.String(128), nullable = True),
     sa.Column( 'activated', sa.types.Integer, nullable = True), 
     sa.Column( 'activationHash', sa.types.String(20), nullable = True),
     sa.Column( 'address', sa.types.Text, nullable = True),
@@ -52,8 +52,8 @@ t_user = sa.Table( 'user', meta.metadata,
     sa.Column( 'bio', sa.types.Text, nullable = True),
     sa.Column( 'connections', sa.types.Text, nullable = True),
     sa.Column( 'accessLevel', sa.types.Integer, nullable = True),
-    #sa.Column( 'signupType', sa.types.Integer, default = 0),
-    #sa.Column( 'signupPlatformID', sa.types.Integer, nullable = True),
+    sa.Column( 'signupType', sa.types.Integer, default = 0),
+    sa.Column( 'signupPlatformID', sa.types.Integer, nullable = True),
     mysql_charset='utf8'
 )
 
@@ -84,7 +84,7 @@ t_surveyAns = sa.Table( 'surveyAns', meta.metadata,
 t_survey = sa.Table( 'survey', meta.metadata,
     sa.Column('id', sa.types.Integer, primary_key = True),
     sa.Column('creator_id', sa.types.Integer, sa.ForeignKey('user.id'), nullable = True),
-    sa.Column('title', sa.types.Text, nullable = True),
+    sa.Column('title', sa.types.String(256), unique = True, nullable = False),
     sa.Column('description', sa.types.Text, nullable = True),
     sa.Column('lastEdited', sa.types.DateTime, default = d.datetime.now),
     mysql_charset = 'utf8'
@@ -99,10 +99,11 @@ t_userWork = sa.Table( 'userWork', meta.metadata,
 
 t_page = sa.Table( 'page', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True ),
-    sa.Column( 'url', sa.types.String(128), unique=True, nullable = False ),
+    sa.Column( 'url', sa.types.String(256), unique=True, nullable = False ),
     sa.Column( 'deleted', sa.types.Boolean, default = False ),
+    sa.Column( 'private', sa.types.Boolean, default = False),
     sa.Column( 'type', sa.types.String(64), unique=False, nullable = False),
-    sa.Column( 'title', sa.types.String(128), unique = True, nullable = False),
+    sa.Column( 'title', sa.types.String(256), unique = True, nullable = False),
     sa.Column( 'related', sa.types.String(120), unique = False, nullable = True),
     sa.Column( 'owners', sa.types.Text, unique = False, nullable = False),
     mysql_charset='utf8'
@@ -113,6 +114,8 @@ t_revision = sa.Table( 'revision', meta.metadata,
     sa.Column( 'page_id', sa.types.Integer, sa.ForeignKey( 'page.id' ), nullable = True),
     sa.Column( 'event_id', sa.types.Integer, sa.ForeignKey( 'event.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id' ), nullable = True),
+    sa.Column( 'comment_id', sa.types.Integer, sa.ForeignKey('comment.id'), nullable = True),
+    sa.Column( 'discussion_id', sa.types.Integer, sa.ForeignKey('discussion.id'), nullable = True),
     sa.Column( 'data', sa.types.Text, nullable = False),
     mysql_charset='utf8'
 )
@@ -122,11 +125,24 @@ t_comment = sa.Table( 'comment', meta.metadata,
     sa.Column( 'page_id', sa.types.Integer, sa.ForeignKey( 'page.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id' ), nullable = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
+    sa.Column( 'discussion_id', sa.types.Integer, sa.ForeignKey('discussion.id'), nullable = True),
+    sa.Column( 'parent_id', sa.types.Integer, sa.ForeignKey('comment.id') ),
+    sa.Column( 'isRoot', sa.types.Boolean, default = False),
     sa.Column( 'data', sa.types.Text, nullable = False),
     sa.Column( 'disabled', sa.types.Boolean, default = False ),
     sa.Column( 'pending', sa.types.Boolean, default = True),
-    sa.Column( 'parent', sa.types.Integer, nullable = True),
     sa.Column( 'avgRating', sa.types.Float, nullable = True),
+    sa.Column( 'lastModified', sa.types.DateTime, default = d.datetime.now),
+    mysql_charset='utf8'
+)
+
+t_discussion = sa.Table('discussion', meta.metadata,
+    sa.Column('id', sa.types.Integer, primary_key = True),
+    sa.Column('title', sa.types.String(256), unique = False, nullable = False),
+    sa.Column('url', sa.types.String(256), unique = False, nullable = False),
+    sa.Column('issue_id', sa.types.Integer, sa.ForeignKey('issue.id'), nullable = True),
+    sa.Column('suggestion_id', sa.types.Integer, sa.ForeignKey('suggestion.id'), nullable = True),
+    sa.Column('user_id', sa.types.Integer, sa.ForeignKey('user.id'), nullable = False),
     mysql_charset='utf8'
 )
 
@@ -139,8 +155,9 @@ t_event = sa.Table( 'event', meta.metadata,
     sa.Column( 'article_id', sa.types.Integer, sa.ForeignKey( 'article.id' ), nullable = True),
     sa.Column( 'rating_id', sa.types.Integer, sa.ForeignKey( 'rating.id' ), nullable = True),
     sa.Column( 'comment_id', sa.types.Integer, sa.ForeignKey( 'comment.id' ), nullable = True),
-    sa.Column( 'type', sa.types.String(8), nullable = False),
-    sa.Column( 'remark', sa.types.String(64), nullable = True),
+    sa.Column( 'discussion_id', sa.types.Integer, sa.ForeignKey('discussion.id'), nullable = True),
+    sa.Column( 'type', sa.types.String(100), nullable = False),
+    sa.Column( 'remark', sa.types.String(512), nullable = True),
     sa.Column( 'date', sa.types.DateTime, default = d.datetime.now )    
 )
 
@@ -163,8 +180,8 @@ t_userTypes = sa.Table( 'userTypes', meta.metadata,
 t_article = sa.Table( 'article', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True ),
     sa.Column( 'url', sa.types.Text, nullable = False ),
-    sa.Column( 'related', sa.types.String(128), nullable = False),
-    sa.Column( 'title', sa.types.String(128), nullable = False),
+    sa.Column( 'related', sa.types.String(256), nullable = False),
+    sa.Column( 'title', sa.types.String(256), nullable = False),
     sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey( 'issue.id' ), nullable = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
     sa.Column( 'type', sa.types.String(20), default = 'post'),
@@ -187,7 +204,7 @@ t_contributions = sa.Table( 'contributions', meta.metadata,
 t_issue = sa.Table( 'issue', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True),
     sa.Column( 'user_id', sa.ForeignKey ('user.id'), nullable = True),
-    sa.Column( 'name', sa.types.String(128), nullable = False),
+    sa.Column( 'name', sa.types.String(256), nullable = False),
     sa.Column( 'govtSphere', sa.types.Integer, nullable = True),
     sa.Column( 'goals', sa.types.Text, nullable = True),
     sa.Column( 'suggestionEnd', sa.types.String(10), nullable = True ), # dd/mm/yyyy
@@ -197,7 +214,8 @@ t_issue = sa.Table( 'issue', meta.metadata,
     sa.Column( 'page_id', sa.types.Integer, sa.ForeignKey( 'page.id' ), nullable = True),
     sa.Column( 'slideshowID', sa.types.Integer, nullable = True ),
     sa.Column( 'slideshowOrder', sa.types.Text, nullable = True),
-    sa.Column( 'participants', sa.types.Text, nullable = True)
+    sa.Column( 'participants', sa.types.Text, nullable = True),
+    mysql_charset='utf8'
 )
 
 t_slideshow = sa.Table ( 'slideshow', meta.metadata,
@@ -211,29 +229,31 @@ t_slideshow = sa.Table ( 'slideshow', meta.metadata,
 
 t_govtSphere = sa.Table( 'govtSphere', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True),
-    sa.Column( 'name', sa.types.String(128), nullable = False),
+    sa.Column( 'name', sa.types.String(256), nullable = False),
     sa.Column( 'pictureHash', sa.types.String(128), nullable = True)
 )
 
 t_suggestion = sa.Table( 'suggestion', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True),
     sa.Column( 'issue_id', sa.types.Integer, sa.ForeignKey( 'issue.id' ), nullable = True),
-    sa.Column( 'title', sa.types.String(128), nullable = False),
+    sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey('user.id'), nullable = True),
+    sa.Column( 'title', sa.types.String(256), nullable = False),
     sa.Column( 'tags', sa.types.Text, nullable = True),
     sa.Column( 'owners', sa.types.Text, unique = False, nullable = False),
     sa.Column( 'related', sa.types.Text, nullable = True),
-    sa.Column( 'url', sa.types.String(128), nullable = True),
+    sa.Column( 'url', sa.types.String(256), nullable = True),
     sa.Column( 'deleted', sa.types.Boolean, default = False),
-    sa.Column( 'pending', sa.types.Boolean, default = True),
+    sa.Column( 'pending', sa.types.Boolean, default = False),
     sa.Column( 'disabled', sa.types.Boolean, default = False),
-    sa.Column( 'type', sa.types.String(20), nullable = True),
+    sa.Column( 'type', sa.types.String(100), nullable = True),
     sa.Column( 'avgRating', sa.types.Float, nullable = True)
 )
 
 t_rating = sa.Table( 'rating', meta.metadata,
     sa.Column( 'id', sa.types.Integer, primary_key = True),
-    sa.Column( 'type', sa.types.String(64), nullable = True),
+    sa.Column( 'type', sa.types.String(128), nullable = True),
     sa.Column( 'rating', sa.types.Float, nullable = True),
+    sa.Column( 'isCurrent', sa.types.Boolean, default = True),
     sa.Column( 'user_id', sa.types.Integer, sa.ForeignKey( 'user.id' ), nullable = True),
     sa.Column( 'suggestion_id', sa.types.Integer, sa.ForeignKey( 'suggestion.id'), nullable = True),
     sa.Column( 'article_id', sa.types.Integer, sa.ForeignKey('article.id'), nullable = True),
@@ -242,9 +262,8 @@ t_rating = sa.Table( 'rating', meta.metadata,
 )
 
 class Suggestion(object):
-    def __init__(self, title, data, owners):
+    def __init__(self, title, owners):
         self.title = title
-        self.data = data
         self.owners = owners
 
 class User(object):
@@ -301,11 +320,17 @@ class Revision(object):
         self.data = data
 
 class Comment(object):
-    def __init__( self, data ):
+    def __init__( self, data, parent = None):
         """Comment Constructor"""
+        self.disabled = False
+        self.pending = False
+        self.parent = parent
+        if parent == None:
+            self.isRoot = True
+        else:
+            self.isRoot = False
         self.data = data
-        self.disabled = True
-
+        
     def disable( self ):
         """disable this comment"""
         self.disabled = True 
@@ -418,13 +443,19 @@ class Survey(object):
         self.title = title
         self.description = description
         self.lastEdited = d.datetime.now
+        
+class Discussion(object):
+    def __init__(self, title, url):
+        self.title = title
+        self.url = url
 
 # orm.mapper(class, table, ...)
 orm.mapper(User, t_user, properties = {
     'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref='user'),
     'comments':orm.relation(Comment, order_by=(sa.desc('comment.id')), backref = 'user'),
     'issues':orm.relation(Issue, order_by=(sa.desc('issue.id')), backref = 'user'),
-    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'user')
+    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'user'),
+    'suggestions':orm.relation(Suggestion, order_by=(sa.desc('suggestion.id')), backref = 'user')
 })
 
 orm.mapper(Page, t_page, properties = {
@@ -443,8 +474,19 @@ properties = {
 orm.mapper(Revision, t_revision)
 orm.mapper(Comment, t_comment, properties = {
     'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref = 'comment'),
-    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'comment')
+    'ratings':orm.relation(Rating, order_by = (sa.desc('rating.id')), backref = 'comment'),
+    'revisions':orm.relation(Revision, order_by=(sa.desc('revision.id')), backref = 'comment'),
+    'children':orm.relation(Comment, backref = orm.backref('parent', remote_side = t_comment.c.id), 
+                            collection_class=orm.collections.attribute_mapped_collection('id') )
 })
+
+orm.mapper(Discussion, t_discussion, properties = {
+    'owner':orm.relation(User, uselist = False, backref = 'discussion'),
+    'children':orm.relation(Comment, order_by=(sa.desc('comment.id')), backref = 'discussion'),
+    'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref = 'discussion'),
+    'revisions':orm.relation(Revision, order_by=(sa.desc('revision.id')), backref = 'discussion')
+})
+
 orm.mapper(Points, t_points)
 orm.mapper(UserTypes, t_userTypes)
 orm.mapper(Article, t_article, properties = {
@@ -464,7 +506,9 @@ properties = {
     'suggestions':orm.relation(Suggestion, order_by=(sa.desc('suggestion.id')), backref = 'issue'),
     'articles':orm.relation(Article, order_by=(sa.desc('article.id')), backref = 'issue'),
     'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref = 'issue'),
-    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'issue')
+    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'issue'),
+    'mainDiscussion':orm.relation(Discussion, uselist=False, backref = 'issueMain'),
+    'discussions':orm.relation(Discussion, order_by=(sa.desc('discussion.id')), backref = 'issue')
 })
 
 orm.mapper(Suggestion, t_suggestion,
@@ -472,7 +516,9 @@ properties = {
     'revisions':orm.relation(Revision, order_by=(sa.desc('revision.id')), backref = 'suggestion'),
     'comments':orm.relation(Comment, order_by=(sa.desc('comment.id')), backref = 'suggestion'),
     'events':orm.relation(Event, order_by=(sa.desc('event.id')), backref = 'suggestion'),
-    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'suggestion')
+    'ratings':orm.relation(Rating, order_by=(sa.desc('rating.id')), backref = 'suggestion'),
+    'mainDiscussion':orm.relation(Discussion, uselist = False, backref = 'suggestionMain'),
+    'discussions':orm.relation(Discussion, order_by=(sa.desc('discussion.id')), backref = 'suggestion')
 })
 
 orm.mapper(Rating, t_rating)
@@ -626,6 +672,7 @@ def get_all_users( ):
 def get_user_by_email( email ):
     """Return user object by email.""" # could be refactored into get_user, using an or statement
     try:
+        log.info('email = %s' %email)
         return meta.Session.query( User ).filter_by( email = email ).one()
     except sa.orm.exc.NoResultFound:
         return False
@@ -803,15 +850,7 @@ def get_all_revisions( page_id ):
     try:
         return meta.Session.query( Revision ).order_by(Revision.id.desc() ).join(Event).filter_by( page_id = page_id ).all()
     except sa.orm.exc.NoResultFound:
-        return False
-
-def get_comment( id ):
-    """Return a revision object by id"""
-    try:
-        return meta.Session.query( Comment ).filter_by( id = id ).one()
-    except sa.orm.exc.NoResultFound:
-        return False
-    
+        return False    
 
 def get_search_results( needle ): 
     db = config['app_conf']['sqlalchemy.url'].split(":")
@@ -1023,6 +1062,12 @@ def getAvgRatingForSuggestion(suggestion_id):
     except:
         return False
 
+def getNumRatingsForSuggestion(suggestion_id):
+    try:
+        return len(meta.Session.query(Rating).filter_by(suggestion_id = suggestion_id).all())
+    except:
+        return False
+
 def getRatingForComment(comment_id, user_id):
     try:
         return meta.Session.query(Rating).filter_by(comment_id = comment_id, user_id = user_id).one()
@@ -1053,5 +1098,23 @@ def getSurvey(title):
 def getCanvasser(user_id):
     try:
         return meta.Session.query(Canvasser).filter_by(user_id = user_id).one()
+    except:
+        return False
+    
+##########################
+# comment functions
+##########################
+def getComment( id ):
+    try:
+        return meta.Session.query( Comment ).filter_by( id = id ).one()
+    except sa.orm.exc.NoResultFound:
+        return False
+
+##########################
+# discussion functions
+##########################
+def getDiscussionByID( id ):
+    try:
+        return meta.Session.query( Discussion ).filter_by( id = id).one()
     except:
         return False

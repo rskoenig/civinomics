@@ -32,7 +32,7 @@ class SuggestionController(BaseController):
         if c.s == False:
             abort(404, h.literal("That page does not exist!"))
 
-        c.u = getUserByID(int(c.s.owners.split(',')[0]))
+        c.u = c.s.user
 
         c.title = c.p.title
         c.url = c.p.url
@@ -40,6 +40,9 @@ class SuggestionController(BaseController):
         r = c.s.revisions[0]
         c.content = h.literal(h.reST2HTML(r.data))
         c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
+
+        c.lastmoddate = r.event.date
+        c.lastmoduser = r.event.user.name
 
         return render('/derived/suggestion.html')
 

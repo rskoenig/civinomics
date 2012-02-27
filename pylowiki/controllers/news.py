@@ -23,7 +23,7 @@ class NewsController(BaseController):
         if c.p == False:
             abort(404, h.literal("That page does not exist!"))
 
-        c.i = getIssueByID(c.p.issue[0].id)
+        c.i = getIssueByID(c.p.issue.id)
         if c.i == False:
             abort(404, h.literal("That page does not exist!"))
 

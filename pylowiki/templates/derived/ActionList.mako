@@ -16,7 +16,7 @@ Results: ${c.count}
     
     <tr class="list ${state}">
 	
-    <% url = p.url.decode('latin-1') %>
+    <% url = p.url %>
 
 	    <td width="100%"> <a href='/issue/${url}'> ${url} </a> </td>
             <td > <a href="/${c.action}/${url}"> ${c.action} </a> </td>
