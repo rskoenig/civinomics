@@ -1,8 +1,9 @@
 #-*- coding: utf-8 -*-
 import logging
 
-from pylowiki.model import Thing, meta
-from dbHelpers import commit
+from pylowiki.model import Thing, Data, meta
+import sqlalchemy as sa
+from dbHelpers import commit, with_characteristic
 from hashlib import md5
 from pylons import config
 
@@ -10,8 +11,8 @@ log = logging.getLogger(__name__)
 
 def get_user(name):
     try:
-        return meta.Session.query(Data).filter(with_characteristic('name', name))
-    except sa.orm.exc.noResultFound:
+        return meta.Session.query(Thing).filter(Thing.data.any(with_characteristic('name', name))).one()
+    except sa.orm.exc.NoResultFound:
         return False
 
 class User(object):
