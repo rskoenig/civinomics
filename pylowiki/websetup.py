@@ -4,7 +4,9 @@ import logging, os
 
 from pylons import config
 from pylowiki.config.environment import load_environment
-from pylowiki.model import meta, commit, User, Page, Revision, Event, Points
+#from pylowiki.model import meta, commit, User, Page, Revision, Event, Points
+from pylowiki.model import meta
+
 
 log = logging.getLogger(__name__)
 
@@ -15,15 +17,18 @@ def setup_app(command, conf, vars):
 
     # If test.ini drop all existing tables
     filename = os.path.split(conf.filename)[-1]
-    if filename == 'test.ini':    
+    if filename == 'development.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
 
     #Create the tables if they don't already exist
     meta.metadata.create_all(bind=meta.engine)
 
+    """
     # We are only working with this part of the config list
     conf = config['app_conf']
+
+    
 
     # if db is mysql, setup fulltext search.
     db = conf['sqlalchemy.url'].split(":")
@@ -53,7 +58,7 @@ def setup_app(command, conf, vars):
             # Create event log entry
             e = Event("Create", "Auto create admin acct.")
             u.events.append(e)
-            """
+
             # Create home page
             p = Page( "home" )
             # Create first revision
@@ -67,7 +72,7 @@ def setup_app(command, conf, vars):
             p.events.append( e )
             # append revision to the page
             p.revisions.append( r )
-            """
+
             commit( e )
             try:
                 p = Points(u.id)
@@ -151,4 +156,5 @@ def setup_app(command, conf, vars):
 
         pass
 
+    """
 

@@ -1,51 +1,17 @@
-#from sqlalchemy import (MetaData, Table, Column, Integer, Unicode, DateTime,
-from sqlalchemy import (Table, Column, Integer, Unicode, DateTime,
-        ForeignKey, UnicodeText, and_, not_)
-from sqlalchemy.orm import mapper, relationship, Session
+"""The application's model objects"""
+import sqlalchemy as sa
+from sqlalchemy import orm
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
-from pylowiki.model import meta
+# Functions used for querying/commiting to db
+from dbHelpers import *
 
+# Some additional imports
 import datetime as d
 
-#metadata = MetaData()
-
-def init_model(engine):
-    meta.Session.configure(bind=engine)
-    meta.engine = engine
-
-"""Mapping a vertical table as a dictionary.
-
-This example illustrates accessing and modifying a "vertical" (or
-"properties", or pivoted) table via a dict-like interface.  These are tables
-that store free-form object properties as rows instead of columns.  For
-example, instead of::
-
-  # A regular ("horizontal") table has columns for 'species' and 'size'
-  Table('animal', metadata,
-        Column('id', Integer, primary_key=True),
-        Column('species', Unicode),
-        Column('size', Unicode))
-
-A vertical table models this as two tables: one table for the base or parent
-entity, and another related table holding key/value pairs::
-
-  Table('animal', metadata,
-        Column('id', Integer, primary_key=True))
-
-  # The properties table will have one row for a 'species' value, and
-  # another row for the 'size' value.
-  Table('properties', metadata
-        Column('animal_id', Integer, ForeignKey('animal.id'),
-               primary_key=True),
-        Column('key', UnicodeText),
-        Column('value', UnicodeText))
-
-Because the key/value pairs in a vertical scheme are not fixed in advance,
-accessing them like a Python dict can be very convenient.  The example below
-can be used with many common vertical schemas as-is or with minor adaptations.
-
-"""
+# Logging
+import logging
+log = logging.getLogger(__name__)
 
 class VerticalProperty(object):
     """A key/value pair.
@@ -59,8 +25,6 @@ class VerticalProperty(object):
 
     def __repr__(self):
         return '<%s %r=%r>' % (self.__class__.__name__, self.key, self.value)
-
-
 class VerticalPropertyDictMixin(object):
     """Adds obj[key] access to a mapped class.
 
@@ -138,47 +102,73 @@ class VerticalPropertyDictMixin(object):
         return iter(self.keys())
 
 
-# Here we have objects (things) and their properties (data)
-t_thing = Table('thing', meta.metadata,
-                Column('id', Integer, primary_key=True),
-                Column('objType', Unicode(100)),
-                Column('date', DateTime, default = d.datetime.now),
-                Column('owner', Integer))
 
-t_data = Table('data', meta.metadata,
-              Column('thing_id', Integer, ForeignKey('thing.id'),
-                     primary_key=True),
-              Column('key', Unicode(100), primary_key=True),
-              Column('value', UnicodeText, default=None),)
+t_thing = sa.Table( 'thing', meta.metadata,
+    sa.Column('id', sa.types.Integer, primary_key=True),
+    sa.Column('objType', sa.types.Unicode(100)),
+    sa.Column('date', sa.types.DateTime, default = d.datetime.now),
+    sa.Column('owner', sa.types.Unicode(100), default = 0),
+    mysql_charset = 'utf8'
+)
+
+t_data = sa.Table( 'data', meta.metadata,
+    sa.Column('thing_id', sa.types.Integer, sa.ForeignKey('thing.id'), primary_key = True),
+    sa.Column('key', sa.types.Unicode(100), primary_key = True),
+    sa.Column('value', sa.types.UnicodeText, default = None),
+    mysql_charset = 'utf8'
+)
 
 class Data(VerticalProperty):
-    """thing properties"""
+    """ The data class """
 
 class Thing(VerticalPropertyDictMixin):
-    """An object on the site.
-
-    thing properties are available via the 'data' property or by using
-    dict-like accessors on a Thing instance::
-
-      cat['color'] = 'calico'
-      # or, equivalently:
-      cat.data['color'] = Data('color', 'calico')
     """
+        A thing - some object that requires persistence.
 
+        thing properties are available via the 'data' property, or by using dict-like
+        accessors on a Thing instance:
+
+        user['name'] = 'edolfo'
+        # Or:
+        user.name = Data('name', 'edolfo')
+    """
     _property_type = Data
     _property_mapping = 'data'
 
-    def __init__(self, objType, owner = 0):
+    def __init__(self, objType, owner = '0'):
+        log.info('objType = %s, owner = %s' %(objType, owner))
         self.objType = objType
+        log.info('just set the object type')
         self.owner = owner
+        log.info('Just set the owner')
 
     def __repr__(self):
-        return '<%s %r>' % (self.__class__.__name__, self.objType)
+        return '<%s %r>' % (self.__class__.__name__, self.name)
+
+    def __getattr__(self, attr):
+        return self.__dict__.get(attr)
+
+orm.mapper(Thing, t_thing, 
+properties = {
+    'data' : orm.relation(Data, backref = 'thing', collection_class = attribute_mapped_collection('key')),
+})
+orm.mapper(Data, t_data)
+    
+## Non-reflected tables may be defined and mapped at module level
+#foo_table = sa.Table("Foo", meta.metadata,
+#    sa.Column("id", sa.types.Integer, primary_key=True),
+#    sa.Column("bar", sa.types.String(255), nullable=False),
+#    )
+#
+#class Foo(object):
+#    pass
+#
+#orm.mapper(Foo, foo_table)
 
 
-mapper(Thing, t_thing, properties={
-    'data': relationship(
-        Data, backref='thing',
-        collection_class=attribute_mapped_collection('key')),
-    })
-mapper(Data, t_data)
+## Classes for reflected tables may be defined here, but the table and
+## mapping itself must be done in the init_model function
+#reflected_table = None
+#
+#class Reflected(object):
+#    pass

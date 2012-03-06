@@ -11,7 +11,9 @@ from pylons import tmpl_context as c
 from pylons import config, session, request
 from pylons.controllers.util import abort, redirect
 
-from pylowiki.model import meta, get_user, getPoints
+#from pylowiki.model import meta, get_user, getPoints
+from pylowiki.model import meta
+from pylowiki.lib.db.user import get_user
 
 class BaseController(WSGIController):
 
