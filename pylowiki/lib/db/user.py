@@ -9,27 +9,52 @@ from pylons import config
 
 log = logging.getLogger(__name__)
 
+# Getters
+
 def get_user(name):
     try:
         return meta.Session.query(Thing).filter(Thing.data.any(with_characteristic('name', name))).one()
     except sa.orm.exc.NoResultFound:
         return False
 
-def changePassword(user, password):
-    user['password'] = hashPassword(password)
-    commit(user)
-    return True
+def getUserByEmail(email):
+    try:
+        return meta.Session.query(Thing).filter(Thing.data.any(with_characteristic('email', email))).one()
+    except:
+        return False
 
 def checkPassword(user, password):
     if user['password'] == hashPassword(password):
         return True
-    return False 
+    return False
+
+# Setters
+
+def changePassword(user, password):
+    user['password'] = hashPassword(password)
+    commit(user)
+    return True 
+
+def changeTagline(user, tagline):
+    if len(tagline) > 140:
+        return False
+    user['tagline'] = tagline
+    commit(user)
+    return True
+
+def changeAccessLevel(user, level):
+    user['accessLevel'] = level
+    commit(user)
+    return True
+
+# Helper functions
     
 def hashPassword(password):
     return md5(password + config['app_conf']['auth.pass.salt']).hexdigest()
 
+
 class User(object):
-    def __init__(self, firstName, lastName, email, password, zipCode = '00000'):
+    def __init__(self, email, firstName, lastName, password, zipCode = '00000'):
         u = Thing('user')
         u['firstName'] = firstName
         u['lastName'] = lastName
