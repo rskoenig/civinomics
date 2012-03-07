@@ -24,7 +24,3 @@ class Workshop(object):
         w['url'] = urlify(title)
         w['urlCode'] = toBase62('%s_%s_%d'%(title, owner['name'], int(time.time())))
         commit(w)
-
-    # Takes in a user's thing ID
-    def addFacilitator(self, facilitator):
-        self['facilitator'] = facilitator

@@ -1,8 +1,9 @@
 #from sqlalchemy import (MetaData, Table, Column, Integer, Unicode, DateTime,
-from sqlalchemy import (Table, Column, Integer, Unicode, DateTime,
+from sqlalchemy import (Table, Column, Integer, Unicode, DateTime, BLOB, 
         ForeignKey, UnicodeText, and_, not_)
 from sqlalchemy.orm import mapper, relationship, Session
 from sqlalchemy.orm.collections import attribute_mapped_collection
+
 
 from pylowiki.model import meta
 
@@ -151,6 +152,14 @@ t_data = Table('data', meta.metadata,
               Column('key', Unicode(100), primary_key=True),
               Column('value', UnicodeText, default=None),)
 
+t_blob = Table('blobbicus', meta.metadata,
+               Column('thing_id', Integer, ForeignKey('thing.id'), primary_key = True),
+               Column('key', Unicode(100), primary_key=True),
+               Column('value', BLOB, default = None))
+
+class Blob(VerticalProperty):
+    """ Used to store things like images, pdf files, etc... """
+
 class Data(VerticalProperty):
     """thing properties"""
 
@@ -168,7 +177,7 @@ class Thing(VerticalPropertyDictMixin):
     _property_type = Data
     _property_mapping = 'data'
 
-    def __init__(self, objType, owner = 0):
+    def __init__(self, objType, owner = u'0'):
         self.objType = objType
         self.owner = owner
 
@@ -180,5 +189,8 @@ mapper(Thing, t_thing, properties={
     'data': relationship(
         Data, backref='thing',
         collection_class=attribute_mapped_collection('key')),
+    'blob' : relationship(Blob, backref = 'thing', 
+        collection_class=attribute_mapped_collection('key')),
     })
 mapper(Data, t_data)
+mapper(Blob, t_blob)
