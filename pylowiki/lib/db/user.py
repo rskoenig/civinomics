@@ -13,13 +13,13 @@ log = logging.getLogger(__name__)
 
 def get_user(name):
     try:
-        return meta.Session.query(Thing).filter(Thing.data.any(with_characteristic('name', name))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(with_characteristic('name', name))).one()
     except sa.orm.exc.NoResultFound:
         return False
 
 def getUserByEmail(email):
     try:
-        return meta.Session.query(Thing).filter(Thing.data.any(with_characteristic('email', email))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(with_characteristic('email', email))).one()
     except:
         return False
 

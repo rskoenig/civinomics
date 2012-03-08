@@ -7,9 +7,23 @@ from dbHelpers import commit, with_characteristic
 
 log = logging.getLogger(__name__)
 
+def get_Revision(id):
+    try:
+        return meta.Session.query(Thing).filter_by(id = id).one()
+    except:
+        return False
+
+def get_all_revisions(pageID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'revision').filter(Thing.data.any(with_characteristic('pageID', pageID)))
+    except:
+        return False
+
 # Every time a revision is made, we make a new revision Thing, and add another revision key-value pair to the page
 class Revision(Thing):
-    def __init__(owner, data):
+    def __init__(owner, data, pageID = None):
         r = Thing('revision', owner)
         r['data'] = data
+        if pageID != None:
+            r['pageID'] = pageID
         
