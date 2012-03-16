@@ -5,7 +5,8 @@ from pylons.controllers.util import abort, redirect
 from pylons import config
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.images import saveImage, resizeImage
-from pylowiki.model import get_page, get_all_pages, getSlideshow, countSlideshow, getIssueByName, get_user, GovtSphere, getAllSpheres, getSphere, getPageByID, getUserByID
+#from pylowiki.model import get_page, get_all_pages, getSlideshow, countSlideshow, getIssueByName, get_user, GovtSphere, getAllSpheres, getSphere, getPageByID, getUserByID
+from pylowiki.lib.db.page import get_page, get_all_pages, getPageByID
 from pylowiki.model import Revision, Page, Event, Article, commit, getParticipantsByID, getArticlesByIssueID, getIssueByID, getRatingForSuggestion
 from pylowiki.model import getSlide
 from pylowiki.lib.points import readThisPage

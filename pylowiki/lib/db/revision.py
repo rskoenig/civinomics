@@ -21,9 +21,9 @@ def get_all_revisions(pageID):
 
 # Every time a revision is made, we make a new revision Thing, and add another revision key-value pair to the page
 class Revision(Thing):
-    def __init__(owner, data, pageID = None):
-        r = Thing('revision', owner)
+    def __init__(self, owner, data, pageID = None):
+        r = Thing('revision', owner.id)
         r['data'] = data
         if pageID != None:
-            r['pageID'] = pageID
-        
+            r['page_id'] = pageID
+        commit(r)

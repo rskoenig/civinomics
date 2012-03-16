@@ -41,13 +41,13 @@
                 <a href="/"><li title="Home">Home</li></a>
                 % if 'user' in session:
                     <a href = "${h.url_for('#')}"><li title="Inbox">Inbox</li></a>
-                    <a href = "/account/${c.authuser.name}"><li title="Profile">Profile</li></a>
+                    <a href = "/account/${c.authuser['name']}"><li title="Profile">Profile</li></a>
                     <a href = "/account/edit"><li title="Account">Account</li></a>
                     <a href = "/login/logout"><li title="Logout">Logout</li></a>
-                    % if c.authuser.accessLevel >= 100:
-                        <a href = "/addIssue"><li title="Add Issue">AddIssue</li></a>
+                    % if c.authuser['accessLevel'] >= 100:
+                        <a href = "/addWorkshop"><li title="Add Workshop">AddWorkshop</li></a>
                     % endif
-                    % if c.authuser.accessLevel >= 200:
+                    % if c.authuser['accessLevel'] >= 200:
                         <a href = "/moderation"><li title="Modding">Modding</li></a>
                     % endif
                 % endif
@@ -64,7 +64,7 @@
 				<span class="time">4 minutes ago</span>
 			</li>
 		</ul>
-		<p class="right renown_summary"><a href="#"><span class="gray">${c.authuser.pointsObj.points}</span></a></p>
+		<p class="right renown_summary"><a href="#"><span class="gray">${c.authuser['totalPoints']}</span></a></p>
 	</div><!-- renown -->
     % endif
     
@@ -78,7 +78,7 @@
     
     <div id="footer">
         % if "user" in session:
-        <a href="/issues">Issues</a> | <a href="/solutions">Solutions</a> | <a href="/profile/${c.authuser.name}">Profile</a> | <a href="#">Gov Bodies</a> | <a href="#">Groups</a>
+        <a href="/issues">Issues</a> | <a href="/solutions">Solutions</a> | <a href="/profile/${c.authuser['name']}">Profile</a> | <a href="#">Gov Bodies</a> | <a href="#">Groups</a>
         % else:
             <a href="/issues">Issues</a> | <a href="/solutions">Solutions</a> | <a href="#">Gov Bodies</a> | <a href="#">Groups</a>
         % endif

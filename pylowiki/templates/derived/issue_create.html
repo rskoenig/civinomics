@@ -5,18 +5,19 @@
 <% numcols = 10 %>
 
     <div class="banner_div">
-        <h2 class="banner">Create Issue</h3>
+        <h2 class="banner">Create Workshop</h2>
     </div>
-</div>
-<form id="create_issue" class="left" action = "/addIssue/handler" enctype="multipart/form-data" method="post" >
+
+<form id="create_issue" class="left" action = "/workshop/addWorkshopHandler" enctype="multipart/form-data" method="post" >
 ##<form id="create_issue" class="left" action = "/addIssue/handler" method = "post">
 ##${h.form(h.url(controller = "addIssue", action="handler"), method="post", id="create_issue")}
     <strong class="gray">Basic Information</strong>
     <br /><br />
-    Issue Name: <span class="darkorange">*</span>
+    Workshop Name: <span class="darkorange">*</span>
     <br />
-    <input type="text" name = "issueName"/>
+    <input type="text" name = "workshopName"/>
     <br /><br />
+    <%doc>
     <div id="government_sphere" class="left">
         Government Sphere: <span class="darkorange">*</span>
         <br />
@@ -42,6 +43,7 @@
             <br /><br />
         </div> <!-- create_new -->
     </div> <!-- government sphere -->
+    </%doc>
     <div id="goals" class="clr">
         Goals: <span class="darkorange">*</span>
         <br />
@@ -53,13 +55,13 @@
     </div>    
     
     <div id="end-dates">
-        Issue Phase End-dates: <span class="darkorange">*</span>
+        Workshop end date: <span class="darkorange">*</span>
         <table>
             <tr>
-                <td>Suggestion</td>
+                <td>End date:</td>
                 <td>
                     <div class="select">
-                        <select class="gray" name = "suggestionMonth">
+                        <select class="gray" name = "workshopMonth">
                             <option value="">Month</option>
                             <% i = 1 %>
                             % for item in c.months:
@@ -72,7 +74,7 @@
                 
                 <td>
                     <div class="select">
-                        <select class="gray" name = "suggestionDay">
+                        <select class="gray" name = "workshopDay">
                             <option value="">Day</option>
                             % for item in c.days:
                                 <option value="${item}">${item}</option>
@@ -83,7 +85,7 @@
                 
                 <td>
                     <div class="select">
-                        <select class="gray" name = "suggestionYear">
+                        <select class="gray" name = "workshopYear">
                             <option value="">Year</option>
                             % for item in c.years:
                                 <option value="${item}">${item}</option>
@@ -93,6 +95,7 @@
                 </td>
             </tr>
             
+            <%doc>
             <tr>
                 <td>Solution</td>
                 <td>
@@ -168,6 +171,7 @@
                     </div>
                 </td>
             </tr>
+            </%doc>
         </table>
     </div><!-- end-dates -->
     <hr />

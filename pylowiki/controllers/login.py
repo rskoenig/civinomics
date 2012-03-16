@@ -9,7 +9,10 @@ from pylowiki.lib.base import BaseController, render
 #Fox imported these modules
 import pylowiki.lib.helpers as h
 from pylowiki.lib.auth import login_required
-from pylowiki.model import get_user, get_user_by_email, commit
+#from pylowiki.model import get_user, get_user_by_email, commit
+from pylowiki.lib.db.user import get_user, checkPassword
+from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
+from pylowiki.lib.db.dbHelpers import commit
 
 from pylowiki.lib.mail import send
 
@@ -30,14 +33,14 @@ class LoginController(BaseController):
                 user = get_user_by_email( email )
          
                 if user: # not none or false
-                    if user.disabled or not user.activated:
+                    if user['disabled'] == True or user['activated'] == False:
                         log.warning("disabled account attempting to login - " + email )
                         h.flash( "This account has been disabled.", "warning" )
-                    elif user.check_password( password ): # if pass is True
+                    elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
-                        user.laston = time.time()
+                        user['laston'] = time.time()
                         commit(user)
-                        session["user"] = user.name
+                        session["user"] = user['name']
                         session.save()
                         log.info('session of user: %s' % session['user'])
                         c.authuser = user

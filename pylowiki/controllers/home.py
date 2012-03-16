@@ -4,8 +4,9 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.helpers as h
-from pylowiki.model import get_user, getPoints, getUserSuggestions, getArticlesRead, getVotes
-from pylowiki.model import getSolutions, getUserContributions, getUserConnections, getUserWork
+#from pylowiki.model import get_user, getPoints, getUserSuggestions, getArticlesRead, getVotes
+from pylowiki.lib.db.user import get_user
+#from pylowiki.model import getSolutions, getUserContributions, getUserConnections, getUserWork
 
 from pylowiki.lib.base import BaseController, render
 
@@ -26,7 +27,7 @@ class HomeController(BaseController):
         """
         if session.get('user'):
             #return render('/derived/issuehome.html')
-            return redirect('/issues')
+            return redirect('/workshops')
         else:
             return render('/derived/splash.html')
 

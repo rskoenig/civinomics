@@ -2,17 +2,17 @@
         
 			<div id="col-1">
 				<div>
-					<img src="/images/avatars/${c.authuser.pictureHash}.profile" alt="avatar"/>
+					<img src="/images/avatars/${c.authuser['pictureHash']}.profile" alt="avatar"/>
 					<br />
 					<span class="gray">Welcome</span>
 					<br />
-					<strong><a href="/account/${c.authuser.name}">${c.authuser.name}</a></strong>
+					<strong><a href="/account/${c.authuser['name']}">${c.authuser['name']}</a></strong>
 					<br />
 					<a href="/account/edit">Edit My Profile</a>
 				</div>
 				<h3>Streams</h3>
 				<div>
-					<strong><a href="#">Top Issues</a></strong>
+					<strong><a href="#">Workshops</a></strong>
                     <%doc>
 					<ul>
 						<a href="#"><li>Recent<span class="right">99+</span></li></a>
@@ -33,15 +33,15 @@
 			</div><!-- col-1 -->
 			<div id="col-2">
 				<div class="banner_div">
-					<h2 class="banner">Top Issues</h2>
+					<h2 class="banner">Workshops</h2>
 				</div>
 				<div id="featured_issue">
                 % if len(c.list) > 0:
-                    <% mainIssue = c.list.pop() %>
-					<a href = '/issue/${mainIssue.url}'> <img src="/images/slideshows/${mainIssue.issue.slideshow[-1].pictureHash}.slideshow" /></a>
+                    <% mainWorkshop = c.list.pop() %>
+					<a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
 					<div id="featured_caption">
-						<p><strong>Featured Issue: ${mainIssue.title}</strong></p>
-						<p><strong><a href="/issue/${mainIssue.url}">View Issue</a></strong></p>
+						<p><strong>Featured Workshop: ${mainWorkshop['title']}</strong></p>
+						<p><strong><a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}">View Workshop</a></strong></p>
 					</div><!-- featured_caption -->
 					<div style="background: green">|</div>
 				</div><!-- featured_issue -->
@@ -49,7 +49,7 @@
 				<ul id="issue_list">
                     % for item in c.list:
                         <li>
-                            <a href="/issue/${item.url}"><img src="/images/slideshows/${item.issue.slideshow[-1].pictureHash}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
+                            <a href="/workshops/${item.url}"><img src="/images/slideshows/${item.issue.slideshow[-1].pictureHash}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
                             <h4><a href="/issue/${item.url}">${item.title}</a></h4>
                             <span>Phase: Suggestion</span>
                             <br />

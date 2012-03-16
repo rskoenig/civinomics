@@ -23,6 +23,12 @@ def getUserByEmail(email):
     except:
         return False
 
+def getUserByID(id):
+    try:
+        return meta.Session.query(Thing).filter_by(id = id).one()
+    except:
+        return False
+    
 def checkPassword(user, password):
     if user['password'] == hashPassword(password):
         return True
@@ -61,9 +67,11 @@ class User(object):
         u['email'] = email
         u['name'] = '%s %s'%(firstName, lastName)
         u['activated'] = 0
+        u['disabled'] = 0
         u['pictureHash'] = 'flash' # default picture
         u['zipCode'] =  zipCode
         u['password'] = self.hashPassword(password)
+        u['totalPoints'] = 1
         commit(u)
 
     # TODO: Should be encrypted instead of hashed

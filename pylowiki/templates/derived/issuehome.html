@@ -5,35 +5,35 @@
 			    	<h2 class="banner">${c.title}</h2>
 		    	</div>
             	<div id="img">
-	            	<img src="/images/${c.slideshowDirectory}/${c.slideshow[0]['hash']}.slideshow" class="slideshow_launch"/>
+	            	<img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
 	            	<p>
 	            		<a href="#" class="slideshow_launch"><img src="/images/slideshow.png" class="left" width="40" height="40" style="padding-right:10px;" /></a>
-	            		<strong>Slideshow</strong> | <strong>Issue Background</strong>
+	            		<strong>Slideshow</strong> | <strong>Background</strong>
 	            		<br />
 	            		##Description goes here.
 	            	</p>
             	</div><!-- img -->
             	<ul class="left gray">
-                    % if c.authuser.accessLevel >= 200 or c.authuser.id in c.p.owners.split(','):
-                        <li><a href="/issue/${c.url}/edit">Edit Issue</a></li>
+                    % if c.authuser['accessLevel'] >= 200 or c.authuser.id in [int(item) for item in c.w['facilitators'].split(',')]:
+                        <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/edit">Edit</a></li>
                     % endif
-            		<li><a href="/issue/${c.i.page.url}"><strong class="darkgray">Issue Home</strong></a></li>
-            		<li><a href="/issue/${c.i.page.url}/background">Background</a></li>
+            		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}"><strong class="darkgray">Home</strong></a></li>
+            		<li><a href="/issue/${c.w['urlCode']}/${c.w['url']}/background">Background</a></li>
             		##<li><a href="#">Discussion</a></li>
-            		<li><a href="/issue/${c.i.page.url}/leaderboard">Leaderboard</a></li>
+            		<li><a href="/issue/${c.w['urlCode']}/${c.w['url']}/leaderboard">Leaderboard</a></li>
             	</ul>
             </div> <!-- slide -->
             <div id="glance" class="right">
                 <h3 class="darkgray">at-a-glance</h3>
                 <hr />
                 <div>
-                    <h4>Government Sphere: ${c.govtSphere['name']} <img src="/images/govtSpheres/${c.govtSphere['image']}.thumbnail" class="right" alt="government sphere" height="30" /></h4>
+                    ##<h4>Government Sphere: ${c.govtSphere['name']} <img src="/images/govtSpheres/${c.govtSphere['image']}.thumbnail" class="right" alt="government sphere" height="30" /></h4>
                     
                     <h4>Goals:</h4>
                     
-                        ${c.goals}
+                        ${c.w['goals']}
                     
-                    <h4>Democratic Phase: Suggestions (1 of 3)</h4>
+                    ##<h4>Democratic Phase: Suggestions (1 of 3)</h4>
                     <span class="time">2 weeks remaining in stage</span>
                     <br />
                     <span>Suggestions submitted: ${len(c.suggestions)}</span>
@@ -62,10 +62,10 @@
         </div>
         <div id="cols">
             <div class="col one left">
-                <h3>news <span class="right">add photo, article or video<a href="#" class="media plus">+</a></span></h3>
+                <h3>news <span class="right">add resource<a href="#" class="media plus">+</a></span></h3>
                 <ul>
                     ## Each issue has one article - the background wiki
-                    % if len(c.i.articles) == 1:
+                    % if int(c.w['numArticles']) == 1:
                         <p class="clr">
                             No news!
                         </p>
@@ -336,7 +336,7 @@
 				<p class="right close"><a href="#" class="x">X</a>close</p>
 				<p class="left">Add a Suggestion</p>
 			</h2>
-			<form class="left" id="suggestiondata" action="/addSuggestion/${c.p.url}" method = "post">
+			<form class="left" id="suggestiondata" action="/addSuggestion/${c.w['urlCode']}/${c.w['url']}" method = "post">
 				<div id="suggestionform" class="left">
 					Title:
 					<br />

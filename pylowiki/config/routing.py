@@ -41,7 +41,7 @@ def make_map():
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
     map.connect('/moderation/{id1}/{id2}', controller = 'moderation', action = 'index', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/addIssue', controller = 'addIssue', action = 'index')
+    map.connect('/addWorkshop', controller = 'workshop', action = 'addWorkshop')
     map.connect('/addSuggestion/{id}', controller = 'addSuggestion', action = 'handler', id = '{id}')
     map.connect('/rating', controller = 'rating', action = 'index')
     map.connect('/admin', controller = 'admin', action = 'index')
@@ -54,6 +54,8 @@ def make_map():
     map.connect('/ipadListener/sendSurveyData', controller = 'ipadListener', action = 'sendSurveyData')
     map.connect('/ipadListener/sendSurveyData/', controller = 'ipadListener', action = 'sendSurveyData')
 
+
+    map.connect('/workshops/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
 
     ################
     # Action Lists #
@@ -72,7 +74,7 @@ def make_map():
     map.connect('/restore/', controller='actionlist', action='index', id='restore')
     
     map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
-    map.connect('/issues', controller='actionlist', action='index', id='sitemapIssues')
+    map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
     map.connect('/solutions', controller = 'actionlist', action = 'index', id = 'sitemapSolutions')
 
     map.connect('/account/edit', controller = 'account', action = 'edit')

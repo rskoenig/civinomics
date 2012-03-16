@@ -6,8 +6,17 @@
 
 import logging, traceback
 
-from pylowiki.model import Comment, Discussion, Revision, getComment, Event, commit, getIssueByID
-from pylowiki.model import getSuggestionByID, getDiscussionByID, getUserByID
+#from pylowiki.model import Comment, Discussion, Revision, getComment, Event, commit, getIssueByID
+from pylowiki.lib.db.comment import Comment, getComment
+from pylowiki.lib.db.discussion import Discussion, getDiscussionByID
+from pylowiki.lib.db.revision import Revision
+from pylowiki.lib.db.event import Event
+from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.workshop import getWorkshopByID
+
+#from pylowiki.model import getSuggestionByID, getDiscussionByID, getUserByID
+from pylowiki.lib.db.suggestion import getSuggestionByID
+from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.utils import urlify
 
 from pylons import tmpl_context as c

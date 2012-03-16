@@ -6,7 +6,9 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
-from pylowiki.model import get_all_pages, getIssues, getSolutions, getParticipantsByID
+#from pylowiki.model import get_all_pages, getIssues, getSolutions, getParticipantsByID
+from pylowiki.lib.db.page import get_all_pages
+from pylowiki.lib.db.workshop import getWorkshops
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
@@ -30,11 +32,13 @@ class ActionlistController(BaseController):
             c.action = ""
             c.list = get_all_pages()
         elif c.action == 'sitemapIssues':
-            c.title = c.heading = 'Issues'
-            c.list = getIssues()
+            c.title = c.heading = 'Workshops'
+            c.list = getWorkshops()
+            """
         elif c.action == 'sitemapSolutions':
             c.title = c.heading = 'Solutions'
             c.list = getSolutions()
+            """
         else:
             c.title = c.heading = "Which " + c.action + "?"
 

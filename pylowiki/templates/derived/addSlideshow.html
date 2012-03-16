@@ -5,7 +5,7 @@
 
 <br />
 
-${h.form(h.url(controller = "addIssue", action="slideshow"), multipart = True)}
+${h.form(h.url(controller = "slideshow", action="addSlideshow"), multipart = True)}
     
     % for i in range(int(c.numSlideshowEntries)):
         Image ${counter}:    ${h.file("image%d"%counter)} <br />
@@ -27,6 +27,7 @@ ${h.form(h.url(controller = "addIssue", action="slideshow"), multipart = True)}
         <% counter += 1 %>
     % endfor
     <% session["numEntries"] = counter %>
+    <input type = "hidden" name = "workshop_id" value = "${c.workshop_id}">
     <button type="submit" class="gold">Finish</button>
 ${h.end_form()}
 

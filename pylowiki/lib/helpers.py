@@ -23,7 +23,7 @@ from pylons import url
 
 from routes import url_for
 
-##from pylowiki.lib.auth import * 
+from pylowiki.lib.auth import * 
 
 from webhelpers.pylonslib.flash import Flash as _Flash
 flash = _Flash()

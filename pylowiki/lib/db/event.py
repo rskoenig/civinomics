@@ -31,3 +31,4 @@ class Event(object):
         e = Thing('event', user)
         e['title'] = title
         e['data'] = data
+        commit(e)

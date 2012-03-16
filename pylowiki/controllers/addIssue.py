@@ -8,8 +8,15 @@ from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.comments import addDiscussion
 
-from pylowiki.model import Revision, Page, Event, commit, get_user, getAllSpheres, GovtSphere, Issue, getIssueByID
-from pylowiki.model import Slideshow, getPageByID, Article
+#from pylowiki.model import Revision, Page, Event, commit, get_user, getAllSpheres, GovtSphere, Issue, getIssueByID
+from pylowiki.lib.db.user import get_user
+from pylowiki.lib.db.revision import Revision
+from pylowiki.lib.db.page import Page, getPageByID
+from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.govtSphere import getAllSpheres, GovtSphere
+from pylowiki.lib.db.workshop import Workshop, getWorkshopByID
+#from pylowiki.model import Slideshow, getPageByID, Article
+from pylowiki.lib.db.slideshow import Slideshow
 
 import pylowiki.lib.helpers as h
 from time import time
@@ -21,10 +28,10 @@ class AddissueController(BaseController):
 
     @h.login_required
     def index(self):
-        if c.authuser.accessLevel >= 100:
+        if c.authuser['accessLevel'] >= 100:
         #if self._checkAccess(100):
             #return render('/derived/createIssue.mako')
-            c.title = "Create Issue"
+            c.title = "Create Workshop"
             c.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
             c.days = range(1, 32)
             c.years = range(2011, 2021)
@@ -34,7 +41,7 @@ class AddissueController(BaseController):
                 for item in getAllSpheres():
                     entry = {}
                     entry['id'] = item.id
-                    entry['name'] = item.name
+                    entry['name'] = item['name']
                     c.governmentSpheres.append(entry)
             else:
                 c.governmentSpheres = []
@@ -55,11 +62,14 @@ class AddissueController(BaseController):
 
     @h.login_required
     def addIssue(self):
-        if c.authuser.accessLevel >= 100:
+        # Rewrite to use the Workshop constructor, instead of making a page and an issue separately
+        if c.authuser['accessLevel'] >= 100:
             try:
                 request.params['submit']
                 url = request.params['issue_url']
                 url = urlify(url)
+                
+                
                 p = Page(url, 'issue', c.authuser.id)
                 p.title = request.params['issue_url']
                 u = get_user(session['user'])
@@ -88,16 +98,20 @@ class AddissueController(BaseController):
     # Todd's editing function?  Check if new page was created on editing
     @h.login_required
     def handler(self):
-        if c.authuser.accessLevel >= 100:
+        if c.authuser['accessLevel'] >= 100:
             try:
                 #request.params['submit']
+                """
                 if request.params['newGovtSphereName']:
                     newGovtSphereName = request.params['newGovtSphereName']
                     photo = request.POST['newGovtSpherePhoto']
                     try:
-                        hash = md5("%s%f"%(photo.filename, time())).hexdigest()
-                        saveImage(photo.filename, hash, photo.file, 'govtSphere')
-                        resizeImage(photo.filename, hash, 40, 40, 'thumbnail', 'govtSphere')
+                        #hash = md5("%s%f"%(photo.filename, time())).hexdigest()
+                        #saveImage(photo.filename, hash, photo.file, 'govtSphere')
+                        #resizeImage(photo.filename, hash, 40, 40, 'thumbnail', 'govtSphere')
+                        image = saveImage(c.authuser, photo.file, photo.filename)
+                        image = resizeImage(c.authuser, image, 40, 40)
+                        
                     except: #No photo for the government sphere
                         hash = 'earth'
                     gS = GovtSphere(newGovtSphereName, hash)
@@ -107,6 +121,7 @@ class AddissueController(BaseController):
                         govtSphere = gS.id
                 else:
                     govtSphere = request.params['governmentSpheres']
+                """
                 issueName = request.params['issueName']
                 issueName = urlify(issueName)
                 
@@ -217,7 +232,7 @@ class AddissueController(BaseController):
             thisImage = request.POST['image%d'%i]
             thisCaption = request.params['caption%d'%i]
             thisTitle = request.params['title%d'%i]
-             
+            
             try:
                 hash = md5("%s%f"%(thisImage.filename, time())).hexdigest()
                 """ The slideshow """

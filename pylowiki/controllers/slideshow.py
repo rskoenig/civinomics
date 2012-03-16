@@ -1,10 +1,16 @@
 import logging
 
 from pylons import request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
+from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
-from pylowiki.model import getSlide, commit
+
+from pylowiki.lib.db.workshop import getWorkshopByID
+from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.slide import Slide, getSlide
+from pylowiki.lib.db.slideshow import Slideshow
+
+from pylowiki.lib.images import saveImage, resizeImage
 
 log = logging.getLogger(__name__)
 
@@ -12,6 +18,40 @@ import simplejson as json
 
 class SlideshowController(BaseController):
 
+    def addSlideshow(self):
+        numEntries = int(session['numEntries'])
+        workshop_id = request.params['workshop_id']
+        w = getWorkshopByID(workshop_id)
+        s = Slideshow(c.authuser, w)
+        l = [] # Used for storing slide IDs
+        identifier = 'slide'
+        
+        for i in range(1, numEntries):
+            thisImage = request.POST['image%d'%i]
+            thisCaption = request.params['caption%d'%i]
+            thisTitle = request.params['title%s'%i]
+            
+            s = saveImage(c.authuser, thisImage.file, thisImage.filename, s.s, identifier)
+            resizeImage(c.authuser, s, identifier, '.slideshow', 835, 550)
+            resizeImage(c.authuser, s, identifier, '.thumbnail', 120, 65)
+            
+            if i == 1:
+                w['mainImage_caption'] = thisCaption
+                w['mainImage_title'] = thisTitle
+                w['mainImage_hash'] = s['image_hash_%s' % identifier] 
+                w['mainImage_postFix'] = s['image_postfix_%s' % identifier]
+                w['mainImage_identifier'] = identifier
+                w['mainImage_id'] = s.id
+                
+            l.append(s.id)
+        
+        slideshow_order = ','.join([str(id) for id in l])
+        w['slideshow_order'] = slideshow_order
+        s['slideshow_order'] = slideshow_order
+        commit(w)
+        commit(s)
+        return redirect('/')
+        
     """ Huge optimization: send request per widget after close button is hit or after order is changed.
         Currently everything is being sent after any edit """
     def edit(self):
@@ -42,8 +82,6 @@ class SlideshowController(BaseController):
             return json.dumps({'error' : 'Error saving slideshow order'})
 
         return json.dumps({'success' : 'Success commiting slide change'})
-
-
 
 
         """
