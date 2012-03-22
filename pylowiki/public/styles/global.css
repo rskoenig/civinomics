@@ -79,7 +79,7 @@ h2.banner {
 	z-index: inherit;
 }
 div.banner_div {
-	background-image: url('/images/slash.png');
+	background-image: url('../images/slash.png');
 	background-repeat: no-repeat;
 	background-position: right top;
 	float: left;
@@ -88,17 +88,31 @@ div.banner_div {
 }
 
 /* search bars -- more styling at topbar.css */
+.search_form {
+	position: relative;
+}
 
 .search_form button[type="submit"] {
 	text-indent: -5000px;
 	border: none;
-	background: transparent url('/images/magnifying_glass_lt_grey.png');
+	background: transparent url('../images/magnifying_glass_lt_grey.png');
 	background-repeat: no-repeat;
 	width: 13px;
 	position: absolute;
-	right: 4px;
+	right: -8px;
 	top: 15px;
 }
 .search_form button[type="submit"]:hover {
 	cursor: pointer;
 }
+
+/* clearfix */
+.group:after {
+	visibility: hidden;
+	display: block;
+	content: "";
+	clear: both;
+	height: 0;
+	}
+* html .group             { zoom: 1; } /* IE6 */
+*:first-child+html .group { zoom: 1; } /* IE7 */

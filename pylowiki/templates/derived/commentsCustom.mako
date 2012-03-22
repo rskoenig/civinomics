@@ -1,6 +1,6 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
-    from pylowiki.model import getRatingForComment
+    #from pylowiki.model import getRatingForComment
     import logging
     log = logging.getLogger(__name__)
 %>
@@ -124,20 +124,17 @@
 <%def name="comments( type )">
  % if type == "background":
     <% 
-        discussion = c.i.mainDiscussion 
-        comments = c.p.comments
+        discussion = c.backgroundDiscussion
     %>
  % elif type == "suggestionMain":
     <%  
         discussion = c.s.mainDiscussion
-        comments = c.s.comments
         issueID = c.i.id
     %>
  % endif
  %if c.conf['allow.comments'] == 'true':
 
-  <% numComments = len([comment for comment in comments if not comment.disabled and not comment.pending]) %>
-  <span class="gray"><a href="#">${numComments} comments</a> | Last edited on ${c.lastmoddate} by ${c.lastmoduser} | <a href="#">Suggest edits</a></span>
+  <span class="gray"><a href="#">${discussion['numComments']} comments</a> | Last edited on ${c.lastmoddate} by ${c.lastmoduser} | <a href="#">Suggest edits</a></span>
   
   <h3>Comments</h3>
     <div id="comments" class="left">
@@ -169,10 +166,12 @@
                 counter = 1000
                 maxDepth = 4
                 curDepth = 0
-                recurseCommentTree(discussion, counter, type, maxDepth, curDepth)
+                if 'children' in discussion.keys():
+                    recurseCommentTree(discussion, counter, type, maxDepth, curDepth)
+                    
             %>
         </ul>
-  ##<div id="show-comment"><a href="javascript: toggle('comment-section', 'show-comment-link', 'Show all ${numComments} comments')" id="show-comment-link" style="font-size: 12px;">Show all ${numComments} comments</a></div>
+  ##<div id="show-comment"><a href="javascript: toggle('comment-section', 'show-comment-link', 'Show all ${discussion['numComments']} comments')" id="show-comment-link" style="font-size: 12px;">Show all ${discussion['numComments']} comments</a></div>
  
  %endif
 
@@ -180,7 +179,7 @@
 
 <%def name="recurseCommentTree(tree, counter, commentType, maxDepth, curDepth)">
     <%
-        if curDepth >= maxDepth or tree.children == None or len(tree.children) < 1:
+        if curDepth >= maxDepth or tree['children'] == None or len(tree['children'].split(',')) < 1:
             return
         for child in tree.children:
             # Hack to resolve slight difference between discussion objects and comment objects

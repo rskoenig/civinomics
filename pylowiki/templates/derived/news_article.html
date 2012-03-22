@@ -4,10 +4,10 @@
 <%namespace file="/derived/commentsCustom.mako" import="comments" />
 
 	    	<div class="banner_div">
-	        	<h2 class="banner"><a href = "/issue/${c.url}">${c.title}</a></h2>
+	        	<h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2>
         	</div>
-			<h3 class="left clr wide">Article: ${c.article.title}</h3>
-			<iframe src="${c.article.url}" class="wide">Your browser cannot display this article.</iframe>
+			<h3 class="left clr wide">Article: ${c.article['title']}</h3>
+			<iframe src="${c.article['url']}" class="wide">Your browser cannot display this article.</iframe>
 			
             <div class="left">
 				<ul class="gray related_issues left">
@@ -23,6 +23,7 @@
                     </%doc>
 				</ul>
 			</div>
+			<%doc>
 			<div class="left article_end">
                 ${h.form(h.url(controller = "news", action = "readThis"), method = "post")}
                 <input type = "hidden" name = "articleID" value = "${c.article.id}" />
@@ -30,6 +31,7 @@
 				<button type="submit" class="green" id="readbutton"><img src="/images/book_icon.png" />I Read This</button>
                 ${h.end_form()}
 			</div>
+			</%doc>
 			<div class="left gray article_end">
 				<div class="gray rating wide">
 					<ul class="star-rating">
@@ -50,11 +52,11 @@
 				</div>
 			</div>
 			<div class="left article_end gray">
-                <a href="/account/${c.u.name}">
-				<img src="/images/avatars/${c.u.pictureHash}.thumbnail" class="right" style="margin-left: 5px;">
-				Posted by ${c.u.name}</a>
+                <a href="/account/${c.poster['name']}">
+				<img src="/images/avatars/${c.poster['pictureHash']}.thumbnail" class="right" style="margin-left: 5px;">
+				Posted by ${c.poster['name']}</a>
 				<br />
-				${c.article.time}
+				${c.article.date}
 			</div>
 			<div class="left clr wide">
                 

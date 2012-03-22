@@ -5,24 +5,22 @@
 <% counter = 0 %>
 
 	    	<div class="banner_div">
-	        	<h2 class="banner"><a href = "/issue/${c.url}">${c.title}</a></h2>
+	        	<h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h2>
         	</div>
         	<div id="img">
-            	<img src = "/images/${c.slideshowDirectory}/${c.slideshow[0]['hash']}.slideshow" />
+            	<img src = "/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" />
             	<p>
             		<a href="#" class="slideshow_launch"><img src="/images/slideshow.png" class="left" width="40" height="40" style="padding-right:10px;" /></a>
-            		<strong>Slideshow</strong> | <strong>Issue Background</strong>
+            		<strong>Slideshow</strong> | <strong>Background</strong>
             		<br />
             		##Description goes here.
             	</p>
         	</div><!-- img -->
         	<ul class="left gray">
-        		<li><a href="/issue/${c.url}">Issue Home</a></li>
-        		<li><a href="/issue/${c.url}/background"><strong class="darkgray">Background</strong></a></li>
-                <%doc>
-        		<li><a href="#">Discussion</a></li>
-        		<li><a href="/issue/${c.url}/leaderboard">Leaderboard</a></li>
-                </%doc>
+        		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">Home</a></li>
+                <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background"><strong class="darkgray">Background</strong></a></li>
+                <li><a href="#">Discussion</a></li>
+                <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/leaderboard">Leaderboard</a></li>
         	</ul>
         	<div id="bgmain" class="left clr">
         		<h3>Summary</h3>
@@ -34,7 +32,7 @@
                     <div id="wiki-section-break">
                     <% numrows = len(row[1].split( "\r\n" )) %>
                     
-                        % if c.authuser.id in c.owners or c.authuser.accessLevel >= 200:
+                        % if c.authuser.id == c.w.owner or int(c.authuser['accessLevel']) >= 200:
                             <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
                             <div id = "section${counter}" ondblclick="toggle('textareadiv${counter}', 'edit${counter}')">${row[0]}</div>
                             </td></tr></table>
@@ -54,7 +52,7 @@
                                 <input type="text" id="sremark"  name="sremark" class="text" />
                             </div>
                         </div>
-                        % if c.authuser.id in c.owners or c.authuser.accessLevel >= 200:
+                        % if c.authuser.id == c.w.owner or c.authuser['accessLevel'] >= 200:
                             <div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv${counter}', 'edit${counter}', 'edit')" id="edit${counter}" style="font-size: 12px;">edit</a></div>
                         % endif
                     </div>

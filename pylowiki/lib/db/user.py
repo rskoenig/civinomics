@@ -3,23 +3,27 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic
+from dbHelpers import commit
+from dbHelpers import with_characteristic as wc
 from hashlib import md5
 from pylons import config
+from pylowiki.lib.utils import urlify, toBase62
+
+from time import time
 
 log = logging.getLogger(__name__)
 
 # Getters
 
-def get_user(name):
+def get_user(hash, url):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(with_characteristic('name', name))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('urlCode', hash))).filter(Thing.data.any(wc('url', url))).one()
     except sa.orm.exc.NoResultFound:
         return False
 
 def getUserByEmail(email):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(with_characteristic('email', email))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('email', email))).one()
     except:
         return False
 
@@ -72,6 +76,10 @@ class User(object):
         u['zipCode'] =  zipCode
         u['password'] = self.hashPassword(password)
         u['totalPoints'] = 1
+        u['url'] = urlify('%s %s' %(firstName, lastName))
+        u['urlCode'] = toBase62('%s_%s_%s' % (firstName, lastName, int(time())))
+        u['numSuggestions'] = 0
+        u['numReadResources'] = 0
         commit(u)
 
     # TODO: Should be encrypted instead of hashed

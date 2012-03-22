@@ -36,13 +36,13 @@ def getSuggestionsForWorkshop(code, url):
 # Takes in a hash and a title - hash for primary lookup, url for collision resolution
 def getSuggestion(hash, url):
     try:
-        q = meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('urlCode', hash)))
+        q = meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('urlCode', hash))).all()
         if len(q) == 1:
-            return q.one()
+            return q[0]
         else:
-            q = meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('urlCode', hash))).filter(Thing.data.any(wc('url', url)))
+            q = meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('urlCode', hash))).filter(Thing.data.any(wc('url', url))).all()
             if len(q) == 1:
-                return q.one()
+                return q[0]
             else:
                 log.error('Unresolvable collision when getting suggestion for hash = %s, url = %s'%(hash, url))
                 return False
@@ -69,4 +69,14 @@ class Suggestion(object):
         d = Discussion('suggestion')
         s['discussion_id'] = d.d.id
         p = Page(title, owner, s, data)
+        if 'numSuggestions' not in owner.keys():
+            owner['numSuggestions'] = 1
+        else:
+            owner['numSuggestions'] = int(owner['numSuggestions']) + 1
+        
+        if 'suggestionList' not in owner.keys():
+            owner['suggestionList'] = s.id
+        else:
+            owner['suggestionList'] = owner['suggestionList'] + ',' + str(s.id)
+        commit(owner)
         commit(s)

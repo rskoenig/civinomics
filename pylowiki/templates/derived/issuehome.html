@@ -1,5 +1,6 @@
 <%!
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.utils import urlify
 %>
 
 <%inherit file = "/base/template.html"/>
@@ -127,13 +128,13 @@
                 % else:
                 	<% counter = 1 %>
                     % for item in c.suggestions:
-                        <% author = getUserByID(item.owner)['name'] %>
+                        <% author = getUserByID(item.owner)%>
                         <li class="sugg">
                             <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
                             <br />
                             ##Issue: <a href="/issue/${c.url}">${item["issue"]}</a>
                             ##<br />
-                            Author: <a href="/profile/${author}">${author}</a>
+                            Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
                             <p>
                                 ${item["suggestionSummary"]}
                             </p>

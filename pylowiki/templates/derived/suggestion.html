@@ -3,31 +3,31 @@
 <%namespace file="/derived/commentsCustom.mako" import="comments" />
         
         	<div class="left headline banner_div">
-	        	<h2 class="banner"><a href = "/issue/${c.p.url}">${c.title}</a></h2> 
+	        	<h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2> 
                 <br/>
         	</div> <!-- left headline -->
         	<div id="suggestion_main" class="left clr">
         		<h3>Suggestion <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span></h3>
         		<div class="left" id="suggestion_info">
 					<p class="left">
-						<strong class="issue_name"><a href="/issue/${c.p.url}/suggestion/${c.s.title}">${c.s.title}</a></strong>
+						<strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a></strong>
 						<br />
-						Issue: <a href="/issue/${c.p.url}">${c.title}</a>
+						Workshop: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a>
 						<br />
-                        Tags: No tags!
+                        ##Tags: No tags!
 						##Tags: <a href="#">water,</a> <a href="#">government,</a> <a href="#">etc.</a>
 					</p>
-					<p class="right"><img src="/images/avatars/${c.u.pictureHash}.thumbnail" alt="avatar" class="right" /><br /><span class="right">Author: <a href="/profile/${c.u.name}">${c.u.name}</a></span></p>
+					<p class="right"><img src="/images/avatars/${c.author['pictureHash']}.thumbnail" alt="avatar" class="right" /><br /><span class="right">Author: <a href="/profile/${c.author['url']}">${c.author['name']}</a></span></p>
 		            <p class="clr suggestion_summary">
-		            	% if c.authuser.id in c.p.owners.split(',') or c.authuser.accessLevel >= 200 or c.authuser.id in c.s.owners.split(','):
-                            ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.i.id, c.s.id) ), method="put" ) }
+		            	% if c.authuser.id == c.s.owner or c.authuser.accessLevel >= 200:
+                            ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
                             <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
                             <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
                             </td></tr></table>
                             
                             <div style="display:none; text-align:center;" id="textareadiv0">
                             <br />
-                            <textarea rows="5" id="textarea0" name="textarea0" onkeyup="previewAjax( 'textarea0', 'section0' )" class="markitup">${c.s.revisions[0].data}</textarea>
+                            <textarea rows="5" id="textarea0" name="textarea0" onkeyup="previewAjax( 'textarea0', 'section0' )" class="markitup">${c.s['data']}</textarea>
                             <div style="align:right;text-align:right;">
                                 Optional remark: <input type="text" id="remark0"  name="remark0" class="text tiny" placeholder="optional remark"/> 
 
@@ -65,7 +65,7 @@
                             </div>
                         % else:
                             <div class = "gray rating wide">
-                                <div class="basic_1 star-rating" data="0_${c.i.id}_${c.s.id}_0"></div> 
+                                <div class="basic_1 star-rating" data="0_${c.w.id}_${c.s.id}_0"></div> 
                                 <script type="text/javascript">
                                 $(document).ready(function(){
                                     $(".basic_1").jRating();
@@ -102,7 +102,7 @@
                     </%doc>
 		            ##<span class="gray right">Posted on 18 August 2011 | <a href="#featuredComments">9 comments</a> | <a href="#comments">Leave a comment</a></span>
                 </div>
-                ${comments("suggestionMain")} </div>
+                ##${comments("suggestionMain")} </div>
                 <%doc>
                 <h3 class="clr">Comments</h3>
                 <div id="comments" class="left">

@@ -41,6 +41,8 @@ class LoginController(BaseController):
                         user['laston'] = time.time()
                         commit(user)
                         session["user"] = user['name']
+                        session["userCode"] = user['urlCode']
+                        session["userURL"] = user['url']
                         session.save()
                         log.info('session of user: %s' % session['user'])
                         c.authuser = user

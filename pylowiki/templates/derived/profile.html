@@ -1,16 +1,16 @@
 <%inherit file = "/base/template.html"/>
 
         	<div id="profileside" class="col left">
-        		<img src="/images/avatars/${c.user.pictureHash}.profile" width="200" />
+        		<img src="/images/avatars/${c.user['pictureHash']}.profile" width="200" />
         		<h3>Connections</h3>
-        		<button class="green" id="invite_button">Invite friends to Greenocracy</button>
+        		<button class="green" id="invite_button">Invite friends to Civinomics</button>
         		<h4 class="gray">Mutual connections</h4>
         		<ul class="left clear">
-                    % if c.user.connectionList == None:
+                    % if 'connectionList' not in c.user.keys():
                         No connections!
                     % else:
                         ${counter = 1}
-                        % for item in c.user.connectionList:
+                        % for item in c.user['connectionList']:
                             % if counter > 6:
                                 <% break %>
                             % endif
@@ -36,7 +36,7 @@
 
         		</ul>
                 <ul class="left clear gray" id="connections2">
-                % if c.user.connectionList == None:
+                % if 'connectionList' not in c.user.keys():
                     <li>
                         No connections!
                     </li>
@@ -67,18 +67,19 @@
         	</div><!-- profileside -->
         	<div id="profile" class="left">
 		    	<div id="profiletop">
-		    		<h1>${c.user.name}</h1>
-                    % if c.user.tagline == None:
+		    		<h1>${c.user['name']}</h1>
+                    % if 'tagline' not in c.user.keys():
                         <span id="title">No tagline!</span>
                     % else:
-                        <span id="title">${c.user.tagline}</span>
+                        <span id="title">${c.user['tagline']}</span>
                     % endif
 		    		<br />
 		    		<br />
                     
+                    <%doc>
                     <span class = "edit">
-                    % if c.user.name == c.authuser.name:
-                        % if c.user.education == None:
+                    % if c.user['email'] == c.authuser['email']:
+                        % if 'education' c.user['education == None:
                             <a href="${h.url_for('/account/edit')}">add education history</a>&bull;
                         % else:
                             <a href="${h.url_for('/account/edit')}">${c.user.education[len(c.user.education) - 1]}</a>&bull;
@@ -116,14 +117,15 @@
                         % endif
                     % endif
                     </span>
+                    </%doc>
                     
 		    		<br />
-		    		member since ${c.user.regdate}
+		    		member since ${c.user.date}
 		    		<h4 class="gray">top issues</h4>
 		    		<ul id="topissues" class="left clr">
-                        % if len(c.user.issues) == 0:
+                        % if 'workshops' not in c.user.keys():
                             <li>
-                                No recent issues!
+                                No recent workshops!
                             </li>
                         % else:
                             <% counter = 1 %>
@@ -157,7 +159,7 @@
 		    			</li>
                         </%doc>
 		    			<li class="right" style="text-align: right;">
-                            % if c.authuser.name != c.user.name:
+                            % if c.authuser['email'] != c.user['email']:
                                 <a href = "${h.url_for('#')}">add as connection</a>
                                 <br />
                                 <a href = "${h.url_for('#')}">send message</a>
@@ -184,14 +186,20 @@
 	        	<h3>Points</h3>
 	        	<div id="points" class="left clr">
 	        		<p class="darkorange left">
-	        			<span class="large">${c.user.pointsObj.points}</span>
+	        			<span class="large">${c.user['totalPoints']}</span>
 	        			<br />
 	        			total points
 	        		</p>
 	        	</div><!-- points -->
                 
                 <h3>Comments</h3>
-                <% numComments = len([comment for comment in c.user.comments if not comment.disabled and not comment.pending]) %>
+                <%
+                    if 'numComments' in c.user.keys():
+                        numComments = c.user['numComments']
+                    else:
+                        numComments = 0
+                %>
+                ##<% numComments = len([comment for comment in c.user.comments if not comment.disabled and not comment.pending]) %>
 	        	<div id="points" class="left clr">
 	        		<p class="darkorange left">
 	        			<span class="large">${numComments}</span>
@@ -256,13 +264,13 @@
 	        	<h3>Suggestions</h3>
 	        	<div id="suggestions" class="left clr">
 	        		<p class="darkorange left">
-	        			<span class="large">${c.user.numSuggestions}</span>
+	        			<span class="large">${c.user['numSuggestions']}</span>
 	        			<br />
 	        			suggestions
 	        		</p>
 	        		<ul class="left gray profdiv">
 	        			<h4>Suggestions Submitted</h4>
-                        % if c.user.suggestions == None:
+                        % if int(c.user['numSuggestions']) == 0:
                             No suggestions submitted!
                         % else:
                         <% count = 1 %>
@@ -281,14 +289,14 @@
 	        	<h3>Articles</h3>
 	        	<div id="articles" class="left clr">
 	        		<p class="darkorange left">
-	        			<span class="large">${c.user.numArticles}</span>
+	        			<span class="large">${c.user['numReadResources']}</span>
 	        			<br />
 	        			articles read
 	        		</p>
 	        		<ul class="left gray profdiv">
 	        			<h4>Recent articles read</h4>
-	        			% if c.user.articles == None:
-                            No articles read!
+	        			% if int(c.user['numReadResources']) == 0:
+                            No resources read!
                         % else:
                         <% count = 1 %>
                             % for item in reversed(c.user.articles):
@@ -307,6 +315,7 @@
         			<br />
         			<p class="right clr"><a href="#">see all</a></p>
 	        	</div><!-- articles -->
+	        	<%doc>
 	        	<h3>Votes</h3>
 	        	<div id="votes" class="left clr">
 	        		<p class="darkorange left">
@@ -316,7 +325,7 @@
 	        		</p>
 	        		<ul class="left gray profdiv">
 	        			<h4>Voted on</h4>
-	        			% if c.user.votes == None:
+	        			% if c.user['numVotes'] == None:
                             No votes cast!
                         % else:
                             % for item in c.user.votes:
@@ -327,6 +336,7 @@
         			<br />
         			<p class="right clr"><a href = "${h.url_for('#')}">see all</a></p>
 	        	</div><!-- votes -->
+	        	
 	        	<h3>Solutions</h3>
 	        	<div id="solutions" class="left clr">
 	        		<p class="darkorange left">
@@ -370,6 +380,7 @@
         			<br />
         			<p class="right clr"><a href="#">see all</a></p>
 	        	</div><!-- contributions -->
+	        	</%doc>
         	</div><!-- profile -->
 
 <%def name = 'extraStyles()'>

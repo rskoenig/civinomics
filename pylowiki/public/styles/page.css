@@ -1,10 +1,11 @@
-div#container {
-    background: #e9e9e9;
+#container {
+    background: #e6e6e6;
     background-repeat: repeat-x;
     float: left;
     z-index: 0;
     color: #454545;
     border-top: 3px solid #d6ef5d;
+    margin-top: 10px;
 }
 
 /*** Main white box square ***/
@@ -20,6 +21,7 @@ div#container {
 #main {
     border: 1px solid #eee;
     background: #fff;
+	box-shadow: 0px 2px 1px #777;
 }
 
 #main>div {
@@ -76,11 +78,12 @@ h3 {
 	font-weight: bold;
 	color: #b9b9b9;
 	text-transform: uppercase;
-    padding: 5px;
+    padding: 10px 5px 0 5px;
     letter-spacing: .4em;
     border-bottom: 1px solid #b9b9b9;
     border-top: 1px solid #b9b9b9;
     font-size: .9em;
+	height: 25px;
 }
 
 h3>span {
@@ -106,10 +109,10 @@ a.plus , a.x{
 	top: -2px;
 }
 a.plus {
-	background-image: url("../images/plus.png");
+	background-image: url("/images/plus.png");
 }
 a.x {
-	background-image: url("../images/x.png");
+	background-image: url("/images/x.png");
 }
 
 /* RATINGS SYSTEM */
@@ -124,7 +127,9 @@ div.rating {
 	margin: 0;
 	padding: 0;
 	width: 80px;
+	height: 15px;
 	position: relative;
+	background: url('/images/star_grey.png') repeat-x;
 }
 
 .star-rating li {
@@ -147,6 +152,7 @@ div.rating {
 	overflow: hidden;
 }
 .star-rating li a:hover {
+	background: url('/images/star_orange.png');
 	z-index: 2;
 	left: 0;
 	border: none;
@@ -179,6 +185,7 @@ div.rating {
 }
 
 .star-rating li.no-rating, .star-rating li.clicked, .average li {
+	background: url('/images/star_green.png');
 	position: absolute;
 	height: 15px;
 	display: block;
