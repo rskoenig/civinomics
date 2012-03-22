@@ -1,11 +1,15 @@
+from pylons import tmpl_context as c
 from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
 from dbHelpers import commit, with_characteristic as wc
 from page import Page
 from event import Event
 from revision import Revision
+from slideshow import Slideshow, getSlideshow
+from slide import Slide
+from discussion import Discussion
 
-import time
+import time, datetime
 import logging
 
 log = logging.getLogger(__name__)
@@ -54,25 +58,50 @@ class Workshop(object):
     # owner -> A user object in Thing form
     #
     # Note this will generate the page and event for you.
-    def __init__(self, title, owner, day, month, year, background, goals):
+    def __init__(self, title, owner, publicPrivate):
         w = Thing('workshop', owner.id)
         w['title'] = title
         w['url'] = urlify(title)
         w['urlCode'] = toBase62('%s_%s_%d'%(title, owner['name'], int(time.time())))
-        # time.strptime("%s %s %s"%(day, month, year), "%d %m %Y")
-        w['endTime'] = '%s %s %s' %(day, month, year)
+        endTime = datetime.datetime.now()
+        endTime = endTime.replace(year = endTime.year + 1)
+        w['endTime'] = endTime.ctime()
         w['deleted'] = False
         w['facilitators'] = owner.id
-        w['goals'] = goals
+        w['goals'] = 'No goals set'
         w['numArticles'] = 1
+        w['public_private'] = publicPrivate
         commit(w)
         self.w = w
+        background = 'No wiki background set yet'
         
-        # def __init__(self, title, owner, type):
-        p = Page(title, owner, w)
-        r = Revision(owner, background, p.p.id)
+        p = Page(title, owner, w, background)
+        #r = Revision(owner, background, p.p.id)
         
-        #def __init__(self, title, data, user = None):
         e = Event('Create workshop', 'User %s created a workshop'%(owner.id))
+        
+        slideshow = Slideshow(c.authuser, w)
+        slideshow = getSlideshow(slideshow.s.id)
+        w['mainSlideshow_id'] = slideshow.id
+        identifier = 'slide'
+        title = 'Sample Title'
+        caption = 'Sample Caption'
+        s = Slide(c.authuser, slideshow, title, caption, 'supDawg.png', 'no file here', False)
+        w['mainImage_caption'] = caption
+        w['mainImage_title'] = title
+        w['mainImage_hash'] = s.s['pictureHash']
+        w['mainImage_postFix'] = 'orig'
+        w['mainImage_identifier'] = identifier
+        w['mainImage_id'] = s.s.id
+        slideshow['slideshow_order'] = s.s.id
+        commit(slideshow)
+        
+        d = Discussion('background', owner)
+        w['backgroundDiscussion_id'] = d.d.id
+        commit(w)
+        
+        
+        
+        
         
         

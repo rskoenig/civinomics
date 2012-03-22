@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 from pylowiki.lib.utils import urlify
+from revision import Revision
 
 log = logging.getLogger(__name__)
 
@@ -30,18 +31,21 @@ def get_all_pages(deleted = False):
 # Assumes title has already been validated
 # Takes in a Thing object, sets its page property with the page's Thing id
 class Page(object):
-    def __init__(self, title, owner, thing):
+    def __init__(self, title, owner, thing, data):
         p = Thing('page', owner.id)
         p['title'] = title
         p['url'] = urlify(title)
         p['type'] = thing.objType
         p['deleted'] = False
         commit(p)
-        self.setThingProperties(p, thing)
         self.p = p
-        #thing['page_id'] = p.id
         
-    
-    def setThingProperties(self, page, thing):
+        r = Revision(owner, data, p)
+        
+        self.setThingProperties(p, r.r, thing)
+        
+    # thing in this case is the workshop Thing
+    def setThingProperties(self, page, revision, thing):
         thing['page_id'] = page.id
+        thing['mainRevision_id'] = revision.id
         commit(thing)

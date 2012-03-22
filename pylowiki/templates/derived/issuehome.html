@@ -1,3 +1,7 @@
+<%!
+    from pylowiki.lib.db.user import getUserByID
+%>
+
 <%inherit file = "/base/template.html"/>
         
             <div id="slide" class="left">
@@ -5,7 +9,7 @@
 			    	<h2 class="banner">${c.title}</h2>
 		    	</div>
             	<div id="img">
-	            	<img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+	            	<img src="/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
 	            	<p>
 	            		<a href="#" class="slideshow_launch"><img src="/images/slideshow.png" class="left" width="40" height="40" style="padding-right:10px;" /></a>
 	            		<strong>Slideshow</strong> | <strong>Background</strong>
@@ -18,9 +22,9 @@
                         <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/edit">Edit</a></li>
                     % endif
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}"><strong class="darkgray">Home</strong></a></li>
-            		<li><a href="/issue/${c.w['urlCode']}/${c.w['url']}/background">Background</a></li>
+            		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></li>
             		##<li><a href="#">Discussion</a></li>
-            		<li><a href="/issue/${c.w['urlCode']}/${c.w['url']}/leaderboard">Leaderboard</a></li>
+            		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/leaderboard">Leaderboard</a></li>
             	</ul>
             </div> <!-- slide -->
             <div id="glance" class="right">
@@ -70,20 +74,19 @@
                             No news!
                         </p>
                     % else:
-                        % for item in c.i.articles:
-                            % if item.type == "post":
+                        % for item in c.articles:
+                            % if item['type'] == "post":
                                 <li class="post">
-                                    <span class="colhd"><a href="/issue/${c.url}/news/${item.title}">${item.title}</a></span>
+                                    <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">${item['title']}</a></span>
                                     <br />
                                     <p class="clr">
-                                         <img src="/images/news/news.thumbnail" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item.comment[:50]}...
-                                         <span class="right"><a href="/issue/${c.url}/news/${item.title}">more</a></span>
+                                         <img src="/images/news/news.thumbnail" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item['comment'][:50]}...
+                                         <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">more</a></span>
                                     </p>
                                     <div class="clr">
-                                        <span class="gray">posted by <a href="/profile/${item.user.name}">${item.user.name}</a></span> on <span class="time">${item.events[-1].date}</span>
+                                        ##<span class="gray">posted by <a href="/profile/${item.user.name}">${item.user.name}</a></span> on <span class="time">${item.events[-1].date}</span>
                                     </div>
                                 </li>
-                            ## TODO: Move away from setting up a dictionary and into object style
                             % elif item.type == "video":
                                 <li class="video">
                                     <span class="colhd"><a href="item['url']">VIDEO: ${item["title"]}</a></span>
@@ -92,7 +95,6 @@
                                         <span class="gray">posted by</span> <a href="/profile/${['user']}">${item["user"]}</a> at <span class="time">${item["time"]}</span>
                                     </div>
                                 </li>
-                            ## TODO: Move away from setting up a dictionary and into object style
                             % elif item.type == "photo":
                                 <li class="photo">
                                     <span class="colhd"><a href="#">PHOTO: ${item["title"]}</a></span>
@@ -125,17 +127,19 @@
                 % else:
                 	<% counter = 1 %>
                     % for item in c.suggestions:
+                        <% author = getUserByID(item.owner)['name'] %>
                         <li class="sugg">
-                            <span class="colhd"><a href="/issue/${c.url}/suggestion/${item['url']}">${item["title"]}</a></span>
+                            <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
                             <br />
-                            Issue: <a href="/issue/${c.url}">${item["issue"]}</a>
-                            <br />
-                            Author: <a href="/profile/${item['author']}">${item["author"]}</a>
+                            ##Issue: <a href="/issue/${c.url}">${item["issue"]}</a>
+                            ##<br />
+                            Author: <a href="/profile/${author}">${author}</a>
                             <p>
                                 ${item["suggestionSummary"]}
                             </p>
                             <br />
                             
+                            <%doc>
                             ## data: "<average>_<issueID>_<suggestionID>"
                             % if "user" in session:
                                 % if item["rating"] != -1:
@@ -159,8 +163,9 @@
                                     </script>
                                 % endif
                             % endif
+                            </%doc>
                             
-                            <span class="gray">Posted on ${item["date"]} | <a href="/issue/${c.url}/suggestion/${item['title']}">${item["numComments"]} comments</a> | <a href="/issue/${c.url}/suggestion/${item['title']}">Leave a comment</a></span>
+                            <span class="gray">Posted on ${item.date} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
                         </li>
                         <% counter += 1 %>
                     % endfor
@@ -268,11 +273,8 @@
                 </ul>
             </div><!-- .col three -->
             
-
 <%def name = 'extraHTML()'>
     <div id="pop">
-    
-    
         <div id="slideshow" class="pop">
             <h2 class="clr left">
                 <p class="right close"><a href="#" class="x">X</a>close</p>
@@ -282,8 +284,8 @@
             
             <div id="photo_container" class="left">
             	<div class="slides_container">                
-                    % for item in c.slideshow:
-                        <div><img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" alt="<strong>${item['title']}</strong><br/>${item['caption']}"/></div>
+                    % for slide in c.slides:
+                        <div><img src="/images/${c.w['mainImage_identifier']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
                     % endfor
 	            </div><!-- slides_container -->
 				<a href="#" class="prev small">&#x25C2;</a>
@@ -348,11 +350,13 @@
 					<textarea id="suggestiontext" name="data" onkeyup="previewAjax( 'textarea1', 'section1' )" class="markitup"></textarea>
 					<br />
 					<br />
+					<%doc>
 					Tags:
 					<br />
 					<input type="text" id="suggestiontags" name = "tags"/>
 					<br />
 					<span class="gray"><em>Separate with commas, e.g. budget, taxes, public departments</em></span>
+					</%doc>
 				</div>
 				<div id="suggestionshare" class="left">
                     <%doc>
@@ -373,7 +377,7 @@
 				<p class="left">Invite Friends</p>
 			</h2>
 			<div>
-				<h4>Invite Contacts to Greenocracy</h4>
+				<h4>Invite Contacts to Civinomics</h4>
 				<form>
 					Invite people by email.
 					<br />
@@ -387,10 +391,11 @@
         <div id="add_media">
 			<h2 class="clr left">
 				<p class="right close"><a href="#" class="x">X</a>close</p>
-				<p class="left">Add News</p>
+				<p class="left">Add Links</p>
 			</h2>
 			<div class="left">
-				${ h.form( url( controller = "news", action ="handler", id = c.title), method="post" ) }
+			    <form action="/news/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
+				##${ h.form( url( controller = "news", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']), method="post" ) }
 					<div class="wide">
 						<div>
 							Link URL:
@@ -416,7 +421,8 @@
 						</div>
 					</div>
 					<button type="submit" class="gold">Submit</button>
-				${h.end_form()}
+				##${h.end_form()}
+				</form>
 			</div>
         </div><!-- add_media -->
 		

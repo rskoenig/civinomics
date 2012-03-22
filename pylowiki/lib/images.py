@@ -104,6 +104,7 @@ def resizeImage(owner, thing, x, y, identifier):
 """
 
 
+"""
 def resizeImage(owner, thing, identifier, postfix, x, y):
     # Resize the image with the given dimensions.  
     #    *Should* only be used to size down an image.
@@ -133,8 +134,52 @@ def resizeImage(owner, thing, identifier, postfix, x, y):
         log.info('Unable to resize %s' % fullpath)
         raise
         return False
+"""    
+   
+# Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
+# Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.thumbnail
+def resizeImage(identifier, hash, x, y, postfix):
+    origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, 'orig')
+    origFullpath = origPathname + '/%s.orig' %(hash)
     
+    try:
+        dims = x, y
+        im = Image.open(origFullpath)
+        im.thumbnail(dims, Image.ANTIALIAS)
+        
+        pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, postfix)
+        if not os.path.exists(pathname):
+            os.makedirs(pathname)
+        
+        im.save(pathname + '/' + hash + '.' + postfix, 'PNG')
+        log.info('Successfully resized %s' % hash)
+        return True
+    except:
+        return False
+    
+# Save an image to disk
+# Directories are created based on the identifier that gets passed in
+def saveImage(image, filename, user, identifier):
+    hash = _generateHash(filename, user)
 
+    pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, 'orig')
+    savename = hash + '.orig'
+    if not os.path.exists(pathname):
+        os.makedirs(pathname)
+    
+    fullpath = os.path.join(pathname, savename)
+    
+    try:
+        f = open(fullpath, 'wb')
+        shutil.copyfileobj(image, f)
+        f.close()
+        log.info('Successfully saved %s to disk as %s', filename, savename)
+        return hash
+    except:
+        log.info('Unable to save to %s with hash %s' % (fullpath, hash))
+        return False
+
+"""
 # Save an image to disk
 # Directories are created based on the identifier that gets passed in
 def saveImage(owner, image, filename, thing, identifier):    
@@ -195,6 +240,7 @@ def saveImage(owner, image, filename, thing, identifier):
     except:
         log.info('Unable to save %s to %s with hash %s' % (name, fullpath, hash))
         return False
+"""
 
 def _generateHash(filename, user):
     s = '%s_%s_%s' %(filename, user['email'], int(time()))

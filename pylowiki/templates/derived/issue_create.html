@@ -17,6 +17,11 @@
     <br />
     <input type="text" name = "workshopName"/>
     <br /><br />
+    
+    <input type="radio" name="publicPrivate" value="public" /> Public<br />
+    <input type="radio" name="publicPrivate" value="private" /> Private<br />
+    
+    ## Below is the code needed to set up the old issues.
     <%doc>
     <div id="government_sphere" class="left">
         Government Sphere: <span class="darkorange">*</span>
@@ -43,7 +48,7 @@
             <br /><br />
         </div> <!-- create_new -->
     </div> <!-- government sphere -->
-    </%doc>
+    
     <div id="goals" class="clr">
         Goals: <span class="darkorange">*</span>
         <br />
@@ -95,7 +100,6 @@
                 </td>
             </tr>
             
-            <%doc>
             <tr>
                 <td>Solution</td>
                 <td>
@@ -171,7 +175,6 @@
                     </div>
                 </td>
             </tr>
-            </%doc>
         </table>
     </div><!-- end-dates -->
     <hr />
@@ -196,9 +199,10 @@
             % endfor
         </select>
     </div>
+    </%doc>
     <button type="submit" class="gold">Next Page</button>
 </form>
-            
+
             
 <%def name = 'extraHTML()'>
 

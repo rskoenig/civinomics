@@ -20,13 +20,13 @@ def undeleteSlideshow( slideshow ):
     commit(slideshow)
 
 # Getters
-def getSlideshow(slideshowID, deleted = False):
+def getSlideshow(slideshowID, deleted = u'0'):
     try:
-        return meta.Session.query(Thing).filter_by(id = 'slideshowID').filter(Thing.data.any(with_characteristic('deleted', deleted))).one()
+        return meta.Session.query(Thing).filter_by(id = slideshowID).filter(Thing.data.any(with_characteristic('deleted', deleted))).one()
     except:
         return False
 
-def countSlideshowSlides(slideshowID, deleted = False):
+def countSlideshowSlides(slideshowID, deleted = u'0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'slide').filter(Thing.data.any(with_characteristic('slideshowID', slideshowID))).filter(Thing.data.any(with_characteristic('deleted', deleted))).count()
     except:
@@ -40,4 +40,3 @@ class Slideshow(object):
         s['deleted'] = False
         self.s = s
         commit(s)
-

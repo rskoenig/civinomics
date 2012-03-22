@@ -8,9 +8,9 @@ from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.workshop import getWorkshopByID
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.slide import Slide, getSlide
-from pylowiki.lib.db.slideshow import Slideshow
+from pylowiki.lib.db.slideshow import Slideshow, getSlideshow
 
-from pylowiki.lib.images import saveImage, resizeImage
+#from pylowiki.lib.images import saveImage, resizeImage
 
 log = logging.getLogger(__name__)
 
@@ -18,12 +18,15 @@ import simplejson as json
 
 class SlideshowController(BaseController):
 
+    # Create a slide object.  That slide object will save the image and create the hash.  Then append the slide object to the slideshow container.
     def addSlideshow(self):
         numEntries = int(session['numEntries'])
         workshop_id = request.params['workshop_id']
         w = getWorkshopByID(workshop_id)
-        s = Slideshow(c.authuser, w)
-        l = [] # Used for storing slide IDs
+        slideshow = Slideshow(c.authuser, w)
+        slideshow = getSlideshow(slideshow.s.id)
+        w['mainSlideshow_id'] = slideshow.id
+        slides = [] # Used for storing slide IDs
         identifier = 'slide'
         
         for i in range(1, numEntries):
@@ -31,9 +34,26 @@ class SlideshowController(BaseController):
             thisCaption = request.params['caption%d'%i]
             thisTitle = request.params['title%s'%i]
             
+            s = Slide(c.authuser, slideshow, thisTitle, thisCaption, thisImage.filename, thisImage.file)
+            slides.append(s.s.id)
+            
+            if i == 1:
+                w['mainImage_caption'] = thisCaption
+                w['mainImage_title'] = thisTitle
+                w['mainImage_hash'] = s.s['pictureHash']
+                w['mainImage_postFix'] = 'orig'
+                w['mainImage_identifier'] = identifier
+                w['mainImage_id'] = s.s.id
+        slideshow['slideshow_order'] = ','.join([str(item) for item in slides])
+        commit(slideshow)
+        commit(w)
+        return redirect('/')
+        """
             s = saveImage(c.authuser, thisImage.file, thisImage.filename, s.s, identifier)
             resizeImage(c.authuser, s, identifier, '.slideshow', 835, 550)
             resizeImage(c.authuser, s, identifier, '.thumbnail', 120, 65)
+            
+            thisSlide = Slide(c.authuser, s, )
             
             if i == 1:
                 w['mainImage_caption'] = thisCaption
@@ -51,6 +71,7 @@ class SlideshowController(BaseController):
         commit(w)
         commit(s)
         return redirect('/')
+        """
         
     """ Huge optimization: send request per widget after close button is hit or after order is changed.
         Currently everything is being sent after any edit """

@@ -5,7 +5,7 @@ from decorator import decorator #easy_install decorator   http://pypi.python.org
 import helpers as h
 
 #from pylowiki.model import get_user, getUserAccessLevel
-from pylowiki.lib.db.user import get_user
+#from pylowiki.lib.db.user import get_user
 
 def _login_required(func, *args, **kw):
     check_if_login_required()
