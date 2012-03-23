@@ -7,7 +7,12 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 
 #fox added following imports
-from pylowiki.model import commit_edit, get_page, get_all_pages
+#from pylowiki.model import commit_edit, get_page, get_all_pages
+from pylowiki.lib.db.page import get_page, get_all_pages, getPageByID
+from pylowiki.lib.db.workshop import getWorkshop
+from pylowiki.lib.db.revision import Revision
+from pylowiki.lib.db.dbHelpers import commit
+
 import pylowiki.lib.helpers as h
 import re
 
@@ -62,8 +67,11 @@ class WikiController(BaseController):
         
 
     @h.login_required   
-    def handler(self, id):
+    def handler(self, id1, id2):
         """ Handles wiki Submit """
+        code = id1
+        url = id2
+        
         try:
 
             request.params['submit'] #Try submit, if false redirect back.
@@ -74,16 +82,27 @@ class WikiController(BaseController):
                     pass # Do nothing
                 else:
                     remark = remark + request.params.get('remark'+str(i))
-
+            
+            w = getWorkshop(code, url)
+            if not w:
+                h.flash('Workshop not found', 'error')
+                return redirect('/')
+            
+            page = getPageByID(w['page_id'])
+            r = Revision(c.authuser, data, page)
+            w['mainRevision_id'] = r.r.id
+            commit(w)
+            
+            """
             if commit_edit( id, session['user'], data, "edit", remark ):
                 h.flash( "The page was saved!", "success" )
             else:
                 h.flash( "The page was NOT saved.", "warning" )
+            """
         except KeyError: 
             h.flash( "Do not access a handler directly", "error" )
-        p = get_page(id)
-        type = p.type
-        return redirect( "/%s/%s" %(type, str(id)) )
+            
+        return redirect( "/workshops/%s/%s/background" %(code, url) )
     
     @h.login_required
     def previewer( self, id ):

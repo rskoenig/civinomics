@@ -7,16 +7,52 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.comments import addDiscussion, addComment, editComment
 
-from pylowiki.model import commit, Event, get_page
+#from pylowiki.model import commit, Event, get_page
+from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.event import Event
+from pylowiki.lib.db.page import get_page
+from pylowiki.lib.db.comment import Comment, getComment
+from pylowiki.lib.db.discussion import getDiscussionByID
 
 log = logging.getLogger(__name__)
 
 #from pylowiki.model import commit_comment, disable_comment, get_comment
-from pylowiki.model import commit_comment, getComment
+#from pylowiki.model import commit_comment, getComment
 import pylowiki.lib.helpers as h
 
 class CommentController(BaseController):
 
+    @h.login_required
+    def addComment(self):
+        try:
+            request.params['submit']
+            discussionID = request.params['discussionID']
+            parentCommentID = request.params['parentID']
+            comType = request.params['type']
+            data = request.params['comment-textarea']
+            workshopCode = request.params['workshopCode']
+            workshopURL = request.params['workshopURL']
+            
+            discussion = getDiscussionByID(discussionID)
+            log.info('parent comment = %s' % parentCommentID)
+            comment = Comment(data, c.authuser, discussion, int(parentCommentID))
+        except KeyError:
+            # Check if the 'submit' variable is in the posted variables.
+            h.flash('Do not access a handler directly', 'error')
+        except:
+            raise
+            h.flash('Unknown error', 'error')
+        
+        if comType == 'background':
+            return redirect('/workshop/%s/%s/background' % (workshopCode, workshopURL) )
+        elif comType == 'suggestionMain':
+            suggestionCode = request.params['suggestionCode']
+            suggestionURL = request.params['suggestionURL']
+            return redirect('/workshop/%s/%s/suggestion/%s/%s'%(workshopCode, workshopURL, suggestionCode, suggestionURL))
+        else:
+            return redirect('/')
+            
+    
     """ id1: the issue's URL.
     """
     @h.login_required

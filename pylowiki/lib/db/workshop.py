@@ -29,7 +29,7 @@ def getWorkshops( deleted = False):
 # TODO: Add in a check for object type
 def getWorkshopByID(id):
     try:
-        return meta.Session.query(Thing).filter_by(id = id).one()
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(id = id).one()
     except:
         return False
 

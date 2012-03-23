@@ -6,16 +6,27 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
-from pylowiki.model import get_user, get_all_users, meta, Event, User, commit
+#from pylowiki.model import get_user, get_all_users, meta, Event, User, commit
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 from pylowiki.lib.images import saveImage, resizeImage
 from hashlib import md5
 
+from pylowiki.lib.db.user import get_user
+
 log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
+    
+    @h.login_required
+    def showUserPage(self, id1, id2):
+        # Called when visiting /account/user-name
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        return render("/derived/profile.html")
     
     @h.login_required
     def index( self ):

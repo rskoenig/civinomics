@@ -3,12 +3,20 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-from pylowiki.model import Article, commit, getIssueByName, Event, get_user, getArticleByTitle, get_page
-from pylowiki.model import getIssueByID, getUserByID, getArticle
+#from pylowiki.model import Article, commit, getIssueByName, Event, get_user, getArticleByTitle, get_page
+#from pylowiki.model import getIssueByID, getUserByID, getArticle
+
+from pylowiki.lib.db.user import get_user, getUserByID
+from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.workshop import getWorkshop
+from pylowiki.lib.db.event import Event
+from pylowiki.lib.db.article import Article, getArticle
+
+from pylowiki.lib.utils import urlify
 
 from pylowiki.lib.base import BaseController, render
 
-from pylowiki.lib.points import readThisPage
+#from pylowiki.lib.points import readThisPage
 
 import pylowiki.lib.helpers as h
 
@@ -16,47 +24,50 @@ log = logging.getLogger(__name__)
 
 class NewsController(BaseController):
 
-    def index(self, id1, id2):
-        c.p = get_page(id1)
-        c.title = c.p.title
-        c.url = c.p.url
-        if c.p == False:
-            abort(404, h.literal("That page does not exist!"))
-
-        c.i = getIssueByID(c.p.issue.id)
-        if c.i == False:
-            abort(404, h.literal("That page does not exist!"))
-
-        c.article = getArticleByTitle(id2, c.i.id)
-        log.info('article = %s'%(c.article))
-        c.u = getUserByID(c.article.user_id)
-        c.article.time = c.article.events[0].date
+    def index(self, id1, id2, id3):
+        code = id1
+        workshopURL = id2
+        articleURL = id3
+        
+        c.w = getWorkshop(code, workshopURL)
+        
+        c.title = c.w['title']
+        c.article = getArticle(urlify(articleURL), c.w)
+        log.info('articleURL = %s' % urlify(articleURL))
+        log.info('workshop = %s' % c.w.id)
+        log.info('Article: %s' % c.article)
+        c.poster = getUserByID(c.article.owner)
+        
         return render('/derived/news_article.html')
 
     @h.login_required
-    def handler(self, id):
-        url = request.params['url']
+    def handler(self, id1, id2):
+        code = id1
+        url = id2
+        
+        linkURL = request.params['url']
         comment = request.params['data']
         title = request.params['title']
-        i = getIssueByName(id)
-        a = getArticleByTitle(url, i.id)
+        
+        w = getWorkshop(code, url)
+        a = getArticle(linkURL, w)
 
         if a:
             h.flash('Link already submitted for this issue', 'warning')
-            return redirect('/issue/%s'%id.lower().replace(' ', '-'))
+            return redirect('/workshop/%s/%s'%(code, url))
 
-        a = Article(url, title)
-        a.comment = comment
-        a.related = i.id
-        i.articles.append(a)
-        e = Event('create', 'Added article %s'%title[:49])
-        u = get_user(session['user'])
-        a.user = u
-        u.events.append(e)
-        a.events.append(e)
-        i.events.append(e)
-        if commit(e) and commit(a):
-            return redirect('/issue/%s'%id.lower().replace(' ', '-'))
+        a = Article(linkURL, title, comment, c.authuser, w)
+        a = getArticle(urlify(title), w)
+        
+        if 'articles' not in w.keys():
+            w['articles'] = a.id 
+        else:
+            w['articles'] = w['articles'] + ',' + str(a.id)
+        
+        w['numArticles'] = int(w['numArticles']) + 1
+        e = Event('create', 'Added article %s'%a.id, c.authuser)
+        commit(a)
+        return redirect('/workshop/%s/%s'%(code, url))
 
     @h.login_required
     def readThis(self):

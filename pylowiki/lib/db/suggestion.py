@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 
 def getSuggestionByID(id):
     try:
-        return meta.Session.query(Thing).filter_by(id = id).one()
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter_by(id = id).one()
     except:
         return False
 
