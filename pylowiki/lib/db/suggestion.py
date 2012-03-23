@@ -3,6 +3,7 @@ from pylowiki.lib.utils import urlify, toBase62
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 from discussion import Discussion
+from revision import Revision
 from page import Page
 
 import logging
@@ -64,6 +65,9 @@ class Suggestion(object):
         log.info('data = %s' % data)
         commit(s)
         self.s = s
+        
+        r = Revision(owner, data, s)
+        s['mainRevision_id'] = r.r.id
         
         # Should this be set to the owner, or be ownerless?
         d = Discussion('suggestion')

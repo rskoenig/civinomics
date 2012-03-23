@@ -30,5 +30,5 @@ class Revision(Thing):
         if 'revisionList' not in thing.keys():
             thing['revisionList'] = r.id
         else:
-            thing['revisionList'] = thing['revisionList'] + ',' + r.id
+            thing['revisionList'] = thing['revisionList'] + ',' + str(r.id)
         commit(thing)

@@ -18,7 +18,7 @@ def get_page(url, deleted = False):
 
 def getPageByID(id, deleted = False):
     try:
-        return meta.Session.query(Thing).filter_by(id = id).filter(Thing.data.any(wc('deleted', deleted))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'page').filter_by(id = id).filter(Thing.data.any(wc('deleted', deleted))).one()
     except:
         return False
 

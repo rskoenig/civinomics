@@ -59,12 +59,13 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
     map.connect('/news/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/news/{id3}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/profile/{id1}/{id2}', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
-    
+    map.connect('/addComment', controller = 'comment', action = 'addComment')
     ################
     # Action Lists #
     ################
@@ -130,7 +131,8 @@ def make_map():
 
     map.connect('/random', controller='wiki', action='random') # selects a random page
 
-    map.connect('/wiki/handler/*id', controller='wiki', action='handler') # wiki handler route
+    #map.connect('/wiki/handler/*id', controller='wiki', action='handler') # wiki handler route
+    map.connect('/wiki/handler/{id1}/{id2}', controller = 'wiki', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     #map.connect('/wiki/*id', controller = 'wiki', action = 'index')
     #map.connect('/*id', controller='wiki', action='index') # view or wiki route
 

@@ -10,6 +10,7 @@ from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.article import getArticlesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
+from pylowiki.lib.db.user import getUserByID
 
 from pylowiki.lib.utils import urlify
 
@@ -92,7 +93,10 @@ class WorkshopController(BaseController):
         
         c.wikilist = zip(HTMLlist, reSTlist)
         
-        c.backgroundDiscussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+        
+        c.lastmoddate = r.date
+        c.lastmoduser = getUserByID(r.owner)
         
         return render('/derived/issuebg.html')
     

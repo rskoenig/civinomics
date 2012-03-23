@@ -30,15 +30,12 @@ def enableComment( comment ):
 # Object
 class Comment(object):
     # parent is a Thing id
-    def __init__(self, data, owner, discussion, parent = None):
+    def __init__(self, data, owner, discussion, parent = 0):
         c = Thing('comment', owner.id)
         c['disabled'] = False
         c['pending'] = False
         c['parent'] = parent
-        if parent == None:
-            c['isRoot'] = True
-        else:
-            c['isRoot'] = False
+        c['children'] = 0
         c['data'] = data
         c['discussion_id'] = discussion.id
         c['pending'] = False
@@ -46,6 +43,18 @@ class Comment(object):
         c['downs'] = 0
         c['lastModified'] = datetime.now().ctime()
         commit(c)
+        
+        if parent == 0:
+            c['isRoot'] = True
+        else:
+            c['isRoot'] = False
+            parentComment = getComment(parent)
+            children = [int(item) for item in parentComment['children'].split(',')]
+            if children[0] == 0:
+                parentComment['children'] = c.id
+            else:
+                parentComment['children'] = parentComment['children'] + ',' + str(c.id)
+            commit(parentComment)
         
         r = Revision(owner, data, c)
         self.setDiscussionProperties(c, discussion)
@@ -56,7 +65,7 @@ class Comment(object):
             if 'children' not in discussion.keys():
                 discussion['children'] = comment.id
             else:
-                discussion['children'] = discussion['children'] + ',' + comment.id
+                discussion['children'] = discussion['children'] + ',' + str(comment.id)
         discussion['numComments'] = int(discussion['numComments']) + 1
         commit(discussion)
         

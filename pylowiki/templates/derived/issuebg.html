@@ -26,7 +26,7 @@
         		<h3>Summary</h3>
         		
                 % if "user" in session:
-                    ${ h.form( url( controller = "wiki", action ="handler", id = c.url ), method="put" ) }
+                    ${ h.form( url( controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url'] ), method="put" ) }
 
                     % for row in c.wikilist:
                     <div id="wiki-section-break">
@@ -63,7 +63,7 @@
 
                     ${h.end_form()}
 
-                    ##<div class="lastmodified"><br/>${c.title} <i>(last modified ${c.lastmoddate} by ${c.lastmoduser})</i></div>
+                    ##<div class="lastmodified"><br/>${c.title} <i>(last modified ${c.lastmoddate} by ${c.lastmoduser['name']})</i></div>
                 % else:
                     ${c.content}
                 % endif

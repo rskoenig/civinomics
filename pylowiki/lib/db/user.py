@@ -41,6 +41,17 @@ def checkPassword(user, password):
 # Setters
 
 def changePassword(user, password):
+    """
+    changePassword(user, password)
+    
+    Changes a user's password.  Returns True if successful.
+    
+    inputs:
+                user        ->    A user Thing
+                password    ->    The new password, in string format
+    outputs:
+                True if successful
+    """
     user['password'] = hashPassword(password)
     commit(user)
     return True 
