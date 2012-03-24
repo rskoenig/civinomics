@@ -2,6 +2,7 @@ import logging
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
+from pylons import config
 
 import pylowiki.lib.helpers as h
 #from pylowiki.model import get_user, getPoints, getUserSuggestions, getArticlesRead, getVotes
@@ -29,6 +30,8 @@ class HomeController(BaseController):
             #return render('/derived/issuehome.html')
             return redirect('/workshops')
         else:
+            c.site_base_url = config['app_conf']['site_base_url']
+            c.site_secure_url = config['app_conf']['site_secure_url']
             return render('/derived/splash.html')
 
     @h.login_required

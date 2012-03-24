@@ -3,6 +3,7 @@ import logging, time
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
+from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 
@@ -55,7 +56,7 @@ class LoginController(BaseController):
                             return redirect("/derived/issuehome.html")
                         except:
                             #return redirect("/home/mainPage/%s" % user.name)
-                            return redirect("/")
+                            return redirect(config['app_conf']['site_base_url'])
                     else:
                         log.warning("incorrect username or password - " + email )
                         h.flash( "incorrect username or password", "warning" )
