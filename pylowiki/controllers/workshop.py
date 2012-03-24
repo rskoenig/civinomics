@@ -58,7 +58,7 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         
-        c.w = getWorkshop(code, url)
+        c.w = getWorkshop(code, urlify(url))
         c.title = c.w['title']
         
         c.slides = []

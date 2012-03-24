@@ -55,7 +55,7 @@ class SuggestionController(BaseController):
         title = request.params['title']
         data = request.params['data']
         
-        w = getWorkshop(code, url)
+        w = getWorkshop(code, urlify(url))
         s = Suggestion(c.authuser, title, data, w)
         
         if 'suggestionList' not in w.keys():
