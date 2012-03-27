@@ -21,7 +21,7 @@ def getAllSuggestions(deleted = False):
     except:
         return False
 
-# Note this function is deprecated, use getSuggestionByHash() instead.
+# Note this function is deprecated, use getSuggestion() instead.
 def getSuggestionByURL(url):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('url', url))).all()

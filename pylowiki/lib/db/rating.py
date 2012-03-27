@@ -10,7 +10,7 @@ import pickle
 
 def getRatingByID(id):
     try:
-        return meta.Session.query(Thing).filter_by(objType, 'rating').filter_by(id, id).one()
+        return meta.Session.query(Thing).filter_by(objType = 'rating').filter_by(id = id).one()
     except:
         return False
 
@@ -61,9 +61,11 @@ class Rating(object):
             l.append(tup)
             owner[key] = pickle.dumps(l)
         else:
-            l = pickle.loads(owner[key])
+            log.info('key = %s' % key)
+            l = pickle.loads(str(owner[key]))
             l.append(tup)
             owner[key] = pickle.dumps(l)
+            
         commit(ratedThing)
         commit(owner)
         
