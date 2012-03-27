@@ -54,18 +54,53 @@ def make_map():
     map.connect('/ipadListener/sendSurveyData', controller = 'ipadListener', action = 'sendSurveyData')
     map.connect('/ipadListener/sendSurveyData/', controller = 'ipadListener', action = 'sendSurveyData')
 
-
+    # Workshop home page
     map.connect('/workshops/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
+    
+    # Add image(s) to workshop slideshow
+    map.connect('/workshop/{id1}/{id2}/addImages', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/addImages/', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/addImages', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/addImages/', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
+    
+    # Handler for adding images
+    map.connect('/workshop/{id1}/{id2}/addImages/handler', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/addImages/handler', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/addImages/handler', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/addImages/handler/', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
+    
+    # Workshop background page
     map.connect('/workshop/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/background/', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/background/', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
+    
+    # Resources
     map.connect('/news/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/news/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/news/{id3}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/workshop/{id1}/{id2}/news/{id3}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/workshops/{id1}/{id2}/news/{id3}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/workshops/{id1}/{id2}/news/{id3}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    
+    # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/addSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/suggestion/{id3}/{id4}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/suggestion/{id3}/{id4}/', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    
+    # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+    
+    # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
+    map.connect('/addComment/', controller = 'comment', action = 'addComment')
 
     map.connect('/geo/postal/{id1}/{id2}', controller = 'geo', action = 'showPostalInfo', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/city/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCityInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')

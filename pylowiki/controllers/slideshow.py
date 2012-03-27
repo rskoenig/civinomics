@@ -1,22 +1,107 @@
 import logging
 
 from pylons import request, response, session, tmpl_context as c
+from pylons import config
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
-from pylowiki.lib.db.workshop import getWorkshopByID
+from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshop
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.slide import Slide, getSlide
 from pylowiki.lib.db.slideshow import Slideshow, getSlideshow
+from pylowiki.lib.db.imageIdentifier import getImageIdentifier
+
+from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory
 
 #from pylowiki.lib.images import saveImage, resizeImage
 
 log = logging.getLogger(__name__)
 
+import pylowiki.lib.helpers as h
 import simplejson as json
+import os
 
 class SlideshowController(BaseController):
+
+    @h.login_required
+    def addImageDisplay(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshop(code, url)
+        if not c.w:
+            h.flash('Could not find workshop!', 'error')
+            return redirect('/')
+        return render('/derived/uploadImages.html')
+        #return render('/derived/test4.html')
+    
+    @h.login_required
+    def addImageHandler(self, id1, id2):
+        code = id1
+        url = id2
+        
+        w = getWorkshop(code, url)
+        s = getSlideshow(w['mainSlideshow_id'])
+        if not w:
+            h.flash('Could not find workshop!', 'error')
+            return redirect('/')
+        elif not s:
+            h.flash('Could not find slideshow!', 'error')
+            return redirect('/')
+        
+        if 'files[]' in request.params.keys():
+            file = request.params['files[]']
+            imageFile = file.file
+            filename = file.filename
+            identifier = 'slide'
+            hash = saveImage(imageFile, filename, c.authuser, identifier, s)
+            resizeImage(identifier, hash, 120, 65, 'thumbnail')
+            resizeImage(identifier, hash, 835, 550, 'slideshow')
+            
+            identifier = 'slide'
+            i = getImageIdentifier(identifier)
+            directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
+            savename = hash + '.orig'
+            newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
+            log.info('hash = %s' % hash)
+            log.info('newPath = %s' % newPath)
+            st = os.stat(newPath)
+            l = []
+            d = {}
+            d['name'] = savename
+            d['size'] = st.st_size
+            d['url'] = 'http://www.civinomics.org:6626/images/%s/%s/orig/%s.orig' % (identifier, directoryNumber, hash)
+            d['thumbnail_url'] = 'http://www.civinomics.org:6626/images/%s/%s/thumbnail/%s.thumbnail' % (identifier, directoryNumber, hash)
+            d['delete_url'] = 'http://www.civinomics.org:6626/workshop/%s/%s/slideshow/delete/%s' %(w['urlCode'], w['url'], hash)
+            d['delete_type'] = "DELETE"
+            d['-'] = hash
+            d['type'] = 'image/png'
+            l.append(d)
+            return json.dumps(l)
+        """
+        Return a JSON-encoded string of the following format:
+        
+        [
+          {
+            "name":"picture1.jpg",
+            "size":902604,
+            "url":"\/\/example.org\/files\/picture1.jpg",
+            "thumbnail_url":"\/\/example.org\/thumbnails\/picture1.jpg",
+            "delete_url":"\/\/example.org\/upload-handler?file=picture1.jpg",
+            "delete_type":"DELETE"
+          },
+          {
+            "name":"picture2.jpg",
+            "size":841946,
+            "url":"\/\/example.org\/files\/picture2.jpg",
+            "thumbnail_url":"\/\/example.org\/thumbnails\/picture2.jpg",
+            "delete_url":"\/\/example.org\/upload-handler?file=picture2.jpg",
+            "delete_type":"DELETE"
+          }
+        ]
+
+        """
 
     # Create a slide object.  That slide object will save the image and create the hash.  Then append the slide object to the slideshow container.
     def addSlideshow(self):

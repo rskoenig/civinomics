@@ -62,6 +62,9 @@
                         <span class="right">$ <input type="text" title="Contribute" value="0.15" /> <button title="Contribute" class="gold contribute">Contribute</button></span>
                     </form>
                     </%doc>
+                    % if c.authuser['accessLevel'] >= 200 or c.authuser.id in [int(item) for item in c.w['facilitators'].split(',')]:
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages"><h4>Add images to slideshow</h4></a>
+                    % endif
                 </div>
             </div><!-- glance -->
         </div>
@@ -532,87 +535,4 @@
         });
     </script>
     
-    <%doc>
-    <script type="text/javascript">
-    
-    	## Need array of these variables for each of the entries
-		var sMax;
-		var holder; 
-		var preSet;
-        var ratedEntries = new Array();
-		var rated = new Array();
-
-
-function rating(num, counter){
-	sMax = 0;	
-	for(n=0; n<num.parentNode.childNodes.length; n++){
-		if(num.parentNode.childNodes[n].nodeName == "A"){
-			sMax++;	
-		}
-	}
-	
-	if(!rated[counter]){
-		s = num.id.replace(counter + "_", '');
-		a = 0;
-		for(i=1; i<=sMax; i++){		
-			if(i<=s){
-				document.getElementById(counter + "_" + i).className = "on";
-				document.getElementById("rateStatus-" + counter).innerHTML = num.title;
-				
-				holder = a+1;
-				a++;
-			}else{
-				document.getElementById(counter + "_" + i).className = "";
-			}
-		}
-	}
-}
-
-function off(me, counter){
-	if(!rated[counter]){
-		if(!preSet){	
-			for(i=1; i<=sMax; i++){		
-				document.getElementById(counter + "_" + i).className = "";
-				document.getElementById("rateStatus-" + counter).innerHTML = me.parentNode.title;
-				
-			}
-		}else{
-			rating(preSet);
-			##document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML;
-			
-		}
-	}
-}
-
-function rateIt(me, counter, title){
-	if(!rated[counter]){
-		document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML + " :: "+me.title;
-		
-		preSet = me;
-		rated[counter]=1;
-		sendRate(me, counter, title);
-		rating(me);
-	}
-}
-
-function rateItBefore(me, counter, title){
-	if(!rated[counter]){
-		document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML + " :: "+me.title;
-		
-		preSet = me;
-		rated[counter]=1;
-		##rating(me);
-	}
-}
-
-function sendRate(sel, counter, title){
-	thisURL = "/issue/${c.url}/suggestion/" + title + "/rate/" + sel.id.replace(counter + "_", "")
-	$.ajax({
-		type: "POST",
-  		url: thisURL
-	});
-    ##alert("URL is " + thisURL);
-}
-    </script>
-    </%doc>
 </%def>
