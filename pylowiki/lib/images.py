@@ -4,10 +4,12 @@ from time import time
 from hashlib import md5
 
 from pylons import config
-from pylowiki.model import Blob
+#from pylowiki.model import Thing
 from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.imageIdentifier import ImageIdentifier, getImageIdentifier
 
 log = logging.getLogger(__name__)
+numImagesInDirectory = 30000
 
 """
     Saves an image to a Thing's blob property.  Sets the image as the main image, given an identifier.
@@ -139,7 +141,10 @@ def resizeImage(owner, thing, identifier, postfix, x, y):
 # Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
 # Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.thumbnail
 def resizeImage(identifier, hash, x, y, postfix):
-    origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, 'orig')
+    i = getImageIdentifier(identifier)
+    directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
+    
+    origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber,'orig')
     origFullpath = origPathname + '/%s.orig' %(hash)
     
     try:
@@ -147,33 +152,45 @@ def resizeImage(identifier, hash, x, y, postfix):
         im = Image.open(origFullpath)
         im.thumbnail(dims, Image.ANTIALIAS)
         
-        pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, postfix)
+        pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
         if not os.path.exists(pathname):
             os.makedirs(pathname)
         
         im.save(pathname + '/' + hash + '.' + postfix, 'PNG')
-        log.info('Successfully resized %s' % hash)
+        #log.info('Successfully resized %s' % hash)
         return True
     except:
         return False
     
 # Save an image to disk
 # Directories are created based on the identifier that gets passed in
-def saveImage(image, filename, user, identifier):
+# Each identifier object contains an 'imageNum' field that is a running tally of
+# all images that have the same identifier.  When we get to 30k images in a
+# directory (via integer division), we create a new directory and save images in there.
+def saveImage(image, filename, user, identifier, thing):
     hash = _generateHash(filename, user)
 
-    pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, 'orig')
+    if not getImageIdentifier(identifier):
+        i = ImageIdentifier(identifier)
+    i = getImageIdentifier(identifier)
+    i['numImages'] = int(i['numImages']) + 1 
+    directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
+
+    pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig')
     savename = hash + '.orig'
     if not os.path.exists(pathname):
         os.makedirs(pathname)
     
     fullpath = os.path.join(pathname, savename)
     
+    thing['directoryNumber'] = directoryNumber
+    commit(thing)
+    
     try:
         f = open(fullpath, 'wb')
         shutil.copyfileobj(image, f)
         f.close()
-        log.info('Successfully saved %s to disk as %s', filename, savename)
+        #log.info('Successfully saved %s to disk as %s', filename, savename)
         return hash
     except:
         log.info('Unable to save to %s with hash %s' % (fullpath, hash))

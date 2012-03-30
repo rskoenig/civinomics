@@ -1,5 +1,8 @@
 <%inherit file = "/base/template.html"/>
-
+<%!
+    from pylowiki.lib.db.suggestion import getSuggestionByID
+    from pylowiki.lib.db.workshop import getWorkshopByID
+%>
         	<div id="profileside" class="col left">
         		<img src="/images/avatars/${c.user['pictureHash']}.profile" width="200" />
         		<h3>Where I Call Home</h3>
@@ -60,7 +63,7 @@
         			<span class="right"><a href="#">see all</a></span>
         		</ul> <!-- connections2 -->
                 <ul class="invite suggest share">
-                    <li><img src="${h.url_for('/images/handdove.png')}" /> <a href="#">Invite to greenocracy</a></li>
+                    <li><img src="${h.url_for('/images/handdove.png')}" /> <a href="#">Invite to civinomics</a></li>
                     <li><img src="${h.url_for('/images/suggest_an_issue.png')}" /> <a href="${h.url_for('#')}">Suggest an issue</a></li>
                     <li><img src="${h.url_for('/images/pen.png')}" /> <a href="${h.url_for('#')}">Share this page</a></li>
                     <li>
@@ -282,11 +285,15 @@
                             No suggestions submitted!
                         % else:
                         <% count = 1 %>
-                            % for item in reversed(c.user.suggestions):
+                            % for item in c.user['suggestionList'].split(','):
+                                <% 
+                                    s = getSuggestionByID(int(item))
+                                    w = getWorkshopByID(int(s['workshop_id']))
+                                %>
                                 % if count > 3:
                                     <% break %>
                                 % endif
-                                <li><a href = "${item['suggestionURL']}"><strong>${item["suggestionTitle"]}</strong></a> in <a href="${item['issueURL']}">${item["issueTitle"]}</a></li>
+                                <li><a href = "/workshop/${w['urlCode']}/${w['url']}/suggestion/${s['urlCode']}/${s['url']}"><strong>${s["title"]}</strong></a> in <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a></li>
                                 <% count += 1 %>
                             %endfor
                         %endif

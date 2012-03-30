@@ -2,7 +2,11 @@
 
         	<div id="account_photo" class="left">
         		<h2 class="banner">Account setup</h2>
-        		<img src="/images/avatars/${c.authuser.pictureHash}.profile" />
+        		% if c.authuser['pictureHash'] == 'flash':
+        		  <img src="/images/avatars/flash.profile" />
+        		% else:
+        		## Note we need to define the 'avatarDirectory' field as a number in the user's Thing object when they change the default avatar
+        		  <img src="/images/avatars/${c.authuser['avatarDirectory']}/${c.authuser['pictureHash']}.profile" />
         	</div><!-- account photo -->
 	    	<form id="account_create" action="/account/editSubmit" class="left" enctype="multipart/form-data" method="post">
             ##${h.form(h.url(controller = "account", action="editSubmit"), method="post", id="account_create")}
@@ -21,12 +25,12 @@
 		    		 	<div class="left">
 						 	First name:*
 						 	<br />
-						 	<input type="text" name="first_name" placeholder = "${c.authuser.firstName}"/>
+						 	<input type="text" name="first_name" placeholder = "${c.authuser['firstName']}"/>
 					 	</div>
 					 	<div class="left">
 					 		Last name:*
 					 		<br />
-					 		<input type="text" name="last_name" placeholder = "${c.authuser.lastName}"/>
+					 		<input type="text" name="last_name" placeholder = "${c.authuser['lastName']}"/>
 					 		<a href="#">not you?</a>
 				 		</div>
 				 		<br class="clr" />
@@ -34,12 +38,12 @@
 				 		<div class="left">
 				 			Email:*
 				 			<br />
-				 			<input type="text" name="email" id="email" placeholder = "${c.authuser.email}"/>
+				 			<input type="text" name="email" id="email" placeholder = "${c.authuser['email']}"/>
 				 		</div>
 				 		<div class="left">
 				 			Zip Code:*
 				 			<br />
-				 			<input type="text" name="zip_code" id="zip_code" placeholder = "${c.authuser.zipCode}"/>
+				 			<input type="text" name="zip_code" id="zip_code" placeholder = "${c.authuser['zipCode']}"/>
 				 		</div>
 	    		 	</div><!-- basic info -->
 	    		 	<br /><br />

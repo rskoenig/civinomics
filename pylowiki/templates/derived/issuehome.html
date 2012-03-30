@@ -10,7 +10,12 @@
 			    	<h2 class="banner">${c.title}</h2>
 		    	</div>
             	<div id="img">
-	            	<img src="/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+            	    % if c.w['mainImage_hash'] == 'supDawg':
+            	       <img src="/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+            	    % else:
+            	       <img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_directoryNum']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+            	    % endif
+	            	
 	            	<p>
 	            		<a href="#" class="slideshow_launch"><img src="/images/slideshow.png" class="left" width="40" height="40" style="padding-right:10px;" /></a>
 	            		<strong>Slideshow</strong> | <strong>Background</strong>
@@ -62,6 +67,10 @@
                         <span class="right">$ <input type="text" title="Contribute" value="0.15" /> <button title="Contribute" class="gold contribute">Contribute</button></span>
                     </form>
                     </%doc>
+                    % if c.authuser['accessLevel'] >= 200 or c.authuser.id in [int(item) for item in c.w['facilitators'].split(',')]:
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages"><h4>Add images to slideshow</h4></a>
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow"><h4>Edit slideshow</h4></a>
+                    % endif
                 </div>
             </div><!-- glance -->
         </div>
@@ -286,7 +295,11 @@
             <div id="photo_container" class="left">
             	<div class="slides_container">                
                     % for slide in c.slides:
-                        <div><img src="/images/${c.w['mainImage_identifier']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                        % if slide['pictureHash'] == 'supDawg':
+                            <div><img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                        % else:
+                            <div><img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                        % endif
                     % endfor
 	            </div><!-- slides_container -->
 				<a href="#" class="prev small">&#x25C2;</a>
@@ -310,7 +323,7 @@
             	<div class="slides_container">
             		% for item in c.slideshow:
                         <div>
-                            <img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" />
+                            <img src="/images/slide/${c.slideshowDirectory}/${item['hash']}.slideshow" />
                             <p class="caption">
                                 <strong>${item["title"]}</strong>
                                 <br />
@@ -532,87 +545,4 @@
         });
     </script>
     
-    <%doc>
-    <script type="text/javascript">
-    
-    	## Need array of these variables for each of the entries
-		var sMax;
-		var holder; 
-		var preSet;
-        var ratedEntries = new Array();
-		var rated = new Array();
-
-
-function rating(num, counter){
-	sMax = 0;	
-	for(n=0; n<num.parentNode.childNodes.length; n++){
-		if(num.parentNode.childNodes[n].nodeName == "A"){
-			sMax++;	
-		}
-	}
-	
-	if(!rated[counter]){
-		s = num.id.replace(counter + "_", '');
-		a = 0;
-		for(i=1; i<=sMax; i++){		
-			if(i<=s){
-				document.getElementById(counter + "_" + i).className = "on";
-				document.getElementById("rateStatus-" + counter).innerHTML = num.title;
-				
-				holder = a+1;
-				a++;
-			}else{
-				document.getElementById(counter + "_" + i).className = "";
-			}
-		}
-	}
-}
-
-function off(me, counter){
-	if(!rated[counter]){
-		if(!preSet){	
-			for(i=1; i<=sMax; i++){		
-				document.getElementById(counter + "_" + i).className = "";
-				document.getElementById("rateStatus-" + counter).innerHTML = me.parentNode.title;
-				
-			}
-		}else{
-			rating(preSet);
-			##document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML;
-			
-		}
-	}
-}
-
-function rateIt(me, counter, title){
-	if(!rated[counter]){
-		document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML + " :: "+me.title;
-		
-		preSet = me;
-		rated[counter]=1;
-		sendRate(me, counter, title);
-		rating(me);
-	}
-}
-
-function rateItBefore(me, counter, title){
-	if(!rated[counter]){
-		document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML + " :: "+me.title;
-		
-		preSet = me;
-		rated[counter]=1;
-		##rating(me);
-	}
-}
-
-function sendRate(sel, counter, title){
-	thisURL = "/issue/${c.url}/suggestion/" + title + "/rate/" + sel.id.replace(counter + "_", "")
-	$.ajax({
-		type: "POST",
-  		url: thisURL
-	});
-    ##alert("URL is " + thisURL);
-}
-    </script>
-    </%doc>
 </%def>

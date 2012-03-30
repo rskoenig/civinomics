@@ -6,7 +6,7 @@
     </div>
     
     <p>Move around the slides into the order you desire.  Edit slide titles and captions as you see fit.  Please note that the first image will be the face of your issue.</p>
-	<a href = '/issue/${c.url}'><strong>Return to issue home</strong></a>
+	<a href = '/workshop/${c.w["urlCode"]}/${c.w["url"]}'><strong>Return to workshop</strong></a>
     <div id="columns">
         
         <ul id="column1" class="column">
@@ -14,12 +14,16 @@
             % for slide in c.slideshow:
                 <li class="widget color-${c.colors[counter]}" id = "${slide.id}">  
                     <div class="widget-head">
-                        <h3>${slide.title}</h3>
+                        <h3>${slide['title']}</h3>
                     </div>
                     <div class="widget-content">
                     ##<div class="basic_1 star-rating" data="0_${c.i.id}_${c.s.id}_0"></div> 
-                        <p>${slide.caption}</p>
-                        <img src = "/images/${c.slideshowDirectory}/${slide.pictureHash}.slideshow" style="width:300px; height: 200px;">
+                        <p>${slide['caption']}</p>
+                        % if slide['pictureHash'] == 'supDawg':
+                            <img src = "/images/slide/slideshow/supDawg.slideshow" style="width:300px; height: 200px;">
+                        % else:
+                            <img src = "/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" style="width:300px; height: 200px;">
+                        % endif
                     </div>
                 </li>
                 <% counter += 1 %>
