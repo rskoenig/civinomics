@@ -10,7 +10,12 @@
 			    	<h2 class="banner">${c.title}</h2>
 		    	</div>
             	<div id="img">
-	            	<img src="/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+            	    % if c.w['mainImage_hash'] == 'supDawg':
+            	       <img src="/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+            	    % else:
+            	       <img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_directoryNum']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+            	    % endif
+	            	
 	            	<p>
 	            		<a href="#" class="slideshow_launch"><img src="/images/slideshow.png" class="left" width="40" height="40" style="padding-right:10px;" /></a>
 	            		<strong>Slideshow</strong> | <strong>Background</strong>
@@ -64,6 +69,7 @@
                     </%doc>
                     % if c.authuser['accessLevel'] >= 200 or c.authuser.id in [int(item) for item in c.w['facilitators'].split(',')]:
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages"><h4>Add images to slideshow</h4></a>
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow"><h4>Edit slideshow</h4></a>
                     % endif
                 </div>
             </div><!-- glance -->
@@ -289,7 +295,11 @@
             <div id="photo_container" class="left">
             	<div class="slides_container">                
                     % for slide in c.slides:
-                        <div><img src="/images/${c.w['mainImage_identifier']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                        % if slide['pictureHash'] == 'supDawg':
+                            <div><img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                        % else:
+                            <div><img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                        % endif
                     % endfor
 	            </div><!-- slides_container -->
 				<a href="#" class="prev small">&#x25C2;</a>
@@ -313,7 +323,7 @@
             	<div class="slides_container">
             		% for item in c.slideshow:
                         <div>
-                            <img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" />
+                            <img src="/images/slide/${c.slideshowDirectory}/${item['hash']}.slideshow" />
                             <p class="caption">
                                 <strong>${item["title"]}</strong>
                                 <br />

@@ -38,7 +38,11 @@
 				<div id="featured_issue">
                 % if len(c.list) > 0:
                     <% mainWorkshop = c.list.pop() %>
-					<a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
+                    % if mainWorkshop['mainImage_hash'] == 'supDawg':
+					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
+					% else:
+					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_directoryNum']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
+					% endif
 					<div id="featured_caption">
 						<p><strong>Featured Workshop: ${mainWorkshop['title']}</strong></p>
 						<p><strong><a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}">View Workshop</a></strong></p>
@@ -49,7 +53,11 @@
 				<ul id="issue_list">
                     % for item in c.list:
                         <li>
-                            <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
+                            % if item['mainImage_hash'] == 'supDawg':
+                                <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
+                            % else:
+                                <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/${item['mainImage_directoryNum']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
+                            % endif
                             <h4><a href="/workshops/${item['urlCode']}/${item['url']}">${item['title']}</a></h4>
                             <span>Phase: Suggestion</span>
                             <br />

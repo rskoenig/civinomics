@@ -194,10 +194,10 @@ var iNettuts = {
         }).mouseup(function () {
             if(!$(this).parent().hasClass('dragging')) {
                 $(this).parent().css({width:''});
-                iNettuts.savePreferences();
+                /*iNettuts.savePreferences();*/
             } else {
                 $(settings.columns).sortable('disable');
-                iNettuts.savePreferences();
+                /*iNettuts.savePreferences();*/
             }
         });
 
@@ -214,6 +214,7 @@ var iNettuts = {
             containment: 'document',
             start: function (e,ui) {
                 $(ui.helper).addClass('dragging');
+                iNettuts.savePreferences();
             },
             stop: function (e,ui) {
                 $(ui.item).css({width:''}).removeClass('dragging');

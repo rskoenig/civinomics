@@ -157,7 +157,7 @@ def resizeImage(identifier, hash, x, y, postfix):
             os.makedirs(pathname)
         
         im.save(pathname + '/' + hash + '.' + postfix, 'PNG')
-        log.info('Successfully resized %s' % hash)
+        #log.info('Successfully resized %s' % hash)
         return True
     except:
         return False
@@ -190,7 +190,7 @@ def saveImage(image, filename, user, identifier, thing):
         f = open(fullpath, 'wb')
         shutil.copyfileobj(image, f)
         f.close()
-        log.info('Successfully saved %s to disk as %s', filename, savename)
+        #log.info('Successfully saved %s to disk as %s', filename, savename)
         return hash
     except:
         log.info('Unable to save to %s with hash %s' % (fullpath, hash))

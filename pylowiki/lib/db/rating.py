@@ -61,7 +61,6 @@ class Rating(object):
             l.append(tup)
             owner[key] = pickle.dumps(l)
         else:
-            log.info('key = %s' % key)
             l = pickle.loads(str(owner[key]))
             l.append(tup)
             owner[key] = pickle.dumps(l)

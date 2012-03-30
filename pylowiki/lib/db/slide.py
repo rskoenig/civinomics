@@ -34,23 +34,25 @@ class Slide(object):
     def __init__( self, owner, slideshow, title, caption, filename, image, newSlide = False):
         if newSlide:
             s = Thing('slide', owner.id)
-            s['slideShow_id'] = slideshow.id
-            hash = saveImage(image, filename, owner, 'slide')
-            s['pictureHash'] = hash
+            s['slideshow_id'] = slideshow.id
             s['caption'] = caption
             s['title'] = title
             s['filename'] = filename
             s['deleted'] = 0
             commit(s)
             self.s = s        
-    
+            
+            hash = saveImage(image, filename, owner, 'slide', s)
+            s['pictureHash'] = hash
+            slideshow['slideshow_order'] = slideshow['slideshow_order'] + ',' + str(s.id)
+            
             # identifier, hash, x, y, postfix
             resizeImage('slide', hash, 835, 550, 'slideshow')
             resizeImage('slide', hash, 120, 65, 'thumbnail')
         else:
             s = Thing('slide', owner.id)
             hash = 'supDawg'
-            s['slideShow_id'] = slideshow.id
+            s['slideshow_id'] = slideshow.id
             s['pictureHash'] = hash
             s['caption'] = caption
             s['title'] = title

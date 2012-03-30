@@ -72,6 +72,12 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/addImages/handler', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/addImages/handler/', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
     
+    # Edit slideshow
+    map.connect('/workshop/{id1}/{id2}/editSlideshow', controller = 'slideshow', action = 'editSlideshowDisplay', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/editSlideshow/', controller = 'slideshow', action = 'editSlideshowDisplay', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/editSlideshow', controller = 'slideshow', action = 'editSlideshowDisplay', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/editSlideshow/', controller = 'slideshow', action = 'editSlideshowDisplay', id1 = '{id1}', id2 = '{id2}')
+    
     # Workshop background page
     map.connect('/workshop/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/background/', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
