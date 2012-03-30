@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/global.css')}" />
+	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/footer.css')}" />
+	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/pop.css')}" />
+	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/splash.css')}" />
+	
+    <script src = "${h.url_for('/js/jquery-1.6.2.min.js')}" type="text/javascript"></script>
+    <script src = "${h.url_for('/js/jslides.js')}" type="text/javascript"></script>
+</head>
+
+<body>
+	<div id="top">
+		##<form id="sign_in">
+        ${h.form(h.url(controller = 'login', action = 'index'), method = 'post', id = "sign_in")}
+			<div>
+				email
+				<br />
+				<input type="text" id = "email" name = "email">
+				<br />
+				<input type="checkbox" id = "rememberMe" name = "rememberMe"> Remember me
+			</div>
+			<div>
+				password
+				<br />
+				<input type="password" id = "password" name = "password">
+				<br />
+				<a href = "/login/forgot">Forgot your password?</a>
+			</div>
+			<div>
+				<button type="submit">login</button>
+			</div>
+		##</form>
+        ${h.end_form()}
+	</div>
+	<div id="main">
+		<div id="intro">
+			<p class="left">
+				This is a test
+			</p>
+		</div>
+		<div id="sign_up">
+			<h1>Sign up</h1>
+			##<form>
+            ${h.form(h.url(controller = 'register', action = 'register_handler'), method = 'post')}
+				First Name:*
+				<br />
+				<input type="text" name = "firstName" class="wide"/>
+				<br />
+				<br />
+				Last Name:*
+				<br />
+				<input type="text" name = "lastName" class="wide"/>
+				<br />
+				<br />
+				Email:* <span class="right">Zip code:*</span>
+				<br />
+				<input type="text" name = "email"/>
+				<input type="text" name = "zipCode" style="width: 80px" class="right" />
+				<br /><br />
+				Password:*
+				<br />
+				<input type="password" name = "password" class="wide" />
+				<br /><br />
+				Re-enter password:*
+				<input type="password" name = "password2" class="wide" />
+				<br /><br />
+				<input type="checkbox" name = "chkTOS"/><em><a href = "${h.url_for('#')}">I agree to the Terms of Use and Privacy Policy</a>*</em>
+				<br /><br />
+				<button class="gold" type="submit">Submit</button> <!--<em>or</em> -->
+			##</form>
+		</div>
+	</div>
+	<div id="footer">
+		<a href = "${h.url_for('#')}">Issues</a> | <a href = "${h.url_for('#')}">Solutions</a> | <a href = "${h.url_for('#')}">Profile</a> | <a href = "${h.url_for('#')}">Gov Bodies</a> | <a href = "${h.url_for('#')}">Groups</a>
+		<br />
+		<span><a href = "${h.url_for('#')}">About us</a> | <a href = "${h.url_for('#')}">Support the Community</a> | <a href = "${h.url_for('#')}">Contact</a> | <a href = "${h.url_for('#')}">Terms of Use</a> | <a href = "${h.url_for('#')}">Privacy</a></span>
+	</div><!-- footer -->
+    % if 'popup' in session and session['popup']:
+	<div id="pop">
+        <div id="registered">
+			<h2 class="clr left">
+				<p class="right close">close <button>X</button></p>
+				<p class="left">Sign Up</p>
+			</h2>
+			<p id="thank_you">Thank you for registering</p>
+			<p id="check">
+				<em>Check your email to finish setting up your account</em>
+			</p>
+			<p class="close">
+				<button class="gold">close</button>
+			</p>
+        </div><!-- suggestion -->
+    </div><!-- pop -->
+    % endif
+</body>
+
+</html>

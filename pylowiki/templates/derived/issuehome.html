@@ -1,0 +1,618 @@
+<%!
+    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.utils import urlify
+%>
+
+<%inherit file = "/base/template.html"/>
+        
+            <div id="slide" class="left">
+				<div class="banner_div">
+			    	<h2 class="banner">${c.title}</h2>
+		    	</div>
+            	<div id="img">
+	            	<img src="/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+	            	<p>
+	            		<a href="#" class="slideshow_launch"><img src="/images/slideshow.png" class="left" width="40" height="40" style="padding-right:10px;" /></a>
+	            		<strong>Slideshow</strong> | <strong>Background</strong>
+	            		<br />
+	            		##Description goes here.
+	            	</p>
+            	</div><!-- img -->
+            	<ul class="left gray">
+                    % if c.authuser['accessLevel'] >= 200 or c.authuser.id in [int(item) for item in c.w['facilitators'].split(',')]:
+                        <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/edit">Edit</a></li>
+                    % endif
+            		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}"><strong class="darkgray">Home</strong></a></li>
+            		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></li>
+            		##<li><a href="#">Discussion</a></li>
+            		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/leaderboard">Leaderboard</a></li>
+            	</ul>
+            </div> <!-- slide -->
+            <div id="glance" class="right">
+                <h3 class="darkgray">at-a-glance</h3>
+                <hr />
+                <div>
+                    ##<h4>Government Sphere: ${c.govtSphere['name']} <img src="/images/govtSpheres/${c.govtSphere['image']}.thumbnail" class="right" alt="government sphere" height="30" /></h4>
+                    
+                    <h4>Goals:</h4>
+                    
+                        ${c.w['goals']}
+                    
+                    ##<h4>Democratic Phase: Suggestions (1 of 3)</h4>
+                    <span class="time">2 weeks remaining in stage</span>
+                    <br />
+                    <span>Suggestions submitted: ${len(c.suggestions)}</span>
+                    
+                    <h4>Participants: ${len(c.participants)}</h4>
+                    <ul>
+                        <% counter = 1 %>
+                        % for user in c.participants:
+                            <li><a href = "/profile/${user.name}"><img src="/images/avatars/${user.pictureHash}.thumbnail" alt="monster" /></a></li>
+                            <% counter += 1 %>
+                            % if counter >= 7:
+                                <% break %>
+                            % endif
+                        % endfor
+                        ##<button class="green invite_friends">Invite</button>
+                    </ul><br /><br /><br />
+                    <%doc>
+                    <h4>Solution Fund: <span id="fund" class="darkorange right">$3.50</span></h4>
+                    
+                    <form class="wide left">
+                        <span class="right">$ <input type="text" title="Contribute" value="0.15" /> <button title="Contribute" class="gold contribute">Contribute</button></span>
+                    </form>
+                    </%doc>
+                </div>
+            </div><!-- glance -->
+        </div>
+        <div id="cols">
+            <div class="col one left">
+                <h3>news <span class="right">add resource<a href="#" class="media plus">+</a></span></h3>
+                <ul>
+                    ## Each issue has one article - the background wiki
+                    % if int(c.w['numArticles']) == 1:
+                        <p class="clr">
+                            No news!
+                        </p>
+                    % else:
+                        % for item in c.articles:
+                            % if item['type'] == "post":
+                                <li class="post">
+                                    <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">${item['title']}</a></span>
+                                    <br />
+                                    <p class="clr">
+                                         <img src="/images/news/news.thumbnail" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item['comment'][:50]}...
+                                         <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">more</a></span>
+                                    </p>
+                                    <div class="clr">
+                                        ##<span class="gray">posted by <a href="/profile/${item.user.name}">${item.user.name}</a></span> on <span class="time">${item.events[-1].date}</span>
+                                    </div>
+                                </li>
+                            % elif item.type == "video":
+                                <li class="video">
+                                    <span class="colhd"><a href="item['url']">VIDEO: ${item["title"]}</a></span>
+                                    <embed type="application/x-shockwave-flash" width="200" height="150" src="${item['url']}" allowscriptaccess="always" allowfullscreen="true">
+                                    <div class="clr">
+                                        <span class="gray">posted by</span> <a href="/profile/${['user']}">${item["user"]}</a> at <span class="time">${item["time"]}</span>
+                                    </div>
+                                </li>
+                            % elif item.type == "photo":
+                                <li class="photo">
+                                    <span class="colhd"><a href="#">PHOTO: ${item["title"]}</a></span>
+                                    <img src="/images/${item['directory']}/${item['hash']}.${item['postfix']}" height="150" width="200" />
+                                    <%doc>
+                                    <ul>
+                                        <li><img src="/images/Monster_icon_25x25.jpg" /></li>
+                                        <li><img src="/images/Monster_icon_25x25.jpg" /></li>
+                                        <li><img src="/images/Monster_icon_25x25.jpg" /></li>
+                                        <li><img src="/images/Monster_icon_25x25.jpg" /></li>
+                                        <p class="right"><a href="#" class="slideshow_launch">slideshow</a></p>
+                                    </ul>
+                                    </%doc>
+                                    <div class="clr">
+                                        <span class="gray">posted by</span> <a href="/profile/${['user']}">${item["user"]}</a> <span class="time">${item["time"]} ago</span>
+                                </li>
+                            % endif
+                        % endfor
+                    % endif
+                </ul>
+            </div><!-- .col one -->
+            <div class="col two left">
+                <h3>suggestions <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span></h3>
+                <ul>
+                
+                % if c.suggestions == None or len(c.suggestions) == 0:
+                    <li class="sugg">
+                        <span class="colhd">No suggestions!</span>
+                    </li>
+                % else:
+                	<% counter = 1 %>
+                    % for item in c.suggestions:
+                        <% author = getUserByID(item.owner)%>
+                        <li class="sugg">
+                            <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
+                            <br />
+                            ##Issue: <a href="/issue/${c.url}">${item["issue"]}</a>
+                            ##<br />
+                            Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
+                            <p>
+                                ${item["suggestionSummary"]}
+                            </p>
+                            <br />
+                            
+                            <%doc>
+                            ## data: "<average>_<issueID>_<suggestionID>"
+                            % if "user" in session:
+                                % if item["rating"] != -1:
+                                    <div class="basic_${counter}" data="${item['avgRating']}_${c.issueID}_${item['suggestionID']}_${item['rating']}"></div> 
+                                    <script type="text/javascript">
+                                    $(document).ready(function(){
+                                        $(".basic_${counter}").jRating({
+                                            ##isDisabled : true
+                                        });
+                                    });
+                                    </script>
+                                    <div class = "avgRating_${item['suggestionID']}">Average rating: ${item["avgRating"]}</div>
+                                    <div class = "yourRating_${item['suggestionID']}">Your rating: ${item["rating"]} </div>
+                                    <br/>
+                                % else:
+                                    <div class="basic_${counter}" data="0_${c.issueID}_${item['suggestionID']}_0"></div> 
+                                    <script type="text/javascript">
+                                    $(document).ready(function(){
+                                        $(".basic_${counter}").jRating();
+                                    });
+                                    </script>
+                                % endif
+                            % endif
+                            </%doc>
+                            
+                            <span class="gray">Posted on ${item.date} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
+                        </li>
+                        <% counter += 1 %>
+                    % endfor
+                % endif
+                
+            </div><!-- .col two -->
+            <div class="col three left">
+                <h3 id="survey">survey</h3>
+                <div>
+                    ##<button class="green">Take the Survey</button>
+                    <p>
+                        No survey yet available!
+                        <br />
+                        ##<span class="right"><a href="#">more</a></span>
+                    </p>
+                </div>
+                <br />
+                <h3>standings</h3>
+                <h4>people</h4>
+                
+                ## Grab the top users - first tabulate
+                <%doc>
+                <% 
+                    users = {}
+                    if len(c.i.events) == 1:
+                        users[c.i.events[0].user.id] = 1
+                    else:
+                        for event in c.i.events:
+                            for user in event:
+                                if user.id in users:
+                                    users[user.id] += 1
+                                else:
+                                    users[user.id] = 1
+                                endif
+                            endfor
+                        endfor
+                    endif
+                %>
+                
+                ## Grab the top users - now sort (uses operator library)
+                
+                <% users = sorted(users.iteritems(), key=itemgetter(1)) %>
+                % for user in users:
+                    <ol>
+                        <li><a href="/account/">Kanye West</a><span class="right">893 rn</span></li>
+                    </ol>
+                % endfor
+                </%doc>
+                
+                <ol>
+                    <li><a href="#">Kanye West</a><span class="right">893 rn</span></li>
+                    <li><a href="#">Manu Koenig</a><span class="right">628 rn</span></li>
+                    <li><a href="#">Edolfo</a><span class="right">314 rn</span></li>
+                    <li><a href="#">Evante</a><span class="right">271 rn</span></li>
+                    <li><a href="#">Timmy</a><span class="right">timmy rn</span></li>
+                </ol>
+                
+                <hr />
+                <h4>suggestions</h4>
+                <ol>
+                    <li><a href="#">Cistern Mandates</a><p>1,588 votes (65%)</p></li>
+                    <li><a href="#">Expanded rebates system</a><p>433 votes (15%)</p></li>
+                    <li><a href="#">Charge tourists more</a><p>275 votes (8%)</p></li>
+                    <li><a href="#">Save the fish</a><p>123 votes(4%)</p></li>
+                    <span class="right"><a href="#">leaderboard</a></span>
+                </ol>
+                <br />
+                <h3>topics</h3>
+                <ul>
+                    <li>
+                        <a href="#">The Effect of a Water Shortage on the Santa Cruz Economy</a>
+                        <br />
+                        10,855 participants
+                        <br />
+                        14 subtopics
+                    </li>
+                    <li>
+                        <a href="#">The Effect of a Water Shortage on the Santa Cruz Economy</a>
+                        <br />
+                        10,855 participants
+                        <br />
+                        14 subtopics
+                    </li>
+                    <li>
+                        <a href="#">The Effect of a Water Shortage on the Santa Cruz Economy</a>
+                        <br />
+                        10,855 participants
+                        <br />
+                        14 subtopics
+                    </li>
+                    <span class="right"><a href="#">all topics</a><span>
+                </ul>
+                <br />
+                <hr />
+                <ul class="invite suggest share">
+                    <li><img src="/images/handdove.png" /> <a href="#" class="invite_friends">Invite to greenocracy</a></li>
+                    <li><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest an issue</a></li>
+                    <li><img src="/images/pen.png" /> <a href="#">Share this page</a></li>
+                    <li>
+                        <form method="get" action="issuehome.html">
+                            <img src="/images/magnifying_glass.png" class="left"/>
+                            <input type="text" value="search...">
+                        </form>
+                    </li>
+                </ul>
+            </div><!-- .col three -->
+            
+<%def name = 'extraHTML()'>
+    <div id="pop">
+        <div id="slideshow" class="pop">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="slidetitle right">${c.title}</p>
+                <p class="right">Slideshow</p>
+            </h2>
+            
+            <div id="photo_container" class="left">
+            	<div class="slides_container">                
+                    % for slide in c.slides:
+                        <div><img src="/images/${c.w['mainImage_identifier']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                    % endfor
+	            </div><!-- slides_container -->
+				<a href="#" class="prev small">&#x25C2;</a>
+				<a href="#" class="next small">&#x25B8;</a>
+				<p class="caption">
+				</p>
+				<a href="#" class="prev"><img src="/images/left_arrow_75%.png" /></a>
+				<a href="#" class="next"><img src="/images/right_arrow_75%.png" /></a>
+            </div><!-- photo_container -->
+        </div><!-- slideshow -->
+        
+        <%doc>
+        <div id="slideshow">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="slidetitle right">${c.title}</p>
+                <p class="right">Slideshow</p>
+            </h2>
+            
+            <div id="photo_container" class="left">
+            	<div class="slides_container">
+            		% for item in c.slideshow:
+                        <div>
+                            <img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" />
+                            <p class="caption">
+                                <strong>${item["title"]}</strong>
+                                <br />
+                                ${item["caption"]}
+                            </p>
+                        </div>
+                    % endfor
+	            </div><!-- slides_container -->   
+				<a href="#" class="prev"><img src="/images/left_arrow_75%.png" /></a>
+				<a href="#" class="next"><img src="/images/right_arrow_75%.png" /></a>
+				<ul class="pagination">
+					<a href="#" class="prev">&#x25C2;</a>
+					<a href="#" class="next">&#x25B8;</a>
+					<% i = 0 %>
+                    % for item in c.slideshow:
+                        <li><a href="#${i}"><img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" height="50" /></a></li>
+                        <% i += 1 %>
+                    % endfor
+				</ul>
+            </div><!-- photo_container -->
+        </div><!-- slideshow -->
+        </%doc>
+        
+        <div id="suggestion">
+			<h2 class="clr left">
+				<p class="right close"><a href="#" class="x">X</a>close</p>
+				<p class="left">Add a Suggestion</p>
+			</h2>
+			<form class="left" id="suggestiondata" action="/addSuggestion/${c.w['urlCode']}/${c.w['url']}" method = "post">
+				<div id="suggestionform" class="left">
+					Title:
+					<br />
+					<input type="text" id="suggestiontitle" name = "title"/>
+					<br />
+					<br />
+					Description:
+					<br />
+					<textarea id="suggestiontext" name="data" onkeyup="previewAjax( 'textarea1', 'section1' )" class="markitup"></textarea>
+					<br />
+					<br />
+					<%doc>
+					Tags:
+					<br />
+					<input type="text" id="suggestiontags" name = "tags"/>
+					<br />
+					<span class="gray"><em>Separate with commas, e.g. budget, taxes, public departments</em></span>
+					</%doc>
+				</div>
+				<div id="suggestionshare" class="left">
+                    <%doc>
+					Also share on:
+					<ul>
+						<li><input type="checkbox" /> Facebook</li>
+						<li><input type="checkbox" /> Twitter</li>
+					</ul>
+                    </%doc>
+					<button type="submit" class="gold">Submit</button>
+				</div>
+			</form>
+        </div><!-- suggestion -->
+		
+        <div id="invite_pop">
+			<h2 class="clr left">
+				<p class="right close"><a href="#" class="x">X</a>close</p>
+				<p class="left">Invite Friends</p>
+			</h2>
+			<div>
+				<h4>Invite Contacts to Civinomics</h4>
+				<form>
+					Invite people by email.
+					<br />
+					<p class="wide"><a href="#">+Add people to invite</a></p>
+					<textarea class="gray wide">Add a personal message</textarea>
+					<button type="submit" class="right">Send</button>
+				</form>
+			</div>
+        </div><!-- invite_pop -->
+		
+        <div id="add_media">
+			<h2 class="clr left">
+				<p class="right close"><a href="#" class="x">X</a>close</p>
+				<p class="left">Add Links</p>
+			</h2>
+			<div class="left">
+			    <form action="/news/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
+				##${ h.form( url( controller = "news", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']), method="post" ) }
+					<div class="wide">
+						<div>
+							Link URL:
+						</div>
+						<div>
+							<input type="text" name = "url"/>
+						</div>
+					</div>
+                    <div class="wide">
+                        <div>
+							Title:
+						</div>
+						<div>
+							<input type="text" name = "title"/>
+						</div>
+					</div>
+					<div class="wide">
+						<div>
+							Add comment:
+						</div>
+						<div>
+							<textarea name = "data"></textarea>
+						</div>
+					</div>
+					<button type="submit" class="gold">Submit</button>
+				##${h.end_form()}
+				</form>
+			</div>
+        </div><!-- add_media -->
+		
+		<div id="contribute">
+			<h2 class="clr left">
+				<p class="right close"><a href="#" class="x">X</a>close</p>
+				<p class="left">Contribute</p>
+			</h2>
+			<div class="left">
+				<p><img src="/images/mountain.jpg" alt="issue" class="left issue_pic" />
+				<img src="/images/paypal.png" alt="Donate now with PayPal" class="right paypal" />
+				Complete the following form or connect to Paypal to contribute to <strong><a href="issuehome.html">Santa Cruz and Soquel Water Planning</a></strong> and help make the winning solution a reality.
+				</p>
+			</div>
+			<form class="left">
+				<strong class="gray">Billing Information</strong>
+				<br />
+				<p class="left wide">
+					<span class="right-al">First Name: <span class="darkorange">*</span></span>
+					<input type="text" class="wide right" />
+				</p>
+				<br /><br />
+				<p class="left wide">
+					<span class="right-al">Last Name: <span class="darkorange">*</span></span>
+					<input type="text" class="wide right" />
+				</p>
+				<p class="left wide">
+					<span class="right-al">Billing Address: <span class="darkorange">*</span></span>
+					<input type="text" class="wide right" />
+					<br />
+					<input type="text" class="wide right" />
+				</p>
+				<p class="left wide citystate">
+					<span class="right-al">City: <span class="darkorange">*</span></span>
+					<input type="text" class="thin" />
+					State: <span class="darkorange">*</span>
+					<input type="text" class="thin" />
+					Zip Code: <span class="darkorange">*</span>
+					<input type="text" class="thin" />
+				</p>
+				<strong class="gray">Credit Card Information</strong>
+				<br />
+				<p class="left wide">
+					<span class="right-al">Card Number: <span class="darkorange">*</span></span>
+					<input type="text" class="wide right" />
+				</p>
+				<p class="left wide">
+					<span class="right-al">Expiration Date: <span class="darkorange">*</span></span>
+					<input type="text" class="tiny" value="MM" /><input type="text" class="tiny" value="YY" />
+					<span class="">Security Code: <span class="darkorange">*</span></span>
+					<input type="text" class="tiny" />
+				</p>
+				<p class="left wide">
+					<span class="right-al">&nbsp;</span>
+					<input type="checkbox" id="save_credit_info_checkbox" /><label for="save_credit_info_checkbox">Save this information</label>
+				</p>
+				<button type="submit" class="gold">Contribute</button>
+			</form>
+		</div> <!-- contribute -->
+		
+    </div><!-- pop -->
+    <%doc>
+    <script type="text/javascript">
+        for(i=0; i<ratedEntries.length; i++){
+            rateItBefore(ratedEntries[i][0], ratedEntries[i][1], ratedEntries[i][2]);
+        }
+    </script>
+    </%doc>
+</%def>
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/issuehome.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/css/pygments/pygments-tango.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jRating.jquery.css" />
+</%def>
+
+
+<%def name = 'extraScripts()'>
+    ##<script src="/js/rating.js" type="text/javascript"></script>
+    <script src="/js/slides.js" type="text/javascript"></script>
+    <script src="/js/col.js" type="text/javascript"></script>
+    <script src="/js/h2banner.js" type="text/javascript"></script>
+    <script src="/js/slides.min.jquery.js" type="text/javascript"></script>
+    <script src="/js/jRating.jquery.js" type="text/javascript"></script>
+	<script src="/js/jquery.cycle.all.js"></script>
+    
+    <script type="text/javascript">
+		$(function() {
+			$('.slides_container').after('<ul class="pagination">').cycle({
+				fx: 'scrollHorz',
+				prev: 'a.prev',
+				next: 'a.next',
+				timeout: 0,
+				pager: '.pagination',
+				pagerAnchorBuilder: function(idx, slide) {
+					var imgSrc = $(slide).find('img').attr('src');
+					return '<li><a href="#"><img src="' + imgSrc + '" height="50" /></a></li>';
+				},
+				after: function() {
+					var caption = $(this).find('img').attr('alt');
+					$('#photo_container p.caption').html(caption);
+				}
+			});
+        });
+    </script>
+    
+    <%doc>
+    <script type="text/javascript">
+    
+    	## Need array of these variables for each of the entries
+		var sMax;
+		var holder; 
+		var preSet;
+        var ratedEntries = new Array();
+		var rated = new Array();
+
+
+function rating(num, counter){
+	sMax = 0;	
+	for(n=0; n<num.parentNode.childNodes.length; n++){
+		if(num.parentNode.childNodes[n].nodeName == "A"){
+			sMax++;	
+		}
+	}
+	
+	if(!rated[counter]){
+		s = num.id.replace(counter + "_", '');
+		a = 0;
+		for(i=1; i<=sMax; i++){		
+			if(i<=s){
+				document.getElementById(counter + "_" + i).className = "on";
+				document.getElementById("rateStatus-" + counter).innerHTML = num.title;
+				
+				holder = a+1;
+				a++;
+			}else{
+				document.getElementById(counter + "_" + i).className = "";
+			}
+		}
+	}
+}
+
+function off(me, counter){
+	if(!rated[counter]){
+		if(!preSet){	
+			for(i=1; i<=sMax; i++){		
+				document.getElementById(counter + "_" + i).className = "";
+				document.getElementById("rateStatus-" + counter).innerHTML = me.parentNode.title;
+				
+			}
+		}else{
+			rating(preSet);
+			##document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML;
+			
+		}
+	}
+}
+
+function rateIt(me, counter, title){
+	if(!rated[counter]){
+		document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML + " :: "+me.title;
+		
+		preSet = me;
+		rated[counter]=1;
+		sendRate(me, counter, title);
+		rating(me);
+	}
+}
+
+function rateItBefore(me, counter, title){
+	if(!rated[counter]){
+		document.getElementById("rateStatus-" + counter).innerHTML = document.getElementById("ratingSaved-" + counter).innerHTML + " :: "+me.title;
+		
+		preSet = me;
+		rated[counter]=1;
+		##rating(me);
+	}
+}
+
+function sendRate(sel, counter, title){
+	thisURL = "/issue/${c.url}/suggestion/" + title + "/rate/" + sel.id.replace(counter + "_", "")
+	$.ajax({
+		type: "POST",
+  		url: thisURL
+	});
+    ##alert("URL is " + thisURL);
+}
+    </script>
+    </%doc>
+</%def>
