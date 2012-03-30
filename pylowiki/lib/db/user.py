@@ -8,6 +8,7 @@ from dbHelpers import with_characteristic as wc
 from hashlib import md5
 from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.db.geoInfo import GeoInfo
 
 from time import time
 
@@ -92,6 +93,8 @@ class User(object):
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         commit(u)
+
+        g = GeoInfo(zipCode, 'United States', u.id)
 
     # TODO: Should be encrypted instead of hashed
     def hashPassword(self, password):

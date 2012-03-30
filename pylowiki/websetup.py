@@ -7,7 +7,6 @@ from pylowiki.config.environment import load_environment
 #from pylowiki.model import meta, commit, User, Page, Revision, Event, Points
 from pylowiki.model import meta
 from pylowiki.lib.db.user import User, getUserByEmail
-from pylowiki.lib.db.geoInfo import GeoInfo
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.dbHelpers import commit
 
@@ -66,10 +65,6 @@ def setup_app(command, conf, vars):
             log.info('hi!')
             commit(u)
 
-            log.info("Before call to GeoInfo...")
-            g = GeoInfo( zipCode, 'United States', u.id )
-            log.info("After call to GeoInfo...")
-            
             # Create home page
             #p = Page( "home" )
             # Create first revision
