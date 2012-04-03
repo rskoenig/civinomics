@@ -7,9 +7,11 @@ from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
-from pylowiki.lib.activate import activateCreate
+#from pylowiki.lib.activate import activateCreate
 
-from pylowiki.model import User, commit, Event, get_user, get_user_by_email, Points
+#from pylowiki.model import User, commit, Event, get_user, get_user_by_email, Points
+from pylowiki.lib.db.user import User, getUserByEmail
+from pylowiki.lib.db.dbHelpers import commit
 
 log = logging.getLogger(__name__)
 
@@ -82,37 +84,37 @@ class RegisterController(BaseController):
                     #return render("/derived/signup.html")
                     return render('/derived/splash.html')
                 username = "%s %s" %(firstName, lastName)
-                if get_user( username ) == False:
+                if getUserByEmail( email ) == False:
                     if password == password2:
-                        u = User(username, password, email, firstName, lastName, zipCode)
+                        u = User(email, firstName, lastName, password, zipCode)
                         #p = Points()
-                        if commit( u ):
-                            p = Points(u.id)
-                            if commit(p):
+                        #if commit( u ):
+                        #    p = Points(u.id)
+                        #    if commit(p):
                                 #session["user"] = username #login user
-                                message = "The user '" + username + "' was created successfully!"
+                        message = "The user '" + username + "' was created successfully!"
                                 #h.flash( "Welcome " + username  + " !", "success" )
-                                log.info( message )
-                                e = Event( "user" )
-                                u.events.append( e )
-                                commit( e )
-                                activateCreate() # lib/activate.py
-                                session['popup'] = True
-                                c.popper = {}
-                                c.popper['leftTitle'] = 'SIGN UP'
-                                c.popper['subject'] = 'Thank you for registering'
-                                c.popper['message'] = 'Check your email to finish setting up your account'
+                        log.info( message )
+                        #        e = Event( "user" )
+                        #        u.events.append( e )
+                        #        commit( e )
+                        #activateCreate(u.u) # lib/activate.py
+                        session['popup'] = True
+                        c.popper = {}
+                        c.popper['leftTitle'] = 'SIGN UP'
+                        c.popper['subject'] = 'Thank you for registering'
+                        c.popper['message'] = 'Check your email to finish setting up your account'
                                 
-                                return render('/derived/splash.html')
+                        return render('/derived/splash.html')
                                 #return redirect('/')
                                 #return redirect(session['return_to'])
                                 #return redirect('/home/mainPage/%s' % u.name)
-                        else:
-                            h.flash( "The email '" + email + "' is already in use", "warning" )
+                        #else:
+                        #    h.flash( "The email '" + email + "' is already in use", "warning" )
                     else:
                         h.flash( "The password and confirmation do not match", "warning" )
                 else:
-                    h.flash( "The username '" + username + "' is already in use", "warning" )
+                    h.flash( "The email '" + email + "' is already in use", "warning" )
             else:
                 h.flash( "Please fill all fields", "warning" )
       

@@ -1,6 +1,8 @@
 #-*- coding: utf-8 -*-
 import logging
 
+from pylons import tmpl_context as c
+
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
@@ -9,6 +11,7 @@ from hashlib import md5
 from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.geoInfo import GeoInfo
+from pylowiki.lib.mail import send
 
 from time import time
 
@@ -92,20 +95,37 @@ class User(object):
         u['urlCode'] = toBase62('%s_%s_%s' % (firstName, lastName, int(time())))
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
+        u['accessLevel'] = 0
+        if email != 'edolfo@civinomics.com':
+            self.generateActivationHash(u)
         commit(u)
 
+        self.u = u
         g = GeoInfo(zipCode, 'United States', u.id)
 
     # TODO: Should be encrypted instead of hashed
     def hashPassword(self, password):
         return md5(password + config['app_conf']['auth.pass.salt'] ).hexdigest()
 
-    def generateActivationHash(self):
+    def generateActivationHash(self, u):
         """Return a system generated hash for account activation"""
         from string import letters, digits
         from random import choice
         pool, size = letters + digits, 20
-        return ''.join([choice(pool) for i in range(size)])
+        hash =  ''.join([choice(pool) for i in range(size)])
+        
+        toEmail = u['email']
+        frEmail = c.conf['activation.email']
+        baseURL = c.conf['activation.url']
+        url = '%s/activate/%s__%s'%(baseURL, hash, toEmail) 
+        subject = "Civinomics Account Activation"
+        message = 'Please click on the following link to activate your account:\n\n%s' % url
+        send(toEmail, frEmail, subject, message)
+        
+        u['activationHash'] = hash
+        commit(u)
+        
+        log.info("Successful account creation (deactivated) for %s" %toEmail)
 
     def changePassword(self, password):
         self['password'] = self.hashPassword(password)

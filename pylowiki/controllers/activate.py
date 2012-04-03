@@ -5,7 +5,9 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
-from pylowiki.model import get_user_by_email, commit
+#from pylowiki.model import get_user_by_email, commit
+from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
+from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.mail import send
 
 import time
@@ -19,17 +21,17 @@ class ActivateController(BaseController):
         user = get_user_by_email(email)
         if user:
             log.info('user exists')
-            if user.activated == 0:
+            if int(user['activated']) == 0:
                 log.info('user inactive')
-                if user.activationHash == hash:
+                if user['activationHash'] == hash:
                     log.info('hashes match')
-                    user.activated = 1
-                    user.laston = time.time()
+                    user['activated'] = 1
+                    user['laston'] = time.time()
                     if commit(user):
-                        toEmail = user.email;
-                        frEmail = c.conf['contact.email']
-                        subject = 'Account Activation - Password'
-                        message = 'We have activated your account and set your temporary password to: %s' % user.password
+                        #toEmail = user['email'];
+                        #frEmail = c.conf['contact.email']
+                        #subject = 'Account Activation - Password'
+                        #message = 'We have activated your account and set your temporary password to: %s' % user.password
                         #send(toEmail, frEmail, subject, message)
                         return 'Congratulations %s, you are now registered!' % email
                         #session['user'] = user.name
