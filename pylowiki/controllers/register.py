@@ -87,18 +87,10 @@ class RegisterController(BaseController):
                 if getUserByEmail( email ) == False:
                     if password == password2:
                         u = User(email, firstName, lastName, password, zipCode)
-                        #p = Points()
-                        #if commit( u ):
-                        #    p = Points(u.id)
-                        #    if commit(p):
-                                #session["user"] = username #login user
                         message = "The user '" + username + "' was created successfully!"
-                                #h.flash( "Welcome " + username  + " !", "success" )
+                                
                         log.info( message )
-                        #        e = Event( "user" )
-                        #        u.events.append( e )
-                        #        commit( e )
-                        #activateCreate(u.u) # lib/activate.py
+                        
                         session['popup'] = True
                         c.popper = {}
                         c.popper['leftTitle'] = 'SIGN UP'
@@ -106,11 +98,6 @@ class RegisterController(BaseController):
                         c.popper['message'] = 'Check your email to finish setting up your account'
                                 
                         return render('/derived/splash.html')
-                                #return redirect('/')
-                                #return redirect(session['return_to'])
-                                #return redirect('/home/mainPage/%s' % u.name)
-                        #else:
-                        #    h.flash( "The email '" + email + "' is already in use", "warning" )
                     else:
                         h.flash( "The password and confirmation do not match", "warning" )
                 else:
