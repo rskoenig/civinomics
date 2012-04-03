@@ -11,6 +11,7 @@ from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.article import getArticlesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID
+from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 
 from pylowiki.lib.utils import urlify
 
@@ -60,6 +61,8 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, urlify(url))
         c.title = c.w['title']
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.facilitators = getFacilitators(c.w.id)
         
         c.slides = []
         c.slideshow = getSlideshow(c.w['mainSlideshow_id'])

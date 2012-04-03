@@ -24,7 +24,7 @@
 	            	</p>
             	</div><!-- img -->
             	<ul class="left gray">
-                    % if c.authuser['accessLevel'] >= 200 or c.authuser.id in [int(item) for item in c.w['facilitators'].split(',')]:
+                    % if c.authuser['accessLevel'] >= 200 or c.isFacilitator:
                         <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/edit">Edit</a></li>
                     % endif
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}"><strong class="darkgray">Home</strong></a></li>
@@ -183,14 +183,21 @@
                 
             </div><!-- .col two -->
             <div class="col three left">
-                <h3 id="survey">survey</h3>
+            % if c.facilitators == False  or len(c.facilitators) == 0:
+                <h3 id="survey">No Facilitators!</h3>
                 <div>
-                    ##<button class="green">Take the Survey</button>
-                    <p>
-                        No survey yet available!
-                        <br />
-                        ##<span class="right"><a href="#">more</a></span>
-                    </p>
+            % else:
+                % if len(c.facilitators) == 1:
+                   <h3 id="survey">Your Facilitator</h3>
+                % else:
+                   <h3 id="survey">Your Facilitators</h3>
+                % endif                  
+                <div>
+                % for facilitator in c.facilitators:
+                     <% fuser = getUserByID(facilitator.owner)%>
+                         <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/${fuser['pictureHash']}.thumbnail" alt="monster" />&nbsp;${fuser['name']}</a>
+                % endfor
+             % endif
                 </div>
                 <br />
                 <h3>standings</h3>
