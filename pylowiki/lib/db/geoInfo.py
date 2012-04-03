@@ -56,12 +56,14 @@ def getGeoInfo(userID):
         return False
 
 class GeoInfo(object):
-    def __init__(self, zipCode, country, userID ):
+    def __init__(self, postalCode, country, userID ):
         g = Thing('geo', userID)
-        g['zipCode'] = zipCode
+        
+        g['postalCode'] = postalCode
+        g['deactivated'] = '0000-00-00'
 
         db = getDB()
-        myquery = "SELECT ZipCode, CityMixedCase, County, StateFullName from US_Postal where ZipCode = " + zipCode
+        myquery = "SELECT ZipCode, CityMixedCase, County, StateFullName from US_Postal where ZipCode = " + postalCode
         db.query( myquery )
         r = db.store_result()
         rlist = r.fetch_row()
@@ -87,6 +89,10 @@ class GeoInfo(object):
         g['cityURL'] = '/geo/city/united-states/' + urlify(state) + '/' + urlify(city)
         g['cityFlag'] = '/images/flags/country/united-states/city.gif'
         g['cityFlagThumb'] = '/images/flags/country/united-states/city_thumb.gif'
-        g['scope'] ='|' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  zipCode
+        g['postalTitle'] = 'Zip Code ' + postalCode
+        g['postalURL'] = '/geo/postal/united-states/' + postalCode
+        g['postalFlag'] = '/images/flags/country/united-states/postal.gif'
+        g['postalFlagThumb'] = '/images/flags/country/united-states/postal_thumb.gif'
+        g['scope'] ='|' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
         commit(g)
 

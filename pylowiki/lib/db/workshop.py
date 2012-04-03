@@ -1,6 +1,7 @@
 from pylons import tmpl_context as c
 from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.db.facilitator import Facilitator
 from dbHelpers import commit, with_characteristic as wc
 from page import Page
 from event import Event
@@ -100,7 +101,7 @@ class Workshop(object):
         w['backgroundDiscussion_id'] = d.d.id
         commit(w)
         
-        
+        f = Facilitator( owner.id, w.id ) 
         
         
         

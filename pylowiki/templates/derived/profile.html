@@ -1,11 +1,12 @@
 <%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID
-    from pylowiki.lib.db.workshop import getWorkshopByID
+    from pylowiki.lib.db.workshop import getWorkshop
 %>
         	<div id="profileside" class="col left">
         		<img src="/images/avatars/${c.user['pictureHash']}.profile" width="200" />
         		<h3>Where I Call Home</h3>
+        		<a href="${c.geoInfo[0]['postalURL']}"><img src="${c.geoInfo[0]['postalFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['postalTitle']}</a><br>
         		<a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
         		<a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
         		<a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
@@ -287,8 +288,8 @@
                         <% count = 1 %>
                             % for item in c.user['suggestionList'].split(','):
                                 <% 
-                                    s = getSuggestionByID(int(item))
-                                    w = getWorkshopByID(int(s['workshop_id']))
+                                s = getSuggestionByID(int(item))
+                                w = getWorkshop(s['workshopCode'], s['workshopURL'])
                                 %>
                                 % if count > 3:
                                     <% break %>
