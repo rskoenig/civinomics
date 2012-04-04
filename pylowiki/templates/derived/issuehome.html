@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.utils import urlify
+    from pylowiki.lib.db.facilitator import isFacilitator
 %>
 
 <%inherit file = "/base/template.html"/>
@@ -24,9 +25,6 @@
 	            	</p>
             	</div><!-- img -->
             	<ul class="left gray">
-                    % if c.authuser['accessLevel'] >= 200 or c.isFacilitator:
-                        <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/edit">Edit</a></li>
-                    % endif
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}"><strong class="darkgray">Home</strong></a></li>
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></li>
             		##<li><a href="#">Discussion</a></li>
@@ -67,9 +65,10 @@
                         <span class="right">$ <input type="text" title="Contribute" value="0.15" /> <button title="Contribute" class="gold contribute">Contribute</button></span>
                     </form>
                     </%doc>
-                    % if c.authuser['accessLevel'] >= 200 or c.authuser.id in [int(item) for item in c.w['facilitators'].split(',')]:
+                    % if c.authuser['accessLevel'] >= 200 or isFacilitator( c.authuser.id, c.w.id ) == True:
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages"><h4>Add images to slideshow</h4></a>
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow"><h4>Edit slideshow</h4></a>
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSettings"><h4>Edit workshop settings</h4></a>
                     % endif
                 </div>
             </div><!-- glance -->

@@ -17,6 +17,7 @@ from pylowiki.lib.utils import urlify
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
+from pylowiki.lib.db.dbHelpers import commit
 
 import re
 
@@ -37,6 +38,22 @@ class WorkshopController(BaseController):
         else:
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
+
+    def editWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+
+        w = getWorkshop(code, urlify(url))
+
+        w['workshopName'] = request.params['workshopName']
+        w['goals'] = request.params['goals']
+        #day = request.params['workshopDay']
+        #month = request.params['workshopMonth']
+        #year = request.params['workshopYear']
+        #publicPrivate = request.params['publicPrivate']
+        #w = Workshop(workshopName, c.authuser, publicPrivate)
+        commit(w)
+        return redirect('/workshop/%s/%s'%(w['urlCode'], w['url']))
 
     def addWorkshopHandler(self):
         workshopName = request.params['workshopName']
@@ -108,7 +125,19 @@ class WorkshopController(BaseController):
         
         return render('/derived/issuebg.html')
     
-    
+    @h.login_required
+    def editSettings(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.w = getWorkshop(code, urlify(url))
+        c.title = c.w['title']
+
+        # make sure they can actually do this
+        if isFacilitator(c.authuser.id, c.w.id):
+            return render('/derived/issue_settings.html')
+        else:
+            return render('/derived/404.html')
     
     # ------------------------------------------
     #    Helper functions for wiki controller
