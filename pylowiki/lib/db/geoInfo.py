@@ -49,6 +49,19 @@ def getStateInfo( state, country ):
     db.close()
     return rlist[0]
 
+def getGeoScope( postalCode, country ):
+        db = getDB()
+        myquery = "SELECT ZipCode, CityMixedCase, County, StateFullName from US_Postal where ZipCode = " + postalCode
+        db.query( myquery )
+        r = db.store_result()
+        rlist = r.fetch_row()
+        db.close()
+        city = rlist[0][1]
+        county = rlist[0][2]
+        state = rlist[0][3]
+        geoScope = '|' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
+
+
 def getGeoInfo(userID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'geo').filter_by(owner = userID).all()

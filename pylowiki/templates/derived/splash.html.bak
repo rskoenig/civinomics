@@ -4,99 +4,163 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/global.css')}" />
-	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/footer.css')}" />
-	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/pop.css')}" />
-	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/splash.css')}" />
+	<link type="text/css" rel="stylesheet" href="/styles/global.css" />
+	<link type="text/css" rel="stylesheet" href="/styles/footer.css" />
+	<link type="text/css" rel="stylesheet" href="/styles/pop.css" />
+	<link type="text/css" rel="stylesheet" href="/styles/splash.css" />
+    ##<link type="text/css" rel="stylesheet" href="/styles/page.css" />
+    <link type="text/css" rel="stylesheet" href = "/styles/flash.css" />
+    <link type="text/css" rel="stylesheet" href = "/styles/grid.css" />
 	
-    <script src = "${h.url_for('/js/jquery-1.6.2.min.js')}" type="text/javascript"></script>
-    <script src = "${h.url_for('/js/jslides.js')}" type="text/javascript"></script>
+    <script src="/js/jquery-1.6.2.min.js" type="text/javascript"></script>
+    <script src="/js/slides.js" type="text/javascript"></script>
 </head>
 
 <body>
+<div class="wide">
 	<div id="top">
-		##<form id="sign_in">
-        ${h.form(h.url(controller = 'login', action = 'index'), method = 'post', id = "sign_in")}
+		<div id="logo">
+			<img src="/images/handdove_medium.png" />
+			<em>greenocracy</em>
+		</div>
+		<form id="sign_in" action = "${c.site_secure_url}/login">
 			<div>
 				email
 				<br />
-				<input type="text" id = "email" name = "email">
+				<input type="text" name = "email"/>
 				<br />
-				<input type="checkbox" id = "rememberMe" name = "rememberMe"> Remember me
+				<input type="checkbox" id="remember_me_checkbox" name = "remember_me_checkbox"/> <label for="remember_me_checkbox">Remember me</label>
 			</div>
 			<div>
 				password
 				<br />
-				<input type="password" id = "password" name = "password">
+				<input type="password" name = "password"/>
 				<br />
-				<a href = "/login/forgot">Forgot your password?</a>
+				<a href="#">Forgot your password?</a>
 			</div>
 			<div>
 				<button type="submit">login</button>
 			</div>
-		##</form>
-        ${h.end_form()}
+		</form>
 	</div>
+    
+    ## Flasher
+    <div id="content" class="grid_16">
+    ${self.flasher()}
+    </div> <!-- End div: grid_16 -->
+    
 	<div id="main">
 		<div id="intro">
 			<p class="left">
-				This is a test
+				##This is a test
+				##<iframe width="600" height="400" src="http://www.youtube.com/watch?v=l9UpKsNJeqI" frameborder="0" allowfullscreen></iframe>
+				<iframe width="600" height="400" src="http://www.youtube.com/embed/l9UpKsNJeqI" frameborder="0" allowfullscreen></iframe>
 			</p>
 		</div>
 		<div id="sign_up">
 			<h1>Sign up</h1>
-			##<form>
-            ${h.form(h.url(controller = 'register', action = 'register_handler'), method = 'post')}
-				First Name:*
+			${h.form(h.url(controller = 'register', action = 'register_handler'), method = 'post')}
+				First Name: *
 				<br />
 				<input type="text" name = "firstName" class="wide"/>
 				<br />
 				<br />
-				Last Name:*
+				Last Name: *
 				<br />
 				<input type="text" name = "lastName" class="wide"/>
 				<br />
 				<br />
-				Email:* <span class="right">Zip code:*</span>
+				Email: *<span class="right">Zip code: *</span>
 				<br />
-				<input type="text" name = "email"/>
-				<input type="text" name = "zipCode" style="width: 80px" class="right" />
+				<input type="text" style="width: 165px" name = "email"/>
+				<input type="text" style="width: 75px" class="right" name = "zipCode"/>
 				<br /><br />
-				Password:*
+				Password: *
 				<br />
-				<input type="password" name = "password" class="wide" />
+				<input type="password" class="wide" name = "password"/>
 				<br /><br />
-				Re-enter password:*
-				<input type="password" name = "password2" class="wide" />
+				Re-enter password: *
+				<input type="password" class="wide" name = "password2"/>
 				<br /><br />
-				<input type="checkbox" name = "chkTOS"/><em><a href = "${h.url_for('#')}">I agree to the Terms of Use and Privacy Policy</a>*</em>
+				<input type="checkbox" name = "chkTOS"/><em><a href="#">I agree to the Terms of Use and Privacy Policy</a> *</em>
 				<br /><br />
-				<button class="gold" type="submit">Submit</button> <!--<em>or</em> -->
-			##</form>
+				<button class="gold" type="submit" id="sign_up_submit2" >Submit</button>
+			${h.end_form()}
 		</div>
 	</div>
 	<div id="footer">
-		<a href = "${h.url_for('#')}">Issues</a> | <a href = "${h.url_for('#')}">Solutions</a> | <a href = "${h.url_for('#')}">Profile</a> | <a href = "${h.url_for('#')}">Gov Bodies</a> | <a href = "${h.url_for('#')}">Groups</a>
+		<a href="/issues">Issues</a> | <a href="#">Solutions</a> | <a href="#">Profile</a> | <a href="#">Gov Bodies</a> | <a href="#">Groups</a>
 		<br />
-		<span><a href = "${h.url_for('#')}">About us</a> | <a href = "${h.url_for('#')}">Support the Community</a> | <a href = "${h.url_for('#')}">Contact</a> | <a href = "${h.url_for('#')}">Terms of Use</a> | <a href = "${h.url_for('#')}">Privacy</a></span>
+		<span><a href="/corp/about">About us</a> | <a href="#">Support the Community</a> | <a href="/corp/contact">Contact</a> | <a href="#">Terms of Use</a> | <a href="#">Privacy</a></span>
 	</div><!-- footer -->
-    % if 'popup' in session and session['popup']:
-	<div id="pop">
-        <div id="registered">
-			<h2 class="clr left">
-				<p class="right close">close <button>X</button></p>
-				<p class="left">Sign Up</p>
-			</h2>
-			<p id="thank_you">Thank you for registering</p>
-			<p id="check">
-				<em>Check your email to finish setting up your account</em>
-			</p>
-			<p class="close">
-				<button class="gold">close</button>
-			</p>
-        </div><!-- suggestion -->
-    </div><!-- pop -->
-    % endif
+    
+    ## Popper    
+    ${self.popper()}
+    
+</div>
 </body>
 
 </html>
+
+<%def name="flasher()">
+    <% messages = h.flash.pop_messages() %>
+    % if messages:
+        % for m in messages:
+            <p id="flash" class="${m.category}" title="Dismiss this message.">
+                    ${m}
+            </p>
+            <script>
+                $("p#flash").fadeIn(800).delay(6000).fadeOut(800);
+                $("p#flash").click(function() {
+                    $(this).clearQueue();
+                    $(this).fadeOut(100);
+                });
+            </script>
+        % endfor
+    % endif
+</%def>
+
+<%def name="popper()">
+    % if c.popper:
+        <div id="pop">
+            <div id="registered">
+                <h2 class="clr left">
+                    <p class="right close"><a href="#" class="x">X</a>close</p>
+                    <p class="left">${c.popper["leftTitle"]}</p>
+                </h2>
+                <p id="thank_you">${c.popper["subject"]}</p>
+                <p id="check">
+                    <em>${c.popper["message"]}</em>
+                </p>
+                <p class="close">
+                    <button class="gold close">close</button>
+                </p>
+                <script>
+                        $("#pop").css({
+                            "display":"block",
+                            "height":$(document).height(),
+                            "width":$(document).width()
+                        });
+                        $("#registered").css({
+                            "display":"block",
+                        });
+                        event.preventDefault();
+                    </script>
+            </div><!-- suggestion -->
+        </div><!-- pop -->
+    % else:
+        <script>
+            $("button#sign_up_submit").click(function(event){
+                $("#pop").css({
+                    "display":"block",
+                    "height":$(document).height(),
+                    "width":$(document).width()
+                });
+                $("#registered").css({
+                    "display":"block",
+                });
+                event.preventDefault();
+            });
+        </script>
+    % endif
+</%def>

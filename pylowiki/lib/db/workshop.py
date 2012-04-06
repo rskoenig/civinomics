@@ -72,6 +72,11 @@ class Workshop(object):
         w['goals'] = 'No goals set'
         w['numArticles'] = 1
         w['public_private'] = publicPrivate
+        w['publicTags'] = 'none'
+        w['memberTags'] = 'none'
+        w['publicScope'] = 0
+        w['publicPostal'] = owner['zipCode']
+        w['publicPostalList'] = ''
         commit(w)
         self.w = w
         background = 'No wiki background set yet'

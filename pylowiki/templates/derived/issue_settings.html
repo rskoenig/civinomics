@@ -21,10 +21,109 @@
     <input type="text" name = "goals" value = "${c.w['goals']}"/>
     <br /><br />
     
+    Workshop Home ZipCode: <span class="darkorange">*</span>
+    <br />
+    <input type="text" name = "publicPostal" value = "${c.w['publicPostal']}"/>
+
+    <br /><br />
+    <br /><br />
+    Who can participate in this workshop: <span class="darkorange">*</span>
+    <br />
+    % if c.w['publicScope'] == '10':
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    People in <input type="radio" name = "publicScope" value = "10" ${checked} /> My ZipCode &nbsp;&nbsp;&nbsp;
+    % if c.w['publicScope'] == '09':
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="radio" name = "publicScope" value = "09" ${checked} /> My City &nbsp;&nbsp;&nbsp;
+    % if c.w['publicScope'] == '07':
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="radio" name = "publicScope" value = "07" ${checked} /> My County &nbsp;&nbsp;&nbsp;
+    % if c.w['publicScope'] == '05':
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="radio" name = "publicScope" value = "05" ${checked} /> My State &nbsp;&nbsp;&nbsp;
+    % if c.w['publicScope'] == '03':
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="radio" name = "publicScope" value = "03" ${checked} /> My Country &nbsp;&nbsp;&nbsp;
+    % if c.w['publicScope'] == '01':
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="radio" name = "publicScope" value = "01" ${checked} /> My Planet &nbsp;&nbsp;&nbsp;
+    <br /><br />
+    OR
+    <br /><br />
+    People in these zip codes: <span class="darkorange">*</span>
+    <br />
+    Enter at least one zip code:
+    <input type="text" name = "publicPostalList" value = "${c.w['publicPostalList']}"/>
+    
+    <br /><br />
     Workshop Tags: <span class="darkorange">*</span>
     <br />
-    <input type="checkbox" name="workshopTags" value="land_use" /> Land Use<br />
-    <input type="checkbox" name="workshopTags" value="water_use" /> Water Use<br />
+    <% tags = c.w['publicTags'] %>
+    <% workshopTags = tags.split(',') %>
+    Choose at least one from the list below<br /> 
+    % if 'Environment' in workshopTags:
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="checkbox" name="publicTags" value="Environment" ${checked} /> Environment &nbsp;&nbsp;&nbsp;
+    % if 'Government' in workshopTags:
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="checkbox" name="publicTags" value="Government" ${checked} /> Government &nbsp;&nbsp;&nbsp;
+    % if 'Municipal Services' in workshopTags:
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="checkbox" name="publicTags" value="Municipal Services" ${checked} /> Municipal Services &nbsp;&nbsp;&nbsp;
+    <input type="checkbox" name="publicTags" value="Economy" ${checked} /> Economy &nbsp;&nbsp;&nbsp;
+    % if 'Economy' in workshopTags:
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="checkbox" name="publicTags" value="Infrastructure" ${checked} /> Infrastructure &nbsp;&nbsp;&nbsp;
+    % if 'Civil Rights' in workshopTags:
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights &nbsp;&nbsp;&nbsp;
+    <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response &nbsp;&nbsp;&nbsp;
+    % if 'Business' in workshopTags:
+        <% checked = 'checked' %>
+     % else:
+        <% checked = 'unchecked' %>
+     % endif
+    <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
+    <br />
+    <br />
+    Additional Workshop Tags: <span class="darkorange">*</span>
+    <br />
+    Enter at least one, separate multiple tags with a comma:</br />
+    <input type="text" name = "memberTags" value = "${c.w['memberTags']}"/>
+    <br /><br />
     
     ## Below is the code needed to set up the old issues.
     <%doc>
