@@ -1,0 +1,130 @@
+#col-1, #col-2, #col-3 {float: left;}
+#col-1, #col-3 {width: 199px;}
+#col-1>div, #col-3>div {padding: 10px 0 10px 20px;}
+
+/** col-1 **/
+
+#col-1>div:first-child {padding-bottom: 20px;}
+#col-1>div:first-child img {
+	width: 60px;
+	margin-bottom: 3px;
+}
+
+#col-1 ul {padding-bottom: 10px;}
+
+#col-1 ul span.right {
+	background: #E0B91B;
+	color: white;
+	font-weight: bold;
+	font-size: .9em;
+	padding: 2px;
+	margin-right: 5px;
+	margin-top: -2px;
+	width: 25px;
+	text-align: center;
+	border-radius: 2px;
+}
+
+#col-1 ul a {display: box;}
+#col-1 ul a:hover {text-decoration: none;}
+#col-1 ul li:hover {background: #e5e5e5;}
+
+#col-1 ul li {padding: 4px; margin: -2px 0;}
+#col-1 ul li:first-child {margin-top: 2px;}
+
+/** col-2 **/
+#col-2 {
+	width: 500px;
+	border-right: 1px solid #b9b9b9;
+	border-left: 1px solid #b9b9b9;
+}
+
+/* featured issue */
+
+#featured_issue {
+	position: relative;
+	width: 480px;
+	height: 300px;
+	overflow: hidden;
+	margin: 0 auto;
+	top: -10px;
+}
+#featured_issue img {	width: 480px;}
+
+#featured_caption {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	width: 288px;
+	padding: 20px;
+	background: rgba(20,20,20,.5);
+}
+#featured_caption p {padding: 2px 0;}
+#featured_caption *, #featured_captiopn *:hover {color: white;}
+
+/* issue list */
+
+#issue_list {
+	padding: 10px 0;
+	float: left;
+}
+
+#issue_list li {
+	float: left;
+	width: 480px;
+	border-top: 1px solid #b9b9b9;
+	padding: 10px;
+}
+
+#issue_list h4 {
+	font-size: 1.2em;
+	padding-bottom: 7px;
+}
+
+#issue_list li>img {
+	height: 80px;
+	width: 120px;
+	padding: 4px 10px 4px 0;
+}
+
+#load_more {
+	float: left;
+	width: 100%;
+	background: #e5e5e5;
+	text-align: center;
+	padding: 10px 0;
+	font-weight: bold;
+}
+
+/** col-3 **/
+#col-3 ol li {
+	list-style-type: decimal;
+	list-style-position: inside;
+}
+#col-3 ol li:first-child {
+	list-style-type: none;
+	width: 100%;
+	float: left;
+	padding: 10px 0 5px 0;
+}
+#col-3 ol li:first-child img {
+	width: 50px;
+	margin-right: 20px;
+}
+#col-3 ol li:first-child strong {
+	font-size: 1.25em;
+	margin-left: -15px;
+}
+#col-3 ol li span.right {color: #f90;}
+#col-3 ol>a.right {padding-top: 5px;}
+
+#col-3 ul#people {
+	padding-top: 5px;
+	height: 55px;
+}
+
+#col-3 ul#people img {
+	width: 25px;
+	padding: 2px;
+	float: left;
+}
