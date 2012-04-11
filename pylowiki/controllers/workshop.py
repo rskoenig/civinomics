@@ -1,9 +1,10 @@
-import logging
+import logging, re
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.workshop import Workshop, getWorkshop, isScoped
+from pylowiki.lib.db.geoInfo import getScopeTitle
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow
 from pylowiki.lib.db.slide import getSlide
@@ -42,28 +43,44 @@ class WorkshopController(BaseController):
     def editWorkshopHandler(self, id1, id2):
         code = id1
         url = id2
+        c.title = "Edit Workshop Settings"
 
         w = getWorkshop(code, urlify(url))
         werror = 0
-        werrMsg = ''
-        if 'workshopName' in request.params:
-           w['workshopName'] = request.params['workshopName']
+        werrMsg = 'Workshop configuration incomplete'
+
+        # Is there anything more painful than form validation?
+        # I don't think so...
+
+        if 'title' in request.params:
+           wTitle = request.params['title']
+           if wTitle == '':
+              werrMsg = 'No Workshop Name'
+              werror = 1
+           else:
+              w['title'] = wTitle
         else:
            werrMsg = 'No Workshop Name'
            werror = 1
 
+        #if 'goals' in request.params and request.params['goals'].isalnum():
         if 'goals' in request.params:
-           w['goals'] = request.params['goals']
+           wGoals = request.params['goals']
+           if wGoals == '':
+              werror = 1
+              werrMsg = 'No Workshop Goals'
+           else:
+              w['goals'] = request.params['goals']
         else:
            werror = 1
            werrMsg = 'No Workshop Goals'
 
         # Hmm... Take this out so they can't change it?
-        if 'publicPostal' in request.params:
-           w['publicPostal'] = request.params['publicPostal']
-        else:
-           werror = 1
-           werrMsg = 'No Workshop Postal'
+        #if 'publicPostal' in request.params:
+        #   w['publicPostal'] = request.params['publicPostal']
+        #else:
+        #   werror = 1
+        #   werrMsg = 'No Workshop Postal'
 
         if 'publicScope' in request.params:
            w['publicScope'] = request.params['publicScope']
@@ -91,6 +108,10 @@ class WorkshopController(BaseController):
            werror = 1
            werrMsg = 'No Workshop Scope or PostalList'
 
+        if w['scopeMethod'] == 'publicScope':
+           w['scopeTitle'] = getScopeTitle(w['publicPostal'], 'United States', w['publicScope'])
+        elif w['scopeMethod'] == 'publicPostalList':
+           w['scopeTitle'] = 'postal codes of ' + w['publicPostalList']
 
         if 'publicTags' in request.params:
            publicTags = request.params.getall('publicTags')
@@ -100,7 +121,14 @@ class WorkshopController(BaseController):
            werrMsg = 'No Workshop Public Tags'
 
         if 'memberTags' in request.params:
-           w['memberTags'] = request.params['memberTags']
+           wMemberTags = request.params['memberTags']
+           wMemberTags = wMemberTags.lstrip()
+           wMemberTags = wMemberTags.rstrip()
+           if wMemberTags == '':
+              werror = 1
+              werrMsg = 'No Workshop Member Tags'
+           else:
+              w['memberTags'] = wMemberTags
         else:
            werror = 1
            werrMsg = 'No Workshop Member Tags'

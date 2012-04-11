@@ -106,6 +106,7 @@ class Workshop(object):
         w['publicTags'] = 'none'
         w['memberTags'] = 'none'
         w['publicScope'] = 10
+        w['publicScopeTitle'] = 'postal code ' + owner['zipCode']
         w['publicPostal'] = owner['zipCode']
         w['publicPostalList'] = ''
         # one of publicScope, publicPostalList. privateDomain, privateEmailList

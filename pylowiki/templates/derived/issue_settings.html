@@ -10,22 +10,20 @@
 
 <form id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/editWorkshopHandler" enctype="multipart/form-data" method="post" >
 
+    <p>
     <strong class="gray">Edit Workshop Settings</strong>
     <br /><br />
     Workshop Name: <span class="darkorange">*</span>
     <br />
-    <input type="text" name = "workshopName" value = "${c.title}"/>
+    <input type="text" name = "title" size="50" maxlength="50" value = "${c.title}"/>
+    <br />
     <br />
     Workshop Goals: <span class="darkorange">*</span>
     <br />
-    <input type="text" name = "goals" value = "${c.w['goals']}"/>
+    <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>
     <br /><br />
-    
-    Workshop Home ZipCode: <span class="darkorange">*</span>
-    <br />
-    <input type="text" name = "publicPostal" value = "${c.w['publicPostal']}"/>
-
     <br /><br />
+    Workshop Home Postal Code: ${c.w['publicPostal']}
     <br /><br />
     Who can participate in this workshop: <span class="darkorange">*</span>
     <br />
@@ -34,7 +32,7 @@
      % else:
         <% checked = 'unchecked' %>
      % endif
-    People in <input type="radio" name = "publicScope" value = "10" ${checked} /> My ZipCode &nbsp;&nbsp;&nbsp;
+    People in <input type="radio" name = "publicScope" value = "10" ${checked} /> My Postal Code &nbsp;&nbsp;&nbsp;
     % if c.w['publicScope'] == '09':
         <% checked = 'checked' %>
      % else:
@@ -68,10 +66,9 @@
     <br /><br />
     OR
     <br /><br />
-    People in these zip codes: <span class="darkorange">*</span>
+    People in these postal codes (enter at least one): <span class="darkorange">*</span>
     <br />
-    Enter at least one zip code:
-    <input type="text" name = "publicPostalList" value = "${c.w['publicPostalList']}"/>
+    <textarea name = "publicPostalList" rows="2" cols="50">${c.w['publicPostalList']}</textarea>
     
     <br /><br />
     Workshop Tags: <span class="darkorange">*</span>
@@ -122,7 +119,7 @@
     Additional Workshop Tags: <span class="darkorange">*</span>
     <br />
     Enter at least one, separate multiple tags with a comma:</br />
-    <input type="text" name = "memberTags" value = "${c.w['memberTags']}"/>
+    <input type="text" name = "memberTags" size="50" maxlength="50" value = "${c.w['memberTags']}"/>
     <br /><br />
     
     ## Below is the code needed to set up the old issues.

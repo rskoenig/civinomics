@@ -69,6 +69,32 @@ def getGeoInfo(userID):
     except sa.orm.exc.NoResultFound:
         return False
 
+def getScopeTitle(postalCode, country, scope):
+        db = getDB()
+        myquery = "SELECT ZipCode, CityMixedCase, County, StateFullName from US_Postal where ZipCode = " + postalCode
+        db.query( myquery )
+        r = db.store_result()
+        rlist = r.fetch_row()
+        db.close()
+        city = rlist[0][1]
+        county = rlist[0][2]
+        state = rlist[0][3]
+
+        if scope == '10':
+           return 'postal code of ' + postalCode
+        elif scope == '09':
+           return 'City of ' + city.title()
+        elif scope == '07':
+           return 'County of ' + county.title()
+        elif scope == '05':
+           return 'State of ' + state.title()
+        elif scope == '03':
+           return 'country of ' + country.title()
+        elif scope == '01':
+           return 'Planet Earth'
+        else:
+           return 'hmmm, I dunno'
+        
 class GeoInfo(object):
     def __init__(self, postalCode, country, userID ):
         g = Thing('geo', userID)

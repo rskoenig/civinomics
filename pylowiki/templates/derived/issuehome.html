@@ -35,18 +35,16 @@
                 <h3 class="darkgray">at-a-glance</h3>
                 <hr />
                 <div>
-                    ##<h4>Government Sphere: ${c.govtSphere['name']} <img src="/images/govtSpheres/${c.govtSphere['image']}.thumbnail" class="right" alt="government sphere" height="30" /></h4>
+                    <strong>Goals:</strong> ${c.w['goals']}
                     
-                    <h4>Goals:</h4>
-                    
-                        ${c.w['goals']}
-                    
-                    ##<h4>Democratic Phase: Suggestions (1 of 3)</h4>
-                    <span class="time">2 weeks remaining in stage</span>
+                    <br /> <br />
+                    <strong>Tags:</strong> ${c.w['publicTags']} ${c.w['memberTags']}
+                    <br /> <br />
+                    <strong>Who can participate:</strong> residents of ${c.w['scopeTitle']}
+                    <br /> <br />
+                    <strong>Suggestions:</strong> ${len(c.suggestions)}
                     <br />
-                    <span>Suggestions submitted: ${len(c.suggestions)}</span>
-                    
-                    <h4>Participants: ${len(c.participants)}</h4>
+                    <strong>Participants:</strong> ${len(c.participants)}
                     <ul>
                         <% counter = 1 %>
                         % for user in c.participants:
@@ -56,12 +54,7 @@
                                 <% break %>
                             % endif
                         % endfor
-                        ##<button class="green invite_friends">Invite</button>
                     </ul><br />
-                    <h4>You can vote: ${c.isScoped}</h4>
-                    <h4>Tags: ${c.w['publicTags']} ${c.w['memberTags']}</h4>
-                    <h4>Home Zip Code: ${c.w['publicPostal']}</h4>
-                    <h4>Participant Scope: ${c.w['publicScope']}</h4>
                     <%doc>
                     <h4>Solution Fund: <span id="fund" class="darkorange right">$3.50</span></h4>
                     
