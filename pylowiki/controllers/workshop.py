@@ -17,6 +17,7 @@ from pylowiki.lib.utils import urlify
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
+from pylowiki.lib.db.dbHelpers import commit
 
 import re
 
@@ -37,6 +38,67 @@ class WorkshopController(BaseController):
         else:
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
+
+    def editWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+
+        w = getWorkshop(code, urlify(url))
+        werror = 0
+        if 'workshopName' in request.params:
+           w['workshopName'] = request.params['workshopName']
+        else:
+           werrMsg = 'No Workshop Name'
+           werror = 1
+
+        if 'goals' in request.params:
+           w['goals'] = request.params['goals']
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Goals'
+
+        # Hmm... Take this out so they can't change it?
+        if 'publicPostal' in request.params:
+           w['publicPostal'] = request.params['publicPostal']
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Postal'
+
+        if 'publicScope' in request.params:
+           w['publicScope'] = request.params['publicScope']
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Scope'
+
+        if 'publicPostalList' in request.params:
+           w['publicPostalList'] = request.params['publicPostalList']
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Scope or PostalList'
+
+
+        if 'publicTags' in request.params:
+           publicTags = request.params.getall('publicTags')
+           w['publicTags'] = ','.join(publicTags)
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Public Tags'
+
+        if 'memberTags' in request.params:
+           w['memberTags'] = request.params['memberTags']
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Member Tags'
+
+        commit(w)
+
+        if werror == 1:
+            h.flash( werrMsg, 'error')
+        else:
+            h.flash('Workshop configuration complete!', 'success')
+
+        return redirect('/workshop/%s/%s'%(w['urlCode'], w['url']))
+
 
     def addWorkshopHandler(self):
         workshopName = request.params['workshopName']
@@ -108,7 +170,19 @@ class WorkshopController(BaseController):
         
         return render('/derived/issuebg.html')
     
-    
+    @h.login_required
+    def editSettings(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.w = getWorkshop(code, urlify(url))
+        c.title = c.w['title']
+
+        # make sure they can actually do this
+        if isFacilitator(c.authuser.id, c.w.id):
+            return render('/derived/issue_settings.html')
+        else:
+            return render('/derived/404.html')
     
     # ------------------------------------------
     #    Helper functions for wiki controller

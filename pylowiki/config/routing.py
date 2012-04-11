@@ -83,6 +83,18 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/background/', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/background/', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
+
+    # Workshop settings
+    map.connect('/workshop/{id1}/{id2}/editSettings', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/editSettings/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/editSettings', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/editSettings/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+
+    # Workshop settings submit handler
+    map.connect('/workshop/{id1}/{id2}/editWorkshopHandler', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/editWorkshopHandler/', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/editWorkshopHandler', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/editWorkshopHandler/', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     
     # Resources
     map.connect('/news/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
