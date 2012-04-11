@@ -5,11 +5,16 @@
     from pylowiki.lib.db.facilitator import isFacilitator
 %>
         	<div id="profileside" class="col left">
-        		<img src="/images/avatars/${c.user['pictureHash']}.profile" width="200" />
+                % if c.authuser['pictureHash'] == 'flash':
+                  <img src="/images/avatars/flash.profile" width="200"/>
+                % else:
+                  <img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" width="200"/>
+                % endif
+        		##<img src="/images/avatars/${c.user['pictureHash']}.profile" width="200" />
         		<h3>Where I Call Home</h3>
         		<a href="${c.geoInfo[0]['postalURL']}"><img src="${c.geoInfo[0]['postalFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['postalTitle']}</a><br>
-        		<a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
-        		<a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
+        		City: <a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
+        		County: <a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
         		<a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
         		<img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />&nbsp;&nbsp;United States</a><br>
         		<img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
