@@ -169,6 +169,10 @@ class WorkshopController(BaseController):
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitators(c.w.id)
         c.isScoped = isScoped(c.authuser, c.w)
+        if c.authuser['accessLevel'] >= 200:
+           c.isAdmin = True
+        else:
+           c.isAdmin = False
         
         c.slides = []
         c.slideshow = getSlideshow(c.w['mainSlideshow_id'])
