@@ -95,9 +95,13 @@ class Workshop(object):
         w['title'] = title
         w['url'] = urlify(title)
         w['urlCode'] = toBase62('%s_%s_%d'%(title, owner['name'], int(time.time())))
-        endTime = datetime.datetime.now()
-        endTime = endTime.replace(year = endTime.year + 1)
-        w['endTime'] = endTime.ctime()
+        w['startTime'] = '0000-00-00'
+        w['endTime'] = '0000-00-00'
+
+        # do this in the publish part
+        #endTime = datetime.datetime.now()
+        #endTime = endTime.replace(year = endTime.year + 1)
+        #w['endTime'] = endTime.ctime()
         w['deleted'] = False
         w['facilitators'] = owner.id
         w['goals'] = 'No goals set'
