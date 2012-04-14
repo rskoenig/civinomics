@@ -28,7 +28,7 @@
             	<ul class="left gray">
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}"><strong class="darkgray">Home</strong></a></li>
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></li>
-            		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/leaderboard">Leaderboard</a></li>
+            		##<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/leaderboard">Leaderboard</a></li>
             	</ul>
             </div> <!-- slide -->
             <div id="glance" class="right">
@@ -165,7 +165,12 @@
                     % endif
                 % for facilitator in c.facilitators:
                      <% fuser = getUserByID(facilitator.owner)%>
-                         <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/${fuser['pictureHash']}.thumbnail" alt="monster" />&nbsp;${fuser['name']}</a>
+                     % if fuser['pictureHash'] == 'flash':
+                        <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${fuser['name']}</a>
+                     % else:
+                        <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a>
+                     % endif
+                         ##<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/${fuser['pictureHash']}.thumbnail" />&nbsp;${fuser['name']}</a>
                 % endfor
              % endif
                 </div>

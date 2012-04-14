@@ -89,12 +89,12 @@
     
     <div id="footer">
         % if "user" in session:
-            <a href="/workshops">Workshops</a> | <a href="/profile/${c.authuser['name']}">Profile</a>
+            <a href="/workshops">Workshops</a> | <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a>
         % else:
             <a href="/workshops">Workshops</a>
         % endif
         <br />
-        <span><a href="#">About us</a> | <a href="#">Contact</a> | <a href="#">Terms of Use</a> | <a href="#">Privacy</a></span>
+        <span><a href="/corp/about">About us</a> | <a href="/corp/contact">Contact</a> | <a href="#">Terms of Use</a> | <a href="#">Privacy Policy</a></span>
     </div><!-- footer -->
 </div><!-- container -->
 </body>
