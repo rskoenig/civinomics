@@ -33,16 +33,11 @@ def make_map():
     map.connect('/issue/{id}/discussion', controller = 'discussion', action = 'index', id = '{id}')
     map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/issue/{id1}/suggestion/{id2}/rate/{id3}', controller = 'suggestion', action = 'rate', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    #map.connect('/issue/{id1}/suggestion/{id2}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}')
-    #map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
-    #map.connect('/profile/{id}', controller = 'home', action = 'mainPage', id = '{id}')
     map.connect('/comment/{id}', controller = 'comment', action = 'index', id = '{id}')
-    #map.connect('/commentModeration', controller = 'commentModeration', action = 'index')
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
     map.connect('/moderation/{id1}/{id2}', controller = 'moderation', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/addWorkshop', controller = 'workshop', action = 'addWorkshop')
-    #map.connect('/addSuggestion/{id}', controller = 'addSuggestion', action = 'handler', id = '{id}')
     map.connect('/rating', controller = 'rating', action = 'index')
     map.connect('/admin', controller = 'admin', action = 'index')
     map.connect('/corp/', controller = 'corp', action = 'index', id = 'None')
@@ -119,6 +114,9 @@ def make_map():
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
     map.connect('/addComment/', controller = 'comment', action = 'addComment')
+
+    # Ratings
+    map.connect('/rateSuggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
 
     map.connect('/geo/postal/{id1}/{id2}', controller = 'geo', action = 'showPostalInfo', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/city/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCityInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')

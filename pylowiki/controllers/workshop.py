@@ -1,4 +1,4 @@
-import logging, re
+import logging, re, pickle
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -13,6 +13,7 @@ from pylowiki.lib.db.article import getArticlesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
+from pylowiki.lib.db.rating import getRatingByID
 
 from pylowiki.lib.utils import urlify
 
@@ -184,6 +185,16 @@ class WorkshopController(BaseController):
             
         c.articles = getArticlesByWorkshopID(c.w.id)
         c.suggestions = getSuggestionsForWorkshop(code, urlify(url))
+        l = []
+        ratedSuggestionIDs = []
+        if 'ratedThings_suggestion_overall' in c.authuser.keys():
+            """
+                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
+                a         ->    rated Thing's ID  (What was rated) 
+                b         ->    rating Thing's ID (The rating object)
+            """
+            l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+            ratedSuggestionIDs = [tup[0] for tup in l]
         
         for item in c.suggestions:
             """ Grab first 250 chars as a summary """
@@ -191,9 +202,18 @@ class WorkshopController(BaseController):
                 item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
             else:
                 item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
-
-        for item in c.slides:
-            log.info('c.slides has %s'%item.id)
+            
+            """ Grab the associated rating, if it exists """
+            found = False
+            try:
+                index = ratedSuggestionIDs.index(item.id)
+                found = True
+            except:
+                pass
+            if found:
+                item.rating = getRatingByID(l[index][1])
+            else:
+                item.rating = False
         
         return render('/derived/issuehome.html')
 

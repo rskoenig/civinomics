@@ -11,13 +11,6 @@
 	    	<form id="account_create" action="/account/editSubmit" class="left" enctype="multipart/form-data" method="post">
             ##${h.form(h.url(controller = "account", action="editSubmit"), method="post", id="account_create")}
 	    		<div>
-                    <%doc>
-		    		<span class="gray"><strong>Your email has been verified!</strong></span>
-		    		<br />
-		    		<span class="gray">Please take this time to fill out the rest of this information, or 
-		    		<br />
-		    		 <a href="issuehome.html">skip this and return to issue</a>.</span>
-                     </%doc>
 		    		 <br /><br />
 		    		 <div id="basic_info">
 		    		 	<strong class="gray">Basic Information</strong>
@@ -68,137 +61,6 @@
 	    		 <br class="clr" />
 	    		 <hr />
 	    		 <br />
-	    		 <%doc>
-	    		 <div id="voter_info">
-	    		 	<strong class="gray">Voter information</strong>
-	    		 	<br />
-	    		 	<br />
-	    		 	<div class="left">
-	    		 		<span class="gray">Street address</span>
-	    		 		<br />
-	    		 		<input type="text" name = "address" placeholder = "${c.authuser.address}"/>
-	    		 		<br />
-                        <span class="gray">City</span>
-                        <br />
-	    		 		<input type="text" name = "city" placeholder = "${c.authuser.city}"/>
-	    		 	</div>
-	    		 	<div class="left">
-	    		 		<span class="gray">State</span>
-	    		 		<br />
-	    		 		<select name = "state">
-	    		 			<option value=""></option>
-                            % for state in c.states:
-                                % if state == c.authuser.state:
-                                    <option selected = "yes" value="${state}">${state}</option>
-                                % else:
-                                    <option value="${state}">${state}</option>
-                                % endif
-                            % endfor
-	    		 		</select>
-	    		 	</div>
-	    		 	<br class="clr" /><br />
-	    		 	<div class="left" id="birthday">
-	    		 		Birthday: 
-                        <span class="gray"><input type="checkbox" name = "hideBirth" ${if c.authuser.hideBirth == 1: "checked"}/> hide on profile</span>
-                        Birthday: 
-                        % if c.authuser.hideBirth == 1:
-                            <input type="checkbox" name="hideBirth" id="hideBirth" checked/> <span class="gray">hide on profile</span>
-                        % else:
-                            <input type="checkbox" name="hideBirth" id="hideBirth" /> <span class="gray">hide on profile</span>
-                        % endif
-	    		 		<br />
-	    		 		<select name = "month">
-                            % for i in range(len(c.months)):
-                                % if i == c.authuser.birthMonth:
-                                    <option selected = "yes" value="${i}">${c.months[i]}</option>
-                                % else:
-                                    <option value="${i}">${c.months[i]}</option>
-                                % endif
-                            % endfor
-    		 			</select>
-                        <select id="birthDay" name = "birthDay">
-                            % for day in c.days:
-                                % if day == c.authuser.birthDay:
-                                    <option selected = "yes" value="${day}">${day}</option>
-                                % else:
-                                    <option value="${day}">${day}</option>
-                                % endif
-                            % endfor
-	    		 		</select>
-                        <select id="birthYear" name = "birthYear">
-                            % for year in c.years:
-                                % if year == c.authuser.birthYear:
-                                    <option selected = "yes" value="${year}">${year}</option>
-                                % else:
-                                    <option value="${year}">${year}</option>
-                                % endif
-                            % endfor
-	    		 		</select>
-	    		 	</div>
-	    		 	<div class="left">
-	    		 		Cultural background: 
-                        % if c.authuser.hideCultBack == 1:
-                            <span class="gray"><input type="checkbox" name = "hideCultBack" checked/> hide on profile</span>
-                        % else:
-                            <span class="gray"><input type="checkbox" name = "hideCultBack"/> hide on profile</span>
-                        % endif
-	    		 		<br />
-	    		 		<select id="cultural_background" name = "culturalBackground1">
-	    		 			<option></option>
-                            % for item in c.culturalBackground:
-                                % if item == c.authuser.culturalBackground1:
-                                    <option selected = "yes" value="${item}">${item}</option>
-                                % else:
-                                    <option value="${item}">${item}</option>
-                                % endif
-                            % endfor
-	    		 		</select>
-	    		 	</div>
-	    		 	<br class="clr" /><br />
-	    		 	<div class="left">
-                        Gender: 
-                        % if c.authuser.hideGender == 1:
-                            <span class="gray"><input type="checkbox" name = "hideGender" checked/> hide on profile</span>
-                        % else:
-                            <span class="gray"><input type="checkbox" name = "hideGender"/> hide on profile</span>
-                        % endif
-	    		 		<br />
-	    		 		<select name = "gender">
-	    		 			<option></option>
-                            % for gender in c.genders:
-                                % if gender == c.authuser.gender:
-                                    <option selected = "yes" value="${gender}">${gender}</option>
-                                % else:
-                                    <option value="${gender}">${gender}</option>
-                                % endif
-                            % endfor
-	    		 		</select>
-	    		 	</div>
-	    		 	<div class="left">
-	    		 		Religious affiliation: 
-                        % if c.authuser.hideReligion == 1:
-                            <span class="gray"><input type="checkbox" name = "hideReligion" checked/> hide on profile</span>
-                        % else:
-                            <span class="gray"><input type="checkbox" name = "hideReligion"/> hide on profile</span>
-                        % endif
-	    		 		<br />
-	    		 		<select name = "religion">
-	    		 			<option></option>
-                            % for item in c.religions:
-                                % if item == c.authuser.religion:
-                                    <option selected = "yes" value="${item}">${item}</option>
-                                % else:
-                                    <option value="${item}">${item}</option>
-                                % endif
-                            % endfor
-	    		 		</select>
-	    		 	</div>
-	    		 	<br class="clr"/>
-	    		 </div> <!-- voter_info -->
-	    		 </%doc>
-	    		 <br class="clr" />
-	    		 <hr />
-	    		 <br />
 	    		 
 	    		 <div>
 	    		 	<strong class="gray">About me</strong>
@@ -208,61 +70,20 @@
                     % if 'tagline' in c.authuser.keys():
                         <input type="text" value="${c.authuser['tagline']}" id="tagline" name = "tagline"/>
                     % else:
-                        <input type="text" value="in 140 characters or fewer ..." id="tagline" name = "tagline"/>
+                        <input type="text" placeholder="in 140 characters or fewer ..." id="tagline" name = "tagline"/>
                     % endif
 					<br /><br />
-					<%doc>
-					Bio
-					<br />
-					<textarea id="bio" name = "bio"></textarea>
-					<br /><br />
-					<strong class="gray">Work experience</strong>
-					<table id="work_experience">
-						<tr class="first">
-							<td>Company</td>
-							<td>Title</td>
-							<td>Years</td>
-						</tr>
-						<tr class="second">
-							<td><input type="text" /></td>
-							<td><input type="text" class="middle" /></td>
-							<td><input type="text" class="years" /> to <input type="text" class="years" /></td>
-							<td><button class="gray add">Add job</button></td>
-						</tr>
-					</table>
-					<br />
-					<strong class="gray">Education</strong>
-					<table id="education">
-						<tr class="first">
-							<td>School</td>
-							<td>Major</td>
-							<td>Years</td>
-						</tr>
-						<tr class="second filled">
-							<td><input type="text" /></td>
-							<td><input type="text" class="middle" /></td>
-							<td><input type="text" class="years" /> to <input type="text" class="years" /></td>
-							<td><button class="gray delete">Delete</button></td>
-						</tr>
-						<tr class="second">
-							<td><input type="text" /></td>
-							<td><input type="text" class="middle" /></td>
-							<td><input type="text" class="years" /> to <input type="text" class="years" /></td>
-							<td><button class="gray add">Add School</button></td>
-						</tr>
-					</table>
-					</%doc>
 				</div>
 				<button class="gold right" type="submit">Save Changes</button>
                 ##${h.end_form()}<!-- account create -->
                 </form>
 
 <%def name = 'extraStyles()'>
-	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/account_create.css')}" />
+	<link type="text/css" rel="stylesheet" href = "/styles/account_create.css" />
 </%def>
 
 <%def name = 'extraScripts()'>
-	<script src = "${h.url_for('/js/account_create.js')}" type="text/javascript"></script>
+	<script src = "/js/account_create.js" type="text/javascript"></script>
 </%def>
 
 <%def name = 'extraHTML()'>

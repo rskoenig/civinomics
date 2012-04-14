@@ -93,7 +93,7 @@
 						//$(this).parents('.gray rating wide').children('.yourRating_' + thisID).html('Your rating: '+sliderVal);
 						$.ajax({
 							type : 'POST',
-							url  : "/rating/rate/"+thingCode+"/"+thingURL+"/${c.authuser['urlCode']}/${c.authuser['url']}",
+							url  : "/rateSuggestion/"+thingCode+"/"+thingURL+"/"+sliderVal,
 							data : "rate=" + sliderVal + "&type=" + ratingType,
 							async : false,
 							success: function(result) {

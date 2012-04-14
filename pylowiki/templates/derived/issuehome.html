@@ -2,6 +2,7 @@
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.utils import urlify
     from pylowiki.lib.db.facilitator import isFacilitator
+    from pylowiki.lib.fuzzyTime import timeSince
 %>
 
 <%inherit file = "/base/template.html"/>
@@ -27,7 +28,6 @@
             	<ul class="left gray">
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}"><strong class="darkgray">Home</strong></a></li>
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></li>
-            		##<li><a href="#">Discussion</a></li>
             		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/leaderboard">Leaderboard</a></li>
             	</ul>
             </div> <!-- slide -->
@@ -40,7 +40,7 @@
                     <br /> <br />
                     <strong>Tags:</strong> ${c.w['publicTags']} ${c.w['memberTags']}
                     <br /> <br />
-                    <strong>Who can participate:</strong> residents of ${c.w['scopeTitle']}
+                    <strong>Who can participate:</strong> residents of ${c.w['publicScopeTitle']}
                     <br /> <br />
                     <strong>Suggestions:</strong> ${len(c.suggestions)}
                     <br />
@@ -55,13 +55,6 @@
                             % endif
                         % endfor
                     </ul><br />
-                    <%doc>
-                    <h4>Solution Fund: <span id="fund" class="darkorange right">$3.50</span></h4>
-                    
-                    <form class="wide left">
-                        <span class="right">$ <input type="text" title="Contribute" value="0.15" /> <button title="Contribute" class="gold contribute">Contribute</button></span>
-                    </form>
-                    </%doc>
                 </div>
             </div><!-- glance -->
         </div>
@@ -92,30 +85,6 @@
                                         ##<span class="gray">posted by <a href="/profile/${item.user.name}">${item.user.name}</a></span> on <span class="time">${item.events[-1].date}</span>
                                     </div>
                                 </li>
-                            % elif item.type == "video":
-                                <li class="video">
-                                    <span class="colhd"><a href="item['url']">VIDEO: ${item["title"]}</a></span>
-                                    <embed type="application/x-shockwave-flash" width="200" height="150" src="${item['url']}" allowscriptaccess="always" allowfullscreen="true">
-                                    <div class="clr">
-                                        <span class="gray">posted by</span> <a href="/profile/${['user']}">${item["user"]}</a> at <span class="time">${item["time"]}</span>
-                                    </div>
-                                </li>
-                            % elif item.type == "photo":
-                                <li class="photo">
-                                    <span class="colhd"><a href="#">PHOTO: ${item["title"]}</a></span>
-                                    <img src="/images/${item['directory']}/${item['hash']}.${item['postfix']}" height="150" width="200" />
-                                    <%doc>
-                                    <ul>
-                                        <li><img src="/images/Monster_icon_25x25.jpg" /></li>
-                                        <li><img src="/images/Monster_icon_25x25.jpg" /></li>
-                                        <li><img src="/images/Monster_icon_25x25.jpg" /></li>
-                                        <li><img src="/images/Monster_icon_25x25.jpg" /></li>
-                                        <p class="right"><a href="#" class="slideshow_launch">slideshow</a></p>
-                                    </ul>
-                                    </%doc>
-                                    <div class="clr">
-                                        <span class="gray">posted by</span> <a href="/profile/${['user']}">${item["user"]}</a> <span class="time">${item["time"]} ago</span>
-                                </li>
                             % endif
                         % endfor
                     % endif
@@ -124,7 +93,7 @@
             <div class="col two left">
                 <h3>suggestions 
                 % if c.isScoped:
-                                  <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span>
+                  <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span>
                 % endif
                 </h3>
                 <ul>
@@ -140,8 +109,6 @@
                         <li class="sugg">
                             <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
                             <br />
-                            ##Issue: <a href="/issue/${c.url}">${item["issue"]}</a>
-                            ##<br />
                             Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
                             <p>
                                 ${item["suggestionSummary"]}
@@ -149,52 +116,35 @@
                             <br />
                             
                             % if "user" in session:
-                            	<%doc>
-                                % if item["rating"]:
-                                    <div id="ratings${counter}" class="gray rating wide">
-                            			<div id="overall_slider" class="ui-slider-container">
-											<div id="${item['urlCode']}_${item['url']}" class="small_slider" data="${item['ratingAvg_overall']}_${item['urlCode']}_${item['url']}_${item['rating']['rating']}_overall_true"></div>
-										</div>
-										<script type="text/javascript">
-                                			$(document).ready(function(){
-                                    			$(".small_slider").jColorSlider();
-                                			});
-                                		</script>
-                                	<br/>
-									<br/>
-                                    <div class = "avgRating_${item['urlCode']}_${item['url']} right">Average rating: ${item["ratingAvg_overall"]}</div>
-                                    <br/>
-                                    <div class = "yourRating_${item['urlCode']}_${item['url']} right">Your rating: ${item["rating"]["rating"]} </div>
-								</div>
-                                % else:
-								</%doc>
-									<div id="ratings${counter}" class="gray rating wide">
-                            			<div id="overall_slider" class="ui-slider-container">
-											<div id="${item['urlCode']}_${item['url']}" class="small_slider" data="0_${item['urlCode']}_${item['url']}_0_overall_false"></div>
-										</div>
-										<script type="text/javascript">
-                                			$(document).ready(function(){
-                                    			$(".small_slider").jColorSlider();
-                                			});
-                                		</script>
-										<br/>                          		
-                                		<br/>
-                                		<div class = "avgRating_${item['urlCode']}_${item['url']} right">Average rating: Unrated!</div>
-                                		<br/>
-                                		<div class = "yourRating_${item['urlCode']}_${item['url']} right">Your rating: Unrated! </div>
-                                
-                                
-                            		</div>
-                            		
-                            	<%doc>	
-                                % endif
-                                </%doc>
+								<div id="ratings${counter}" class="gray rating wide" style="padding-bottom:15px;">
+                        			<div id="overall_slider" class="ui-slider-container">
+                        			    % if item.rating:
+										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data="0_${item['urlCode']}_${item['url']}_${item.rating['rating']}_overall_true"></div>
+										% else:
+										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data="0_${item['urlCode']}_${item['url']}_0_overall_false"></div>
+										% endif
+									</div>
+									<script type="text/javascript">
+                            			$(document).ready(function(){
+                                			$(".small_slider").jColorSlider();
+                            			});
+                            		</script>
+                            		<%doc>
+									<br/>                          		
+                            		<br/>
+                            		<div class = "avgRating_${item['urlCode']}_${item['url']} right">Average rating: Unrated!</div>
+                            		<br/>
+                            		<div class = "yourRating_${item['urlCode']}_${item['url']} right">Your rating: Unrated! </div>
+                            		</%doc>
+                        		</div>
                             % endif
-                            <span class="gray">Posted on ${item.date} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
+                            <br />
+                            <span class="gray">Posted ${timeSince(item.date)} ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
                         </li>
                         <% counter += 1 %>
                     % endfor
                 % endif
+                </ul>
                 
             </div><!-- .col two -->
             <div class="col three left">
@@ -209,9 +159,9 @@
                 % endif                  
                 <div>
                     % if c.isAdmin or c.isFacilitator:
-                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages">Add slideshow images</a></br>
-                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow">Edit slideshow</a></br>
-                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSettings">Configure workshop</a></br></br>
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages">Add slideshow images</a><br />
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow">Edit slideshow</a><br />
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSettings">Configure workshop</a><br /><br />
                     % endif
                 % for facilitator in c.facilitators:
                      <% fuser = getUserByID(facilitator.owner)%>
@@ -219,94 +169,10 @@
                 % endfor
              % endif
                 </div>
-                <br />
-                <h3>standings</h3>
-                <h4>people</h4>
-                
-                ## Grab the top users - first tabulate
-                <%doc>
-                <% 
-                    users = {}
-                    if len(c.i.events) == 1:
-                        users[c.i.events[0].user.id] = 1
-                    else:
-                        for event in c.i.events:
-                            for user in event:
-                                if user.id in users:
-                                    users[user.id] += 1
-                                else:
-                                    users[user.id] = 1
-                                endif
-                            endfor
-                        endfor
-                    endif
-                %>
-                
-                ## Grab the top users - now sort (uses operator library)
-                
-                <% users = sorted(users.iteritems(), key=itemgetter(1)) %>
-                % for user in users:
-                    <ol>
-                        <li><a href="/account/">Kanye West</a><span class="right">893 rn</span></li>
-                    </ol>
-                % endfor
-                </%doc>
-                
-                <ol>
-                    <li><a href="#">Kanye West</a><span class="right">893 rn</span></li>
-                    <li><a href="#">Manu Koenig</a><span class="right">628 rn</span></li>
-                    <li><a href="#">Edolfo</a><span class="right">314 rn</span></li>
-                    <li><a href="#">Evante</a><span class="right">271 rn</span></li>
-                    <li><a href="#">Timmy</a><span class="right">timmy rn</span></li>
-                </ol>
-                
-                <hr />
-                <h4>suggestions</h4>
-                <ol>
-                    <li><a href="#">Cistern Mandates</a><p>1,588 votes (65%)</p></li>
-                    <li><a href="#">Expanded rebates system</a><p>433 votes (15%)</p></li>
-                    <li><a href="#">Charge tourists more</a><p>275 votes (8%)</p></li>
-                    <li><a href="#">Save the fish</a><p>123 votes(4%)</p></li>
-                    <span class="right"><a href="#">leaderboard</a></span>
-                </ol>
-                <br />
-                <h3>topics</h3>
-                <ul>
-                    <li>
-                        <a href="#">The Effect of a Water Shortage on the Santa Cruz Economy</a>
-                        <br />
-                        10,855 participants
-                        <br />
-                        14 subtopics
-                    </li>
-                    <li>
-                        <a href="#">The Effect of a Water Shortage on the Santa Cruz Economy</a>
-                        <br />
-                        10,855 participants
-                        <br />
-                        14 subtopics
-                    </li>
-                    <li>
-                        <a href="#">The Effect of a Water Shortage on the Santa Cruz Economy</a>
-                        <br />
-                        10,855 participants
-                        <br />
-                        14 subtopics
-                    </li>
-                    <span class="right"><a href="#">all topics</a><span>
-                </ul>
-                <br />
-                <hr />
                 <ul class="invite suggest share">
-                    <li><img src="/images/handdove.png" /> <a href="#" class="invite_friends">Invite to greenocracy</a></li>
-                    <li><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest an issue</a></li>
+                    <li><img src="/images/handdove.png" /> <a href="#" class="invite_friends">Invite to Civinomics</a></li>
+                    <li><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest a workshop</a></li>
                     <li><img src="/images/pen.png" /> <a href="#">Share this page</a></li>
-                    <li>
-                        <form method="get" action="issuehome.html">
-                            <img src="/images/magnifying_glass.png" class="left"/>
-                            <input type="text" value="search...">
-                        </form>
-                    </li>
                 </ul>
             </div><!-- .col three -->
             
@@ -388,7 +254,7 @@
 					<br />
 					Description:
 					<br />
-					<textarea id="suggestiontext" name="data" onkeyup="previewAjax( 'textarea1', 'section1' )" class="markitup"></textarea>
+					<textarea id="suggestiontext" name="data" class="markitup"></textarea>
 					<br />
 					<br />
 					<%doc>
@@ -467,6 +333,7 @@
 			</div>
         </div><!-- add_media -->
 		
+		<%doc>
 		<div id="contribute">
 			<h2 class="clr left">
 				<p class="right close"><a href="#" class="x">X</a>close</p>
@@ -523,7 +390,7 @@
 				<button type="submit" class="gold">Contribute</button>
 			</form>
 		</div> <!-- contribute -->
-		
+		</%doc>
     </div><!-- pop -->
     <%doc>
     <script type="text/javascript">
@@ -539,7 +406,7 @@
     <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
     <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
     <link type="text/css" rel="stylesheet" href="/css/pygments/pygments-tango.css" />
-    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
 	<link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
 </%def>
 
@@ -551,11 +418,10 @@
     <script src="/js/h2banner.js" type="text/javascript"></script>
     <script src="/js/slides.min.jquery.js" type="text/javascript"></script>
 	<script src="/js/jquery.cycle.all.js"></script>
-	<script src="/js/jquery-1.7.1.min.js" type="text/javascript"></script>
 	<script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
 	<script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
     
-    <%doc>
+    
     <script type="text/javascript">
 		$(function() {
 			$('.slides_container').after('<ul class="pagination">').cycle({
@@ -575,5 +441,5 @@
 			});
         });
     </script>
-    </%doc>
+    
 </%def>

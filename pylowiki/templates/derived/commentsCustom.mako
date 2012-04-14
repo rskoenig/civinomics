@@ -146,8 +146,8 @@
  % endif
  %if c.conf['allow.comments'] == 'true':
 
-  <span class="gray"><a href="#">${discussion['numComments']} comments</a> | Last edited on ${c.lastmoddate} by ${c.lastmoduser['name']} | <a href="#">Suggest edits</a></span>
-  
+  ##<span class="gray"><a href="#">${discussion['numComments']} comments</a> | Last edited on ${c.lastmoddate} by ${c.lastmoduser['name']} | <a href="#">Suggest edits</a></span>
+  <span class="gray"><a href="#">${discussion['numComments']} comments</a> | Last edited ${timeSince(c.lastmoddate)} ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   <h3>Comments</h3>
     <div id="comments" class="left">
         <form action="/addComment" method="post">
@@ -167,7 +167,7 @@
             add a comment
             <br />
             
-            <textarea rows="4" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup"></textarea>  
+            <textarea rows="4" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup" style="width:500px;"></textarea>  
             <div id="comment-preview-div"></div>
             <div style="align:right;text-align:right;">${h.submit('submit', 'Comment')}</div>
             <br />

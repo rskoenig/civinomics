@@ -6,7 +6,6 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
-#from pylowiki.model import get_user, get_all_users, meta, Event, User, commit
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
@@ -135,116 +134,6 @@ class AccountController(BaseController):
             h.flash('Error', 'error')
             raise
             return redirect('/account/edit')
-
-    """
-    @h.login_required
-    def editSubmit(self):
-
-        firstName = request.params['first_name']
-        lastName = request.params['last_name']
-        email = request.params['email']
-        zipCode = request.params['zip_code']
-        address = request.params['address']
-        state = request.params['state']
-        city = request.params['city']
-        try:
-            request.params['hideBirth']
-            hideBirth = 1
-        except:
-            hideBirth = 0
-        birthMonth = request.params['month']
-        birthDay = request.params['birthDay']
-        birthYear = request.params['birthYear']
-        try:
-            request.params['hideCultBack']
-            hideCultBack = 1
-        except:
-            hideCultBack = 0
-        culturalBackground1 = request.params['culturalBackground1']
-        #culturalBackground2 = request.params['culturalBackground2']
-        try:
-            request.params['hideGender']
-            hideGender = 1
-        except:
-            hideGender = 0
-        gender = request.params['gender']
-        try:
-            request.params['hideReligion']
-            hideReligion = 1
-        except:
-            hideReligion = 0
-        religion = request.params['religion']
-        tagline = request.params['tagline']
-        bio = request.params['bio']
-        picture = request.POST['pictureFile']
-       
-        # Validation goes here...
-        
-        if len(tagline) > 140:
-            tagline = tagline[0:140]
-
-
-        # Save to database
-        u = get_user(c.authuser.name)
-        nameChange = 0
-        if firstName:
-            u.firstName = firstName
-            nameChange = 1
-        if lastName:
-            u.lastName = lastName
-            nameChange = 1
-        if nameChange:
-            u.name = '%s %s'%(u.firstName, u.lastName)
-
-        try:
-            hash = self.hashPicture(c.authuser.name, picture.filename)
-            u.pictureHash = hash
-            saveImage(picture.filename, hash, picture.file, 'avatar')
-            resizeImage(picture.filename, hash, 200, 200, 'profile', 'avatar')
-            resizeImage(picture.filename, hash, 25, 25, 'thumbnail', 'avatar')
-        except:
-            # do nothing 
-            log.info('no picture change for %s'%c.authuser.name)
-        if email:
-            u.email = email
-        if zipCode:
-            u.zipCode = zipCode
-        if state:
-            u.state = state
-        if city:
-            u.city = city
-        if birthMonth != 'Month':
-            u.birthMonth = birthMonth
-        if birthDay != 'Day':
-            u.birthDay = birthDay
-        if birthYear != 'Year':
-            u.birthYear = birthYear
-        if culturalBackground1:
-            u.culturalBackground1 = culturalBackground1
-        if gender:
-            u.gender = gender
-        if religion:
-            u.religion = religion
-        if tagline != 'in 140 characters or fewer ...':
-            u.tagline = tagline
-        if bio:
-            u.bio = bio
-        if address:
-            u.address = address
-        u.hideBirth = hideBirth
-        u.hideGender = hideGender
-        u.hideCultBack = hideCultBack
-        u.hideReligion = hideReligion
-
-        try:
-            commit(u)
-        except:
-            message = '%s: user info not updated!' % u.name
-            log.info(message)
-            h.flash(message, 'warning')
-            return redirect('/account/edit')
-        return redirect('/home/mainPage/%s' % u.name)
-    """
     
     def hashPicture(self, username, title):
         return md5(username + title).hexdigest()

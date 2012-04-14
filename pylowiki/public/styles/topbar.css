@@ -55,7 +55,8 @@
     color: #555;
 }
 #navtab>li>a {
-	position: relative;
+	position: absolute;
+	left:100px;
 	display: block;
 	width: 70px;
 	color: #858585;
@@ -83,7 +84,7 @@
 #navtab li a#nav_dropdown_arrow { /* arrow that drops down the menu */
 	float: left;
 	position: absolute;
-	width: 16px;
+	width: 150px;
 	height: 35px;
 	padding-top: 6px;
 	text-align: center;
@@ -94,7 +95,8 @@
 #nav_dropdown { /* the actual menu */
 	position: absolute;
 	top: 30px;
-	right: -15px;
+	/*right: -15px;*/
+	left: 80px;
 	z-index: 900;
 	background: white;
 	border: 1px solid gray;

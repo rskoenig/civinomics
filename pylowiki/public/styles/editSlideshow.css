@@ -1,9 +1,9 @@
-.column { width: 850px; float: left; padding-bottom: 100px; }
+.column { width: 400px; float: left; padding-bottom: 100px; }
 
 .portlet { margin: 0 1em 1em 0; }
-.portlet-title { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; background-color: #86945A; width: 800px;}
+.portlet-title { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; background-color: #86945A; width: 350px;}
 .portlet-title .ui-icon { float: right;}
-.portlet-caption { padding: 0.4em; width: 800px;}
+.portlet-caption { padding: 0.4em; width: 350px;}
 .portlet-image { padding: 0.4em;}
 
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 110px !important; }
