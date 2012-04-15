@@ -68,12 +68,8 @@
                     </div>
                     <% counter += 1 %>
                     % endfor
-
                     ${h.hidden("count",counter)}
-
                     ${h.end_form()}
-
-                    ##<div class="lastmodified"><br/>${c.title} <i>(last modified ${c.lastmoddate} by ${c.lastmoduser['name']})</i></div>
                 % else:
                     ${c.content}
                 % endif
@@ -186,39 +182,6 @@
             </div><!-- photo_container -->
         </div><!-- slideshow -->
         
-        <div id="suggestion">
-			<h2 class="clr left">
-				<p class="right close">close <button>X</button></p>
-				<p class="left">Add a Suggestion</p>
-			</h2>
-			<form class="left" id="suggestiondata">
-				<div id="suggestionform" class="left">
-					Title:
-					<br />
-					<input type="text" id="suggestiontitle" />
-					<br />
-					<br />
-					Description:
-					<br />
-					<textarea id="suggestiontext"></textarea>
-					<br />
-					<br />
-					Tags:
-					<br />
-					<input type="text" id="suggestiontags" />
-					<br />
-					<span class="gray"><em>Popular tags in this issue: water, conservation, government</em></span>
-				</div>
-				<div id="suggestionshare" class="left">
-					Also share on:
-					<ul>
-						<li><input type="checkbox" /> Facebook</li>
-						<li><input type="checkbox" /> Twitter</li>
-					</ul>
-					<button type="submit" class="gold">Submit</button>
-				</div>
-			</form>
-        </div><!-- suggestion -->
         <div id="add_media">
             <h2 class="clr left">
                 <p class="right close"><a href="#" class="x">X</a>close</p>
