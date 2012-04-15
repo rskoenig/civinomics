@@ -73,6 +73,7 @@
                         </p>
                     % else:
                         % for item in c.articles:
+                            <% author = getUserByID(item.owner) %> 
                             % if item['type'] == "post":
                                 <li class="post">
                                     <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">${item['title']}</a></span>
@@ -82,7 +83,7 @@
                                          <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">more</a></span>
                                     </p>
                                     <div class="clr">
-                                        ##<span class="gray">posted by <a href="/profile/${item.user.name}">${item.user.name}</a></span> on <span class="time">${item.events[-1].date}</span>
+                                        <span class="gray">posted by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span> <span class="time">${timeSince(item.date)}</span> <span class="gray">ago</span>
                                     </div>
                                 </li>
                             % endif
@@ -137,7 +138,7 @@
                         		</div>
                             % endif
                             <br />
-                            <span class="gray">Posted ${timeSince(item.date)} ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
+                            <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
                         </li>
                         <% counter += 1 %>
                     % endfor
@@ -252,13 +253,13 @@
         <div id="add_media">
 			<h2 class="clr left">
 				<p class="right close"><a href="#" class="x">X</a>close</p>
-				<p class="left">Add Links</p>
+				<p class="left">Add Resource</p>
 			</h2>
 			<div class="left">
 			    <form action="/news/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
 					<div class="wide">
 						<div>
-							Link URL:
+							Resource URL:
 						</div>
 						<div>
 							<input type="text" name = "url"/>

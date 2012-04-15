@@ -170,7 +170,7 @@ class WorkshopController(BaseController):
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitators(c.w.id)
         c.isScoped = isScoped(c.authuser, c.w)
-        if c.authuser['accessLevel'] >= 200:
+        if int(c.authuser['accessLevel']) >= 200:
            c.isAdmin = True
         else:
            c.isAdmin = False
@@ -223,6 +223,18 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
+        c.articles = getArticlesByWorkshopID(c.w.id)
+        
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.facilitators = getFacilitators(c.w.id)
+        
+        c.slides = []
+        c.slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
+        for id in slide_ids:
+            s = getSlide(id) # Don't grab deleted slides
+            if s:
+                c.slides.append(s)
         
         r = get_revision(int(c.w['mainRevision_id']))
         reST = r['data']
