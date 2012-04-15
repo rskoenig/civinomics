@@ -4,7 +4,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
-from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID
+from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.revision import get_revision, Revision
@@ -30,6 +30,12 @@ class SuggestionController(BaseController):
         
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
+        c.suggestions = getSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
+        for i in range(len(c.suggestions)):
+            suggestion = c.suggestions[i]
+            if suggestion.id == c.s.id:
+                c.suggestions.pop(i)
+                break
         r = get_revision(int(c.s['mainRevision_id']))
         
         c.title = c.s['title']

@@ -1,5 +1,8 @@
+<%!
+    from pylowiki.lib.db.user import getUserByID
+%>
+
 <%inherit file = "/base/template.html"/>
-##<%namespace file="/derived/commentsCustom2.mako" import="comments" />
 <%namespace file="/derived/commentsCustom.mako" import="comments" />
         
         	<div class="left headline banner_div">
@@ -14,12 +17,20 @@
 						<br />
 						Workshop: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a>
 						<br />
-                        ##Tags: No tags!
-						##Tags: <a href="#">water,</a> <a href="#">government,</a> <a href="#">etc.</a>
 					</p>
-					<p class="right"><img src="/images/avatars/${c.author['pictureHash']}.thumbnail" alt="avatar" class="right" /><br /><span class="right">Author: <a href="/profile/${c.author['url']}">${c.author['name']}</a></span></p>
-		            <p class="clr suggestion_summary">
-		            	% if c.authuser.id == c.s.owner or c.authuser.accessLevel >= 200:
+					<p class="right">
+					    % if c.author['pictureHash'] == 'flash':
+                            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="avatar" class="right" style="width=50px;}"/></a>
+                        % else:
+                            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" alt="avatar" class="right"/></a>
+                        % endif
+					    <br />
+					    <span class="right">
+					        Author: <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a>
+				        </span>
+				    </p>
+		            <p class="clr suggestion_summary"></p>
+		            	% if c.authuser.id == c.s.owner or int(c.authuser.accessLevel) >= 200:
                             ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
                             <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
                             <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
@@ -41,7 +52,6 @@
                         % else:
                         	${c.content}
                         % endif
-		            </p>
 					<br />
 		            <br />
                     
@@ -57,26 +67,26 @@
                                 	});
                                 </script>
                                 <%doc>
-								<div class="ui-buttons-container">
-									<button id="buttonS" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-									<button id="buttonN" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-								</div>
-								
-								<script type="text/javascript">
-                                	$(document).ready(function(){
-                                    	$("#buttonS").jDownButton();
-                                    	$("#buttonN").jUpButton();
-                                	});
-                                </script>
+    								<div class="ui-buttons-container">
+    									<button id="buttonS" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
+    									<button id="buttonN" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
+    								</div>
+    								
+    								<script type="text/javascript">
+                                    	$(document).ready(function(){
+                                        	$("#buttonS").jDownButton();
+                                        	$("#buttonN").jUpButton();
+                                    	});
+                                    </script>
                                 </%doc>
                                 <%doc>
-                                <br/>
-                                <br/>
-                                <br/>
-								<br/>
-								<div class = "avgRating_${c.s['urlCode']}_${c.s['url']} right">Average rating: ${c.s["ratingAvg_overall"]}</div>
-								<br/>
-                                <div class = "yourRating_${c.s['urlCode']}_${c.s['url']} right">Your rating: ${c.s["rating"]["rating"]} </div>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+    								<br/>
+    								<div class = "avgRating_${c.s['urlCode']}_${c.s['url']} right">Average rating: ${c.s["ratingAvg_overall"]}</div>
+    								<br/>
+                                    <div class = "yourRating_${c.s['urlCode']}_${c.s['url']} right">Your rating: ${c.s["rating"]["rating"]} </div>
                                 </%doc>
                             </div>
                         % else:
@@ -90,26 +100,26 @@
                                 	});
                                 </script>
                                 <%doc>
-                                <div class="ui-buttons-container">
-									<button id="buttonS" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-									<button id="buttonN" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-								</div>
-								<script type="text/javascript">
-                                	$(document).ready(function(){
-                                    	$("#buttonS").jDownButton();
-                                    	$("#buttonN").jUpButton();
-                                	});
-                                </script>
+                                    <div class="ui-buttons-container">
+    									<button id="buttonS" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
+    									<button id="buttonN" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
+    								</div>
+    								<script type="text/javascript">
+                                    	$(document).ready(function(){
+                                        	$("#buttonS").jDownButton();
+                                        	$("#buttonN").jUpButton();
+                                    	});
+                                    </script>
                                 </%doc>
                                 <%doc>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <div class = "avgRating_${c.s['urlCode']}_${c.s['url']} right">Average rating: Unrated!</div>
-                                <br/>
-                                <div class = "yourRating_${c.s['urlCode']}_${c.s['url']} right">Your rating: Unrated! </div>
-                                <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <br/>
+                                    <div class = "avgRating_${c.s['urlCode']}_${c.s['url']} right">Average rating: Unrated!</div>
+                                    <br/>
+                                    <div class = "yourRating_${c.s['urlCode']}_${c.s['url']} right">Your rating: Unrated! </div>
+                                    <br/>
                                 </%doc>
                             </div>
                         % endif
@@ -119,36 +129,26 @@
         	</div> <!-- suggestion_main -->
         	
         	<div id="suggestion_side" class="left">
-        		<h3>Related Suggestions</h3>
+        		<h3>Other Suggestions</h3>
         		<ul id="related_suggestion">
-        			<li>
-        				<strong class="issue_name"><a href="#">Build a desalination plant</a></strong>
-        				<br />
-        				<span class="gray">By <a href="profile.html">Monty</a></span>
-    				</li>
-        			<li>
-        				<strong class="issue_name"><a href="#">Stop using water for anything</a></strong>
-        				<br />
-        				<span class="gray">By <a href="profile.html">Crazy person</a></span>
-    				</li>
-        			<li>
-        				<strong class="issue_name"><a href="#">Raise the cost of water</a></strong>
-        				<br />
-        				<span class="gray">By <a href="profile.html">Edmund Hillary</a></span>
-    				</li>
-    				<br />
-    				<span class="right"><a href="#">all suggestions</a></span>
+        		    % if len(c.suggestions) == 0:
+        		    <li>
+        		        No other suggestions!
+        		    </li>
+        		    % else:
+        		      % for suggestion in c.suggestions:
+        		          <% author = getUserByID(suggestion.owner)%>
+        		          <li>
+                              <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a></strong>
+                              <br />
+                              <span class="gray">By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span>
+                          </li>
+        		      % endfor
+        		    % endif
         		</ul> <!-- related_suggestion -->
                 <ul class="share suggest invite">
-                    <li><img src="/images/handdove.png" /> <a href="#">Invite to greenocracy</a></li>
-                    <li><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest an issue</a></li>
-                    <li><img src="/images/pen.png" /> <a href="#">Share this page</a></li>
-                    <li>
-                        <form method="get" action="issuehome.html">
-                            <img src="/images/magnifying_glass.png" class="left"/>
-                            <input type="text" value="search...">
-                        </form>
-                    </li>
+                    <li><img src="/images/handdove.png" /> <a href="#">Invite to Civinomics</a></li>
+                    <li><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest a workshop</a></li>
                 </ul>
         	</div>
 
@@ -159,30 +159,20 @@
                 <p class="right close"><a href="#" class="x">X</a>close</p>
                 <p class="left">Add a Suggestion</p>
             </h2>
-            <form class="left" id="suggestiondata">
+            <form class="left" id="suggestiondata" action="/addSuggestion/${c.w['urlCode']}/${c.w['url']}" method = "post">
                 <div id="suggestionform" class="left">
                     Title:
                     <br />
-                    <input type="text" id="suggestiontitle" />
+                    <input type="text" id="suggestiontitle" name = "title"/>
                     <br />
                     <br />
                     Description:
                     <br />
-                    <textarea id="suggestiontext"></textarea>
+                    <textarea id="suggestiontext" name="data" class="markitup"></textarea>
                     <br />
                     <br />
-                    Tags:
-                    <br />
-                    <input type="text" id="suggestiontags" />
-                    <br />
-                    <span class="gray"><em>Popular tags in this issue: water, conservation, government</em></span>
                 </div>
                 <div id="suggestionshare" class="left">
-                    Also share on:
-                    <ul>
-                        <li><input type="checkbox" /> Facebook</li>
-                        <li><input type="checkbox" /> Twitter</li>
-                    </ul>
                     <button type="submit" class="gold">Submit</button>
                 </div>
             </form>
@@ -195,7 +185,7 @@
     <link type="text/css" rel="stylesheet" href="/styles/comments.css" />
     <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
     <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
-    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
 	<link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
 </%def>
 

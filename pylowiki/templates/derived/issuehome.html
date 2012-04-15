@@ -110,9 +110,7 @@
                             <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
                             <br />
                             Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
-                            <p>
-                                ${item["suggestionSummary"]}
-                            </p>
+                            ${item["suggestionSummary"]}
                             <br />
                             
                             % if "user" in session:
@@ -209,42 +207,6 @@
             </div><!-- photo_container -->
         </div><!-- slideshow -->
         
-        <%doc>
-        <div id="slideshow">
-            <h2 class="clr left">
-                <p class="right close"><a href="#" class="x">X</a>close</p>
-                <p class="slidetitle right">${c.title}</p>
-                <p class="right">Slideshow</p>
-            </h2>
-            
-            <div id="photo_container" class="left">
-            	<div class="slides_container">
-            		% for item in c.slideshow:
-                        <div>
-                            <img src="/images/slide/${c.slideshowDirectory}/${item['hash']}.slideshow" />
-                            <p class="caption">
-                                <strong>${item["title"]}</strong>
-                                <br />
-                                ${item["caption"]}
-                            </p>
-                        </div>
-                    % endfor
-	            </div><!-- slides_container -->   
-				<a href="#" class="prev"><img src="/images/left_arrow_75%.png" /></a>
-				<a href="#" class="next"><img src="/images/right_arrow_75%.png" /></a>
-				<ul class="pagination">
-					<a href="#" class="prev">&#x25C2;</a>
-					<a href="#" class="next">&#x25B8;</a>
-					<% i = 0 %>
-                    % for item in c.slideshow:
-                        <li><a href="#${i}"><img src="/images/${c.slideshowDirectory}/${item['hash']}.slideshow" height="50" /></a></li>
-                        <% i += 1 %>
-                    % endfor
-				</ul>
-            </div><!-- photo_container -->
-        </div><!-- slideshow -->
-        </%doc>
-        
         <div id="suggestion">
 			<h2 class="clr left">
 				<p class="right close"><a href="#" class="x">X</a>close</p>
@@ -262,22 +224,8 @@
 					<textarea id="suggestiontext" name="data" class="markitup"></textarea>
 					<br />
 					<br />
-					<%doc>
-					Tags:
-					<br />
-					<input type="text" id="suggestiontags" name = "tags"/>
-					<br />
-					<span class="gray"><em>Separate with commas, e.g. budget, taxes, public departments</em></span>
-					</%doc>
 				</div>
 				<div id="suggestionshare" class="left">
-                    <%doc>
-					Also share on:
-					<ul>
-						<li><input type="checkbox" /> Facebook</li>
-						<li><input type="checkbox" /> Twitter</li>
-					</ul>
-                    </%doc>
 					<button type="submit" class="gold">Submit</button>
 				</div>
 			</form>
@@ -290,11 +238,12 @@
 			</h2>
 			<div>
 				<h4>Invite Contacts to Civinomics</h4>
-				<form>
+				<form method="post">
 					Invite people by email.
 					<br />
-					<p class="wide"><a href="#">+Add people to invite</a></p>
-					<textarea class="gray wide">Add a personal message</textarea>
+					##<p class="wide"><a href="#">+Add people to invite</a></p>
+					<textarea class="gray wide" name="emails" placeholder="email address(es), separated by commas"></textarea>
+					<textarea class="gray wide" name="message" placeholder="Add a personal message"></textarea>
 					<button type="submit" class="right">Send</button>
 				</form>
 			</div>
@@ -307,7 +256,6 @@
 			</h2>
 			<div class="left">
 			    <form action="/news/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
-				##${ h.form( url( controller = "news", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']), method="post" ) }
 					<div class="wide">
 						<div>
 							Link URL:
@@ -333,77 +281,10 @@
 						</div>
 					</div>
 					<button type="submit" class="gold">Submit</button>
-				##${h.end_form()}
 				</form>
 			</div>
         </div><!-- add_media -->
-		
-		<%doc>
-		<div id="contribute">
-			<h2 class="clr left">
-				<p class="right close"><a href="#" class="x">X</a>close</p>
-				<p class="left">Contribute</p>
-			</h2>
-			<div class="left">
-				<p><img src="/images/mountain.jpg" alt="issue" class="left issue_pic" />
-				<img src="/images/paypal.png" alt="Donate now with PayPal" class="right paypal" />
-				Complete the following form or connect to Paypal to contribute to <strong><a href="issuehome.html">Santa Cruz and Soquel Water Planning</a></strong> and help make the winning solution a reality.
-				</p>
-			</div>
-			<form class="left">
-				<strong class="gray">Billing Information</strong>
-				<br />
-				<p class="left wide">
-					<span class="right-al">First Name: <span class="darkorange">*</span></span>
-					<input type="text" class="wide right" />
-				</p>
-				<br /><br />
-				<p class="left wide">
-					<span class="right-al">Last Name: <span class="darkorange">*</span></span>
-					<input type="text" class="wide right" />
-				</p>
-				<p class="left wide">
-					<span class="right-al">Billing Address: <span class="darkorange">*</span></span>
-					<input type="text" class="wide right" />
-					<br />
-					<input type="text" class="wide right" />
-				</p>
-				<p class="left wide citystate">
-					<span class="right-al">City: <span class="darkorange">*</span></span>
-					<input type="text" class="thin" />
-					State: <span class="darkorange">*</span>
-					<input type="text" class="thin" />
-					Zip Code: <span class="darkorange">*</span>
-					<input type="text" class="thin" />
-				</p>
-				<strong class="gray">Credit Card Information</strong>
-				<br />
-				<p class="left wide">
-					<span class="right-al">Card Number: <span class="darkorange">*</span></span>
-					<input type="text" class="wide right" />
-				</p>
-				<p class="left wide">
-					<span class="right-al">Expiration Date: <span class="darkorange">*</span></span>
-					<input type="text" class="tiny" value="MM" /><input type="text" class="tiny" value="YY" />
-					<span class="">Security Code: <span class="darkorange">*</span></span>
-					<input type="text" class="tiny" />
-				</p>
-				<p class="left wide">
-					<span class="right-al">&nbsp;</span>
-					<input type="checkbox" id="save_credit_info_checkbox" /><label for="save_credit_info_checkbox">Save this information</label>
-				</p>
-				<button type="submit" class="gold">Contribute</button>
-			</form>
-		</div> <!-- contribute -->
-		</%doc>
     </div><!-- pop -->
-    <%doc>
-    <script type="text/javascript">
-        for(i=0; i<ratedEntries.length; i++){
-            rateItBefore(ratedEntries[i][0], ratedEntries[i][1], ratedEntries[i][2]);
-        }
-    </script>
-    </%doc>
 </%def>
 
 <%def name = 'extraStyles()'>
@@ -426,7 +307,7 @@
 	<script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
 	<script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
     
-    
+    ## Used for the slideshow
     <script type="text/javascript">
 		$(function() {
 			$('.slides_container').after('<ul class="pagination">').cycle({

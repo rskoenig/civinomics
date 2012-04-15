@@ -67,7 +67,7 @@
 					orientation: "horizontal",
 					range: "min",
 					max: 100,
-					value: 49,
+					value: 50,
 					step: 1,
 					slide: function(event, ui) {
 						var sliderVal = ui.value;
