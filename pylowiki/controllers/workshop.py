@@ -110,9 +110,9 @@ class WorkshopController(BaseController):
            werrMsg = 'No Workshop Scope or PostalList'
 
         if w['scopeMethod'] == 'publicScope':
-           w['scopeTitle'] = getScopeTitle(w['publicPostal'], 'United States', w['publicScope'])
+           w['publicScopeTitle'] = getScopeTitle(w['publicPostal'], 'United States', w['publicScope'])
         elif w['scopeMethod'] == 'publicPostalList':
-           w['scopeTitle'] = 'postal codes of ' + w['publicPostalList']
+           w['publicScopeTitle'] = 'postal codes of ' + w['publicPostalList']
 
         if 'publicTags' in request.params:
            publicTags = request.params.getall('publicTags')

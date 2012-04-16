@@ -35,7 +35,7 @@ class NewsController(BaseController):
         c.article = getArticle(urlify(articleURL), c.w)
         log.info('articleURL = %s' % urlify(articleURL))
         log.info('workshop = %s' % c.w.id)
-        log.info('Article: %s' % c.article)
+        log.info('Article: %s' % c.article.owner)
         c.poster = getUserByID(c.article.owner)
         
         return render('/derived/news_article.html')
