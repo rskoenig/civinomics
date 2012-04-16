@@ -14,19 +14,19 @@ class AdminController(BaseController):
 
     @h.login_required
     def index( self ):
-        if c.authuser.accessLevel < 300:
+        if c.authuser['accessLevel'] < 300:
             return redirect('/')
         return render('/derived/admin.mako')
 
     @h.login_required
     def addMod(self):
-        if c.authuser.accessLevel < 300:
+        if c.authuser['accessLevel'] < 300:
             return redirect('/')
 
         email = request.params['email']
         log.info('email = %s' %email)
         u = get_user_by_email(email)
-        e = Event('MOD-ify', '%s made mod by %s'%(u.name, c.authuser.name))
+        e = Event('MOD-ify', '%s made mod by %s'%(u.name, c.authuser['name']))
         u.accessLevel = 200
         u.events.append(e)
         commit(e)

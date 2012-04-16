@@ -30,7 +30,7 @@
 				        </span>
 				    </p>
 		            <p class="clr suggestion_summary"></p>
-		            	% if c.authuser.id == c.s.owner or int(c.authuser.accessLevel) >= 200:
+		            	% if c.authuser.id == c.s.owner or int(c.authuser['accessLevel']) >= 200:
                             ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
                             <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
                             <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>

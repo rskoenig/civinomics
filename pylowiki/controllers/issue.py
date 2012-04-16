@@ -228,7 +228,7 @@ class IssueController(BaseController):
         
     @h.login_required
     def edit(self, id):
-        if c.authuser.accessLevel >= 200:
+        if c.authuser['accessLevel'] >= 200:
             c.p = get_page(id)
             c.pId = id
             if c.p == False:
@@ -285,7 +285,7 @@ class IssueController(BaseController):
     @h.login_required
     def edit_handler(self, id):
         #if self._checkAccess(300):
-        if c.authuser.accessLevel >= 200:
+        if c.authuser['accessLevel'] >= 200:
             try:
                 request.params['submit']
                 if request.params['newGovtSphereName']:
@@ -412,7 +412,7 @@ class IssueController(BaseController):
         c.url = p.url
         i = p.issue
 
-        if c.authuser.accessLevel < 200 or c.authuser.id not in map(int, p.owners.split(',')):
+        if c.authuser['accessLevel'] < 200 or c.authuser.id not in map(int, p.owners.split(',')):
             h.flash('You are not authorized to view that page', 'warning')
             return redirect('/')
 
