@@ -1,0 +1,269 @@
+<%!
+    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.facilitator import isFacilitator
+    from pylowiki.lib.fuzzyTime import timeSince
+%>
+
+<%inherit file = "/base/template.html"/>        
+        
+<%namespace file="/lib/mako_lib.mako" import="return_to" />
+<%namespace file="/derived/commentsCustom.mako" import="comments" />
+<% counter = 0 %>
+
+	    	<div class="banner_div">
+	        	<h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h2>
+        	</div>
+        	<div id="img">
+        	    % if c.w['mainImage_hash'] == 'supDawg':
+                   <img src="/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+                % else:
+                   <img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_directoryNum']}/slideshow/${c.w['mainImage_hash']}.slideshow" class="slideshow_launch"/>
+                % endif
+            	##<img src = "/images/${c.w['mainImage_identifier']}/slideshow/${c.w['mainImage_hash']}.slideshow" />
+            	<p>
+            		<a href="#" class="slideshow_launch"><img src="/images/slideshow.png" class="left" width="40" height="40" style="padding-right:10px;" /></a>
+            		<strong>Slideshow</strong> | <strong>Background</strong>
+            		<br />
+            		##Description goes here.
+            	</p>
+        	</div><!-- img -->
+        	<ul class="left gray">
+        		<li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">Home</a></li>
+                <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background"><strong class="darkgray">Background</strong></a></li>
+        	</ul>
+        	<div id="bgmain" class="left clr">
+        		<h3>Summary</h3>
+        		
+                % if "user" in session:
+                    ${ h.form( url( controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url'] ), method="put" ) }
+
+                    % for row in c.wikilist:
+                    <div id="wiki-section-break">
+                    ##<% numrows = len(row[1].split( "\r\n" )) + 4%>
+                    <% numrows = 10 %>
+                    
+                        % if c.authuser.id == c.w.owner or int(c.authuser['accessLevel']) >= 200:
+                            <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                            <div id = "section${counter}" ondblclick="toggle('textareadiv${counter}', 'edit${counter}')">${row[0]}</div>
+                            </td></tr></table>
+                        % else:
+                            <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                            <div id = "section${counter}" >${row[0]}</div>
+                            </td></tr></table>
+                        % endif
+
+                        <div style="display:none; text-align:center;" id="textareadiv${counter}">
+                            <br />
+                            <textarea rows="${numrows}" id="textarea${counter}" name="textarea${counter}" onkeyup="previewAjax( 'textarea${counter}', 'section${counter}' )" class="markitup">${row[1]}</textarea>
+                            <div style="align:right; text-align:right; padding-right:35px;">
+                                Optional remark: <input type="text" id="remark${counter}"  name="remark${counter}" class="text tiny" placeholder="optional remark"/> 
+
+                                ${h.submit('submit', 'Save')}
+                                <input type="text" id="sremark"  name="sremark" class="text" />
+                            </div>
+                        </div>
+                        % if c.authuser.id == c.w.owner or int(c.authuser['accessLevel']) >= 200:
+                            <div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv${counter}', 'edit${counter}', 'edit')" id="edit${counter}" style="font-size: 12px; padding-right:35px;">edit</a></div>
+                        % endif
+                    </div>
+                    <% counter += 1 %>
+                    % endfor
+                    ${h.hidden("count",counter)}
+                    ${h.end_form()}
+                % else:
+                    ${c.content}
+                % endif
+                
+                ${h.form(h.url(controller = "issue", action = "readThis"), method = "post")}
+    			<button type="submit" class="green" id="readbutton" name = "readThis" value = "readThis"><img src="/images/book_icon.png" />I Read This</button>
+                ${h.end_form()}
+                
+                    ${comments("background")}
+	            </div><!-- comments -->
+        	</div><!-- bgmain -->
+        	
+        	<div id="bgside" class="left">
+        		% if c.facilitators == False  or len(c.facilitators) == 0:
+                    <h3>No Facilitators!</h3>
+                    <div>
+                % else:
+                    % if len(c.facilitators) == 1:
+                       <h3>Your Facilitator</h3>
+                    % else:
+                       <h3>Your Facilitators</h3>
+                    % endif                  
+                    <div>
+                        % if c.isAdmin or c.isFacilitator:
+                            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages" style="padding-left:10px;">Add slideshow images</a><br />
+                            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow" style="padding-left:10px;">Edit slideshow</a><br />
+                            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSettings" style="padding-left:10px;">Configure workshop</a><br /><br />
+                        % endif
+                    % for facilitator in c.facilitators:
+                         <% fuser = getUserByID(facilitator.owner)%>
+                         % if fuser['pictureHash'] == 'flash':
+                            <a href="/profile/${fuser['urlCode']}/${fuser['url']}" style="padding-left:10px;"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${fuser['name']}</a>
+                         % else:
+                            <a href="/profile/${fuser['urlCode']}/${fuser['url']}" style="padding-left:10px;"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a>
+                         % endif
+                    % endfor
+                 % endif
+                    </div>
+                    
+                    <h3>
+                        Resources 
+                        <span class="right">
+                            add a resource<a href="#" class="media plus">+</a>
+                        </span>
+                    </h3>
+                    <ul class="related_links gray">
+                        ## Each issue has one article - the background wiki
+                        % if int(c.w['numArticles']) == 1:
+                            <p class="clr" style="padding-left:10px; padding-top:10px;">
+                                No news!
+                            </p>
+                        % else:
+                            % for item in c.articles:
+                                <% author = getUserByID(item.owner) %> 
+                                % if item['type'] == "post":
+                                    <li>
+                                        <strong class="issue_name">
+                                            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">
+                                                ${item['title']}
+                                            </a>
+                                        </strong>
+                                        <br />
+                                        <p class="clr">
+                                             <img src="/images/news/news.thumbnail" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item['comment'][:50]}...
+                                             <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">more</a></span>
+                                        </p>
+                                        <div class="clr">
+                                            <span class="gray">posted by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span> <span class="time">${timeSince(item.date)}</span> ago
+                                        </div>
+                                    </li>
+                                % endif
+                            % endfor
+                        % endif
+                    </ul>
+                    <br />
+                    <hr>
+                    <br />
+                    <ul class="invite suggest share">
+                        <li style="padding-left:10px;"><img src="/images/handdove.png" /> <a href="#" class="invite_friends">Invite to Civinomics</a></li>
+                        <li style="padding-left:10px;"><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest a workshop</a></li>
+                        <li style="padding-left:10px;"><img src="/images/pen.png" /> <a href="#">Share this page</a></li>
+                    </ul>
+        	</div>
+        	
+<%def name = 'extraHTML()'>
+    <div id="pop">
+        <div id="slideshow" class="pop">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="slidetitle right">${c.title}</p>
+                <p class="right">Slideshow</p>
+            </h2>
+            
+            <div id="photo_container" class="left">
+                <div class="slides_container">                
+                    % for slide in c.slides:
+                        % if slide['pictureHash'] == 'supDawg':
+                            <div><img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                        % else:
+                            <div><img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/></div>
+                        % endif
+                    % endfor
+                </div><!-- slides_container -->
+                <a href="#" class="prev small">&#x25C2;</a>
+                <a href="#" class="next small">&#x25B8;</a>
+                <p class="caption">
+                </p>
+                <a href="#" class="prev"><img src="/images/left_arrow_75%.png" /></a>
+                <a href="#" class="next"><img src="/images/right_arrow_75%.png" /></a>
+            </div><!-- photo_container -->
+        </div><!-- slideshow -->
+        
+        <div id="add_media">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="left">Add Resource</p>
+            </h2>
+            <div class="left">
+                <form action="/news/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
+                    <div class="wide">
+                        <div>
+                            Resource URL:
+                        </div>
+                        <div>
+                            <input type="text" name = "url"/>
+                        </div>
+                    </div>
+                    <div class="wide">
+                        <div>
+                            Title:
+                        </div>
+                        <div>
+                            <input type="text" name = "title"/>
+                        </div>
+                    </div>
+                    <div class="wide">
+                        <div>
+                            Add comment:
+                        </div>
+                        <div>
+                            <textarea name = "data"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="gold">Submit</button>
+                </form>
+            </div>
+        </div><!-- add_media -->
+    </div><!-- pop -->
+</%def>
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/issuebg.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/comments.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/css/pygments/pygments-tango.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jRating.jquery.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src = "/js/slides.js" type="text/javascript"></script>
+    <script src = "/js/h2banner.js" type="text/javascript"></script>
+    <script src = "/js/comment.js" type="text/javascript"></script>
+    <script src="/js/slides.min.jquery.js" type="text/javascript"></script>
+    <script src="/js/jquery.cycle.all.js"></script>
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+    <script src = "/js/javascript.js" type="text/javascript"></script>
+    <script src = "/js/jRating.jquery.js" type="text/javascript"></script>
+    
+    <script language="javascript">
+        $(document).ready(function()	{
+            $('.markitup').markItUp(mySettings);
+        });
+    </script>
+    
+    ## Used for the slideshow
+    <script type="text/javascript">
+        $(function() {
+            $('.slides_container').after('<ul class="pagination">').cycle({
+                fx: 'scrollHorz',
+                prev: 'a.prev',
+                next: 'a.next',
+                timeout: 0,
+                pager: '.pagination',
+                pagerAnchorBuilder: function(idx, slide) {
+                    var imgSrc = $(slide).find('img').attr('src');
+                    return '<li><a href="#"><img src="' + imgSrc + '" height="50" /></a></li>';
+                },
+                after: function() {
+                    var caption = $(this).find('img').attr('alt');
+                    $('#photo_container p.caption').html(caption);
+                }
+            });
+        });
+    </script>
+</%def>
