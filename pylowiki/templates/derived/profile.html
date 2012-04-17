@@ -1,0 +1,418 @@
+<%inherit file = "/base/template.html"/>
+<%!
+    from pylowiki.lib.db.suggestion import getSuggestionByID
+    from pylowiki.lib.db.workshop import getWorkshop
+    from pylowiki.lib.db.facilitator import isFacilitator
+%>
+        	<div id="profileside" class="col left">
+                % if c.authuser['pictureHash'] == 'flash':
+                  <img src="/images/avatars/flash.profile" width="200"/>
+                % else:
+                  <img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" width="200"/>
+                % endif
+        		##<img src="/images/avatars/${c.user['pictureHash']}.profile" width="200" />
+        		<h3>Where I Call Home</h3>
+        		<a href="${c.geoInfo[0]['postalURL']}"><img src="${c.geoInfo[0]['postalFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['postalTitle']}</a><br>
+        		City: <a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
+        		County: <a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
+        		<a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
+        		<img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />&nbsp;&nbsp;United States</a><br>
+        		<img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
+        		<h3>Connections</h3>
+        		<button class="green" id="invite_button">Invite friends to Civinomics</button>
+        		<h4 class="gray">Mutual connections</h4>
+        		<ul class="left clear">
+                    % if 'connectionList' not in c.user.keys():
+                        No connections!
+                    % else:
+                        ${counter = 1}
+                        % for item in c.user['connectionList']:
+                            % if counter > 6:
+                                <% break %>
+                            % endif
+                            <a href = "${item['profileURL']}">
+                            <li><img src="/images/avatars/${item.pictureHash}.profile" width="25" /></li>
+                            </a>
+                            <% counter += 1 %>
+                        % endfor
+                        <span>
+                            ${counter = 1}
+                            % for item in c.user.connectionList:
+                                % if counter > 6:
+                                    <% break %>
+                                % endif
+                                <a href = "${item['profileURL']}">${item["name"]},</a> 
+                                <% counter += 1 %>
+                            % endfor
+                            % if len(c.user.connectionList) > 6:
+                                and <a href = "${h.url_for('#')}">${len(c.user.connectionList) - 6} others</a>
+                            % endif
+                        </span>
+                    % endif
+
+        		</ul>
+                <ul class="left clear gray" id="connections2">
+                % if 'connectionList' not in c.user.keys():
+                    <li>
+                        No connections!
+                    </li>
+                % else:
+                    % for item in c.user.connectionList:
+                        <li>
+                            <img src="/images/avatars/${item.pictureHash}.profile" width="25" />
+                            <a href = "${h.url_for(item['profileURL'])}">${item["name"]}</a>
+                            <br />
+                            ${item["location"]}
+                        </li>
+                    % endfor
+                % endif
+        			<br />
+        			<span class="right"><a href="#">see all</a></span>
+        		</ul> <!-- connections2 -->
+                <ul class="invite suggest share">
+                    <li><img src="${h.url_for('/images/handdove.png')}" /> <a href="#">Invite to civinomics</a></li>
+                    <li><img src="${h.url_for('/images/suggest_an_issue.png')}" /> <a href="${h.url_for('#')}">Suggest an issue</a></li>
+                    <li><img src="${h.url_for('/images/pen.png')}" /> <a href="${h.url_for('#')}">Share this page</a></li>
+                    <li>
+                        <form method="get" action="issuehome.html">
+                            <img src="/images/magnifying_glass.png" class="left"/>
+                            <input type="text" value="search...">
+                        </form>
+                    </li>
+                </ul>
+        	</div><!-- profileside -->
+        	<div id="profile" class="left">
+		    	<div id="profiletop">
+		    		<h1>${c.user['name']}</h1>
+                    % if 'tagline' not in c.user.keys():
+                        <span id="title">No tagline!</span>
+                    % else:
+                        <span id="title">${c.user['tagline']}</span>
+                    % endif
+		    		<br />
+		    		<br />
+                    
+                    <%doc>
+                    <span class = "edit">
+                    % if c.user['email'] == c.authuser['email']:
+                        % if 'education' c.user['education == None:
+                            <a href="${h.url_for('/account/edit')}">add education history</a>&bull;
+                        % else:
+                            <a href="${h.url_for('/account/edit')}">${c.user.education[len(c.user.education) - 1]}</a>&bull;
+                        % endif
+                        % if c.user.city == None:
+                            <a href="/account/edit">add current city</a>&bull;
+                        % else:
+                            <a href="#">${c.user.city}, ${c.user.state}</a>&bull;
+                        % endif
+                        % if c.user.work == None:
+                            <a href="${h.url_for('/account/edit')}">add work experience</a>
+                        % else:
+                            <a href="${h.url_for('/account/edit')}">${c.user.work[len(c.user.work) - 1]}</a>
+                        % endif
+                    % else:
+                        % if c.user.education == None:
+                            No education history&bull;
+                        % else:
+                            <a href="${h.url_for('#')}">${c.user.education[len(c.user.education) - 1]}</a>&bull;
+                        % endif
+                        % if c.user.city == None:
+                            No current city&bull;
+                        % else:
+                            <a href="#">${c.user.city}, ${c.user.state}</a>&bull;
+                        % endif
+                        % if c.user.homeTown == None:
+                            No hometown&bull;
+                        % else:
+                            <a href="${h.url_for('#')}">${c.user.homeTown}, ${c.user.homeState}</a>&bull;
+                        % endif
+                        % if c.user.work == None:
+                            No work experience
+                        % else:
+                            <a href="${h.url_for('#')}">${c.user.work[len(c.user.work) - 1]}</a>
+                        % endif
+                    % endif
+                    </span>
+                    </%doc>
+                    
+		    		<br />
+		    		member since ${c.user.date}
+                                <br />
+                                resident of ${c.geoInfo[0]['stateTitle']}
+		    		<h4 class="gray">top issues</h4>
+		    		<ul id="topissues" class="left clr">
+                        % if 'workshops' not in c.user.keys():
+                            <li>
+                                No recent workshops!
+                            </li>
+                        % else:
+                            <% counter = 1 %>
+                            % for issue in reversed(c.user.issues):
+                                % if counter > 4:
+                                    <% break %>
+                                % endif
+                                <li>
+                                    <a href="/issue/${issue.page.url}"><img src="/images/slideshows/${issue.slideshow[-1].pictureHash}.thumbnail" />
+                                    ${issue.name}</a>
+                                </li>
+                                <% counter += 1 %>
+                            % endfor
+                        % endif
+                        <%doc>
+		    			<li>
+		    				<img src="/images/mountain.jpg" />
+		    				<a href="${h.url_for('#')}">Issue name</a>
+		    			</li>
+		    			<li>
+		    				<img src="/images/mountain.jpg" />
+		    				<a href="${h.url_for('#')}">Issue name</a>
+		    			</li>
+		    			<li>
+		    				<img src="/images/mountain.jpg" />
+		    				<a href="${h.url_for('#')}">Issue name</a>
+		    			</li>
+		    			<li>
+		    				<img src="/images/mountain.jpg" />
+		    				<a href="${h.url_for('#')}">Issue name</a>
+		    			</li>
+                        </%doc>
+		    			<li class="right" style="text-align: right;">
+                            % if c.authuser['email'] != c.user['email']:
+                                <a href = "${h.url_for('#')}">add as connection</a>
+                                <br />
+                                <a href = "${h.url_for('#')}">send message</a>
+                                <br />
+                                <a href = "${h.url_for('#')}">report abuse</a>
+                                <br />
+                                <a href = "${h.url_for('#')}">block user</a>
+                                <br />
+                                <a href = "${h.url_for('#')}">invite to group</a>
+                                <br />
+                                <a href = "${h.url_for('#')}">share this profile</a>
+                                <br />
+                            % endif
+		    			</li>
+		    		</ul>
+		        	<ul class="left gray clr">
+		        		<li><a href = "${h.url_for('#')}">Activity</a></li>
+		        		<li><a href = "${h.url_for('#')}">Bio</a></li>
+		        		<li><a href = "${h.url_for('#')}"><strong class="darkgray">Stats</strong></a></li>
+		        		<li><a href = "${h.url_for('#')}">Discussion</a></li>
+		        	</ul>
+		        	<br />
+				</div><!-- profiletop -->
+	        	<h3>Points</h3>
+	        	<div id="points" class="left clr">
+	        		<p class="darkorange left">
+	        			<span class="large">${c.user['totalPoints']}</span>
+	        			<br />
+	        			total points
+	        		</p>
+	        	</div><!-- points -->
+                
+                <h3>Comments</h3>
+                <%
+                    if 'numComments' in c.user.keys():
+                        numComments = c.user['numComments']
+                    else:
+                        numComments = 0
+                %>
+                ##<% numComments = len([comment for comment in c.user.comments if not comment.disabled and not comment.pending]) %>
+	        	<div id="points" class="left clr">
+	        		<p class="darkorange left">
+	        			<span class="large">${numComments}</span>
+	        			<br />
+	        			total comments
+	        		</p>
+                    <ul class="left gray profdiv">
+	        			<h4>3 most recent comments:</h4>
+	        			% if numComments > 0:
+                            <% comCount = 0 %>
+                            % for comment in c.user.comments:
+                                % if not comment.disabled and not comment.pending:
+                                    <% comCount += 1 %>
+                                    ##<li><a href = "#"><strong>${item["articleTitle"]}</strong></a> in <a href="${item['issueURL']}">${item["issueTitle"]}</a></li>
+                                    % if len(comment.data) <= 80:
+                                        <li><a href = "#"></a>${"%d) %s"%(comCount, comment.data)}</li>
+                                    % else:
+                                        <li><a href = "#"></a>${"%d) %s..."%(comCount, comment.data[:80])}</li>
+                                    % endif
+                                    % if comCount >= 3:
+                                        <% break %>
+                                    % endif
+                                % endif
+                            %endfor
+                        %endif
+	        		</ul>
+	        	</div><!-- comments -->
+                
+	        	<h3>Badges</h3>
+	        	<div id="badges" class="clr left">
+	        		<ul>
+	        			<li>Contributor</li>
+	        			<li>Proofreader</li>
+	        			<li>Civic Duty</li>
+	        			<li></li>
+	        		</ul>
+	        		<ul>
+	        			<li></li>
+	        			<li></li>
+	        			<li></li>
+	        			<li></li>
+	        		</ul>
+	        		<ul>
+	        			<li></li>
+	        			<li></li>
+	        			<li></li>
+	        			<li></li>
+	        		</ul>
+	        		<ul>
+	        			<li></li>
+	        			<li></li>
+	        			<li></li>
+	        			<li></li>
+	        		</ul>
+	        		<ul>
+	        			<li></li>
+	        			<li></li>
+	        			<li></li>
+	        			<li></li>
+	        		</ul>
+	        	</div><!-- badges -->
+	        	<h3>Suggestions</h3>
+	        	<div id="suggestions" class="left clr">
+	        		<p class="darkorange left">
+	        			<span class="large">${c.user['numSuggestions']}</span>
+	        			<br />
+	        			suggestions
+	        		</p>
+	        		<ul class="left gray profdiv">
+	        			<h4>Suggestions Submitted</h4>
+                        % if int(c.user['numSuggestions']) == 0:
+                            No suggestions submitted!
+                        % else:
+                        <% count = 1 %>
+                            % for item in c.user['suggestionList'].split(','):
+                                <% 
+                                s = getSuggestionByID(int(item))
+                                w = getWorkshop(s['workshopCode'], s['workshopURL'])
+                                %>
+                                % if count > 3:
+                                    <% break %>
+                                % endif
+                                <li><a href = "/workshop/${w['urlCode']}/${w['url']}/suggestion/${s['urlCode']}/${s['url']}"><strong>${s["title"]}</strong></a> in <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a></li>
+                                <% count += 1 %>
+                            %endfor
+                        %endif
+	        		</ul>
+        			<br />
+        			<p class="right clr"><a href="#">see all</a></p>
+	        	</div><!-- suggestions -->
+	        	<h3>Articles</h3>
+	        	<div id="articles" class="left clr">
+	        		<p class="darkorange left">
+	        			<span class="large">${c.user['numReadResources']}</span>
+	        			<br />
+	        			articles read
+	        		</p>
+	        		<ul class="left gray profdiv">
+	        			<h4>Recent articles read</h4>
+	        			% if int(c.user['numReadResources']) == 0:
+                            No resources read!
+                        % else:
+                        <% count = 1 %>
+                            % for item in reversed(c.user.articles):
+                                % if count > 3:
+                                    <% break %>
+                                % endif
+                                % if item["type"] == "background":
+                                    <li><strong>Background wiki in </strong><a href = "/issue/${item['articleURL']}/background"><strong>${item["articleTitle"]}</strong></li></a>
+                                % else:
+                                    <li><a href = "${item['articleURL']}"><strong>${item["articleTitle"]}</strong></a> in <a href="/issue/${item['issueURL']}">${item["issueTitle"]}</a></li>
+                                % endif
+                                <% count += 1 %>
+                            %endfor
+                        %endif
+	        		</ul>
+        			<br />
+        			<p class="right clr"><a href="#">see all</a></p>
+	        	</div><!-- articles -->
+	        	<%doc>
+	        	<h3>Votes</h3>
+	        	<div id="votes" class="left clr">
+	        		<p class="darkorange left">
+	        			<span class="large">${c.user.numVotes}</span>
+	        			<br />
+	        			votes cast
+	        		</p>
+	        		<ul class="left gray profdiv">
+	        			<h4>Voted on</h4>
+	        			% if c.user['numVotes'] == None:
+                            No votes cast!
+                        % else:
+                            % for item in c.user.votes:
+                                <li><strong>${item["amount"]}</strong></a> in <a href="${item['issueURL']}">${item["issueTitle"]}</a></li>
+                            %endfor
+                        %endif
+	        		</ul>
+        			<br />
+        			<p class="right clr"><a href = "${h.url_for('#')}">see all</a></p>
+	        	</div><!-- votes -->
+	        	
+	        	<h3>Solutions</h3>
+	        	<div id="solutions" class="left clr">
+	        		<p class="darkorange left">
+	        			<span class="large">${c.user.numSolutions}</span>
+	        			<br />
+	        			solutions
+	        		</p>
+	        		<ul class="left gray profdiv">
+	        			<h4>Solutions Submitted</h4>
+                        % if c.user.solutions == None:
+                            No solutions submitted!
+                        % else:
+                            % for item in c.user.solutions:
+                                <li><a href="${item['solutionURL']}"><strong>${item["solutionTitle"]}</strong></a> in <a href="${item['issueURL']}">${item["issueTitle"]}</a></li>
+                            % endfor
+                        % endif
+
+	        		</ul>
+        			<br />
+        			<p class="right clr"><a href="#">see all</a></p>
+	        	</div><!-- solutions -->
+	        	<h3>Contributions</h3>
+	        	<div id="contributions" class="left clr">
+	        		<p class="darkorange left">
+	        			<span class="large">${c.user.numContributions}</span>
+	        			<br />
+	        			contributions
+	        		</p>
+	        		<ul class="left gray profdiv">
+	        			<h4>Solution Funds Contributed To</h4>
+
+                        % if c.user.contributions == None:
+                            No contributions made!
+                        % else:
+                            % for item in c.user.contributions:
+                                <li><a href="${item['solutionURL']}"><strong>${item["solutionTitle"]}</strong></a></li>
+                            % endfor
+                        % endif
+
+	        		</ul>
+        			<br />
+        			<p class="right clr"><a href="#">see all</a></p>
+	        	</div><!-- contributions -->
+	        	</%doc>
+        	</div><!-- profile -->
+
+<%def name = 'extraStyles()'>
+	<link type="text/css" rel="stylesheet" href = "${h.url_for('/styles/profile.css')}" />
+</%def>
+
+<%def name = 'extraScripts()'>
+	<script src = "${h.url_for('/js/slides.js')}" type="text/javascript"></script>
+</%def>
+
+<%def name = 'extraHTML()'>
+
+</%def>
