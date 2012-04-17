@@ -249,6 +249,17 @@ class WorkshopController(BaseController):
         c.lastmoduser = getUserByID(r.owner)
         
         return render('/derived/issuebg.html')
+
+    def feedback(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.w = getWorkshop(code, urlify(url))
+        c.title = c.w['title']
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.facilitators = getFacilitators(c.w.id)
+        c.isScoped = isScoped(c.authuser, c.w)
+        return render("/derived/issue_feedback.html")
     
     @h.login_required
     def editSettings(self, id1, id2):

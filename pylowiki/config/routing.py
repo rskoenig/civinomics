@@ -85,6 +85,9 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/editSettings', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/editSettings/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
 
+    # Workshop feedback
+    map.connect('/workshop/{id1}/{id2}/feedback', controller = 'workshop', action = 'feedback', id1 = '{id1}', id2 = '{id2}')
+
     # Workshop settings submit handler
     map.connect('/workshop/{id1}/{id2}/editWorkshopHandler', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/editWorkshopHandler/', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
