@@ -8,7 +8,7 @@
     <br>
 </h1>
 <p>
-Save your planning budget and streamline development by incorporating community feedback from the get-go.  Greenocracy’s platform allows you to connect with a persistent community of thoughtful, engaged citizens.  Or, build your own community.
+Save your planning budget and streamline development by incorporating community feedback from the get-go.  Civinomics’s platform allows you to connect with a persistent community of thoughtful, engaged citizens.  Or, build your own community.
 </p>
 
 <h7>features overview</h7>
@@ -61,7 +61,7 @@ Save your planning budget and streamline development by incorporating community 
                 <br/> <br/><br/>
                 <h4> Multimedia content allows people to learn about your issue and make meaningful contributions. </h4>
             
-                <p>The first step to engagement is understanding.  Greenocracy creates a rich educational space that includes slideshows, video, a background wiki, charts, and graphs.</p>
+                <p>The first step to engagement is understanding.  Civinomics creates a rich educational space that includes slideshows, video, a background wiki, charts, and graphs.</p>
 
             </div>
         </div>
@@ -109,7 +109,7 @@ Save your planning budget and streamline development by incorporating community 
                 <br/><br/><br/>
                 <h4> Solution generation and voting is a multi-step process that allows detailed plans to be compared and selected. </h4>
             
-                <p>Greenocracy allows you to manage the process of finding solutions from the brainstorming phase, all the way up to finalizing your plans.</p>
+                <p>Civinomics allows you to manage the process of finding solutions from the brainstorming phase, all the way up to finalizing your plans.</p>
 
             </div>
         </div>
