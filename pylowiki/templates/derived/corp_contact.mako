@@ -8,11 +8,11 @@ Contact Us
 <br>
 </h3>
 <p>
-Sales: <a href = "mailto:sales@greenocracy.org?subject=Sales Query"> sales@greenocracy.org </a>
+Sales: <a href = "mailto:sales@civinomics.org?subject=Sales Query"> sales@civinomics.org </a>
 <br />
-Careers: <a href = "mailto:careers@greenocracy.org?subject=Careers"> careers@greenocracy.org </a>
+Careers: <a href = "mailto:careers@civinomics.org?subject=Careers"> careers@civinomics.org </a>
 <br />
-Information: <a href = "mailto:info@greenocracy.org?subject=Question"> info@greenocracy.org </a>
+Information: <a href = "mailto:info@civinomics.org?subject=Question"> info@civinomics.org </a>
 
 </p>
 </%def>
