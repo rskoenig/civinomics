@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 class WorkshopController(BaseController):
 
     def addWorkshop(self):
-        if c.authuser['accessLevel'] >= 100:
+        if int(c.authuser['accessLevel']) >= 100:
         #if self._checkAccess(100):
             #return render('/derived/createIssue.mako')
             c.title = "Create Workshop"

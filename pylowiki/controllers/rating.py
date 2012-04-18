@@ -27,14 +27,36 @@ class RatingController(BaseController):
         code = id1
         url = id2
         amount = int(id3)
-        log.info('%s %s %s' % (id1, id2, id3))
+        ##log.info('%s %s %s' % (id1, id2, id3))
         rKey = 'ratedThings_suggestion_overall'
-        log.info('getSuggestion %s %s %s' % (id1, id2, id3))
         s = getSuggestion(code, url)
-        if not s:
-           log.info('getWorkshop %s %s %s' % (id1, id2, id3))
-           s = getWorkshop(code, url)
-           rKey = 'ratedThings_workshop_overall'
+
+        found = False
+        if rKey in c.authuser.keys():
+            """
+                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
+                a         ->    rated Thing's ID  (What was rated) 
+                b         ->    rating Thing's ID (The rating object)
+            """
+            l = pickle.loads(str(c.authuser[rKey]))
+            for tup in l:
+                if tup[0] == s.id:
+                    found = True
+                    changeRating(s, tup[1], amount)
+            
+        if not found:
+            r = Rating(amount, s, c.authuser, 'overall')
+        return "ok"
+        
+
+    @h.login_required
+    def rateFacilitation(self, id1, id2, id3):
+        code = id1
+        url = id2
+        amount = int(id3)
+        ##log.info('%s %s %s' % (id1, id2, id3))
+        rKey = 'ratedThings_workshop_overall'
+        s = getWorkshop(code, url)
 
         found = False
         if rKey in c.authuser.keys():

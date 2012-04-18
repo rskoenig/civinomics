@@ -63,6 +63,7 @@
 				myRating  = parseFloat($(this).attr('data').split('_')[3]), 	// user's own rating
 				ratingType = $(this).attr('data').split('_')[4],	// type of the rating
 				isRated = $(this).attr('data').split('_')[5];		// if user has rated this yet
+				ratingHandler = $(this).attr('data').split('_')[6];		// for the ajax handler URL below
 				$(this).slider({
 					orientation: "horizontal",
 					range: "min",
@@ -93,7 +94,7 @@
 						//$(this).parents('.gray rating wide').children('.yourRating_' + thisID).html('Your rating: '+sliderVal);
 						$.ajax({
 							type : 'POST',
-							url  : "/rateSuggestion/"+thingCode+"/"+thingURL+"/"+sliderVal,
+							url  : "/"+ratingHandler+"/"+thingCode+"/"+thingURL+"/"+sliderVal,
 							data : "rate=" + sliderVal + "&type=" + ratingType,
 							async : false,
 							success: function(result) {

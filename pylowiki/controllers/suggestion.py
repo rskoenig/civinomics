@@ -90,7 +90,7 @@ class SuggestionController(BaseController):
         
         # Does the user have an access level of at least 200?
         # Alternately, is the user marked as an owner of the suggestion and/or issue?
-        if (c.authuser['accessLevel'] < 200) or (int(c.authuser.id) != int(s.owner)):
+        if (int(c.authuser['accessLevel']) < 200) or (int(c.authuser.id) != int(s.owner)):
             h.flash('You are not authorized to view this page', 'error')
             return redirect('/')
         
