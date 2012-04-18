@@ -17,6 +17,32 @@ Blurb about the workshop process goes here. The intent of the blurb is to educat
    <br />
    <br />
 Workshop slider rating goes here.
+                    
+   % if "user" in session:
+     % if c.rating:
+        <div class = "gray rating wide">
+           <div id="overall_slider" class="ui-slider-container">
+	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data="0_${c.w['urlCode']}_${c.w['url']}_${c.rating['rating']}_overall_true"></div>
+           </div>
+           <script type="text/javascript">
+              $(document).ready(function(){
+                 $(".normal_slider").jColorSlider();
+              });
+           </script>
+        </div>
+     % else:
+        <div class = "gray rating wide">
+           <div id="overall_slider" class="ui-slider-container">
+	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data="0_${c.w['urlCode']}_${c.w['url']}_0_overall_false"></div>
+           </div>
+           <script type="text/javascript">
+              $(document).ready(function(){
+                 $(".normal_slider").jColorSlider();
+              });
+           </script>
+         </div>
+     % endif
+   % endif
    <br />
    <br />
    <br />

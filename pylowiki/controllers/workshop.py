@@ -271,6 +271,18 @@ class WorkshopController(BaseController):
         else:
            c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
 
+        c.rating = False
+        if 'ratedThings_workshop_overall' in c.authuser.keys():
+            """
+                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
+                a         ->    rated Thing's ID  (What was rated) 
+                b         ->    rating Thing's ID (The rating object)
+            """
+            l = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
+            for tup in l:
+                if tup[0] == c.w.id:
+                    c.rating = getRatingByID(tup[1])
+
         return render("/derived/issue_feedback.html")
     
     @h.login_required
