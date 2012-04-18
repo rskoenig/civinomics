@@ -14,13 +14,13 @@ class AdminController(BaseController):
 
     @h.login_required
     def index( self ):
-        if c.authuser['accessLevel'] < 300:
+        if int(c.authuser['accessLevel']) < 300:
             return redirect('/')
         return render('/derived/admin.mako')
 
     @h.login_required
     def addMod(self):
-        if c.authuser['accessLevel'] < 300:
+        if int(c.authuser['accessLevel']) < 300:
             return redirect('/')
 
         email = request.params['email']
