@@ -27,7 +27,7 @@ class RatingController(BaseController):
         code = id1
         url = id2
         amount = int(id3)
-        ##log.info('%s %s %s' % (id1, id2, id3))
+        log.info('%s %s %s' % (id1, id2, id3))
         rKey = 'ratedThings_suggestion_overall'
         s = getSuggestion(code, url)
 
@@ -56,7 +56,7 @@ class RatingController(BaseController):
         amount = int(id3)
         ##log.info('%s %s %s' % (id1, id2, id3))
         rKey = 'ratedThings_workshop_overall'
-        s = getWorkshop(code, url)
+        w = getWorkshop(code, url)
 
         found = False
         if rKey in c.authuser.keys():
@@ -67,11 +67,11 @@ class RatingController(BaseController):
             """
             l = pickle.loads(str(c.authuser[rKey]))
             for tup in l:
-                if tup[0] == s.id:
+                if tup[0] == w.id:
                     found = True
-                    changeRating(s, tup[1], amount)
+                    changeRating(w, tup[1], amount)
             
         if not found:
-            r = Rating(amount, s, c.authuser, 'overall')
+            r = Rating(amount, w, c.authuser, 'overall')
         return "ok"
         
