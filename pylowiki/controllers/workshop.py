@@ -214,7 +214,14 @@ class WorkshopController(BaseController):
                 item.rating = getRatingByID(l[index][1])
             else:
                 item.rating = False
-        
+
+        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
+        if 'feedbackDiscussion_id' in c.w:
+           c.discussion = getDiscussionByID(c.w['feedbackDiscussion_id'])
+        else:
+           c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
         return render('/derived/issuehome.html')
 
     def background(self, id1, id2):

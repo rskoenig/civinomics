@@ -2,6 +2,7 @@
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.utils import urlify
     from pylowiki.lib.db.facilitator import isFacilitator
+    from pylowiki.lib.db.discussion import getDiscussionByID
     from pylowiki.lib.fuzzyTime import timeSince
 %>
 
@@ -107,6 +108,7 @@
                 	<% counter = 1 %>
                     % for item in c.suggestions:
                         <% author = getUserByID(item.owner)%>
+                        <% discussion = getDiscussionByID(item['discussion_id'])%>
                         <li class="sugg">
                             <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
                             <br />
@@ -138,7 +140,7 @@
                         		</div>
                             % endif
                             <br />
-                            <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
+                            <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${discussion["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
                         </li>
                         <% counter += 1 %>
                     % endfor
@@ -149,7 +151,8 @@
             <div class="col three left">
             <h3 id="survey">Info & Feedback</h3>
             <div>
-            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Learn more. Give feedback.</a><br /><br />
+            Learn more about the workshop and facilitation process.<br /><br />
+            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">${c.discussion['numComments']} comments</a> | <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Give feedback.</a><br />
             </div> 
             % if c.facilitators == False  or len(c.facilitators) == 0:
                 <h3 id="survey">No Facilitators!</h3>
