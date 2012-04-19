@@ -142,10 +142,12 @@ class Workshop(object):
         
         d = Discussion('background', owner)
         w['backgroundDiscussion_id'] = d.d.id
+
+        f = Discussion('feedback', owner)
+        w['feedbackDiscussion_id'] = f.d.id
+
         commit(w)
         
         f = Facilitator( owner.id, w.id ) 
-        
-        
         
         
