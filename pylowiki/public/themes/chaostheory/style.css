@@ -1,0 +1,177 @@
+@import "960.css";
+@import "pygments-native.css";
+
+html{
+    background-color:#111111;
+}
+
+body {
+    margin: 0%;
+    background-color: #1F2733;
+    color: #DDDDDD;
+}
+
+#header {
+    display: block;
+    font-size: 2em;
+    background-color: #0A0A0A;
+    padding: 2%;
+}
+
+#header a {
+    color: #ffffff;
+}
+
+h1, h2, h3, h4, h5 {
+    color: #6DCFF6;
+    font-family: Verdana, Arial, Helvetica, Tahoma, sans-serif;
+    letter-spacing:-0.04em;
+    line-height:normal;
+}
+
+a, a:link, a:visited {
+    color: #6DCFF6;
+}
+
+#wikibar{
+    padding-top: 0%;
+    margin-top: 0%;
+    border: 0px;
+    font-size: 11px;
+}
+
+#wikibar-left, #wikibar-right{
+    padding: 0%;
+    margin: 0%;
+}
+
+#wikibar-right{
+    width: auto;
+    float: right;
+    background-color:#0A0A0A;
+    padding-bottom:6px;
+    padding-left:10px;
+    padding-right:10px;
+    padding-top:6px;
+}
+
+#wikibar-left a {
+  border: 0px;
+  border-top: 1px solid #0a0a0a;
+  float: left;
+  background-color:#0A0A0A;
+  color:#CCCCCC;
+  padding-bottom:6px;
+  padding-left:10px;
+  padding-right:10px;
+  padding-top:6px;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  margin:0px;
+}
+
+#wikibar-left a.on {
+    border-top: 1px solid #262626;
+    background-color: #191919;
+    color: #aaaaaa;
+}
+
+#wikibar-left a:hover {
+    background: #111;
+    border-top: 1px solid #1c1c1c;
+}
+
+/*********************
+ page body areas
+*********************/
+
+#wiki-section-break, #comment-section, #show-comment{
+    border-color: #333333;
+}
+
+#comment-section{
+    display: block;
+}
+
+#comment, #comment-preview-div{
+    font-size: 11px;
+    background-color: #1e1e1e;
+    color: #eeeeee;
+   -moz-border-radius: 6px;
+    border-radius: 6px;
+    border-color: #333333;
+}
+
+textarea, .text{
+    background-color: #1e1e1e;
+    color: #eeeeee;
+   -moz-border-radius: 6px;
+    border-radius: 6px;
+    border-color: #333333;
+}
+
+#flash {
+    filter:alpha(opacity=80);
+    -moz-opacity:0.8;
+    -khtml-opacity: 0.8;
+    opacity: 0.8;
+}
+
+.contents {
+    background-color: #1e1e1e;
+    color: #eeeeee;
+    border-color: #333333;
+}
+
+.codeblock {
+    color: #bbbbbb;
+    background-color: #1E1E1E;
+   -moz-border-radius: 6px;
+    border-radius: 6px;
+    border: 1px;
+    border-color: #333333;
+}
+
+#footer{
+    background-image: url(footer-lines-bkg.png);
+    padding: 40px;
+    padding-top: 80px;
+    background-color:#111111;
+    background-position:50% 0;
+    background-repeat: repeat-x;
+}
+
+.utility{
+    color: white;
+    font-weight: bold;
+}
+
+
+/*******************
+     event Table
+********************/
+
+table.event {
+    border: 0px;
+}
+
+td.event {
+    color: #DDDDDD;
+}
+
+tr.False {
+    background-color: #242d3b;
+}
+
+
+tr.True {
+    background-color: #2a3545;
+}
+
+.daybr {
+    background-color: #141921;
+    background-color:#111111;
+    background-color:#181818;
+    border: 0px;
+}
+
