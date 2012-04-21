@@ -15,6 +15,7 @@ from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 from pylowiki.lib.db.rating import getRatingByID
+from pylowiki.lib.db.tag import Tag
 
 from pylowiki.lib.utils import urlify
 
@@ -127,7 +128,7 @@ class WorkshopController(BaseController):
               w['publicTags'] = ','.join(publicTags)
            else:
               werror = 1
-              werrMsg += 'Tags '
+              werrMsg += 'System Tags '
    
            if 'memberTags' in request.params:
               wMemberTags = request.params['memberTags']
@@ -135,12 +136,12 @@ class WorkshopController(BaseController):
               wMemberTags = wMemberTags.rstrip()
               if wMemberTags == '' or wMemberTags == 'none':
                  werror = 1
-                 werrMsg += 'Tags '
+                 werrMsg += 'Member Tags '
               else:
                  w['memberTags'] = wMemberTags
            else:
               werror = 1
-              werrMsg += 'Tags '
+              werrMsg += 'Member Tags '
 
            if 'startWorkshop' in request.params:
               startButtons = request.params.getall('startWorkshop')
@@ -151,6 +152,10 @@ class WorkshopController(BaseController):
                  endTime = datetime.datetime.now()
                  endTime = endTime.replace(year = endTime.year + 1)
                  w['endTime'] = endTime.ctime()
+                 for wTag in request.params.getall('publicTags'):
+                    t = Tag('system', wTag, w.id, w.owner)
+                 for mTag in wMemberTags.split(','):
+                    t = Tag('member', mTag, w.id, w.owner)
 
         commit(w)
 
