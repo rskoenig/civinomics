@@ -147,7 +147,12 @@
  %if c.conf['allow.comments'] == 'true':
 
   ##<span class="gray"><a href="#">${discussion['numComments']} comments</a> | Last edited on ${c.lastmoddate} by ${c.lastmoduser['name']} | <a href="#">Suggest edits</a></span>
-  <span class="gray"><a href="#">${discussion['numComments']} comments</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
+  % if discussion['numComments'] == '1':
+     <% commentString = 'comment' %>
+  % else:
+     <% commentString = 'comments' %>
+  % endif
+  <span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   <h3>Comments</h3>
     <div id="comments" class="left">
         <form action="/addComment" method="post">

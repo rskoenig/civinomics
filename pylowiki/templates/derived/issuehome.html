@@ -39,7 +39,7 @@
                     <strong>Goals:</strong> ${c.w['goals']}
                     
                     <br /> <br />
-                    <strong>Tags:</strong> ${c.w['publicTags']} ${c.w['memberTags']}
+                    <strong>Tags:</strong> ${c.w['publicTags']}, ${c.w['memberTags']}
                     <br /> <br />
                     <strong>Who can participate:</strong> residents of ${c.w['publicScopeTitle']}
                     <br /> <br />
@@ -140,7 +140,12 @@
                         		</div>
                             % endif
                             <br />
-                            <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${discussion["numComments"]} comments</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
+                            % if discussion['numComments'] == '1':
+                               <% commentString = 'comment' %>
+                            % else:
+                               <% commentString = 'comments' %>
+                            % endif
+                            <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${discussion["numComments"]} ${commentString}</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
                         </li>
                         <% counter += 1 %>
                     % endfor
@@ -151,8 +156,13 @@
             <div class="col three left">
             <h3 id="survey">Info & Feedback</h3>
             <div>
+            % if c.discussion['numComments'] == '1':
+               <% commentString = 'comment' %>
+            % else:
+               <% commentString = 'comments' %>
+            % endif
             Learn more about the workshop and facilitation process.<br /><br />
-            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">${c.discussion['numComments']} comments</a> | <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Give feedback.</a><br />
+            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">${c.discussion['numComments']} ${commentString}</a> | <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Give feedback.</a><br />
             </div> 
             % if c.facilitators == False  or len(c.facilitators) == 0:
                 <h3 id="survey">No Facilitators!</h3>
@@ -167,7 +177,8 @@
                     % if c.isAdmin or c.isFacilitator:
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages">Add slideshow images</a><br />
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow">Edit slideshow</a><br />
-                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSettings">Configure workshop</a><br /><br />
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSettings">Configure workshop</a><br />
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/admin">Admin workshop</a><br /><br />
                     % endif
                 % for facilitator in c.facilitators:
                      <% fuser = getUserByID(facilitator.owner)%>

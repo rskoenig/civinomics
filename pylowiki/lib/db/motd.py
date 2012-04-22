@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 # Getters
 def getMessage( parentID ):
     try:
-        return meta.Session.query( Thing ).filter_by( objType = 'motd' ).filter(Thing.data.any(with_characteristic('parentID', parentID))),one()
+        return meta.Session.query( Thing ).filter_by( objType = 'motd' ).filter(Thing.data.any(with_characteristic('parentID', parentID))).one()
     except sa.orm.exc.NoResultFound:
         return False
 

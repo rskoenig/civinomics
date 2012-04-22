@@ -16,6 +16,7 @@ from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag
+from pylowiki.lib.db.motd import MOTD, getMessage
 
 from pylowiki.lib.utils import urlify
 
@@ -156,6 +157,7 @@ class WorkshopController(BaseController):
                     t = Tag('system', wTag, w.id, w.owner)
                  for mTag in wMemberTags.split(','):
                     t = Tag('member', mTag, w.id, w.owner)
+                 m = MOTD('Welcome to the workshop!', w.id, w.id)
 
         commit(w)
 
@@ -183,6 +185,19 @@ class WorkshopController(BaseController):
         c.title = 'Add slideshow'
         #return render('/derived/addSlideshow.html')
         return redirect('/workshops/%s/%s'%(w.w['urlCode'], w.w['url']))
+    
+    def adminWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Administrate Workshop"
+
+        w = getWorkshop(code, urlify(url))
+        m = getMessage(w.id)
+         
+        motd = request.params['motd']
+        m['data'] = motd
+        commit(m)
+        return redirect('/workshops/%s/%s'%(w['urlCode'], w['url']))
     
     def display(self, id1, id2):
         code = id1
@@ -324,8 +339,26 @@ class WorkshopController(BaseController):
         c.title = c.w['title']
 
         # make sure they can actually do this
-        if isFacilitator(c.authuser.id, c.w.id):
+        if isFacilitator(c.authuser.id, c.w.id) or int(c.authuser['accessLevel']) >= 100:
             return render('/derived/issue_settings.html')
+        else:
+            return render('/derived/404.html')
+    
+    @h.login_required
+    def admin(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.w = getWorkshop(code, urlify(url))
+        c.title = c.w['title']
+        c.motd = getMessage(c.w.id)
+        # kludge for now
+        if not c.motd:
+           c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+
+        # make sure they can actually do this
+        if isFacilitator(c.authuser.id, c.w.id) or int(c.authuser['accessLevel']) >= 100:
+            return render('/derived/issue_admin.html')
         else:
             return render('/derived/404.html')
     
