@@ -8,8 +8,6 @@ from dbHelpers import commit, with_characteristic
 def getDB():
     return _mysql.connect("localhost","civinomics","Sisyphus3","geo")
 
-    return url
-
 def geoDeurlify( something ):
     deurl = something.replace('-', ' ')
     return deurl 
@@ -63,9 +61,9 @@ def getGeoScope( postalCode, country ):
         return geoScope
 
 
-def getGeoInfo(userID):
+def getGeoInfo(ownerID):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'geo').filter_by(owner = userID).all()
+        return meta.Session.query(Thing).filter_by(objType = 'geo').filter_by(owner = ownerID).all()
     except sa.orm.exc.NoResultFound:
         return False
 
@@ -96,8 +94,8 @@ def getScopeTitle(postalCode, country, scope):
            return 'hmmm, I dunno'
         
 class GeoInfo(object):
-    def __init__(self, postalCode, country, userID ):
-        g = Thing('geo', userID)
+    def __init__(self, postalCode, country, ownerID ):
+        g = Thing('geo', ownerID)
         
         g['postalCode'] = postalCode
         g['deactivated'] = '0000-00-00'

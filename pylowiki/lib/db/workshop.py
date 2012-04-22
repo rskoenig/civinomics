@@ -57,7 +57,7 @@ def getParticipantsByID(id):
         return False
 
 def isScoped(user, workshop):
-   upostal = user['zipCode']
+   upostal = user['postalCode']
    if workshop['scopeMethod'] == 'publicPostalList':
       pstring = workshop['publicPostalList']
       pstring = pstring.replace(' ', ',')
@@ -110,8 +110,8 @@ class Workshop(object):
         w['publicTags'] = 'none'
         w['memberTags'] = 'none'
         w['publicScope'] = 10
-        w['publicScopeTitle'] = 'postal code ' + owner['zipCode']
-        w['publicPostal'] = owner['zipCode']
+        w['publicScopeTitle'] = 'postal code ' + owner['postalCode']
+        w['publicPostal'] = owner['postalCode']
         w['publicPostalList'] = ''
         # one of publicScope, publicPostalList. privateDomain, privateEmailList
         w['scopeMethod'] = 'publicScope'
