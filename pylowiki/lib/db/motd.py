@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import logging
+import datetime
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
@@ -31,8 +32,9 @@ class MOTD(object):
     def __init__(self, data, ownerID, parentID):
         m = Thing('motd', ownerID)
         m['parentID'] = parentID
-        m['disabled'] = False
+        m['enabled'] = True
         m['data'] = data
-        m['lastModified'] = '0000-00-00'
+        mCreated = datetime.datetime.now()
+        m['lastModified'] = mCreated.ctime()
         commit(m)
 

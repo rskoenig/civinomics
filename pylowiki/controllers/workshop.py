@@ -194,8 +194,27 @@ class WorkshopController(BaseController):
         w = getWorkshop(code, urlify(url))
         m = getMessage(w.id)
          
-        motd = request.params['motd']
-        m['data'] = motd
+        werror = 0
+        werrMsg = 'Incomplete information: '
+
+        if 'motd' in request.params:
+           motd = request.params['motd']
+           m['data'] = motd
+        else:
+           werror = 1
+           werrMsg += 'Message text '
+            
+        if 'enable' in request.params:
+           enable = request.params['enable']
+           if enable == '1' or enable == '0':
+              m['enabled'] = enable
+           else:
+              werror = 1
+              werrMsg += 'Publish message or not '
+        else:
+           werror = 1
+           werrMsg += 'Publish message or not '
+            
         commit(m)
         return redirect('/workshops/%s/%s'%(w['urlCode'], w['url']))
     
@@ -259,6 +278,18 @@ class WorkshopController(BaseController):
            c.discussion = getDiscussionByID(c.w['feedbackDiscussion_id'])
         else:
            c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
+        c.motd = getMessage(c.w.id)
+        # kludge for now
+        if c.motd == False:
+           c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+
+        """ Grab first 250 chars as a summary """
+        if len(c.motd['data']) <= 140:
+            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+        else:
+            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
+
 
         return render('/derived/issuehome.html')
 
@@ -353,8 +384,15 @@ class WorkshopController(BaseController):
         c.title = c.w['title']
         c.motd = getMessage(c.w.id)
         # kludge for now
-        if not c.motd:
+        if c.motd == False:
            c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+
+        """ Grab first 250 chars as a summary """
+        if len(c.motd['data']) <= 140:
+            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+        else:
+            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
+
 
         # make sure they can actually do this
         if isFacilitator(c.authuser.id, c.w.id) or int(c.authuser['accessLevel']) >= 100:

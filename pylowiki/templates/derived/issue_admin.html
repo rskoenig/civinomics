@@ -17,6 +17,14 @@
     <br />
     <textarea name="motd" rows="5" cols="50">${c.motd['data']}</textarea>
     <br /><br />
+    % if c.motd['enabled'] == '1':
+       <% pChecked = 'checked' %>
+       <% uChecked = '' %>
+    % else:
+       <% pChecked = '' %>
+       <% uChecked = 'checked' %>
+    % endif
+    <input type=radio name="enable" value="1" ${pChecked}> Publish&nbsp;&nbsp;&nbsp;<input type=radio name="enable" value="0" ${uChecked}> Unpublish
     <br /><br />
     <button type="submit" class="gold">Save Changes</button>
 </form>

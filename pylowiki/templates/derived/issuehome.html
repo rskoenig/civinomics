@@ -62,7 +62,7 @@
         <div id="cols">
             <div class="col one left">
                 <h3>news 
-                 % if c.isScoped:
+                 % if c.isScoped or c.isFacilitator:
                         <span class="right">add resource<a href="#" class="media plus">+</a></span>
                  %endif
                  </h3>
@@ -94,7 +94,7 @@
             </div><!-- .col one -->
             <div class="col two left">
                 <h3>suggestions 
-                % if c.isScoped:
+                % if c.isScoped or c.isFacilitator:
                   <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span>
                 % endif
                 </h3>
@@ -189,6 +189,15 @@
                      % endif
                          ##<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/${fuser['pictureHash']}.thumbnail" />&nbsp;${fuser['name']}</a>
                 % endfor
+                % if c.motd['enabled'] == '1':
+                  <br />
+                  <br />
+                  <strong>Facilitator message:</strong>
+                  <br />
+                  ${c.motd['messageSummary']}
+                  <br />
+                  <br />
+                % endif
              % endif
                 </div>
                 <ul class="invite suggest share">
