@@ -359,6 +359,11 @@ class WorkshopController(BaseController):
                 if tup[0] == c.w.id:
                     c.rating = getRatingByID(tup[1])
 
+        c.motd = getMessage(c.w.id)
+        # kludge for now
+        if c.motd == False:
+           c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+
         return render("/derived/issue_feedback.html")
     
     @h.login_required
