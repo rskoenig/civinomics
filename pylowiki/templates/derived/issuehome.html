@@ -120,16 +120,11 @@
 								<div id="ratings${counter}" class="gray rating wide" style="padding-bottom:15px;">
                         			<div id="overall_slider" class="ui-slider-container">
                         			    % if item.rating:
-										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data="0_${item['urlCode']}_${item['url']}_${item.rating['rating']}_overall_true_rateSuggestion"></div>
+										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data1="0_${item['urlCode']}_${item.rating['rating']}_overall_true_rateSuggestion" data2="${item['url']}"></div>
 										% else:
-										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data="0_${item['urlCode']}_${item['url']}_0_overall_false_rateSuggestion"></div>
+										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data1="0_${item['urlCode']}_0_overall_false_rateSuggestion" data2="${item['url']}"></div>
 										% endif
 									</div>
-									<script type="text/javascript">
-                            			$(document).ready(function(){
-                                			$(".small_slider").jColorSlider();
-                            			});
-                            		</script>
                             		<%doc>
 									<br/>                          		
                             		<br/>
@@ -144,6 +139,13 @@
                         </li>
                         <% counter += 1 %>
                     % endfor
+                    % if "user" in session:
+						<script type="text/javascript">
+							$(document).ready(function(){
+								$(".small_slider").jColorSlider();
+							});
+						</script>
+					% endif
                 % endif
                 </ul>
                 

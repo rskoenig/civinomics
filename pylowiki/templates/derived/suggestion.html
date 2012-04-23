@@ -59,7 +59,7 @@
                         % if c.rating:
                             <div class = "gray rating wide">
                                 <div id="overall_slider" class="ui-slider-container">
-									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data="0_${c.s['urlCode']}_${c.s['url']}_${c.rating['rating']}_overall_true_rateSuggestion"></div>
+									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data1="0_${c.s['urlCode']}_${c.rating['rating']}_overall_true_rateSuggestion" data2="${c.s['url']}"></div>
 								</div>
 								<script type="text/javascript">
                                 	$(document).ready(function(){
@@ -92,7 +92,7 @@
                         % else:
                             <div class = "gray rating wide">
                                 <div id="overall_slider" class="ui-slider-container">
-									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data="0_${c.s['urlCode']}_${c.s['url']}_0_overall_false_rateSuggestion"></div>
+									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data1="0_${c.s['urlCode']}_0_overall_false_rateSuggestion" data2="${c.s['url']}"></div>
 								</div>
                                 <script type="text/javascript">
                                 	$(document).ready(function(){
