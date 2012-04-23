@@ -1,4 +1,6 @@
+
 <%inherit file = "/base/template.html"/>
+
 <SCRIPT LANGUAGE="JavaScript">
    function clearZipList () {
      document.edit_issue.publicPostalList.value = '';
@@ -6,9 +8,6 @@
    }    
 </SCRIPT>
 
-<% counter = 1 %> 
-<% numrows = 10 %>
-<% numcols = 10 %>
 % if c.w['startTime'] == '0000-00-00':
      <% wstarted = 0 %>
 % else:
@@ -18,6 +17,8 @@
     <div class="banner_div">
         <h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h2>
     </div>     
+    <br /> <br />
+    <br /> <br />
 
 <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/editWorkshopHandler" enctype="multipart/form-data" method="post" >
 
@@ -182,12 +183,4 @@
         });
     </script>
     
-    <script>
-        $(function(){
-            $("#photo_container").slides({
-                preload: true,
-                generatePagination: false
-            });
-        });
-    </script>
 </%def>

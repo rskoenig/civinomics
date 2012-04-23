@@ -54,6 +54,9 @@
                             % if int(c.authuser['accessLevel']) >= 200:
                                 ##<a href = "/moderation">Modding</a>
                             % endif
+                            % if int(c.authuser['accessLevel']) >= 200:
+                                <a href = "/systemAdmin">Sys Admin</a>
+                            % endif
                             <a href = "/account/edit"> Edit </a>
                             <a href="/login/logout">Logout</a>
                         </div>

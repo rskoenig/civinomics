@@ -161,7 +161,7 @@
             % else:
                <% commentString = 'comments' %>
             % endif
-            Learn more about the workshop and facilitation process.<br /><br />
+            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Learn more</a> about the workshop and facilitation process.<br /><br />
             <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">${c.discussion['numComments']} ${commentString}</a> | <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Give feedback.</a><br />
             </div> 
             % if c.facilitators == False  or len(c.facilitators) == 0:

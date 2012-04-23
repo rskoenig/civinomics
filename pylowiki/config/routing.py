@@ -102,6 +102,16 @@ def make_map():
     # Workshop feedback
     map.connect('/workshop/{id1}/{id2}/feedback', controller = 'workshop', action = 'feedback', id1 = '{id1}', id2 = '{id2}')
 
+    # System Administration
+    map.connect('/systemAdmin', controller = 'systemAdmin', action = 'index')
+    map.connect('/systemAdmin/', controller = 'systemAdmin', action = 'index')
+
+    # System admin submit handler
+    map.connect('/systemAdmin/handler', controller = 'systemAdmin', action = 'handler')
+    map.connect('/systemAdmin/handler/', controller = 'systemAdmin', action = 'handler')
+
+
+
     # Resources
     map.connect('/news/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/news/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
