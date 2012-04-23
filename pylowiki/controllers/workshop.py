@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 class WorkshopController(BaseController):
 
     def addWorkshop(self):
-        if c.authuser['accessLevel'] >= 100:
+        if int(c.authuser['accessLevel']) >= 100:
         #if self._checkAccess(100):
             #return render('/derived/createIssue.mako')
             c.title = "Create Workshop"
@@ -110,9 +110,9 @@ class WorkshopController(BaseController):
            werrMsg = 'No Workshop Scope or PostalList'
 
         if w['scopeMethod'] == 'publicScope':
-           w['scopeTitle'] = getScopeTitle(w['publicPostal'], 'United States', w['publicScope'])
+           w['publicScopeTitle'] = getScopeTitle(w['publicPostal'], 'United States', w['publicScope'])
         elif w['scopeMethod'] == 'publicPostalList':
-           w['scopeTitle'] = 'postal codes of ' + w['publicPostalList']
+           w['publicScopeTitle'] = 'postal codes of ' + w['publicPostalList']
 
         if 'publicTags' in request.params:
            publicTags = request.params.getall('publicTags')
@@ -214,7 +214,14 @@ class WorkshopController(BaseController):
                 item.rating = getRatingByID(l[index][1])
             else:
                 item.rating = False
-        
+
+        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
+        if 'feedbackDiscussion_id' in c.w:
+           c.discussion = getDiscussionByID(c.w['feedbackDiscussion_id'])
+        else:
+           c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
         return render('/derived/issuehome.html')
 
     def background(self, id1, id2):
@@ -249,6 +256,41 @@ class WorkshopController(BaseController):
         c.lastmoduser = getUserByID(r.owner)
         
         return render('/derived/issuebg.html')
+
+    def feedback(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.w = getWorkshop(code, urlify(url))
+        r = get_revision(int(c.w['mainRevision_id']))
+        c.lastmoddate = r.date
+        c.lastmoduser = getUserByID(r.owner)
+
+        c.title = c.w['title']
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.facilitators = getFacilitators(c.w.id)
+        c.isScoped = isScoped(c.authuser, c.w)
+
+        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
+        if 'feedbackDiscussion_id' in c.w:
+           c.discussion = getDiscussionByID(c.w['feedbackDiscussion_id'])
+        else:
+           c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
+        c.rating = False
+        if 'ratedThings_workshop_overall' in c.authuser.keys():
+            """
+                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
+                a         ->    rated Thing's ID  (What was rated) 
+                b         ->    rating Thing's ID (The rating object)
+            """
+            l = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
+            for tup in l:
+                if tup[0] == c.w.id:
+                    c.rating = getRatingByID(tup[1])
+
+        return render("/derived/issue_feedback.html")
     
     @h.login_required
     def editSettings(self, id1, id2):

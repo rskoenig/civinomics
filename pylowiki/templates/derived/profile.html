@@ -5,10 +5,10 @@
     from pylowiki.lib.db.facilitator import isFacilitator
 %>
         	<div id="profileside" class="col left">
-                % if c.authuser['pictureHash'] == 'flash':
+                % if c.user['pictureHash'] == 'flash':
                   <img src="/images/avatars/flash.profile" width="200"/>
                 % else:
-                  <img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" width="200"/>
+                  <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" width="200"/>
                 % endif
         		##<img src="/images/avatars/${c.user['pictureHash']}.profile" width="200" />
         		<h3>Where I Call Home</h3>

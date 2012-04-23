@@ -134,7 +134,7 @@
 
 ## Main function that gets called by the template
 <%def name="comments( type )">
- % if type == "background":
+ % if type == "background" or type == "feedback":
     <% 
         discussion = c.discussion
     %>
@@ -159,7 +159,7 @@
                 <input type="hidden" id="url" name="suggestionCode" value="${c.s['urlCode']}" />
                 <input type="hidden" id="url" name="workshopCode" value="${c.w['urlCode']}" />
                 <input type="hidden" id="url" name="workshopURL" value="${c.w['url']}" />
-            % elif type == "background":
+            % elif type == "background" or type == "feedback":
                 <input type="hidden" id="url" name="workshopCode" value="${c.w['urlCode']}" />
                 <input type="hidden" id="url" name="workshopURL" value="${c.w['url']}" />
             % endif

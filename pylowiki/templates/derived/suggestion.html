@@ -30,7 +30,7 @@
 				        </span>
 				    </p>
 		            <p class="clr suggestion_summary"></p>
-		            	% if c.authuser.id == c.s.owner or int(c.authuser.accessLevel) >= 200:
+		            	% if c.authuser.id == c.s.owner or int(c.authuser['accessLevel']) >= 200:
                             ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
                             <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
                             <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
@@ -59,7 +59,7 @@
                         % if c.rating:
                             <div class = "gray rating wide">
                                 <div id="overall_slider" class="ui-slider-container">
-									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data="0_${c.s['urlCode']}_${c.s['url']}_${c.rating['rating']}_overall_true"></div>
+									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data="0_${c.s['urlCode']}_${c.s['url']}_${c.rating['rating']}_overall_true_rateSuggestion"></div>
 								</div>
 								<script type="text/javascript">
                                 	$(document).ready(function(){
@@ -92,7 +92,7 @@
                         % else:
                             <div class = "gray rating wide">
                                 <div id="overall_slider" class="ui-slider-container">
-									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data="0_${c.s['urlCode']}_${c.s['url']}_0_overall_false"></div>
+									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data="0_${c.s['urlCode']}_${c.s['url']}_0_overall_false_rateSuggestion"></div>
 								</div>
                                 <script type="text/javascript">
                                 	$(document).ready(function(){
