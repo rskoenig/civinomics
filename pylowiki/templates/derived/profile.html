@@ -206,15 +206,15 @@
                            % for workshop in c.facilitatorWorkshops:
                                <ul class="left gray clr">
                                % if workshop['mainImage_hash'] == 'supDawg':
-                                 <li>
-                                 <div><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></div>
-                                 <div><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></div>
-                                 </li>
+                                 <ul>
+                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></li>
+                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
+                                 </ul>
                                % else:
-                                 <li>
-                                 <div><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></div>
-                                 <div><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></div>
-                                 </li>
+                                 <ul>
+                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></li>
+                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
+                                 </ul>
                                % endif
                                </ul>
                            % endfor

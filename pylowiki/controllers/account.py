@@ -16,6 +16,7 @@ from pylowiki.lib.db.user import get_user
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getUserFacilitators
 from pylowiki.lib.db.workshop import getWorkshopByID
+from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, unfollow
 
 
 from hashlib import md5
@@ -38,6 +39,8 @@ class AccountController(BaseController):
         for f in fList:
            wID = f['workshopID']
            c.facilitatorWorkshops.append(getWorkshopByID(wID))
+
+        followers = getUserFollowers(c.user.id)
 
         return render("/derived/profile.html")
     
