@@ -22,12 +22,10 @@
         </td></tr></table>
         <div style="display:none; text-align:center;" id="textareadiv${thisID}">
             <br />
-            <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment.data}</textarea>
+            <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment['data']}</textarea>
             <div style="align:right;text-align:right;">
-                Optional remark: <input type="text" id="remark${thisID}"  name="remark${thisID}" class="text tiny" placeholder="optional remark"/> 
-            
-                ${h.submit('submit', 'Save')}
-                <input type="text" id="sremark"  name="sremark" class="text" />
+                <button type="submit" name = "submit" value = "submit" class="right green">Submit</button>
+                ##${h.submit('submit', 'Save')}
                 <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
             </div>
         </div>
@@ -65,19 +63,6 @@
         """
         avgRating = 0
     %>
-    <div class="basic_${counter + comment.id}" data="${avgRating}_${comment.id}_${userRating}"></div> 
-    <script type="text/javascript">
-    $(document).ready(function(){
-        $(".basic_${counter + comment.id}").jRating({
-            ratingType: "comment",
-            type: "small"
-        });
-    });
-    </script>
-    ##% if comment['avgRating'] != None:
-        <div class = "avgRating_${comment.id}">Average rating: ${avgRating}</div>
-        <div class = "yourRating_${comment.id}">Your rating: ${userRating} </div>
-    ##% endif
     <br/>
 </%def>
 
@@ -93,12 +78,17 @@
             
             </div><!-- comment_data -->
             <div class="flag content left">
-                <form action="" class="left wide">
-                    <span class="dark-text">Please explain why you are flagging this content:</span>
-                    <br />
-                    <textarea name="flag" class="content_feedback"></textarea>
-                    <button type="submit" class="green">Submit</button>
-                </form>
+                ##<form action="/flagComment/${comment.id}" class="left wide">
+                    <span class="dark-text">Are you sure? </span>
+                    <span>
+                        <a href="/flagComment/${comment.id}" style="color:red;" class = "flagComment">
+                            Yes
+                        </a>
+                    </span>
+                    <span id = 'flagged_${comment.id}'>
+                        
+                    </span>
+                ##</form>
             </div><!-- flag_content -->
             <div class="reply content left">
                 <form action="/addComment">
@@ -146,7 +136,6 @@
  % endif
  %if c.conf['allow.comments'] == 'true':
 
-  ##<span class="gray"><a href="#">${discussion['numComments']} comments</a> | Last edited on ${c.lastmoddate} by ${c.lastmoduser['name']} | <a href="#">Suggest edits</a></span>
   <span class="gray"><a href="#">${discussion['numComments']} comments</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   <h3>Comments</h3>
     <div id="comments" class="left">
@@ -169,7 +158,9 @@
             
             <textarea rows="4" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup" style="width:500px;"></textarea>  
             <div id="comment-preview-div"></div>
-            <div style="align:right; text-align:right; padding-right:10px;">${h.submit('submit', 'Comment')}</div>
+            <div style="align:right; text-align:right; padding-right:10px;">
+                <button type="submit" class="green" name = "submit" value = "reply">Submit</button>
+            </div>
             <br />
             % else:
             <h3 class="utility"> 
@@ -186,10 +177,8 @@
                 curDepth = 0
                 if 'children' in discussion.keys():
                     recurseCommentTree(discussion, counter, type, maxDepth, curDepth)
-                    
             %>
         </ul>
-  ##<div id="show-comment"><a href="javascript: toggle('comment-section', 'show-comment-link', 'Show all ${discussion['numComments']} comments')" id="show-comment-link" style="font-size: 12px;">Show all ${discussion['numComments']} comments</a></div>
  
  %endif
 
@@ -201,13 +190,9 @@
             return
         if type(tree) == type(1):
             tree = getComment(tree)
-            log.info('Comment %s being processed now' % tree)
-            #return
-        #if curDepth >= maxDepth or tree['children'] == 0 or len(tree['children'].split(',')) < 1:
         if curDepth >= maxDepth or tree['children'] == 0:
             return
         for child in [int(item) for item in tree['children'].split(',')]:
-            log.info('children: %s' % tree['children'])
             # Hack to resolve slight difference between discussion objects and comment objects
             if type(child) == type(1L):
                 child = tree.children[child]
@@ -218,7 +203,6 @@
                 recurseCommentTree(child, counter, commentType, maxDepth, curDepth + 1)
             except:
                 raise
-                #log.info('Error with comment %s, it has children %s'%(tree.id, tree.children[0].id))
     %>
 </%def>
 

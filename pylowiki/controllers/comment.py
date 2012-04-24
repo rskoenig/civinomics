@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+log = logging.getLogger(__name__)
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -7,20 +8,31 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.comments import addDiscussion, addComment, editComment
 
-#from pylowiki.model import commit, Event, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment
 from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.comment import getComment
+from pylowiki.lib.db.flag import Flag, isFlagged
 
-log = logging.getLogger(__name__)
-
-#from pylowiki.model import commit_comment, disable_comment, get_comment
-#from pylowiki.model import commit_comment, getComment
 import pylowiki.lib.helpers as h
 
+import simplejson as json
+
 class CommentController(BaseController):
+
+    @h.login_required
+    def flagComment(self, id1):
+        commentID = id1
+        comment = getComment(commentID)
+        if not comment:
+            return json.dumps({'id':commentID, 'result':'ERROR'})
+        if not isFlagged(comment, c.authuser):
+            f = Flag(comment, c.authuser)
+            return json.dumps({'id':commentID, 'result':"Successfully flagged!"})
+        else:
+            return json.dumps({'id':commentID, 'result':"Already flagged!"})
 
     @h.login_required
     def addComment(self):
