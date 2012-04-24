@@ -6,14 +6,13 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.comments import addDiscussion, addComment, editComment
 
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.comment import getComment
+from pylowiki.lib.db.comment import getComment, editComment
 from pylowiki.lib.db.flag import Flag, isFlagged
 
 import pylowiki.lib.helpers as h
@@ -120,15 +119,23 @@ class CommentController(BaseController):
                         id    ->    The comment id
         """
         commentID = id
-        start = 1000 # starting of counter in commentsCustom.mako
+        start = 0 # starting of counter in commentsCustom.mako
         thisID = start + int(id)
         data = request.params['textarea' + str(thisID)]
         discussionID = request.params['discussionID']
         comment = editComment(commentID, discussionID, data)
+        d = getDiscussionByID(discussionID)
         
         if not comment:
             h.flash('Comment edit was NOT saved!', 'error')
-            return redirect('/issue/%s' % comment.page.url)
+            return redirect('/workshop/%s/%s' % (d['workshopCode'], d['workshopURL']))
         else:
             h.flash('Comment edit saved!', 'success')
-            return redirect('/issue/%s' % comment.page.url)
+            if d['discType'] == 'background':
+                return redirect('/workshop/%s/%s/background' %(d['workshopCode'], d['workshopURL']))
+            elif d['discType'] == 'feedback':
+                return redirect('/workshop/%s/%s/feedback' %(d['workshopCode'], d['workshopURL']))
+            elif d['discType'] == 'suggestion':
+                return redirect('/workshop/%s/%s/suggestion/%s/%s' %(d['workshopCode'], d['workshopURL'], d['suggestionCode'], d['suggestionURL']))
+            else:
+                return redirect('/')

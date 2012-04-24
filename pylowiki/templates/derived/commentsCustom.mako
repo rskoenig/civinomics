@@ -9,7 +9,11 @@
 
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
-	<span><img src="/images/avatars/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> says: </span>
+    % if author['pictureHash'] == 'flash':
+        <span><img src="/images/avatars/flash.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> says: </span>
+    % else:
+        <span><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> says: </span>
+    % endif
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
@@ -172,7 +176,7 @@
         <h4>Comments</h4>
         <ul id="featuredComments">
             <% 
-                counter = 1000
+                counter = 0
                 maxDepth = 4
                 curDepth = 0
                 if 'children' in discussion.keys():

@@ -140,10 +140,12 @@ class Workshop(object):
         slideshow['slideshow_order'] = s.s.id
         commit(slideshow)
         
-        d = Discussion('background', owner)
+        #d = Discussion('background', owner)
+        d = Discussion(owner = owner, discType = 'background', attachedThing = w, title = 'background')
         w['backgroundDiscussion_id'] = d.d.id
 
-        f = Discussion('feedback', owner)
+        #f = Discussion('feedback', owner)
+        f = Discussion(owner = owner, discType = 'feedback', attachedThing = w, title = 'background')
         w['feedbackDiscussion_id'] = f.d.id
 
         commit(w)

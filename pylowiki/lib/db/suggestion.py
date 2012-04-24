@@ -70,7 +70,7 @@ class Suggestion(object):
         s['mainRevision_id'] = r.r.id
         
         # Should this be set to the owner, or be ownerless?
-        d = Discussion('suggestion')
+        d = Discussion(title='suggestion', attachedThing = s, workshop = workshop, discType = 'suggestion')
         s['discussion_id'] = d.d.id
         p = Page(title, owner, s, data)
         if 'numSuggestions' not in owner.keys():
