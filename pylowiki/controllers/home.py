@@ -27,7 +27,6 @@ class HomeController(BaseController):
             return render('/base/template.html')
         """
         if session.get('user'):
-            #return render('/derived/issuehome.html')
             return redirect('/workshops')
         else:
             c.site_base_url = config['app_conf']['site_base_url']

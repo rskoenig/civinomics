@@ -331,7 +331,6 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
-        r = get_revision(int(c.w['mainRevision_id']))
         c.lastmoddate = r.date
         c.lastmoduser = getUserByID(r.owner)
 
@@ -339,8 +338,6 @@ class WorkshopController(BaseController):
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitators(c.w.id)
         c.isScoped = isScoped(c.authuser, c.w)
-
-        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
 
         if 'feedbackDiscussion_id' in c.w:
            c.discussion = getDiscussionByID(c.w['feedbackDiscussion_id'])
