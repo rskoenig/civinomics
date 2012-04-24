@@ -14,6 +14,9 @@ from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
 from pylowiki.lib.db.user import get_user
 from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.facilitator import getUserFacilitators
+from pylowiki.lib.db.workshop import getWorkshopByID
+
 
 from hashlib import md5
 
@@ -29,6 +32,13 @@ class AccountController(BaseController):
         c.user = get_user(code, url)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
+
+        fList = getUserFacilitators(c.user.id)
+        c.facilitatorWorkshops = []
+        for f in fList:
+           wID = f['workshopID']
+           c.facilitatorWorkshops.append(getWorkshopByID(wID))
+
         return render("/derived/profile.html")
     
     @h.login_required

@@ -201,6 +201,25 @@
 		        	</ul>
 		        	<br />
 				</div><!-- profiletop -->
+                        % if c.facilitatorWorkshops:
+	        	   <h3>Workshops I Am Facilitating</h3>
+                           % for workshop in c.facilitatorWorkshops:
+                               <ul class="left gray clr">
+                               % if workshop['mainImage_hash'] == 'supDawg':
+                                 <li>
+                                 <div><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></div>
+                                 <div><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></div>
+                                 </li>
+                               % else:
+                                 <li>
+                                 <div><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></div>
+                                 <div><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></div>
+                                 </li>
+                               % endif
+                               </ul>
+                           % endfor
+                            </ul>
+                        % endif
 	        	<h3>Points</h3>
 	        	<div id="points" class="left clr">
 	        		<p class="darkorange left">

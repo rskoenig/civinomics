@@ -331,6 +331,7 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
+        r = get_revision(int(c.w['mainRevision_id']))
         c.lastmoddate = r.date
         c.lastmoduser = getUserByID(r.owner)
 
