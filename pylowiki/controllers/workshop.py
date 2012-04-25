@@ -17,6 +17,7 @@ from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag
 from pylowiki.lib.db.motd import MOTD, getMessage
+from pylowiki.lib.db.follow import Follow, getFollow, isFollowing
 
 from pylowiki.lib.utils import urlify
 
@@ -43,6 +44,34 @@ class WorkshopController(BaseController):
         else:
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
+
+    def followHandler(self, id1, id2):
+        code = id1
+        url = id2
+        log.info('followHandler %s %s' % (code, url))
+        w = getWorkshop(code, urlify(url))
+        f = getFollow(c.authuser.id, w.id)
+        if f:
+           ##log.info('f is %s' % f)
+           f['disabled'] = False
+        elif not isFollowing(c.authuser.id, w.id): 
+           f = Follow(c.authuser.id, w.id, 'workshop') 
+           commit(f)
+           
+        return "ok"
+
+    def unfollowHandler(self, id1, id2):
+        code = id1
+        url = id2
+        log.info('unfollowHandler %s %s' % (code, url))
+        w = getWorkshop(code, urlify(url))
+        f = getFollow(c.authuser.id, w.id)
+        if f:
+           ##log.info('f is %s' % f)
+           f['disabled'] = True
+           commit(f)
+           
+        return "ok"
 
     def editWorkshopHandler(self, id1, id2):
         code = id1
@@ -227,6 +256,8 @@ class WorkshopController(BaseController):
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitators(c.w.id)
         c.isScoped = isScoped(c.authuser, c.w)
+        c.isFollowing = isFollowing(c.authuser.id, c.w.id)
+        ##log.info('c.isFollowing is %s' % c.isFollowing)
         if int(c.authuser['accessLevel']) >= 200:
            c.isAdmin = True
         else:

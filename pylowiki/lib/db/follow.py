@@ -35,10 +35,17 @@ def getUserFollows( userID, disabled = False):
     except:
         return False
 
-# is the user following the thing
-def isFollowing( userID, thingID):
+# get the Follow object for this user and thing
+def getFollow( userID, thingID):
     try:
-        f = meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('thingID', workshopID))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('thingID', thingID))).one()
+    except:
+        return False
+
+# is the user following the thing
+def isFollowing(userID, thingID):
+    try:
+        f = meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('thingID', thingID))).all()
         if f:
            return True
         else:

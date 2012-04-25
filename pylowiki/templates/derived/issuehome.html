@@ -56,6 +56,18 @@
                             % endif
                         % endfor
                     </ul><br />
+                    % if not c.isFacilitator:
+                       % if c.isFollowing:
+<div class="button_container following">
+    <button class="btn followButton gold" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Unfollow</button>
+</div>
+                       % else:
+<div class="button_container">
+    <button class="btn followButton gold" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Follow</button>
+</div>
+                       % endif
+                    %endif
+                    <br />
                 </div>
             </div><!-- glance -->
         </div>
@@ -333,6 +345,7 @@
     <script src="/js/slides.min.jquery.js" type="text/javascript"></script>
 	<script src="/js/jquery.cycle.all.js"></script>
 	<script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+    <script src="/js/follow.js" type="text/javascript"></script>
 	<script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
     
     ## Used for the slideshow
