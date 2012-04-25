@@ -45,6 +45,7 @@ class WorkshopController(BaseController):
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
 
+    @h.login_required
     def followHandler(self, id1, id2):
         code = id1
         url = id2
@@ -64,6 +65,7 @@ class WorkshopController(BaseController):
            
         return "ok"
 
+    @h.login_required
     def unfollowHandler(self, id1, id2):
         code = id1
         url = id2
@@ -77,6 +79,7 @@ class WorkshopController(BaseController):
            
         return "ok"
 
+    @h.login_required
     def editWorkshopHandler(self, id1, id2):
         code = id1
         url = id2
@@ -202,6 +205,7 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s'%(w['urlCode'], w['url']))
 
 
+    @h.login_required
     def addWorkshopHandler(self):
         workshopName = request.params['workshopName']
         """
@@ -219,6 +223,7 @@ class WorkshopController(BaseController):
         #return render('/derived/addSlideshow.html')
         return redirect('/workshops/%s/%s'%(w.w['urlCode'], w.w['url']))
     
+    @h.login_required
     def adminWorkshopHandler(self, id1, id2):
         code = id1
         url = id2
