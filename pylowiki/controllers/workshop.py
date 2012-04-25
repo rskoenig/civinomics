@@ -56,8 +56,11 @@ class WorkshopController(BaseController):
            f['disabled'] = False
            commit(f)
         elif not isFollowing(c.authuser.id, w.id): 
+           ##log.info('not isFollowing')
            f = Follow(c.authuser.id, w.id, 'workshop') 
-           commit(f)
+        else:
+           ##log.info('else')
+           f = Follow(c.authuser.id, w.id, 'workshop') 
            
         return "ok"
 

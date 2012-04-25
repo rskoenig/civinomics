@@ -1,4 +1,3 @@
-// The rel attribute is the userID you would want to follow
 
 $('button.followButton').live('click', function(e){
     e.preventDefault();
@@ -9,6 +8,7 @@ $('button.followButton').live('click', function(e){
         urlString = urlString + '/unfollow/';
         $.ajax({
            type : 'POST',
+           async : false,
            url  : urlString
         });
         
@@ -21,6 +21,7 @@ $('button.followButton').live('click', function(e){
         urlString = urlString + '/follow/';
         $.ajax({
            type : 'POST',
+           async : false,
            url  : urlString
         });
                    

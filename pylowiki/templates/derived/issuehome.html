@@ -58,8 +58,8 @@
                     </ul><br />
                     % if not c.isFacilitator:
                        % if c.isFollowing:
-<div class="button_container following">
-    <button class="btn followButton gold" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Unfollow</button>
+<div class="button_container">
+    <button class="btn followButton gold following" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Unfollow</button>
 </div>
                        % else:
 <div class="button_container">

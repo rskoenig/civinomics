@@ -23,7 +23,7 @@ def getUserFollowers( userID, disabled = False):
 
 # Which workshops is the user following
 def getWorkshopFollows( userID, disabled = False):
-    log.info('getWorkshopFollows %s' % userID)
+    ##log.info('getWorkshopFollows %s' % userID)
     try:
         return meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('thingType', 'workshop'))).all()
     except:
