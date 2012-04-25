@@ -48,12 +48,13 @@ class WorkshopController(BaseController):
     def followHandler(self, id1, id2):
         code = id1
         url = id2
-        log.info('followHandler %s %s' % (code, url))
+        ##log.info('followHandler %s %s' % (code, url))
         w = getWorkshop(code, urlify(url))
         f = getFollow(c.authuser.id, w.id)
         if f:
            ##log.info('f is %s' % f)
            f['disabled'] = False
+           commit(f)
         elif not isFollowing(c.authuser.id, w.id): 
            f = Follow(c.authuser.id, w.id, 'workshop') 
            commit(f)
@@ -63,7 +64,7 @@ class WorkshopController(BaseController):
     def unfollowHandler(self, id1, id2):
         code = id1
         url = id2
-        log.info('unfollowHandler %s %s' % (code, url))
+        ##log.info('unfollowHandler %s %s' % (code, url))
         w = getWorkshop(code, urlify(url))
         f = getFollow(c.authuser.id, w.id)
         if f:

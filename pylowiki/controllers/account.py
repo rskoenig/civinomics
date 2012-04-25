@@ -40,6 +40,13 @@ class AccountController(BaseController):
            wID = f['workshopID']
            c.facilitatorWorkshops.append(getWorkshopByID(wID))
 
+        fList = getWorkshopFollows(c.user.id)
+        ##log.info('fList is %s userID is %s'%(fList, c.user.id))
+        c.followingWorkshops = []
+        for f in fList:
+           wID = f['thingID']
+           c.followingWorkshops.append(getWorkshopByID(wID))
+
         followers = getUserFollowers(c.user.id)
 
         return render("/derived/profile.html")

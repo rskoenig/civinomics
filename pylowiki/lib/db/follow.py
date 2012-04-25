@@ -23,6 +23,7 @@ def getUserFollowers( userID, disabled = False):
 
 # Which workshops is the user following
 def getWorkshopFollows( userID, disabled = False):
+    log.info('getWorkshopFollows %s' % userID)
     try:
         return meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('thingType', 'workshop'))).all()
     except:
@@ -45,7 +46,7 @@ def getFollow( userID, thingID):
 # is the user following the thing
 def isFollowing(userID, thingID):
     try:
-        f = meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('thingID', thingID))).all()
+        f = meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('disabled', False))).filter(Thing.data.any(wc('thingID', thingID))).all()
         if f:
            return True
         else:

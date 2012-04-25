@@ -2,7 +2,6 @@
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID
     from pylowiki.lib.db.workshop import getWorkshop
-    from pylowiki.lib.db.facilitator import isFacilitator
 %>
         	<div id="profileside" class="col left">
                 % if c.user['pictureHash'] == 'flash':
@@ -204,6 +203,25 @@
                         % if c.facilitatorWorkshops:
 	        	   <h3>Workshops I Am Facilitating</h3>
                            % for workshop in c.facilitatorWorkshops:
+                               <ul class="left gray clr">
+                               % if workshop['mainImage_hash'] == 'supDawg':
+                                 <ul>
+                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></li>
+                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
+                                 </ul>
+                               % else:
+                                 <ul>
+                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></li>
+                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
+                                 </ul>
+                               % endif
+                               </ul>
+                           % endfor
+                            </ul>
+                        % endif
+                        % if c.followingWorkshops:
+	        	   <h3>Workshops I Am Following</h3>
+                           % for workshop in c.followingWorkshops:
                                <ul class="left gray clr">
                                % if workshop['mainImage_hash'] == 'supDawg':
                                  <ul>
