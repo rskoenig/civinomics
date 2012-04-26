@@ -140,6 +140,8 @@
                         % if c.facilitatorWorkshops:
 	        	   <h3>Workshops I Am Facilitating</h3>
                            <% fLoop = 1 %>
+                           <% fCount = 0 %>
+                           <% fNum = len(c.facilitatorWorkshops) %>
                            % for workshop in c.facilitatorWorkshops:
                                % if fLoop == 1:
                                   <div class="blockcontainer">
@@ -156,15 +158,18 @@
                                % endif
                                 </div><!-- inner block -->
                                <% fLoop += 1 %>
-                               % if fLoop == 4:
+                               % if fLoop == 5 or fCount == fNum - 1:
                                  <% fLoop = 1 %> 
                                  </div><!-- block container -->
-                                 <br/> 
+                                 <br/>
                                % endif
+                               <% fCount += 1 %>
                            % endfor
                         % endif
                         % if c.followingWorkshops:
                            <% fLoop = 1 %>
+                           <% fCount = 0 %>
+                           <% fNum = len(c.followingWorkshops) %>
 	        	   <h3>Workshops I Am Following</h3>
                            % for workshop in c.followingWorkshops:
                                % if fLoop == 1:
@@ -182,14 +187,14 @@
                                % endif
                                 </div><!-- inner block -->
                                <% fLoop += 1 %>
-                               % if fLoop == 4:
+                               % if fLoop == 5 or fCount == fNum - 1:
                                  <% fLoop = 1 %> 
                                  </div><!-- block container -->
                                  <br/> 
                                % endif
+                               <% fCount += 1 %>
                            % endfor
                         % endif
-                        </div>
 	        	<h3>Points</h3>
 	        	<div id="points" class="left clr">
 	        		<p class="darkorange left">
