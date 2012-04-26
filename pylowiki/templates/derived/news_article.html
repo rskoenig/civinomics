@@ -1,0 +1,208 @@
+<%inherit file = "/base/template.html"/>
+
+<%namespace file="/lib/mako_lib.mako" import="return_to" />
+<%namespace file="/derived/commentsCustom.mako" import="comments" />
+
+	    	<div class="banner_div">
+	        	<h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2>
+        	</div>
+			<h3 class="left clr wide">Article: ${c.article['title']}</h3>
+			<iframe src="${c.article['url']}" class="wide">Your browser cannot display this article.</iframe>
+			
+            <div class="left">
+				<ul class="gray related_issues left">
+					Related issues:
+                    <li> No related issues! </li>
+                    <%doc>
+					<li><a href="#">Budget reform,</a></li>
+					<li><a href="#">tax reform,</a></li>
+					<li><a href="#">tort reform,</a></li>
+					<li><a href="#">tart reform,</a></li>
+					<li><a href="#">cake reform,</a></li>
+					<li><a href="#">pie reform,</a></li>
+                    </%doc>
+				</ul>
+			</div>
+			<%doc>
+			<div class="left article_end">
+                ${h.form(h.url(controller = "news", action = "readThis"), method = "post")}
+                <input type = "hidden" name = "articleID" value = "${c.article.id}" />
+                <input type = "hidden" name = "issueID" value = "${c.i.id}" />
+				<button type="submit" class="green" id="readbutton"><img src="/images/book_icon.png" />I Read This</button>
+                ${h.end_form()}
+			</div>
+			</%doc>
+			<div class="left gray article_end">
+				<div class="gray rating wide">
+					<ul class="star-rating">
+						<li class="no-rating">Not yet voted.</li>
+						<li><a href="#" class="one-star">1</a></li>
+						<li><a href="#" class="two-star">2</a></li>
+						<li><a href="#" class="three-star">3</a></li>
+						<li><a href="#" class="four-star">4</a></li>
+						<li><a href="#" class="five-star">5</a></li>
+					</ul>
+					<p class="right you-rate">Rate this article</p>
+					<div class="average clr">
+						<ul class="star-rating">
+							<li>Average rating.</li>
+						</ul>
+						<p class="right they-rate">Avg rating</p>
+					</div>
+				</div>
+			</div>
+			<div class="left article_end gray">
+                <a href="/account/${c.poster['name']}">
+				<img src="/images/avatars/${c.poster['pictureHash']}.thumbnail" class="right" style="margin-left: 5px;">
+				Posted by ${c.poster['name']}</a>
+				<br />
+				${c.article.date}
+			</div>
+			<div class="left clr wide">
+                
+				<div class="left" id="comments">
+					<h3>Comments</h3>
+                    <%doc>
+		            <form class="left">
+		            	add a comment
+		            	<br />
+		            	<textarea id="comment"></textarea>
+		            	<br />
+		            	<button type="submit" class="right green">Submit</button>
+		            </form>
+                    </%doc>
+		            <h4>Comments</h4>
+		            <ul id="featuredComments">
+                    <li>
+                        No Comments!
+                    </li>
+                    <%doc>
+		            	<li>
+		            		<span><img src="/images/Monster_icon_25x25.jpg" /> <a href="profile.html">Monster</a> says ...</span>
+		            		<p>
+		            		<br />
+		            			Monster monster monster monster monster monster monster munster monster monster monster
+		            		</p>
+		            		<br />
+		            		<span class="time">Posted 15 minutes ago</span><span class="gray"> | Flag comment | Share comment | 14 <img src="/images/thumb_up_grey.png"  /> 7 <img src="/images/thumb_down_grey.png"  /></span>
+		            	</li>
+		            	<li>
+		            		<span><img src="/images/Monster_icon_25x25.jpg" /> <a href="profile.html">Monster</a> says ...</span>
+		            		<p>
+		            		<br />
+		            			Monster monster monster monster monster monster monster munster monster monster monster
+		            		</p>
+		            		<br />
+		            		<span class="time">Posted 15 minutes ago</span><span class="gray"> | Flag comment | Share comment | 14 <img src="/images/thumb_up_grey.png"  /> 7 <img src="/images/thumb_down_grey.png"  /></span>
+		            	</li>
+		            	<li>
+		            		<span><img src="/images/Monster_icon_25x25.jpg" /> <a href="profile.html">Monster</a> says ...</span>
+		            		<p>
+		            		<br />
+		            			Monster monster monster monster monster monster monster munster monster monster monster
+		            		</p>
+		            		<br />
+		            		<span class="time">Posted 15 minutes ago</span><span class="gray"> | Flag comment | Share comment | 14 <img src="/images/thumb_up_grey.png"  /> 7 <img src="/images/thumb_down_grey.png"  /></span>
+		            	</li>
+                        </%doc>
+		            </ul>
+				</div>
+                
+				<div class="left related">
+					<h3>Related solutions</h3>
+					<ul class="related_links gray">
+						<li>
+							<strong><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+						</li>
+						<li>
+							<strong><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+						</li>
+						<li>
+							<strong><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+						</li>
+						<a href="#" class="right">see all</a>
+					</ul>
+					<h3>Related articles</h3>
+					<ul class="related_links gray">
+						<li>
+							<strong><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+							<br />
+							via <a href="#">Source</a>
+						</li>
+						<li>
+							<strong><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+							<br />
+							via <a href="#">Source</a>
+						</li>
+						<li>
+							<strong><a href="#">Build a desalination plant</a></strong>
+							<br />
+							By user
+							<br />
+							via <a href="#">Source</a>
+						</li>
+						<a href="#" class="right">see all</a>
+					</ul>
+					<h3>Related media</h3>
+					<ul class="related_media">
+						<li>
+							<img src="/images/map.jpg" />
+							<br />
+							<img src="/images/arrow_turn_right.png" style="padding-right: 5px" /><a href="#"><strong>Interactive map:</strong> Depleted zones</a>
+							<br />
+							Description goes here.
+							<br />
+							<span class="gray">Posted by <a href="profile.html">User Name</a> on Aug 20, 2011</span>
+						</li>
+						<hr />
+						<li>
+							<img src="/images/map.jpg" />
+							<br />
+							<img src="/images/arrow_turn_right.png" style="padding-right: 5px;"/><a href="#"><strong>Interactive map:</strong> Depleted zones</a>
+							<br />
+							Description goes here.
+							<br />
+							<span class="gray">Posted by <a href="profile.html">User Name</a> on Aug 20, 2011</span>
+						</li>
+						<a href="#" class="right">see all</a>
+					</ul>
+				</div>
+			</div>
+            
+<%def name = 'extraHTML()'>
+
+</%def>
+            
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="${h.url_for('/styles/comments.css')}" />
+    <link type="text/css" rel="stylesheet" href="${h.url_for('/styles/news_article.css')}" />
+    <link type="text/css" rel="stylesheet" href="${h.url_for('/js/markitup/skins/simple/style.css')}" />
+    <link type="text/css" rel="stylesheet" href="${h.url_for('/js/markitup/sets/rst/style.css')}" />
+    <link type="text/css" rel="stylesheet" href="${h.url_for('/css/pygments/pygments-tango.css')}" />
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="/js/rating.js" type="text/javascript"></script>
+    <script src="/js/h2banner.js" type="text/javascript"></script>
+    <script src = "${h.url_for('/js/slides.js')}" type="text/javascript"></script>
+    <script src = "${h.url_for('/js/slides.min.jquery.js')}"></script>
+    <script src = "${h.url_for('/js/markitup/jquery.markitup.js')}" type="text/javascript"></script>
+    <script src = "${h.url_for('/js/markitup/sets/rst/set.js')}" type="text/javascript"></script>
+    <script src = "${h.url_for('/js/javascript.js')}" type="text/javascript"></script>
+    
+    <script language="javascript">
+        $(document).ready(function()	{
+            $('.markitup').markItUp(mySettings);
+        });
+    </script>
+</%def>

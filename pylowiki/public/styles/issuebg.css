@@ -1,0 +1,93 @@
+div.banner_div {
+	top: -5px;
+	left: -10px;
+}
+
+.headline {
+	width: 100%;
+	padding-bottom: 20px;
+	z-index: 1;
+}
+
+.headline h3 {
+	z-index: 1;
+}
+
+#img {
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+	top: -10px;
+	height: 300px;
+}
+
+#img p {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	background: rgba(50,50,50,.4);
+	color: #fff;
+	height: 120px;
+	padding: 10px;
+}
+
+#img+ul.left.gray>li {
+	float: left;
+	width: 120px;
+	height: 40px;
+	text-align: center;
+}
+#img+ul.left.gray>li>a {
+	color: #b9b9b9;
+}
+
+/* bg main */
+
+#bgmain {
+	width: 599px;
+	min-height: 400px;
+}
+
+#bgmain p {
+	padding: 5px 0;
+}
+
+#readbutton {
+	width: 130px;
+	margin: 0 auto;
+}
+
+#readbutton img {
+	position: relative;
+	left: -10px;
+	top: 3px;
+}
+
+#bgmain>span {
+	text-align: center;
+	display: block;
+	padding: 10px 0;
+}
+
+/* bg side */
+
+#bgside {
+	width: 300px;
+	min-height: 400px;
+	border-left: 1px solid #b9b9b9;
+}
+
+#bgside h3 {
+	float: left;
+	width: 100%;
+}
+
+#references {
+	margin-left: 10px;
+	padding: 20px;
+}
+
+#references li {
+	float: left;
+	clear: both;
+}
