@@ -13,8 +13,21 @@ div.blockcontainer {
         overflow: hidden;
 }
 
-div.blockleft {
+div.blocklefthalf {
         width: 50%;
+        display: block;
+        float: left;
+        text-align: left;
+}
+
+div.blockrighthalf {
+        margin-left:8px;
+        float: left;
+}
+
+div.blockleft {
+        margin-left:5px;
+        width: 130px;
         display: block;
         float: left;
         text-align: left;
@@ -22,8 +35,14 @@ div.blockleft {
 
 div.blockright {
         margin-left:8px;
+        width: 130px;
         float: left;
 }
+
+img.block {
+        display: block;
+}
+
 
 #profileside {
 	width: 200px;

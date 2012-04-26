@@ -104,7 +104,7 @@
         	<div id="profile" class="left">
 		   <div id="profiletop">
                       <div class="blockcontainer">
-                      <div class="blockleft">
+                      <div class="blocklefthalf">
 		   	<h1>${c.user['name']}</h1>
                     % if 'tagline' not in c.user.keys():
                         <span id="title">No tagline!</span>
@@ -127,7 +127,7 @@
                        % endif
                        % endif
                         </div><!-- blockleft --> 
-                        <div class="blockright">
+                        <div class="blockrighthalf">
         		<!-- <a href="${c.geoInfo[0]['postalURL']}"><img src="${c.geoInfo[0]['postalFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['postalTitle']}</a><br> -->
         		<a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
         		<a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
@@ -139,42 +139,57 @@
 			</div><!-- profiletop -->
                         % if c.facilitatorWorkshops:
 	        	   <h3>Workshops I Am Facilitating</h3>
+                           <% fLoop = 1 %>
                            % for workshop in c.facilitatorWorkshops:
-                               <ul class="left gray clr">
-                               % if workshop['mainImage_hash'] == 'supDawg':
-                                 <ul>
-                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></li>
-                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
-                                 </ul>
+                               % if fLoop == 1:
+                                  <div class="blockcontainer">
+                                     <div class="blockleft">
                                % else:
-                                 <ul>
-                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></li>
-                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
-                                 </ul>
+                                     <div class="blockright">
                                % endif
-                               </ul>
+                               % if workshop['mainImage_hash'] == 'supDawg':
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/>
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+                               % else:
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/>
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+                               % endif
+                                </div><!-- inner block -->
+                               <% fLoop += 1 %>
+                               % if fLoop == 4:
+                                 <% fLoop = 1 %> 
+                                 </div><!-- block container -->
+                                 <br/> 
+                               % endif
                            % endfor
-                            </ul>
                         % endif
                         % if c.followingWorkshops:
+                           <% fLoop = 1 %>
 	        	   <h3>Workshops I Am Following</h3>
                            % for workshop in c.followingWorkshops:
-                               <ul class="left gray clr">
-                               % if workshop['mainImage_hash'] == 'supDawg':
-                                 <ul>
-                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></li>
-                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
-                                 </ul>
+                               % if fLoop == 1:
+                                  <div class="blockcontainer">
+                                     <div class="blockleft">
                                % else:
-                                 <ul>
-                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></li>
-                                 <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
-                                 </ul>
+                                     <div class="blockright">
                                % endif
-                               </ul>
+                               % if workshop['mainImage_hash'] == 'supDawg':
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "width: 120px; height: 80px;"/>
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+                               % else:
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "width: 120px; height: 80px;"/>
+                                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+                               % endif
+                                </div><!-- inner block -->
+                               <% fLoop += 1 %>
+                               % if fLoop == 4:
+                                 <% fLoop = 1 %> 
+                                 </div><!-- block container -->
+                                 <br/> 
+                               % endif
                            % endfor
-                            </ul>
                         % endif
+                        </div>
 	        	<h3>Points</h3>
 	        	<div id="points" class="left clr">
 	        		<p class="darkorange left">
