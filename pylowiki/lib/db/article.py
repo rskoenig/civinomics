@@ -5,22 +5,28 @@ from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
-from pylowiki.lib.utils import urlify
+from pylowiki.lib.utils import urlify, toBase62
 from pylons import config
+from time import time
+from tldextract import extract
 
 log = logging.getLogger(__name__)
 
-# Setters
-# Getters
 def getArticleByID(id):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'article').filter_by(id = id).one()
     except:
         return False
 
-def getArticle(url, workshop):
+def getArticle(urlCode, url, workshop):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('internalURL', url))).filter(Thing.data.any(wc('workshop_id', workshop.id))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('workshop_id', workshop.id))).one()
+    except:
+        return False
+
+def getArticleByLink(link, workshop):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('workshop_id', workshop.id))).one()
     except:
         return False
 
@@ -52,13 +58,20 @@ def getAllArticles():
 class Article(object):
     def __init__( self, url, title, comment, owner, workshop):
         a = Thing('article', owner.id)
-        a['url'] = url
+        if not url.startswith('http://'):
+            url = u'http://' + url
+        a['link'] = url # The resource's URL
+        tldResults = extract(url)
+        a['tld'] = tldResults.tld
+        a['domain'] = tldResults.domain
+        a['subdomain'] = tldResults.subdomain
+        a['url'] = urlify(title[:30])
+        a['urlCode'] = toBase62('%s_%s_%s'%(title, owner['name'], int(time())))
         a['title'] = title
         a['comment'] = comment
-        a['internalURL'] = urlify(title)
         a['workshop_id'] = workshop.id
         a['type'] = 'post'
-        a['pending'] = True
+        a['pending'] = False
         a['disabled'] = False
         commit(a)
         self.a = a

@@ -5,7 +5,7 @@ from dbHelpers import with_characteristic as wc
 from discussion import Discussion
 from revision import Revision
 from page import Page
-
+from time import time
 import logging
 log = logging.getLogger(__name__)
 
@@ -56,8 +56,8 @@ class Suggestion(object):
     def __init__(self, owner, title, data, workshop):
         s = Thing('suggestion', owner.id)
         s['title'] = title
-        s['url'] = urlify(title)
-        s['urlCode'] = toBase62('%s_%s'%(title, owner['name']))
+        s['url'] = urlify(title[:30])
+        s['urlCode'] = toBase62('%s_%s_%s'%(title, owner['name'], int(time())))
         s['data'] = data
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']

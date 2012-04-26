@@ -93,7 +93,7 @@ class Workshop(object):
     def __init__(self, title, owner, publicPrivate):
         w = Thing('workshop', owner.id)
         w['title'] = title
-        w['url'] = urlify(title)
+        w['url'] = urlify(title[:30])
         w['urlCode'] = toBase62('%s_%s_%d'%(title, owner['name'], int(time.time())))
         w['startTime'] = '0000-00-00'
         w['endTime'] = '0000-00-00'
@@ -105,7 +105,7 @@ class Workshop(object):
         w['deleted'] = False
         w['facilitators'] = owner.id
         w['goals'] = 'No goals set'
-        w['numArticles'] = 1
+        w['numResources'] = 1
         w['public_private'] = publicPrivate
         w['publicTags'] = 'none'
         w['memberTags'] = 'none'

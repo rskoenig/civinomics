@@ -95,12 +95,12 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/editWorkshopHandler/', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     
     # Resources
-    map.connect('/news/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/news/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/news/{id3}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/workshop/{id1}/{id2}/news/{id3}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/workshops/{id1}/{id2}/news/{id3}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/workshops/{id1}/{id2}/news/{id3}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/resource/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/resource/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
@@ -130,6 +130,9 @@ def make_map():
     map.connect('/geo/county/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCountyInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/state/{id1}/{id2}', controller = 'geo', action = 'showStateInfo', id1 = '{id1}', id2 = '{id2}')
 
+    # Temporary
+    map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    
     ################
     # Action Lists #
     ################

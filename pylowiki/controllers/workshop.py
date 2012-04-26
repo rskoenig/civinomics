@@ -183,7 +183,7 @@ class WorkshopController(BaseController):
             if s:
                 c.slides.append(s)
             
-        c.articles = getArticlesByWorkshopID(c.w.id)
+        c.resources = getArticlesByWorkshopID(c.w.id)
         c.suggestions = getSuggestionsForWorkshop(code, urlify(url))
         l = []
         ratedSuggestionIDs = []

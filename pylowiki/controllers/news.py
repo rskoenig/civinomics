@@ -3,14 +3,11 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-#from pylowiki.model import Article, commit, getIssueByName, Event, get_user, getArticleByTitle, get_page
-#from pylowiki.model import getIssueByID, getUserByID, getArticle
-
 from pylowiki.lib.db.user import get_user, getUserByID
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.event import Event
-from pylowiki.lib.db.article import Article, getArticle
+from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID
 
 from pylowiki.lib.utils import urlify
 
@@ -24,21 +21,27 @@ log = logging.getLogger(__name__)
 
 class NewsController(BaseController):
 
-    def index(self, id1, id2, id3):
-        code = id1
+    def index(self, id1, id2, id3, id4):
+        workshopCode = id1
         workshopURL = id2
-        articleURL = id3
+        resourceCode = id3
+        resourceURL = id4
         
-        c.w = getWorkshop(code, workshopURL)
+        c.w = getWorkshop(workshopCode, workshopURL)
         
         c.title = c.w['title']
-        c.article = getArticle(urlify(articleURL), c.w)
-        log.info('articleURL = %s' % urlify(articleURL))
-        log.info('workshop = %s' % c.w.id)
-        log.info('Article: %s' % c.article)
-        c.poster = getUserByID(c.article.owner)
+        c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
+        c.poster = getUserByID(c.resource.owner)
         
-        return render('/derived/news_article.html')
+        c.otherResources = getArticlesByWorkshopID(c.w.id)
+        for i in range(len(c.otherResources)):
+            resource = c.otherResources[i]
+            if resource.id == c.resource.id:
+                c.otherResources.pop(i)
+                break
+        
+        #return render('/derived/news_article.html')
+        return render('/derived/resource.html')
 
     @h.login_required
     def handler(self, id1, id2):
@@ -50,23 +53,21 @@ class NewsController(BaseController):
         title = request.params['title']
         
         w = getWorkshop(code, url)
-        a = getArticle(linkURL, w)
+        a = getArticleByLink(linkURL, w)
 
         if a:
             h.flash('Link already submitted for this issue', 'warning')
             return redirect('/workshop/%s/%s'%(code, url))
 
         a = Article(linkURL, title, comment, c.authuser, w)
-        a = getArticle(urlify(title), w)
         
-        if 'articles' not in w.keys():
-            w['articles'] = a.id 
+        if 'resources' not in w.keys():
+            w['resources'] = a.a.id
         else:
-            w['articles'] = w['articles'] + ',' + str(a.id)
+            w['resources'] = w['resources'] + ',' + str(a.a.id)
         
-        w['numArticles'] = int(w['numArticles']) + 1
-        e = Event('create', 'Added article %s'%a.id, c.authuser)
-        commit(a)
+        w['numResources'] = int(w['numResources']) + 1
+        commit(w)
         return redirect('/workshop/%s/%s'%(code, url))
 
     @h.login_required
