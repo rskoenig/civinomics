@@ -185,15 +185,17 @@ class WorkshopController(BaseController):
               ##log.info('Got startWorkshop %s' % ','.join(startButtons))
               if 'Start' in startButtons and 'VerifyStart' in startButtons and werror == 0:
                  startTime = datetime.datetime.now()
-                 w['startTime'] = startTime.ctime()
+                 #w['startTime'] = startTime.ctime()
+                 w['startTime'] = startTime
                  endTime = datetime.datetime.now()
                  endTime = endTime.replace(year = endTime.year + 1)
-                 w['endTime'] = endTime.ctime()
+                 #w['endTime'] = endTime.ctime()
+                 w['endTime'] = endTime
                  for wTag in request.params.getall('publicTags'):
                     t = Tag('system', wTag, w.id, w.owner)
                  for mTag in wMemberTags.split(','):
                     t = Tag('member', mTag, w.id, w.owner)
-                 m = MOTD('Welcome to the workshop!', w.id, w.id)
+                 #m = MOTD('Welcome to the workshop!', w.id, w.id)
 
         commit(w)
 
@@ -220,7 +222,7 @@ class WorkshopController(BaseController):
         w = Workshop(workshopName, c.authuser, publicPrivate)
         c.workshop_id = w.w.id # TEST
         c.title = 'Add slideshow'
-        #return render('/derived/addSlideshow.html')
+        c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
         return redirect('/workshops/%s/%s'%(w.w['urlCode'], w.w['url']))
     
     @h.login_required
@@ -271,7 +273,11 @@ class WorkshopController(BaseController):
            c.isAdmin = True
         else:
            c.isAdmin = False
-        
+        if c.w['startTime'] != '0000-00-00':
+           c.wStarted = True
+        else:
+          c.wStarted = False
+
         c.slides = []
         c.slideshow = getSlideshow(c.w['mainSlideshow_id'])
         slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]

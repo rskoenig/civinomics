@@ -1,4 +1,5 @@
 <%!
+    import time, datetime
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.utils import urlify
     from pylowiki.lib.db.facilitator import isFacilitator
@@ -41,7 +42,15 @@
                     <br /> <br />
                     <strong>Tags:</strong> ${c.w['publicTags']}, ${c.w['memberTags']}
                     <br /> <br />
-                    <strong>Who can participate:</strong> residents of ${c.w['publicScopeTitle']}
+                    <strong>Public Sphere:</strong> ${c.w['publicScopeTitle']}
+                    <br /> <br />
+                    % if c.wStarted:
+                       <strong>Started:</strong> ${c.w['startTime']}<br />
+                       <strong>Ends:</strong> ${c.w['endTime']}
+                    % else:
+                       <strong>Started:</strong> ${c.w['startTime']}<br />
+                       <strong>Ends:</strong> ${c.w['endTime']}
+                    % endif
                     <br /> <br />
                     <strong>Suggestions:</strong> ${len(c.suggestions)}
                     <br />
