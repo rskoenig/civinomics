@@ -59,7 +59,7 @@ class AccountController(BaseController):
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
         c.userFollowers = []
         for u in uList:
-           uID = u['thingID']
+           uID = u.owner
            c.userFollowers.append(getUserByID(uID))
 
 

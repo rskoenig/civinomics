@@ -1,15 +1,32 @@
 /** profile sidebar **/
 
-#profileside {
-	width: 200px;
+div.blockimage {
+        overflow: hidden;
+        width: 200px;
+        height: 200px;
+        display: block;
+        float: left;
+        align: left;
 }
 
-div.block {
-        overflow:hidden;
-        width:200px;
-        height:200px;
-        float:left;
-        align:left;
+div.blockcontainer {
+        overflow: hidden;
+}
+
+div.blockleft {
+        width: 50%;
+        display: block;
+        float: left;
+        text-align: left;
+}
+
+div.blockright {
+        margin-left:8px;
+        float: left;
+}
+
+#profileside {
+	width: 200px;
 }
 
 #profileside h4, #profile h4 {

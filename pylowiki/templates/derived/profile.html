@@ -4,21 +4,40 @@
     from pylowiki.lib.db.workshop import getWorkshop
 %>
         	<div id="profileside" class="col left">
-                <div class="block">
+                <div class="blockimage">
                 % if c.user['pictureHash'] == 'flash':
                   <img src="/images/avatars/flash.profile" width="200"/>
                 % else:
                   <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" width="200"/>
                 % endif
-                </div>
-        		##<img src="/images/avatars/${c.user['pictureHash']}.profile" width="200" />
-        		<h3>Where I Call Home</h3>
-        		<a href="${c.geoInfo[0]['postalURL']}"><img src="${c.geoInfo[0]['postalFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['postalTitle']}</a><br>
-        		City: <a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
-        		County: <a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
-        		<a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
-        		<img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />&nbsp;&nbsp;United States</a><br>
-        		<img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
+                </div><!-- blockimage -->
+                <div>&nbsp;<br /></div>
+                % if c.followingUsers:
+                   <% fNum = len(c.followingUsers) %>
+	      	   <h3>Following (${fNum})</h3>
+                   % for fuser in c.followingUsers:
+                     <ul class="left gray clr">
+                     % if fuser['pictureHash'] == 'flash':
+                       <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${fuser['name']}</a>
+                     % else:
+                       <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a>
+                     % endif
+                    </ul>
+                   % endfor
+                % endif
+                % if c.userFollowers:
+                   <% fNum = len(c.userFollowers) %>
+	      	   <h3>Followers (${fNum})</h3>
+                   % for fuser in c.userFollowers:
+                     <ul class="left gray clr">
+                     % if fuser['pictureHash'] == 'flash':
+                       <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${fuser['name']}</a>
+                     % else:
+                       <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a>
+                     % endif
+                    </ul>
+                   % endfor
+                % endif
         		<h3>Connections</h3>
         		<button class="green" id="invite_button">Invite friends to Civinomics</button>
         		<h4 class="gray">Mutual connections</h4>
@@ -84,6 +103,8 @@
         	</div><!-- profileside -->
         	<div id="profile" class="left">
 		   <div id="profiletop">
+                      <div class="blockcontainer">
+                      <div class="blockleft">
 		   	<h1>${c.user['name']}</h1>
                     % if 'tagline' not in c.user.keys():
                         <span id="title">No tagline!</span>
@@ -91,25 +112,30 @@
                         <span id="title">${c.user['tagline']}</span>
                     % endif
 		    	<br /> <br />
-		    	<ul id="topissues" class="left clr">
-                        <li>
-		    	Member since ${c.user.date}
-                        </li>
-		    	<li class="right" style="text-align: right;">
+                        <% mStart = c.user.date.strftime('%B %d %Y') %>
+		    	Member since ${mStart}
                        % if c.authuser['email'] != c.user['email']:
+		    	<br /> <br />
                        % if c.isFollowing:
 <div class="button_container">
-    <button class="btn followButton gold following" rel="profile_${c.user['urlCode']}_${c.user['url']}">Unfollow</button>
+    <button class="btn followButton gold following" rel="profile_${c.user['urlCode']}_${c.user['url']}">Following</button>
 </div>
                        % else:
 <div class="button_container">
     <button class="btn followButton gold" rel="profile_${c.user['urlCode']}_${c.user['url']}">Follow</button>
 </div>
                        % endif
-                            % endif
-		    		</li>
-		        	<br /><br />
-		        	<br /><br />
+                       % endif
+                        </div><!-- blockleft --> 
+                        <div class="blockright">
+        		<!-- <a href="${c.geoInfo[0]['postalURL']}"><img src="${c.geoInfo[0]['postalFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['postalTitle']}</a><br> -->
+        		<a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
+        		<a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
+        		<a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
+        		<img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />&nbsp;&nbsp;United States</a><br>
+        		<img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
+                        </div><!-- blockright -->
+                        </div><!-- blockcontainer -->
 			</div><!-- profiletop -->
                         % if c.facilitatorWorkshops:
 	        	   <h3>Workshops I Am Facilitating</h3>
@@ -145,19 +171,6 @@
                                  <li><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></li>
                                  </ul>
                                % endif
-                               </ul>
-                           % endfor
-                            </ul>
-                        % endif
-                        % if c.followingUsers:
-	        	   <h3>Members I Am Following</h3>
-                           % for fuser in c.followingUsers:
-                               <ul class="left gray clr">
-                               % if fuser['pictureHash'] == 'flash':
-                                 <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${fuser['name']}</a>
-                              % else:
-                                <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a>
-                              % endif
                                </ul>
                            % endfor
                             </ul>
