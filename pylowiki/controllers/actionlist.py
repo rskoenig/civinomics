@@ -55,7 +55,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
+            items_per_page = 10, item_count = c.count
         )
 
         return render('/derived/top_issues.html')
