@@ -8,6 +8,7 @@ from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID
+from pylowiki.lib.db.discussion import getDiscussionByID
 
 from pylowiki.lib.utils import urlify
 
@@ -39,7 +40,9 @@ class NewsController(BaseController):
             if resource.id == c.resource.id:
                 c.otherResources.pop(i)
                 break
-        
+        c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
+        c.lastmoddate = c.resource.date
+        c.lastmoduser = getUserByID(c.resource.owner)
         #return render('/derived/news_article.html')
         return render('/derived/resource.html')
 

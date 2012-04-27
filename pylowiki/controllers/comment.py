@@ -49,6 +49,7 @@ class CommentController(BaseController):
             comment = Comment(data, c.authuser, discussion, int(parentCommentID))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
+            raise
             h.flash('Do not access a handler directly', 'error')
         except:
             raise
@@ -66,11 +67,12 @@ class CommentController(BaseController):
             return redirect('/')
             
     
-    """ id1: the issue's URL.
-    """
+    
     @h.login_required
     def index(self, id):
-        
+        """ 
+            id1: the issue's URL.
+        """
         #for key in request.params:
         #        log.info("key:::value ---> %s:::%s"%(key, request.params[key]))
         

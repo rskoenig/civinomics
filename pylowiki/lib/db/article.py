@@ -5,6 +5,7 @@ from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
+from discussion import Discussion
 from pylowiki.lib.utils import urlify, toBase62
 from pylons import config
 from time import time
@@ -74,5 +75,7 @@ class Article(object):
         a['pending'] = False
         a['disabled'] = False
         commit(a)
+        d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
+        a['discussion_id'] = d.d.id
         self.a = a
 
