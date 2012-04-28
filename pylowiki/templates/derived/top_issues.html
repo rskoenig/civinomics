@@ -2,6 +2,7 @@
    from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
+   from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
 %>
 <%inherit file = "/base/template.html"/>
         
@@ -22,12 +23,26 @@
                                         <h3>Public Spheres</h3>
                                         <% c.geoInfo = getGeoInfo(c.authuser.id) %> 
                                </div>
-                               <div class="blockrighthalf">
+                               <div class="blockcontainer">
                         <a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
                         <a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
                         <a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
                         <img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />&nbsp;&nbsp;United States</a><br>
                         <img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
+                            </div>
+                            <div>
+                                 <h3>Public Tags</h3>
+                                 <% pTags = getPublicTagCount() %>
+                                 % for pT in pTags.keys():
+                                 ${pT} : ${pTags[pT]}<br />
+                                 % endfor
+                            </div>
+                            <div>
+                                 <h3>Member Tags</h3>
+                                 <% mTags = getMemberTagCount() %>
+                                 % for mT in mTags.keys():
+                                 ${mT} : ${mTags[mT]}<br />
+                                 % endfor
                             </div>
 			</div><!-- col-1 -->
 			<div id="col-2">
@@ -43,7 +58,9 @@
 					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_directoryNum']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
 					% endif
 					<div id="featured_caption">
-						<p><strong>Featured Workshop: ${mainWorkshop['title']}</strong></p>
+						<p><strong>Latest Workshop: ${mainWorkshop['title']}</strong></p>
+						<p><strong>Public Sphere: ${mainWorkshop['publicScopeTitle']}</strong></p>
+						<p><strong>Tags: ${mainWorkshop['publicTags']}, ${mainWorkshop['memberTags']}</strong></p>
 						<p><strong><a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}">View Workshop</a></strong></p>
 					</div><!-- featured_caption -->
 					<div style="background: green">|</div>
