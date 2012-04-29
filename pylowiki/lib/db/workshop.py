@@ -4,7 +4,7 @@ from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.geoInfo import getGeoScope
-from dbHelpers import commit, with_characteristic as wc
+from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo
 from page import Page
 from event import Event
 from revision import Revision
@@ -29,7 +29,12 @@ def getWorkshops( deleted = False):
     except:
         return False
 
-# TODO: Add in a check for object type
+def getActiveWorkshops( deleted = False):
+     try:
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).all()
+     except:
+        return False
+
 def getWorkshopByID(id):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(id = id).one()

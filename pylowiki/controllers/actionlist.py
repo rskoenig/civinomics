@@ -8,7 +8,7 @@ from pylowiki.lib.base import BaseController, render
 
 #from pylowiki.model import get_all_pages, getIssues, getSolutions, getParticipantsByID
 from pylowiki.lib.db.page import get_all_pages
-from pylowiki.lib.db.workshop import getWorkshops
+from pylowiki.lib.db.workshop import getActiveWorkshops
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
@@ -33,7 +33,7 @@ class ActionlistController(BaseController):
             c.list = get_all_pages()
         elif c.action == 'sitemapIssues':
             c.title = c.heading = 'Workshops'
-            c.list = getWorkshops()
+            c.list = getActiveWorkshops()
         elif c.action == 'sitemapIssuesByTag':
             c.title = c.heading = 'Workshops'
             c.list = getWorkshops()
