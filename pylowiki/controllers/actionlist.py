@@ -34,6 +34,9 @@ class ActionlistController(BaseController):
         elif c.action == 'sitemapIssues':
             c.title = c.heading = 'Workshops'
             c.list = getWorkshops()
+        elif c.action == 'sitemapIssuesByTag':
+            c.title = c.heading = 'Workshops'
+            c.list = getWorkshops()
             """
         elif c.action == 'sitemapSolutions':
             c.title = c.heading = 'Solutions'

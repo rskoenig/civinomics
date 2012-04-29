@@ -192,10 +192,13 @@ class WorkshopController(BaseController):
                  #w['endTime'] = endTime.ctime()
                  w['endTime'] = endTime
                  for wTag in request.params.getall('publicTags'):
+                    wTag = wTag.lstrip()
+                    wTag = wTag.rstrip()
                     t = Tag('system', wTag, w.id, w.owner)
                  for mTag in wMemberTags.split(','):
+                    mTag = mTag.lstrip()
+                    mTag = mTag.rstrip()
                     t = Tag('member', mTag, w.id, w.owner)
-                 #m = MOTD('Welcome to the workshop!', w.id, w.id)
 
         commit(w)
 

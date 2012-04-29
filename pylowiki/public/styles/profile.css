@@ -1,5 +1,12 @@
 /** profile sidebar **/
 
+div.blockfullpage {
+        width: 100%;
+        display: block;
+        float: left;
+        align: center;
+}
+
 div.blockimage {
         overflow: hidden;
         width: 200px;

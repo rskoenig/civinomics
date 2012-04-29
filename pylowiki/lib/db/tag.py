@@ -46,10 +46,12 @@ def getMemberTagCount():
     tagDict = dict()
     for tL in tSearch:
        t = tL['tagName']
-       if t not in tagDict:
-           tagDict[t] = 1
-       else:
+       t = t.lstrip()
+       t = t.rstrip()
+       if t in tagDict:
            tagDict[t] += 1
+       else:
+           tagDict[t] = 1
 
     return tagDict
 
@@ -58,6 +60,8 @@ class Tag(object):
         t = Thing('tag', ownerID)
         # tagType, one of: system or member (tag from our list or their input)
         t['tagType'] = tagType
+        tagName = tagName.lstrip()
+        tagName = tagName.rstrip()
         t['tagName'] = tagName
         # the id of the object described by the tag
         t['thingID'] = thingID

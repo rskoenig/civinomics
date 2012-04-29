@@ -49,8 +49,8 @@
 				<div class="banner_div">
 					<h2 class="banner">Workshops</h2>
 				</div>
+                % if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode']:
 				<div id="featured_issue">
-                % if len(c.list) > 0:
                     <% mainWorkshop = c.list.pop() %>
                     % if mainWorkshop['mainImage_hash'] == 'supDawg':
 					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
@@ -64,10 +64,10 @@
 						<p><strong><a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}">View Workshop</a></strong></p>
 					</div><!-- featured_caption -->
 					<div style="background: green">|</div>
-                % endif
                 </div><!-- featured_issue -->
+                % endif
 				<ul id="issue_list">
-                    % for item in c.list:
+                    % for item in c.paginator:
                         <li>
                             % if item['mainImage_hash'] == 'supDawg':
                                 <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
@@ -101,6 +101,17 @@
 				</div>
 			</div> <!-- col-3 -->
     
+<div class="blockfullpage">
+
+<% state = True %>
+
+% for p in c.paginator:
+    <% state = not state %>
+% endfor
+
+<div style="text-align: center"><h4>Total Workshops: ${c.count} | View ${ c.paginator.pager('~3~') }</h4></div>
+
+</div>
 <%def name = 'extraStyles()'>
     <link type="text/css" rel="stylesheet" href="/styles/top_issues.css" />
     <link type="text/css" rel="stylesheet" href="/styles/profile.css" />
