@@ -41,8 +41,6 @@ class CommentController(BaseController):
             parentCommentID = request.params['parentID']
             comType = request.params['type']
             data = request.params['comment-textarea']
-            workshopCode = request.params['workshopCode']
-            workshopURL = request.params['workshopURL']
             
             discussion = getDiscussionByID(discussionID)
             log.info('parent comment = %s' % parentCommentID)
@@ -55,17 +53,8 @@ class CommentController(BaseController):
             raise
             h.flash('Unknown error', 'error')
         
-        if comType == 'background':
-            return redirect('/workshop/%s/%s/background' % (workshopCode, workshopURL) )
-        elif comType == 'feedback':
-            return redirect('/workshop/%s/%s/feedback' % (workshopCode, workshopURL) )
-        elif comType == 'suggestionMain':
-            suggestionCode = request.params['suggestionCode']
-            suggestionURL = request.params['suggestionURL']
-            return redirect('/workshop/%s/%s/suggestion/%s/%s'%(workshopCode, workshopURL, suggestionCode, suggestionURL))
-        else:
-            return redirect('/')
-            
+        log.info(session['return_to'])
+        return redirect(session['return_to'])
     
     
     @h.login_required
@@ -130,9 +119,11 @@ class CommentController(BaseController):
         
         if not comment:
             h.flash('Comment edit was NOT saved!', 'error')
-            return redirect('/workshop/%s/%s' % (d['workshopCode'], d['workshopURL']))
+            #return redirect('/workshop/%s/%s' % (d['workshopCode'], d['workshopURL']))
+            return redirect(session['return_to'])
         else:
             h.flash('Comment edit saved!', 'success')
+            """
             if d['discType'] == 'background':
                 return redirect('/workshop/%s/%s/background' %(d['workshopCode'], d['workshopURL']))
             elif d['discType'] == 'feedback':
@@ -141,3 +132,6 @@ class CommentController(BaseController):
                 return redirect('/workshop/%s/%s/suggestion/%s/%s' %(d['workshopCode'], d['workshopURL'], d['suggestionCode'], d['suggestionURL']))
             else:
                 return redirect('/')
+            """
+            return redirect(session['return_to'])
+        

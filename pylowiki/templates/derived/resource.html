@@ -4,7 +4,9 @@
 
 <%inherit file = "/base/template.html"/>
 <%namespace file="/derived/commentsCustom.mako" import="comments" />
+<%namespace file="/lib/mako_lib.mako" import="return_to" />
 
+${return_to()}
 	<div class="container"> <!-- responsive container for everything -->
 		<div class="row">
 			<div class="span12 civ-container">
