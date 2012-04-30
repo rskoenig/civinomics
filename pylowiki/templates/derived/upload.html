@@ -1,0 +1,6 @@
+<%inherit file = "/base/mainTemplate.html" />
+    ${h.form(h.url_for(controller = 'picture', action = 'uploadPicture'), multipart = True)}
+    Upload File:    ${h.file('pictureFile')} <br />
+    Description:    ${h.text('pictureDescription')} <br />
+                    ${h.submit('submit', 'Submit')}
+    ${h.end_form()}
