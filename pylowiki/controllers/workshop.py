@@ -14,6 +14,7 @@ from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 from pylowiki.lib.db.rating import getRatingByID
+from pylowiki.lib.db.motd import MOTD, getMessage
 
 from pylowiki.lib.utils import urlify
 
@@ -178,7 +179,7 @@ class WorkshopController(BaseController):
         w = Workshop(workshopName, c.authuser, publicPrivate)
         c.workshop_id = w.w.id # TEST
         c.title = 'Add slideshow'
-        c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
+        c.motd = MOTD('Welcome to the workshop!', c.authuser, w.w)
         return redirect('/workshops/%s/%s'%(w.w['urlCode'], w.w['url']))
     
     def display(self, id1, id2):
@@ -245,6 +246,9 @@ class WorkshopController(BaseController):
            c.discussion = getDiscussionByID(c.w['feedbackDiscussion_id'])
         else:
            c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
+        c.motd = getMessage(c.w.id)
+        c.motd['messageSummary'] = c.motd['data']
 
         return render('/derived/issuehome.html')
 
