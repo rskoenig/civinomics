@@ -176,7 +176,10 @@ def make_map():
     
     map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
     map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
-    map.connect('/solutions', controller = 'actionlist', action = 'index', id = 'sitemapSolutions')
+    map.connect('/searchWorkshops/{id1}/{id2}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/searchWorkshops/{id1}/{id2}/', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/searchMembers/{id1}/{id2}', controller='actionlist', action='searchWorkshops', id='searchMembers', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/searchMembers/{id1}/{id2}/', controller='actionlist', action='searchWorkshops', id='searchMembers', id1 = '{id1}', id2 = '{id2}')
 
     map.connect('/account/edit', controller = 'account', action = 'edit')
     map.connect('/account/editSubmit', controller = 'account', action = 'editSubmit')

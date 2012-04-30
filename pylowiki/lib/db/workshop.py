@@ -29,6 +29,12 @@ def getWorkshops( deleted = False):
     except:
         return False
 
+def searchWorkshops( wKey, wValue):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc(wKey, wValue))).all()
+    except:
+        return False
+
 def getActiveWorkshops( deleted = False):
      try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).all()
