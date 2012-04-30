@@ -1,6 +1,8 @@
 #-*- coding: utf-8 -*-
 import logging
 
+from pylons import tmpl_context as c
+
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic
@@ -26,6 +28,14 @@ def enableComment( comment ):
     """enable the comment"""
     comment['disabled'] = False
     commit(comment)
+
+def editComment(commentID, discussionID, data):
+    comment = getComment(commentID)
+    comment['data'] = data
+    r = Revision(c.authuser, data, comment)
+    
+    commit(comment)
+    return comment
 
 # Object
 class Comment(object):

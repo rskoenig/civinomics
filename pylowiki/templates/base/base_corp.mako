@@ -4,7 +4,7 @@
   <head>
   <meta charset="UTF-8"/>
   <title>
-    Greenocracy | 
+    Civinomics | 
     ${c.title.capitalize()}
   </title>
   <!-- This resets the browser defauls and formats print screen -->
@@ -51,7 +51,7 @@
      % if c.user==None :
           ${self.login_form()}
      % else :
-          #${self.greet_user()}
+          ##${self.greet_user()}
      % endif
      </div>
   </div>
@@ -85,7 +85,7 @@
       <div id="footer_block" class="grid_4">
           <div id = "footer_block_header">
           <h3> 
-                GREENOCRACY
+                CIVINOMICS
           </h3>
           </div>
           <div id  = "footer_block_content" class="grid_1">
@@ -109,8 +109,8 @@
           </h3>
           </div>
           <div id  = "footer_block_content" class="grid_1">
-          <a href="http://www.facebook.com/pages/Greenocracy/121523694586958"> Facebook </a>
-          <a href="https://twitter.com/#!/Greenocracy"> Twitter </a>
+          <a href="http://www.facebook.com/pages/Civinomics/121523694586958"> Facebook </a>
+          <a href="https://twitter.com/#!/Civinomics"> Twitter </a>
           </div>
      </div>
      <div id="footer_block" class="grid_2">
@@ -120,7 +120,7 @@
          </h3>
          </div>
          <div id  = "footer_block_content" class="grid_1">
-         <a href="/corp/about"> info@greenocracy.org </a>
+         <a href="/corp/about"> info@civinomics.org </a>
          </div>
      </div>
   </div>
@@ -149,7 +149,7 @@
                class ="navig_highlight"
           %endif
           > Careers </a>
-          <a href="http://greenocracydevelopmentblog.wordpress.com/"
+          <a href="http://civinomics.wordpress.com/"
           % if highlight_name == "blog":
                class ="navig_highlight"
           %endif

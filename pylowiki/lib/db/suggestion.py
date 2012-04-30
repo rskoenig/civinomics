@@ -5,7 +5,7 @@ from dbHelpers import with_characteristic as wc
 from discussion import Discussion
 from revision import Revision
 from page import Page
-
+from time import time
 import logging
 log = logging.getLogger(__name__)
 
@@ -56,8 +56,8 @@ class Suggestion(object):
     def __init__(self, owner, title, data, workshop):
         s = Thing('suggestion', owner.id)
         s['title'] = title
-        s['url'] = urlify(title)
-        s['urlCode'] = toBase62('%s_%s'%(title, owner['name']))
+        s['url'] = urlify(title[:30])
+        s['urlCode'] = toBase62('%s_%s_%s'%(title, owner['name'], int(time())))
         s['data'] = data
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']
@@ -70,7 +70,7 @@ class Suggestion(object):
         s['mainRevision_id'] = r.r.id
         
         # Should this be set to the owner, or be ownerless?
-        d = Discussion('suggestion')
+        d = Discussion(title='suggestion', attachedThing = s, workshop = workshop, discType = 'suggestion')
         s['discussion_id'] = d.d.id
         p = Page(title, owner, s, data)
         if 'numSuggestions' not in owner.keys():
