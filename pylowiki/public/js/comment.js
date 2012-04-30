@@ -17,7 +17,7 @@ $(document).ready(function() {
 			"display":"block"
 		})
 		.animate({
-			height: "60px",
+			height: "20px",
 			paddingTop: "10px",
 			paddingBottom: "10px",
 			paddingLeft: "10px"
@@ -70,5 +70,18 @@ $(document).ready(function() {
 		});
 		event.preventDefault();
 	});
-	
+
+    $(function()
+    {
+        $('.flagComment').click( function() 
+        {
+            $.post( $(this).attr('href'),
+            function(data) 
+            {
+                var data = $.parseJSON(data)
+                $('#flagged_'+data.id).empty().append(data.result);
+            });
+            return false; // cancel link default action
+        });
+    });
 });

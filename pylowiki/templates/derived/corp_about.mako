@@ -12,7 +12,7 @@ float:right;font-size:25px;font-weight:bold;">
 -Steve Jobs
 </p>
 <p>
-Greenocracy was founded in Spring 2011 by UCSC and Stanford grads, frustrated with the political binary. Even in their home town of Santa Cruz, CA, founders Manu and Robert saw discussion on the critical issue of regional water policy disintegrating into entrenched party positions. Civic officials were championing a desalination plant while environmentalists did everything they could to stop it. Neither side was considering the range of concrete policy options needed to create a robust solution to the over-drafted water supply.
+Civinomics was founded in Spring 2011 by UCSC and Stanford grads, frustrated with the political binary. Even in their home town of Santa Cruz, CA, founders Manu and Robert saw discussion on the critical issue of regional water policy disintegrating into entrenched party positions. Civic officials were championing a desalination plant while environmentalists did everything they could to stop it. Neither side was considering the range of concrete policy options needed to create a robust solution to the over-drafted water supply.
 </p>
 
 <p>
@@ -20,7 +20,7 @@ That summer, the Congressional Budget Ceiling talks demonstrated the same human 
 </p>
 
 <p>
-When the duo met Edolfo, an innately gifted developer seeking higher meaning in a bio-physics lab, Greenocracy was born. Between the three founders, the company had the entrepreneurial vision, political tongue, and engineering know-how it needed to become a reality. 
+When the duo met Edolfo, an innately gifted developer seeking higher meaning in a bio-physics lab, Civinomics was born. Between the three founders, the company had the entrepreneurial vision, political tongue, and engineering know-how it needed to become a reality. 
 </p>
 
 <p>
@@ -28,7 +28,7 @@ Since then, every person that has embraced the need for political renewal throug
 </p>
 
 <p>
-Greenocracy is headquartered in downtown Santa Cruz, CA at the Cruzio Building: 877 Cedar St, Suite 150.
+Civinomics is headquartered in downtown Santa Cruz, CA at the Cruzio Building: 877 Cedar St, Suite 150.
 </p>
 </%def>
 <%def name="display_body_bottom_content()">
@@ -43,7 +43,7 @@ Greenocracy is headquartered in downtown Santa Cruz, CA at the Cruzio Building: 
         <img class="about_profile_img" src="/images/manu.png">
         <div id="about_profile_text">
         <h4> Manu Koenig - CEO </h4>
-        Manu manages Greenocracy’s operations and product development. Previously he was General Manager of Strategic Partnerships at Martini Media Network- an online advertising start-up focused on reaching the affluent online. Manu expanded the network’s service offerings by deploying Silicon Valley technology for Martini’s publisher base. He also worked as Operations Manager, running campaigns for clients including Gulfstream, Aston Martin, and Breitling. Manu worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin, Germany after graduating from Stanford.
+        Manu manages Civinomics’s operations and product development. Previously he was General Manager of Strategic Partnerships at Martini Media Network- an online advertising start-up focused on reaching the affluent online. Manu expanded the network’s service offerings by deploying Silicon Valley technology for Martini’s publisher base. He also worked as Operations Manager, running campaigns for clients including Gulfstream, Aston Martin, and Breitling. Manu worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin, Germany after graduating from Stanford.
         </div>
         </div>
                 <div id="about_profile" class="grid_8">

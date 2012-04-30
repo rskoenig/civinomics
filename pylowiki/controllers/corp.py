@@ -1,14 +1,11 @@
 import logging
 
 from pylons import request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to, redirect
+from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.helpers as h
-from pylowiki.model import get_user, getPoints, getUserSuggestions, getArticlesRead, getVotes
-from pylowiki.model import getSolutions, getUserContributions, getUserConnections, getUserWork
 
 from pylowiki.lib.base import BaseController, render
-
 
 log = logging.getLogger(__name__)
 
@@ -54,9 +51,5 @@ class CorpController(BaseController):
             abort(404)
         
         c.title = render_var['body_header']
-        if session.get('user') :
-            c.user = get_user(session['user'])
-        else :
-            c.user = None
         return render("/derived/corp_"+page+".mako", extra_vars=render_var)
 

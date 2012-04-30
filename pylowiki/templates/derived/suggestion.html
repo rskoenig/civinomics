@@ -20,7 +20,7 @@
 					</p>
 					<p class="right">
 					    % if c.author['pictureHash'] == 'flash':
-                            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="avatar" class="right" style="width=50px;}"/></a>
+                            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="avatar" class="right" style="width:50px;}"/></a>
                         % else:
                             <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" alt="avatar" class="right"/></a>
                         % endif
@@ -84,9 +84,6 @@
                                     <br/>
                                     <br/>
     								<br/>
-    								<div class = "avgRating_${c.s['urlCode']}_${c.s['url']} right">Average rating: ${c.s["ratingAvg_overall"]}</div>
-    								<br/>
-                                    <div class = "yourRating_${c.s['urlCode']}_${c.s['url']} right">Your rating: ${c.s["rating"]["rating"]} </div>
                                 </%doc>
                             </div>
                         % else:
@@ -116,16 +113,13 @@
                                     <br/>
                                     <br/>
                                     <br/>
-                                    <div class = "avgRating_${c.s['urlCode']}_${c.s['url']} right">Average rating: Unrated!</div>
-                                    <br/>
-                                    <div class = "yourRating_${c.s['urlCode']}_${c.s['url']} right">Your rating: Unrated! </div>
-                                    <br/>
                                 </%doc>
                             </div>
                         % endif
                     % endif
                 </div>
-                ${comments("suggestionMain")} </div>
+                ${comments("suggestionMain")} 
+                </div>
         	</div> <!-- suggestion_main -->
         	
         	<div id="suggestion_side" class="left">

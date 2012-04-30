@@ -1,26 +1,37 @@
 # -*- coding: utf-8 -*-
 import logging
+log = logging.getLogger(__name__)
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.comments import addDiscussion, addComment, editComment
 
-#from pylowiki.model import commit, Event, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment
 from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.comment import getComment, editComment
+from pylowiki.lib.db.flag import Flag, isFlagged
 
-log = logging.getLogger(__name__)
-
-#from pylowiki.model import commit_comment, disable_comment, get_comment
-#from pylowiki.model import commit_comment, getComment
 import pylowiki.lib.helpers as h
 
+import simplejson as json
+
 class CommentController(BaseController):
+
+    @h.login_required
+    def flagComment(self, id1):
+        commentID = id1
+        comment = getComment(commentID)
+        if not comment:
+            return json.dumps({'id':commentID, 'result':'ERROR'})
+        if not isFlagged(comment, c.authuser):
+            f = Flag(comment, c.authuser)
+            return json.dumps({'id':commentID, 'result':"Successfully flagged!"})
+        else:
+            return json.dumps({'id':commentID, 'result':"Already flagged!"})
 
     @h.login_required
     def addComment(self):
@@ -38,6 +49,7 @@ class CommentController(BaseController):
             comment = Comment(data, c.authuser, discussion, int(parentCommentID))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
+            raise
             h.flash('Do not access a handler directly', 'error')
         except:
             raise
@@ -55,11 +67,12 @@ class CommentController(BaseController):
             return redirect('/')
             
     
-    """ id1: the issue's URL.
-    """
+    
     @h.login_required
     def index(self, id):
-        
+        """ 
+            id1: the issue's URL.
+        """
         #for key in request.params:
         #        log.info("key:::value ---> %s:::%s"%(key, request.params[key]))
         
@@ -108,15 +121,23 @@ class CommentController(BaseController):
                         id    ->    The comment id
         """
         commentID = id
-        start = 1000 # starting of counter in commentsCustom.mako
+        start = 0 # starting of counter in commentsCustom.mako
         thisID = start + int(id)
         data = request.params['textarea' + str(thisID)]
         discussionID = request.params['discussionID']
         comment = editComment(commentID, discussionID, data)
+        d = getDiscussionByID(discussionID)
         
         if not comment:
             h.flash('Comment edit was NOT saved!', 'error')
-            return redirect('/issue/%s' % comment.page.url)
+            return redirect('/workshop/%s/%s' % (d['workshopCode'], d['workshopURL']))
         else:
             h.flash('Comment edit saved!', 'success')
-            return redirect('/issue/%s' % comment.page.url)
+            if d['discType'] == 'background':
+                return redirect('/workshop/%s/%s/background' %(d['workshopCode'], d['workshopURL']))
+            elif d['discType'] == 'feedback':
+                return redirect('/workshop/%s/%s/feedback' %(d['workshopCode'], d['workshopURL']))
+            elif d['discType'] == 'suggestion':
+                return redirect('/workshop/%s/%s/suggestion/%s/%s' %(d['workshopCode'], d['workshopURL'], d['suggestionCode'], d['suggestionURL']))
+            else:
+                return redirect('/')
