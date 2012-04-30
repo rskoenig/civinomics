@@ -4,15 +4,15 @@
 </%def>
 <%def name="display_body_right_content()">
 <h3>
-Greenocracy provides a community engagement platform and mobile outreach service for your projects and policies.
+Civinomics provides a community engagement platform and mobile outreach service for your projects and policies.
 </h3>
 
 <p>
-If you’re a Civic Leader or Social Organization, Greenocracy can help you develop new ideas and build support for your issue. Our platform generates valuable data about what your community or member base is ready to support, and engages them from the get go in your planning process. Businesses can leverage our group decision making tools for department or company wide planning and strategic development.
+If you’re a Civic Leader or Social Organization, Civinomics can help you develop new ideas and build support for your issue. Our platform generates valuable data about what your community or member base is ready to support, and engages them from the get go in your planning process. Businesses can leverage our group decision making tools for department or company wide planning and strategic development.
 </p>
 <p>
-Contact <a href="mailto:sales@greenocracy.org">
-sales@greenocracy.org </a> for pricing. 
+Contact <a href="mailto:sales@civinomics.org">
+sales@civinomics.org </a> for pricing. 
 </p>
 </%def>
 <%def name="display_body_bottom_content()">

@@ -89,20 +89,20 @@
                  </h3>
                 <ul>
                     ## Each issue has one article - the background wiki
-                    % if int(c.w['numArticles']) == 1:
+                    % if int(c.w['numResources']) == 1:
                         <p class="clr">
                             No news!
                         </p>
                     % else:
-                        % for item in c.articles:
+                        % for item in c.resources:
                             <% author = getUserByID(item.owner) %> 
                             % if item['type'] == "post":
                                 <li class="post">
-                                    <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">${item['title']}</a></span>
+                                    <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">${item['title']}</a></span>
                                     <br />
                                     <p class="clr">
                                          <img src="/images/icons/news_icon.jpg" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item['comment'][:50]}...
-                                         <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/news/${item['internalURL']}">more</a></span>
+                                         <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">more</a></span>
                                     </p>
                                     <div class="clr">
                                         <span class="gray">posted by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span> <span class="time">${timeSince(item.date)}</span> <span class="gray">ago</span>
@@ -141,16 +141,11 @@
 								<div id="ratings${counter}" class="gray rating wide" style="padding-bottom:15px;">
                         			<div id="overall_slider" class="ui-slider-container">
                         			    % if item.rating:
-										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data="0_${item['urlCode']}_${item['url']}_${item.rating['rating']}_overall_true_rateSuggestion"></div>
+										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data1="0_${item['urlCode']}_${item.rating['rating']}_overall_true_rateSuggestion" data2="${item['url']}"></div>
 										% else:
-										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data="0_${item['urlCode']}_${item['url']}_0_overall_false_rateSuggestion"></div>
+										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data1="0_${item['urlCode']}_0_overall_false_rateSuggestion" data2="${item['url']}"></div>
 										% endif
 									</div>
-									<script type="text/javascript">
-                            			$(document).ready(function(){
-                                			$(".small_slider").jColorSlider();
-                            			});
-                            		</script>
                             		<%doc>
 									<br/>                          		
                             		<br/>
@@ -170,6 +165,13 @@
                         </li>
                         <% counter += 1 %>
                     % endfor
+                    % if "user" in session:
+						<script type="text/javascript">
+							$(document).ready(function(){
+								$(".small_slider").jColorSlider();
+							});
+						</script>
+					% endif
                 % endif
                 </ul>
                 
@@ -304,7 +306,7 @@
 				<p class="left">Add Resource</p>
 			</h2>
 			<div class="left">
-			    <form action="/news/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
+			    <form action="/resource/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
 					<div class="wide">
 						<div>
 							Resource URL:

@@ -63,33 +63,11 @@ def setup_app(command, conf, vars):
             # Create event log entry
             e = Event("Create", "Auto create admin acct.", u)
             # commented out by CCN - crashes
-            #u['events'] = e.id
             log.info('hi!')
             commit(u)
 
-            # Create home page
-            #p = Page( "home" )
-            # Create first revision
-            #r = Revision ("This is your homepage, please edit this page as you like!")
-
-            # relate the revision and event
-            #r.event = e
-            # append the event to the user
-            #u.events.append( e )
-            # append the event to the page
-            #p.events.append( e )
-            # append revision to the page
-            #p.revisions.append( r )
-
-            #commit( e )
-            #try:
-            #    p = Points(u.id)
-            #    commit(p)
-            #except:
-            #    log.info('unable to create points object')
-
     except:
-
+        raise
         pass
 
     
