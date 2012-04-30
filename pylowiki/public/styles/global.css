@@ -1,13 +1,13 @@
 * {margin: 0;padding: 0;}
 
-body {width: 1000px; margin: 0 auto; 
+body {width: 1000px; margin: 0 auto; background-color:#E6E6E6;
 font-family: "HelveticaNeue", "Helvetica Neue", "HelveticaNeueRoman", "HelveticaNeue-Roman", "Helvetica Neue Roman", 'TeXGyreHerosRegular', "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif; font-weight:400; font-stretch:normal;
 }
 
 #main {font-size: .75em;}
 
 ul {list-style-type: none;}
-
+ul.simple {list-style-type: disc;}
 a, a:hover {color: #86945a;}
 a {text-decoration: none;}
 a:hover {text-decoration: underline;}

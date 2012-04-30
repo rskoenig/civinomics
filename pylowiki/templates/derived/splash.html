@@ -60,6 +60,8 @@
 		<div id="sign_up">
 			<h1>Sign up</h1>
 			${h.form(h.url(controller = 'register', action = 'register_handler'), method = 'post')}
+				<input type="hidden" name = "country" value="United States"/>
+				<input type="hidden" name = "memberType" value="individual"/>
 				First Name: *
 				<br />
 				<input type="text" name = "firstName" class="wide"/>
@@ -73,7 +75,7 @@
 				Email: *<span class="right">Zip code: *</span>
 				<br />
 				<input type="text" style="width: 165px" name = "email"/>
-				<input type="text" style="width: 75px" class="right" name = "zipCode"/>
+				<input type="text" style="width: 75px" class="right" name = "postalCode"/>
 				<br /><br />
 				Password: *
 				<br />

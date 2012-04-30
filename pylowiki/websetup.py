@@ -47,13 +47,15 @@ def setup_app(command, conf, vars):
         lastName = conf['admin.lastName']
         email = conf['admin.email']
         passwd = conf['admin.pass']
-        zipCode = conf['admin.zipCode']
+        postalCode = conf['admin.postalCode']
+        country = 'United States'
+        memberType = 'individual'
         userName = "%s %s"%(firstName, lastName)
 
-        if firstName != "" and lastName != "" and userName != "" and passwd != ""  and email != "" and zipCode != "":
+        if firstName != "" and lastName != "" and userName != "" and passwd != ""  and email != "" and postalCode != "":
         
             # Create the admin user
-            u = User( email, firstName, lastName, passwd, zipCode )
+            u = User( email, firstName, lastName, passwd, country, memberType, postalCode )
             u = getUserByEmail(email)
             u['accessLevel'] = '300'
             u['activated'] = '1'

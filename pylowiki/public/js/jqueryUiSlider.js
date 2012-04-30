@@ -57,13 +57,13 @@
 		if(this.length>0)
 		this.each(function(idx, element) {
 				var thisID = element.id,
-				averageRating = parseFloat($(this).attr('data1').split('_')[0]),	// rating's average score
-				thingCode = $(this).attr('data1').split('_')[1], 	// this page's code
-				myRating  = parseFloat($(this).attr('data1').split('_')[2]), 	// user's own rating
-				ratingType = $(this).attr('data1').split('_')[3],	// type of the rating
-				isRated = $(this).attr('data1').split('_')[4];		// if user has rated this yet
-				ratingHandler = $(this).attr('data1').split('_')[5],		// for the ajax handler URL below
-				thingURL = $(this).attr('data2'); 	// this page's url
+				averageRating = parseFloat($(this).attr('data').split('_')[0]),	// rating's average score
+				thingCode = $(this).attr('data').split('_')[1], 	// this page's code
+				thingURL = $(this).attr('data').split('_')[2], 	// this page's url
+				myRating  = parseFloat($(this).attr('data').split('_')[3]), 	// user's own rating
+				ratingType = $(this).attr('data').split('_')[4],	// type of the rating
+				isRated = $(this).attr('data').split('_')[5];		// if user has rated this yet
+				ratingHandler = $(this).attr('data').split('_')[6];		// for the ajax handler URL below
 				$(this).slider({
 					orientation: "horizontal",
 					range: "min",

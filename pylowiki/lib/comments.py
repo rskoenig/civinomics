@@ -95,15 +95,6 @@ def editComment(commentID, discussionID, data):
     comment = getComment(commentID)
     comment.data = data
     r = Revision(data)
-    e = Event('editComment', 'User %s edited comment %s'%(c.authuser.id, comment.id))
-    u = c.authuser
-    comment.events.append(e)
-    r.event = e
-    d = comment.discussion
-    d.events.append(e)
-    u.events.append(e)
-    try:
-        commit(e)
-        return comment
-    except:
-        return False
+    
+    commit(comment)
+    return comment

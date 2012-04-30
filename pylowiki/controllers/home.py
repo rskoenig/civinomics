@@ -5,9 +5,7 @@ from pylons.controllers.util import abort, redirect
 from pylons import config
 
 import pylowiki.lib.helpers as h
-#from pylowiki.model import get_user, getPoints, getUserSuggestions, getArticlesRead, getVotes
 from pylowiki.lib.db.user import get_user
-#from pylowiki.model import getSolutions, getUserContributions, getUserConnections, getUserWork
 
 from pylowiki.lib.base import BaseController, render
 
@@ -27,7 +25,6 @@ class HomeController(BaseController):
             return render('/base/template.html')
         """
         if session.get('user'):
-            #return render('/derived/issuehome.html')
             return redirect('/workshops')
         else:
             c.site_base_url = config['app_conf']['site_base_url']

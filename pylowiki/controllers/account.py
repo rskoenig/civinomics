@@ -12,8 +12,12 @@ from pylons import config
 
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
-from pylowiki.lib.db.user import get_user
+from pylowiki.lib.db.user import get_user, getUserByID
 from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.facilitator import getUserFacilitators
+from pylowiki.lib.db.workshop import getWorkshopByID
+from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
+
 
 from hashlib import md5
 
@@ -23,12 +27,35 @@ class AccountController(BaseController):
     
     @h.login_required
     def showUserPage(self, id1, id2):
-        # Called when visiting /account/user-name
+        # Called when visiting /profile/urlCode/url
         code = id1
         url = id2
         c.user = get_user(code, url)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+
+        fList = getUserFacilitators(c.user.id)
+        c.facilitatorWorkshops = []
+        for f in fList:
+           wID = f['workshopID']
+           c.facilitatorWorkshops.append(getWorkshopByID(wID))
+
+        fList = getWorkshopFollows(c.user.id)
+        ##log.info('fList is %s userID is %s'%(fList, c.user.id))
+        c.followingWorkshops = []
+        for f in fList:
+           wID = f['thingID']
+           c.followingWorkshops.append(getWorkshopByID(wID))
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.followingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.followingUsers.append(getUserByID(uID))
+
+
         return render("/derived/profile.html")
     
     @h.login_required
@@ -137,3 +164,42 @@ class AccountController(BaseController):
     
     def hashPicture(self, username, title):
         return md5(username + title).hexdigest()
+
+    @h.login_required
+    def followHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        log.info('followHandler %s %s' % (code, url))
+        # this gets a follow which has been unfollowed
+        f = getFollow(c.authuser.id, c.user.id)
+        if f:
+           log.info('f is %s' % f)
+           f['disabled'] = False
+           commit(f)
+        # this only gets follows which are not disabled
+        elif not isFollowing(c.authuser.id, c.user.id):
+           log.info('not isFollowing')
+           f = Follow(c.authuser.id, c.user.id, 'user')
+        else:
+           log.info('else')
+           f = Follow(c.authuser.id, c.user.id, 'user')
+
+        return "ok"
+
+    @h.login_required
+    def unfollowHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        log.info('unfollowHandler %s %s' % (code, url))
+        f = getFollow(c.authuser.id, c.user.id)
+        if f:
+           log.info('f is %s' % f)
+           f['disabled'] = True
+           commit(f)
+
+        return "ok"
+
+
+

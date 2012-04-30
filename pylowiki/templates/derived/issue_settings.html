@@ -1,14 +1,26 @@
+
 <%inherit file = "/base/template.html"/>
 
-<% counter = 1 %> 
-<% numrows = 10 %>
-<% numcols = 10 %>
+<SCRIPT LANGUAGE="JavaScript">
+   function clearZipList () {
+     document.edit_issue.publicPostalList.value = '';
+     return 1;
+   }    
+</SCRIPT>
+
+% if c.w['startTime'] == '0000-00-00':
+     <% wstarted = 0 %>
+% else:
+     <% wstarted = 1 %>
+% endif
 
     <div class="banner_div">
         <h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h2>
     </div>     
+    <br /> <br />
+    <br /> <br />
 
-<form id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/editWorkshopHandler" enctype="multipart/form-data" method="post" >
+<form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/editWorkshopHandler" enctype="multipart/form-data" method="post" >
 
     <p>
     <strong class="gray">Edit Workshop Settings</strong>
@@ -25,283 +37,126 @@
     <br /><br />
     Workshop Home Postal Code: ${c.w['publicPostal']}
     <br /><br />
-    Who can participate in this workshop: <span class="darkorange">*</span>
-    <br />
-    % if c.w['publicScope'] == '10':
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    People in <input type="radio" name = "publicScope" value = "10" ${checked} /> My Postal Code &nbsp;&nbsp;&nbsp;
-    % if c.w['publicScope'] == '09':
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="radio" name = "publicScope" value = "09" ${checked} /> My City &nbsp;&nbsp;&nbsp;
-    % if c.w['publicScope'] == '07':
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="radio" name = "publicScope" value = "07" ${checked} /> My County &nbsp;&nbsp;&nbsp;
-    % if c.w['publicScope'] == '05':
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="radio" name = "publicScope" value = "05" ${checked} /> My State &nbsp;&nbsp;&nbsp;
-    % if c.w['publicScope'] == '03':
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="radio" name = "publicScope" value = "03" ${checked} /> My Country &nbsp;&nbsp;&nbsp;
-    % if c.w['publicScope'] == '01':
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="radio" name = "publicScope" value = "01" ${checked} /> My Planet &nbsp;&nbsp;&nbsp;
-    <br /><br />
-    OR
-    <br /><br />
-    People in these postal codes (enter at least one): <span class="darkorange">*</span>
-    <br />
-    <textarea name = "publicPostalList" rows="2" cols="50">${c.w['publicPostalList']}</textarea>
+    % if wstarted == 0:
+       Who is eligable to participate in this workshop: <span class="darkorange">*</span>
+       <br />
+       % if c.w['publicScope'] == '10':
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       People in <input type="radio" name = "publicScope" value = "10" ${checked} onClick="clearZipList()" /> My Postal Code &nbsp;&nbsp;&nbsp;
+       % if c.w['publicScope'] == '09':
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="radio" name = "publicScope" value = "09" ${checked} onClick="clearZipList()" /> My City &nbsp;&nbsp;&nbsp;
+       % if c.w['publicScope'] == '07':
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="radio" name = "publicScope" value = "07" ${checked} onClick="clearZipList()" /> My County &nbsp;&nbsp;&nbsp;
+       % if c.w['publicScope'] == '05':
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="radio" name = "publicScope" value = "05" ${checked} onClick="clearZipList()" /> My State &nbsp;&nbsp;&nbsp;
+       % if c.w['publicScope'] == '03':
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="radio" name = "publicScope" value = "03" ${checked} onClick="clearZipList()" /> My Country &nbsp;&nbsp;&nbsp;
+       % if c.w['publicScope'] == '01':
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="radio" name = "publicScope" value = "01" ${checked} onClick="clearZipList()" /> My Planet &nbsp;&nbsp;&nbsp;
+       <br /><br />
+       OR
+       <br /><br />
+       People in these postal codes (enter at least one): <span class="darkorange">*</span>
+       <br />
+       <textarea name = "publicPostalList" rows="2" cols="50">${c.w['publicPostalList']}</textarea>
     
-    <br /><br />
-    Workshop Tags: <span class="darkorange">*</span>
-    <br />
-    <% tags = c.w['publicTags'] %>
-    <% workshopTags = tags.split(',') %>
-    Choose at least one from the list below<br /> 
-    % if 'Environment' in workshopTags:
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="checkbox" name="publicTags" value="Environment" ${checked} /> Environment &nbsp;&nbsp;&nbsp;
-    % if 'Government' in workshopTags:
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="checkbox" name="publicTags" value="Government" ${checked} /> Government &nbsp;&nbsp;&nbsp;
-    % if 'Municipal Services' in workshopTags:
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="checkbox" name="publicTags" value="Municipal Services" ${checked} /> Municipal Services &nbsp;&nbsp;&nbsp;
-    <input type="checkbox" name="publicTags" value="Economy" ${checked} /> Economy &nbsp;&nbsp;&nbsp;
-    % if 'Economy' in workshopTags:
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="checkbox" name="publicTags" value="Infrastructure" ${checked} /> Infrastructure &nbsp;&nbsp;&nbsp;
-    % if 'Civil Rights' in workshopTags:
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights &nbsp;&nbsp;&nbsp;
-    <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response &nbsp;&nbsp;&nbsp;
-    % if 'Business' in workshopTags:
-        <% checked = 'checked' %>
-     % else:
-        <% checked = 'unchecked' %>
-     % endif
-    <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
-    <br />
-    <br />
-    Additional Workshop Tags: <span class="darkorange">*</span>
-    <br />
-    Enter at least one, separate multiple tags with a comma:</br />
-    <input type="text" name = "memberTags" size="50" maxlength="50" value = "${c.w['memberTags']}"/>
-    <br /><br />
+       <br /><br />
+       Workshop Tags: <span class="darkorange">*</span>
+       <br />
+       <% tags = c.w['publicTags'] %>
+       <% workshopTags = tags.split(',') %>
+       Choose at least one from the list below<br /> 
+       % if 'Environment' in workshopTags:
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="checkbox" name="publicTags" value="Environment" ${checked} /> Environment &nbsp;&nbsp;&nbsp;
+       % if 'Government' in workshopTags:
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="checkbox" name="publicTags" value="Government" ${checked} /> Government &nbsp;&nbsp;&nbsp;
+       % if 'Municipal Services' in workshopTags:
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="checkbox" name="publicTags" value="Municipal Services" ${checked} /> Municipal Services &nbsp;&nbsp;&nbsp;
+       <input type="checkbox" name="publicTags" value="Economy" ${checked} /> Economy &nbsp;&nbsp;&nbsp;
+       % if 'Economy' in workshopTags:
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="checkbox" name="publicTags" value="Infrastructure" ${checked} /> Infrastructure &nbsp;&nbsp;&nbsp;
+       % if 'Civil Rights' in workshopTags:
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights &nbsp;&nbsp;&nbsp;
+       <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response &nbsp;&nbsp;&nbsp;
+       % if 'Business' in workshopTags:
+           <% checked = 'checked' %>
+        % else:
+           <% checked = 'unchecked' %>
+        % endif
+       <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
+       <br />
+       <br />
+       Additional Workshop Tags: <span class="darkorange">*</span>
+       <br />
+       Enter at least one, separate multiple tags with a comma:</br />
+       <input type="text" name = "memberTags" size="50" maxlength="50" value = "${c.w['memberTags']}"/>
+       <br /><br />
     
-    ## Below is the code needed to set up the old issues.
-    <%doc>
-    <div id="government_sphere" class="left">
-        Government Sphere: <span class="darkorange">*</span>
-        <br />
-        <div class="select">
-            <select class="left" name = "governmentSpheres">
-                <option value="">select existing</option>
-                % for item in c.governmentSpheres:
-                    <option value="${item['id']}">${item["name"]}</option>
-                % endfor
-            </select>
-        </div>
-        <div class="left" id="create_new">
-            <em>create new</em>
-            <br /><br />
-            Name:
-            <br />
-            <input type="text" class="wide" name = "newGovtSphereName"/>
-            <br /><br />
-            Photo:
-            <br />
-            ##<input type="file" class="gray" name = "newGovtSpherePhoto"/>
-            ${h.file("newGovtSpherePhoto")}
-            <br /><br />
-        </div> <!-- create_new -->
-    </div> <!-- government sphere -->
-    
-    <div id="goals" class="clr">
-        Goals: <span class="darkorange">*</span>
-        <br />
-        <div style="display:inline; text-align:center;" id="textareadiv${counter}">
-            <br />
-            <textarea rows="${numrows}" cols="${numcols}" id="textarea${counter}" name="goals" onkeyup="previewAjax( 'textarea${counter}', 'section${counter}' )" class="markitup"></textarea>
-            <% counter = counter + 1 %>
-        </div>
-    </div>    
-    
-    <div id="end-dates">
-        Workshop end date: <span class="darkorange">*</span>
-        <table>
-            <tr>
-                <td>End date:</td>
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "workshopMonth">
-                            <option value="">Month</option>
-                            <% i = 1 %>
-                            % for item in c.months:
-                                <option value="${i}">${item}</option>
-                                <% i += 1 %>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-                
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "workshopDay">
-                            <option value="">Day</option>
-                            % for item in c.days:
-                                <option value="${item}">${item}</option>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-                
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "workshopYear">
-                            <option value="">Year</option>
-                            % for item in c.years:
-                                <option value="${item}">${item}</option>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-            </tr>
-            
-            <tr>
-                <td>Solution</td>
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "solutionMonth">
-                            <option value="">Month</option>
-                            <% i = 1 %>
-                            % for item in c.months:
-                                <option value="${i}">${item}</option>
-                                <% i += 1 %>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-                
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "solutionDay">
-                            <option value="">Day</option>
-                            % for item in c.days:
-                                <option value="${item}">${item}</option>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-                
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "solutionYear">
-                            <option value="">Year</option>
-                            % for item in c.years:
-                                <option value="${item}">${item}</option>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-            </tr>
-            
-            <tr>
-                <td>Solution Package</td>
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "solutionPkgMonth">
-                            <option value="">Month</option>
-                            <% i = 1 %>
-                            % for item in c.months:
-                                <option value="${i}">${item}</option>
-                                <% i += 1 %>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-                
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "solutionPkgDay">
-                            <option value="">Day</option>
-                            % for item in c.days:
-                                <option value="${item}">${item}</option>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-                
-                <td>
-                    <div class="select">
-                        <select class="gray" name = "solutionPkgYear">
-                            <option value="">Year</option>
-                            % for item in c.years:
-                                <option value="${item}">${item}</option>
-                            % endfor
-                        </select>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div><!-- end-dates -->
-    <hr />
-    <div id="background_wiki">
-        <strong class="gray">Background Wiki</strong>
-        <br /><br />
-        <div style="display:inline; text-align:center;" id="textareadiv${counter}">
-            <br />
-            <textarea rows="${numrows}" cols = "${numcols}"id="textarea${counter}" name="backgroundWiki" onkeyup="previewAjax( 'textarea${counter}', 'section${counter}' )" class="markitup"></textarea>
-        </div>
-    ##</div>
-        
-    </div> <!-- background_wiki -->
-    <hr />
-    <div id="issue_slideshow">
-        <strong class="gray">Issue Slideshow</strong>
-        <br />
-        Number of entries:
-        <select class="gray" name = "numSlideshowEntries">
-            % for i in range(1, c.maxSlideshowEntries + 1):
-                <option value="${i}">${i}</option>
-            % endfor
-        </select>
-    </div>
-    </%doc>
-    <button type="submit" class="gold">Submit</button>
+       <br />
+       <br />
+       When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
+   Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligable to participate. 
+       <br />
+       <br />
+   Note that once a workshop has started, you may not change the workshop participant eligability or tags. 
+       <br />
+       <input type="checkbox" name="startWorkshop" value="Start" /> Start Workshop &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Start Workshop
+       <br />
+       <br />
+       <br />
+       <br />
+   % else:
+     Members eligable to participate in this workshop: residents of ${c.w['publicScopeTitle']}
+     <br />
+     Workshop Tags: ${c.w['publicTags']} ${c.w['memberTags']}
+     <br />
+     <br />
+
+   % endif
+    <button type="submit" class="gold">Save Changes</button>
 </form>
 
             
@@ -328,12 +183,4 @@
         });
     </script>
     
-    <script>
-        $(function(){
-            $("#photo_container").slides({
-                preload: true,
-                generatePagination: false
-            });
-        });
-    </script>
 </%def>

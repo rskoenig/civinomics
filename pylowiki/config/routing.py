@@ -54,6 +54,13 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
+
+    # Workshop follow/unfollow
+    map.connect('/workshop/{id1}/{id2}/follow', controller = 'workshop', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/follow/', controller = 'workshop', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/unfollow', controller = 'workshop', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/unfollow/', controller = 'workshop', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
+    
     
     # Add image(s) to workshop slideshow
     map.connect('/workshop/{id1}/{id2}/addImages', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
@@ -94,13 +101,34 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/editWorkshopHandler', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/editWorkshopHandler/', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     
+    # Workshop admin
+    map.connect('/workshop/{id1}/{id2}/admin', controller = 'workshop', action = 'admin', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/admin/', controller = 'workshop', action = 'admin', id1 = '{id1}', id2 = '{id2}')
+
+    # Workshop admin submit handler
+    map.connect('/workshop/{id1}/{id2}/adminWorkshopHandler', controller = 'workshop', action = 'adminWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/adminWorkshopHandler/', controller = 'workshop', action = 'adminWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+
+    # Workshop feedback
+    map.connect('/workshop/{id1}/{id2}/feedback', controller = 'workshop', action = 'feedback', id1 = '{id1}', id2 = '{id2}')
+
+    # System Administration
+    map.connect('/systemAdmin', controller = 'systemAdmin', action = 'index')
+    map.connect('/systemAdmin/', controller = 'systemAdmin', action = 'index')
+
+    # System admin submit handler
+    map.connect('/systemAdmin/handler', controller = 'systemAdmin', action = 'handler')
+    map.connect('/systemAdmin/handler/', controller = 'systemAdmin', action = 'handler')
+
+
+
     # Resources
-    map.connect('/news/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/news/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/news/{id3}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/workshop/{id1}/{id2}/news/{id3}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/workshops/{id1}/{id2}/news/{id3}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/workshops/{id1}/{id2}/news/{id3}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/resource/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/resource/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
@@ -114,9 +142,18 @@ def make_map():
     map.connect('/profile/{id1}/{id2}', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     
+    # User profile follow/unfollow
+    map.connect('/profile/{id1}/{id2}/follow', controller = 'account', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/follow/', controller = 'account', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/unfollow', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/unfollow/', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
+    
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
     map.connect('/addComment/', controller = 'comment', action = 'addComment')
+    
+    # Comment flagging
+    map.connect('/flagComment/{id1}', controller = 'comment', action = 'flagComment', id1 = '{id1}')
 
     # Ratings
     map.connect('/rateSuggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
@@ -127,6 +164,9 @@ def make_map():
     map.connect('/geo/county/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCountyInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/state/{id1}/{id2}', controller = 'geo', action = 'showStateInfo', id1 = '{id1}', id2 = '{id2}')
 
+    # Temporary
+    map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    
     ################
     # Action Lists #
     ################

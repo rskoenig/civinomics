@@ -41,7 +41,9 @@ class RegisterController(BaseController):
             password = request.params['password']
             password2 = request.params['password2']
             email = request.params['email']
-            zipCode = request.params['zipCode']
+            postalCode = request.params['postalCode']
+            country = request.params['country']
+            memberType = request.params['memberType']
             firstName = request.params['firstName']
             lastName = request.params['lastName']
             checkTOS = request.params['chkTOS']
@@ -86,7 +88,7 @@ class RegisterController(BaseController):
                 username = "%s %s" %(firstName, lastName)
                 if getUserByEmail( email ) == False:
                     if password == password2:
-                        u = User(email, firstName, lastName, password, zipCode)
+                        u = User(email, firstName, lastName, password, country, memberType, postalCode)
                         message = "The user '" + username + "' was created successfully!"
                                 
                         log.info( message )

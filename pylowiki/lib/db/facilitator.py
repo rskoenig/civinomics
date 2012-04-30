@@ -4,6 +4,8 @@ import logging
 from pylowiki.model import Thing, meta
 from dbHelpers import commit, with_characteristic as wc
 
+log = logging.getLogger(__name__)
+
 # Getters
 def isFacilitator( userID, workshopID ):
    f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('workshopID', workshopID))).all()
@@ -14,8 +16,13 @@ def isFacilitator( userID, workshopID ):
 
 def getFacilitators( workshopID, disabled = False):
     try:
-        #return meta.Session.query(Thing).filter_by(objType = 'facilitator').filer(Thing.data.any(wc('workshopID', workshopID))).filter(Thing.data.any(wc('disabled', disabled))).all()
         return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('workshopID', workshopID))).all()
+    except:
+        return False
+
+def getUserFacilitators(userID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).all()
     except:
         return False
 

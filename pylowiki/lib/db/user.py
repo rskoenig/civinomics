@@ -79,7 +79,7 @@ def hashPassword(password):
 
 
 class User(object):
-    def __init__(self, email, firstName, lastName, password, zipCode = '00000'):
+    def __init__(self, email, firstName, lastName, password, country, memberType, postalCode = '00000'):
         u = Thing('user')
         u['firstName'] = firstName
         u['lastName'] = lastName
@@ -88,7 +88,9 @@ class User(object):
         u['activated'] = 0
         u['disabled'] = 0
         u['pictureHash'] = 'flash' # default picture
-        u['zipCode'] =  zipCode
+        u['postalCode'] =  postalCode
+        u['country'] =  country
+        u['memberType'] =  memberType
         u['password'] = self.hashPassword(password)
         u['totalPoints'] = 1
         u['url'] = urlify('%s %s' %(firstName, lastName))
@@ -101,7 +103,7 @@ class User(object):
         commit(u)
 
         self.u = u
-        g = GeoInfo(zipCode, 'United States', u.id)
+        g = GeoInfo(postalCode, country, u.id)
 
     # TODO: Should be encrypted instead of hashed
     def hashPassword(self, password):
