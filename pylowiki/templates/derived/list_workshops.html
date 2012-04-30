@@ -34,14 +34,16 @@
                                  <h3>Public Tags</h3>
                                  <% pTags = getPublicTagCount() %>
                                  % for pT in pTags.keys():
-                                 ${pT} : ${pTags[pT]}<br />
+                                    <% fixedpT = pT.replace(" ", "_") %>
+                                 <a href=/searchTags/${fixedpT}/>${pT}</a> : ${pTags[pT]}<br />
                                  % endfor
                             </div>
                             <div>
                                  <h3>Member Tags</h3>
                                  <% mTags = getMemberTagCount() %>
                                  % for mT in mTags.keys():
-                                 ${mT} : ${mTags[mT]}<br />
+                                    <% fixedmT = mT.replace(" ", "_") %>
+                                 <a href=/searchTags/${fixedmT}/>${mT}</a> : ${mTags[mT]}<br />
                                  % endfor
                             </div>
 			</div><!-- col-1 -->
@@ -49,7 +51,7 @@
 				<div class="banner_div">
 					<h2 class="banner">${c.heading}</h2>
 				</div>
-                % if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode']:
+                % if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode'] and c.action == 'sitemapIssues':
 				<div id="featured_issue">
                     <% mainWorkshop = c.list.pop() %>
                     % if mainWorkshop['mainImage_hash'] == 'supDawg':

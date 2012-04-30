@@ -3,11 +3,20 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic as wc
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+
+log = logging.getLogger(__name__)
 
 def getWorkshopTags(workshopID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('thingID', workshopID))).all()
+    except:
+        return False
+
+def searchTags(searchString):
+    log.info('searchString %s' % searchString)
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wcl('tagName', searchString))).all()
     except:
         return False
 
