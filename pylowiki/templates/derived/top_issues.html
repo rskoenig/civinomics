@@ -51,7 +51,7 @@
 				</div>
                 % if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode']:
 				<div id="featured_issue">
-                    <% mainWorkshop = c.list.pop() %>
+                    <% mainWorkshop = c.paginator.pop() %>
                     % if mainWorkshop['mainImage_hash'] == 'supDawg':
 					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
 					% else:

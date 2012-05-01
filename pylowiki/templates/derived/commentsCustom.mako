@@ -134,7 +134,7 @@
 
 ## Main function that gets called by the template
 <%def name="comments( type )">
- % if type == "background" or type == "feedback":
+ % if type == "background" or type == "feedback" or type == "resource":
     <% 
         discussion = c.discussion
     %>

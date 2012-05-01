@@ -29,13 +29,13 @@ def enableMessage( motd ):
 
 # Object
 class MOTD(object):
-    def __init__(self, data, owner, parent):
-        m = Thing('motd', owner.id)
-        m['parentID'] = parent.id
+    def __init__(self, data, ownerID, parentID):
+        m = Thing('motd', ownerID)
+        m['parentID'] = parentID
         m['enabled'] = True
         m['data'] = data
         mCreated = datetime.datetime.now()
         m['lastModified'] = mCreated.ctime()
         commit(m)
-        parent['motd_id'] = m.id
-        commit(parent)
+        #parent['motd_id'] = m.id
+        #commit(parent)
