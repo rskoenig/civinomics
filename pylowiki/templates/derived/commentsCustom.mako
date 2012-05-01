@@ -112,6 +112,9 @@
                     % if commentType == 'suggestionMain':
                         <input type="hidden" name = "suggestionCode" value = "${c.s['urlCode']}" />
                         <input type="hidden" name = "suggestionURL" value = "${c.s['url']}" />
+                    % elif commentType == 'resource':
+                        <input type="hidden" name = "resourceCode" value = "${c.resource['urlCode']}" />
+                        <input type="hidden" name = "resourceURL" value = "${c.resource['url']}" />
                     % endif
                     
                     <button type="submit" class="green" name = "submit" value = "reply">Submit</button>
