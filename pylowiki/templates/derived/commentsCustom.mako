@@ -9,7 +9,7 @@
 
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
-	<span><img src="/images/avatars/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> says: </span>
+	<span><img src="/images/avatars/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}" style="color:#86945A;">${author['name']}</a> says: </span>
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
@@ -26,12 +26,17 @@
             <div style="align:right;text-align:right;">
                 Optional remark: <input type="text" id="remark${thisID}"  name="remark${thisID}" class="text tiny" placeholder="optional remark"/> 
             
-                ${h.submit('submit', 'Save')}
+                <button type="submit" name = "submit" value = "submit" class="right green">Submit</button>
+                ##${h.submit('submit', 'Save')}
                 <input type="text" id="sremark"  name="sremark" class="text" />
                 <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
             </div>
         </div>
-        <div style="align:left;text-align:left;"><a href="javascript: toggle('textareadiv${thisID}', 'edit${thisID}', 'edit')" id="edit${thisID}" style="font-size: 12px;">edit</a></div>
+        <div style="align:left;text-align:left;">
+            <a href="javascript: toggle('textareadiv${thisID}', 'edit${thisID}', 'edit')" id="edit${thisID}" style="font-size: 12px; color:#86945A;">
+                edit
+            </a>
+        </div>
     ${h.end_form()}
 </%def>
 
@@ -49,36 +54,7 @@
 
 ## Sets up the rating system
 <%def name="displayRating(comment, counter, commentType)">
-    ## data: "<average>_<commentID>_<userRating>"
-    <%
-        #userRating = getRatingForComment(comment.id, c.authuser.id)
-        userRating = 0
-        """
-        if userRating == False:
-            userRating = 0
-        else:
-            userRating = userRating.rating
-        if comment.avgRating == None:
-            avgRating = 0
-        else:
-            avgRating = comment.avgRating
-        """
-        avgRating = 0
-    %>
-    <div class="basic_${counter + comment.id}" data="${avgRating}_${comment.id}_${userRating}"></div> 
-    <script type="text/javascript">
-    $(document).ready(function(){
-        $(".basic_${counter + comment.id}").jRating({
-            ratingType: "comment",
-            type: "small"
-        });
-    });
-    </script>
-    ##% if comment['avgRating'] != None:
-        <div class = "avgRating_${comment.id}">Average rating: ${avgRating}</div>
-        <div class = "yourRating_${comment.id}">Your rating: ${userRating} </div>
-    ##% endif
-    <br/>
+    
 </%def>
 
 ## Displays the footer of the comment (post date, flag, reply, rate)
@@ -93,12 +69,17 @@
             
             </div><!-- comment_data -->
             <div class="flag content left">
-                <form action="" class="left wide">
-                    <span class="dark-text">Please explain why you are flagging this content:</span>
-                    <br />
-                    <textarea name="flag" class="content_feedback"></textarea>
-                    <button type="submit" class="green">Submit</button>
-                </form>
+                ##<form action="/flagComment/${comment.id}" class="left wide">
+                    <span class="dark-text">Are you sure? </span>
+                    <span>
+                        <a href="/flagComment/${comment.id}" style="color:red;" class = "flagComment">
+                            Yes
+                        </a>
+                    </span>
+                    <span id = 'flagged_${comment.id}'>
+                        
+                    </span>
+                ##</form>
             </div><!-- flag_content -->
             <div class="reply content left">
                 <form action="/addComment">
@@ -155,7 +136,11 @@
   % else:
      <% commentString = 'comments' %>
   % endif
-  <span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
+  % if type == 'resource':
+    <span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
+  % else:
+    <span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
+  % endif
   <h3>Comments</h3>
     <div id="comments" class="left">
         <form action="/addComment" method="post">
@@ -182,7 +167,10 @@
             
             <textarea rows="4" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup" style="width:500px;"></textarea>  
             <div id="comment-preview-div"></div>
-            <div style="align:right; text-align:right; padding-right:10px;">${h.submit('submit', 'Comment')}</div>
+            <div style="align:right; text-align:right; padding-right:10px;">
+                ##${h.submit('submit', 'Comment')}
+                <button type="submit" name = "submit" value = "submit" class="right green">Submit</button>
+            </div>
             <br />
             % else:
             <h3 class="utility"> 
