@@ -47,6 +47,10 @@ class CommentController(BaseController):
             return redirect('/workshop/%s/%s/background' % (workshopCode, workshopURL) )
         elif comType == 'feedback':
             return redirect('/workshop/%s/%s/feedback' % (workshopCode, workshopURL) )
+        elif comType == 'resource':
+            resourceCode = request.params['resourceCode']
+            resourceURL = request.params['resourceURL']
+            return redirect('/workshop/%s/%s/resource/%s/%s/' % (workshopCode, workshopURL, resourceCode, resourceURL ) )
         elif comType == 'suggestionMain':
             suggestionCode = request.params['suggestionCode']
             suggestionURL = request.params['suggestionURL']

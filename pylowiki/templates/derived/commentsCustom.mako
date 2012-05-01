@@ -134,11 +134,11 @@
 
 ## Main function that gets called by the template
 <%def name="comments( type )">
- % if type == "background" or type == "feedback" or type == "resource":
+ % if type == "background" or type == "feedback":
     <% 
         discussion = c.discussion
     %>
- % elif type == "suggestionMain":
+ % elif type == "suggestionMain" or type == "resource":
     <%  
         discussion = c.discussion
         workshop = c.w
@@ -167,6 +167,11 @@
             % elif type == "background" or type == "feedback":
                 <input type="hidden" id="url" name="workshopCode" value="${c.w['urlCode']}" />
                 <input type="hidden" id="url" name="workshopURL" value="${c.w['url']}" />
+            % elif type == "resource":
+                <input type="hidden" id="url" name="workshopCode" value="${c.w['urlCode']}" />
+                <input type="hidden" id="url" name="workshopURL" value="${c.w['url']}" />
+                <input type="hidden" id="url" name="resourceCode" value="${c.resource['urlCode']}" />
+                <input type="hidden" id="url" name="resourceURL" value="${c.resource['url']}" />
             % endif
             % if "user" in session:
             add a comment
