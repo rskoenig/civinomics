@@ -191,6 +191,8 @@ def make_map():
     map.connect('/searchUsers/{id1}/{id2}/', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchTags/{id1}', controller='actionlist', action='searchTags', id='searchTags', id1 = '{id1}')
     map.connect('/searchTags/{id1}/', controller='actionlist', action='searchTags', id='searchTags', id1 = '{id1}')
+    map.connect('/searchName/', controller='actionlist', action='searchName', id='searchName')
+    map.connect('/searchName', controller='actionlist', action='searchName', id='searchName')
 
     map.connect('/account/edit', controller = 'account', action = 'edit')
     map.connect('/account/editSubmit', controller = 'account', action = 'editSubmit')

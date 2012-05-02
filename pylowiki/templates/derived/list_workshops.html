@@ -31,6 +31,22 @@
                         <img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
                             </div>
                             <div>
+                                 <h3>Show Me...</h3>
+                                 <br />
+                                 <form class="left" id="searchWorkshops" action="/searchName/" method = "post">
+                                 <select name="searchType">
+                                 <option>Workshops</option> 
+                                 <option>Members</option> 
+                                 </select>&nbsp;&nbsp;&nbsp;named<br />
+                                 <input type=text name=searchString><br />
+                                 <br />
+                                 <button type="submit" class="gold">Search</button>
+                                 </form>
+                            </div>
+                                 <br /><br />
+                                 <br /><br />
+                                 <br />
+                            <div>
                                  <h3>Public Tags</h3>
                                  <% pTags = getPublicTagCount() %>
                                  % for pT in pTags.keys():

@@ -69,6 +69,36 @@ class ActionlistController(BaseController):
 
         return render('/derived/list_workshops.html')
 
+    def searchName( self ):
+        log.info('searchName')
+        if 'searchType' in request.params and 'searchString' in request.params:
+           searchType = request.params['searchType']
+           searchString = request.params['searchString']
+
+           if searchType == 'Workshops':
+              c.title = c.heading = 'Search Workshops: ' + searchString
+              c.list = searchWorkshops('title', searchString)
+              c.count = len( c.list )
+              c.paginator = paginate.Page(
+                  c.list, page=int(request.params.get('page', 1)),
+                  items_per_page = 10, item_count = c.count
+              )
+
+              return render('/derived/list_workshops.html')
+
+           else:
+              c.title = c.heading = 'Search Members: ' + searchString
+              c.list = searchUsers('name', searchString)
+              c.count = len( c.list )
+              c.paginator = paginate.Page(
+                  c.list, page=int(request.params.get('page', 1)),
+                  items_per_page = 10, item_count = c.count
+              )
+
+              return render('/derived/list_users.html')
+        else:
+           return redirect(session['return_to'])
+
     def searchTags( self, id1 ):
         log.info('searchTags %s' % id1)
         id1 = id1.replace("_", " ")
