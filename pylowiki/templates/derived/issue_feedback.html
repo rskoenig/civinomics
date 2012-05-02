@@ -22,7 +22,7 @@ Workshop slider rating goes here.
      % if c.rating:
         <div class = "gray rating wide">
            <div id="overall_slider" class="ui-slider-container">
-	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data="0_${c.w['urlCode']}_${c.w['url']}_${c.rating['rating']}_overall_true_rateFacilitation"></div>
+	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_${c.w['url']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
            </div>
            <script type="text/javascript">
               $(document).ready(function(){
@@ -33,7 +33,7 @@ Workshop slider rating goes here.
      % else:
         <div class = "gray rating wide">
            <div id="overall_slider" class="ui-slider-container">
-	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data="0_${c.w['urlCode']}_${c.w['url']}_0_overall_false_rateFacilitation"></div>
+	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_${c.w['url']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
            </div>
            <script type="text/javascript">
               $(document).ready(function(){
