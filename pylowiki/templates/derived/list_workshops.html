@@ -1,0 +1,128 @@
+<%! 
+   from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
+   from pylowiki.lib.db.follow import getWorkshopFollowers
+   from pylowiki.lib.db.geoInfo import getGeoInfo
+   from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
+%>
+<%inherit file = "/base/template.html"/>
+        
+			<div id="col-1">
+				<div class="blockcontainer">
+                                        <h3>Welcome</h3>
+					% if c.authuser['pictureHash'] == 'flash':
+                      <div class="blockthumb"><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatars/flash.profile" /></a></div>
+                    % else:
+                      <div class="blockthumb"><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" /></a></div>
+                    % endif
+					<div><strong><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a></strong>
+					<br />
+					<a href="/account/edit">Edit My Profile</a>
+                                        </div>
+				</div>
+                                <div>
+                                        <h3>Public Spheres</h3>
+                                        <% c.geoInfo = getGeoInfo(c.authuser.id) %> 
+                               </div>
+                               <div class="blockcontainer">
+                        <a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
+                        <a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
+                        <a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
+                        <img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />&nbsp;&nbsp;United States</a><br>
+                        <img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
+                            </div>
+                            <div>
+                                 <h3>Public Tags</h3>
+                                 <% pTags = getPublicTagCount() %>
+                                 % for pT in pTags.keys():
+                                    <% fixedpT = pT.replace(" ", "_") %>
+                                 <a href=/searchTags/${fixedpT}/>${pT}</a> : ${pTags[pT]}<br />
+                                 % endfor
+                            </div>
+                            <div>
+                                 <h3>Member Tags</h3>
+                                 <% mTags = getMemberTagCount() %>
+                                 % for mT in mTags.keys():
+                                    <% fixedmT = mT.replace(" ", "_") %>
+                                 <a href=/searchTags/${fixedmT}/>${mT}</a> : ${mTags[mT]}<br />
+                                 % endfor
+                            </div>
+			</div><!-- col-1 -->
+			<div id="col-2">
+				<div class="banner_div">
+					<h2 class="banner">${c.heading}</h2>
+				</div>
+                % if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode'] and c.action == 'sitemapIssues':
+				<div id="featured_issue">
+                    <% mainWorkshop = c.paginator.pop() %>
+                    % if mainWorkshop['mainImage_hash'] == 'supDawg':
+					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
+					% else:
+					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_directoryNum']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
+					% endif
+					<div id="featured_caption">
+						<p><strong>Latest Workshop: ${mainWorkshop['title']}</strong></p>
+						<p><strong>Public Sphere: ${mainWorkshop['publicScopeTitle']}</strong></p>
+						<p><strong>Tags: ${mainWorkshop['publicTags']}, ${mainWorkshop['memberTags']}</strong></p>
+						<p><strong><a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}">View Workshop</a></strong></p>
+					</div><!-- featured_caption -->
+					<div style="background: green">|</div>
+                </div><!-- featured_issue -->
+                % endif
+				<ul id="issue_list">
+                    % for item in c.paginator:
+                        <li>
+                            % if item['mainImage_hash'] == 'supDawg':
+                                <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
+                            % else:
+                                <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/${item['mainImage_directoryNum']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
+                            % endif
+                            <h4><a href="/workshops/${item['urlCode']}/${item['url']}">${item['title']}</a></h4>
+                            <span><strong>Public sphere:</strong> ${item['publicScopeTitle']}</span>
+                            <br />
+                            <span><strong>Suggestions:</strong> ${len(getSuggestionsForWorkshop(item['urlCode'], item['url']))}</span>
+                            <br />
+                            <span><strong>Followers:</strong> ${len(getWorkshopFollowers(item.id))}</span>
+                            <br />
+                            <span class=orange><strong>Ends:</strong> ${item['endTime']}</span>
+                            <br />
+                            ##<span>Participants: 140 including 3 connections</span>
+                            ##<span>Participants: ${len(getParticipantsByID(item.id))}</span>
+                            <br />
+                            ##<span>Time remaining in phase: </span><span class="time">54 minutes</span>
+                        </li>
+                    % endfor
+				</ul>
+				##<a href="#" id="load_more">Load more issues ...</a>
+			</div> <!-- col-2 -->
+			<div id="col-3">
+				<div>
+					<ul class="invite suggest share">
+						<li><img src="/images/handdove.png" /> <a href="#" class="invite_friends">Invite to Civinomics</a></li>
+						<li><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest a workshop</a></li>
+					</ul>
+				</div>
+			</div> <!-- col-3 -->
+    
+<div class="blockfullpage">
+
+<% state = True %>
+
+% for p in c.paginator:
+    <% state = not state %>
+% endfor
+
+<div style="text-align: center"><h4>Total Workshops: ${c.count} | View ${ c.paginator.pager('~3~') }</h4></div>
+
+</div>
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/top_issues.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/profile.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="/js/h2banner.js" type="text/javascript"></script>
+</%def>
+
+<%def name = 'extraHTML()'>
+
+</%def>
