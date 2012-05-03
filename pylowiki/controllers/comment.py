@@ -13,6 +13,9 @@ from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment
 from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.flag import Flag, isFlagged
+
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -21,6 +24,18 @@ log = logging.getLogger(__name__)
 import pylowiki.lib.helpers as h
 
 class CommentController(BaseController):
+
+    @h.login_required
+    def flagComment(self, id1):
+        commentID = id1
+        comment = getComment(commentID)
+        if not comment:
+            return json.dumps({'id':commentID, 'result':'ERROR'})
+        if not isFlagged(comment, c.authuser):
+            f = Flag(comment, c.authuser)
+            return json.dumps({'id':commentID, 'result':"Successfully flagged!"})
+        else:
+            return json.dumps({'id':commentID, 'result':"Already flagged!"})
 
     @h.login_required
     def addComment(self):
