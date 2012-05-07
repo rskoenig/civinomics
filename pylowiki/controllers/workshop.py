@@ -247,8 +247,8 @@ class WorkshopController(BaseController):
            werror = 1
            werrMsg += 'Message text '
             
-        if 'enable' in request.params:
-           enable = request.params['enable']
+        if 'enableMOTD' in request.params:
+           enable = request.params['enableMOTD']
            if enable == '1' or enable == '0':
               m['enabled'] = enable
            else:
@@ -257,6 +257,35 @@ class WorkshopController(BaseController):
         else:
            werror = 1
            werrMsg += 'Publish message or not '
+
+        eW = 0
+        veW = 0
+        if 'enableWorkshop' in request.params:
+           eW = 1
+
+        if 'verifyEnableWorkshop' in request.params:
+           veW = 1
+
+        ##log.info('Enable is %s and Verify is %s' % (eW, veW))
+        if eW != veW:
+           ##log.info('not equal')
+           werror = 1
+           if w['deleted'] == 1:
+              eAction = 'enabled'
+           else:
+              eAction = 'disabled'
+           werrMsg += 'Action must be verified before workshop can be ' + eAction + '.'
+        elif eW == 1 and veW == 1:
+           ##log.info('equal and deleted is %s' % w['deleted'])
+           if w['deleted'] == '1':
+              w['deleted'] = '0'
+              ##log.info('doing undelete')
+           else:
+              w['deleted'] = '1'
+              ##log.info('doing delete')
+
+           commit(w)
+
             
         commit(m)
         return redirect('/workshops/%s/%s'%(w['urlCode'], w['url']))

@@ -22,7 +22,19 @@
        <% pChecked = '' %>
        <% uChecked = 'checked' %>
     % endif
-    <input type=radio name="enable" value="1" ${pChecked}> Publish&nbsp;&nbsp;&nbsp;<input type=radio name="enable" value="0" ${uChecked}> Unpublish
+    <input type=radio name="enableMOTD" value="1" ${pChecked}> Publish&nbsp;&nbsp;&nbsp;<input type=radio name="enableMOTD" value="0" ${uChecked}> Unpublish
+    <br /><br />
+    <br /><br />
+    % if c.w['deleted'] == '1':
+       Enable Workshop
+       <% eAction = 'Enable' %>
+    % else:
+       Disable Workshop
+       <% eAction = 'Disable' %>
+    % endif
+    <br />
+    <input type=radio name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type=radio name="verifyEnableWorkshop" value="0"> Verify ${eAction}
+    <br /><br />
     <br /><br />
     <button type="submit" class="gold">Save Changes</button>
 </form>
