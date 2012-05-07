@@ -37,6 +37,16 @@ def getUserByID(id):
     except:
         return False
     
+def isAdmin(id):
+    try:
+        u = meta.Session.query(Thing).filter_by(id = id).one()
+        if int(u['accessLevel']) >= 200:
+           return True
+        else:
+           return False
+    except:
+        return False
+    
 def searchUsers( uKey, uValue):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wcl(uKey, uValue))).all()

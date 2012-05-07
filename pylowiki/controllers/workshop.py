@@ -12,7 +12,7 @@ from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.article import getArticlesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
-from pylowiki.lib.db.user import getUserByID
+from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag
@@ -272,10 +272,7 @@ class WorkshopController(BaseController):
         c.isScoped = isScoped(c.authuser, c.w)
         c.isFollowing = isFollowing(c.authuser.id, c.w.id)
         ##log.info('c.isFollowing is %s' % c.isFollowing)
-        if int(c.authuser['accessLevel']) >= 200:
-           c.isAdmin = True
-        else:
-           c.isAdmin = False
+        c.isAdmin = isAdmin(c.authuser.id)
         if c.w['startTime'] != '0000-00-00':
            c.wStarted = True
         else:
