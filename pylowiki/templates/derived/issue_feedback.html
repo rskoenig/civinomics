@@ -1,0 +1,107 @@
+<%!
+    from pylowiki.lib.db.user import getUserByID
+%>
+
+<%inherit file = "/base/template.html"/>
+<%namespace file="/derived/commentsCustom.mako" import="comments" />
+
+<div class="left headline banner_div">
+   <h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2>
+   <br/>
+</div> <!-- left headline -->
+<div id="suggestion_main" class="left clr">
+   <h3>Workshop Feedback</h3>
+   <div class="left clr">
+Blurb about the workshop process goes here. The intent of the blurb is to educate people about how the workshop works right at the top here before they rate the workshop or give comments.
+   <br />
+   <br />
+   <br />
+Workshop slider rating goes here.
+                    
+   % if "user" in session:
+     % if c.rating:
+        <div class = "gray rating wide">
+           <div id="overall_slider" class="ui-slider-container">
+	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_${c.w['url']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
+           </div>
+           <script type="text/javascript">
+              $(document).ready(function(){
+                 $(".normal_slider").jColorSlider();
+              });
+           </script>
+        </div>
+     % else:
+        <div class = "gray rating wide">
+           <div id="overall_slider" class="ui-slider-container">
+	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_${c.w['url']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
+           </div>
+           <script type="text/javascript">
+              $(document).ready(function(){
+                 $(".normal_slider").jColorSlider();
+              });
+           </script>
+         </div>
+     % endif
+   % endif
+   <br />
+   <br />
+   <br />
+</div>
+${comments("feedback")}</div>
+</div> <!-- suggestion_main -->
+<div id="suggestion_side" class="left">
+   <h3>About Facilitation</h3>
+   The blurb about the role of the facilitator goes here.
+   <br />
+   <br />
+   % if c.facilitators == False  or len(c.facilitators) == 0:
+       <h3>No Facilitators!</h3>
+       <div>
+   % else:
+       % if len(c.facilitators) == 1:
+          <h3>Your Facilitator</h3>
+       % else:
+          <h3>Your Facilitators</h3>
+       % endif                  
+       <div>
+       % for facilitator in c.facilitators:
+          <% fuser = getUserByID(facilitator.owner)%>
+          % if fuser['pictureHash'] == 'flash':
+             <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${fuser['name']}</a><br/>
+          % else:
+             <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a><br/>
+          % endif
+       % endfor
+   % endif
+   </div>
+</div> <!-- suggestion_side -->
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/suggestion.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/comments.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
+        <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
+
+	
+</%def>
+
+<%def name = 'extraScripts()'>
+   <script src="/js/slides.js" type="text/javascript"></script>
+   <script src="/js/col.js" type="text/javascript"></script>
+   <script src="/js/h2banner.js" type="text/javascript"></script>
+   <script src="/js/slides.min.jquery.js" type="text/javascript"></script>
+   <script src="/js/jquery.cycle.all.js"></script>
+   <script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+   <script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
+   <script src = "/js/comment.js" type="text/javascript"></script>
+   <script src = "/js/javascript.js" type="text/javascript"></script>
+   <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+   <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+   <script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
+</%def>
+
+<%def name = 'extraHTML()'>
+
+</%def>
