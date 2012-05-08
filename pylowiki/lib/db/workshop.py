@@ -4,7 +4,7 @@ from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.geoInfo import getGeoScope
-from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo
+from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 from page import Page
 from event import Event
 from revision import Revision
@@ -31,7 +31,7 @@ def getWorkshops( deleted = False):
 
 def searchWorkshops( wKey, wValue):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc(wKey, wValue))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wcl(wKey, wValue))).all()
     except:
         return False
 

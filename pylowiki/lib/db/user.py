@@ -6,7 +6,7 @@ from pylons import tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl
 from hashlib import md5
 from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
@@ -37,6 +37,12 @@ def getUserByID(id):
     except:
         return False
     
+def searchUsers( uKey, uValue):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wcl(uKey, uValue))).all()
+    except:
+        return False
+
 def checkPassword(user, password):
     if user['password'] == hashPassword(password):
         return True

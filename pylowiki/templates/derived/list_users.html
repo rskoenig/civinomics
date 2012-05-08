@@ -67,49 +67,17 @@
 				<div class="banner_div">
 					<h2 class="banner">${c.heading}</h2>
 				</div>
-                % if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode'] and c.action == 'sitemapIssues':
-				<div id="featured_issue">
-                    <% mainWorkshop = c.paginator.pop() %>
-                    % if mainWorkshop['mainImage_hash'] == 'supDawg':
-					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
-					% else:
-					   <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'> <img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_directoryNum']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" /></a>
-					% endif
-					<div id="featured_caption">
-						<p><strong>Latest Workshop: ${mainWorkshop['title']}</strong></p>
-						<p><strong>Public Sphere: ${mainWorkshop['publicScopeTitle']}</strong></p>
-						<p><strong>Tags: ${mainWorkshop['publicTags']}, ${mainWorkshop['memberTags']}</strong></p>
-						<p><strong><a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}">View Workshop</a></strong></p>
-					</div><!-- featured_caption -->
-					<div style="background: green">|</div>
-                </div><!-- featured_issue -->
-                % endif
-				<ul id="issue_list">
+                    <ul id="issue_list">
                     % for item in c.paginator:
-                        <li>
-                            % if item['mainImage_hash'] == 'supDawg':
-                                <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
-                            % else:
-                                <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/${item['mainImage_directoryNum']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "margin: 5px; width: 120px; height: 80px;"/></a>
-                            % endif
-                            <h4><a href="/workshops/${item['urlCode']}/${item['url']}">${item['title']}</a></h4>
-                            <span><strong>Public sphere:</strong> ${item['publicScopeTitle']}</span>
-                            <br />
-                            <span><strong>Suggestions:</strong> ${len(getSuggestionsForWorkshop(item['urlCode'], item['url']))}</span>
-                            <br />
-                            <span><strong>Followers:</strong> ${len(getWorkshopFollowers(item.id))}</span>
-                            <br />
-                            <span class=orange><strong>Ends:</strong> ${item['endTime']}</span>
-                            <br />
-                            ##<span>Participants: 140 including 3 connections</span>
-                            ##<span>Participants: ${len(getParticipantsByID(item.id))}</span>
-                            <br />
-                            ##<span>Time remaining in phase: </span><span class="time">54 minutes</span>
-                        </li>
+                       <li>
+                       % if item['pictureHash'] == 'flash':
+                         <a href="/profile/${item['urlCode']}/${item['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${item['name']}</a>
+                       % else:
+                         <div class="blockthumb"><a href="/profile/${item['urlCode']}/${item['url']}"><img src="/images/avatar/${item['directoryNumber']}/profile/${item['pictureHash']}.profile" style="width:50px;"/></a></div><a href="/profile/${item['urlCode']}/${item['url']}"> ${item['name']}</a>
+                       % endif
                     % endfor
-				</ul>
-				##<a href="#" id="load_more">Load more issues ...</a>
-			</div> <!-- col-2 -->
+		</ul>
+		</div> <!-- col-2 -->
 			<div id="col-3">
 				<div>
 					<ul class="invite suggest share">
@@ -127,7 +95,7 @@
     <% state = not state %>
 % endfor
 
-<div style="text-align: center"><h4>Total Workshops: ${c.count} | View ${ c.paginator.pager('~3~') }</h4></div>
+<div style="text-align: center"><h4>Total Members: ${c.count} | View ${ c.paginator.pager('~3~') }</h4></div>
 
 </div>
 <%def name = 'extraStyles()'>
