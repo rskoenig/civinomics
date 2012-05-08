@@ -104,7 +104,7 @@ class User(object):
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         u['accessLevel'] = 0
-        if email != 'edolfo@civinomics.com':
+        if email != config['app_conf']['admin.email']:
             self.generateActivationHash(u)
         commit(u)
 
