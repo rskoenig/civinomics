@@ -231,3 +231,19 @@ class AccountController(BaseController):
 
         return redirect("/profile/" + code + "/" + url + "/" )
 
+    @h.login_required
+    def privsHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        log.info('privHandler %s %s' % (code, url))
+
+        if 'setPrivs' in request.params:
+           c.user['accessLevel'] = request.params['setPrivs']
+           commit(c.user)
+           h.flash('New Access Level Set', 'success')
+        else:
+           h.flash('Error: you must specify a new access level', 'error')
+
+        return redirect("/profile/" + code + "/" + url + "/" )
+
