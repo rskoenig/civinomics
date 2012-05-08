@@ -2,6 +2,7 @@
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID
     from pylowiki.lib.db.workshop import getWorkshop
+    from pylowiki.lib.db.user import isAdmin
 %>
         	<div id="profileside" class="col left">
                 <div class="blockimage">
@@ -116,15 +117,27 @@
 		    	Member since ${mStart}
                        % if c.authuser['email'] != c.user['email']:
 		    	<br /> <br />
-                       % if c.isFollowing:
+                          % if c.isFollowing:
 <div class="button_container">
     <button class="btn followButton gold following" rel="profile_${c.user['urlCode']}_${c.user['url']}">Following</button>
 </div>
-                       % else:
+                          % else:
 <div class="button_container">
     <button class="btn followButton gold" rel="profile_${c.user['urlCode']}_${c.user['url']}">Follow</button>
 </div>
+                          % endif
                        % endif
+                       % if isAdmin(c.authuser.id):
+                          % if c.user['disabled'] == '1':
+                             <% eAction = 'Enable' %>
+                          % else:
+                             <% eAction = 'Disable' %>
+                          % endif
+                          <br /><br />
+                          <form method="post" name="enableUser" id="enableUser" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/">
+                          <input type=radio name="verifyEnableUser" value="0"> Verify ${eAction}
+                          &nbsp;&nbsp;<button type="submit" class="gold">${eAction} User</button>
+                          </form>
                        % endif
                         </div><!-- blockleft --> 
                         <div class="blockrighthalf">

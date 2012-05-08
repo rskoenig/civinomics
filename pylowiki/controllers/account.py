@@ -208,5 +208,26 @@ class AccountController(BaseController):
 
         return "ok"
 
+    @h.login_required
+    def enableHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        log.info('enableHandler %s %s' % (code, url))
 
+        if 'verifyEnableUser' in request.params:
+           log.info('disabled is %s' % c.user['disabled'])
+           if c.user['disabled'] == '1':
+              c.user['disabled'] = 0
+              eAction = 'User Enabled'
+           else:
+              c.user['disabled'] = 1
+              eAction = 'User Disabled'
+
+           commit(c.user)
+           h.flash(eAction, 'success')
+        else:
+           h.flash('Error: you must verify action before submit', 'error')
+
+        return redirect("/profile/" + code + "/" + url + "/" )
 

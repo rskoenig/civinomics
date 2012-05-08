@@ -148,6 +148,10 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/unfollow', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/unfollow/', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
     
+    # User profile enable/disable
+    map.connect('/profile/{id1}/{id2}/enable', controller = 'account', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/enable/', controller = 'account', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
+
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
     map.connect('/addComment/', controller = 'comment', action = 'addComment')
