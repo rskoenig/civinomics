@@ -11,12 +11,14 @@ from pylowiki.lib.db.revision import get_revision, Revision
 from pylowiki.lib.db.page import getPageByID
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.rating import getRatingByID
+from pylowiki.lib.db.flag import Flag, isFlagged
 
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.fuzzyTime import timeSince
 from pylowiki.lib.utils import urlify
 
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -102,3 +104,17 @@ class SuggestionController(BaseController):
         commit(s)
         
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+    @h.login_required
+    def flagSuggestion(self, id1):
+        suggestionID = id1
+        suggestion = getSuggestionByID(suggestionID)
+        if not suggestion:
+            return json.dumps({'id':suggestionID, 'result':'ERROR'})
+        if not isFlagged(suggestion, c.authuser):
+            f = Flag(suggestion, c.authuser)
+            return json.dumps({'id':suggestionID, 'result':"Successfully flagged!"})
+        else:
+            return json.dumps({'id':suggestionID, 'result':"Already flagged!"})
+
+

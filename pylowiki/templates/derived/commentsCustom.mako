@@ -138,11 +138,26 @@
   % endif
   % if type == 'resource':
     <span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
+  % elif type == 'suggestionMain' and "user" in session:
+    <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a></span></div>
+
+    <div class="flag content left">
+       <span class="dark-text">Are you sure? </span>
+       <span>
+          <a href="/flagSuggestion/${c.s.id}" style="color:red;" class = "flagComment">
+                            Yes
+          </a>
+        </span>
+        <span id = 'flagged_${c.s.id}'>
+
+        </span>
+    </div><!-- flag_content -->
   % else:
     <span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   % endif
-  <h3>Comments</h3>
+
     <div id="comments" class="left">
+  <h3>Comments</h3>
         <form action="/addComment" method="post">
             <input type="hidden" id="type" name="type" value=${type} />
             <input type="hidden" name="discussionID" value=${discussion.id} />
