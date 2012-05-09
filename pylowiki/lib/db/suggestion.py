@@ -62,6 +62,7 @@ class Suggestion(object):
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']
         s['numComments'] = 0
+        s['disabled'] = False
         log.info('data = %s' % data)
         commit(s)
         self.s = s

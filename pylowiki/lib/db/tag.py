@@ -35,18 +35,16 @@ def getPublicTagList():
 
 def getPublicTagCount():
     tagDict = dict()
-    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'system'))).all()
+    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'system'))).filter(Thing.data.any(wc('disabled', '0'))).all()
     tagDict = dict()
     for tL in tSearch:
-       wID = tL['thingID']
-       if not isWorkshopDeleted(wID):
-          t = tL['tagName']
-          t = t.lstrip()
-          t = t.rstrip()
-          if t in tagDict:
-              tagDict[t] += 1
-          else:
-              tagDict[t] = 1
+       t = tL['tagName']
+       t = t.lstrip()
+       t = t.rstrip()
+       if t in tagDict:
+           tagDict[t] += 1
+       else:
+           tagDict[t] = 1
 
     return tagDict
 
@@ -61,18 +59,16 @@ def getMemberTagList():
     return tagList
 
 def getMemberTagCount():
-    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'member'))).all()
+    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'member'))).filter(Thing.data.any(wc('disabled', '0'))).all()
     tagDict = dict()
     for tL in tSearch:
-       wID = tL['thingID']
-       if not isWorkshopDeleted(wID):
-          t = tL['tagName']
-          t = t.lstrip()
-          t = t.rstrip()
-          if t in tagDict:
-              tagDict[t] += 1
-          else:
-              tagDict[t] = 1
+       t = tL['tagName']
+       t = t.lstrip()
+       t = t.rstrip()
+       if t in tagDict:
+           tagDict[t] += 1
+       else:
+           tagDict[t] = 1
 
     return tagDict
 

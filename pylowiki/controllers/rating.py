@@ -27,7 +27,7 @@ class RatingController(BaseController):
         code = id1
         url = id2
         amount = int(id3)
-        log.info('%s %s %s' % (id1, id2, id3))
+        ##log.info('%s %s %s' % (id1, id2, id3))
         rKey = 'ratedThings_suggestion_overall'
         s = getSuggestion(code, url)
 
@@ -54,7 +54,7 @@ class RatingController(BaseController):
         code = id1
         url = id2
         amount = int(id3)
-        ##log.info('%s %s %s' % (id1, id2, id3))
+        ##log.info('rateFacilitation %s %s %s' % (id1, id2, id3))
         rKey = 'ratedThings_workshop_overall'
         w = getWorkshop(code, url)
 

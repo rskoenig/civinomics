@@ -15,7 +15,7 @@ from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.tag import Tag
+from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing
 
@@ -235,6 +235,10 @@ class WorkshopController(BaseController):
         c.title = "Administrate Workshop"
 
         w = getWorkshop(code, urlify(url))
+        if not isFacilitator(c.authuser.id, w.id) and not isAdmin(c.authuser.id):
+           h.flash("You are not authorized", "warning")
+           return redirect('/')
+
         m = getMessage(w.id)
          
         werror = 0
@@ -284,6 +288,7 @@ class WorkshopController(BaseController):
               w['deleted'] = '1'
               ##log.info('doing delete')
 
+           setWorkshopTagEnable(w, w['deleted'])
            commit(w)
 
             
@@ -429,8 +434,10 @@ class WorkshopController(BaseController):
             """
             l = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
             for tup in l:
+                ##log.info('c.w.id is %s tup[0] is %s tup[1] is %s' % (c.w.id, tup[0], tup[1]))
                 if tup[0] == c.w.id:
                     c.rating = getRatingByID(tup[1])
+                    ##log.info('c.rating is %s' % c.rating)
 
         c.motd = getMessage(c.w.id)
         # kludge for now
@@ -445,13 +452,13 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
+        if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
+            h.flash("You are not authorized", "warning")
+            return render('/')
+
         c.title = c.w['title']
 
-        # make sure they can actually do this
-        if isFacilitator(c.authuser.id, c.w.id) or int(c.authuser['accessLevel']) >= 100:
-            return render('/derived/issue_settings.html')
-        else:
-            return render('/derived/404.html')
+        return render('/derived/issue_settings.html')
     
     @h.login_required
     def admin(self, id1, id2):
@@ -459,6 +466,10 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
+        if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
+           h.flash("You are not authorized", "warning")
+           return redirect('/')
+
         c.title = c.w['title']
         c.motd = getMessage(c.w.id)
         # kludge for now
@@ -471,12 +482,7 @@ class WorkshopController(BaseController):
         else:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
 
-
-        # make sure they can actually do this
-        if isFacilitator(c.authuser.id, c.w.id) or int(c.authuser['accessLevel']) >= 100:
-            return render('/derived/issue_admin.html')
-        else:
-            return render('/derived/404.html')
+        return render('/derived/issue_admin.html')
     
     # ------------------------------------------
     #    Helper functions for wiki controller
