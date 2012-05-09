@@ -1,4 +1,8 @@
 <%inherit file = "/base/template.html"/>
+<%!
+    from pylowiki.lib.db.flag import checkFlagged
+    from pylowiki.lib.db.comment import getFlaggedDiscussionComments
+%>  
 
     <div class="banner_div">
         <h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h2>
@@ -37,6 +41,29 @@
     <br /><br />
     <br /><br />
     <button type="submit" class="gold">Save Changes</button>
+
+    <br /><br />
+    <br /><br />
+    <% sFlagCount = 0 %>
+    <% cFlagCount = 0 %>
+    <% rFlagCount = 0 %>
+    % for s in c.s:
+       % if checkFlagged(s): 
+          <% sFlagCount += 1 %>
+       % endif
+       <% cList = getFlaggedDiscussionComments(s['discussion_id']) %>
+       % if cList:
+          <% cFlagCount += len(cList) %>
+       % endif
+    % endfor
+    <strong class="gray">Flagged Objects</strong>
+    <br /><br />
+    <ul>
+    <li>Suggestions: ${sFlagCount}</li>
+    <li>Comments:  ${cFlagCount}</li>
+    <li>Resources:  ${rFlagCount}</li>
+    </ul> 
+
 </form>
 
             

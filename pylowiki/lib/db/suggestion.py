@@ -1,5 +1,6 @@
 from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.db.flag import checkFlagged
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 from discussion import Discussion
@@ -31,6 +32,18 @@ def getSuggestionByURL(url):
 def getSuggestionsForWorkshop(code, url):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).all()
+    except:
+        return False
+
+def getFlaggedSuggestionsForWorkshop(code, url):
+    try:
+        sList = meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).all()
+        fList = []
+        for s in sList:
+           if checkFlagged(s) and s.id not in sList:
+              fList.append(s.id)
+
+        return fList
     except:
         return False
 

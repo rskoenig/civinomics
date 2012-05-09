@@ -3,7 +3,7 @@ import logging
 log = logging.getLogger(__name__)
 
 from pylowiki.model import Thing, Data, meta
-from dbHelpers import commit, with_characteristic
+from dbHelpers import commit, with_characteristic as wc
 
 import pickle
 
@@ -60,6 +60,15 @@ def Flag(thing, flagger, flagType = "overall"):
     
     return f
     
+def checkFlagged(thing):
+    log.info('checkFlagged thing.id is %s' % thing.id) 
+    t =  meta.Session.query(Thing).filter_by(objType = 'flag').filter(Thing.data.any(wc('flaggedThing_id', thing.id))).all()
+    log.info('t is %s' % t) 
+    if t:
+       return True
+    else:
+       return False
+
 def isFlagged(thing, flagger):
     """
         Check if a Thing object has already been flagged by the flagger.

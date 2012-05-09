@@ -473,14 +473,10 @@ class WorkshopController(BaseController):
         c.title = c.w['title']
         c.motd = getMessage(c.w.id)
         # kludge for now
-        if c.motd == False:
-           c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+        #if c.motd == False:
+        #   c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        """ Grab first 250 chars as a summary """
-        if len(c.motd['data']) <= 140:
-            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
-        else:
-            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
+        c.s = getSuggestionsForWorkshop(code, urlify(url))
 
         return render('/derived/issue_admin.html')
     
