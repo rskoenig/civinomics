@@ -2,7 +2,7 @@
 <%!
     from pylowiki.lib.db.flag import checkFlagged
     from pylowiki.lib.db.comment import getFlaggedDiscussionComments
-    from pylowiki.lib.db.article import getFlaggedArticlesByWorkshopID, getArticleByID
+    from pylowiki.lib.db.article import getArticlesByWorkshopID, getArticleByID
 %>  
 
     <div class="banner_div">
@@ -45,35 +45,47 @@
 
     <br /><br />
     <br /><br />
-    <% sFlagCount = 0 %>
-    <% cFlagCount = 0 %>
-    <% rFlagCount = 0 %>
-    <% rList = getFlaggedArticlesByWorkshopID(c.w.id) %>
+    <strong class="gray">Flagged Objects</strong>
+    <br /><br />
+    <% rList = getArticlesByWorkshopID(c.w.id) %>
+    <strong>Resources and Comments:</strong>
+    <br />
     % if rList:
-       % for rID in rList:
-          <% a = getArticleByID(rID) %>
-          % if a and checkFlagged(a): 
-             <% rFlagCount += 1 %>
+       % for r in rList:
+          <% a = getArticleByID(r.id) %>
+          % if checkFlagged(a): 
+             Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a['title']}</a><br />
           % endif
+          <% cList = getFlaggedDiscussionComments(a['discussion_id']) %>
+          % for comment in cList:
+             <% cFlagCount = len(cList) %>
+             % if cFlagCount > 1:
+                <% cString = 'comments' %> 
+             % else:
+                <% cString = 'comment' %> 
+             % endif
+             ${cFlagCount} ${cString} in <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a["title"]}</a><br />
+          % endfor
        % endfor
     % endif
+    <br /><br />
+    <strong>Suggestions and Comments:</strong>
+    <br />
     % for s in c.s:
        % if checkFlagged(s): 
-          <% sFlagCount += 1 %>
+          Suggestion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a><br />
        % endif
        <% cList = getFlaggedDiscussionComments(s['discussion_id']) %>
        % if cList:
-          <% cFlagCount += len(cList) %>
+          <% cFlagCount = len(cList) %>
+          % if cFlagCount > 1:
+             <% cString = 'comments' %> 
+          % else:
+             <% cString = 'comment' %> 
+          % endif
+          ${cFlagCount} ${cString} in <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a><br />
        % endif
     % endfor
-    <strong class="gray">Flagged Objects</strong>
-    <br /><br />
-    <ul>
-    <li>Suggestions: ${sFlagCount}</li>
-    <li>Comments:  ${cFlagCount}</li>
-    <li>Resources:  ${rFlagCount}</li>
-    </ul> 
-
 </form>
 
             
