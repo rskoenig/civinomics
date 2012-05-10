@@ -11,7 +11,7 @@ from pylowiki.lib.db.revision import get_revision, Revision
 from pylowiki.lib.db.page import getPageByID
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.flag import Flag, isFlagged
+from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged
 
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.fuzzyTime import timeSince
@@ -48,6 +48,11 @@ class SuggestionController(BaseController):
         c.author = c.lastmoduser = getUserByID(r.owner)
         c.lastmoddate = r.date
         c.discussion = getDiscussionByID(c.s['discussion_id'])
+
+        c.flagged = False
+        if checkFlagged(c.s):
+           c.flagged = True
+
         
         c.rating = False
         if 'ratedThings_suggestion_overall' in c.authuser.keys():

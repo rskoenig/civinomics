@@ -9,7 +9,7 @@ from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getArticleByID
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.flag import Flag, isFlagged
+from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged
 
 from pylowiki.lib.utils import urlify
 
@@ -34,6 +34,12 @@ class NewsController(BaseController):
         
         c.title = c.w['title']
         c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
+
+        c.flagged = False
+        log.info('c.resource.id is %s' % c.resource.id)
+        if checkFlagged(c.resource):
+           c.flagged = True
+
         c.poster = getUserByID(c.resource.owner)
         
         c.otherResources = getArticlesByWorkshopID(c.w.id)
@@ -45,7 +51,6 @@ class NewsController(BaseController):
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
         c.lastmoddate = c.resource.date
         c.lastmoduser = getUserByID(c.resource.owner)
-        #return render('/derived/news_article.html')
         return render('/derived/resource.html')
 
     @h.login_required

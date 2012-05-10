@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import checkFlagged
     from pylowiki.lib.db.comment import getComment
     import logging
     from datetime import datetime
@@ -64,6 +65,9 @@
         % if "user" in session:
             <p>
                 <a href="#" class="gray flag">Flag comment</a>
+                % if checkFlagged(comment):
+                   <strong class=gray> | Flagged | </strong>
+                % endif
                 <a href="#" class="gray reply">Reply</a>
             </p>
             
@@ -137,7 +141,12 @@
      <% commentString = 'comments' %>
   % endif
   % if type == 'resource' and "user" in session:
-    <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag resource</a></span></div>
+    % if c.flagged == True:
+       <% showFlagged = " | Flagged" %> 
+    % else:
+       <% showFlagged = "" %> 
+    % endif
+    <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag resource</a>${showFlagged}</span></div>
 
     <div class="flag content left">
        <span class="dark-text">Are you sure? </span>
@@ -154,7 +163,12 @@
   % elif type == 'resource':
     <span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   % elif type == 'suggestionMain' and "user" in session:
-    <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a></span></div>
+    % if c.flagged == True:
+       <% showFlagged = " | Flagged" %> 
+    % else:
+       <% showFlagged = "" %> 
+    % endif
+    <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a>${showFlagged}</span></div>
 
     <div class="flag content left">
        <span class="dark-text">Are you sure? </span>
