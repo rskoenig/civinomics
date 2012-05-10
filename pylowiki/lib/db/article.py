@@ -7,6 +7,7 @@ from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 from discussion import Discussion
 from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.db.flag import checkFlagged
 from pylons import config
 from time import time
 from tldextract import extract
@@ -40,6 +41,18 @@ def getArticleByURL(url, workshopID):
 def getArticlesByWorkshopID(workshopID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).all()
+    except:
+        return False
+
+def getFlaggedArticlesByWorkshopID(workshopID):
+    try:
+        aList = meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).all()
+        fList = []
+        for a in aList:
+           if checkFlagged(a) and a.id not in fList:
+              fList.append(a.id)
+
+        return fList
     except:
         return False
 

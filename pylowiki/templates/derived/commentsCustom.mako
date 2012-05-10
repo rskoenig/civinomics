@@ -136,7 +136,22 @@
   % else:
      <% commentString = 'comments' %>
   % endif
-  % if type == 'resource':
+  % if type == 'resource' and "user" in session:
+    <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag resource</a></span></div>
+
+    <div class="flag content left">
+       <span class="dark-text">Are you sure? </span>
+       <span>
+          <a href="/flagResource/${c.resource.id}" style="color:red;" class = "flagComment">
+                            Yes
+          </a>
+        </span>
+        <span id = 'flagged_${c.resource.id}'>
+
+        </span>
+    </div><!-- flag_content -->
+
+  % elif type == 'resource':
     <span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   % elif type == 'suggestionMain' and "user" in session:
     <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a></span></div>

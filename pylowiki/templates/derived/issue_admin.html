@@ -2,6 +2,7 @@
 <%!
     from pylowiki.lib.db.flag import checkFlagged
     from pylowiki.lib.db.comment import getFlaggedDiscussionComments
+    from pylowiki.lib.db.article import getFlaggedArticlesByWorkshopID, getArticleByID
 %>  
 
     <div class="banner_div">
@@ -47,6 +48,15 @@
     <% sFlagCount = 0 %>
     <% cFlagCount = 0 %>
     <% rFlagCount = 0 %>
+    <% rList = getFlaggedArticlesByWorkshopID(c.w.id) %>
+    % if rList:
+       % for rID in rList:
+          <% a = getArticleByID(rID) %>
+          % if a and checkFlagged(a): 
+             <% rFlagCount += 1 %>
+          % endif
+       % endfor
+    % endif
     % for s in c.s:
        % if checkFlagged(s): 
           <% sFlagCount += 1 %>

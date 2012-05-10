@@ -7,8 +7,9 @@ from pylowiki.lib.db.user import get_user, getUserByID
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.event import Event
-from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID
+from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getArticleByID
 from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.flag import Flag, isFlagged
 
 from pylowiki.lib.utils import urlify
 
@@ -17,6 +18,7 @@ from pylowiki.lib.base import BaseController, render
 #from pylowiki.lib.points import readThisPage
 
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -82,3 +84,17 @@ class NewsController(BaseController):
         a = getArticle(request.params['articleID'])
         i = getIssueByID(request.params['issueID'])
         return redirect('/issue/%s/news/%s'%(i.page.url, a.title))
+
+    @h.login_required
+    def flagResource(self, id1):
+        resourceID = id1
+        resource = getArticleByID(resourceID)
+        if not resource:
+            return json.dumps({'id':resourceID, 'result':'ERROR'})
+        if not isFlagged(resource, c.authuser):
+            f = Flag(resource, c.authuser)
+            return json.dumps({'id':resourceID, 'result':"Successfully flagged!"})
+        else:
+            return json.dumps({'id':resourceID, 'result':"Already flagged!"})
+
+
