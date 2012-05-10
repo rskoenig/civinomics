@@ -102,7 +102,7 @@ class User(object):
         u['email'] = email
         u['name'] = '%s %s'%(firstName, lastName)
         u['activated'] = 0
-        u['disabled'] = 0
+        u['disabled'] = False
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
         u['country'] =  country

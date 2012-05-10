@@ -23,7 +23,7 @@ def get_all_events():
 # In the relational model, event was used as a sort of metatable to keep track
 # of things that happened (User makes a change, page is created, etc...)
 class Event(object):
-    def __init__(self, title, data, user = None):
+    def __init__(self, title, data, parent, user = None):
         if user == None:
             user = 0
         else:
@@ -31,4 +31,5 @@ class Event(object):
         e = Thing('event', user)
         e['title'] = title
         e['data'] = data
+        e['parent_id'] = parent.id
         commit(e)

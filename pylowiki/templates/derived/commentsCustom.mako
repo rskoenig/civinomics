@@ -65,10 +65,10 @@
         % if "user" in session:
             <p>
                 <a href="#" class="gray flag">Flag comment</a>
-                % if checkFlagged(comment):
-                   <strong class=gray> | Flagged | </strong>
-                % endif
                 <a href="#" class="gray reply">Reply</a>
+                % if checkFlagged(comment):
+                   <strong class=gray> | Flagged</strong>
+                % endif
             </p>
             
             </div><!-- comment_data -->

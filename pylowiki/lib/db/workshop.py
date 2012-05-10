@@ -144,7 +144,7 @@ class Workshop(object):
         p = Page(title, owner, w, background)
         #r = Revision(owner, background, p.p.id)
         
-        e = Event('Create workshop', 'User %s created a workshop'%(owner.id))
+        e = Event('Create workshop', 'User %s created a workshop'%(owner.id), w)
         
         slideshow = Slideshow(c.authuser, w)
         slideshow = getSlideshow(slideshow.s.id)
