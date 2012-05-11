@@ -69,19 +69,6 @@ ${return_to()}
                                     	$(".normal_slider").jColorSlider();
                                 	});
                                 </script>
-                                <%doc>
-    								<div class="ui-buttons-container">
-    									<button id="buttonS" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-    									<button id="buttonN" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-    								</div>
-    								
-    								<script type="text/javascript">
-                                    	$(document).ready(function(){
-                                        	$("#buttonS").jDownButton();
-                                        	$("#buttonN").jUpButton();
-                                    	});
-                                    </script>
-                                </%doc>
                             </div>
                         % else:
                             <div class = "gray rating wide">
@@ -93,18 +80,6 @@ ${return_to()}
                                     	$(".normal_slider").jColorSlider();
                                 	});
                                 </script>
-                                ##<%doc>
-                                    <div class="ui-buttons-container">
-    									<button id="buttonS" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-    									<button id="buttonN" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-    								</div>
-    								<script type="text/javascript">
-                                    	$(document).ready(function(){
-                                        	$("#buttonS").jDownButton();
-                                        	$("#buttonN").jUpButton();
-                                    	});
-                                    </script>
-                                ##</%doc>
                             </div>
                         % endif
                     % endif
@@ -171,6 +146,7 @@ ${return_to()}
     <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
     <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
     <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
 </%def>
 
 <%def name = 'extraScripts()'>
@@ -183,11 +159,13 @@ ${return_to()}
     <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
 	<script src = "/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
 	<script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
-	<script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
+	##<script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
 
     <script language="javascript">
         $(document).ready(function()	{
             $(".markitup").markItUp(mySettings);
         });
     </script>
+    
+    <script src = "/js/upDown.js" type="text/javascript"></script>
 </%def>

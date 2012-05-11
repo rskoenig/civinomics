@@ -11,6 +11,7 @@ from pylowiki.lib.db.rating import Rating, changeRating, getRatingByID
 from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.article import getResource
 from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.comment import getComment
 
 import pylowiki.lib.helpers as h
 
@@ -95,11 +96,9 @@ class RatingController(BaseController):
             voteType = 1
         
         rKey = 'ratedThings_article_overall'
-        log.info('code:%s, url:%s'%(code, url))
         res = getResource(code, url)
         found = False
         if rKey in c.authuser.keys():
-            log.info('rKey found!')
             """
                 Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
                 a         ->    rated Thing's ID  (What was rated) 
@@ -109,10 +108,7 @@ class RatingController(BaseController):
             for tup in l:
                 if tup[0] == res.id:
                     found = True
-                    log.info('found rated thing\'s id')
                     oldRating = int(getRatingByID(tup[1])['rating'])
-                    log.info('old rating: %s'%oldRating)
-                    log.info('voteType: %s'%voteType)
                     if voteType == 0:
                         # user down voted
                         if oldRating == -1:
@@ -128,15 +124,6 @@ class RatingController(BaseController):
                             changeRating(res, tup[1], amount)
                             res['ups'] = int(res['ups']) - 1
                             res['downs'] = int(res['downs']) + 1
-                            """
-                    elif voteType == 1:
-                        # User is resetting their vote
-                        changeRating(res, tup[1], amount)
-                        if oldRating == -1:
-                            res['downs'] = int(res['downs']) - 1
-                        elif oldRating == 1:
-                            res['ups'] = int(res['ups']) - 1
-                            """
                     elif voteType == 2:
                         # User up voted
                         if oldRating == -1:
@@ -152,10 +139,8 @@ class RatingController(BaseController):
                             # User undoing old vote
                             res['ups'] = int(res['ups']) - 1
                             changeRating(res, tup[1], 0)
-                            return "OK"
                         
         if not found:
-            log.info('rKey not found!')
             rating = Rating(amount, res, c.authuser, 'overall')
             if voteType == 0:
                 res['downs'] = int(res['downs']) + 1
@@ -165,4 +150,82 @@ class RatingController(BaseController):
             else:
                 res['ups'] = int(res['ups']) + 1
         commit(res)
+        return "OK"
+    
+    @h.login_required
+    def rateComment(self, id1, id2):
+        commentID = id1
+        amount = int(id2)
+        
+        """
+            voteType:   0    ->    down
+                        1    ->    neutral
+                        2    ->    up
+        """
+        voteType = 0
+        if amount < 0:
+            amount = -1
+        elif amount > 0:
+            voteType = 2
+            amount = 1
+        else:
+            amount = 0
+            voteType = 1
+            
+        if voteType == 1:
+            return "OK"
+        
+        cKey = 'ratedThings_comment_overall'
+        com = getComment(commentID)
+        found = False
+        if cKey in c.authuser.keys():
+            """
+                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
+                a         ->    rated Thing's ID  (What was rated) 
+                b         ->    rating Thing's ID (The rating object)
+            """
+            l = pickle.loads(str(c.authuser[cKey]))
+            log.info('cKey found: %s' % l)
+            for tup in l:
+                if tup[0] == com.id:
+                    found = True
+                    oldRating = int(getRatingByID(tup[1])['rating'])
+                    if voteType == 0:
+                        # user down voted
+                        if oldRating == -1:
+                            # User undoing old vote
+                            com['downs'] = int(com['downs']) - 1
+                            changeRating(com, tup[1], 0)
+                        elif oldRating == 0:
+                            # Change vote from neutral -> down
+                            changeRating(com, tup[1], amount)
+                            com['downs'] = int(com['downs']) + 1
+                        elif oldRating == 1:
+                            # Change vote from up -> down
+                            changeRating(com, tup[1], amount)
+                            com['ups'] = int(com['ups']) - 1
+                            com['downs'] = int(com['downs']) + 1
+                    elif voteType == 2:
+                        # User up voted
+                        if oldRating == -1:
+                            # Change vote from down -> up
+                            changeRating(com, tup[1], amount)
+                            com['ups'] = int(com['ups']) + 1
+                            com['downs'] = int(com['downs']) - 1
+                        elif oldRating == 0:
+                            # Change vote from neutral -> up
+                            com['ups'] = int(com['ups']) + 1
+                            changeRating(com, tup[1], amount)
+                        elif oldRating == 1:
+                            # User undoing old vote
+                            com['ups'] = int(com['ups']) - 1
+                            changeRating(com, tup[1], 0)
+        if not found:
+            log.info('cKey not found')
+            rating = Rating(amount, com, c.authuser, 'overall')
+            if voteType == 0:
+                com['downs'] = int(com['downs']) + 1
+            elif voteType == 2:
+                com['ups'] = int(com['ups']) + 1
+        commit(com)
         return "OK"

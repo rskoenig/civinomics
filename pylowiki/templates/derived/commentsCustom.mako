@@ -1,15 +1,37 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
     from pylowiki.lib.db.user import getUserByID
-    from pylowiki.lib.db.comment import getComment
-    import logging
+    from pylowiki.lib.db.comment import getComment, getComments
+    from pylowiki.lib.db.rating import getRatingByID
+    from pylowiki.lib.sort import sortBinaryByTopPop
+    
     from datetime import datetime
+    from pickle import loads
+    
+    import logging
     log = logging.getLogger(__name__)
+    
 %>
+
+<%def name="getCommentRatings()">
+    <%
+        commentRatings = False
+        key = 'ratedThings_comment_overall'
+        if key in c.authuser.keys():
+            commentRatings = loads(str(c.authuser[key]))
+        return commentRatings
+    %>
+</%def>
 
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
-	<span><img src="/images/avatars/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}" style="color:#86945A;">${author['name']}</a> says: </span>
+	<span>
+	    <img src="/images/avatars/${author['pictureHash']}.thumbnail" /> 
+	    <a href = "/profile/${author['urlCode']}/${author['url']}" style="color:#86945A;">
+	        ${author['name']}
+        </a> 
+        says: 
+    </span>
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
@@ -65,21 +87,69 @@
             <p>
                 <a href="#" class="gray flag">Flag comment</a>
                 <a href="#" class="gray reply">Reply</a>
+                |
+                <% commentRatings = getCommentRatings() %>
+                % if commentRatings:
+                    <%
+                        found = False
+                        for item in commentRatings:
+                            if item[0] == comment.id:
+                                found = True
+                                rating = int(getRatingByID(item[1])['rating'])
+                    %>
+                    % if found:
+                        % if rating > 0:
+                            <a href="/rateComment/${comment.id}/1" class="upVote voted">
+                                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png" height="15" width="15">
+                            </a>
+                            <a href="/rateComment/${comment.id}/-1" class="downVote">
+                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                            </a>
+                        % elif rating < 0:
+                            <a href="/rateComment/${comment.id}/1" class="upVote">
+                                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                            </a>
+                            <a href="/rateComment/${comment.id}/-1" class="downVote voted">
+                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png" height="15" width="15">
+                            </a>
+                        % else:
+                            <a href="/rateComment/${comment.id}/1" class="upVote">
+                                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                            </a>
+                            <a href="/rateComment/${comment.id}/-1" class="downVote">
+                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                            </a>
+                        % endif
+                    % else:
+                        <a href="/rateComment/${comment.id}/1" class="upVote">
+                            <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                        </a>
+                        <a href="/rateComment/${comment.id}/-1" class="downVote">
+                            <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                        </a>
+                    % endif
+                % else:
+                    <a href="/rateComment/${comment.id}/1" class="upVote">
+                        <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                    </a>
+                    <a href="/rateComment/${comment.id}/-1" class="downVote">
+                        <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                    </a>
+                % endif
+                Total: ${int(comment['ups']) - int(comment['downs'])}
             </p>
             
             </div><!-- comment_data -->
             <div class="flag content left">
-                ##<form action="/flagComment/${comment.id}" class="left wide">
-                    <span class="dark-text">Are you sure? </span>
-                    <span>
-                        <a href="/flagComment/${comment.id}" style="color:red;" class = "flagComment">
-                            Yes
-                        </a>
-                    </span>
-                    <span id = 'flagged_${comment.id}'>
-                        
-                    </span>
-                ##</form>
+                <span class="dark-text">Are you sure? </span>
+                <span>
+                    <a href="/flagComment/${comment.id}" style="color:red;" class = "flagComment">
+                        Yes
+                    </a>
+                </span>
+                <span id = 'flagged_${comment.id}'>
+                    
+                </span>
             </div><!-- flag_content -->
             <div class="reply content left">
                 <form action="/addComment">
@@ -186,8 +256,7 @@
                 maxDepth = 4
                 curDepth = 0
                 if 'children' in discussion.keys():
-                    recurseCommentTree(discussion, counter, type, maxDepth, curDepth)
-                    
+                    recurseCommentTree(discussion, counter, type, maxDepth, curDepth)                    
             %>
         </ul>
   ##<div id="show-comment"><a href="javascript: toggle('comment-section', 'show-comment-link', 'Show all ${discussion['numComments']} comments')" id="show-comment-link" style="font-size: 12px;">Show all ${discussion['numComments']} comments</a></div>
@@ -202,14 +271,14 @@
             return
         if type(tree) == type(1):
             tree = getComment(tree)
-            log.info('Comment %s being processed now' % tree)
-            #return
-        #if curDepth >= maxDepth or tree['children'] == 0 or len(tree['children'].split(',')) < 1:
         if curDepth >= maxDepth or tree['children'] == 0:
             return
-        for child in [int(item) for item in tree['children'].split(',')]:
-            log.info('children: %s' % tree['children'])
+        children = tree['children'].split(',')
+        children = getComments(children)
+        children = sortBinaryByTopPop(children)
+        for child in children:
             # Hack to resolve slight difference between discussion objects and comment objects
+            log.info(child.id)
             if type(child) == type(1L):
                 child = tree.children[child]
             if child == 0:
@@ -225,11 +294,7 @@
 
 <%def name="displayComment(comment, counter, commentType, curDepth)">
     <% 
-        comment = getComment(comment)
-        if comment:
-            author = getUserByID(comment.owner)
-        else:
-            return
+        author = getUserByID(comment.owner)
     %>
     <li>
         ## This can be refactored into one set of function calls

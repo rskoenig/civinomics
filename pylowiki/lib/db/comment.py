@@ -18,6 +18,17 @@ def getComment( id ):
     except sa.orm.exc.NoResultFound:
         return False
 
+def getComments( ids ):
+    """
+        Given a list of ids, returns a list of comments.
+        Inputs            ->    ids: a list of integers
+        Outputs           ->    comments: a list of the comment Things
+    """
+    try:
+        return meta.Session.query(Thing).filter(Thing.id.in_(ids)).all()
+    except:
+        return False
+
 # Setters
 def disableComment( comment ):
     """disable this comment"""

@@ -20,6 +20,7 @@ from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing
 
 from pylowiki.lib.utils import urlify
+from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
@@ -290,7 +291,9 @@ class WorkshopController(BaseController):
                 c.slides.append(s)
             
         c.resources = getArticlesByWorkshopID(c.w.id)
+        c.resources = sortBinaryByTopPop(c.resources)
         c.suggestions = getSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         l = []
         ratedSuggestionIDs = []
         if 'ratedThings_suggestion_overall' in c.authuser.keys():
