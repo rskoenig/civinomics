@@ -3,7 +3,8 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-from pylowiki.lib.db.user import get_user, getUserByID
+from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
+from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.event import Event
@@ -36,9 +37,11 @@ class NewsController(BaseController):
         c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
 
         c.flagged = False
-        log.info('c.resource.id is %s' % c.resource.id)
         if checkFlagged(c.resource):
            c.flagged = True
+
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.isAdmin = isAdmin(c.authuser.id)
 
         c.poster = getUserByID(c.resource.owner)
         

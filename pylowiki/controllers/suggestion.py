@@ -5,7 +5,8 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
 from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop
-from pylowiki.lib.db.user import getUserByID
+from pylowiki.lib.db.user import getUserByID, isAdmin
+from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.revision import get_revision, Revision
 from pylowiki.lib.db.page import getPageByID
@@ -52,6 +53,9 @@ class SuggestionController(BaseController):
         c.flagged = False
         if checkFlagged(c.s):
            c.flagged = True
+
+        c.isAdmin = isAdmin(c.authuser.id)
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
 
         
         c.rating = False

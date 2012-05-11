@@ -66,8 +66,10 @@
             <p>
                 <a href="#" class="gray flag">Flag comment</a>
                 <a href="#" class="gray reply">Reply</a>
-                % if checkFlagged(comment):
-                   <strong class=gray> | Flagged</strong>
+                % if checkFlagged(comment): 
+                      % if c.isFacilitator or c.isAdmin:
+                         <strong class=gray> | Flagged</strong>
+                      % endif
                 % endif
             </p>
             
@@ -141,10 +143,11 @@
      <% commentString = 'comments' %>
   % endif
   % if type == 'resource' and "user" in session:
+    <% showFlagged = "" %> 
     % if c.flagged == True:
-       <% showFlagged = " | Flagged" %> 
-    % else:
-       <% showFlagged = "" %> 
+       % if c.isAdmin == True or c.isFacilitator == True:
+          <% showFlagged = " | Flagged" %> 
+       % endif
     % endif
     <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag resource</a>${showFlagged}</span></div>
 
@@ -163,10 +166,11 @@
   % elif type == 'resource':
     <span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   % elif type == 'suggestionMain' and "user" in session:
+    <% showFlagged = "" %> 
     % if c.flagged == True:
-       <% showFlagged = " | Flagged" %> 
-    % else:
-       <% showFlagged = "" %> 
+       % if c.isAdmin == True or c.isFacilitator == True:
+          <% showFlagged = " | Flagged" %> 
+       % endif
     % endif
     <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a>${showFlagged}</span></div>
 

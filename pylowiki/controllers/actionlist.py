@@ -97,7 +97,7 @@ class ActionlistController(BaseController):
 
               return render('/derived/list_users.html')
         else:
-           return redirect(session['return_to'])
+           return redirect('/')
 
     def searchTags( self, id1 ):
         log.info('searchTags %s' % id1)
