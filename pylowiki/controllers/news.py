@@ -56,6 +56,28 @@ class NewsController(BaseController):
         c.lastmoduser = getUserByID(c.resource.owner)
         return render('/derived/resource.html')
 
+    def modResource(self, id1, id2, id3, id4):
+        workshopCode = id1
+        workshopURL = id2
+        resourceCode = id3
+        resourceURL = id4
+        
+        c.w = getWorkshop(workshopCode, workshopURL)
+        
+        c.title = c.w['title']
+        c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
+
+        c.flagged = False
+        if checkFlagged(c.resource):
+           c.flagged = True
+
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.isAdmin = isAdmin(c.authuser.id)
+
+        c.poster = getUserByID(c.resource.owner)
+        
+        return render('/derived/resource_admin.html')
+
     @h.login_required
     def handler(self, id1, id2):
         code = id1

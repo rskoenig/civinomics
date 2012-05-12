@@ -151,6 +151,19 @@ ${return_to()}
 
 <%def name = 'extraHTML()'>
     <div id="pop">
+        <div id="suggestionMod">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="left">Moderate a Suggestion</p>
+            </h2>
+            <form class="left" id="suggestionmoddata" action="/modSuggestion/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}" method = "post">
+                <div id="suggestionmodform" class="left">
+                Foo: <input type=text name=foo value="foo">
+                <div id="suggestionmodshare" class="left">
+                    <button type="submit" class="gold">Submit</button>
+                </div>
+            </form>
+        </div><!-- suggestionMod -->
         <div id="suggestion">
             <h2 class="clr left">
                 <p class="right close"><a href="#" class="x">X</a>close</p>

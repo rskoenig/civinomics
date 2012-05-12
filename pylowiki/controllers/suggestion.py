@@ -89,6 +89,40 @@ class SuggestionController(BaseController):
         
         return redirect('/workshops/%s/%s'%(code, url))
 
+    def modSuggestion(self, id1, id2, id3, id4):
+        workshopCode = id1
+        workshopURL = id2
+        suggestionCode = id3
+        suggestionURL = id4
+        
+        c.w = getWorkshop(workshopCode, urlify(workshopURL))
+        c.isAdmin = isAdmin(c.authuser.id)
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
+        c.suggestions = getSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
+        for i in range(len(c.suggestions)):
+            suggestion = c.suggestions[i]
+            if suggestion.id == c.s.id:
+                c.suggestions.pop(i)
+                break
+        r = get_revision(int(c.s['mainRevision_id']))
+        
+        c.title = c.s['title']
+        c.content = h.literal(h.reST2HTML(c.s['data']))
+        c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
+        
+        # Note we can get original author and last revision author
+        c.author = c.lastmoduser = getUserByID(r.owner)
+        c.lastmoddate = r.date
+        c.discussion = getDiscussionByID(c.s['discussion_id'])
+
+        c.flagged = False
+        if checkFlagged(c.s):
+           c.flagged = True
+
+        
+        return render('/derived/suggestion_admin.html')
+
     """ Takes in edits to the suggestion, saves new revision to the database. """
     @h.login_required
     def handler(self, id):

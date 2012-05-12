@@ -162,10 +162,11 @@
                             % else:
                                <% commentString = 'comments' %>
                             % endif
+                            <% showFlagged = "" %>
                             % if checkFlagged(item):
-                               <% showFlagged = " | Flagged" %>
-                            % else:
-                               <% showFlagged = "" %>
+                               % if c.isAdmin == True or c.isFacilitator == True:
+                                  <% showFlagged = " | Flagged" %>
+                               % endif
                             % endif
                             <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${discussion["numComments"]} ${commentString}</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a>${showFlagged}</span>
                         </li>
