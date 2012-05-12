@@ -38,6 +38,18 @@ class CommentController(BaseController):
             return json.dumps({'id':commentID, 'result':"Already flagged!"})
 
     @h.login_required
+    def modComment(self, id1, id2, id3, id4, id5, id6):
+        wCode = id1
+        wURL = id2
+        oCode = id3
+        oURL = id4
+        commentID = id5
+        commentType = id6
+        c.comment = getComment(commentID)
+
+        return render('/derived/comment_admin.html')
+
+    @h.login_required
     def addComment(self):
         try:
             request.params['submit']
@@ -73,7 +85,6 @@ class CommentController(BaseController):
         else:
             return redirect('/')
             
-    
     """ id1: the issue's URL.
     """
     @h.login_required

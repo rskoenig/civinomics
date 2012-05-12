@@ -68,7 +68,17 @@
                 <a href="#" class="gray reply">Reply</a>
                 % if checkFlagged(comment): 
                       % if c.isFacilitator or c.isAdmin:
-                         <strong class=gray> | Flagged</strong>
+                         % if commentType == 'suggestionMain':
+                           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modComment/${comment.id}">Flagged</a>
+                         % elif commentType == 'resource':
+                           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modComment/${comment.id}">Flagged</a>
+                         % elif commentType == 'background':
+                           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background/modComment/${comment.id}">Flagged</a>
+                         % elif commentType == 'feedback':
+                           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback/modComment/${comment.id}">Flagged</a>
+                         % else:
+                            <strong class=gray> | Flagged</strong>
+                         % endif
                       % endif
                 % endif
             </p>
