@@ -88,6 +88,27 @@
           ${cFlagCount} ${cString} in <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a><br />
        % endif
     % endfor
+
+    <br /><br />
+    <br /><br />
+    <strong class="gray">Disabled Objects</strong>
+    <br /><br />
+    <strong>Resources and Comments:</strong>
+    <br />
+    % if c.dr:
+       % for r in c.dr:
+          <% a = getArticleByID(r.id) %>
+          Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a['title']}</a><br />
+       % endfor
+    % endif
+    <br /><br />
+    <strong>Suggestions and Comments:</strong>
+    <br />
+    % if c.ds:
+       % for s in c.ds:
+          Suggestion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a><br />
+       % endfor
+    % endif
 </form>
 
             

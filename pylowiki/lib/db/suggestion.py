@@ -31,7 +31,13 @@ def getSuggestionByURL(url):
 
 def getSuggestionsForWorkshop(code, url):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', 0))).all()
+    except:
+        return False
+
+def getDisabledSuggestionsForWorkshop(code, url):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', 1))).all()
     except:
         return False
 

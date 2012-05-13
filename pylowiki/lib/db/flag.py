@@ -60,9 +60,14 @@ def Flag(thing, flagger, flagType = "overall"):
     
     return f
     
+def getFlags(thing):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'flag').filter(Thing.data.any(wc('flaggedThing_id', thing.id))).all()
+    except:
+        return False
+
 def checkFlagged(thing):
-    t =  meta.Session.query(Thing).filter_by(objType = 'flag').filter(Thing.data.any(wc('flaggedThing_id', thing.id))).all()
-    if t:
+    if 'numFlags' in thing.keys() and int(thing['numFlags']) != 0:
        return True
     else:
        return False

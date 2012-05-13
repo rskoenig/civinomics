@@ -152,6 +152,9 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modSuggestion', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modSuggestion/', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     
+    map.connect('/modSuggestionHandler', controller = 'suggestion', action = 'modSuggestionHandler')
+    map.connect('/modSuggestionHandler/', controller = 'suggestion', action = 'modSuggestionHandler')
+
     # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')

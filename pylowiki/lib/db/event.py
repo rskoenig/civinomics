@@ -3,13 +3,19 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic
+from dbHelpers import commit, with_characteristic as wc
 
 log = logging.getLogger(__name__)
 
 def getEvent(id):
     try:
         return meta.Session.query(Thing).filter_by(id = id).one()
+    except:
+        return False
+
+def getParentEvents(parent):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'event').filter(Thing.data.any(wc('parent_id', parent.id))).all()
     except:
         return False
 

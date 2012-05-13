@@ -3,6 +3,7 @@ import logging, pickle
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
+from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
 from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
@@ -12,7 +13,7 @@ from pylowiki.lib.db.revision import get_revision, Revision
 from pylowiki.lib.db.page import getPageByID
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged
+from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
 
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.fuzzyTime import timeSince
@@ -53,6 +54,7 @@ class SuggestionController(BaseController):
         c.flagged = False
         if checkFlagged(c.s):
            c.flagged = True
+           c.flags = getFlags(c.s)
 
         c.isAdmin = isAdmin(c.authuser.id)
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
@@ -100,6 +102,7 @@ class SuggestionController(BaseController):
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         c.suggestions = getSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
+        c.events = getParentEvents(c.s)
         for i in range(len(c.suggestions)):
             suggestion = c.suggestions[i]
             if suggestion.id == c.s.id:
@@ -119,11 +122,50 @@ class SuggestionController(BaseController):
         c.flagged = False
         if checkFlagged(c.s):
            c.flagged = True
+           c.flags = getFlags(c.s)
 
         
         return render('/derived/suggestion_admin.html')
 
     """ Takes in edits to the suggestion, saves new revision to the database. """
+    @h.login_required
+    def modSuggestionHandler(self):
+        try:
+           w = False
+           s = False
+           workshopCode = request.params['workshopCode']
+           workshopURL = request.params['workshopURL']
+           w = getWorkshop(workshopCode, workshopURL) 
+
+           suggestionCode = request.params['suggestionCode']
+           suggestionURL = request.params['suggestionURL']
+           s = getSuggestion(suggestionCode, suggestionURL) 
+
+           if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
+              h.flash('You are not authorized', 'error')
+              return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+
+           modSuggestionReason = request.params['modSuggestionReason']
+           verifyModSuggestion = request.params['verifyModSuggestion']
+        except:
+           h.flash('All fields required', 'error')
+           return redirect('/workshop/%s/%s/suggestion/%s/%s/modSuggestion'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+        # disable or enable the suggestion, log the event
+        if s['disabled'] == '0':
+           s['disabled'] = True
+           modTitle = "Suggestion Disabled"
+        else:
+           s['disabled'] = False
+           modTitle = "Suggestion Enabled"
+
+        commit(s)
+        e = Event(modTitle, modSuggestionReason, s, c.authuser)
+
+        h.flash(modTitle, 'success')
+        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
     @h.login_required
     def handler(self, id):
         l = id.split('_')

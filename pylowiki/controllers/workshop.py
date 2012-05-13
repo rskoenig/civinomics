@@ -10,8 +10,8 @@ from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.article import getArticlesByWorkshopID
-from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
+from pylowiki.lib.db.article import getArticlesByWorkshopID, getDisabledArticlesByWorkshopID
+from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 from pylowiki.lib.db.rating import getRatingByID
@@ -477,6 +477,9 @@ class WorkshopController(BaseController):
         #   c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
         c.s = getSuggestionsForWorkshop(code, urlify(url))
+        c.ds = getDisabledSuggestionsForWorkshop(code, urlify(url))
+        c.r = getArticlesByWorkshopID(c.w.id)
+        c.dr = getDisabledArticlesByWorkshopID(c.w.id)
 
         return render('/derived/issue_admin.html')
     
