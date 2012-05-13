@@ -101,13 +101,7 @@ class SuggestionController(BaseController):
         c.isAdmin = isAdmin(c.authuser.id)
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
-        c.suggestions = getSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
         c.events = getParentEvents(c.s)
-        for i in range(len(c.suggestions)):
-            suggestion = c.suggestions[i]
-            if suggestion.id == c.s.id:
-                c.suggestions.pop(i)
-                break
         r = get_revision(int(c.s['mainRevision_id']))
         
         c.title = c.s['title']

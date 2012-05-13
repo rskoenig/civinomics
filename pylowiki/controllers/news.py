@@ -7,10 +7,10 @@ from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop
-from pylowiki.lib.db.event import Event
+from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getArticleByID
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged
+from pylowiki.lib.db.flag import Flag, checkFlagged, getFlags
 
 from pylowiki.lib.utils import urlify
 
@@ -66,10 +66,8 @@ class NewsController(BaseController):
         
         c.title = c.w['title']
         c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
-
-        c.flagged = False
-        if checkFlagged(c.resource):
-           c.flagged = True
+        c.flags = getFlags(c.resource)
+        c.events = getParentEvents(c.resource)
 
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.isAdmin = isAdmin(c.authuser.id)
@@ -77,6 +75,44 @@ class NewsController(BaseController):
         c.poster = getUserByID(c.resource.owner)
         
         return render('/derived/resource_admin.html')
+
+    def modResourceHandler(self):
+        try:
+           w = False
+           r = False
+           workshopCode = request.params['workshopCode']
+           workshopURL = request.params['workshopURL']
+           w = getWorkshop(workshopCode, workshopURL) 
+
+           resourceCode = request.params['resourceCode']
+           resourceURL = request.params['resourceURL']
+           r = getArticle(resourceCode, urlify(resourceURL), w) 
+
+           if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
+              h.flash('You are not authorized', 'error')
+              return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+
+
+           modResourceReason = request.params['modResourceReason']
+           verifyModResource = request.params['verifyModResource']
+        except:
+           h.flash('All fields required', 'error')
+           return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+
+        # disable or enable the resource, log the event
+        if r['disabled'] == '0':
+           r['disabled'] = True
+           modTitle = "Resource Disabled"
+        else:
+           r['disabled'] = False
+           modTitle = "Resource Enabled"
+
+        commit(r)
+        e = Event(modTitle, modResourceReason, r, c.authuser)
+
+        h.flash(modTitle, 'success')
+        return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+
 
     @h.login_required
     def handler(self, id1, id2):

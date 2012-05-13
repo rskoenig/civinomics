@@ -136,6 +136,9 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'news', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'news', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     
+    map.connect('/modResourceHandler', controller = 'news', action = 'modResourceHandler')
+    map.connect('/modResourceHandler/', controller = 'news', action = 'modResourceHandler')
+
     
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
