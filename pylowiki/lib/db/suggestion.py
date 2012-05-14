@@ -6,6 +6,7 @@ from discussion import Discussion
 from revision import Revision
 from page import Page
 from time import time
+from rating import Rating
 import logging
 log = logging.getLogger(__name__)
 
@@ -83,4 +84,7 @@ class Suggestion(object):
         else:
             owner['suggestionList'] = owner['suggestionList'] + ',' + str(s.id)
         commit(owner)
+        
+        rateAmount = 50
+        thisRating = Rating(rateAmount, s, owner, 'overall')
         commit(s)
