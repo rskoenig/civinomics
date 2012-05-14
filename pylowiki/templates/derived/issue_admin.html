@@ -49,11 +49,10 @@
     <br /><br />
     <strong class="gray">Flagged Objects</strong>
     <br /><br />
-    <% rList = getArticlesByWorkshopID(c.w.id) %>
     <strong>Resources and Comments:</strong>
     <br />
-    % if rList:
-       % for r in rList:
+    % if c.r:
+       % for r in c.r:
           <% a = getArticleByID(r.id) %>
           % if checkFlagged(a): 
              Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a['title']}</a><br />
@@ -95,18 +94,21 @@
     <br /><br />
     <strong>Resources and Comments:</strong>
     <br />
-    % if c.dr:
-       % for r in c.dr:
-          <% a = getArticleByID(r.id) %>
-          Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a['title']}</a><br />
+    % if c.r:
+       % for r in c.r:
+          % if 'disabled' in r and r['disabled'] == '1':
+             Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a><br />
+          % endif
        % endfor
     % endif
     <br /><br />
     <strong>Suggestions and Comments:</strong>
     <br />
-    % if c.ds:
-       % for s in c.ds:
-          Suggestion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a><br />
+    % if c.s:
+       % for s in c.s:
+          % if 'disabled' in s and s['disabled'] == '1':
+             Suggestion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a><br />
+          % endif
        % endfor
     % endif
 </form>

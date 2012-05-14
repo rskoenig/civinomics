@@ -40,13 +40,7 @@ def getArticleByURL(url, workshopID):
 
 def getArticlesByWorkshopID(workshopID):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', 0))).all()
-    except:
-        return False
-
-def getDisabledArticlesByWorkshopID(workshopID):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', 1))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).all()
     except:
         return False
 
