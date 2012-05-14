@@ -23,7 +23,7 @@
         </td></tr></table>
         <div style="display:none; text-align:center;" id="textareadiv${thisID}">
             <br />
-            <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment.data}</textarea>
+            <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment['data']}</textarea>
             <div style="align:right;text-align:right;">
                 Optional remark: <input type="text" id="remark${thisID}"  name="remark${thisID}" class="text tiny" placeholder="optional remark"/> 
             
