@@ -6,6 +6,12 @@
      document.edit_issue.publicPostalList.value = '';
      return 1;
    }    
+   function clearEligibleCheckboxes (field) {
+     // document.edit_issue.publicscope.checked = 'unchecked';
+     // return 1;
+     for (i = 0; i < field.length; i++)
+           field[i].checked = false ;
+   }
 </SCRIPT>
 
 % if c.w['startTime'] == '0000-00-00':
@@ -81,7 +87,7 @@
        <br /><br />
        People in these postal codes (enter at least one): <span class="darkorange">*</span>
        <br />
-       <textarea name = "publicPostalList" rows="2" cols="50">${c.w['publicPostalList']}</textarea>
+       <textarea name = "publicPostalList" onClick="clearEligibleCheckboxes(document.edit_issue.publicScope)" rows="2" cols="50">${c.w['publicPostalList']}</textarea>
     
        <br /><br />
        Workshop Tags: <span class="darkorange">*</span>
@@ -131,7 +137,7 @@
        <br />
        Additional Workshop Tags: <span class="darkorange">*</span>
        <br />
-       Enter at least one, separate multiple tags with a comma:</br />
+       Enter at least one, separate multiple tags with a comma:<br />
        <input type="text" name = "memberTags" size="50" maxlength="50" value = "${c.w['memberTags']}"/>
        <br /><br />
     
