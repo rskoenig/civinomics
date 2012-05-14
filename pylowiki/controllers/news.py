@@ -72,7 +72,7 @@ class NewsController(BaseController):
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.isAdmin = isAdmin(c.authuser.id)
 
-        c.poster = getUserByID(c.resource.owner)
+        c.author = getUserByID(c.resource.owner)
         
         return render('/derived/resource_admin.html')
 

@@ -6,21 +6,21 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.comments import addDiscussion, addComment, editComment
-
+from pylowiki.lib.db.user import getUserByID, isAdmin
+from pylowiki.lib.db.facilitator import isFacilitator
+from pylowiki.lib.db.workshop import getWorkshop
 #from pylowiki.model import commit, Event, get_page
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.event import Event
+from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.flag import Flag, isFlagged
+from pylowiki.lib.db.flag import Flag, isFlagged, getFlags
 
 import simplejson as json
 
 log = logging.getLogger(__name__)
 
-#from pylowiki.model import commit_comment, disable_comment, get_comment
-#from pylowiki.model import commit_comment, getComment
 import pylowiki.lib.helpers as h
 
 class CommentController(BaseController):
@@ -39,15 +39,79 @@ class CommentController(BaseController):
 
     @h.login_required
     def modComment(self, id1, id2, id3, id4, id5, id6):
-        wCode = id1
-        wURL = id2
-        oCode = id3
-        oURL = id4
-        commentID = id5
-        commentType = id6
-        c.comment = getComment(commentID)
+        c.wCode = id1
+        c.wURL = id2
+        w = getWorkshop(c.wCode, c.wURL)
+        if id6 == 'background':
+           c.commentID = id3
+        elif id6 == 'feedback':
+           c.commentID = id3
+        else:
+           c.oCode = id3
+           c.oURL = id4
+           c.commentID = id5
+
+        c.commentType = id6
+        c.comment = getComment(c.commentID)
+        c.flags = getFlags(c.comment)
+        c.events = getParentEvents(c.comment)
+        c.user = getUserByID(c.comment.owner)
+
+        if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
+            h.flash('You are not authorized', 'error')
+            return redirect('/')
 
         return render('/derived/comment_admin.html')
+
+    @h.login_required
+    def modCommentHandler(self):
+        backlink = '/'
+        try:
+           commentID = request.params['commentID']
+           comment = getComment(commentID)
+
+           commentType = request.params['commentType']
+
+           workshopCode = request.params['workshopCode']
+           workshopURL = request.params['workshopURL']
+           w = getWorkshop(workshopCode, workshopURL)
+
+           otherCode = request.params['otherCode']
+           otherURL = request.params['otherURL']
+
+           modCommentReason = request.params['modCommentReason']
+           verifyModComment = request.params['verifyModComment']
+
+           if commentType == 'resource':
+              backlink = "/workshop/%s/%s/resource/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
+           elif commentType == 'suggestion':
+              backlink = "/workshop/%s/%s/suggestion/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
+           elif commentType == 'background':
+              backlink = "/workshop/%s/%s/background"%(workshopCode, workshopURL)
+           elif commentType == 'feedback':
+              backlink = "/workshop/%s/%s/feedback"%(workshopCode, workshopURL)
+
+           if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
+              h.flash('You are not authorized', 'error')
+              return redirect(backlink)    
+
+        except:
+           h.flash('All fields required', 'error')
+           return redirect(backlink)    
+
+        # disable or enable the comment, log the event
+        if comment['disabled'] == '0':
+           comment['disabled'] = True
+           modTitle = "Comment Disabled"
+        else:
+           comment['disabled'] = False
+           modTitle = "Comment Enabled %s"%commentID
+
+        commit(comment)
+        e = Event(modTitle, modCommentReason, comment, c.authuser)
+
+        h.flash(modTitle, 'success')
+        return redirect(backlink)
 
     @h.login_required
     def addComment(self):
