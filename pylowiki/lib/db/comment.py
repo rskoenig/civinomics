@@ -4,8 +4,9 @@ import logging
 from pylons import tmpl_context as c
 
 from pylowiki.model import Thing, Data, meta
+from pylowiki.lib.db.flag import checkFlagged
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic
+from dbHelpers import commit, with_characteristic as wc
 from pylons import config
 from datetime import datetime
 from revision import Revision
@@ -18,15 +19,16 @@ def getComment( id ):
     except sa.orm.exc.NoResultFound:
         return False
 
-def getComments( ids ):
-    """
-        Given a list of ids, returns a list of comments.
-        Inputs            ->    ids: a list of integers
-        Outputs           ->    comments: a list of the comment Things
-    """
+def getFlaggedDiscussionComments( id ):
     try:
-        return meta.Session.query(Thing).filter(Thing.id.in_(ids)).all()
-    except:
+        cList =  meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', id))).all()
+        fList = []
+        for c in cList:
+            if checkFlagged(c) and c.id not in fList:
+               fList.append(c.id)
+        
+        return fList
+    except sa.orm.exc.NoResultFound:
         return False
 
 # Setters

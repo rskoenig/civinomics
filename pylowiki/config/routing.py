@@ -129,6 +129,16 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    # Resource flagging
+    map.connect('/flagResource/{id1}', controller = 'news', action = 'flagResource', id1 = '{id1}')
+
+    # Resource modding
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'news', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'news', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    
+    map.connect('/modResourceHandler', controller = 'news', action = 'modResourceHandler')
+    map.connect('/modResourceHandler/', controller = 'news', action = 'modResourceHandler')
+
     
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
@@ -137,7 +147,17 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshops/{id1}/{id2}/suggestion/{id3}/{id4}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshops/{id1}/{id2}/suggestion/{id3}/{id4}/', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+
+    # Suggestion flagging
+    map.connect('/flagSuggestion/{id1}', controller = 'suggestion', action = 'flagSuggestion', id1 = '{id1}')
+
+    # Suggestion modding
+    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modSuggestion', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modSuggestion/', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     
+    map.connect('/modSuggestionHandler', controller = 'suggestion', action = 'modSuggestionHandler')
+    map.connect('/modSuggestionHandler/', controller = 'suggestion', action = 'modSuggestionHandler')
+
     # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
@@ -148,12 +168,36 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/unfollow', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/unfollow/', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
     
+    # User profile enable/disable
+    map.connect('/profile/{id1}/{id2}/enable', controller = 'account', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/enable/', controller = 'account', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
+
+    # User accessLevel
+    map.connect('/profile/{id1}/{id2}/privs', controller = 'account', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/privs/', controller = 'account', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
+
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
     map.connect('/addComment/', controller = 'comment', action = 'addComment')
     
     # Comment flagging
     map.connect('/flagComment/{id1}', controller = 'comment', action = 'flagComment', id1 = '{id1}')
+
+    # Comment modding
+    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
+    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
+
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'resource')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modComment/{id5}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'resource')
+
+    map.connect('/workshop/{id1}/{id2}/background/modComment/{id3}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'background', id5 = 'background', id6 = 'background')
+    map.connect('/workshop/{id1}/{id2}/background/modComment/{id3}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'background', id5 = 'background', id6 = 'background')
+
+    map.connect('/workshop/{id1}/{id2}/feedback/modComment/{id3}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
+    map.connect('/workshop/{id1}/{id2}/feedback/modComment/{id3}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
+
+    map.connect('/modCommentHandler', controller = 'comment', action = 'modCommentHandler')
+    map.connect('/modCommentHandler/', controller = 'comment', action = 'modCommentHandler')
 
     # Ratings
     map.connect('/rateSuggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')

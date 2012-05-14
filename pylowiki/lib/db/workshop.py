@@ -47,6 +47,17 @@ def getWorkshopByID(id):
     except:
         return False
 
+def isWorkshopDeleted(id):
+    try:
+        w =  meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(id = id).one()
+        if w['deleted'] == '1':
+           return True
+        else:
+           return False
+
+    except:
+        return False
+
 def getWorkshop(code, url):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('urlCode', code))).filter(Thing.data.any(wc('url', url))).one()
@@ -133,7 +144,7 @@ class Workshop(object):
         p = Page(title, owner, w, background)
         #r = Revision(owner, background, p.p.id)
         
-        e = Event('Create workshop', 'User %s created a workshop'%(owner.id))
+        e = Event('Create workshop', 'User %s created a workshop'%(owner.id), w)
         
         slideshow = Slideshow(c.authuser, w)
         slideshow = getSlideshow(slideshow.s.id)

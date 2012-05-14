@@ -1,3 +1,7 @@
+<%!
+    from pylowiki.lib.db.user import isAdmin
+%>      
+
 <?xml version="1.0" encoding="UTF-8"?> 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -54,7 +58,7 @@
                             % if int(c.authuser['accessLevel']) >= 200:
                                 ##<a href = "/moderation">Modding</a>
                             % endif
-                            % if int(c.authuser['accessLevel']) >= 200:
+                            % if isAdmin(int(c.authuser.id)):
                                 <a href = "/systemAdmin">Sys Admin</a>
                             % endif
                             <a href = "/account/edit"> Edit </a>

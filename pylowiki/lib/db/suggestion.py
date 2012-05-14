@@ -1,12 +1,12 @@
 from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.db.flag import checkFlagged
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 from discussion import Discussion
 from revision import Revision
 from page import Page
 from time import time
-from rating import Rating
 import logging
 log = logging.getLogger(__name__)
 
@@ -32,6 +32,18 @@ def getSuggestionByURL(url):
 def getSuggestionsForWorkshop(code, url):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).all()
+    except:
+        return False
+
+def getFlaggedSuggestionsForWorkshop(code, url):
+    try:
+        sList = meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).all()
+        fList = []
+        for s in sList:
+           if checkFlagged(s) and s.id not in sList:
+              fList.append(s.id)
+
+        return fList
     except:
         return False
 
@@ -63,6 +75,7 @@ class Suggestion(object):
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']
         s['numComments'] = 0
+        s['disabled'] = False
         log.info('data = %s' % data)
         commit(s)
         self.s = s
@@ -84,7 +97,4 @@ class Suggestion(object):
         else:
             owner['suggestionList'] = owner['suggestionList'] + ',' + str(s.id)
         commit(owner)
-        
-        rateAmount = 50
-        thisRating = Rating(rateAmount, s, owner, 'overall')
         commit(s)

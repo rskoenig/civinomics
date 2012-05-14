@@ -37,6 +37,16 @@ def getUserByID(id):
     except:
         return False
     
+def isAdmin(id):
+    try:
+        u = meta.Session.query(Thing).filter_by(id = id).one()
+        if int(u['accessLevel']) >= 200:
+           return True
+        else:
+           return False
+    except:
+        return False
+    
 def searchUsers( uKey, uValue):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wcl(uKey, uValue))).all()
@@ -92,7 +102,7 @@ class User(object):
         u['email'] = email
         u['name'] = '%s %s'%(firstName, lastName)
         u['activated'] = 0
-        u['disabled'] = 0
+        u['disabled'] = False
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
         u['country'] =  country

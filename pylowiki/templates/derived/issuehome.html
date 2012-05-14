@@ -3,6 +3,7 @@
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.utils import urlify
     from pylowiki.lib.db.facilitator import isFacilitator
+    from pylowiki.lib.db.flag import checkFlagged
     from pylowiki.lib.db.discussion import getDiscussionByID
     from pylowiki.lib.fuzzyTime import timeSince
 %>
@@ -82,7 +83,7 @@
         </div>
         <div id="cols">
             <div class="col one left">
-                <h3>news 
+                <h3>Resources 
                  % if c.isScoped or c.isFacilitator:
                         <span class="right">add resource<a href="#" class="media plus">+</a></span>
                  %endif
@@ -161,7 +162,13 @@
                             % else:
                                <% commentString = 'comments' %>
                             % endif
-                            <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${discussion["numComments"]} ${commentString}</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a></span>
+                            <% showFlagged = "" %>
+                            % if checkFlagged(item):
+                               % if c.isAdmin == True or c.isFacilitator == True:
+                                  <% showFlagged = " | Flagged" %>
+                               % endif
+                            % endif
+                            <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${discussion["numComments"]} ${commentString}</a> | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">Leave a comment</a>${showFlagged}</span>
                         </li>
                         <% counter += 1 %>
                     % endfor
