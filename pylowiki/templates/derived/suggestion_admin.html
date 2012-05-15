@@ -1,0 +1,78 @@
+<%inherit file = "/base/template.html"/>
+<%!
+    from pylowiki.lib.db.user import getUserByID
+%>  
+
+    <div class="banner_div">
+        <h2 class="banner"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/">${c.title}</a></h2>
+    </div>     
+    <br /><br />
+    Added by member <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a> 
+    <br /><br />
+    Last modified date: ${c.lastmoddate}
+    <br /><br />
+    ${c.s['data']}
+    <br /><br />
+    <% numFlags = len(c.flags) %>
+    <% fString = "Flags" %>
+    % if numFlags == 1:
+       <% fString = "Flag" %>
+    % endif
+    <strong>${numFlags} ${fString}:</strong>
+    <br /><br />
+    % for flag in c.flags:
+       <% user = getUserByID(flag.owner) %>
+       Flagged ${flag.date} by ${user['name']}<br />
+    %endfor
+
+    <br /><br />
+    % if c.events:
+       <% numEvents = len(c.events) %>
+       <% eString = "Events" %>
+       % if numEvents == 1:
+          <% eString = "Event" %>
+       % endif
+       <strong>${numEvents} ${eString}:</strong>
+       <br /><br />
+       % for event in c.events:
+          <% user = getUserByID(event.owner) %>
+          ${event['title']} ${event.date} by ${user['name']}<br />
+          Reason: ${event['data']}
+          <br /><br />
+       %endfor
+    % endif
+    
+
+    <br /><br />
+    <p>
+    <strong class="gray">Administrate Suggestion</strong>
+    <br /><br />
+<form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
+    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
+    <input type=hidden name=workshopURL value="${c.w['url']}">
+    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
+    <input type=hidden name=suggestionURL value="${c.s['url']}">
+    <br /><br />
+    Reason for action: &nbsp;
+    <input type=text name=modSuggestionReason><br /><br />
+    Click to verify&nbsp;<input type=radio name=verifyModSuggestion> &nbsp; &nbsp;
+    % if c.s['disabled'] == '0':
+       <button type="submit" class="gold">Disable Suggestion</button>
+    % else:
+       <button type="submit" class="gold">Enable Suggestion</button>
+    % endif
+</form>
+
+            
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
+
+</%def>
