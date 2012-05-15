@@ -3,10 +3,25 @@
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.flag import checkFlagged
     from pylowiki.lib.db.comment import getComment
+    from pylowiki.lib.db.rating import getRatingByID
+    from pylowiki.lib.sort import sortBinaryByTopPop
+    
     import logging
-    from datetime import datetime
     log = logging.getLogger(__name__)
+    
+    from datetime import datetime
+    from pickle import loads
 %>
+
+<%def name="getCommentRatings()">
+    <%
+        commentRatings = False
+        key = 'ratedThings_comment_overall'
+        if key in c.authuser.keys():
+            commentRatings = loads(str(c.authuser[key]))
+        return commentRatings
+    %>
+</%def>
 
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
@@ -25,11 +40,9 @@
             <br />
             <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment['data']}</textarea>
             <div style="align:right;text-align:right;">
-                Optional remark: <input type="text" id="remark${thisID}"  name="remark${thisID}" class="text tiny" placeholder="optional remark"/> 
             
                 <button type="submit" name = "submit" value = "submit" class="right green">Submit</button>
                 ##${h.submit('submit', 'Save')}
-                <input type="text" id="sremark"  name="sremark" class="text" />
                 <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
             </div>
         </div>
@@ -81,6 +94,55 @@
                          % endif
                       % endif
                 % endif
+                <% commentRatings = getCommentRatings() %>
+                % if commentRatings:
+                    <%
+                        found = False
+                        for item in commentRatings:
+                            if item[0] == comment.id:
+                                found = True
+                                rating = int(getRatingByID(item[1])['rating'])
+                    %>
+                    % if found:
+                        % if rating > 0:
+                            <a href="/rateComment/${comment.id}/1" class="upVote voted">
+                                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png" height="15" width="15">
+                            </a>
+                            <a href="/rateComment/${comment.id}/-1" class="downVote">
+                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                            </a>
+                        % elif rating < 0:
+                            <a href="/rateComment/${comment.id}/1" class="upVote">
+                                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                            </a>
+                            <a href="/rateComment/${comment.id}/-1" class="downVote voted">
+                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png" height="15" width="15">
+                            </a>
+                        % else:
+                            <a href="/rateComment/${comment.id}/1" class="upVote">
+                                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                            </a>
+                            <a href="/rateComment/${comment.id}/-1" class="downVote">
+                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                            </a>
+                        % endif
+                    % else:
+                        <a href="/rateComment/${comment.id}/1" class="upVote">
+                            <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                        </a>
+                        <a href="/rateComment/${comment.id}/-1" class="downVote">
+                            <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                        </a>
+                    % endif
+                % else:
+                    <a href="/rateComment/${comment.id}/1" class="upVote">
+                        <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                    </a>
+                    <a href="/rateComment/${comment.id}/-1" class="downVote">
+                        <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                    </a>
+                % endif
+                Total: ${int(comment['ups']) - int(comment['downs'])}
             </p>
             
             </div><!-- comment_data -->
