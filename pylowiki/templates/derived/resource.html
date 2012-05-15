@@ -1,0 +1,286 @@
+<%!
+    from pylowiki.lib.fuzzyTime import timeSince
+    import logging
+    log = logging.getLogger(__name__)
+%>
+
+<%inherit file = "/base/template.html"/>
+<%namespace file="/derived/commentsCustom.mako" import="comments" />
+<%namespace file="/lib/mako_lib.mako" import="return_to" />
+
+${return_to()}
+<%
+    voted = False
+    if c.rating:
+        voted = True
+        vote = int(c.rating['rating'])
+%>
+	<div class="container"> <!-- responsive container for everything -->
+		<div class="row">
+			<div class="span12 civ-container">
+				<div class="row">
+					<div class="span12">
+						<div class="row">
+							<div class="span12">
+							    <div class="banner_div">
+								    <h2 class="banner" style="line-height:13px;"><a style = "color: #86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2>
+								</div>
+							</div> <!-- ./span12 -->
+						</div> <!-- ./row -->
+						<p style="margin-bottom:5px;"></p> <!-- ugly spacer hack -->
+					</div> <!-- ./span12 -->
+				</div> <!-- ./row -->
+               
+				<div class="row">
+					<div class="span8">
+						##<div class="civ-col" style="border-right:1px solid #999999;">
+						<div class="civ-col">
+							##<h2 class="civ-col">${c.resource['type']}</h2>
+							<h3 class="civ-col" style="font-size: 0.9em; font-weight:normal; color: #B9B9B9; padding: 5px 5px 5px 10px;">Resource</h3>
+							<div class="civ-col-inner">
+								<div class="row-fluid">
+									<div class="span1">
+									    % if voted:
+									        % if vote > 0:
+									           ${log.info('vote value on template: %s' % vote)}
+									            <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote voted">
+									                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png">
+									            </a>
+									        % else:
+									            <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote">
+									                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png">
+                                                </a>
+									        % endif
+									    % else:
+									        <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote">
+    									        <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png">
+                                            </a>
+									    % endif
+                                        <br />
+                                        <br />
+                                        <span>${int(c.resource['ups']) - int(c.resource['downs'])}</span>
+                                        <br />
+                                        <br />
+                                        % if voted:
+                                            % if vote < 0:
+                                                <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/-1" class="downVote voted">
+                                                    <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png">
+                                                </a>
+                                            % else:
+                                                <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/-1" class="downVote">
+                                                    <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png">
+                                                </a>
+                                            % endif
+                                        % else:
+                                            <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/-1" class="downVote">
+                                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png">
+                                            </a>
+                                        % endif
+									</div> <!-- /.span1 -->
+									<div class="span11">
+										<div class="row-fluid">
+											<div class="span12">
+												<h2><a href="${c.resource['link']}" target="_blank" style="color:#86945A;">${c.resource['title']}</a></h2>
+												<span><small>(${c.resource['domain']}.${c.resource['tld']})</small></span>
+												<br>
+												##<span>Posted </span><span class="time">${timeSince(c.resource.date)} ago </span><span>by <a href="/profile/${c.poster['urlCode']}/${c.poster['url']}" style="color:#86945A;">${c.poster['name']}</a> </span>
+											</div> <!-- /.span12 -->
+										</div> <!-- /.row-fluid -->
+										<div class="row-fluid"><br></div>
+										<div class="row-fluid">
+											<div class="span12">
+											    <div class="well" style="background-color:#E6E6E6;">
+												    <p>${c.resource['comment']}</p>
+												</div>
+											</div>
+										</div>
+										<%doc>
+										<div class="row-fluid"><br></div>
+										<p>
+											<a href="#">Flag</a> | 
+											<a href="#">Share</a> | 
+											<a href="#">Follow</a>
+										</p>
+										</%doc>
+									</div> <!-- /.span11 -->
+								</div> <!-- /.row-fluid -->
+							</div> <!-- /.civ-col-inner -->
+						</div> <!-- /.civ-col -->
+						<div class="civ-col">
+							##<h3 class="civ-col" style="font-size: 0.9em; font-weight:normal; color: #B9B9B9; padding: 5px 5px 5px 10px;">Comments</h3>
+							##<div class="civ-col-inner">
+							    <!-- start comments -->
+                                ${comments("resource")}
+                            </div>
+                                <!-- end comments -->
+							##</div> <!-- /.civ-col-innner -->
+						</div> <!-- /.civ-col -->
+					</div> <!-- /.span8 -->
+
+					<div class="span4">
+						##<div class="civ-col" style="border-left:none;">
+						<div class="civ-col">
+						    <h3 class="civ-col" style="font-size: 0.9em; font-weight:normal; color: #B9B9B9; padding: 5px 5px 5px 10px; margin-right:30px;">
+						        Other Resources 
+						        ##<a href="#AddResource" data-toggle="modal" class="fix-plus pull-right" style="margin-top:5px;">+</a>
+						        <span class="right"><a href="#" class="fix-plus pull-right media" style="margin-top:5px;">+</a></span>
+					        </h3>
+							% if len(c.otherResources) == 0:
+								<div class="row-fluid">
+								    <div class="span1"></div>
+								    <div class="span11">
+									   <p style="color:red;">There doesn't seem to be anything here!</p>
+									</div>
+								</div>
+							% else:
+								% for resource in c.otherResources:
+									<div class="row-fluid">
+										<div class="span12">
+											<div class="civ-col-item civ-col-inner" style="margin-right:30px;">
+											    % if len(resource['title']) > 25:
+											        <h2><a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title'][:25]}...</a></h2>
+											    % else:
+											        <h2><a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a></h2>
+											    % endif
+												<span><small>(${resource['domain']}.${resource['tld']})</small></span>
+												% if len(resource['comment']) > 50:
+												    <p>${resource['comment'][:50]}... <a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+												% else:
+												    ${resource['comment']} <a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+												% endif
+												<p>Posted <span class="time" style="color:#F85806;">${timeSince(resource.date)}</span> ago</p>
+											</div> <!-- /.civ-col-item -->
+										</div> <!-- /.span12 -->
+									</div> <!-- /.row-fluid -->
+								% endfor
+							% endif
+						</div> <!-- /.civ-col -->
+					</div> <!-- /.span4 -->
+				</div> <!-- /.row -->
+			
+			</div> <!-- /.span12 -->
+		</div> <!-- /.row -->
+	</div> <!-- /.container-fluid -->
+
+    <%doc>
+	<div id="AddResource" class="modal hide fade">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">×</a>
+			<h3>Add Resource</h3>
+		</div>
+		<div class="modal-body">
+			<form action="" class="form-horizontal">
+				<fieldset>
+					<div class="control-group">
+						<label for="AddResourceType" class="control-label">Type: </label>
+						<div class="controls">
+							<select name="SelectResourceType" id="AddResourceType">
+								<option value="News Article">News Article</option>
+								<option value="Op Ed">Op Ed</option>
+								<option value="Photo">Photo</option>
+								<option value="Slideshow">Slideshow</option>
+								<option value="Video">Video</option>
+							</select>
+						</div> <!-- /.controls -->
+					</div> <!-- /.control-group -->
+					<div class="control-group">
+						<label for="AddResourceLink" class="control-label">
+							<i class="icon-share"></i>
+						</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="AddResourceLink" placeholder="Link">
+						</div> <!-- /.controls -->
+					</div> <!-- /.control-group -->
+					<div class="control-group">
+						<label for="AddResourceTitle" class="control-label"><i class="icon-minus"></i></label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="AddResourceTitle" placeholder="Title">
+						</div> <!-- /.controls -->
+					</div> <!-- /.control-group -->
+					<div class="control-group">
+						<label for="AddResourceComment" class="control-label"><i class="icon-comment"></i></label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="AddResourceComment" placeholder="Comment">
+						</div> <!-- /.controls -->
+					</div> <!-- /.control-group -->
+					<div class="form-actions">
+						<button class="btn btn-primary" type="Submit">Submit</button>
+						<button class="btn" data-dismiss="modal">Cancel</button>
+					</div> <!-- /.form-action -->
+				</fieldset>
+			</form>
+		</div> <!-- /.modal-body -->
+	</div> <!-- /#AddResource -->
+	</%doc>
+
+<%def name = 'extraHTML()'>
+    <div id="pop">
+        <div id="add_media">
+            <h2 class="clr left">
+                <p class="right close" style="font-size:.85em; font-weight:normal; opacity:1; font-stretch:normal; margin-bottom:0px;">close<a href="#" style="margin-top:2px;" class="x">X</a></p>
+                <p class="left">Add Resource</p>
+            </h2>
+            <div class="left">
+                <form action="/resource/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
+                    <div class="wide">
+                        <div>
+                            Resource URL:
+                        </div>
+                        <div>
+                            <input type="text" name = "url"/>
+                        </div>
+                    </div>
+                    <div class="wide">
+                        <div>
+                            Title:
+                        </div>
+                        <div>
+                            <input type="text" name = "title"/>
+                        </div>
+                    </div>
+                    <div class="wide">
+                        <div>
+                            Add comment:
+                        </div>
+                        <div>
+                            <textarea name = "data"></textarea>
+                        </div>
+                    </div>
+                    <button type="submit" class="gold">Submit</button>
+                </form>
+            </div>
+        </div><!-- add_media -->
+    </div>
+</%def>
+
+<%def name = 'extraStyles()'>
+	##<link type="text/css" rel="stylesheet" href="/styles/UI_2/civinomics.css">
+	<link type="text/css" rel="stylesheet" href = "/styles/bootstrap.custom.min.css">
+	<link type="text/css" rel="stylesheet" href = "/styles/comments.css">
+	<link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    ##<link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</%def>
+
+<%def name = 'extraScripts()'>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap/bootstrap-transition.js"></script>
+	<script type="text/javascript" src="/js/bootstrap/bootstrap-modal.js"></script>
+	<script src="/js/h2banner.js" type="text/javascript"></script>
+	<script src="/js/slides.js" type="text/javascript"></script>
+	<script src = "/js/javascript.js" type="text/javascript"></script>
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+    <script src = "/js/comment.js" type="text/javascript"></script>
+	
+	<script language="javascript">
+        $(document).ready(function()    {
+            $(".markitup").markItUp(mySettings);
+        });
+    </script>
+    
+    <script src = "/js/upDown.js" type="text/javascript"></script>
+</%def>
