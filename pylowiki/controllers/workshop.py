@@ -253,11 +253,11 @@ class WorkshopController(BaseController):
                  for wTag in request.params.getall('publicTags'):
                     wTag = wTag.lstrip()
                     wTag = wTag.rstrip()
-                    t = Tag('system', wTag, w.id, w.owner)
+                    t = Tag('system', wTag, c.w.id, c.w.owner)
                  for mTag in wMemberTags.split(','):
                     mTag = mTag.lstrip()
                     mTag = mTag.rstrip()
-                    t = Tag('member', mTag, w.id, w.owner)
+                    t = Tag('member', mTag, c.w.id, c.w.owner)
 
             formSchema = editWorkshopForm()
             try:
