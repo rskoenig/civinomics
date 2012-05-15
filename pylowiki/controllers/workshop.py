@@ -395,12 +395,16 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, urlify(url))
         c.title = c.w['title']
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        
+        if 'user' in session:
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.isFollowing = isFollowing(c.authuser.id, c.w.id)
+            c.isAdmin = isAdmin(c.authuser.id)
+        
         c.facilitators = getFacilitators(c.w.id)
-        c.isScoped = isScoped(c.authuser, c.w)
-        c.isFollowing = isFollowing(c.authuser.id, c.w.id)
+        
         ##log.info('c.isFollowing is %s' % c.isFollowing)
-        c.isAdmin = isAdmin(c.authuser.id)
         if c.w['startTime'] != '0000-00-00':
            c.wStarted = True
         else:
@@ -419,15 +423,17 @@ class WorkshopController(BaseController):
         c.suggestions = getSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         l = []
-        ratedSuggestionIDs = []
-        if 'ratedThings_suggestion_overall' in c.authuser.keys():
-            """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
-            """
-            l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-            ratedSuggestionIDs = [tup[0] for tup in l]
+        
+        if 'user' in session:
+            ratedSuggestionIDs = []
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                """
+                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
+                    a         ->    rated Thing's ID  (What was rated) 
+                    b         ->    rating Thing's ID (The rating object)
+                """
+                l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = [tup[0] for tup in l]
         
         for item in c.suggestions:
             """ Grab first 250 chars as a summary """
@@ -435,18 +441,19 @@ class WorkshopController(BaseController):
                 item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
             else:
                 item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
-            
-            """ Grab the associated rating, if it exists """
-            found = False
-            try:
-                index = ratedSuggestionIDs.index(item.id)
-                found = True
-            except:
-                pass
-            if found:
-                item.rating = getRatingByID(l[index][1])
-            else:
-                item.rating = False
+        
+            if 'user' in session:    
+                """ Grab the associated rating, if it exists """
+                found = False
+                try:
+                    index = ratedSuggestionIDs.index(item.id)
+                    found = True
+                except:
+                    pass
+                if found:
+                    item.rating = getRatingByID(l[index][1])
+                else:
+                    item.rating = False
 
         c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
 
@@ -477,9 +484,6 @@ class WorkshopController(BaseController):
         c.title = c.w['title']
         c.articles = getArticlesByWorkshopID(c.w.id)
         
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-        c.facilitators = getFacilitators(c.w.id)
-        
         c.slides = []
         c.slideshow = getSlideshow(c.w['mainSlideshow_id'])
         slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
@@ -489,11 +493,17 @@ class WorkshopController(BaseController):
                 c.slides.append(s)
         
         r = get_revision(int(c.w['mainRevision_id']))
-        reST = r['data']
-        reSTlist = self.get_reSTlist(reST)
-        HTMLlist = self.get_HTMLlist(reST)
-        
-        c.wikilist = zip(HTMLlist, reSTlist)
+        if 'user' in session:
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.facilitators = getFacilitators(c.w.id)
+            
+            reST = r['data']
+            reSTlist = self.get_reSTlist(reST)
+            HTMLlist = self.get_HTMLlist(reST)
+            
+            c.wikilist = zip(HTMLlist, reSTlist)
+        else:
+            c.content = h.literal(h.reST2HTML(r['data']))
         
         c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
         

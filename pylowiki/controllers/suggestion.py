@@ -56,21 +56,21 @@ class SuggestionController(BaseController):
            c.flagged = True
            c.flags = getFlags(c.s)
 
-        c.isAdmin = isAdmin(c.authuser.id)
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-
-        
-        c.rating = False
-        if 'ratedThings_suggestion_overall' in c.authuser.keys():
-            """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
-            """
-            l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-            for tup in l:
-                if tup[0] == c.s.id:
-                    c.rating = getRatingByID(tup[1])
+        if 'user' in session:
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            
+            c.rating = False
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                """
+                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
+                    a         ->    rated Thing's ID  (What was rated) 
+                    b         ->    rating Thing's ID (The rating object)
+                """
+                l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                for tup in l:
+                    if tup[0] == c.s.id:
+                        c.rating = getRatingByID(tup[1])
                     
         return render('/derived/suggestion.html')
 

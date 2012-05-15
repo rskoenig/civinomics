@@ -42,9 +42,21 @@ class NewsController(BaseController):
         if checkFlagged(c.resource):
            c.flagged = True
 
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-        c.isAdmin = isAdmin(c.authuser.id)
+        if 'user' in session:
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.isAdmin = isAdmin(c.authuser.id)
 
+            if 'ratedThings_article_overall' in c.authuser.keys():
+                """
+                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
+                    a         ->    rated Thing's ID  (What was rated) 
+                    b         ->    rating Thing's ID (The rating object)
+                """
+                l = pickle.loads(str(c.authuser['ratedThings_article_overall']))
+                for tup in l:
+                    if tup[0] == c.resource.id:
+                        c.rating = getRatingByID(tup[1])
+                    
         c.poster = getUserByID(c.resource.owner)
         
         c.otherResources = getArticlesByWorkshopID(c.w.id)
@@ -56,17 +68,6 @@ class NewsController(BaseController):
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
         c.lastmoddate = c.resource.date
         c.lastmoduser = getUserByID(c.resource.owner)
-        
-        if 'ratedThings_article_overall' in c.authuser.keys():
-            """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
-            """
-            l = pickle.loads(str(c.authuser['ratedThings_article_overall']))
-            for tup in l:
-                if tup[0] == c.resource.id:
-                    c.rating = getRatingByID(tup[1])
         
         return render('/derived/resource.html')
 

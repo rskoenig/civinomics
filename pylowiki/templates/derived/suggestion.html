@@ -33,27 +33,31 @@ ${return_to()}
 				        </span>
 				    </p>
 		            <p class="clr suggestion_summary"></p>
-		            	% if c.authuser.id == c.s.owner or int(c.authuser['accessLevel']) >= 200:
-                            ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
-                            <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
-                            <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
-                            </td></tr></table>
-                            
-                            <div style="display:none; text-align:center;" id="textareadiv0">
-                            <br />
-                            <textarea rows="5" id="textarea0" name="textarea0" onkeyup="previewAjax( 'textarea0', 'section0' )" class="markitup">${c.s['data']}</textarea>
-                            <div style="align:right;text-align:right;">
-                                Optional remark: <input type="text" id="remark0"  name="remark0" class="text tiny" placeholder="optional remark"/> 
-
-                                ${h.submit('submit', 'Save')}
-                                <input type="text" id="sremark"  name="sremark" class="text" />
+		                % if 'user' in session: 
+    		            	% if c.authuser.id == c.s.owner or int(c.authuser['accessLevel']) >= 200:
+                                ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
+                                <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                                <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
+                                </td></tr></table>
+                                
+                                <div style="display:none; text-align:center;" id="textareadiv0">
+                                <br />
+                                <textarea rows="5" id="textarea0" name="textarea0" onkeyup="previewAjax( 'textarea0', 'section0' )" class="markitup">${c.s['data']}</textarea>
+                                <div style="align:right;text-align:right;">
+                                    Optional remark: <input type="text" id="remark0"  name="remark0" class="text tiny" placeholder="optional remark"/> 
+    
+                                    ${h.submit('submit', 'Save')}
+                                    <input type="text" id="sremark"  name="sremark" class="text" />
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv0', 'edit0', 'edit')" id="edit0" style="font-size: 12px;">edit</a></div>
-                        ${h.end_form()}
+                            
+                            <div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv0', 'edit0', 'edit')" id="edit0" style="font-size: 12px;">edit</a></div>
+                            ${h.end_form()}
+                            % else:
+                            	${c.content}
+                            % endif
                         % else:
-                        	${c.content}
+                            ${c.content}}
                         % endif
 					<br />
 		            <br />
