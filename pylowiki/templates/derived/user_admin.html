@@ -1,0 +1,72 @@
+<%inherit file = "/base/template.html"/>
+<%!
+    from pylowiki.lib.db.user import getUserByID
+%>  
+
+    <div class="banner_div">
+        <h2 class="banner"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.title}</a></h2>
+    </div>     
+    <br /><br />
+    <br /><br />
+    % if c.events:
+       <% numEvents = len(c.events) %>
+       <% eString = "Events" %>
+       % if numEvents == 1:
+          <% eString = "Event" %>
+       % endif
+       <strong>${numEvents} ${eString}:</strong>
+       <br /><br />
+       % for event in c.events:
+          <% user = getUserByID(event.owner) %>
+          ${event['title']} ${event.date} by ${user['name']}<br />
+          Reason: ${event['data']}
+          <br /><br />
+       %endfor
+    % endif
+    
+    <br /><br />
+    <p>
+    <strong class="gray">Administrate Member</strong>
+    <br /><br />
+    % if c.user['disabled'] == '1':
+       <% eAction = 'Enable' %>
+    % else:
+       <% eAction = 'Disable' %>
+    % endif
+    <br /><br />
+    <strong>${eAction} Member</strong><br /><br />
+    <form method="post" name="enableUser" id="enableUser" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/">
+       Reason for Member ${eAction}: <input type=text name=enableUserReason> <br /><br />
+       <input type=radio name="verifyEnableUser" value="0"> Verify ${eAction}
+       &nbsp;&nbsp;<button type="submit" class="gold">${eAction} Member</button>
+    </form>
+    <br /><br />
+    <strong>Change Access Level</strong><br /><br />
+    Current Access Level: ${c.user['accessLevel']}
+    <form method="post" name="userPrivs" id="userPrivs" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/">
+     Reason for Member Access Level Change: <input type=text name=changeAccessReason><br /><br /> 
+     % if c.user['accessLevel'] == '100':
+        <input type=radio name="setPrivs" value="0"> User &nbsp; &nbsp; &nbsp;
+        <input type=radio name="setPrivs" value="200"> Admin
+     % elif int(c.user['accessLevel']) >= 200:
+        <input type=radio name="setPrivs" value="0"> User &nbsp; &nbsp; &nbsp;
+        <input type=radio name="setPrivs" value="100"> Facilitator
+     % else:
+        <input type=radio name="setPrivs" value="100"> Facilitator &nbsp; &nbsp; &nbsp;
+        <input type=radio name="setPrivs" value="200"> Admin
+     % endif
+     &nbsp;&nbsp;<button type="submit" class="gold">Set Privs</button>
+     </form>
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
+
+</%def>

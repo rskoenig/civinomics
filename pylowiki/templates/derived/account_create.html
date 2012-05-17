@@ -8,8 +8,7 @@
         		  <img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" />
         		% endif
         	</div><!-- account photo -->
-	    	<form id="account_create" action="/account/editSubmit" class="left" enctype="multipart/form-data" method="post">
-            ##${h.form(h.url(controller = "account", action="editSubmit"), method="post", id="account_create")}
+	    	<form id="account_create" action="/profile/editSubmit" class="left" enctype="multipart/form-data" method="post">
 	    		<div>
 		    		 <br /><br />
 		    		 <div id="basic_info">

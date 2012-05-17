@@ -176,6 +176,11 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/privs', controller = 'profile', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/privs/', controller = 'profile', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
 
+    # User admin
+    map.connect('/profile/{id1}/{id2}/admin', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/admin/', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
+
+
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
     map.connect('/addComment/', controller = 'comment', action = 'addComment')

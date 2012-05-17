@@ -12,11 +12,12 @@ from pylons import config
 
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
-from pylowiki.lib.db.user import get_user, getUserByID
+from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getUserFacilitators
 from pylowiki.lib.db.workshop import getWorkshopByID
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
+from pylowiki.lib.db.event import Event, getParentEvents
 
 
 from hashlib import md5
@@ -145,6 +146,7 @@ class ProfileController(BaseController):
             #    anyChange = True
             try:
                 identifier = 'avatar'
+                # CCN below fails if no picture file
                 imageFile = picture.file
                 filename = picture.filename
                 
@@ -209,27 +211,46 @@ class ProfileController(BaseController):
         return "ok"
 
     @h.login_required
+    def userAdmin(self, id1, id2):
+        if not isAdmin(c.authuser.id):
+           h.flash('You are not authorized.', 'error')
+           return redirect("/")
+
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name'] 
+        c.events = getParentEvents(c.user)
+        log.info('userAdmin %s %s' % (code, url))
+
+        return render("/derived/user_admin.html")
+
+
+    @h.login_required
     def enableHandler(self, id1, id2):
         code = id1
         url = id2
         c.user = get_user(code, url)
         log.info('enableHandler %s %s' % (code, url))
 
-        if 'verifyEnableUser' in request.params:
+        if 'verifyEnableUser' in request.params and 'enableUserReason' in request.params and len(request.params['enableUserReason']) > 0:
            log.info('disabled is %s' % c.user['disabled'])
+           enableUserReason = request.params['enableUserReason']
            if c.user['disabled'] == '1':
               c.user['disabled'] = 0
               eAction = 'User Enabled'
            else:
               c.user['disabled'] = 1
               eAction = 'User Disabled'
-
+ 
+           e = Event(eAction, enableUserReason, c.user, c.authuser)
            commit(c.user)
+           
            h.flash(eAction, 'success')
         else:
-           h.flash('Error: you must verify action before submit', 'error')
+           h.flash('Error: Enter reason and verify action before submit', 'error')
 
-        return redirect("/profile/" + code + "/" + url + "/" )
+        return redirect("/profile/" + code + "/" + url + "/admin" )
 
     @h.login_required
     def privsHandler(self, id1, id2):
@@ -238,12 +259,15 @@ class ProfileController(BaseController):
         c.user = get_user(code, url)
         log.info('privHandler %s %s' % (code, url))
 
-        if 'setPrivs' in request.params:
+        if 'setPrivs' in request.params and 'changeAccessReason' in request.params and request.params['changeAccessReason'] != '':
+           eAction = 'Access Level Changed from ' + c.user['accessLevel'] + ' to ' + request.params['setPrivs']
            c.user['accessLevel'] = request.params['setPrivs']
+           changeAccessReason = request.params['changeAccessReason']
+           e = Event(eAction, changeAccessReason, c.user, c.authuser)
            commit(c.user)
            h.flash('New Access Level Set', 'success')
         else:
-           h.flash('Error: you must specify a new access level', 'error')
+           h.flash('Error: Enter reason and pecify a new access level', 'error')
 
-        return redirect("/profile/" + code + "/" + url + "/" )
+        return redirect("/profile/" + code + "/" + url + "/admin" )
 
