@@ -6,7 +6,7 @@ from pylons import tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl
 from hashlib import md5
 from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
@@ -37,6 +37,22 @@ def getUserByID(id):
     except:
         return False
     
+def isAdmin(id):
+    try:
+        u = meta.Session.query(Thing).filter_by(id = id).one()
+        if int(u['accessLevel']) >= 200:
+           return True
+        else:
+           return False
+    except:
+        return False
+    
+def searchUsers( uKey, uValue):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wcl(uKey, uValue))).all()
+    except:
+        return False
+
 def checkPassword(user, password):
     if user['password'] == hashPassword(password):
         return True
@@ -86,7 +102,7 @@ class User(object):
         u['email'] = email
         u['name'] = '%s %s'%(firstName, lastName)
         u['activated'] = 0
-        u['disabled'] = 0
+        u['disabled'] = False
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
         u['country'] =  country
@@ -98,7 +114,7 @@ class User(object):
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         u['accessLevel'] = 0
-        if email != 'edolfo@civinomics.com':
+        if email != config['app_conf']['admin.email']:
             self.generateActivationHash(u)
         commit(u)
 

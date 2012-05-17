@@ -1,5 +1,9 @@
-import logging, re, pickle
+import logging, re, pickle, formencode
 import time, datetime
+
+from formencode import validators, htmlfill
+from formencode.compound import All
+from formencode.foreach import ForEach
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -12,14 +16,15 @@ from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.article import getArticlesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
-from pylowiki.lib.db.user import getUserByID
+from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.tag import Tag
+from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing
 
 from pylowiki.lib.utils import urlify
+from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
@@ -28,6 +33,74 @@ from pylowiki.lib.db.dbHelpers import commit
 import re
 
 log = logging.getLogger(__name__)
+
+class CommaSepList(validators.FancyValidator):
+    cannot_be_empty=True
+    reassemble_value = ''
+
+    def _to_python(self, value, state):
+        return value.split(",")
+
+    def validate_python(self, value, state):
+        for elem in value:
+            elem.strip()
+            if (elem == '' or elem == 'none') and len(value) == 1 and self.cannot_be_empty == True:
+                h.flash("Additional workshop tags error.", 'error')
+                raise formencode.Invalid('Enter at least one tag. For multiple tags, separate each with a comma.', value, state)
+            elif elem == '' and len(value) > 1:
+                h.flash("Additional workshop tags error.", 'error')
+                raise formencode.Invalid('For multiple tags, separate each with one comma.', value, state)
+
+class NoGoalsSet(validators.FancyValidator):
+    max = 300
+    messages = {
+        'too_many': 'Sorry, the description of goals should not exceed 300 characters. Your entry has %(max)i characters.',
+    }
+
+    def _to_python(self, value, state):
+        # _to_python gets run before validate_python.  Here we
+        # strip whitespace off the password, because leading and
+        # trailing whitespace in a password is too elite.
+        value = value.strip()
+        if value == 'No goals set':
+            value = ''
+        return value
+
+    def validate_python(self, value, state):
+        if value == '':
+            raise formencode.Invalid('Please provide a description of this workshop\'s goals.', value, state)
+        if len(value) > self.max:
+            raise validators.Invalid(self.message("too_many", state, max=self.max), value, state)
+
+class NotBothPublicInputs(validators.FancyValidator):
+
+    def validate_python(self, field_dict, state):
+
+        pubScope = field_dict['publicScope']
+        pubPostList = field_dict['publicPostalList']
+
+        if pubScope and pubPostList:
+            h.flash("Public scope error.", 'error')
+            raise formencode.Invalid("Please select a public scope, or enter a list of zipcodes.", field_dict, state, error_dict={'publicScope':'Please select a public scope,', 'publicPostalList':'OR enter a list of zipcodes.'})
+
+class editWorkshopForm(formencode.Schema):
+    allow_extra_fields = True
+    filter_extra_fields = True
+    title = validators.String(strip=True, not_empty=True, messages = {'empty' : 'Please provide a name for your workshop.'})
+    goals = NoGoalsSet()
+    publicScope = formencode.validators.String(if_missing=None)
+    publicPostalList = formencode.validators.String(if_missing=None)
+    chained_validators = [validators.RequireIfPresent('publicScope', missing="publicPostalList", messages = {'empty' : 'Please select one of these options OR provide a list of zipcodes in the next field.'})]
+    chained_validators = [validators.RequireIfPresent('publicPostalList', missing="publicScope", messages = {'empty' : 'Please select one of these options OR provide a list of zipcodes in the next field.'})]
+    chained_validators = [NotBothPublicInputs()]
+    publicPostalList = CommaSepList(cannot_be_empty=False)
+    memberTags = CommaSepList(cannot_be_empty=True)
+
+class addWorkshopForm(formencode.Schema):
+    maxTitle = 70
+    allow_extra_fields = True
+    filter_extra_fields = True
+    workshopName = validators.String(strip=True, not_empty=True, max=maxTitle, messages = {'empty' : 'Please give your workshop a name.'})
 
 class WorkshopController(BaseController):
 
@@ -85,11 +158,11 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Edit Workshop Settings"
 
-        w = getWorkshop(code, urlify(url))
+        c.w = getWorkshop(code, urlify(url))
         werror = 0
         werrMsg = 'Missing Info: '
         wstarted = 0
-        if w['startTime'] != '0000-00-00':
+        if c.w['startTime'] != '0000-00-00':
            wstarted = 1
 
         ##log.info('wstarted is %s' % wstarted)
@@ -98,99 +171,85 @@ class WorkshopController(BaseController):
         # I don't think so...
 
         if 'title' in request.params:
-           wTitle = request.params['title']
-           if wTitle == '':
-              werrMsg += 'Name '
-              werror = 1
-           else:
-              w['title'] = wTitle
+            wTitle = request.params['title']
+            c.w['title'] = wTitle
         else:
-           werrMsg += 'Name '
-           werror = 1
+            werrMsg += 'Name '
+            werror = 1
 
         if 'goals' in request.params:
-           wGoals = request.params['goals']
+           wGoals = str(request.params['goals'])
            wGoals = wGoals.lstrip()
            wGoals = wGoals.rstrip()
-           if wGoals == '' or wGoals == 'No goals set':
-              werror = 1
-              werrMsg += 'Goals '
-           else:
-              w['goals'] = request.params['goals']
+           c.w['goals'] = request.params['goals']
         else:
            werror = 1
            werrMsg += 'Goals '
 
         # Hmm... Take this out so they can't change it?
         #if 'publicPostal' in request.params:
-        #   w['publicPostal'] = request.params['publicPostal']
+        #   c.w['publicPostal'] = request.params['publicPostal']
         #else:
         #   werror = 1
         #   werrMsg = 'No Workshop Postal'
 
         if not wstarted:
-           if 'publicScope' in request.params:
-              w['publicScope'] = request.params['publicScope']
-              w['scopeMethod'] = 'publicScope'
-           else:
-              w['publicScope'] = '00'
-              werror = 1
-              werrMsg += 'Participants '
+            werrCheckParticipants = False
+            if 'publicScope' in request.params:
+              c.w['publicScope'] = request.params['publicScope']
+              c.w['scopeMethod'] = 'publicScope'
+            else:
+              # NOTE setting publicScope to '' instead of 00, since 00 is a valid state to have if publicPostalList has a value (line 237)
+              c.w['publicScope'] = ''
+              # NOTE set these only if the other input field does not have content, use werrCheckParticipants to watch for this 
+              # werror = 1
+              # werrMsg += 'Participants'
+              werrCheckParticipants = True
 
-           if 'publicPostalList' in request.params:
+            if 'publicPostalList' in request.params:
               plist = request.params['publicPostalList']
               plist = plist.lstrip()
               plist = plist.rstrip()
-              w['publicPostalList'] = plist
+              c.w['publicPostalList'] = plist
               if plist != '':
-                 w['scopeMethod'] = 'publicPostalList'
-                 w['publicScope'] = '00'
-                 if werrMsg == 'Participants':
-                    werrMsg = ''
-                    werror = 0
-              elif w['publicScope'] == '00':
-                 werror = 1
-                 werrMsg += 'Pariticpants or Postal List '
-           else:
+                 c.w['scopeMethod'] = 'publicPostalList'
+                 c.w['publicScope'] = '00'
+            else:
               werror = 1
-              werrMsg += 'Participants or PostalList '
+              werrMsg += 'Public Postal List '
+           
+            if c.w['scopeMethod'] == 'publicScope':
+              c.w['publicScopeTitle'] = getScopeTitle(c.w['publicPostal'], 'United States', c.w['publicScope'])
+            elif c.w['scopeMethod'] == 'publicPostalList':
+              c.w['publicScopeTitle'] = 'postal codes of ' + c.w['publicPostalList']
 
-           if w['scopeMethod'] == 'publicScope':
-              w['publicScopeTitle'] = getScopeTitle(w['publicPostal'], 'United States', w['publicScope'])
-           elif w['scopeMethod'] == 'publicPostalList':
-              w['publicScopeTitle'] = 'postal codes of ' + w['publicPostalList']
-
-           if 'publicTags' in request.params:
+            if 'publicTags' in request.params:
               publicTags = request.params.getall('publicTags')
-              w['publicTags'] = ','.join(publicTags)
-           else:
+              c.w['publicTags'] = ','.join(publicTags)
+            else:
               werror = 1
               werrMsg += 'System Tags '
    
-           if 'memberTags' in request.params:
+            if 'memberTags' in request.params:
               wMemberTags = request.params['memberTags']
               wMemberTags = wMemberTags.lstrip()
               wMemberTags = wMemberTags.rstrip()
-              if wMemberTags == '' or wMemberTags == 'none':
-                 werror = 1
-                 werrMsg += 'Member Tags '
-              else:
-                 w['memberTags'] = wMemberTags
-           else:
+              c.w['memberTags'] = wMemberTags
+            else:
               werror = 1
               werrMsg += 'Member Tags '
 
-           if 'startWorkshop' in request.params:
+            if 'startWorkshop' in request.params:
               startButtons = request.params.getall('startWorkshop')
               ##log.info('Got startWorkshop %s' % ','.join(startButtons))
               if 'Start' in startButtons and 'VerifyStart' in startButtons and werror == 0:
                  startTime = datetime.datetime.now()
-                 #w['startTime'] = startTime.ctime()
-                 w['startTime'] = startTime
+                 #c.w['startTime'] = startTime.ctime()
+                 c.w['startTime'] = startTime
                  endTime = datetime.datetime.now()
                  endTime = endTime.replace(year = endTime.year + 1)
-                 #w['endTime'] = endTime.ctime()
-                 w['endTime'] = endTime
+                 #c.w['endTime'] = endTime.ctime()
+                 c.w['endTime'] = endTime
                  for wTag in request.params.getall('publicTags'):
                     wTag = wTag.lstrip()
                     wTag = wTag.rstrip()
@@ -200,14 +259,31 @@ class WorkshopController(BaseController):
                     mTag = mTag.rstrip()
                     t = Tag('member', mTag, w.id, w.owner)
 
-        commit(w)
+            formSchema = editWorkshopForm()
+            try:
+                c.form_result = formSchema.to_python(request.params)
+            except formencode.Invalid, error:
+                c.form_result = error.value
+                c.form_errors = error.error_dict or {}
+                log.info("form_result "+ str(c.form_result))
+                log.info("form_errors "+ str(c.form_errors))
+                c.form_result['memberTags'] = wMemberTags
+                c.form_result['publicPostalList'] = plist
+                html = render('/derived/issue_settings.html')
+                return htmlfill.render(
+                    html,
+                    defaults=c.form_result,
+                    errors=c.form_errors
+                )
+            else:
+                if werror == 1:
+                    h.flash( werrMsg, 'error')
+                else:
+                    if isFacilitator(c.authuser.id, c.w.id):
+                        commit(c.w)
+                    h.flash('Workshop configuration complete!', 'success')
+            return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
 
-        if werror == 1:
-            h.flash( werrMsg, 'error')
-        else:
-            h.flash('Workshop configuration complete!', 'success')
-
-        return redirect('/workshop/%s/%s'%(w['urlCode'], w['url']))
 
 
     @h.login_required
@@ -221,7 +297,25 @@ class WorkshopController(BaseController):
         backgroundWiki = request.params['backgroundWiki']
         c.numSlideshowEntries = request.params['numSlideshowEntries']
         """
-        publicPrivate = request.params['publicPrivate']
+        try:
+            publicPrivate = request.params['publicPrivate']
+        except:
+            publicPrivate = ''
+
+        formSchema = addWorkshopForm()
+        try:
+            form_result = formSchema.to_python(request.params)
+        except validators.Invalid, error:
+            h.flash("Errors found, please fix the highlighted areas", "warning")
+            c.form_result = error.value
+            c.form_errors = error.error_dict or {}
+            html = render('/derived/issue_create.html')
+            return htmlfill.render(
+                html,
+                defaults=c.form_result,
+                errors=c.form_errors
+            )
+
         w = Workshop(workshopName, c.authuser, publicPrivate)
         c.workshop_id = w.w.id # TEST
         c.title = 'Add slideshow'
@@ -235,6 +329,10 @@ class WorkshopController(BaseController):
         c.title = "Administrate Workshop"
 
         w = getWorkshop(code, urlify(url))
+        if not isFacilitator(c.authuser.id, w.id) and not isAdmin(c.authuser.id):
+           h.flash("You are not authorized", "warning")
+           return redirect('/')
+
         m = getMessage(w.id)
          
         werror = 0
@@ -247,8 +345,8 @@ class WorkshopController(BaseController):
            werror = 1
            werrMsg += 'Message text '
             
-        if 'enable' in request.params:
-           enable = request.params['enable']
+        if 'enableMOTD' in request.params:
+           enable = request.params['enableMOTD']
            if enable == '1' or enable == '0':
               m['enabled'] = enable
            else:
@@ -257,6 +355,36 @@ class WorkshopController(BaseController):
         else:
            werror = 1
            werrMsg += 'Publish message or not '
+
+        eW = 0
+        veW = 0
+        if 'enableWorkshop' in request.params:
+           eW = 1
+
+        if 'verifyEnableWorkshop' in request.params:
+           veW = 1
+
+        ##log.info('Enable is %s and Verify is %s' % (eW, veW))
+        if eW != veW:
+           ##log.info('not equal')
+           werror = 1
+           if w['deleted'] == 1:
+              eAction = 'enabled'
+           else:
+              eAction = 'disabled'
+           werrMsg += 'Action must be verified before workshop can be ' + eAction + '.'
+        elif eW == 1 and veW == 1:
+           ##log.info('equal and deleted is %s' % w['deleted'])
+           if w['deleted'] == '1':
+              w['deleted'] = '0'
+              ##log.info('doing undelete')
+           else:
+              w['deleted'] = '1'
+              ##log.info('doing delete')
+
+           setWorkshopTagEnable(w, w['deleted'])
+           commit(w)
+
             
         commit(m)
         return redirect('/workshops/%s/%s'%(w['urlCode'], w['url']))
@@ -272,10 +400,7 @@ class WorkshopController(BaseController):
         c.isScoped = isScoped(c.authuser, c.w)
         c.isFollowing = isFollowing(c.authuser.id, c.w.id)
         ##log.info('c.isFollowing is %s' % c.isFollowing)
-        if int(c.authuser['accessLevel']) >= 200:
-           c.isAdmin = True
-        else:
-           c.isAdmin = False
+        c.isAdmin = isAdmin(c.authuser.id)
         if c.w['startTime'] != '0000-00-00':
            c.wStarted = True
         else:
@@ -289,8 +414,10 @@ class WorkshopController(BaseController):
             if s:
                 c.slides.append(s)
             
-        c.articles = getArticlesByWorkshopID(c.w.id)
+        c.resources = getArticlesByWorkshopID(c.w.id)
+        c.resources = sortBinaryByTopPop(c.resources)
         c.suggestions = getSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         l = []
         ratedSuggestionIDs = []
         if 'ratedThings_suggestion_overall' in c.authuser.keys():
@@ -403,8 +530,10 @@ class WorkshopController(BaseController):
             """
             l = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
             for tup in l:
+                ##log.info('c.w.id is %s tup[0] is %s tup[1] is %s' % (c.w.id, tup[0], tup[1]))
                 if tup[0] == c.w.id:
                     c.rating = getRatingByID(tup[1])
+                    ##log.info('c.rating is %s' % c.rating)
 
         c.motd = getMessage(c.w.id)
         # kludge for now
@@ -419,13 +548,13 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
+        if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
+            h.flash("You are not authorized", "warning")
+            return render('/')
+
         c.title = c.w['title']
 
-        # make sure they can actually do this
-        if isFacilitator(c.authuser.id, c.w.id) or int(c.authuser['accessLevel']) >= 100:
-            return render('/derived/issue_settings.html')
-        else:
-            return render('/derived/404.html')
+        return render('/derived/issue_settings.html')
     
     @h.login_required
     def admin(self, id1, id2):
@@ -433,24 +562,17 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
+        if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
+           h.flash("You are not authorized", "warning")
+           return redirect('/')
+
         c.title = c.w['title']
         c.motd = getMessage(c.w.id)
-        # kludge for now
-        if c.motd == False:
-           c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        """ Grab first 250 chars as a summary """
-        if len(c.motd['data']) <= 140:
-            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
-        else:
-            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
+        c.s = getSuggestionsForWorkshop(code, urlify(url))
+        c.r = getArticlesByWorkshopID(c.w.id)
 
-
-        # make sure they can actually do this
-        if isFacilitator(c.authuser.id, c.w.id) or int(c.authuser['accessLevel']) >= 100:
-            return render('/derived/issue_admin.html')
-        else:
-            return render('/derived/404.html')
+        return render('/derived/issue_admin.html')
     
     # ------------------------------------------
     #    Helper functions for wiki controller

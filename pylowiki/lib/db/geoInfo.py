@@ -122,11 +122,11 @@ class GeoInfo(object):
         g['countyTitle'] = county.title()
         g['countyURL'] = '/geo/county/united-states/' + urlify(state) + '/' + urlify(county)
         g['countyFlag'] = '/images/flags/country/united-states/county.gif'
-        g['countyFlagThumb'] = '/images/flags/country/united-states/county_thumb.gif'
+        g['countyFlagThumb'] = '/images/flags/country/united-states/county_thumb.png'
         g['cityTitle'] = city.title()
         g['cityURL'] = '/geo/city/united-states/' + urlify(state) + '/' + urlify(city)
         g['cityFlag'] = '/images/flags/country/united-states/city.gif'
-        g['cityFlagThumb'] = '/images/flags/country/united-states/city_thumb.gif'
+        g['cityFlagThumb'] = '/images/flags/country/united-states/city_thumb.png'
         g['postalTitle'] = 'Zip Code ' + postalCode
         g['postalURL'] = '/geo/postal/united-states/' + postalCode
         g['postalFlag'] = '/images/flags/country/united-states/postal.gif'

@@ -14,7 +14,7 @@ def getRatingByID(id):
     except:
         return False
 
-
+# Looks like this needs to also update the user's pickled list of rating tuples
 def changeRating(ratedThing, rateObj_id, amount):
     rateObj = getRatingByID(rateObj_id)
     ratingType = rateObj['ratingType']

@@ -9,6 +9,7 @@ from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.page import get_all_pages
 from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID
 from pylowiki.lib.db.tag import searchTags
+from pylowiki.lib.db.user import searchUsers
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
@@ -68,6 +69,36 @@ class ActionlistController(BaseController):
 
         return render('/derived/list_workshops.html')
 
+    def searchName( self ):
+        log.info('searchName')
+        if 'searchType' in request.params and 'searchString' in request.params:
+           searchType = request.params['searchType']
+           searchString = request.params['searchString']
+
+           if searchType == 'Workshops':
+              c.title = c.heading = 'Search Workshops: ' + searchString
+              c.list = searchWorkshops('title', searchString)
+              c.count = len( c.list )
+              c.paginator = paginate.Page(
+                  c.list, page=int(request.params.get('page', 1)),
+                  items_per_page = 10, item_count = c.count
+              )
+
+              return render('/derived/list_workshops.html')
+
+           else:
+              c.title = c.heading = 'Search Members: ' + searchString
+              c.list = searchUsers('name', searchString)
+              c.count = len( c.list )
+              c.paginator = paginate.Page(
+                  c.list, page=int(request.params.get('page', 1)),
+                  items_per_page = 10, item_count = c.count
+              )
+
+              return render('/derived/list_users.html')
+        else:
+           return redirect('/')
+
     def searchTags( self, id1 ):
         log.info('searchTags %s' % id1)
         id1 = id1.replace("_", " ")
@@ -86,3 +117,17 @@ class ActionlistController(BaseController):
         )
 
         return render('/derived/list_workshops.html')
+
+    def searchUsers( self, id1, id2  ):
+        log.info('searchUsers %s %s' % (id1, id2))
+        id2 = id2.replace("_", " ")
+        c.title = c.heading = 'Search Users: ' + id1 + ' ' + id2
+        c.list = searchUsers(id1, id2)
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 10, item_count = c.count
+        )
+
+        return render('/derived/list_users.html')
+

@@ -7,12 +7,19 @@ from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 from discussion import Discussion
 from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.db.flag import checkFlagged
 from pylons import config
 from time import time
 from tldextract import extract
 
 log = logging.getLogger(__name__)
 
+def getResource(urlCode, url):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).one()
+    except:
+        return False
+    
 def getArticleByID(id):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'article').filter_by(id = id).one()
@@ -40,6 +47,18 @@ def getArticleByURL(url, workshopID):
 def getArticlesByWorkshopID(workshopID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).all()
+    except:
+        return False
+
+def getFlaggedArticlesByWorkshopID(workshopID):
+    try:
+        aList = meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).all()
+        fList = []
+        for a in aList:
+           if checkFlagged(a) and a.id not in fList:
+              fList.append(a.id)
+
+        return fList
     except:
         return False
 
@@ -74,6 +93,8 @@ class Article(object):
         a['type'] = 'post'
         a['pending'] = False
         a['disabled'] = False
+        a['ups'] = 0
+        a['downs'] = 0
         commit(a)
         d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
         a['discussion_id'] = d.d.id

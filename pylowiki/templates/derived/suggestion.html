@@ -62,61 +62,38 @@ ${return_to()}
                         % if c.rating:
                             <div class = "gray rating wide">
                                 <div id="overall_slider" class="ui-slider-container">
+                                	<p class="sliderMyRating">Your rating: ${c.rating['rating']}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data1="0_${c.s['urlCode']}_${c.rating['rating']}_overall_true_rateSuggestion" data2="${c.s['url']}"></div>
+									<br/>
+									<br/>
+									<br/>
+									<br/>
+																				   ## doesn't work yet: ${c.rating['ratingAvg_overall']}
+									<p class="sliderOverallRating">Overall Rating: ${c.rating['rating']}&nbsp;&nbsp;&nbsp;</p>
 								</div>
 								<script type="text/javascript">
                                 	$(document).ready(function(){
                                     	$(".normal_slider").jColorSlider();
                                 	});
                                 </script>
-                                <%doc>
-    								<div class="ui-buttons-container">
-    									<button id="buttonS" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-    									<button id="buttonN" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-    								</div>
-    								
-    								<script type="text/javascript">
-                                    	$(document).ready(function(){
-                                        	$("#buttonS").jDownButton();
-                                        	$("#buttonN").jUpButton();
-                                    	});
-                                    </script>
-                                </%doc>
-                                <%doc>
-                                    <br/>
-                                    <br/>
-                                    <br/>
-    								<br/>
-                                </%doc>
                             </div>
                         % else:
                             <div class = "gray rating wide">
                                 <div id="overall_slider" class="ui-slider-container">
+                                	<p class="sliderMyRating">Rate this&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data1="0_${c.s['urlCode']}_0_overall_false_rateSuggestion" data2="${c.s['url']}"></div>
+									<br/>
+									<br/>
+									<br/>
+									<br/>
+																				   ## doesn't work yet: ${c.rating['ratingAvg_overall']}
+									<p class="sliderOverallRating">Overall Rating: ${c.rating['rating']}&nbsp;&nbsp;&nbsp;</p>
 								</div>
                                 <script type="text/javascript">
                                 	$(document).ready(function(){
                                     	$(".normal_slider").jColorSlider();
                                 	});
                                 </script>
-                                <%doc>
-                                    <div class="ui-buttons-container">
-    									<button id="buttonS" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-    									<button id="buttonN" data="${c.s['urlCode']}_${c.s['url']}_helpfulness"></button>
-    								</div>
-    								<script type="text/javascript">
-                                    	$(document).ready(function(){
-                                        	$("#buttonS").jDownButton();
-                                        	$("#buttonN").jUpButton();
-                                    	});
-                                    </script>
-                                </%doc>
-                                <%doc>
-                                    <br/>
-                                    <br/>
-                                    <br/>
-                                    <br/>
-                                </%doc>
                             </div>
                         % endif
                     % endif
@@ -151,6 +128,19 @@ ${return_to()}
 
 <%def name = 'extraHTML()'>
     <div id="pop">
+        <div id="suggestionMod">
+            <h2 class="clr left">
+                <p class="right close"><a href="#" class="x">X</a>close</p>
+                <p class="left">Moderate a Suggestion</p>
+            </h2>
+            <form class="left" id="suggestionmoddata" action="/modSuggestion/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}" method = "post">
+                <div id="suggestionmodform" class="left">
+                Foo: <input type=text name=foo value="foo">
+                <div id="suggestionmodshare" class="left">
+                    <button type="submit" class="gold">Submit</button>
+                </div>
+            </form>
+        </div><!-- suggestionMod -->
         <div id="suggestion">
             <h2 class="clr left">
                 <p class="right close"><a href="#" class="x">X</a>close</p>
@@ -183,7 +173,7 @@ ${return_to()}
     <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
     <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
     <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
-	<link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
 </%def>
 
 <%def name = 'extraScripts()'>
@@ -196,11 +186,13 @@ ${return_to()}
     <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
 	<script src = "/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
 	<script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
-	<script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
+	##<script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
 
     <script language="javascript">
         $(document).ready(function()	{
             $(".markitup").markItUp(mySettings);
         });
     </script>
+    
+    <script src = "/js/upDown.js" type="text/javascript"></script>
 </%def>

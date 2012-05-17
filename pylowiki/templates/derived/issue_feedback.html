@@ -12,17 +12,28 @@
 <div id="suggestion_main" class="left clr">
    <h3>Workshop Feedback</h3>
    <div class="left clr">
-Blurb about the workshop process goes here. The intent of the blurb is to educate people about how the workshop works right at the top here before they rate the workshop or give comments.
-   <br />
-   <br />
-   <br />
-Workshop slider rating goes here.
-                    
+<strong>Workshops</strong> are an online space where 
+<strong>Members</strong> residing in the participating 
+<strong>Public Sphere </strong> make contributions, as individuals 
+working in a community, to accomplish the workshop <strong>Goals</strong>. 
+These contributions can take the form of links to information 
+<strong>Resources</strong> to help inform the workshop topic, 
+<strong>Suggestions</strong> toward accomplishing the goals of the workshop,
+or <strong>Comments</strong> offering insights to the information and 
+contributions in the workhop. Members also <strong>Rank</strong> the 
+contributions of others to give an aggregate community sense of the 
+credibility and/or value of the contribution (and hence, the contributor).
+<br /> <br /> <br />
+Rate this workshop. Use the comments to ask questions of the 
+<strong>Facilitator</strong>, make suggestions as to ways to improve 
+the workshop, or otherwise chime in on how things are done in this workshop. 
+Your facilitator and the team at Civinomics need the feedback to build 
+your community.
    % if "user" in session:
      % if c.rating:
         <div class = "gray rating wide">
            <div id="overall_slider" class="ui-slider-container">
-	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data="0_${c.w['urlCode']}_${c.w['url']}_${c.rating['rating']}_overall_true_rateFacilitation"></div>
+	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
            </div>
            <script type="text/javascript">
               $(document).ready(function(){
@@ -33,7 +44,7 @@ Workshop slider rating goes here.
      % else:
         <div class = "gray rating wide">
            <div id="overall_slider" class="ui-slider-container">
-	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data="0_${c.w['urlCode']}_${c.w['url']}_0_overall_false_rateFacilitation"></div>
+	      <div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
            </div>
            <script type="text/javascript">
               $(document).ready(function(){
@@ -51,7 +62,12 @@ ${comments("feedback")}</div>
 </div> <!-- suggestion_main -->
 <div id="suggestion_side" class="left">
    <h3>About Facilitation</h3>
-   The blurb about the role of the facilitator goes here.
+   The <strong>Facilitator</strong> is the host of the workshop, 
+and we as a community appreciate their tending of this work space. They have 
+some administrative privileges in this workhop which include the ability
+to moderate member contributions which are off topic or violate the
+Terms of Use, point to related information in other
+workhops, and otherwise facilitate a smooth experience in this space.
    <br />
    <br />
    % if c.facilitators == False  or len(c.facilitators) == 0:
@@ -72,6 +88,15 @@ ${comments("feedback")}</div>
              <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a><br/>
           % endif
        % endfor
+       % if c.motd['enabled'] == '1':
+          <br />
+          <br />
+          <strong>Facilitator message:</strong>
+          <br />
+          ${c.motd['data']}
+          <br />
+          <br />
+       % endif
    % endif
    </div>
 </div> <!-- suggestion_side -->

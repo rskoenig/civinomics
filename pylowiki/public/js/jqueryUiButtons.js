@@ -34,10 +34,11 @@
 					}
 				});
 			});				
-			
+			/*
 			$(this).css( "width", "16px" );
 			$(this).css( "height", "19px" );
 			$(this).css( "background-image", "url(/images/thumb_up_green.gif)" );
+			*/
 		});
 
 	}
@@ -64,10 +65,11 @@
 					}
 				});
 			});				
-			
+			/*
 			$(this).css( "width", "16px" );
 			$(this).css( "height", "19px" );
 			$(this).css( "background-image", "url(/images/thumb_down_red.gif)" );
+			*/
 		});
 
 	}

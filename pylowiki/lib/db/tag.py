@@ -2,6 +2,7 @@
 import logging
 
 from pylowiki.model import Thing, Data, meta
+from pylowiki.lib.db.workshop import Workshop, isWorkshopDeleted
 import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
 
@@ -34,9 +35,16 @@ def getPublicTagList():
 
 def getPublicTagCount():
     tagDict = dict()
-    tL = getPublicTagList()
-    for pT in tL:
-       tagDict[pT] = meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'system'))).filter(Thing.data.any(wc('tagName', pT))).count()
+    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'system'))).filter(Thing.data.any(wc('disabled', '0'))).all()
+    tagDict = dict()
+    for tL in tSearch:
+       t = tL['tagName']
+       t = t.lstrip()
+       t = t.rstrip()
+       if t in tagDict:
+           tagDict[t] += 1
+       else:
+           tagDict[t] = 1
 
     return tagDict
 
@@ -51,7 +59,7 @@ def getMemberTagList():
     return tagList
 
 def getMemberTagCount():
-    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'member'))).all()
+    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'member'))).filter(Thing.data.any(wc('disabled', '0'))).all()
     tagDict = dict()
     for tL in tSearch:
        t = tL['tagName']
@@ -64,6 +72,12 @@ def getMemberTagCount():
 
     return tagDict
 
+def setWorkshopTagEnable(workshop, disabled):
+    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('thingID', workshop.id))).all()
+    for tL in tSearch:
+       tL['disabled'] = disabled
+       commit(tL)
+
 class Tag(object):
     def __init__(self, tagType, tagName, thingID, ownerID):
         t = Thing('tag', ownerID)
@@ -72,6 +86,7 @@ class Tag(object):
         tagName = tagName.lstrip()
         tagName = tagName.rstrip()
         t['tagName'] = tagName
+        t['disabled'] = False
         # the id of the object described by the tag
         t['thingID'] = thingID
         commit(t)

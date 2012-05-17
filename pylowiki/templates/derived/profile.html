@@ -2,6 +2,7 @@
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID
     from pylowiki.lib.db.workshop import getWorkshop
+    from pylowiki.lib.db.user import isAdmin
 %>
         	<div id="profileside" class="col left">
                 <div class="blockimage">
@@ -116,15 +117,41 @@
 		    	Member since ${mStart}
                        % if c.authuser['email'] != c.user['email']:
 		    	<br /> <br />
-                       % if c.isFollowing:
+                          % if c.isFollowing:
 <div class="button_container">
     <button class="btn followButton gold following" rel="profile_${c.user['urlCode']}_${c.user['url']}">Following</button>
 </div>
-                       % else:
+                          % else:
 <div class="button_container">
     <button class="btn followButton gold" rel="profile_${c.user['urlCode']}_${c.user['url']}">Follow</button>
 </div>
+                          % endif
                        % endif
+                       % if isAdmin(c.authuser.id):
+                          % if c.user['disabled'] == '1':
+                             <% eAction = 'Enable' %>
+                          % else:
+                             <% eAction = 'Disable' %>
+                          % endif
+                          <br />
+                          <form method="post" name="enableUser" id="enableUser" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/">
+                          <input type=radio name="verifyEnableUser" value="0"> Verify ${eAction}
+                          &nbsp;&nbsp;<button type="submit" class="gold">${eAction} User</button>
+                          </form>
+                          <br />Current Access Level: ${c.user['accessLevel']}
+                          <form method="post" name="userPrivs" id="userPrivs" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/">
+                          % if c.user['accessLevel'] == '100':
+                          <input type=radio name="setPrivs" value="0"> User &nbsp; &nbsp; &nbsp;
+                          <input type=radio name="setPrivs" value="200"> Admin
+                          % elif int(c.user['accessLevel']) >= 200:
+                          <input type=radio name="setPrivs" value="0"> User &nbsp; &nbsp; &nbsp;
+                          <input type=radio name="setPrivs" value="100"> Facilitator
+                          % else:
+                          <input type=radio name="setPrivs" value="100"> Facilitator &nbsp; &nbsp; &nbsp;
+                          <input type=radio name="setPrivs" value="200"> Admin
+                          % endif
+                          &nbsp;&nbsp;<button type="submit" class="gold">Set Privs</button>
+                          </form>
                        % endif
                         </div><!-- blockleft --> 
                         <div class="blockrighthalf">
