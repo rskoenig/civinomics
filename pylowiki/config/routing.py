@@ -159,22 +159,22 @@ def make_map():
     map.connect('/modSuggestionHandler/', controller = 'suggestion', action = 'modSuggestionHandler')
 
     # User profile
-    map.connect('/profile/{id1}/{id2}', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     
     # User profile follow/unfollow
-    map.connect('/profile/{id1}/{id2}/follow', controller = 'account', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/follow/', controller = 'account', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/unfollow', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/unfollow/', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/follow', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/follow/', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/unfollow', controller = 'profile', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/unfollow/', controller = 'profile', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
     
     # User profile enable/disable
-    map.connect('/profile/{id1}/{id2}/enable', controller = 'account', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/enable/', controller = 'account', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/enable', controller = 'profile', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/enable/', controller = 'profile', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
 
     # User accessLevel
-    map.connect('/profile/{id1}/{id2}/privs', controller = 'account', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/privs/', controller = 'account', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/privs', controller = 'profile', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/privs/', controller = 'profile', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
 
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
@@ -240,10 +240,9 @@ def make_map():
     map.connect('/searchName/', controller='actionlist', action='searchName', id='searchName')
     map.connect('/searchName', controller='actionlist', action='searchName', id='searchName')
 
-    map.connect('/account/edit', controller = 'account', action = 'edit')
-    map.connect('/account/editSubmit', controller = 'account', action = 'editSubmit')
-    #map.connect('/account/{id}', controller='account', action='user', id='{id}')
-    map.connect('/account/{id}', controller = 'home', action = 'mainPage', id = '{id}')
+    map.connect('/profile/edit', controller = 'profile', action = 'edit')
+    map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')
+    map.connect('/profile/{id}', controller = 'home', action = 'mainPage', id = '{id}')
 
     ################
     #  AreYouSure  #

@@ -44,5 +44,6 @@ class Facilitator(object):
         f = Thing('facilitator', userID)
         f['workshopID'] = workshopID
         f['disabled'] = disabled
+        f['pending'] = 0
         commit(f)
 

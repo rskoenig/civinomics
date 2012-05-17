@@ -49,7 +49,7 @@
                     ##<li title="Inbox"><a href = "#">Inbox</a></li>
                     <li title="Profile"><a href = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a></li>
                     <li title="Account">
-                        <a href = "/account/edit">Account</a>
+                        <a href = "/profile/edit">Account</a>
                         <a href="#" id="nav_dropdown_arrow">&#9660;</a>
                         <div id="nav_dropdown" class="group">
                             % if int(c.authuser['accessLevel']) >= 100:
@@ -61,7 +61,7 @@
                             % if isAdmin(int(c.authuser.id)):
                                 <a href = "/systemAdmin">Sys Admin</a>
                             % endif
-                            <a href = "/account/edit"> Edit </a>
+                            <a href = "/profile/edit"> Edit </a>
                             <a href="/login/logout">Logout</a>
                         </div>
                     </li>
