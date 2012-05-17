@@ -140,22 +140,11 @@
                             
                             % if "user" in session:
 								<div id="ratings${counter}" class="gray rating wide" style="padding-bottom:15px;">
-									
                         			<div id="overall_slider" class="ui-slider-container">
                         			    % if item.rating:
-                        			      <p class="sliderMyRating">Your rating: ${item.rating['rating']}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data1="0_${item['urlCode']}_${item.rating['rating']}_overall_true_rateSuggestion" data2="${item['url']}"></div>
-										  <br/>
-										  <br/>
-										  												 ## doesn't work yet: ${item.rating['ratingAvg_overall']}
-										  <p class="sliderOverallRating">Overall Rating: ${item.rating['rating']}&nbsp;&nbsp;&nbsp;</p>
 										% else:
-										  <p class="sliderMyRating">Rate this&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
 										  <div id="${item['urlCode']}_${item['url']}" class="small_slider" data1="0_${item['urlCode']}_0_overall_false_rateSuggestion" data2="${item['url']}"></div>
-										  <br/>
-										  <br/>
-										  												 ## doesn't work yet: ${item.rating['ratingAvg_overall']}
-										  <p class="sliderOverallRating">Overall Rating: ${item.rating['rating']}&nbsp;&nbsp;&nbsp;</p>
 										% endif
 									</div>
                             		<%doc>

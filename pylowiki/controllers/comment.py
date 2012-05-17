@@ -125,16 +125,11 @@ class CommentController(BaseController):
             workshopURL = request.params['workshopURL']
             
             discussion = getDiscussionByID(discussionID)
-            if data != '':
-                data = data.strip()
-            if data == '':
-                raise
-            
             log.info('parent comment = %s' % parentCommentID)
             comment = Comment(data, c.authuser, discussion, int(parentCommentID))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
-            h.flash('There was a problem with the comment', 'error')
+            h.flash('Do not access a handler directly', 'error')
         except:
             raise
             h.flash('Unknown error', 'error')

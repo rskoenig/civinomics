@@ -53,7 +53,7 @@
 			});
 			return hex.join( "" ).toUpperCase();
 		}
-			
+				
 		if(this.length>0)
 		this.each(function(idx, element) {
 				var thisID = element.id,
@@ -90,10 +90,9 @@
 						hex = hexFromInput( sliderVal );
 						$(this).children(".ui-widget-header").css( "background", "#" + hex );
 						$(this).css( "background", "#" + hex );
-						// $(this).children(".ui-slider-handle").html( '<span class="handleVal">'+sliderVal+'</span>' );
+						$(this).children(".ui-slider-handle").html( '<span class="handleVal">'+sliderVal+'</span>' );
 						// this code isn't portable for other pages, but is a good example of how to update the rating on page if desired
 						//$(this).parents('.gray rating wide').children('.yourRating_' + thisID).html('Your rating: '+sliderVal);
-						
 						$.ajax({
 							type : 'POST',
 							url  : "/"+ratingHandler+"/"+thingCode+"/"+thingURL+"/"+sliderVal,
@@ -101,8 +100,6 @@
 							async : false,
 							success: function(result) {
 								input_content = result;
-								// doesn't work?? $("#"+thisID).sibling(".sliderTitle").html('Your rating: '+sliderVal+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
-								$("#"+thisID).parent().children(".sliderMyRating").html('Your rating: '+sliderVal+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 							}
 						});
 					}

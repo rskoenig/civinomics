@@ -57,13 +57,13 @@
 ## Displays the content of the comment
 <%def name="commentContent(comment, counter)">
     <br />
-        
-        % if c.authuser['accessLevel'] >= 200:
-            ${editComment(comment, counter)}
-        % else:
-            ${h.literal(h.reST2HTML(comment['data']))}
+        % if 'user' in session:
+            % if int(c.authuser['accessLevel']) >= 200:
+                ${editComment(comment, counter)}
+            % else:
+                ${h.literal(h.reST2HTML(comment['data']))}
+            % endif
         % endif
-        
 </%def>
 
 ## Sets up the rating system
@@ -297,9 +297,9 @@
             </div>
             <br />
             % else:
-            <h3 class="utility"> 
-              Please <a href="/login">login</a> or <a href="/register">register</a> to leave a comment!
-              </h3>
+            <h4 class="utility"> 
+                Please <a href="/">login</a> or <a href="/">register</a> to leave a comment!
+            </h4>
             %endif
         </form>
         

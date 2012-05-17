@@ -2,23 +2,11 @@
 	/*background: url('/images/slider_initial_grey.png') no-repeat scroll 0 0;*/ 
 	padding: 0 0.6em;
 }
-
-.ui-slider-container p.sliderMyRating { 
-	text-align: right;
-	padding-right: 3px;
-}
-
-.ui-slider-container p.sliderOverallRating {
-	text-align: right;
-	padding-right: 3px;	
-}
-
 .normal_slider {
 	float: right;
 	width: 180px;
 	margin: 5px;
 }
-
 .normal_slider.ui-slider-horizontal { 
 	height: 32px; 
 	border: 0;
@@ -87,4 +75,3 @@
     font-size: 0.8em;
     color: #454545;
 }
-

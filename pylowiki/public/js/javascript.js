@@ -8,7 +8,7 @@ function previewAjax( textarea, div ){
     }
     previewTimer = setTimeout( function() {
         sendPreview( textarea, div );
-    }, 1 );
+    }, 300 );
 }
 
 function sendPreview( textarea, div ){

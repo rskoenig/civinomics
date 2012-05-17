@@ -30,13 +30,7 @@
 }
 
 .warning, .error {
-    background-color: #E74836;
-}
-
-.error-message {
-	padding: 2px;
-	color: #000;
-	background-color: #F7A059;
+    background-color: #CB0003;
 }
 
 .success, .notice {
