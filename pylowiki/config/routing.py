@@ -180,6 +180,10 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/admin', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/admin/', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
 
+    # User account admin
+    map.connect('/profile/{id1}/{id2}/account', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/account/', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
+
 
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')

@@ -57,7 +57,57 @@
      % endif
      &nbsp;&nbsp;<button type="submit" class="gold">Set Privs</button>
      </form>
-
+    <br /><br />
+    % if c.account:
+       <strong>User Account</strong><br /><br />
+       Total hosting for account: ${c.account['numHost']}<br /> 
+       <% numWorkshops = len(c.workshops) %>
+       Total workshops hosted for account: ${numWorkshops}<br /> 
+       % if c.workshops:
+          % for w in c.workshops:
+             &nbsp; &nbsp; &nbsp; &bull; &nbsp;<a href="/workshop/${w['urlCode']}/${w['url']}">${w['title']}</a>
+             <br />
+          % endfor
+       % endif
+       Total hosted remaining for account: ${c.account['numRemaining']}<br /> 
+       <br /><br /> 
+       <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
+       Change number of objects which may be hosted: 
+       <select name="numHost">
+       <option>1</option>
+       <option>2</option>
+       <option>3</option>
+       <option>4</option>
+       <option>5</option>
+       <option>6</option>
+       <option>7</option>
+       <option>8</option>
+       <option>9</option>
+       <option>10</option>
+       </select>
+       <br /><br />
+       <button type="submit" class="gold">Update Account</button>
+       </form> 
+    % else:
+       <strong>Create User Account</strong><br /><br />
+       <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
+       Number of objects which may be hosted: 
+       <select name="numHost">
+       <option>1</option>
+       <option>2</option>
+       <option>3</option>
+       <option>4</option>
+       <option>5</option>
+       <option>6</option>
+       <option>7</option>
+       <option>8</option>
+       <option>9</option>
+       <option>10</option>
+       </select>
+       <br /><br />
+       <button type="submit" class="gold">Add Account</button>
+       </form> 
+    % endif
 <%def name = 'extraHTML()'>
 
 </%def>

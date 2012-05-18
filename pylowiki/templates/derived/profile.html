@@ -127,8 +127,15 @@
 </div>
                           % endif
                        % endif
+                       % if c.authuser.id == c.user.id:
+                          % if c.account and c.account['numRemaining'] != '0':
+                             <br /><br />
+                             <a href="/addWorkshop">Create New Workshop</a>
+                             <br />
+                          % endif
+                       % endif
                        % if isAdmin(c.authuser.id):
-                          <br /> <br />
+                          <br />
                           <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin">Admin Member</a>
                           <br />
                        % endif

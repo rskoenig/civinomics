@@ -33,6 +33,7 @@ class Account(object):
         a = Thing('account', user.id)
         """number of workshop or survey objects the account can host"""
         a['numHost'] = numHost
+        a['numRemaining'] = numHost
         a['disabled'] = False
         commit(a)
 

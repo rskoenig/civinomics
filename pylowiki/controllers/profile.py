@@ -15,9 +15,10 @@ from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getUserFacilitators
-from pylowiki.lib.db.workshop import getWorkshopByID
+from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
 from pylowiki.lib.db.event import Event, getParentEvents
+from pylowiki.lib.db.account import Account, getUserAccount
 
 
 from hashlib import md5
@@ -35,6 +36,7 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        c.account = getUserAccount(c.user.id)
 
         fList = getUserFacilitators(c.user.id)
         c.facilitatorWorkshops = []
@@ -221,6 +223,8 @@ class ProfileController(BaseController):
         c.user = get_user(code, url)
         c.title = c.user['name'] 
         c.events = getParentEvents(c.user)
+        c.account = getUserAccount(c.user.id)
+        c.workshops = getWorkshopsByOwner(c.user.id)
         log.info('userAdmin %s %s' % (code, url))
 
         return render("/derived/user_admin.html")
