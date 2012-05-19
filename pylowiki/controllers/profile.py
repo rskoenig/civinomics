@@ -40,9 +40,13 @@ class ProfileController(BaseController):
 
         fList = getUserFacilitators(c.user.id)
         c.facilitatorWorkshops = []
+        c.pendingFacilitators = []
         for f in fList:
-           wID = f['workshopID']
-           c.facilitatorWorkshops.append(getWorkshopByID(wID))
+           if 'pending' in f and f['pending'] == '1':
+              c.pendingFacilitators.append(f)
+           elif f['disabled'] == '0':
+              wID = f['workshopID']
+              c.facilitatorWorkshops.append(getWorkshopByID(wID))
 
         fList = getWorkshopFollows(c.user.id)
         ##log.info('fList is %s userID is %s'%(fList, c.user.id))

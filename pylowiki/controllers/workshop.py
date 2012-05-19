@@ -22,6 +22,7 @@ from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing
+from pylowiki.lib.db.account import Account, getUserAccount
 
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
@@ -105,7 +106,9 @@ class addWorkshopForm(formencode.Schema):
 class WorkshopController(BaseController):
 
     def addWorkshop(self):
-        if int(c.authuser['accessLevel']) >= 100:
+        c.account = getUserAccount(c.authuser.id)
+        if c.account and c.account['numRemaining'] > 0:
+        #if int(c.authuser['accessLevel']) >= 100:
         #if self._checkAccess(100):
             #return render('/derived/createIssue.mako')
             c.title = "Create Workshop"
@@ -113,6 +116,10 @@ class WorkshopController(BaseController):
             c.days = range(1, 32)
             c.years = range(2012, 2021)
             c.maxSlideshowEntries = 10
+            numRemaining = c.account['numRemaining'] 
+            numRemaining = int(numRemaining) - 1
+            c.account['numRemaining'] = numRemaining
+            commit(c.account)
             return render('/derived/issue_create.html')
         else:
             h.flash("You are not authorized to view that page", "warning")

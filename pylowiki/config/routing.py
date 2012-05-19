@@ -184,6 +184,12 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/account', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/account/', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
 
+    # Cofacilitation invitation and response
+    map.connect('/profile/{id1}/{id2}/coFacilitateInvite', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/coFacilitateInvite/', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
+
+    map.connect('/profile/{id1}/{id2}/coFacilitateHandler', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/coFacilitateHandler/', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
 
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
