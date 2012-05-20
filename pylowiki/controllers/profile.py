@@ -46,7 +46,13 @@ class ProfileController(BaseController):
               c.pendingFacilitators.append(f)
            elif f['disabled'] == '0':
               wID = f['workshopID']
-              c.facilitatorWorkshops.append(getWorkshopByID(wID))
+              myW = getWorkshopByID(wID)
+              if myW['startTime'] == '0000-00-00':
+                 # show to the workshop owner, show to the facilitator owner
+                 if c.authuser.id == f.owner or c.authuser.id == myW.owner:
+                    c.facilitatorWorkshops.append(myW)
+              else:
+                    c.facilitatorWorkshops.append(myW)
 
         fList = getWorkshopFollows(c.user.id)
         ##log.info('fList is %s userID is %s'%(fList, c.user.id))

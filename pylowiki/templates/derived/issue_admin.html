@@ -1,6 +1,7 @@
 <%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.flag import checkFlagged
+    from pylowiki.lib.db.event import getParentEvents
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.comment import getFlaggedDiscussionComments
     from pylowiki.lib.db.article import getArticlesByWorkshopID, getArticleByID
@@ -47,6 +48,33 @@
     <button type="submit" class="gold">Save Changes</button>
 
     <br /><br />
+    <br /><br />
+    <strong class="gray">Facilitators</strong>
+    <br /><br />
+    % for f in c.f:
+       <% fUser = getUserByID(f.owner) %>
+       <% fEvents = getParentEvents(f) %>
+       <% fPending = "" %>
+       % if f['pending'] == '1':
+          <% fPending = "(Pending)" %>
+       % endif
+       <a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
+       % if fEvents:
+          % for fE in fEvents:
+          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+          % endfor
+       % endif
+    % endfor
+    % for f in c.df:
+       <% fUser = getUserByID(f.owner) %>
+       <% fEvents = getParentEvents(f) %>
+       <a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
+       % if fEvents:
+          % for fE in fEvents:
+          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+          % endfor
+       % endif
+    % endfor
     <br /><br />
     <strong class="gray">Flagged Objects</strong>
     <br /><br />
