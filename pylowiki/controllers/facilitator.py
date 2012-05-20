@@ -51,15 +51,15 @@ class FacilitatorController(BaseController):
         if 'workshopCode' in request.params and 'workshopURL' in request.params:
             wCode = request.params['workshopCode']
             wURL = request.params['workshopURL']
-            log.info('coFacilitateHandler %s %s' % (wCode, wURL))
+            ##log.info('coFacilitateHandler %s %s' % (wCode, wURL))
             w = getWorkshop(wCode, urlify(wURL))
             fList = getUserFacilitators(c.authuser.id)
             doF = False
             for f in fList:
-               log.info('coFacilitateHandler got %s w.id is %s'%(f, w.id))
+               ##log.info('coFacilitateHandler got %s w.id is %s'%(f, w.id))
                if int(f['workshopID']) == int(w.id):
                   doF = f
-                  log.info('coFacilitateHandler got doF')
+                  ##log.info('coFacilitateHandler got doF')
 
             if doF and 'acceptInvite' in request.params:
                   doF['pending'] = 0
@@ -78,3 +78,38 @@ class FacilitatorController(BaseController):
 
         h.flash('Error: You are not authorized', 'error')
         return redirect("/" )
+
+    @h.login_required
+    def resignFacilitatorHandler(self, id1, id2):
+        code = id1
+        url = id2
+        w = getWorkshop(code, urlify(url))
+        fList = getUserFacilitators(c.authuser.id)
+        doF = False
+        for f in fList:
+           if int(f['workshopID']) == int(w.id):
+              doF = f
+
+        if 'resignReason' in request.params:
+           resignReason = request.params['resignReason']
+           resignReason = resignReason.lstrip()
+           resignReason = resignReason.rstrip()
+           if resignReason == '':
+              h.flash('Error: include note', 'error')
+              return redirect("/workshop/%s/%s"%(code, url))
+
+           log.info('resignReason is %s'%resignReason)
+        else:
+           h.flash('Error: include note', 'error')
+           return redirect("/workshop/%s/%s"%(code, url))
+
+
+        if doF and c.authuser.id == doF.owner:
+           doF['disabled'] = 1
+           commit(doF)
+           Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], w['title'], resignReason), c.authuser, c.authuser)
+           h.flash('CoFacilitation Resignation Accepted', 'success')
+           return redirect("/workshop/%s/%s"%(code, url))
+
+        h.flash('Error: You are not authorized', 'error')
+        return redirect("/workshop/%s/%s"%(code, url))

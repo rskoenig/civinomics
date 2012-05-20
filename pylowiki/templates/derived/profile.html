@@ -1,8 +1,8 @@
 <%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID
-    from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
-    from pylowiki.lib.db.facilitator import getUserFacilitators, isFacilitator
+    from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, getWorkshopsByOwner
+    from pylowiki.lib.db.facilitator import getUserFacilitators, isFacilitator, isPendingFacilitator
     from pylowiki.lib.db.user import isAdmin
 %>
         	<div id="profileside" class="col left">
@@ -135,13 +135,14 @@
                              <br />
                           % endif
                        % endif
-                       <% checkF = getUserFacilitators(c.authuser.id) %>
+                       <% checkW = getWorkshopsByOwner(c.authuser.id) %>
                        <% wList = [] %>
-                       % for f in checkF:
-                          <% checkW = getWorkshopByID(f['workshopID']) %>
-                          % if not isFacilitator(c.user.id, checkW.id):
-                             <% wList.append(checkW) %>
-                          % endif 
+                       % for w in checkW:
+                          % if w['deleted'] == '0':
+                             % if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
+                                <% wList.append(w) %>
+                             % endif 
+                          % endif
                        % endfor
                        % if c.authuser.id != c.user.id and wList:
                        <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/">

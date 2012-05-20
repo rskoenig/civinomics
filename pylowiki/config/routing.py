@@ -191,6 +191,9 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/coFacilitateHandler', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/coFacilitateHandler/', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
 
+    map.connect('/workshop/{id1}/{id2}/resignFacilitator', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/resignFacilitator/', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
+
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
     map.connect('/addComment/', controller = 'comment', action = 'addComment')

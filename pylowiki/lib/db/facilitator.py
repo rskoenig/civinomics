@@ -8,7 +8,14 @@ log = logging.getLogger(__name__)
 
 # Getters
 def isFacilitator( userID, workshopID ):
-   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('workshopID', workshopID))).all()
+   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('workshopID', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', 0))).all()
+   if f:
+      return True
+   else:
+      return False
+
+def isPendingFacilitator( userID, workshopID ):
+   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('workshopID', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', 1))).all()
    if f:
       return True
    else:

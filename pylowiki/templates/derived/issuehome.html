@@ -211,13 +211,22 @@
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/admin">Admin workshop</a><br /><br />
                     % endif
                 % for facilitator in c.facilitators:
+                   % if facilitator['disabled'] != '1':
+                     <div>
                      <% fuser = getUserByID(facilitator.owner)%>
                      % if fuser['pictureHash'] == 'flash':
                         <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${fuser['name']}</a>
                      % else:
                         <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a>
                      % endif
-                         ##<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/${fuser['pictureHash']}.thumbnail" />&nbsp;${fuser['name']}</a>
+                     % if c.authuser.id == facilitator.owner and c.authuser.id != c.w.owner:
+                     <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
+                     Note: <input type=text name=resignReason><br />
+                     <button type="submit" class="gold" value="Resign">Resign</button>
+                     </form>
+                     % endif
+                     </div>
+                   % endif
                 % endfor
                 % if c.motd['enabled'] == '1':
                   <br />
