@@ -14,7 +14,7 @@ from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.facilitator import getUserFacilitators
+from pylowiki.lib.db.facilitator import getFacilitatorsByUser
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
 from pylowiki.lib.db.event import Event, getParentEvents
@@ -38,7 +38,7 @@ class ProfileController(BaseController):
         c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
         c.account = getUserAccount(c.user.id)
 
-        fList = getUserFacilitators(c.user.id)
+        fList = getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
         c.pendingFacilitators = []
         for f in fList:

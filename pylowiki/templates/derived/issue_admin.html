@@ -1,6 +1,7 @@
 <%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.flag import checkFlagged
+    from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.comment import getFlaggedDiscussionComments
     from pylowiki.lib.db.article import getArticlesByWorkshopID, getArticleByID
 %>  

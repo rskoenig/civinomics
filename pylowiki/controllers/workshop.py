@@ -17,7 +17,7 @@ from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.article import getArticlesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
-from pylowiki.lib.db.facilitator import isFacilitator, getFacilitators
+from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
@@ -409,8 +409,13 @@ class WorkshopController(BaseController):
             c.isFollowing = isFollowing(c.authuser.id, c.w.id)
             c.isAdmin = isAdmin(c.authuser.id)
         
-        c.facilitators = getFacilitators(c.w.id)
+        fList = []
+        for f in (getFacilitatorsByWorkshop(c.w.id)):
+           if f['pending'] == '0' and f['disabled'] == '0':
+              fList.append(f)
         
+        c.facilitators = fList
+
         ##log.info('c.isFollowing is %s' % c.isFollowing)
         if c.w['startTime'] != '0000-00-00':
            c.wStarted = True
@@ -502,7 +507,7 @@ class WorkshopController(BaseController):
         r = get_revision(int(c.w['mainRevision_id']))
         if 'user' in session:
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-            c.facilitators = getFacilitators(c.w.id)
+            c.facilitators = getFacilitatorsByWorkshop(c.w.id)
             
             reST = r['data']
             reSTlist = self.get_reSTlist(reST)
@@ -530,7 +535,7 @@ class WorkshopController(BaseController):
 
         c.title = c.w['title']
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-        c.facilitators = getFacilitators(c.w.id)
+        c.facilitators = getFacilitatorsByWorkshop(c.w.id)
         c.isScoped = isScoped(c.authuser, c.w)
 
         if 'feedbackDiscussion_id' in c.w:
@@ -588,6 +593,8 @@ class WorkshopController(BaseController):
 
         c.s = getSuggestionsForWorkshop(code, urlify(url))
         c.r = getArticlesByWorkshopID(c.w.id)
+        c.f = getFacilitatorsByWorkshop(c.w.id)
+        c.df = getFacilitatorsByWorkshop(c.w.id, 1)
 
         return render('/derived/issue_admin.html')
     

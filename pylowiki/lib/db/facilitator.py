@@ -21,15 +21,21 @@ def isPendingFacilitator( userID, workshopID ):
    else:
       return False
 
-def getFacilitators( workshopID, disabled = False):
+def getFacilitatorsByWorkshop( workshopID, disabled = False):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('workshopID', workshopID))).all()
     except:
         return False
 
-def getUserFacilitators(userID):
+def getFacilitatorsByUser(userID, disabled = False):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).all()
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('disabled', disabled))).all()
+    except:
+        return False
+
+def getFacilitatorsByUserAndWorkshop(userID, workshopID, disabled = False):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('workshopID', workshopID))).filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
 

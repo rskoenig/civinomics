@@ -10,7 +10,7 @@ import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 
-from pylowiki.lib.db.facilitator import Facilitator, getUserFacilitators
+from pylowiki.lib.db.facilitator import Facilitator, getFacilitatorsByUser, getFacilitatorsByUserAndWorkshop
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, getWorkshopsByOwner
@@ -36,7 +36,9 @@ class FacilitatorController(BaseController):
            wURL = iList[1]
            w = getWorkshop(wCode, urlify(wURL))
            Facilitator(c.user.id, w.id, 1)
-           Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), c.user, c.authuser)
+           # Becasue the __init__ function doesn't return the object... sigh
+           fList = getFacilitatorsByUserAndWorkshop(c.user.id, w.id)
+           Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
            h.flash('CoFacilitation Invitation Issued', 'success')
            return redirect("/profile/%s/%s"%(code, url))
         else:
@@ -53,7 +55,7 @@ class FacilitatorController(BaseController):
             wURL = request.params['workshopURL']
             ##log.info('coFacilitateHandler %s %s' % (wCode, wURL))
             w = getWorkshop(wCode, urlify(wURL))
-            fList = getUserFacilitators(c.authuser.id)
+            fList = getFacilitatorsByUser(c.authuser.id)
             doF = False
             for f in fList:
                ##log.info('coFacilitateHandler got %s w.id is %s'%(f, w.id))
@@ -72,7 +74,7 @@ class FacilitatorController(BaseController):
 
             if doF:
                   commit(doF)
-                  Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), w['title']), c.user, c.user)
+                  Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), w['title']), doF, c.user)
                   h.flash('CoFacilitation Invitation %s'%eAction, 'success')
                   return redirect("/profile/%s/%s"%(code, url))
 
@@ -84,7 +86,7 @@ class FacilitatorController(BaseController):
         code = id1
         url = id2
         w = getWorkshop(code, urlify(url))
-        fList = getUserFacilitators(c.authuser.id)
+        fList = getFacilitatorsByUser(c.authuser.id)
         doF = False
         for f in fList:
            if int(f['workshopID']) == int(w.id):
@@ -107,7 +109,7 @@ class FacilitatorController(BaseController):
         if doF and c.authuser.id == doF.owner:
            doF['disabled'] = 1
            commit(doF)
-           Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], w['title'], resignReason), c.authuser, c.authuser)
+           Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], w['title'], resignReason), doF, c.authuser)
            h.flash('CoFacilitation Resignation Accepted', 'success')
            return redirect("/workshop/%s/%s"%(code, url))
 
