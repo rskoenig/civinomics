@@ -1,9 +1,15 @@
 #-*- coding: utf-8 -*-
 import _mysql
+import sqlalchemy as sa
+from sqlalchemy import orm
 from pylowiki.model import Thing, Data, meta
 from pylowiki.lib.utils import urlify
-from dbHelpers import commit, with_characteristic
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
 
+import time, datetime
+import logging
+    
+log = logging.getLogger(__name__)
 
 def getDB():
     return _mysql.connect("localhost","civinomics","Sisyphus3","geo")
@@ -27,7 +33,6 @@ def getCityInfo( city, state, country ):
     r = db.store_result()
     rlist = r.fetch_row( 1, 1 )
     return rlist[0]
-
 
 def getCountyInfo( county, state, country ):
     db = getDB()
@@ -60,6 +65,23 @@ def getGeoScope( postalCode, country ):
         geoScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
         return geoScope
 
+def getUserScopes(geoInfo, scopeLevel):
+    ## geoInfo: a geo object from a user
+    ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
+    ## format of scope attribute ||country||state||county||city|zip
+    log.info('geoInfo is %s' % geoInfo)
+    searchScope = geoInfo[0]['scope']
+    scopeLevel = int(scopeLevel) + 1
+    try:
+        sList = searchScope.split('|')
+        log.info('sList is %s' % len(sList))
+        sList = sList[:int(scopeLevel)]
+        searchScope = "|".join(sList)
+        searchScope = searchScope + '%'
+        log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
+        return meta.Session.query(Thing).filter_by(objType = 'geo').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
+    except sa.orm.exc.NoResultFound:
+        return False
 
 def getGeoInfo(ownerID):
     try:

@@ -9,7 +9,8 @@ from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.page import get_all_pages
 from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID
 from pylowiki.lib.db.tag import searchTags
-from pylowiki.lib.db.user import searchUsers
+from pylowiki.lib.db.user import searchUsers, getUserByID
+from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
@@ -98,6 +99,29 @@ class ActionlistController(BaseController):
               return render('/derived/list_users.html')
         else:
            return redirect('/')
+
+    def searchGeoUsers( self ):
+        log.info('searchGeoUsers')
+        c.title = c.heading = 'List Nearby Members'
+        geoInfo = getGeoInfo(c.authuser.id)
+        log.info('geoInfo is %s'%geoInfo)
+        c.list = []
+        if 'scopeLevel' in request.params:
+           scopeLevel = request.params['scopeLevel']
+           scopeList = getUserScopes(geoInfo, scopeLevel)
+           for gInfo in scopeList:
+              c.list.append(getUserByID(gInfo.owner))
+
+           c.count = len( c.list )
+           c.paginator = paginate.Page(
+                     c.list, page=int(request.params.get('page', 1)),
+                     items_per_page = 10, item_count = c.count
+                 )
+
+           return render('/derived/list_users.html')
+        else:
+           return redirect('/')
+
 
     def searchTags( self, id1 ):
         log.info('searchTags %s' % id1)
