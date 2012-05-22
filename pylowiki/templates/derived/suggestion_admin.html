@@ -47,7 +47,29 @@
     <p>
     <strong class="gray">Administrate Suggestion</strong>
     <br /><br />
-<form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
+    % if 'adopted' not in c.s or c.s['adopted'] == '0':
+       <% adoptTitle = "Adopt Suggestion" %>
+    % else:
+       <% adoptTitle = "Unadopt Suggestion" %>
+    % endif
+    <strong>${adoptTitle}</strong>
+    <form name="adopt_suggestion" id="adopt_suggestion" class="left" action = "/adoptSuggestionHandler" enctype="multipart/form-data" method="post" >
+    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
+    <input type=hidden name=workshopURL value="${c.w['url']}">
+    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
+    <input type=hidden name=suggestionURL value="${c.s['url']}">
+    <br /><br />
+    Reason for action: &nbsp;
+    <input type=text name=adoptSuggestionReason><br /><br />
+    <button type="submit" class="gold">${adoptTitle}</button>
+    </form>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <p>
+    <strong>Disable Suggestion</strong>
+    <form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
     <input type=hidden name=workshopCode value="${c.w['urlCode']}">
     <input type=hidden name=workshopURL value="${c.w['url']}">
     <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
@@ -55,14 +77,12 @@
     <br /><br />
     Reason for action: &nbsp;
     <input type=text name=modSuggestionReason><br /><br />
-    Click to verify&nbsp;<input type=radio name=verifyModSuggestion> &nbsp; &nbsp;
     % if c.s['disabled'] == '0':
        <button type="submit" class="gold">Disable Suggestion</button>
     % else:
        <button type="submit" class="gold">Enable Suggestion</button>
     % endif
-</form>
-
+    </form>
             
 <%def name = 'extraHTML()'>
 

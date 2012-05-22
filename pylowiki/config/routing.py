@@ -157,6 +157,8 @@ def make_map():
     
     map.connect('/modSuggestionHandler', controller = 'suggestion', action = 'modSuggestionHandler')
     map.connect('/modSuggestionHandler/', controller = 'suggestion', action = 'modSuggestionHandler')
+    map.connect('/adoptSuggestionHandler', controller = 'suggestion', action = 'adoptSuggestionHandler')
+    map.connect('/adoptSuggestionHandler/', controller = 'suggestion', action = 'adoptSuggestionHandler')
 
     # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')

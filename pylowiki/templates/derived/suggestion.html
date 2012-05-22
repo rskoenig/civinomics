@@ -34,7 +34,7 @@ ${return_to()}
 				    </p>
 		            <p class="clr suggestion_summary"></p>
 		                % if 'user' in session: 
-    		            	% if c.authuser.id == c.s.owner or int(c.authuser['accessLevel']) >= 200:
+    		            	% if c.authuser.id == c.s.owner or c.isFacilitator or c.isAdmin:
                                 ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
                                 <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
                                 <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
@@ -61,6 +61,9 @@ ${return_to()}
                         % endif
 					<br />
 		            <br />
+                                % if c.authuser.id == c.w.owner or c.isAdmin:
+                                  <div class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modSuggestion">adopt suggestion</a></div>
+                                % endif
                     
                     % if "user" in session:
                         % if c.rating:

@@ -411,7 +411,7 @@ class WorkshopController(BaseController):
         
         fList = []
         for f in (getFacilitatorsByWorkshop(c.w.id)):
-           if f['pending'] == '0' and f['disabled'] == '0':
+           if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
               fList.append(f)
         
         c.facilitators = fList

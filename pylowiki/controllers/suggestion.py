@@ -51,11 +51,6 @@ class SuggestionController(BaseController):
         c.lastmoddate = r.date
         c.discussion = getDiscussionByID(c.s['discussion_id'])
 
-        c.flagged = False
-        if checkFlagged(c.s):
-           c.flagged = True
-           c.flags = getFlags(c.s)
-
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
@@ -141,7 +136,6 @@ class SuggestionController(BaseController):
 
 
            modSuggestionReason = request.params['modSuggestionReason']
-           verifyModSuggestion = request.params['verifyModSuggestion']
         except:
            h.flash('All fields required', 'error')
            return redirect('/workshop/%s/%s/suggestion/%s/%s/modSuggestion'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
@@ -158,6 +152,42 @@ class SuggestionController(BaseController):
         e = Event(modTitle, modSuggestionReason, s, c.authuser)
 
         h.flash(modTitle, 'success')
+        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+    @h.login_required
+    def adoptSuggestionHandler(self):
+        try:
+           w = False
+           s = False
+           workshopCode = request.params['workshopCode']
+           workshopURL = request.params['workshopURL']
+           w = getWorkshop(workshopCode, workshopURL) 
+
+           suggestionCode = request.params['suggestionCode']
+           suggestionURL = request.params['suggestionURL']
+           s = getSuggestion(suggestionCode, suggestionURL) 
+
+           if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
+              h.flash('You are not authorized', 'error')
+              return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+
+           adoptSuggestionReason = request.params['adoptSuggestionReason']
+        except:
+           h.flash('All fields required', 'error')
+           return redirect('/workshop/%s/%s/suggestion/%s/%s/modSuggestion'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+        if not 'adopted' in s or s['adopted'] == '0':
+           s['adopted'] = True
+           adoptTitle = "Suggestion Adopted"
+        else:
+           s['adopted'] = False
+           adoptTitle = "Suggestion Unadopted"
+
+        commit(s)
+        e = Event(adoptTitle, adoptSuggestionReason, s, c.authuser)
+
+        h.flash('Sugestion Adopted', 'success')
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
     @h.login_required

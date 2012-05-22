@@ -216,8 +216,7 @@
   % endif
   % if type == 'resource' and "user" in session:
     <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag resource</a>
-    <% showFlagged = "" %> 
-    % if c.flagged == True:
+    % if checkFlagged(c.resource):
        % if c.isAdmin == True or c.isFacilitator == True:
           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource/">Flagged</a> 
        % endif
@@ -238,15 +237,11 @@
   % elif type == 'resource':
     <span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   % elif type == 'suggestionMain' and "user" in session:
-    <% showFlagged = "" %> 
-    % if c.flagged == True:
-       % if c.isAdmin == True or c.isFacilitator == True:
-          <% showFlagged = ' | Flagged' %> 
-       % endif
-    % endif
     <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a>
        % if c.isAdmin == True or c.isFacilitator == True:
-          | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modSuggestion">Flagged</a> 
+          % if checkFlagged(c.s):
+             | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modSuggestion">Flagged</a> 
+          % endif
        % endif
 </span></div>
 
