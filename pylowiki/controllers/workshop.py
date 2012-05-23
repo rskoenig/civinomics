@@ -9,7 +9,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.workshop import Workshop, getWorkshop, isScoped
-from pylowiki.lib.db.geoInfo import getScopeTitle
+from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow
 from pylowiki.lib.db.slide import getSlide
@@ -188,10 +188,29 @@ class WorkshopController(BaseController):
            wGoals = str(request.params['goals'])
            wGoals = wGoals.lstrip()
            wGoals = wGoals.rstrip()
-           c.w['goals'] = request.params['goals']
+           ##c.w['goals'] = request.params['goals']
+           c.w['goals'] = wGoals
         else:
            werror = 1
            werrMsg += 'Goals '
+
+        log.info('Got wGoals %s' % wGoals)
+        if 'allowSuggestions' in request.params:
+           allowSuggestions = request.params['allowSuggestions']
+           if allowSuggestions == '1' or allowSuggestions == '0':
+              c.w['allowSuggestions'] = allowSuggestions
+        else:
+           werror = 1
+           werrMsg += 'Allow Suggestions '
+
+        if 'allowResources' in request.params:
+           allowResources = request.params['allowResources']
+           if allowResources == '1' or allowResources == '0':
+              c.w['allowResources'] = allowResources
+        else:
+           werror = 1
+           werrMsg += 'Allow Resources '
+
 
         # Hmm... Take this out so they can't change it?
         #if 'publicPostal' in request.params:
@@ -217,6 +236,9 @@ class WorkshopController(BaseController):
               plist = request.params['publicPostalList']
               plist = plist.lstrip()
               plist = plist.rstrip()
+              plist = plist.replace(' ', ',')
+              plist = plist.replace(',,', ',')
+              plist = plist.replace('	', ',')
               c.w['publicPostalList'] = plist
               if plist != '':
                  c.w['scopeMethod'] = 'publicPostalList'
@@ -260,11 +282,20 @@ class WorkshopController(BaseController):
                  for wTag in request.params.getall('publicTags'):
                     wTag = wTag.lstrip()
                     wTag = wTag.rstrip()
-                    t = Tag('system', wTag, c.w.id, c.w.owner)
+                    Tag('system', wTag, c.w.id, c.w.owner)
                  for mTag in wMemberTags.split(','):
                     mTag = mTag.lstrip()
                     mTag = mTag.rstrip()
-                    t = Tag('member', mTag, c.w.id, c.w.owner)
+                    Tag('member', mTag, c.w.id, c.w.owner)
+                 if c.w['scopeMethod'] == 'publicPostalList':
+                    pString = c.w['publicPostalList']
+                    pList = pString.split(',')
+                    for p in pList:
+                       if p != '':
+                          WorkshopScope(p, 'United States', c.w.id, c.w.owner)
+                 elif c.w['scopeMethod'] == 'publicScope':
+                    p = c.w['publicPostal']
+                    WorkshopScope(p, 'United States', c.w.id, c.w.owner)
 
             formSchema = editWorkshopForm()
             try:
@@ -290,7 +321,14 @@ class WorkshopController(BaseController):
                         commit(c.w)
                     h.flash('Workshop configuration complete!', 'success')
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
-
+        else:
+           if werror == 1:
+              h.flash( werrMsg, 'error')
+           else:
+              if isFacilitator(c.authuser.id, c.w.id):
+                 commit(c.w)
+                 h.flash('Workshop configuration complete!', 'success')
+        return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
 
 
     @h.login_required

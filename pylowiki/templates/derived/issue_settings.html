@@ -41,6 +41,30 @@
     <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>
     <br /><br />
     <br /><br />
+    % if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
+        <% yesChecked = 'checked' %>
+        <% noChecked = '' %>
+    % elif 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '0':
+        <% yesChecked = '' %>
+        <% noChecked = 'checked' %>
+    % else:
+        <% yesChecked = 'checked' %>
+        <% noChecked = '' %>
+    % endif
+    Allow members to add suggestions: <input type=radio name=allowSuggestions value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowSuggestions value=0 ${noChecked}> No<br />
+    <br /><br />
+    % if 'allowResources' in c.w and c.w['allowResources'] == '1':
+        <% yesChecked = 'checked' %>
+        <% noChecked = '' %>
+    % elif 'allowResources' in c.w and c.w['allowResources'] == '0':
+        <% yesChecked = '' %>
+        <% noChecked = 'checked' %>
+    % else:
+        <% yesChecked = 'checked' %>
+        <% noChecked = '' %>
+    % endif
+    Allow members to add resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
+    <br /><br />
     Workshop Home Postal Code: ${c.w['publicPostal']}
     <br /><br />
     % if wstarted == 0:

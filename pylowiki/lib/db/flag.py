@@ -16,6 +16,7 @@ def Flag(thing, flagger, flagType = "overall"):
     # flag creation
     f = Thing('flag', flagger.id)
     f['flaggedThing_id'] = thing.id
+    f['flaggedThing_owner'] = thing.owner
     f['flaggedThing_objType'] = thing.objType
     f['category'] = flagType
     commit(f)

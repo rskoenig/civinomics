@@ -143,6 +143,8 @@ class Workshop(object):
         w['publicPostalList'] = ''
         # one of publicScope, publicPostalList. privateDomain, privateEmailList
         w['scopeMethod'] = 'publicScope'
+        w['allowSuggestions'] = 1
+        w['allowResources'] = 1
         commit(w)
         self.w = w
         background = 'No wiki background set yet'

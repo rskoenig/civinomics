@@ -69,16 +69,16 @@ def getUserScopes(geoInfo, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
     ## format of scope attribute ||country||state||county||city|zip
-    log.info('geoInfo is %s' % geoInfo)
+    ##log.info('geoInfo is %s' % geoInfo)
     searchScope = geoInfo[0]['scope']
     scopeLevel = int(scopeLevel) + 1
     try:
         sList = searchScope.split('|')
-        log.info('sList is %s' % len(sList))
+        ##log.info('sList is %s' % len(sList))
         sList = sList[:int(scopeLevel)]
         searchScope = "|".join(sList)
         searchScope = searchScope + '%'
-        log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
+        ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
         return meta.Session.query(Thing).filter_by(objType = 'geo').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
     except sa.orm.exc.NoResultFound:
         return False
@@ -115,6 +115,16 @@ def getScopeTitle(postalCode, country, scope):
         else:
            return 'hmmm, I dunno'
         
+class WorkshopScope(object):
+    def __init__(self, postalCode, country, workshopID, ownerID):
+        w = Thing('wscope', ownerID)
+        w['postalCode'] = postalCode
+        w['country'] = country
+        w['workshopID'] = workshopID
+        w['deactivated'] = '0000-00-00'
+        w['scope'] = getGeoScope(postalCode, country)
+        commit(w)
+
 class GeoInfo(object):
     def __init__(self, postalCode, country, ownerID ):
         g = Thing('geo', ownerID)
