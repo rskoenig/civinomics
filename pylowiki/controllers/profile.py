@@ -12,7 +12,7 @@ from pylons import config
 
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
-from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
+from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
@@ -127,61 +127,95 @@ class ProfileController(BaseController):
 
     @h.login_required
     def editSubmit(self):
-        try:
-            firstName = request.params['first_name']
-            lastName = request.params['last_name']
-            email = request.params['email']
-            tagline = request.params['tagline']
-            #zipCode = request.params['zip_code']
+        perror = 0
+        perrorMsg = ""
+        if 'pictureFile' in request.POST:
             picture = request.POST['pictureFile']
-            
-            nameChange = False
-            anyChange = False
-            u = c.authuser
-            if firstName != '':
-                u['firstName'] = firstName
-                nameChange = True
-                anyChange = True
-            if lastName != '':
-                u['lastName'] = lastName
-                nameChange = True
-                anyChange = True
-            if tagline != '':
-                if len(tagline)>140:
-                    u['tagline'] = tagline[:140]
-                else:
-                    u['tagline'] = tagline
-                anyChange = True
-            #if zipCode != '':
-            #    u['zipCode'] = zipCode
-                
-            #    anyChange = True
-            try:
-                identifier = 'avatar'
-                # CCN below fails if no picture file
-                imageFile = picture.file
-                filename = picture.filename
-                
-                hash = saveImage(imageFile, filename, u, 'avatar', u)
-                u['pictureHash'] = hash
-                
-                resizeImage(identifier, hash, 200, 200, 'profile')
-                resizeImage(identifier, hash, 25, 25, 'thumbnail')
+            if picture == "":
+                picture = False
+        else:
+            picture = False
+        log.info('picture is %s'%picture)
+        u = c.authuser
+        if 'password' in request.params:
+            password = request.params['password']
+        else:
+            password = False 
+        if 'verify_password' in request.params:
+            verify_password = request.params['verify_password']
+        else:
+            verify_password = False 
 
+        if password and verify_password and password == verify_password:
+            changePassword(u, password)
+            log.info('changed password for  %s'%c.authuser['name'])
+
+        if password and verify_password and password != verify_password:
+            perror = 1
+            perrorMsg = 'Password and Verify Password must match'
+        if password or verify_password and password != verify_password:
+            perror = 1
+            perrorMsg = 'Password and Verify Password must match'
+
+        if 'first_name' in request.params:
+            firstName = request.params['first_name']
+        else:
+            firstName = False
+        if 'last_name' in request.params:
+            lastName = request.params['last_name']
+        else:
+            lastName = False
+        if 'email' in request.params:
+            email = request.params['email']
+        else:
+            email = False
+        if 'tagline' in request.params:
+            tagline = request.params['tagline']
+        else:
+            tagline = False
+            
+        nameChange = False
+        anyChange = False
+        if firstName and firstName != '' and firstName != c.authuser['firstName']:
+            u['firstName'] = firstName
+            nameChange = True
+            anyChange = True
+        if lastName and lastName != '' and lastName != c.authuser['lastName']:
+            u['lastName'] = lastName
+            nameChange = True
+            anyChange = True
+        if tagline and tagline != '' and tagline != c.authuser['tagline']:
+            if len(tagline)>140:
+                u['tagline'] = tagline[:140]
+            else:
+                u['tagline'] = tagline
                 anyChange = True
-            except:
-                raise
-                log.info('no picture change for %s'%c.authuser['name'])
-            if nameChange:
-                u['name'] = '%s %s' %(u['firstName'], u['lastName'])
-                log.info('Changed name')
-            if anyChange:
-                commit(u)
-            return redirect('/account/edit')
-        except:
-            h.flash('Error', 'error')
-            raise
-            return redirect('/account/edit')
+
+        log.info('before doing new picture for %s'%c.authuser['name'])
+        if picture != False:
+           identifier = 'avatar'
+           log.info('doing new picture for %s'%c.authuser['name'])
+           imageFile = picture.file
+           filename = picture.filename
+           hash = saveImage(imageFile, filename, u, 'avatar', u)
+           u['pictureHash'] = hash
+           resizeImage(identifier, hash, 200, 200, 'profile')
+           resizeImage(identifier, hash, 25, 25, 'thumbnail')
+           log.info('Saving picture change for %s'%c.authuser['name'])
+           anyChange = True
+
+        if nameChange:
+            u['name'] = '%s %s' %(u['firstName'], u['lastName'])
+            log.info('Changed name')
+        if anyChange and perror == 0:
+            commit(u)
+            h.flash('Changes saved.', 'success')
+        elif anyChange and perror == 1:
+            h.flash(perrorMsg, 'error')
+        else:
+            h.flash('No changes submitted.', 'success')
+
+        return redirect('/profile/edit')
     
     def hashPicture(self, username, title):
         return md5(username + title).hexdigest()
