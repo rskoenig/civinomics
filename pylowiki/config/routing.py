@@ -143,6 +143,12 @@ def make_map():
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/addSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'newSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'newSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'editSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'editSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'saveSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'saveSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshops/{id1}/{id2}/suggestion/{id3}/{id4}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
@@ -152,8 +158,8 @@ def make_map():
     map.connect('/flagSuggestion/{id1}', controller = 'suggestion', action = 'flagSuggestion', id1 = '{id1}')
 
     # Suggestion modding
-    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modSuggestion', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modSuggestion/', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/modSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/modSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}')
     
     map.connect('/modSuggestionHandler', controller = 'suggestion', action = 'modSuggestionHandler')
     map.connect('/modSuggestionHandler/', controller = 'suggestion', action = 'modSuggestionHandler')

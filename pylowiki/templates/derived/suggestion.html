@@ -13,7 +13,7 @@ ${return_to()}
                 <br/>
         	</div> <!-- left headline -->
         	<div id="suggestion_main" class="left clr">
-        		<h3>Suggestion <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span></h3>
+                        <h3>Suggestion <span class="right">add new suggestion<a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span></h3>
         		<div class="left" id="suggestion_info">
 					<p class="left">
 						<strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a></strong>
@@ -62,7 +62,10 @@ ${return_to()}
 					<br />
 		            <br />
                                 % if c.authuser.id == c.w.owner or c.isAdmin:
-                                  <div class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modSuggestion">adopt suggestion</a></div>
+                                  <div class="right">&nbsp; &nbsp;<a href="/modSuggestion/${c.s['urlCode']}/${c.s['url']}">adopt suggestion</a></div>
+                                % endif
+                                % if c.authuser.id == c.s.owner or c.isAdmin:
+                                  <div class="right"><a href="/editSuggestion/${c.s['urlCode']}/${c.s['url']}">edit suggestion</a></div>
                                 % endif
                     
                     % if "user" in session:
@@ -120,44 +123,6 @@ ${return_to()}
         	</div>
 
 <%def name = 'extraHTML()'>
-    <div id="pop">
-        <div id="suggestionMod">
-            <h2 class="clr left">
-                <p class="right close"><a href="#" class="x">X</a>close</p>
-                <p class="left">Moderate a Suggestion</p>
-            </h2>
-            <form class="left" id="suggestionmoddata" action="/modSuggestion/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}" method = "post">
-                <div id="suggestionmodform" class="left">
-                Foo: <input type=text name=foo value="foo">
-                <div id="suggestionmodshare" class="left">
-                    <button type="submit" class="gold">Submit</button>
-                </div>
-            </form>
-        </div><!-- suggestionMod -->
-        <div id="suggestion">
-            <h2 class="clr left">
-                <p class="right close"><a href="#" class="x">X</a>close</p>
-                <p class="left">Add a Suggestion</p>
-            </h2>
-            <form class="left" id="suggestiondata" action="/addSuggestion/${c.w['urlCode']}/${c.w['url']}" method = "post">
-                <div id="suggestionform" class="left">
-                    Title:
-                    <br />
-                    <input type="text" id="suggestiontitle" name = "title"/>
-                    <br />
-                    <br />
-                    Description:
-                    <br />
-                    <textarea id="suggestiontext" name="data" class="markitup"></textarea>
-                    <br />
-                    <br />
-                </div>
-                <div id="suggestionshare" class="left">
-                    <button type="submit" class="gold">Submit</button>
-                </div>
-            </form>
-        </div><!-- suggestion -->
-    </div><!-- pop -->
 </%def>
 
 <%def name = 'extraStyles()'>

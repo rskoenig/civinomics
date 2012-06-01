@@ -69,33 +69,104 @@ class SuggestionController(BaseController):
                     
         return render('/derived/suggestion.html')
 
+    def newSuggestion(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.w = getWorkshop(code, urlify(url))
+        c.s = False
+
+        return render('/derived/suggestion_edit.html')
+
+    def editSuggestion(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.s = getSuggestion(code, urlify(url))
+        c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
+
+        return render('/derived/suggestion_edit.html')
+
+    def saveSuggestion(self, id1, id2):
+        code = id1
+        url = id2
+        
+        if 'title' in request.params:
+            title = request.params['title']
+        else: 
+            title = False
+        if 'data' in request.params:
+            data = request.params['data']
+        else:
+            data = False
+        
+        serror = 0
+        serrorMsg = ''
+        if not data or not title:
+            serror = 1
+            serrorMsg = 'Enter suggestion title and text.'
+
+        if data == '' or title == '':
+            serror = 1
+            serrorMsg = 'Enter suggestion title and text.'
+
+
+        if serror:
+           h.flash(serrorMsg, 'error')
+        else:
+           s = getSuggestion(code, urlify(url))
+           s['title'] = title
+           s['data'] = data
+           commit(s)
+        
+        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(s['workshopCode'], urlify(s['workshopURL']), code, url))
+
     def addSuggestion(self, id1, id2):
         code = id1
         url = id2
         
-        title = request.params['title']
-        data = request.params['data']
-        
-        w = getWorkshop(code, urlify(url))
-        s = Suggestion(c.authuser, title, data, w)
-        
-        if 'suggestionList' not in w.keys():
-            w['suggestionList'] = s.s.id
+        if 'title' in request.params:
+            title = request.params['title']
+        else: 
+            title = False
+        if 'data' in request.params:
+            data = request.params['data']
         else:
-            w['suggestionList'] = w['suggestionList'] + ',' + str(s.s.id)
+            data = False
         
-        return redirect('/workshops/%s/%s'%(code, url))
+        serror = 0
+        serrorMsg = ''
+        if not data or not title:
+            serror = 1
+            serrorMsg = 'Enter suggestion title and text.'
 
-    def modSuggestion(self, id1, id2, id3, id4):
-        workshopCode = id1
-        workshopURL = id2
-        suggestionCode = id3
-        suggestionURL = id4
+        if data == '' or title == '':
+            serror = 1
+            serrorMsg = 'Enter suggestion title and text.'
+
+
+        if serror:
+           h.flash(serrorMsg, 'error')
+        else:
+           w = getWorkshop(code, urlify(url))
+           s = Suggestion(c.authuser, title, data, w)
         
-        c.w = getWorkshop(workshopCode, urlify(workshopURL))
+        ## commented out CCN never worked, not committed
+        ##if 'suggestionList' not in w.keys():
+            ##w['suggestionList'] = s.s.id
+        ##else:
+            ##w['suggestionList'] = w['suggestionList'] + ',' + str(s.s.id)
+        
+        return redirect('/workshop/%s/%s'%(code, url))
+
+    def modSuggestion(self, id1, id2):
+        suggestionCode = id1
+        suggestionURL = id2
+        
+        c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
+        c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
         c.isAdmin = isAdmin(c.authuser.id)
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-        c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         c.events = getParentEvents(c.s)
         r = get_revision(int(c.s['mainRevision_id']))
         

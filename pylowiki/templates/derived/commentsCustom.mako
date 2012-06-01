@@ -240,7 +240,7 @@
     <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a>
        % if c.isAdmin == True or c.isFacilitator == True:
           % if checkFlagged(c.s):
-             | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modSuggestion">Flagged</a> 
+             | <a href="/modSuggestion/${c.s['urlCode']}/${c.s['url']}">Flagged</a> 
           % endif
        % endif
 </span></div>

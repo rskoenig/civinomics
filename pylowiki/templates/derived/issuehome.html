@@ -117,7 +117,8 @@
             <div class="col two left">
                 <h3>suggestions 
                 % if c.isScoped or c.isFacilitator:
-                  <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span>
+                  <span class="right">add new suggestion<a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span>
+                  ##<span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span>
                 % endif
                 </h3>
                 <ul>
@@ -274,30 +275,6 @@
             </div><!-- photo_container -->
         </div><!-- slideshow -->
         
-        <div id="suggestion">
-			<h2 class="clr left">
-				<p class="right close"><a href="#" class="x">X</a>close</p>
-				<p class="left">Add a Suggestion</p>
-			</h2>
-			<form class="left" id="suggestiondata" action="/addSuggestion/${c.w['urlCode']}/${c.w['url']}" method = "post">
-				<div id="suggestionform" class="left">
-					Title:
-					<br />
-					<input type="text" id="suggestiontitle" name = "title"/>
-					<br />
-					<br />
-					Description:
-					<br />
-					<textarea id="suggestiontext" name="data" class="markitup"></textarea>
-					<br />
-					<br />
-				</div>
-				<div id="suggestionshare" class="left">
-					<button type="submit" class="gold">Submit</button>
-				</div>
-			</form>
-        </div><!-- suggestion -->
-		
         <div id="invite_pop">
 			<h2 class="clr left">
 				<p class="right close"><a href="#" class="x">X</a>close</p>
@@ -317,33 +294,33 @@
         </div><!-- invite_pop -->
 		
         <div id="add_media">
-			<h2 class="clr left">
-				<p class="right close"><a href="#" class="x">X</a>close</p>
-				<p class="left">Add Resource</p>
-			</h2>
-			<div class="left">
-			    <form action="/resource/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
-					<div class="wide">
-						<div>
-							Resource URL:
-						</div>
-						<div>
-							<input type="text" name = "url"/>
-						</div>
-					</div>
-                    <div class="wide">
+		<h2 class="clr left">
+		<p class="right close"><a href="#" class="x">X</a>close</p>
+		<p class="left">Add Resource</p>
+		</h2>
+		<div class="left">
+		    <form action="/resource/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
+			<div class="wide">
+				<div>
+					Resource URL:
+				</div>
+				<div>
+					<input type="text" name = "url"/>
+				</div>
+			</div>
+                        <div class="wide">
                         <div>
-							Title:
-						</div>
-						<div>
-							<input type="text" name = "title"/>
-						</div>
-					</div>
-					<div class="wide">
-						<div>
-							Add comment:
-						</div>
-						<div>
+					Title:
+			</div>
+				<div>
+					<input type="text" name = "title"/>
+				</div>
+			</div>
+			<div class="wide">
+				<div>
+					Add description:
+				</div>
+				<div>
 							<textarea name = "data"></textarea>
 						</div>
 					</div>
