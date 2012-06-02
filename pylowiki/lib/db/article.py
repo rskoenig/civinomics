@@ -93,6 +93,7 @@ class Article(object):
         a['type'] = 'post'
         a['pending'] = False
         a['disabled'] = False
+        a['allowComments'] = True
         a['ups'] = 0
         a['downs'] = 0
         commit(a)

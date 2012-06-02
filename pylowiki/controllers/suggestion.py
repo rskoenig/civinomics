@@ -10,10 +10,11 @@ from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.revision import get_revision, Revision
-from pylowiki.lib.db.page import getPageByID
+from pylowiki.lib.db.page import Page, getPageByID, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
+from pylowiki.lib.db.revision import Revision
 
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.fuzzyTime import timeSince
@@ -75,6 +76,7 @@ class SuggestionController(BaseController):
 
         c.w = getWorkshop(code, urlify(url))
         c.s = False
+        c.suggestions = getSuggestionsForWorkshop(code, urlify(url))
 
         return render('/derived/suggestion_edit.html')
 
@@ -99,6 +101,10 @@ class SuggestionController(BaseController):
             data = request.params['data']
         else:
             data = False
+        if 'allowComments' in request.params:
+            allowComments = request.params['allowComments']
+        else:
+            allowComments = -1
         
         serror = 0
         serrorMsg = ''
@@ -110,6 +116,9 @@ class SuggestionController(BaseController):
             serror = 1
             serrorMsg = 'Enter suggestion title and text.'
 
+        if allowComments != '1' and allowComments != 0:
+            serror = 1
+            serrorMsg = 'Allow comments or not?'
 
         if serror:
            h.flash(serrorMsg, 'error')
@@ -117,7 +126,12 @@ class SuggestionController(BaseController):
            s = getSuggestion(code, urlify(url))
            s['title'] = title
            s['data'] = data
+           s['allowComments'] = allowComments
+           r = Revision(c.authuser, data, s)
+           s['mainRevision_id'] = r.r.id
+           p = Page(title, c.authuser, s, data)
            commit(s)
+           Event('Suggestion Edited', 'Suggestion Edited by %s'%c.authuser['name'], s, c.authuser)
         
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(s['workshopCode'], urlify(s['workshopURL']), code, url))
 
@@ -133,6 +147,11 @@ class SuggestionController(BaseController):
             data = request.params['data']
         else:
             data = False
+        if 'allowComments' in request.params:
+            allowComments = request.params['allowComments']
+        else:
+            allowComments = -1
+
         
         serror = 0
         serrorMsg = ''
@@ -149,7 +168,7 @@ class SuggestionController(BaseController):
            h.flash(serrorMsg, 'error')
         else:
            w = getWorkshop(code, urlify(url))
-           s = Suggestion(c.authuser, title, data, w)
+           s = Suggestion(c.authuser, title, data, allowComments, w)
         
         ## commented out CCN never worked, not committed
         ##if 'suggestionList' not in w.keys():

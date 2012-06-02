@@ -67,7 +67,7 @@ def getSuggestion(hash, url):
 # owner is a Thing object
 # title is a string
 class Suggestion(object):
-    def __init__(self, owner, title, data, workshop):
+    def __init__(self, owner, title, data, allowComments, workshop):
         s = Thing('suggestion', owner.id)
         s['title'] = title
         s['url'] = urlify(title[:30])
@@ -75,10 +75,11 @@ class Suggestion(object):
         s['data'] = data
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']
+        s['allowComments'] = allowComments
         s['numComments'] = 0
         s['disabled'] = False
         s['adopted'] = False
-        log.info('data = %s' % data)
+        ##log.info('data = %s' % data)
         commit(s)
         self.s = s
         

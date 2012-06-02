@@ -17,8 +17,8 @@
        <h3>Add Suggestion</h3>
         <form class="left" id="suggestiondata" action="/addSuggestion/${c.w['urlCode']}/${c.w['url']}" method = "post">
     % endif
-            Title:
-            <br />
+            <strong>Suggestion Title:</strong><br />
+            Keep the title short and informative as possible.<br />
             % if c.s:
                 <% titleValue = c.s['title'] %>
             % else:
@@ -26,14 +26,27 @@
             % endif
             <input type="text" id="suggestiontitle" size=50 name = "title" value="${titleValue}"/>
             <br /> <br />
-            Description:
-            <br />
+            <strong>Full Suggestion:</strong><br />
+            Please provide a complete description of your suggestion.<br />
             % if c.s:
                 <% dataValue = c.s['data'] %>
             % else:
                 <% dataValue = '' %>
             % endif
-            <textarea id="suggestiontext" name="data" rows=8 cols=50 class="markitup">${dataValue}</textarea>
+            <textarea id="suggestiontext" name="data" rows=8 cols=50 onkeyup="previewAjax( 'suggestiontext', 'suggestion-preview-div' )" class="markitup">${dataValue}</textarea>
+            <div id="suggestion-preview-div"></div>
+            <br /><br />
+            Allow member comments:<br />
+            % if c.s and 'allowComments' in c.s and c.s['allowComments'] == '0':
+               <% noChecked = 'checked' %>
+               <% yesChecked = '' %>
+            % else:
+               <% yesChecked = 'checked' %>
+               <% noChecked = '' %>
+            % endif
+            <input type=radio name=allowComments value=1 ${yesChecked}> Yes 
+            &nbsp;&nbsp;&nbsp;
+            <input type=radio name=allowComments value=0 ${noChecked}> No 
             <br /><br />
             <button type="submit" class="gold">Submit</button>
         </form>
