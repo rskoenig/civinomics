@@ -26,6 +26,12 @@ def getArticleByID(id):
     except:
         return False
 
+def getResource(urlCode, url):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).one()
+    except:
+        return False
+
 def getArticle(urlCode, url, workshop):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('workshop_id', workshop.id))).one()
@@ -76,7 +82,7 @@ def getAllArticles():
 
 # Object
 class Article(object):
-    def __init__( self, url, title, comment, owner, workshop):
+    def __init__( self, url, title, comment, owner, allowComments, workshop):
         a = Thing('article', owner.id)
         if not url.startswith('http://'):
             url = u'http://' + url
@@ -89,6 +95,7 @@ class Article(object):
         a['urlCode'] = toBase62('%s_%s_%s'%(title, owner['name'], int(time())))
         a['title'] = title
         a['comment'] = comment
+        a['allowComments'] = allowComments
         a['workshop_id'] = workshop.id
         a['type'] = 'post'
         a['pending'] = False

@@ -45,7 +45,7 @@ class SuggestionController(BaseController):
         
         c.title = c.s['title']
         c.content = h.literal(h.reST2HTML(c.s['data']))
-        c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
+        ##c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
         
         # Note we can get original author and last revision author
         c.author = c.lastmoduser = getUserByID(r.owner)
@@ -191,7 +191,7 @@ class SuggestionController(BaseController):
         
         c.title = c.s['title']
         c.content = h.literal(h.reST2HTML(c.s['data']))
-        c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
+        ##c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
         
         # Note we can get original author and last revision author
         c.author = c.lastmoduser = getUserByID(r.owner)

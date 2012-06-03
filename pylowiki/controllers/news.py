@@ -6,12 +6,14 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.workshop import getWorkshop
+from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getArticleByID
+from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getArticleByID, getResource
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.flag import Flag, checkFlagged, getFlags
+from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
+from pylowiki.lib.db.page import Page, getPageByID, get_page
+from pylowiki.lib.db.revision import Revision, get_revision
 
 from pylowiki.lib.utils import urlify
 
@@ -37,6 +39,7 @@ class NewsController(BaseController):
         
         c.title = c.w['title']
         c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
+        c.content = h.literal(h.reST2HTML(c.resource['comment']))
 
         c.flagged = False
         if checkFlagged(c.resource):
@@ -56,7 +59,10 @@ class NewsController(BaseController):
                 for tup in l:
                     if tup[0] == c.resource.id:
                         c.rating = getRatingByID(tup[1])
-                    
+        else:            
+            c.isFacilitator = False
+            c.isAdmin = False
+
         c.poster = getUserByID(c.resource.owner)
         
         c.otherResources = getArticlesByWorkshopID(c.w.id)
@@ -66,10 +72,147 @@ class NewsController(BaseController):
                 c.otherResources.pop(i)
                 break
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
-        c.lastmoddate = c.resource.date
+        if 'mainRevision_id' in c.resource:
+            r = get_revision(int(c.resource['mainRevision_id']))
+            c.lastmoddate = r.date
+        else:
+            c.lastmoddate = c.resource.date
         c.lastmoduser = getUserByID(c.resource.owner)
         
         return render('/derived/resource.html')
+
+    def newResource(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.w = getWorkshop(code, urlify(url))
+        c.r = False
+        c.otherResources = getArticlesByWorkshopID(c.w.id)
+
+        return render('/derived/resource_edit.html')
+
+    def editResource(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.r = getResource(code, urlify(url))
+        c.w = getWorkshopByID(c.r['workshop_id'])
+        c.otherResources = getArticlesByWorkshopID(c.w.id)
+        for i in range(len(c.otherResources)):
+            resource = c.otherResources[i]
+            if resource.id == c.r.id:
+                c.otherResources.pop(i)
+                break
+
+
+        return render('/derived/resource_edit.html')
+
+    def saveResource(self, id1, id2):
+        code = id1
+        url = id2
+        
+        if 'title' in request.params:
+            title = request.params['title']
+        else: 
+            title = False
+        if 'comment' in request.params:
+            comment = request.params['comment']
+        else:
+            comment = False
+        if 'link' in request.params:
+            link = request.params['link']
+        else:
+            link = False
+        if 'allowComments' in request.params:
+            allowComments = request.params['allowComments']
+        else:
+            allowComments = -1
+        
+        rerror = 0
+        rerrorMsg = ''
+        if not comment or not title:
+            rerror = 1
+            rerrorMsg = 'Enter resource title and description.'
+
+        if comment == '' or title == '':
+            rerror = 1
+            rerrorMsg = 'Enter resource title and text.'
+
+        if allowComments != '1' and allowComments != '0':
+            rerror = 1
+            rerrorMsg = 'Allow comments or not?'
+
+        resource = getResource(code, urlify(url))
+        w = getWorkshopByID(resource['workshop_id'])
+        if rerror:
+           h.flash(rerrorMsg, 'error')
+        else:
+           resource['title'] = title
+           resource['comment'] = comment
+           resource['allowComments'] = allowComments
+           rev = Revision(c.authuser, comment, resource)
+           resource['mainRevision_id'] = rev.r.id
+           p = Page(title, c.authuser, resource, comment)
+           commit(resource)
+           Event('Resource Edited', 'Resource Edited by %s'%c.authuser['name'], resource, c.authuser)
+           h.flash('Changes saved', 'success')
+        
+        return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], urlify(w['url']), code, url))
+
+    def addResource(self, id1, id2):
+        code = id1
+        url = id2
+        
+        if 'title' in request.params:
+            title = request.params['title']
+        else: 
+            title = False
+        if 'comment' in request.params:
+            comment = request.params['comment']
+        else:
+            comment = False
+        if 'link' in request.params:
+            link = request.params['link']
+        else:
+            link = False
+        if 'allowComments' in request.params:
+            allowComments = request.params['allowComments']
+        else:
+            allowComments = -1
+
+        
+        rerror = 0
+        rerrorMsg = ''
+        if not link or not comment or not title:
+            rerror = 1
+            rerrorMsg = 'Enter resource title, URL and description.'
+
+        if comment == '' or title == '' or link == '':
+            rerror = 1
+            rerrorMsg = 'Enter resource title, URL and description.'
+
+
+        if rerror:
+            h.flash(rerrorMsg, 'error')
+        else:
+            w = getWorkshop(code, urlify(url))
+            # make sure link not already submitted
+            a = getArticleByLink(link, w)
+            if a:
+                h.flash('Link already submitted for this issue', 'warning')
+                return redirect('/workshop/%s/%s'%(code, url))
+
+            r = Article(link, title, comment, c.authuser, allowComments, w)
+            if 'resources' not in w.keys():
+                w['resources'] = r.a.id
+            else:
+                w['resources'] = w['resources'] + ',' + str(r.a.id)
+
+            w['numResources'] = int(w['numResources']) + 1
+            commit(w)
+
+        
+        return redirect('/workshop/%s/%s'%(code, url))
 
     def modResource(self, id1, id2, id3, id4):
         workshopCode = id1

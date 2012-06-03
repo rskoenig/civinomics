@@ -123,8 +123,18 @@ def make_map():
 
 
     # Resources
+    map.connect('/addResource/{id1}/{id2}', controller = 'news', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/addResource/{id1}/{id2}/', controller = 'news', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newResource/{id1}/{id2}', controller = 'news', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newResource/{id1}/{id2}/', controller = 'news', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editResource/{id1}/{id2}', controller = 'news', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editResource/{id1}/{id2}/', controller = 'news', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveResource/{id1}/{id2}', controller = 'news', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveResource/{id1}/{id2}/', controller = 'news', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
+
     map.connect('/resource/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/resource/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')

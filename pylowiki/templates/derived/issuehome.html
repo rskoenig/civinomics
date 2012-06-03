@@ -1,5 +1,6 @@
 <%!
     import time, datetime
+    import pylowiki.lib.helpers as h
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.utils import urlify
     from pylowiki.lib.db.facilitator import isFacilitator
@@ -85,7 +86,7 @@
             <div class="col one left">
                 <h3>Resources 
                  % if c.isScoped or c.isFacilitator:
-                        <span class="right">add resource<a href="#" class="media plus">+</a></span>
+                        <span class="right">add a new resource<a href="/newResource/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span>
                  %endif
                  </h3>
                 <ul>
@@ -102,7 +103,8 @@
                                     <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">${item['title']}</a></span>
                                     <br />
                                     <p class="clr">
-                                         <img src="/images/icons/news_icon.jpg" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item['comment'][:50]}...
+                                    <% rContent = h.literal(h.reST2HTML(item['comment'])) %>
+                                         <img src="/images/icons/news_icon.jpg" height="40" width="40" style="float: left; margin-right: 5px;" /> ${rContent[:50]}...
                                          <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">more</a></span>
                                     </p>
                                     <div class="clr">
@@ -118,7 +120,6 @@
                 <h3>suggestions 
                 % if c.isScoped or c.isFacilitator:
                   <span class="right">add new suggestion<a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span>
-                  ##<span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span>
                 % endif
                 </h3>
                 <ul>

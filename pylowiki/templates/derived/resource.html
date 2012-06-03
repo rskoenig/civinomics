@@ -90,11 +90,19 @@ ${return_to()}
 										<div class="row-fluid">
 											<div class="span12">
 											    <div class="well" style="background-color:#E6E6E6;">
-												    <p>${c.resource['comment']}</p>
+												    <p>${c.content}</p>
 												</div>
+% if c.isAdmin or c.isFacilitator or c.authuser.id == c.resource.owner:
+   <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}">edit resource</a> &nbsp; &nbsp; &nbsp;
+% endif
+% if c.isAdmin or c.isFacilitator:
+   <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource">admin resource</a>
+% endif
+
 											</div>
 										</div>
-										<%doc>
+
+<%doc>
 										<div class="row-fluid"><br></div>
 										<p>
 											<a href="#">Flag</a> | 
