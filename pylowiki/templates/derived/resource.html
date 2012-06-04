@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
     import logging
+    import pylowiki.lib.helpers as h
     log = logging.getLogger(__name__)
 %>
 
@@ -151,10 +152,14 @@ ${return_to()}
 											        <h2><a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a></h2>
 											    % endif
 												<span><small>(${resource['domain']}.${resource['tld']})</small></span>
-												% if len(resource['comment']) > 50:
-												    <p>${resource['comment'][:50]}... <a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+                <% content = h.literal(h.reST2HTML(resource['comment'])) %>
+												##% if len(resource['comment']) > 50:
+												% if len(content) > 50:
+												    ##<p>${resource['comment'][:50]}... <a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+												    <p>${content[:50]}... <a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
 												% else:
-												    ${resource['comment']} <a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+												    ##${resource['comment']} <a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+												    ${content} <a style="color:#86945A;" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
 												% endif
 												<p>Posted <span class="time" style="color:#F85806;">${timeSince(resource.date)}</span> ago</p>
 											</div> <!-- /.civ-col-item -->

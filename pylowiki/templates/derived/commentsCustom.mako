@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
-    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.user import getUserByID, isAdmin
+    from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.flag import checkFlagged
     from pylowiki.lib.db.comment import getComment
     from pylowiki.lib.db.rating import getRatingByID
@@ -25,27 +26,25 @@
 
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
-	<span><img src="/images/avatars/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}" style="color:#86945A;">${author['name']}</a> says: </span>
+        % if isAdmin(author.id):
+           <% uTitle = ' (Admin)' %>
+        % elif isFacilitator(author.id, c.w.id):
+           <% uTitle = ' (Facilitator)' %>
+        % else:
+           <% uTitle = '' %>
+        % endif
+	<span><img src="/images/avatars/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}" style="color:#86945A;">${author['name']}</a>${uTitle} says: </span>
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
-## Passes info to the comment controller, edit function, with the comment id as the only argument
+## Passes info to the comment controller, edit function, with Facilitator comment id as the only argument
 <%def name="editComment(comment, counter)">
     <% thisID = comment.id + counter %>
     ${ h.form( url( controller = "comment", action ="edit", id = comment.id ), method="put" ) }
         <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
         <div id = "section${thisID}" ondblclick="toggle('textareadiv${thisID}', 'edit${thisID}')">${comment['data']}</div>
         </td></tr></table>
-        <div style="display:none; text-align:center;" id="textareadiv${thisID}">
-            <br />
-            <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment['data']}</textarea>
-            <div style="align:right;text-align:right;">
-            
-                <button type="submit" name = "submit" value = "submit" class="right green">Submit</button>
-                ##${h.submit('submit', 'Save')}
-                <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
-            </div>
-        </div>
+        <div style="display:none; text-align:center;" id="textareadiv${thisID}"></div>
         <div style="align:left;text-align:left;">
             <a href="javascript: toggle('textareadiv${thisID}', 'edit${thisID}', 'edit')" id="edit${thisID}" style="font-size: 12px; color:#86945A;">
                 edit
@@ -214,8 +213,15 @@
   % else:
      <% commentString = 'comments' %>
   % endif
+  % if isAdmin(c.lastmoduser.id):
+     <% uTitle = ' (Admin)' %>
+  % elif isFacilitator(c.lastmoduser.id, c.w.id):
+     <% uTitle = ' (Facilitator)' %>
+  % else:
+     <% uTitle = '' %>
+  % endif
   % if type == 'resource' and "user" in session:
-    <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag resource</a>
+    <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>${uTitle} <a href="#" class="gray flag">Flag resource</a>
     % if checkFlagged(c.resource):
        % if c.isAdmin == True or c.isFacilitator == True:
           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource/">Flagged</a> 
@@ -237,12 +243,12 @@
   % elif type == 'resource':
     <span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   % elif type == 'suggestionMain' and "user" in session:
-    <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a>
-       % if c.isAdmin == True or c.isFacilitator == True:
-          % if checkFlagged(c.s):
-             | <a href="/modSuggestion/${c.s['urlCode']}/${c.s['url']}">Flagged</a> 
-          % endif
-       % endif
+    <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>${uTitle} <a href="#" class="gray flag">Flag suggestion</a>
+       ##% if c.isAdmin == True or c.isFacilitator == True:
+         ## % if checkFlagged(c.s):
+           ##  | <a href="/modSuggestion/${c.s['urlCode']}/${c.s['url']}">Flagged</a> 
+          ##% endif
+       ##% endif
 </span></div>
 
     <div class="flag content left">
@@ -257,7 +263,7 @@
         </span>
     </div><!-- flag_content -->
   % else:
-    <span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
+    <span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>${uTitle}</span>
   % endif
 
     <div id="comments" class="left">

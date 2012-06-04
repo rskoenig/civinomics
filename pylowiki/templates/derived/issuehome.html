@@ -1,7 +1,7 @@
 <%!
     import time, datetime
     import pylowiki.lib.helpers as h
-    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.user import getUserByID, isAdmin
     from pylowiki.lib.utils import urlify
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.flag import checkFlagged
@@ -108,7 +108,14 @@
                                          <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">more</a></span>
                                     </p>
                                     <div class="clr">
-                                        <span class="gray">posted by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span> <span class="time">${timeSince(item.date)}</span> <span class="gray">ago</span>
+                                        % if isAdmin(author.id):
+                                           <% uTitle = ' (Admin)' %>
+                                        % elif isFacilitator(author.id, c.w.id):
+                                           <% uTitle = ' (Facilitator)' %>
+                                        % else:
+                                           <% uTitle = '' %>
+                                        % endif
+                                        <span class="gray">Posted by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>${uTitle}</span><br /><span class="time">${timeSince(item.date)}</span> <span class="gray">ago</span>
                                     </div>
                                 </li>
                             % endif
@@ -136,7 +143,14 @@
                         <li class="sugg">
                             <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
                             <br />
-                            Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
+                            % if isAdmin(author.id):
+                               <% uTitle = ' (Admin)' %>
+                            % elif isFacilitator(author.id, c.w.id):
+                               <% uTitle = ' (Facilitator)' %>
+                             % else:
+                               <% uTitle = '' %>
+                            % endif
+                            Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>${uTitle}
                             ${item["suggestionSummary"]}
                             <br />
                             
