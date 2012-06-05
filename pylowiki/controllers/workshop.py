@@ -23,6 +23,7 @@ from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing
 from pylowiki.lib.db.account import Account, getUserAccount
+from pylowiki.lib.db.event import Event
 
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
@@ -401,6 +402,10 @@ class WorkshopController(BaseController):
            werror = 1
            werrMsg += 'Publish message or not '
 
+        eventReason = ''
+        if 'eventReason' in request.params:
+            eventReason = request.params['eventReason']
+
         eW = 0
         veW = 0
         if 'enableWorkshop' in request.params:
@@ -409,7 +414,7 @@ class WorkshopController(BaseController):
         if 'verifyEnableWorkshop' in request.params:
            veW = 1
 
-        ##log.info('Enable is %s and Verify is %s' % (eW, veW))
+        #log.info('Enable is %s and Verify is %s' % (eW, veW))
         if eW != veW:
            ##log.info('not equal')
            werror = 1
@@ -422,17 +427,20 @@ class WorkshopController(BaseController):
            ##log.info('equal and deleted is %s' % w['deleted'])
            if w['deleted'] == '1':
               w['deleted'] = '0'
+              eAction = 'enabled'
               ##log.info('doing undelete')
            else:
               w['deleted'] = '1'
+              eAction = 'disabled'
               ##log.info('doing delete')
 
            setWorkshopTagEnable(w, w['deleted'])
+           Event('Workshop %s'%eAction, 'Workshop %s by %s Note: %s'%(eAction, c.authuser['name'], eventReason), w, c.authuser)
            commit(w)
 
             
         commit(m)
-        return redirect('/workshops/%s/%s'%(w['urlCode'], w['url']))
+        return redirect('/workshop/%s/%s/admin'%(w['urlCode'], w['url']))
     
     def display(self, id1, id2):
         code = id1

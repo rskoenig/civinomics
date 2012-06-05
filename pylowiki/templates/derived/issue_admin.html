@@ -13,7 +13,8 @@
     <br /><br />
     <br /><br />
 
-<form name="admin_issue" id="admin_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
+<div class=left>
+<form name="admin_issue" id="admin_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
 
     <p>
     <strong class="gray">Administrate Workshop</strong>
@@ -33,10 +34,10 @@
     <br /><br />
     <br /><br />
     % if c.w['deleted'] == '1':
-       Enable Workshop
+       <strong>Enable Workshop</strong>
        <% eAction = 'Enable' %>
     % else:
-       Disable Workshop
+       <strong>Disable Workshop</strong>
        <% eAction = 'Disable' %>
     % endif
     <br />
@@ -46,7 +47,17 @@
     <br /><br />
     <br /><br />
     <button type="submit" class="gold">Save Changes</button>
-
+    </form>
+    <% wEvents = getParentEvents(c.w) %>
+    % if wEvents:
+        <br /><br />
+        <br /><br />
+        <strong class="gray">Workshop Events</strong>
+        <br /><br />
+        % for wE in wEvents:
+            &nbsp; &nbsp; &nbsp; <strong>${wE.date} ${wE['title']}</strong>  ${wE['data']}<br />
+        % endfor
+    % endif
     <br /><br />
     <br /><br />
     <strong class="gray">Facilitators</strong>
@@ -55,7 +66,7 @@
        <% fUser = getUserByID(f.owner) %>
        <% fEvents = getParentEvents(f) %>
        <% fPending = "" %>
-       % if f['pending'] == '1':
+       % if pending in f and f['pending'] == '1':
           <% fPending = "(Pending)" %>
        % endif
        <a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
@@ -63,6 +74,13 @@
           % for fE in fEvents:
           &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
           % endfor
+       % endif
+       % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
+           <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
+               &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
+               <button type="submit" class="gold" value="Resign">Resign</button>
+           <br />
+           </form>
        % endif
     % endfor
     % for f in c.df:
@@ -140,8 +158,7 @@
           % endif
        % endfor
     % endif
-</form>
-
+</div>
             
 <%def name = 'extraHTML()'>
 

@@ -85,11 +85,12 @@ class FacilitatorController(BaseController):
     def resignFacilitatorHandler(self, id1, id2):
         code = id1
         url = id2
+        log.info('in resignFacilitatorHandler')
         w = getWorkshop(code, urlify(url))
-        fList = getFacilitatorsByUser(c.authuser.id)
+        fList = getFacilitatorsByUser(c.authuser.id, 0)
         doF = False
         for f in fList:
-           if int(f['workshopID']) == int(w.id):
+           if int(f['workshopID']) == int(w.id) and f['disabled'] != '1':
               doF = f
 
         if 'resignReason' in request.params:

@@ -1,5 +1,6 @@
 <%!
-    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.user import getUserByID, isAdmin
+    from pylowiki.lib.db.facilitator import isFacilitator
 %>
 
 <%inherit file = "/base/template.html"/>
@@ -28,8 +29,16 @@ ${return_to()}
                             <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" alt="avatar" class="right"/></a>
                         % endif
 					    <br />
+                                        % if isAdmin(c.author.id):
+                                           <% uTitle = ' (Admin)' %>
+                                        % elif isFacilitator(c.author.id, c.w.id):
+                                           <% uTitle = ' (Facilitator)' %>
+                                        % else:
+                                           <% uTitle = '' %>
+                                        % endif
+
 					    <span class="right">
-					        Author: <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a>
+					        Author: <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a>${uTitle}
 				        </span>
 				    </p>
 		            <p class="clr suggestion_summary"></p>

@@ -3,9 +3,11 @@ import logging
 
 from pylons import tmpl_context as c
 
+from pylowiki.lib.utils import toBase62
 from pylowiki.model import Thing, Data, meta
 from pylowiki.lib.db.flag import checkFlagged
 import sqlalchemy as sa
+from time import time
 from dbHelpers import commit, with_characteristic as wc
 from pylons import config
 from datetime import datetime
@@ -60,6 +62,11 @@ class Comment(object):
         c['parent'] = parent
         c['children'] = 0
         c['data'] = data
+        if len(data) > 10:
+           cData = data[:10]
+           c['urlCode'] = toBase62('%s_%s_%s'%(cData, owner['name'], int(time())))
+        else:
+           c['urlCode'] = toBase62('%s_%s_%s'%(data, owner['name'], int(time())))
         c['discussion_id'] = discussion.id
         c['pending'] = False
         c['ups'] = 0

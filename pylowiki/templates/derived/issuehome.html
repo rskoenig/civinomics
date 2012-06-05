@@ -235,12 +235,6 @@
                      % else:
                         <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a>
                      % endif
-                     % if c.authuser.id == facilitator.owner and c.authuser.id != c.w.owner:
-                     <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
-                     Note: <input type=text name=resignReason><br />
-                     <button type="submit" class="gold" value="Resign">Resign</button>
-                     </form>
-                     % endif
                      </div>
                    % endif
                 % endfor
