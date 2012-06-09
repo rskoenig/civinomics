@@ -15,7 +15,7 @@ from pylowiki.lib.db.slideshow import getSlideshow
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.article import getArticlesByWorkshopID
-from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
+from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
@@ -478,8 +478,9 @@ class WorkshopController(BaseController):
             
         c.resources = getArticlesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
-        c.suggestions = getSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
         l = []
         
         if 'user' in session:
@@ -533,6 +534,17 @@ class WorkshopController(BaseController):
 
 
         return render('/derived/issuehome.html')
+
+    def inactiveSuggestions(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshop(code, url)
+        c.title = c.w['title']
+        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+
+        return render('/derived/suggestion_list.html')
 
     def background(self, id1, id2):
         code = id1
@@ -637,7 +649,8 @@ class WorkshopController(BaseController):
         c.title = c.w['title']
         c.motd = getMessage(c.w.id)
 
-        c.s = getSuggestionsForWorkshop(code, urlify(url))
+        c.s = getActiveSuggestionsForWorkshop(code, urlify(url))
+        c.ds = getInactiveSuggestionsForWorkshop(code, urlify(url))
         c.r = getArticlesByWorkshopID(c.w.id)
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)

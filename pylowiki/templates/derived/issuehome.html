@@ -54,8 +54,13 @@
                        <strong>Ends:</strong> ${c.w['endTime']}
                     % endif
                     <br /> <br />
-                    <strong>Suggestions:</strong> ${len(c.suggestions)}
+                    <strong>Active Suggestions:</strong> ${len(c.suggestions)}
                     <br />
+                    % if c.dsuggestions:
+                        <strong><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/inactiveSuggestions">Inactive Suggestions</a>:</strong> ${len(c.dsuggestions)}
+                        <br />
+                    % endif
+
                     <strong>Participants:</strong> ${len(c.participants)}
                     <ul>
                         <% counter = 1 %>

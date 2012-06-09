@@ -68,7 +68,11 @@
     <br /><br />
     <br /><br />
     <p>
-    <strong>Disable Suggestion</strong>
+    % if c.s['disabled'] == '0':
+        <strong>Disable Suggestion</strong>
+    % else:
+        <strong>Enable  Suggestion</strong>
+    % endif
     <form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
     <input type=hidden name=workshopCode value="${c.w['urlCode']}">
     <input type=hidden name=workshopURL value="${c.w['url']}">
