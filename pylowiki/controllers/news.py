@@ -39,6 +39,7 @@ class NewsController(BaseController):
         
         c.title = c.w['title']
         c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
+        c.disabled = c.resource['disabled']
         c.content = h.literal(h.reST2HTML(c.resource['comment']))
 
         c.flagged = False

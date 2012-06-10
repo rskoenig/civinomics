@@ -25,7 +25,7 @@ ${return_to()}
             % for item in c.dsuggestions:
                 <br /><br />
                 <% author = getUserByID(item.owner)%>
-                <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
+                <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></strong>
                 <br />
                 % if isAdmin(author.id):
                     <% uTitle = ' (Admin)' %>

@@ -47,13 +47,28 @@
     <p>
     <strong class="gray">Administrate Suggestion</strong>
     <br /><br />
+    <strong>Leave Note on Suggetion</strong>
+    <form name="note_suggestion" id="note_suggestion" class="left" action = "/noteSuggestionHandler" enctype="multipart/form-data" method="post" >
+    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
+    <input type=hidden name=workshopURL value="${c.w['url']}">
+    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
+    <input type=hidden name=suggestionURL value="${c.s['url']}">
+    <br /><br />
+    Note text: &nbsp;
+    <input type=text name=noteSuggestionText><br /><br />
+    <button type="submit" class="gold">Save Note</button>
+    </form>
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
     % if 'adopted' not in c.s or c.s['adopted'] == '0':
        <% adoptTitle = "Adopt Suggestion" %>
     % else:
        <% adoptTitle = "Unadopt Suggestion" %>
     % endif
-    <strong>${adoptTitle}</strong>
     <form name="adopt_suggestion" id="adopt_suggestion" class="left" action = "/adoptSuggestionHandler" enctype="multipart/form-data" method="post" >
+    <strong>${adoptTitle}</strong>
     <input type=hidden name=workshopCode value="${c.w['urlCode']}">
     <input type=hidden name=workshopURL value="${c.w['url']}">
     <input type=hidden name=suggestionCode value="${c.s['urlCode']}">

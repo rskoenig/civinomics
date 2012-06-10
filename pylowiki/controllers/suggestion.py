@@ -5,7 +5,7 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
-from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop
+from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.discussion import getDiscussionByID
@@ -35,7 +35,9 @@ class SuggestionController(BaseController):
         
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
-        c.suggestions = getSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
+        c.disabled = c.s['disabled']
+        c.events = getParentEvents(c.s)
+        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
         for i in range(len(c.suggestions)):
             suggestion = c.suggestions[i]
             if suggestion.id == c.s.id:
@@ -76,7 +78,7 @@ class SuggestionController(BaseController):
 
         c.w = getWorkshop(code, urlify(url))
         c.s = False
-        c.suggestions = getSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
 
         return render('/derived/suggestion_edit.html')
 
@@ -278,6 +280,34 @@ class SuggestionController(BaseController):
         e = Event(adoptTitle, adoptSuggestionReason, s, c.authuser)
 
         h.flash('Sugestion Adopted', 'success')
+        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+    @h.login_required
+    def noteSuggestionHandler(self):
+        try:
+           w = False
+           s = False
+           workshopCode = request.params['workshopCode']
+           workshopURL = request.params['workshopURL']
+           w = getWorkshop(workshopCode, workshopURL) 
+
+           suggestionCode = request.params['suggestionCode']
+           suggestionURL = request.params['suggestionURL']
+           s = getSuggestion(suggestionCode, suggestionURL) 
+
+           if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
+              h.flash('You are not authorized', 'error')
+              return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+
+           noteSuggestionText = request.params['noteSuggestionText']
+        except:
+           h.flash('All fields required', 'error')
+           return redirect('/workshop/%s/%s/suggestion/%s/%s/modSuggestion'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+        e = Event('Note Added', noteSuggestionText, s, c.authuser)
+
+        h.flash('Note Saved', 'success')
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
     @h.login_required
