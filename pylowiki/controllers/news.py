@@ -39,7 +39,12 @@ class NewsController(BaseController):
         
         c.title = c.w['title']
         c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
-        c.disabled = c.resource['disabled']
+        c.events = getParentEvents(c.resource)
+        if c.resource['disabled'] == '1' or c.resource['allowComments'] == '0':
+            c.commentsDisabled = 1
+        else:
+            c.commentsDisabled = 0
+
         c.content = h.literal(h.reST2HTML(c.resource['comment']))
 
         c.flagged = False
@@ -226,6 +231,8 @@ class NewsController(BaseController):
         c.title = c.w['title']
         c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
         c.flags = getFlags(c.resource)
+        if not c.flags:
+           c.resource['numFlags'] = 0
         c.events = getParentEvents(c.resource)
 
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)

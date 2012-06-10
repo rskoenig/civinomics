@@ -60,6 +60,12 @@
                         <strong><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/inactiveSuggestions">Inactive Suggestions</a>:</strong> ${len(c.dsuggestions)}
                         <br />
                     % endif
+                    <strong>Active Resources:</strong> ${len(c.resources)}
+                    <br />
+                    % if c.dresources:
+                        <strong><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/inactiveResources">Inactive Resources</a>:</strong> ${len(c.dresources)}
+                        <br />
+                    % endif
 
                     <strong>Participants:</strong> ${len(c.participants)}
                     <ul>

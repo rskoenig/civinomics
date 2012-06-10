@@ -76,7 +76,7 @@
         <p class="time">Posted ${timeSince(datetime.strptime(comment['lastModified'], '%a %b %d %H:%M:%S %Y'))} ago </p>
         % if "user" in session:
             <p>
-                % if c.disabled == '0':
+                % if c.commentsDisabled == '0':
                     <a href="#" class="gray flag">Flag comment</a>
                     <a href="#" class="gray reply">Reply</a>
                     % if checkFlagged(comment): 
@@ -309,7 +309,7 @@
                 <input type="hidden" id="url" name="resourceURL" value="${c.resource['url']}" />
             % endif
             % if "user" in session:
-               % if c.disabled == '0':
+               % if int(c.commentsDisabled) == 0:
             add a comment
             <br />
             

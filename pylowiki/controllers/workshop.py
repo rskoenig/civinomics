@@ -14,7 +14,7 @@ from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.article import getArticlesByWorkshopID
+from pylowiki.lib.db.article import getArticlesByWorkshopID, getActiveArticlesByWorkshopID, getInactiveArticlesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
@@ -476,7 +476,8 @@ class WorkshopController(BaseController):
             if s:
                 c.slides.append(s)
             
-        c.resources = getArticlesByWorkshopID(c.w.id)
+        c.resources = getActiveArticlesByWorkshopID(c.w.id)
+        c.dresources = getInactiveArticlesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
@@ -546,13 +547,24 @@ class WorkshopController(BaseController):
 
         return render('/derived/suggestion_list.html')
 
+    def inactiveResources(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshop(code, url)
+        c.title = c.w['title']
+        c.articles = getActiveArticlesByWorkshopID(c.w.id)
+        c.darticles = getInactiveArticlesByWorkshopID(c.w.id)
+
+        return render('/derived/resource_list.html')
+
     def background(self, id1, id2):
         code = id1
         url = id2
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
-        c.articles = getArticlesByWorkshopID(c.w.id)
+        c.articles = getActiveArticlesByWorkshopID(c.w.id)
         
         c.slides = []
         c.slideshow = getSlideshow(c.w['mainSlideshow_id'])
@@ -651,7 +663,7 @@ class WorkshopController(BaseController):
 
         c.s = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.ds = getInactiveSuggestionsForWorkshop(code, urlify(url))
-        c.r = getArticlesByWorkshopID(c.w.id)
+        c.r = getActiveArticlesByWorkshopID(c.w.id)
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
 

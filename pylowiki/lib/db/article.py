@@ -56,6 +56,19 @@ def getArticlesByWorkshopID(workshopID):
     except:
         return False
 
+def getActiveArticlesByWorkshopID(workshopID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).all()
+    except:
+        return False
+
+def getInactiveArticlesByWorkshopID(workshopID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '1'))).all()
+    except:
+        return False
+
+
 def getFlaggedArticlesByWorkshopID(workshopID):
     try:
         aList = meta.Session.query(Thing).filter_by(objType = 'article').filter(Thing.data.any(wc('workshop_id', workshopID))).all()

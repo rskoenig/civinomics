@@ -35,7 +35,11 @@ class SuggestionController(BaseController):
         
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
-        c.disabled = c.s['disabled']
+        # for comment disable
+        if c.s['disabled'] == '1' or c.s['allowComments'] == '0':
+            c.commentsDisabled = 1
+        else:
+            c.commentsDisabled = 0
         c.events = getParentEvents(c.s)
         c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
         for i in range(len(c.suggestions)):

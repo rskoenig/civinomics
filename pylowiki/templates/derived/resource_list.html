@@ -16,36 +16,36 @@ ${return_to()}
 </div> <!-- left headline -->
 
 <div id="suggestion_main" class="left clr">
-    <h3>Inactive Suggestions</h3>
-    % if c.dsuggestions == None or len(c.dsuggestions) == 0:
-        <span class="colhd">No suggestions!</span>
+    <h3>Disabled Reources</h3>
+    % if c.darticles == None or len(c.darticles) == 0:
+        <span class="colhd">No resources!</span>
     % else:
         <% counter = 1 %>
             <div id="suggestion_main" class="left clr">
-            % for item in c.dsuggestions:
+            % for item in c.darticles:
                 <br /><br />
-                <% author = getUserByID(item.owner)%>
-                <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></strong>
+                <% author = getUserByID(item.owner) %>
+                <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">${item['title']}</a></span>
                 <br />
+                <p class="clr">
+                <% rContent = h.literal(h.reST2HTML(item['comment'])) %>
+                % if len(rContent) < 50:
+                    ${rContent}
+                % else:
+                    ${rContent[:50]}...
+                    <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">more</a></span>
+                % endif
+                </p>
+                <div class="clr">
                 % if isAdmin(author.id):
-                    <% uTitle = ' (Admin)' %>
+                        <% uTitle = ' (Admin)' %>
                 % elif isFacilitator(author.id, c.w.id):
-                    <% uTitle = ' (Facilitator)' %>
+                        <% uTitle = ' (Facilitator)' %>
                 % else:
-                    <% uTitle = '' %>
+                        <% uTitle = '' %>
                 % endif
-                % if len(item['data']) <= 250:
-                   <% suggestionSummary = h.literal(h.reST2HTML(item['data'])) %>
-                % else:
-                   <% suggestionSummary = h.literal(h.reST2HTML(item['data'][:250] + '...')) %>
-                % endif
-
-                Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>${uTitle}
-                ${suggestionSummary}
-                <br />
-                            
-                <span class="gray">Posted <span class="time">${timeSince(item.date)}</span> ago 
-                <% counter += 1 %>
+                <span class="gray">Posted by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>${uTitle}</span><br /><span class="time">${timeSince(item.date)}</span> <span class="gray">ago</span>
+                </div>
                 <br /><br />
             % endfor
             </div>
@@ -53,7 +53,7 @@ ${return_to()}
 </div> <!-- suggestion_main -->
         	
 <div id="suggestion_side" class="left">
-    <h3>Other Suggestions</h3>
+    <h3>Other Resources</h3>
     <ul id="related_suggestion">
     % if not c.suggestions or len(c.suggestions) == 0:
         <li>
