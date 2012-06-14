@@ -36,6 +36,8 @@ class SuggestionController(BaseController):
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         # for comment disable
+        if 'allowComments' not in c.s:
+           c.s['allowComments'] = 1
         if c.s['disabled'] == '1' or c.s['allowComments'] == '0':
             c.commentsDisabled = 1
         else:
@@ -126,10 +128,10 @@ class SuggestionController(BaseController):
             serror = 1
             serrorMsg = 'Allow comments or not?'
 
+        s = getSuggestion(code, urlify(url))
         if serror:
            h.flash(serrorMsg, 'error')
         else:
-           s = getSuggestion(code, urlify(url))
            s['title'] = title
            s['data'] = data
            s['allowComments'] = allowComments

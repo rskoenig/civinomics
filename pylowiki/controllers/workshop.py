@@ -602,6 +602,7 @@ class WorkshopController(BaseController):
         r = get_revision(int(c.w['mainRevision_id']))
         c.lastmoddate = r.date
         c.lastmoduser = getUserByID(r.owner)
+        c.commentsDisabled = 0
 
         c.title = c.w['title']
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)

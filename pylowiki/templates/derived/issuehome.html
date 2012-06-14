@@ -96,7 +96,7 @@
         <div id="cols">
             <div class="col one left">
                 <h3>Resources 
-                 % if c.isScoped or c.isFacilitator:
+                 % if (c.isScoped and c.w['allowResources'] == '1')  or c.isFacilitator:
                         <span class="right">add a new resource<a href="/newResource/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span>
                  %endif
                  </h3>

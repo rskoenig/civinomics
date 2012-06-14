@@ -151,6 +151,8 @@ def make_map():
     
     map.connect('/modResourceHandler', controller = 'news', action = 'modResourceHandler')
     map.connect('/modResourceHandler/', controller = 'news', action = 'modResourceHandler')
+    map.connect('/noteResourceHandler', controller = 'news', action = 'noteResourceHandler')
+    map.connect('/noteResourceHandler/', controller = 'news', action = 'noteResourceHandler')
 
     
     # Suggestions

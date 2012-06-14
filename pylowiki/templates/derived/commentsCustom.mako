@@ -76,7 +76,7 @@
         <p class="time">Posted ${timeSince(datetime.strptime(comment['lastModified'], '%a %b %d %H:%M:%S %Y'))} ago </p>
         % if "user" in session:
             <p>
-                % if c.commentsDisabled == '0':
+                % if int(c.commentsDisabled) == 0:
                     <a href="#" class="gray flag">Flag comment</a>
                     <a href="#" class="gray reply">Reply</a>
                     % if checkFlagged(comment): 

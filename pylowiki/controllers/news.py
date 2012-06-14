@@ -6,7 +6,7 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
+from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getArticleByID, getResource
 from pylowiki.lib.db.discussion import getDiscussionByID
@@ -92,10 +92,18 @@ class NewsController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
-        c.r = False
-        c.otherResources = getArticlesByWorkshopID(c.w.id)
 
-        return render('/derived/resource_edit.html')
+        a = isAdmin(c.authuser)
+        f =  isFacilitator(c.authuser, c.w)
+        s = isScoped(c.authuser, c.w)
+        if (s and c.w['allowResources'] == '1') or a or f:
+            c.r = False
+            c.otherResources = getArticlesByWorkshopID(c.w.id)
+
+            return render('/derived/resource_edit.html')
+        else:
+            h.flash('You are not authorized', 'error')
+            return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
 
     def editResource(self, id1, id2):
         code = id1
@@ -103,15 +111,19 @@ class NewsController(BaseController):
 
         c.r = getResource(code, urlify(url))
         c.w = getWorkshopByID(c.r['workshop_id'])
-        c.otherResources = getArticlesByWorkshopID(c.w.id)
-        for i in range(len(c.otherResources)):
-            resource = c.otherResources[i]
-            if resource.id == c.r.id:
-                c.otherResources.pop(i)
-                break
+        a = isAdmin(c.authuser.id)
+        f =  isFacilitator(c.authuser.id, c.w)
+        if c.authuser.id == c.r.owner or (a or f):
+            for i in range(len(c.otherResources)):
+                resource = c.otherResources[i]
+                if resource.id == c.r.id:
+                    c.otherResources.pop(i)
+                    break
 
-
-        return render('/derived/resource_edit.html')
+            return render('/derived/resource_edit.html')
+        else:
+            h.flash('You are not authorized a is %s and f is %s'%(a, f), 'error')
+            return redirect('/workshop/%s/%s/resource/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.r['urlCode'], urlify(c.r['url'])))
 
     def saveResource(self, id1, id2):
         code = id1
@@ -150,17 +162,33 @@ class NewsController(BaseController):
 
         resource = getResource(code, urlify(url))
         w = getWorkshopByID(resource['workshop_id'])
+
+        a = isAdmin(c.authuser.id)
+        f =  isFacilitator(c.authuser.id, w)
+        if c.authuser.id != resource.owner and (a == False and f == False):
+           rerror = 1
+           rerrorMsg = 'You are not authorized'
         if rerror:
            h.flash(rerrorMsg, 'error')
         else:
+           cMsg = 'Edits: '
+           if resource['title'] != title:
+              cMsg = 'Title updated. '
            resource['title'] = title
+           if resource['comment'] != comment:
+              cMsg = cMsg + 'Description updated. '
            resource['comment'] = comment
+           if resource['allowComments'] != allowComments:
+              if allowComments == '0':
+                 cMsg = cMsg + 'Comments disabled. '
+              else:
+                 cMsg = cMsg + 'Comments enabled. '
            resource['allowComments'] = allowComments
            rev = Revision(c.authuser, comment, resource)
            resource['mainRevision_id'] = rev.r.id
            p = Page(title, c.authuser, resource, comment)
            commit(resource)
-           Event('Resource Edited', 'Resource Edited by %s'%c.authuser['name'], resource, c.authuser)
+           Event('Resource Edited', cMsg, resource, c.authuser)
            h.flash('Changes saved', 'success')
         
         return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], urlify(w['url']), code, url))
@@ -278,6 +306,33 @@ class NewsController(BaseController):
 
         h.flash(modTitle, 'success')
         return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+
+    def noteResourceHandler(self):
+        try:
+           w = False
+           r = False
+           workshopCode = request.params['workshopCode']
+           workshopURL = request.params['workshopURL']
+           w = getWorkshop(workshopCode, workshopURL) 
+
+           resourceCode = request.params['resourceCode']
+           resourceURL = request.params['resourceURL']
+           r = getArticle(resourceCode, urlify(resourceURL), w) 
+
+           if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
+              h.flash('You are not authorized', 'error')
+              return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+
+           noteResourceText = request.params['noteResourceText']
+        except:
+           h.flash('All fields required', 'error')
+           return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+
+        e = Event("Note Added", noteResourceText, r, c.authuser)
+
+        h.flash("Note Saved", 'success')
+        return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+
 
 
     @h.login_required
