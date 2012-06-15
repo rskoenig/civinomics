@@ -141,8 +141,8 @@
     <br /><br />
     <strong>Resources and Comments:</strong>
     <br />
-    % if c.r:
-       % for r in c.r:
+    % if c.dr:
+       % for r in c.dr:
           % if 'disabled' in r and r['disabled'] == '1':
              Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a><br />
           % endif
@@ -151,8 +151,8 @@
     <br /><br />
     <strong>Suggestions and Comments:</strong>
     <br />
-    % if c.s:
-       % for s in c.s:
+    % if c.ds:
+       % for s in c.ds:
           % if 'disabled' in s and s['disabled'] == '1':
              Suggestion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a><br />
           % endif

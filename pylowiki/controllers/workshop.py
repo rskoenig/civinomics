@@ -665,6 +665,7 @@ class WorkshopController(BaseController):
         c.s = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.ds = getInactiveSuggestionsForWorkshop(code, urlify(url))
         c.r = getActiveArticlesByWorkshopID(c.w.id)
+        c.dr = getInactiveArticlesByWorkshopID(c.w.id)
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
 

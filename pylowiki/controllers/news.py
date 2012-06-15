@@ -8,7 +8,7 @@ from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getArticleByID, getResource
+from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getActiveArticlesByWorkshopID, getArticleByID, getResource
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
@@ -71,7 +71,7 @@ class NewsController(BaseController):
 
         c.poster = getUserByID(c.resource.owner)
         
-        c.otherResources = getArticlesByWorkshopID(c.w.id)
+        c.otherResources = getActiveArticlesByWorkshopID(c.w.id)
         for i in range(len(c.otherResources)):
             resource = c.otherResources[i]
             if resource.id == c.resource.id:
