@@ -87,14 +87,15 @@ class NewsController(BaseController):
         
         return render('/derived/resource.html')
 
+    @h.login_required
     def newResource(self, id1, id2):
         code = id1
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
 
-        a = isAdmin(c.authuser)
-        f =  isFacilitator(c.authuser, c.w)
+        a = isAdmin(c.authuser.id)
+        f =  isFacilitator(c.authuser.id, c.w.id)
         s = isScoped(c.authuser, c.w)
         if (s and c.w['allowResources'] == '1') or a or f:
             c.r = False
@@ -105,6 +106,7 @@ class NewsController(BaseController):
             h.flash('You are not authorized', 'error')
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
 
+    @h.login_required
     def editResource(self, id1, id2):
         code = id1
         url = id2
@@ -112,7 +114,7 @@ class NewsController(BaseController):
         c.r = getResource(code, urlify(url))
         c.w = getWorkshopByID(c.r['workshop_id'])
         a = isAdmin(c.authuser.id)
-        f =  isFacilitator(c.authuser.id, c.w)
+        f =  isFacilitator(c.authuser.id, c.w.id)
         if c.authuser.id == c.r.owner or (a or f):
             for i in range(len(c.otherResources)):
                 resource = c.otherResources[i]
@@ -125,6 +127,7 @@ class NewsController(BaseController):
             h.flash('You are not authorized a is %s and f is %s'%(a, f), 'error')
             return redirect('/workshop/%s/%s/resource/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.r['urlCode'], urlify(c.r['url'])))
 
+    @h.login_required
     def saveResource(self, id1, id2):
         code = id1
         url = id2
@@ -164,7 +167,7 @@ class NewsController(BaseController):
         w = getWorkshopByID(resource['workshop_id'])
 
         a = isAdmin(c.authuser.id)
-        f =  isFacilitator(c.authuser.id, w)
+        f =  isFacilitator(c.authuser.id, w.id)
         if c.authuser.id != resource.owner and (a == False and f == False):
            rerror = 1
            rerrorMsg = 'You are not authorized'
@@ -193,6 +196,7 @@ class NewsController(BaseController):
         
         return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], urlify(w['url']), code, url))
 
+    @h.login_required
     def addResource(self, id1, id2):
         code = id1
         url = id2
@@ -248,6 +252,7 @@ class NewsController(BaseController):
         
         return redirect('/workshop/%s/%s'%(code, url))
 
+    @h.login_required
     def modResource(self, id1, id2, id3, id4):
         workshopCode = id1
         workshopURL = id2
@@ -270,6 +275,7 @@ class NewsController(BaseController):
         
         return render('/derived/resource_admin.html')
 
+    @h.login_required
     def modResourceHandler(self):
         try:
            w = False
@@ -307,6 +313,7 @@ class NewsController(BaseController):
         h.flash(modTitle, 'success')
         return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
 
+    @h.login_required
     def noteResourceHandler(self):
         try:
            w = False

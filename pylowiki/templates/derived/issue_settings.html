@@ -68,7 +68,7 @@
     Workshop Home Postal Code: ${c.w['publicPostal']}
     <br /><br />
     % if wstarted == 0:
-       Who is eligable to participate in this workshop: <span class="darkorange">*</span>
+       Who is eligible to participate in this workshop: <span class="darkorange">*</span>
        <br />
        % if c.w['publicScope'] == '10':
            <% checked = 'checked' %>
@@ -168,10 +168,10 @@
        <br />
        <br />
        When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
-   Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligable to participate. 
+   Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligible to participate. 
        <br />
        <br />
-   Note that once a workshop has started, you may not change the workshop participant eligability or tags. 
+   Note that once a workshop has started, you may not change the workshop participant eligibility or tags. 
        <br />
        <input type="checkbox" name="startWorkshop" value="Start" /> Start Workshop &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Start Workshop
        <br />
@@ -179,7 +179,7 @@
        <br />
        <br />
    % else:
-     Members eligable to participate in this workshop: residents of ${c.w['publicScopeTitle']}
+     Members eligible to participate in this workshop: residents of ${c.w['publicScopeTitle']}
      <br />
      Workshop Tags: ${c.w['publicTags']} ${c.w['memberTags']}
      <br />

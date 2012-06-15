@@ -4,7 +4,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
+from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
@@ -78,25 +78,40 @@ class SuggestionController(BaseController):
                     
         return render('/derived/suggestion.html')
 
+    @h.login_required
     def newSuggestion(self, id1, id2):
         code = id1
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
-        c.s = False
-        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+        a = isAdmin(c.authuser.id)
+        f =  isFacilitator(c.authuser, c.w)
+        s = isScoped(c.authuser, c.w)
+        if (s and c.w['allowSuggestions'] == '1') or a or f:
+            c.s = False
+            c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
 
-        return render('/derived/suggestion_edit.html')
+            return render('/derived/suggestion_edit.html')
+        else:
+           h.flash('You are not authorized', 'error')
+           return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
 
+    @h.login_required
     def editSuggestion(self, id1, id2):
         code = id1
         url = id2
 
         c.s = getSuggestion(code, urlify(url))
         c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
+        a = isAdmin(c.authuser.id)
+        f =  isFacilitator(c.authuser, c.w)
+        if (c.authuser.id == c.s.owner) or a or f:
+            return render('/derived/suggestion_edit.html')
+        else:
+           h.flash('You are not authorized', 'error')
+           return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.s['urlCode'], urlify(c.s['url'])))
 
-        return render('/derived/suggestion_edit.html')
-
+    @h.login_required
     def saveSuggestion(self, id1, id2):
         code = id1
         url = id2
@@ -124,29 +139,48 @@ class SuggestionController(BaseController):
             serror = 1
             serrorMsg = 'Enter suggestion title and text.'
 
-        if allowComments != '1' and allowComments != 0:
+        if allowComments != '1' and allowComments != '0':
             serror = 1
             serrorMsg = 'Allow comments or not?'
 
         s = getSuggestion(code, urlify(url))
+        w = getWorkshop(s['workshopCode'], urlify(s['workshopURL']))
+        
+        a = isAdmin(c.authuser.id)
+        f =  isFacilitator(c.authuser.id, w.id)
+        if c.authuser.id != s.owner and (a == False and f == False):
+           serror = 1
+           serrorMsg = 'You are not authorized'
         if serror:
            h.flash(serrorMsg, 'error')
         else:
+           cMsg = 'Edited: '
+           if s['title'] != title:
+               cMsg = cMsg + 'Title updated. '
            s['title'] = title
+           if s['data'] != data:
+               cMsg = cMsg + 'Text updated. '
            s['data'] = data
+           if s['allowComments'] != allowComments:
+               if allowComments == '0':
+                   cMsg = cMsg + 'Comments disabled. '
+               else:
+                   cMsg = cMsg + 'Comments enabled. '
            s['allowComments'] = allowComments
            r = Revision(c.authuser, data, s)
            s['mainRevision_id'] = r.r.id
            p = Page(title, c.authuser, s, data)
            commit(s)
-           Event('Suggestion Edited', 'Suggestion Edited by %s'%c.authuser['name'], s, c.authuser)
+           Event('Suggestion Edited', cMsg, s, c.authuser)
         
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(s['workshopCode'], urlify(s['workshopURL']), code, url))
 
+    @h.login_required
     def addSuggestion(self, id1, id2):
         code = id1
         url = id2
         
+        c.w = getWorkshop(code, urlify(url))
         if 'title' in request.params:
             title = request.params['title']
         else: 
@@ -160,38 +194,38 @@ class SuggestionController(BaseController):
         else:
             allowComments = -1
 
-        
         serror = 0
         serrorMsg = ''
         if not data or not title:
             serror = 1
             serrorMsg = 'Enter suggestion title and text.'
-
         if data == '' or title == '':
             serror = 1
             serrorMsg = 'Enter suggestion title and text.'
-
-
+        a = isAdmin(c.authuser.id)
+        f =  isFacilitator(c.authuser, c.w)
+        s = isScoped(c.authuser, c.w)
+        if (not s or c.w['allowSuggestions'] == '0') and not a and not f:
+           serror = 1
+           serrorMsg = 'You are not authorized.'
         if serror:
            h.flash(serrorMsg, 'error')
         else:
-           w = getWorkshop(code, urlify(url))
            s = Suggestion(c.authuser, title, data, allowComments, w)
-        
-        ## commented out CCN never worked, not committed
-        ##if 'suggestionList' not in w.keys():
-            ##w['suggestionList'] = s.s.id
-        ##else:
-            ##w['suggestionList'] = w['suggestionList'] + ',' + str(s.s.id)
         
         return redirect('/workshop/%s/%s'%(code, url))
 
+    @h.login_required
     def modSuggestion(self, id1, id2):
         suggestionCode = id1
         suggestionURL = id2
         
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
+        if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, c.w.id):
+              h.flash('You are not authorized', 'error')
+              return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], c.w['url'], c.s['urlCode'], c.s['url']))
+
         c.isAdmin = isAdmin(c.authuser.id)
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.events = getParentEvents(c.s)

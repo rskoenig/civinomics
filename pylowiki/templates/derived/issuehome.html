@@ -136,7 +136,7 @@
             </div><!-- .col one -->
             <div class="col two left">
                 <h3>suggestions 
-                % if c.isScoped or c.isFacilitator:
+                % if (c.isScoped and c.w['allowSuggestions'] == '1')  or c.isFacilitator or c.isAdmin:
                   <span class="right">add new suggestion<a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span>
                 % endif
                 </h3>
