@@ -121,7 +121,7 @@ class WorkshopController(BaseController):
             numRemaining = int(numRemaining) - 1
             c.account['numRemaining'] = numRemaining
             commit(c.account)
-            return render('/derived/issue_create.html')
+            return render('/derived/workshop_create.html')
         else:
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
@@ -308,7 +308,7 @@ class WorkshopController(BaseController):
                 log.info("form_errors "+ str(c.form_errors))
                 c.form_result['memberTags'] = wMemberTags
                 c.form_result['publicPostalList'] = plist
-                html = render('/derived/issue_settings.html')
+                html = render('/derived/workshop_settings.html')
                 return htmlfill.render(
                     html,
                     defaults=c.form_result,
@@ -355,7 +355,7 @@ class WorkshopController(BaseController):
             h.flash("Errors found, please fix the highlighted areas", "warning")
             c.form_result = error.value
             c.form_errors = error.error_dict or {}
-            html = render('/derived/issue_settings_.html')
+            html = render('/derived/workshop_settings_.html')
             return htmlfill.render(
                 html,
                 defaults=c.form_result,
@@ -534,7 +534,7 @@ class WorkshopController(BaseController):
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
 
 
-        return render('/derived/issuehome.html')
+        return render('/derived/workshop.html')
 
     def inactiveSuggestions(self, id1, id2):
         code = id1
@@ -593,7 +593,7 @@ class WorkshopController(BaseController):
         c.lastmoddate = r.date
         c.lastmoduser = getUserByID(r.owner)
         
-        return render('/derived/issuebg.html')
+        return render('/derived/workshop_background.html')
 
     def feedback(self, id1, id2):
         code = id1
@@ -634,7 +634,7 @@ class WorkshopController(BaseController):
         if c.motd == False:
            c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        return render("/derived/issue_feedback.html")
+        return render("/derived/workshop_feedback.html")
     
     @h.login_required
     def editSettings(self, id1, id2):
@@ -648,7 +648,7 @@ class WorkshopController(BaseController):
 
         c.title = c.w['title']
 
-        return render('/derived/issue_settings.html')
+        return render('/derived/workshop_settings.html')
     
     @h.login_required
     def admin(self, id1, id2):
@@ -670,7 +670,7 @@ class WorkshopController(BaseController):
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
 
-        return render('/derived/issue_admin.html')
+        return render('/derived/workshop_admin.html')
     
     # ------------------------------------------
     #    Helper functions for wiki controller

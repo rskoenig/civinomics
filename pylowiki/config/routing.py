@@ -86,10 +86,10 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/background/', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
 
     # Workshop settings
-    map.connect('/workshop/{id1}/{id2}/editSettings', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/editSettings/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshops/{id1}/{id2}/editSettings', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshops/{id1}/{id2}/editSettings/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configure', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configure/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/configure', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/configure/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
 
     # Workshop feedback
     map.connect('/workshop/{id1}/{id2}/feedback', controller = 'workshop', action = 'feedback', id1 = '{id1}', id2 = '{id2}')
