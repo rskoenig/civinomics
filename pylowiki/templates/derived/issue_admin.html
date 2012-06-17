@@ -4,7 +4,6 @@
     from pylowiki.lib.db.event import getParentEvents
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.comment import getFlaggedDiscussionComments
-    from pylowiki.lib.db.article import getArticlesByWorkshopID, getArticleByID
 %>  
 
     <div class="banner_div">
@@ -100,11 +99,10 @@
     <br />
     % if c.r:
        % for r in c.r:
-          <% a = getArticleByID(r.id) %>
-          % if checkFlagged(a): 
-             Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a['title']}</a><br />
+          % if checkFlagged(r): 
+             Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a><br />
           % endif
-          <% cList = getFlaggedDiscussionComments(a['discussion_id']) %>
+          <% cList = getFlaggedDiscussionComments(r['discussion_id']) %>
           % for comment in cList:
              <% cFlagCount = len(cList) %>
              % if cFlagCount > 1:
@@ -112,7 +110,7 @@
              % else:
                 <% cString = 'comment' %> 
              % endif
-             ${cFlagCount} ${cString} in <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a["title"]}</a><br />
+             ${cFlagCount} ${cString} in <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r["title"]}</a><br />
           % endfor
        % endfor
     % endif

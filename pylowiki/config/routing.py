@@ -31,7 +31,6 @@ def make_map():
     map.connect('/issue/{id}', controller = 'issue', action = 'home', id = '{id}')
     map.connect('/issue/{id}/leaderboard', controller = 'leaderboard', action = 'index', id = '{id}')
     map.connect('/issue/{id}/discussion', controller = 'discussion', action = 'index', id = '{id}')
-    map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/issue/{id1}/suggestion/{id2}/rate/{id3}', controller = 'suggestion', action = 'rate', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/comment/{id}', controller = 'comment', action = 'index', id = '{id}')
     map.connect('/moderation', controller = 'moderation', action = 'index')
@@ -123,36 +122,36 @@ def make_map():
 
 
     # Resources
-    map.connect('/addResource/{id1}/{id2}', controller = 'news', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/addResource/{id1}/{id2}/', controller = 'news', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/newResource/{id1}/{id2}', controller = 'news', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/newResource/{id1}/{id2}/', controller = 'news', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/editResource/{id1}/{id2}', controller = 'news', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/editResource/{id1}/{id2}/', controller = 'news', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/saveResource/{id1}/{id2}', controller = 'news', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/saveResource/{id1}/{id2}/', controller = 'news', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/addResource/{id1}/{id2}', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/addResource/{id1}/{id2}/', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newResource/{id1}/{id2}', controller = 'resource', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newResource/{id1}/{id2}/', controller = 'resource', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editResource/{id1}/{id2}', controller = 'resource', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editResource/{id1}/{id2}/', controller = 'resource', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveResource/{id1}/{id2}', controller = 'resource', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveResource/{id1}/{id2}/', controller = 'resource', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
 
-    map.connect('/resource/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/resource/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/resource/handler/{id1}/{id2}', controller = 'resource', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/resource/handler/{id1}/{id2}/', controller = 'resource', action = 'handler', id1 = '{id1}', id2 = '{id2}')
 
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshop/{id1}/{id2}/inactiveResources', controller = 'workshop', action = 'inactiveResources', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/inactiveResources/', controller = 'workshop', action = 'inactiveResources', id1 = '{id1}', id2 = '{id2}')
 
     # Resource flagging
-    map.connect('/flagResource/{id1}', controller = 'news', action = 'flagResource', id1 = '{id1}')
+    map.connect('/flagResource/{id1}', controller = 'resource', action = 'flagResource', id1 = '{id1}')
 
     # Resource modding
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'news', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'news', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     
-    map.connect('/modResourceHandler', controller = 'news', action = 'modResourceHandler')
-    map.connect('/modResourceHandler/', controller = 'news', action = 'modResourceHandler')
-    map.connect('/noteResourceHandler', controller = 'news', action = 'noteResourceHandler')
-    map.connect('/noteResourceHandler/', controller = 'news', action = 'noteResourceHandler')
+    map.connect('/modResourceHandler', controller = 'resource', action = 'modResourceHandler')
+    map.connect('/modResourceHandler/', controller = 'resource', action = 'modResourceHandler')
+    map.connect('/noteResourceHandler', controller = 'resource', action = 'noteResourceHandler')
+    map.connect('/noteResourceHandler/', controller = 'resource', action = 'noteResourceHandler')
 
     
     # Suggestions

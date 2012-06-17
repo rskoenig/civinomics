@@ -8,7 +8,7 @@ from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.article import Article, getArticle, getArticleByLink, getArticlesByWorkshopID, getActiveArticlesByWorkshopID, getArticleByID, getResource
+from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getResourceByID, getResource
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
@@ -27,7 +27,7 @@ import simplejson as json
 
 log = logging.getLogger(__name__)
 
-class NewsController(BaseController):
+class ResourceController(BaseController):
 
     def index(self, id1, id2, id3, id4):
         workshopCode = id1
@@ -38,7 +38,7 @@ class NewsController(BaseController):
         c.w = getWorkshop(workshopCode, workshopURL)
         
         c.title = c.w['title']
-        c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
+        c.resource = getResource(resourceCode, urlify(resourceURL))
         c.events = getParentEvents(c.resource)
         if c.resource['disabled'] == '1' or c.resource['allowComments'] == '0':
             c.commentsDisabled = 1
@@ -55,13 +55,13 @@ class NewsController(BaseController):
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
             c.isAdmin = isAdmin(c.authuser.id)
 
-            if 'ratedThings_article_overall' in c.authuser.keys():
+            if 'ratedThings_resource_overall' in c.authuser.keys():
                 """
                     Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
                     a         ->    rated Thing's ID  (What was rated) 
                     b         ->    rating Thing's ID (The rating object)
                 """
-                l = pickle.loads(str(c.authuser['ratedThings_article_overall']))
+                l = pickle.loads(str(c.authuser['ratedThings_resource_overall']))
                 for tup in l:
                     if tup[0] == c.resource.id:
                         c.rating = getRatingByID(tup[1])
@@ -71,7 +71,7 @@ class NewsController(BaseController):
 
         c.poster = getUserByID(c.resource.owner)
         
-        c.otherResources = getActiveArticlesByWorkshopID(c.w.id)
+        c.otherResources = getActiveResourcesByWorkshopID(c.w.id)
         for i in range(len(c.otherResources)):
             resource = c.otherResources[i]
             if resource.id == c.resource.id:
@@ -99,7 +99,7 @@ class NewsController(BaseController):
         s = isScoped(c.authuser, c.w)
         if (s and c.w['allowResources'] == '1') or a or f:
             c.r = False
-            c.otherResources = getArticlesByWorkshopID(c.w.id)
+            c.otherResources = getResourcesByWorkshopID(c.w.id)
 
             return render('/derived/resource_edit.html')
         else:
@@ -235,12 +235,12 @@ class NewsController(BaseController):
         else:
             w = getWorkshop(code, urlify(url))
             # make sure link not already submitted
-            a = getArticleByLink(link, w)
+            a = getResourceByLink(link, w)
             if a:
                 h.flash('Link already submitted for this issue', 'warning')
                 return redirect('/workshop/%s/%s'%(code, url))
 
-            r = Article(link, title, comment, c.authuser, allowComments, w)
+            r = Resource(link, title, comment, c.authuser, allowComments, w)
             if 'resources' not in w.keys():
                 w['resources'] = r.a.id
             else:
@@ -262,7 +262,7 @@ class NewsController(BaseController):
         c.w = getWorkshop(workshopCode, workshopURL)
         
         c.title = c.w['title']
-        c.resource = getArticle(resourceCode, urlify(resourceURL), c.w)
+        c.resource = getResource(resourceCode, urlify(resourceURL))
         c.flags = getFlags(c.resource)
         if not c.flags:
            c.resource['numFlags'] = 0
@@ -286,7 +286,7 @@ class NewsController(BaseController):
 
            resourceCode = request.params['resourceCode']
            resourceURL = request.params['resourceURL']
-           r = getArticle(resourceCode, urlify(resourceURL), w) 
+           r = getResource(resourceCode, urlify(resourceURL), w) 
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
               h.flash('You are not authorized', 'error')
@@ -324,7 +324,7 @@ class NewsController(BaseController):
 
            resourceCode = request.params['resourceCode']
            resourceURL = request.params['resourceURL']
-           r = getArticle(resourceCode, urlify(resourceURL), w) 
+           r = getResource(resourceCode, urlify(resourceURL), w) 
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
               h.flash('You are not authorized', 'error')
@@ -352,13 +352,13 @@ class NewsController(BaseController):
         title = request.params['title']
         
         w = getWorkshop(code, url)
-        a = getArticleByLink(linkURL, w)
+        a = getResourceByLink(linkURL, w)
 
         if a:
             h.flash('Link already submitted for this issue', 'warning')
             return redirect('/workshop/%s/%s'%(code, url))
 
-        a = Article(linkURL, title, comment, c.authuser, w)
+        a = Resource(linkURL, title, comment, c.authuser, w)
         
         if 'resources' not in w.keys():
             w['resources'] = a.a.id
@@ -370,19 +370,20 @@ class NewsController(BaseController):
         return redirect('/workshop/%s/%s'%(code, url))
 
     @h.login_required
+    ## Deprecated CCN
     def readThis(self):
         if readThisPage(c.authuser.id, request.params['articleID'], 'article'):
             h.flash("You have read this article!", "success")
         else:
             h.flash("You have already read this article!", "warning")
-        a = getArticle(request.params['articleID'])
+        a = getResource(request.params['articleID'])
         i = getIssueByID(request.params['issueID'])
-        return redirect('/issue/%s/news/%s'%(i.page.url, a.title))
+        return redirect('/issue/%s/resource/%s'%(i.page.url, a.title))
 
     @h.login_required
     def flagResource(self, id1):
         resourceID = id1
-        resource = getArticleByID(resourceID)
+        resource = getResourceByID(resourceID)
         if not resource:
             return json.dumps({'id':resourceID, 'result':'ERROR'})
         if not isFlagged(resource, c.authuser):

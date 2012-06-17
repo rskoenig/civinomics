@@ -211,7 +211,7 @@ class SuggestionController(BaseController):
         if serror:
            h.flash(serrorMsg, 'error')
         else:
-           s = Suggestion(c.authuser, title, data, allowComments, w)
+           s = Suggestion(c.authuser, title, data, allowComments, c.w)
         
         return redirect('/workshop/%s/%s'%(code, url))
 

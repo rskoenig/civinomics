@@ -16,13 +16,13 @@ ${return_to()}
 </div> <!-- left headline -->
 
 <div id="suggestion_main" class="left clr">
-    <h3>Disabled Reources</h3>
-    % if c.darticles == None or len(c.darticles) == 0:
+    <h3>Disabled Resources</h3>
+    % if c.dresources == None or len(c.dresources) == 0:
         <span class="colhd">No resources!</span>
     % else:
         <% counter = 1 %>
             <div id="suggestion_main" class="left clr">
-            % for item in c.darticles:
+            % for item in c.dresources:
                 <br /><br />
                 <% author = getUserByID(item.owner) %>
                 <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">${item['title']}</a></span>
@@ -55,15 +55,15 @@ ${return_to()}
 <div id="suggestion_side" class="left">
     <h3>Other Resources</h3>
     <ul id="related_suggestion">
-    % if not c.suggestions or len(c.suggestions) == 0:
+    % if not c.resources or len(c.resources) == 0:
         <li>
-        No other suggestions!
+        No other resources!
         </li>
     % else:
-        % for suggestion in c.suggestions:
-            <% author = getUserByID(suggestion.owner)%>
+        % for resource in c.resources:
+            <% author = getUserByID(resource.owner)%>
             <li>
-            <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a></strong>
+            <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a></strong>
             <br />
             <span class="gray">By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span>
             </li>

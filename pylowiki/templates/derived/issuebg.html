@@ -113,13 +113,13 @@ ${return_to()}
                         </span>
                     </h3>
                     <ul class="related_links gray">
-                        ## Each issue has one article - the background wiki
+                        ## Each issue has one resource - the background wiki
                         % if int(c.w['numResources']) == 1:
                             <p class="clr" style="padding-left:10px; padding-top:10px;">
                                 No news!
                             </p>
                         % else:
-                            % for item in c.articles:
+                            % for item in c.resources:
                                 <% author = getUserByID(item.owner) %> 
                                 % if item['type'] == "post":
                                     <li>
