@@ -161,10 +161,10 @@ class WorkshopController(BaseController):
         return "ok"
 
     @h.login_required
-    def editWorkshopHandler(self, id1, id2):
+    def configureWorkshopHandler(self, id1, id2):
         code = id1
         url = id2
-        c.title = "Edit Workshop Settings"
+        c.title = "Configure Workshop"
 
         c.w = getWorkshop(code, urlify(url))
         werror = 0
@@ -308,7 +308,7 @@ class WorkshopController(BaseController):
                 log.info("form_errors "+ str(c.form_errors))
                 c.form_result['memberTags'] = wMemberTags
                 c.form_result['publicPostalList'] = plist
-                html = render('/derived/workshop_settings.html')
+                html = render('/derived/workshop_configure.html')
                 return htmlfill.render(
                     html,
                     defaults=c.form_result,
@@ -355,7 +355,7 @@ class WorkshopController(BaseController):
             h.flash("Errors found, please fix the highlighted areas", "warning")
             c.form_result = error.value
             c.form_errors = error.error_dict or {}
-            html = render('/derived/workshop_settings_.html')
+            html = render('/derived/workshop_configure.html')
             return htmlfill.render(
                 html,
                 defaults=c.form_result,
@@ -637,7 +637,7 @@ class WorkshopController(BaseController):
         return render("/derived/workshop_feedback.html")
     
     @h.login_required
-    def editSettings(self, id1, id2):
+    def configure(self, id1, id2):
         code = id1
         url = id2
 
@@ -648,7 +648,7 @@ class WorkshopController(BaseController):
 
         c.title = c.w['title']
 
-        return render('/derived/workshop_settings.html')
+        return render('/derived/workshop_configure.html')
     
     @h.login_required
     def admin(self, id1, id2):
