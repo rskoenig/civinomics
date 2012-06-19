@@ -9,7 +9,7 @@ from pylowiki.lib.db.suggestion import getSuggestion
 from pylowiki.lib.db.suggestion import getSuggestion
 from pylowiki.lib.db.rating import Rating, changeRating, getRatingByID
 from pylowiki.lib.db.workshop import getWorkshop
-from pylowiki.lib.db.article import getResource
+from pylowiki.lib.db.resource import getResource
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.comment import getComment
 

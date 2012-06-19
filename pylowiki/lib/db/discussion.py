@@ -44,11 +44,11 @@ class Discussion(object):
             d['workshopURL'] = kwargs['workshop']['url']
             d['suggestionCode'] = attachedThing['urlCode']
             d['suggestionURL'] = attachedThing['url']
-        elif attachedThing.objType == 'article':
+        elif attachedThing.objType == 'resource':
             d['workshopCode'] = kwargs['workshop']['urlCode']
             d['workshopURL'] = kwargs['workshop']['url']
-            d['articleCode'] = attachedThing['urlCode']
-            d['articleURL'] = attachedThing['url']
+            d['resourceCode'] = attachedThing['urlCode']
+            d['resourceURL'] = attachedThing['url']
         d['title'] = title
         d['url'] = urlify(title)
         d['urlCode'] = toBase62('%s_%s'%(title, int(time())))

@@ -43,13 +43,33 @@
           <br /><br />
        %endfor
     % endif
-    
 
     <br /><br />
     <p>
     <strong class="gray">Administrate Resource</strong>
     <br /><br />
+    <strong>Post Event Note on Resource</strong>
+    <form name="note_resource" id="note_resource" class="left" action = "/noteResourceHandler" enctype="multipart/form-data" method="post" >
+    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
+    <input type=hidden name=workshopURL value="${c.w['url']}">
+    <input type=hidden name=resourceCode value="${c.resource['urlCode']}">
+    <input type=hidden name=resourceURL value="${c.resource['url']}">
+    <br /><br />
+    Note: &nbsp;
+    <input type=text name=noteResourceText><br /><br />
+    <button type="submit" class="gold">Save Note</button>
+</form>
+    % if c.resource['disabled'] == '0':
+         <% aTitle = "Disable Resource" %>  
+    % else:
+         <% aTitle = "Enable Resource" %>  
+    % endif
+    <br /><br />
+    <br /><br />
+    <br /><br />
+    <br /><br />
 <form name="moderate_resource" id="moderate_resource" class="left" action = "/modResourceHandler" enctype="multipart/form-data" method="post" >
+    <strong>${aTitle}</strong>
     <input type=hidden name=workshopCode value="${c.w['urlCode']}">
     <input type=hidden name=workshopURL value="${c.w['url']}">
     <input type=hidden name=resourceCode value="${c.resource['urlCode']}">
@@ -58,11 +78,7 @@
     Reason for action: &nbsp;
     <input type=text name=modResourceReason><br /><br />
     Click to verify&nbsp;<input type=radio name=verifyModResource> &nbsp; &nbsp;
-    % if c.resource['disabled'] == '0':
-       <button type="submit" class="gold">Disable Resource</button>
-    % else:
-       <button type="submit" class="gold">Enable Resource</button>
-    % endif
+    <button type="submit" class="gold">${aTitle}</button>
 </form>
 
             

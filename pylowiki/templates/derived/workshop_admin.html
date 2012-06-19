@@ -1,8 +1,9 @@
 <%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.flag import checkFlagged
+    from pylowiki.lib.db.event import getParentEvents
+    from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.comment import getFlaggedDiscussionComments
-    from pylowiki.lib.db.article import getArticlesByWorkshopID, getArticleByID
 %>  
 
     <div class="banner_div">
@@ -11,7 +12,8 @@
     <br /><br />
     <br /><br />
 
-<form name="admin_issue" id="admin_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
+<div class=left>
+<form name="admin_issue" id="admin_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
 
     <p>
     <strong class="gray">Administrate Workshop</strong>
@@ -31,21 +33,65 @@
     <br /><br />
     <br /><br />
     % if c.w['deleted'] == '1':
-       Enable Workshop
+       <strong>Enable Workshop</strong>
        <% eAction = 'Enable' %>
     % else:
-       Disable Workshop
+       <strong>Disable Workshop</strong>
        <% eAction = 'Disable' %>
     % endif
     <br />
-    Note: <input type=text name=eventReason id=eventReason>
+    Reason: <input type=text name=eventReason id=eventReason>
     <br />
     <input type=radio name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type=radio name="verifyEnableWorkshop" value="0"> Verify ${eAction}
     <br /><br />
     <br /><br />
     <button type="submit" class="gold">Save Changes</button>
-
+    </form>
+    <% wEvents = getParentEvents(c.w) %>
+    % if wEvents:
+        <br /><br />
+        <br /><br />
+        <strong class="gray">Workshop Events</strong>
+        <br /><br />
+        % for wE in wEvents:
+            &nbsp; &nbsp; &nbsp; <strong>${wE.date} ${wE['title']}</strong>  ${wE['data']}<br />
+        % endfor
+    % endif
     <br /><br />
+    <br /><br />
+    <strong class="gray">Facilitators</strong>
+    <br /><br />
+    % for f in c.f:
+       <% fUser = getUserByID(f.owner) %>
+       <% fEvents = getParentEvents(f) %>
+       <% fPending = "" %>
+       % if pending in f and f['pending'] == '1':
+          <% fPending = "(Pending)" %>
+       % endif
+       <a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
+       % if fEvents:
+          % for fE in fEvents:
+          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+          % endfor
+       % endif
+       % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
+           <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
+               &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
+               <button type="submit" class="gold" value="Resign">Resign</button>
+           <br />
+           </form>
+       % endif
+    % endfor
+    % for f in c.df:
+       <% fUser = getUserByID(f.owner) %>
+       <% fEvents = getParentEvents(f) %>
+       <a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
+       % if fEvents:
+          % for fE in fEvents:
+          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+          % endfor
+       % endif
+    % endfor
     <br /><br />
     <strong class="gray">Flagged Objects</strong>
     <br /><br />
@@ -53,11 +99,10 @@
     <br />
     % if c.r:
        % for r in c.r:
-          <% a = getArticleByID(r.id) %>
-          % if checkFlagged(a): 
-             Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a['title']}</a><br />
+          % if checkFlagged(r): 
+             Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a><br />
           % endif
-          <% cList = getFlaggedDiscussionComments(a['discussion_id']) %>
+          <% cList = getFlaggedDiscussionComments(r['discussion_id']) %>
           % for comment in cList:
              <% cFlagCount = len(cList) %>
              % if cFlagCount > 1:
@@ -65,7 +110,7 @@
              % else:
                 <% cString = 'comment' %> 
              % endif
-             ${cFlagCount} ${cString} in <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${a['urlCode']}/${a['url']}">${a["title"]}</a><br />
+             ${cFlagCount} ${cString} in <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r["title"]}</a><br />
           % endfor
        % endfor
     % endif
@@ -94,8 +139,8 @@
     <br /><br />
     <strong>Resources and Comments:</strong>
     <br />
-    % if c.r:
-       % for r in c.r:
+    % if c.dr:
+       % for r in c.dr:
           % if 'disabled' in r and r['disabled'] == '1':
              Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a><br />
           % endif
@@ -104,15 +149,14 @@
     <br /><br />
     <strong>Suggestions and Comments:</strong>
     <br />
-    % if c.s:
-       % for s in c.s:
+    % if c.ds:
+       % for s in c.ds:
           % if 'disabled' in s and s['disabled'] == '1':
              Suggestion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a><br />
           % endif
        % endfor
     % endif
-</form>
-
+</div>
             
 <%def name = 'extraHTML()'>
 

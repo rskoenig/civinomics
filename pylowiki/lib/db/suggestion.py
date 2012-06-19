@@ -36,6 +36,18 @@ def getSuggestionsForWorkshop(code, url):
     except:
         return False
 
+def getActiveSuggestionsForWorkshop(code, url):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', '0'))).all()
+    except:
+        return False
+
+def getInactiveSuggestionsForWorkshop(code, url):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', '1'))).all()
+    except:
+        return False
+
 def getFlaggedSuggestionsForWorkshop(code, url):
     try:
         sList = meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).all()
@@ -67,7 +79,7 @@ def getSuggestion(hash, url):
 # owner is a Thing object
 # title is a string
 class Suggestion(object):
-    def __init__(self, owner, title, data, workshop):
+    def __init__(self, owner, title, data, allowComments, workshop):
         s = Thing('suggestion', owner.id)
         s['title'] = title
         s['url'] = urlify(title[:30])
@@ -75,9 +87,11 @@ class Suggestion(object):
         s['data'] = data
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']
+        s['allowComments'] = allowComments
         s['numComments'] = 0
         s['disabled'] = False
-        log.info('data = %s' % data)
+        s['adopted'] = False
+        ##log.info('data = %s' % data)
         commit(s)
         self.s = s
         

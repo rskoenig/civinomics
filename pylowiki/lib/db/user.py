@@ -99,6 +99,7 @@ class User(object):
         u = Thing('user')
         u['firstName'] = firstName
         u['lastName'] = lastName
+        u['tagline'] = ''
         u['email'] = email
         u['name'] = '%s %s'%(firstName, lastName)
         u['activated'] = 0

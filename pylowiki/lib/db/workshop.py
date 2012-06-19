@@ -47,6 +47,12 @@ def getWorkshopByID(id):
     except:
         return False
 
+def getWorkshopsByOwner(userID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(owner = userID).all()
+    except:
+        return False
+
 def isWorkshopDeleted(id):
     try:
         w =  meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(id = id).one()
@@ -137,6 +143,8 @@ class Workshop(object):
         w['publicPostalList'] = ''
         # one of publicScope, publicPostalList. privateDomain, privateEmailList
         w['scopeMethod'] = 'publicScope'
+        w['allowSuggestions'] = 1
+        w['allowResources'] = 1
         commit(w)
         self.w = w
         background = 'No wiki background set yet'
