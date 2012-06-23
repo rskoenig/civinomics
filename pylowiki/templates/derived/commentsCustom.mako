@@ -98,10 +98,9 @@
                     % if commentRatings:
                         <%
                             found = False
-                            for item in commentRatings:
-                                if item[0] == comment.id:
-                                    found = True
-                                    rating = int(getRatingByID(item[1])['rating'])
+                            if comment.id in commentRatings.keys():
+                                found = True
+                                rating = int(getRatingByID(commentRatings[comment.id])['rating'])
                         %>
                         % if found:
                             % if rating > 0:

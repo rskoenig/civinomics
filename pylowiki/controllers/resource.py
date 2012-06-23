@@ -57,14 +57,14 @@ class ResourceController(BaseController):
 
             if 'ratedThings_resource_overall' in c.authuser.keys():
                 """
-                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                    a         ->    rated Thing's ID  (What was rated) 
-                    b         ->    rating Thing's ID (The rating object)
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
                 """
-                l = pickle.loads(str(c.authuser['ratedThings_resource_overall']))
-                for tup in l:
-                    if tup[0] == c.resource.id:
-                        c.rating = getRatingByID(tup[1])
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall']))
+                if c.resource.id in resRateDict.keys():
+                    c.rating = getRatingByID(resRateDict[c.resource.id])
+                    
         else:            
             c.isFacilitator = False
             c.isAdmin = False

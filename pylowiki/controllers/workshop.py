@@ -482,18 +482,17 @@ class WorkshopController(BaseController):
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
-        l = []
         
         if 'user' in session:
             ratedSuggestionIDs = []
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
                 """
-                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                    a         ->    rated Thing's ID  (What was rated) 
-                    b         ->    rating Thing's ID (The rating object)
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
                 """
-                l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                ratedSuggestionIDs = [tup[0] for tup in l]
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = sugRateDict.keys()
         
         for item in c.suggestions:
             """ Grab first 250 chars as a summary """
@@ -511,7 +510,7 @@ class WorkshopController(BaseController):
                 except:
                     pass
                 if found:
-                    item.rating = getRatingByID(l[index][1])
+                    item.rating = getRatingByID(sugRateDict[item.id])
                 else:
                     item.rating = False
 
@@ -618,16 +617,13 @@ class WorkshopController(BaseController):
         c.rating = False
         if 'ratedThings_workshop_overall' in c.authuser.keys():
             """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
+                Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                Check to see if the commentID as a string is in the Dictionary keys
+                meaning it was already rated by this user
             """
-            l = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
-            for tup in l:
-                ##log.info('c.w.id is %s tup[0] is %s tup[1] is %s' % (c.w.id, tup[0], tup[1]))
-                if tup[0] == c.w.id:
-                    c.rating = getRatingByID(tup[1])
-                    ##log.info('c.rating is %s' % c.rating)
+            workRateDict = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
+            if c.w.id in workRateDict.keys():
+                c.rating = getRatingByID(workRateDict[c.w.id])
 
         c.motd = getMessage(c.w.id)
         # kludge for now

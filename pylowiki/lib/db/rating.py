@@ -76,16 +76,14 @@ class Rating(object):
         
         # Linkback to the owner doing the rating
         key = 'ratedThings_%s_%s' % (ratedThing.objType, ratingType)
-        tup = (ratedThing.id, r.id)
         if key not in owner.keys():
-            # tuple of ratedThing id and the rating id
-            l = []
-            l.append(tup)
-            owner[key] = pickle.dumps(l)
+            # Dictionary of ratedThing id as key and the rating id as value
+            rateDict = {ratedThing.id:r.id}
+            owner[key] = pickle.dumps(rateDict)
         else:
-            l = pickle.loads(str(owner[key]))
-            l.append(tup)
-            owner[key] = pickle.dumps(l)
+            rateDict = pickle.loads(str(owner[key]))
+            rateDict[ratedThing.id] = r.id
+            owner[key] = pickle.dumps(rateDict)
             
         commit(ratedThing)
         commit(owner)

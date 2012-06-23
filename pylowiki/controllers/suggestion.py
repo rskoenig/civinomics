@@ -67,14 +67,13 @@ class SuggestionController(BaseController):
             c.rating = False
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
                 """
-                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                    a         ->    rated Thing's ID  (What was rated) 
-                    b         ->    rating Thing's ID (The rating object)
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
                 """
-                l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                for tup in l:
-                    if tup[0] == c.s.id:
-                        c.rating = getRatingByID(tup[1])
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                if c.s.id in sugRateDict.keys():
+                    c.rating = getRatingByID(sugRateDict[c.s.id])
                     
         return render('/derived/suggestion.html')
 
