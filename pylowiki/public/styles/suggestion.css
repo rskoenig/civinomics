@@ -1,0 +1,45 @@
+.headline {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+/* main bar */
+
+#suggestion_main {
+	width: 599px;
+	border-right: 1px solid #b9b9b9;
+}
+
+#suggestion_info {
+    width: 579px;
+	padding: 10px;
+	margin-top: 10px;
+}
+
+.suggestion_summary {
+	padding: 30px 0 20px 0;
+}
+
+/* sidebar */
+
+#suggestion_side {
+	width: 300px;
+}
+
+#suggestion_side ul {
+	padding: 20px;
+	margin-bottom: 10px;
+}
+
+#related_suggestion li {
+	padding: 5px 0;
+}
+
+.share {
+	border-top: 1px solid #b9b9b9;
+}
+
+.share input[type="text"] {
+	border: 1px solid #b9b9b9;
+	color: #b9b9b9;
+}

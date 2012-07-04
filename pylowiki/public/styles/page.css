@@ -1,0 +1,221 @@
+#container {
+    background: #e6e6e6;
+    background-repeat: repeat-x;
+    float: left;
+    z-index: 0;
+    color: #454545;
+    border-top: 3px solid #d6ef5d;
+    margin-top: 10px;
+}
+
+/*** Main white box square ***/
+
+#main, #footer {
+    width: 900px;
+    float: left;
+    position: relative;
+    padding: 25px;
+    margin: 0 25px;
+}
+
+#main {
+    border: 1px solid #eee;
+    background: #fff;
+	box-shadow: 0px 2px 1px #777;
+}
+
+#main>div {
+    width: 100%;
+}
+
+.invite.suggest.share li {
+	float: none !important;
+	padding: 2px 0;
+}
+.invite.suggest.share img {
+	padding-right: 10px;
+}
+.invite.suggest.share input[type="text"] {
+	width: 100px;
+}
+
+/** related stuff **/
+.related {
+	width: 299px;
+	border-right: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+}
+
+.related_links {
+	padding-bottom: 20px;
+	float: left;
+	width: 100%;
+}
+.related_links>li {
+	padding: 10px;
+	margin-top: 5px;
+}
+
+/* media */
+
+hr { /* move this to something more global later */
+	border: none;
+	border-bottom: 1px solid #ccc;
+}
+
+.related_media {
+	float: left;
+	width: 100%;
+	padding-bottom: 20px;
+}
+
+.related_media li {
+	padding: 20px;
+}
+
+/* headlines */
+h3 {
+	font-weight: bold;
+	color: #b9b9b9;
+	text-transform: uppercase;
+    padding: 10px 5px 0 5px;
+    letter-spacing: .4em;
+    border-bottom: 1px solid #b9b9b9;
+    border-top: 1px solid #b9b9b9;
+    font-size: .9em;
+	height: 25px;
+}
+
+h3>span {
+	text-transform: lowercase;
+	padding: 0;
+	font-weight: normal;
+	letter-spacing: 0;
+}
+
+a.plus , a.x{
+	display: block;
+	float: right;
+	width: 15px;
+	height: 15px;
+	margin-left: 5px;
+	text-indent: -5000px;
+	background-repeat: no-repeat;
+	background-attachment: scroll;
+	background-position: center;
+	border: 1px solid #ccc;
+	box-shadow: 0px 0px 2px #ccc;
+	position: relative;
+	top: -2px;
+}
+a.plus {
+	background-image: url("/images/plus.png");
+}
+a.x {
+	background-image: url("/images/x.png");
+}
+
+/* RATINGS SYSTEM */
+
+div.rating {
+	float: left;
+}
+
+.star-rating {
+	float: right;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	width: 80px;
+	height: 15px;
+	position: relative;
+	background: url('/images/star_grey.png') repeat-x;
+}
+
+.star-rating li {
+	padding: 0 !important;
+	margin: 0;
+	width: 16px;
+	height: 15px;
+	float: left;
+}
+.star-rating li a {
+	display: block;
+	width: 16px;
+	height: 15px;
+	line-height: 15px;
+	text-decoration: none;
+	text-indent: -5000px;
+	z-index: 3;
+	position: absolute;
+	padding: 0;
+	overflow: hidden;
+}
+.star-rating li a:hover {
+	background: url('/images/star_orange.png');
+	z-index: 2;
+	left: 0;
+	border: none;
+}
+
+.star-rating a.one-star {
+	left: 0;
+}.star-rating a.one-star:hover {
+	width: 16px;
+}
+.star-rating a.two-star {
+	left: 16px;
+}.star-rating a.two-star:hover {
+	width: 32px;
+}
+.star-rating a.three-star {
+	left: 32px;
+}.star-rating a.three-star:hover {
+	width: 48px;
+}
+.star-rating a.four-star {
+	left: 48px;
+}.star-rating a.four-star:hover {
+	width: 64px;
+}
+.star-rating a.five-star {
+	left: 64px;
+}.star-rating a.five-star:hover {
+	width: 80px;
+}
+
+.star-rating li.no-rating, .star-rating li.clicked, .average li {
+	background: url('/images/star_green.png');
+	position: absolute;
+	height: 15px;
+	display: block;
+	text-indent: -9000px;
+	z-index: 1;
+}
+
+.star-rating li.no-rating {
+	width: 0px;
+}
+
+.star-rating a:active {
+	outline: none
+}
+
+div.average {
+	height: 0;
+	overflow: hidden;
+}
+.average li {
+	width: 40px; /* width = 16 * (average rating) */
+}				/* in this example, 40 = 16 * 2.5. not shitty, but not awesome.*/
+
+p.you-rate {
+	padding-right: 5px;
+}
+p.they-rate {
+	padding-right: 10px;
+}
+
+/* misc. shared style */
+
+.issue_name {font-size: 1.2em;}
