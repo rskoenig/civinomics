@@ -116,7 +116,7 @@
 		    	<br /> <br />
                         <% mStart = c.user.date.strftime('%B %d %Y') %>
 		    	Member since ${mStart}
-                       % if c.authuser['email'] != c.user['email']:
+                       % if c.authuser and c.authuser['email'] != c.user['email']:
 		    	<br /> <br />
                           % if c.isFollowing:
 <div class="button_container">
@@ -128,39 +128,41 @@
 </div>
                           % endif
                        % endif
-                       % if c.authuser.id == c.user.id:
+                       % if c.authuser and c.authuser.id == c.user.id:
                           % if c.account and c.account['numRemaining'] != '0':
                              <br /><br />
                              <a href="/addWorkshop">Create New Workshop</a>
                              <br />
                           % endif
                        % endif
-                       <% checkW = getWorkshopsByOwner(c.authuser.id) %>
-                       <% wList = [] %>
-                       % for w in checkW:
-                          % if w['deleted'] == '0':
-                             % if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
-                                <% wList.append(w) %>
-                             % endif 
-                          % endif
-                       % endfor
-                       % if c.authuser.id != c.user.id and wList:
-                       <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/">
-                          <br />
-                          <button type="submit" class="gold">Invite</button> to co-facilitate <select name=inviteToFacilitate>
-                          % for myW in wList:
-                             <br />
-                             <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
-                             <br /><br />
-                          % endfor                       
-                          </select>
-                       </form>
-                       % endif
-                       % if isAdmin(c.authuser.id):
-                          <br />
-                          <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin">Admin Member</a>
-                          <br />
-                       % endif
+                       % if c.authuser:
+                           <% checkW = getWorkshopsByOwner(c.authuser.id) %>
+                           <% wList = [] %>
+                           % for w in checkW:
+                              % if w['deleted'] == '0':
+                                     % if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
+                                    <% wList.append(w) %>
+                                 % endif 
+                              % endif
+                           % endfor
+                           % if c.authuser.id != c.user.id and wList:
+                           <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/">
+                              <br />
+                              <button type="submit" class="gold">Invite</button> to co-facilitate <select name=inviteToFacilitate>
+                              % for myW in wList:
+                                 <br />
+                                 <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
+                                 <br /><br />
+                              % endfor                       
+                              </select>
+                           </form>
+                           % endif
+                           % if isAdmin(c.authuser.id):
+                              <br />
+                              <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin">Admin Member</a>
+                              <br />
+                           % endif
+                        % endif
                         </div><!-- blockleft --> 
                         <div class="blockrighthalf">
         		<!-- <a href="${c.geoInfo[0]['postalURL']}"><img src="${c.geoInfo[0]['postalFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['postalTitle']}</a><br> -->

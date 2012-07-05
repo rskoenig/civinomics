@@ -27,7 +27,7 @@ log = logging.getLogger(__name__)
 
 class ProfileController(BaseController):
     
-    @h.login_required
+    ##@h.login_required
     def showUserPage(self, id1, id2):
         # Called when visiting /profile/urlCode/url
         code = id1
@@ -35,7 +35,10 @@ class ProfileController(BaseController):
         c.user = get_user(code, url)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
-        c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        c.isFollowing = False
+        if c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        
         c.account = getUserAccount(c.user.id)
 
         fList = getFacilitatorsByUser(c.user.id)
