@@ -93,7 +93,7 @@ ${return_to()}
 											    <div class="well" style="background-color:#E6E6E6;">
 												    <p>${c.content}</p>
 												</div>
-% if c.isAdmin or c.isFacilitator or c.authuser.id == c.resource.owner:
+% if c.authuser and (c.isAdmin or c.isFacilitator or c.authuser.id == c.resource.owner):
    <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}">edit resource</a> &nbsp; &nbsp; &nbsp;
 % endif
 % if c.isAdmin or c.isFacilitator:

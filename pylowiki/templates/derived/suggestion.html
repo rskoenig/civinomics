@@ -70,10 +70,10 @@ ${return_to()}
                         % endif
 					<br />
 		            <br />
-                                % if c.authuser.id == c.w.owner or c.isAdmin:
+                                % if c.authuser and (c.authuser.id == c.w.owner or c.isAdmin):
                                   <div class="right">&nbsp; &nbsp;<a href="/modSuggestion/${c.s['urlCode']}/${c.s['url']}">admin suggestion</a></div>
                                 % endif
-                                % if c.authuser.id == c.s.owner or c.isAdmin:
+                                % if c.authuser and (c.authuser.id == c.s.owner or c.isAdmin):
                                   <div class="right"><a href="/editSuggestion/${c.s['urlCode']}/${c.s['url']}">edit suggestion</a></div>
                                 % endif
                     
