@@ -278,6 +278,8 @@ def make_map():
     map.connect('/searchName', controller='actionlist', action='searchName', id='searchName')
     map.connect('/searchGeoUsers', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
     map.connect('/searchGeoUsers/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
+    map.connect('/searchGeoWorkshops', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
+    map.connect('/searchGeoWorkshops/', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
 
     map.connect('/profile/edit', controller = 'profile', action = 'edit')
     map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')

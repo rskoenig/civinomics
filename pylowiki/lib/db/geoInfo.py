@@ -85,6 +85,24 @@ def getUserScopes(geoInfo, scopeLevel):
     except sa.orm.exc.NoResultFound:
         return False
 
+def getWorkshopScopes(geoInfo, scopeLevel):
+    ## geoInfo: a geo object from a user
+    ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
+    ## format of scope attribute ||country||state||county||city|zip
+    ##log.info('geoInfo is %s' % geoInfo)
+    searchScope = geoInfo[0]['scope']
+    scopeLevel = int(scopeLevel) + 1
+    try:
+        sList = searchScope.split('|')
+        ##log.info('sList is %s' % len(sList))
+        sList = sList[:int(scopeLevel)]
+        searchScope = "|".join(sList)
+        searchScope = searchScope + '%'
+        ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
+        return meta.Session.query(Thing).filter_by(objType = 'wscope').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
+    except sa.orm.exc.NoResultFound:
+        return False
+
 def getGeoInfo(ownerID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'geo').filter_by(owner = ownerID).all()

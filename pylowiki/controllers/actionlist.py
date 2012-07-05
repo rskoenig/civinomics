@@ -10,7 +10,7 @@ from pylowiki.lib.db.page import get_all_pages
 from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
-from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes
+from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
@@ -119,6 +119,31 @@ class ActionlistController(BaseController):
                  )
 
            return render('/derived/list_users.html')
+        else:
+           return redirect('/')
+
+    def searchGeoWorkshops( self ):
+        log.info('searchGeoWorkshops')
+        c.title = c.heading = 'List Nearby Workshops'
+        geoInfo = getGeoInfo(c.authuser.id)
+        log.info('geoInfo is %s'%geoInfo)
+        c.list = []
+        if 'scopeLevel' in request.params:
+           scopeLevel = request.params['scopeLevel']
+           scopeList = getWorkshopScopes(geoInfo, scopeLevel)
+           for gInfo in scopeList:
+              w = getWorkshopByID(gInfo['workshopID'])
+              if w['startTime'] != '0000-00-00' and w['deleted'] != '1':
+                  if w not in c.list:
+                      c.list.append(w)
+
+           c.count = len( c.list )
+           c.paginator = paginate.Page(
+                     c.list, page=int(request.params.get('page', 1)),
+                     items_per_page = 10, item_count = c.count
+                 )
+
+           return render('/derived/list_workshops.html')
         else:
            return redirect('/')
 
