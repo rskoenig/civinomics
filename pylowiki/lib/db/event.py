@@ -25,6 +25,12 @@ def get_all_events():
     except:
         return False
 
+def getCommentEvent(comID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'event').filter(Thing.data.any(wc('parent_id', comID))).all()
+    except:
+        return False
+
 # May not be needed.  Title is a short descriptor, data is a longer descriptor.
 # In the relational model, event was used as a sort of metatable to keep track
 # of things that happened (User makes a change, page is created, etc...)
@@ -39,3 +45,4 @@ class Event(object):
         e['data'] = data
         e['parent_id'] = parent.id
         commit(e)
+        self.e = e

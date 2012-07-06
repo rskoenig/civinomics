@@ -38,14 +38,33 @@ def getSuggestionsForWorkshop(code, url):
 
 def getActiveSuggestionsForWorkshop(code, url):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+    except:
+        return False
+
+def getDisabledSuggestionsForWorkshop(code, url):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', '1'))).all()
+    except:
+        return False
+
+def getDeletedSuggestionsForWorkshop(code, url):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('deleted', '1'))).all()
     except:
         return False
 
 def getInactiveSuggestionsForWorkshop(code, url):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', '1'))).all()
-    except:
+    InactiveSugs = []
+    DisabledSugs = getDisabledSuggestionsForWorkshop(code, url)
+    DeletedSugs = getDeletedSuggestionsForWorkshop(code, url)
+    if DisabledSugs:
+        InactiveSugs = DisabledSugs
+    if DeletedSugs:
+        InactiveSugs += DeletedSugs
+    if DisabledSugs or DeletedSugs:
+        return InactiveSugs
+    else:
         return False
 
 def getFlaggedSuggestionsForWorkshop(code, url):
@@ -90,6 +109,7 @@ class Suggestion(object):
         s['allowComments'] = allowComments
         s['numComments'] = 0
         s['disabled'] = False
+        s['deleted'] = False
         s['adopted'] = False
         ##log.info('data = %s' % data)
         commit(s)

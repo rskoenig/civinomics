@@ -1,108 +1,27 @@
-<%inherit file = "/base/template.html"/>
-<%!
-    from pylowiki.lib.db.user import getUserByID
-%>  
+<%inherit file = "/base/template.bootstrap"/>
 
-    <div class="banner_div">
-        <h2 class="banner"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/">${c.title}</a></h2>
-    </div>     
-    <br /><br />
-    Added by member <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a> 
-    <br /><br />
-    Last modified date: ${c.lastmoddate}
-    <br /><br />
-    ${c.content}
-    <br /><br />
-    <% numFlags = len(c.flags) %>
-    <% fString = "Flags" %>
-    % if numFlags == 1:
-       <% fString = "Flag" %>
-    % endif
-    <strong>${numFlags} ${fString}:</strong>
-    <br /><br />
-    % for flag in c.flags:
-       <% user = getUserByID(flag.owner) %>
-       Flagged ${flag.date} by ${user['name']}<br />
-    %endfor
+<%namespace name="helpers" file="/lib/admin_helpers/suggestion.mako" />
 
-    <br /><br />
-    % if c.events:
-       <% numEvents = len(c.events) %>
-       <% eString = "Events" %>
-       % if numEvents == 1:
-          <% eString = "Event" %>
-       % endif
-       <strong>${numEvents} ${eString}:</strong>
-       <br /><br />
-       % for event in c.events:
-          <% user = getUserByID(event.owner) %>
-          ${event['title']} ${event.date} by ${user['name']}<br />
-          Reason: ${event['data']}
-          <br /><br />
-       %endfor
-    % endif
+<div class="container">
+	</br></br></br></br>
+	<div class="span3 offset9">
+		${helpers.fields_alert()}		
+	</div>
+	${helpers.sug_admin_banner()}
+
+	<div class="row">
+		<div class="span6">
+			${helpers.suggestion_events_flags()}
+		</div>
+		<div class="span6">		
+			${helpers.suggestion_admin()}
+		</div>
+	</div>
+</div>	
+</br>
+</br>
+</br>
     
-
-    <br /><br />
-    <p>
-    <strong class="gray">Administrate Suggestion</strong>
-    <br /><br />
-    <strong>Leave Note on Suggetion</strong>
-    <form name="note_suggestion" id="note_suggestion" class="left" action = "/noteSuggestionHandler" enctype="multipart/form-data" method="post" >
-    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-    <input type=hidden name=workshopURL value="${c.w['url']}">
-    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-    <input type=hidden name=suggestionURL value="${c.s['url']}">
-    <br /><br />
-    Note text: &nbsp;
-    <input type=text name=noteSuggestionText><br /><br />
-    <button type="submit" class="gold">Save Note</button>
-    </form>
-    <br /><br />
-    <br /><br />
-    <br /><br />
-    <br /><br />
-    % if 'adopted' not in c.s or c.s['adopted'] == '0':
-       <% adoptTitle = "Adopt Suggestion" %>
-    % else:
-       <% adoptTitle = "Unadopt Suggestion" %>
-    % endif
-    <form name="adopt_suggestion" id="adopt_suggestion" class="left" action = "/adoptSuggestionHandler" enctype="multipart/form-data" method="post" >
-    <strong>${adoptTitle}</strong>
-    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-    <input type=hidden name=workshopURL value="${c.w['url']}">
-    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-    <input type=hidden name=suggestionURL value="${c.s['url']}">
-    <br /><br />
-    Reason for action: &nbsp;
-    <input type=text name=adoptSuggestionReason><br /><br />
-    <button type="submit" class="gold">${adoptTitle}</button>
-    </form>
-    <br /><br />
-    <br /><br />
-    <br /><br />
-    <br /><br />
-    <p>
-    % if c.s['disabled'] == '0':
-        <strong>Disable Suggestion</strong>
-    % else:
-        <strong>Enable  Suggestion</strong>
-    % endif
-    <form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
-    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-    <input type=hidden name=workshopURL value="${c.w['url']}">
-    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-    <input type=hidden name=suggestionURL value="${c.s['url']}">
-    <br /><br />
-    Reason for action: &nbsp;
-    <input type=text name=modSuggestionReason><br /><br />
-    % if c.s['disabled'] == '0':
-       <button type="submit" class="gold">Disable Suggestion</button>
-    % else:
-       <button type="submit" class="gold">Enable Suggestion</button>
-    % endif
-    </form>
-            
 <%def name = 'extraHTML()'>
 
 </%def>

@@ -14,8 +14,8 @@ from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID
-from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop
+from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
+from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
@@ -239,7 +239,7 @@ class WorkshopController(BaseController):
               plist = plist.rstrip()
               plist = plist.replace(' ', ',')
               plist = plist.replace(',,', ',')
-              plist = plist.replace('	', ',')
+              plist = plist.replace('    ', ',')
               c.w['publicPostalList'] = plist
               if plist != '':
                  c.w['scopeMethod'] = 'publicPostalList'
@@ -302,6 +302,12 @@ class WorkshopController(BaseController):
             try:
                 c.form_result = formSchema.to_python(request.params)
             except formencode.Invalid, error:
+                alert = {'type':'error'}
+                alert['title'] = 'All * Fields Required'
+                alert['content'] = ''
+                "alert['content'] = 'Please check all Required Fields'"
+                session['alert'] = alert
+                session.save()
                 c.form_result = error.value
                 c.form_errors = error.error_dict or {}
                 log.info("form_result "+ str(c.form_result))
@@ -316,7 +322,14 @@ class WorkshopController(BaseController):
                 )
             else:
                 if werror == 1:
-                    h.flash( werrMsg, 'error')
+                    alert = {'type':'error'}
+                    alert['title'] = 'Missing Info: Workshop Tags'
+                    alert['content'] = ''
+                    "alert['content'] = 'Please check all Required Fields'"
+                    session['alert'] = alert
+                    session.save()
+                    "h.flash( werrMsg, 'error')"
+                    return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
                 else:
                     if isFacilitator(c.authuser.id, c.w.id):
                         commit(c.w)
@@ -324,7 +337,14 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
         else:
            if werror == 1:
-              h.flash( werrMsg, 'error')
+                alert = {'type':'error'}
+                alert['title'] = 'Missing Info: Workshop Tags'
+                alert['content'] = ''
+                "alert['content'] = 'Please check all Required Fields'"
+                session['alert'] = alert
+                session.save()
+                "h.flash( werrMsg, 'error')"
+                return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
            else:
               if isFacilitator(c.authuser.id, c.w.id):
                  commit(c.w)
@@ -660,12 +680,14 @@ class WorkshopController(BaseController):
         c.motd = getMessage(c.w.id)
 
         c.s = getActiveSuggestionsForWorkshop(code, urlify(url))
-        c.ds = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.disabledSug = getDisabledSuggestionsForWorkshop(code, urlify(url))
+        c.deletedSug = getDeletedSuggestionsForWorkshop(code, urlify(url))
         c.r = getActiveResourcesByWorkshopID(c.w.id)
-        c.dr = getInactiveResourcesByWorkshopID(c.w.id)
+        c.disabledRes = getDisabledResourcesByWorkshopID(c.w.id)
+        c.deletedRes = getDeletedResourcesByWorkshopID(c.w.id)
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
-
+        
         return render('/derived/workshop_admin.html')
     
     # ------------------------------------------

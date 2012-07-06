@@ -1,75 +1,34 @@
-<%inherit file = "/base/template.html"/>
-<%!
-    from pylowiki.lib.db.user import getUserByID
-%>
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="helpers" file="/lib/admin_helpers/comment.mako" />
 
-    <div class="banner_div">
-       <h2 class="banner">Moderate Comment</h2>
-    </div>     
-    <br /><br />
-    % if c.commentType == 'suggestion':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/suggestion/${c.oCode}/$c.oURL}">Suggestion</a>
-    % elif c.commentType == 'resource':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/resource/${c.oCode}/$c.oURL}">Resource</a>
-    % elif c.commentType == 'background':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/background">Background</a>
-    % elif c.commentType == 'feedback':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/feedback">Feedback</a>
-    % endif
-    <br /><br />
-    Added ${c.comment['lastModified']} by ${c.user['name']}
-    <br /><br />
-    ${c.comment['data']}
-    <br /><br />
-    <% fString = "Flags" %>
-    % if c.comment['numFlags'] == '1':
-       <% fString = "Flag" %>
-    % endif
-    <strong>${c.comment['numFlags']} ${fString}:</strong>
-    <br /><br />
-    % for flag in c.flags:
-       <% user = getUserByID(flag.owner) %>
-       Flagged ${flag.date} by ${user['name']}<br />
-    %endfor
+    
+<div class="container">
+	<div class="span12">
+		<div class="row">	
+		    <br /><br />
+		    <br /><br />
+			<div class="span3 offset9">
+				${helpers.fields_alert()}		
+			</div>
+		    <div class="banner_div">
+		       <h2 class="banner">Moderate Comment</h2>
+		    </div> 
+		    <br />
+		</div>
+		<div class="row">
+			<div class="span6">
+			${helpers.comment_admin()}
+			</div>
+			<div class="span6">
+    			<strong>Moderate Comment</strong>
+				<div class="row">
+				${helpers.moderateComments()}
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>
 
-    <br /><br />
-    % if c.events:
-       <% numEvents = len(c.events) %>
-       <% eString = "Events" %>
-       % if numEvents == 1:
-          <% eString = "Event" %>
-       % endif
-       <strong>${numEvents} ${eString}:</strong>
-       <br /><br />
-       % for event in c.events:
-          <% user = getUserByID(event.owner) %>
-          ${event['title']} ${event.date} by ${user['name']}<br />
-          Reason: ${event['data']}
-          <br /><br />
-       %endfor
-    % endif
-
-    <p>
-    <strong class="gray">Moderate Comment</strong>
-    <br /><br />
-    <form name="moderate_comment" id="moderate_comment" class="left" action = "/modCommentHandler" enctype="multipart/form-data" method="post" >
-    <input type=hidden name=commentID value="${c.commentID}">
-    <input type=hidden name=commentType value="${c.commentType}">
-    <input type=hidden name=workshopCode value="${c.wCode}">
-    <input type=hidden name=workshopURL value="${c.wURL}">
-    <input type=hidden name=otherCode value="${c.oCode}">
-    <input type=hidden name=otherURL value="${c.oURL}">
-    <br /><br />
-    Reason for action: &nbsp;
-    <input type=text name=modCommentReason><br /><br />
-    Click to verify&nbsp;<input type=radio name=verifyModComment> &nbsp; &nbsp;
-    % if c.comment['disabled'] == '0':
-       <button type="submit" class="gold">Disable Comment</button>
-    % else:
-       <button type="submit" class="gold">Enable Comment</button>
-    % endif
-</form>
-            
 <%def name = 'extraHTML()'>
 
 </%def>

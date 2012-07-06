@@ -21,14 +21,55 @@ def getComment( id ):
     except sa.orm.exc.NoResultFound:
         return False
 
+def getUserComments(user, disabled = False):
+    try:
+       return meta.Session.query(Thing).filter_by(objType = 'comment').filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', disabled))).all()
+    except:
+       return False
+
 def getFlaggedDiscussionComments( id ):
     try:
         cList =  meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', id))).all()
         fList = []
         for c in cList:
             if checkFlagged(c) and c.id not in fList:
-               fList.append(c.id)
-        
+               fList.append(c.id)        
+        return fList
+    except sa.orm.exc.NoResultFound:
+        return False
+
+def getDisabledComments(discussionID):
+    try:
+       cList = meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
+       comDisabledList = []
+       for c in cList:
+           if c['disabled'] == '1':
+               comDisabledList.append(c.id)
+       return comDisabledList
+    except:
+       return False  
+
+def getDeletedComments(discussionID):
+    try:
+       cList = meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
+       comDisabledList = []
+       for c in cList:
+           log.info('%d' % int(c['disabled']))
+           if c['deleted'] == '1':
+               comDisabledList.append(c.id)
+       return comDisabledList
+    except:
+       return False  
+
+"Pure meaning they are not disabled or deleted yet"
+def getPureFlaggedDiscussionComments( id ):
+    try:
+        cList =  meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', id))).all()
+        fList = []
+        for c in cList:
+            if checkFlagged(c) and c.id not in fList:
+               if c['disabled'] == '0' and c['deleted'] == '0':
+                   fList.append(c.id)
         return fList
     except sa.orm.exc.NoResultFound:
         return False
@@ -37,6 +78,11 @@ def getFlaggedDiscussionComments( id ):
 def disableComment( comment ):
     """disable this comment"""
     comment['disabled'] = True
+    commit(comment)
+
+def deleteComment( comment ):
+    """disable this comment"""
+    comment['delete'] = True
     commit(comment)
 
 def enableComment( comment ):
@@ -58,6 +104,7 @@ class Comment(object):
     def __init__(self, data, owner, discussion, parent = 0):
         c = Thing('comment', owner.id)
         c['disabled'] = False
+        c['deleted'] = False
         c['pending'] = False
         c['parent'] = parent
         c['children'] = 0
