@@ -11,6 +11,7 @@ import pylowiki.lib.helpers as h
 
 #from pylowiki.model import User, commit, Event, get_user, get_user_by_email, Points
 from pylowiki.lib.db.user import User, getUserByEmail
+from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 
 log = logging.getLogger(__name__)
@@ -81,6 +82,16 @@ class RegisterController(BaseController):
                 if len(password) > maxChars:
                     h.flash("Error: Password: Password can be " + unicode(maxChars) + " characters at most", "warning")
                     log.info("Error: Long password")
+                    errorFound = True
+                if postalCode:
+                    pInfo = getPostalInfo(postalCode, 'United States')
+                    if pInfo == None:
+                        h.flash("Error: invalid postal code", "warning")
+                        log.info("Error: Bad Postal Code password")
+                        errorFound = True
+                else: 
+                    h.flash("Error: invalid postal code", "warning")
+                    log.info("Error: Bad Postal Code password")
                     errorFound = True
                 if errorFound:
                     #return render("/derived/signup.html")

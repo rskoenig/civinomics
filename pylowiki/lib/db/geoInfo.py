@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 import MySQLdb
+import MySQLdb.cursors
 import sqlalchemy as sa
 from sqlalchemy import orm
 from pylowiki.model import Thing, Data, meta
