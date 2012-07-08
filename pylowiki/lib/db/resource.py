@@ -95,7 +95,7 @@ def getAllResources():
 
 # Object
 class Resource(object):
-    def __init__( self, url, title, comment, owner, allowComments, workshop):
+    def __init__( self, url, title, comment, owner, allowComments, workshop, parent = None):
         a = Thing('resource', owner.id)
         if not url.startswith('http://'):
             url = u'http://' + url
@@ -110,6 +110,12 @@ class Resource(object):
         a['comment'] = comment
         a['allowComments'] = allowComments
         a['workshop_id'] = workshop.id
+        if parent != None:
+             a['parent_id'] = parent.id
+             a['parent_type'] = parent.objType
+        else:
+             a['parent_id'] = None
+             a['parent_type'] = None
         a['type'] = 'post'
         a['pending'] = False
         a['disabled'] = False
@@ -117,7 +123,11 @@ class Resource(object):
         a['ups'] = 0
         a['downs'] = 0
         commit(a)
-        d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
+        if parent != None:
+            if parent.objType == 'suggestion':
+                d = Discussion(owner = owner, discType = 'sresource', attachedThing = a, workshop = workshop, title = title)
+        else:
+            d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
         a['discussion_id'] = d.d.id
         self.a = a
 

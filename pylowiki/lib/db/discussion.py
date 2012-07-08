@@ -20,7 +20,7 @@ class Discussion(object):
     # If the owner is not None, then the discussion was actively created by some user.
     def __init__(self, **kwargs):
         """
-            Discussions can only be attached to a workshop's feedback, background, resources and suggestions
+            Discussions can only be attached to a workshop's feedback, background, workshop resources, suggestions and suggestion resources
             kwargs: dict of arguments, keyed as follows:
                     owner                ->    The owner Thing that created the discussion
                     title                ->    The title of the discussion, in string format
@@ -49,6 +49,15 @@ class Discussion(object):
             d['workshopURL'] = kwargs['workshop']['url']
             d['resourceCode'] = attachedThing['urlCode']
             d['resourceURL'] = attachedThing['url']
+        elif attachedThing.objType == 'sresource':
+            d['workshopCode'] = kwargs['workshop']['urlCode']
+            d['workshopURL'] = kwargs['workshop']['url']
+            d['resourceCode'] = attachedThing['urlCode']
+            d['resourceURL'] = attachedThing['url']
+            sID = attachedThing['parent_id']
+            s = getThingByID(sID)
+            d['suggestionCode'] = s['urlCode']
+            d['suggestionURL'] = s['url']
         d['title'] = title
         d['url'] = urlify(title)
         d['urlCode'] = toBase62('%s_%s'%(title, int(time())))
