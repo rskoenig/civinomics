@@ -104,11 +104,12 @@ class ActionlistController(BaseController):
         log.info('searchGeoUsers')
         c.title = c.heading = 'List Nearby Members'
         geoInfo = getGeoInfo(c.authuser.id)
+        searchScope = geoInfo[0]['scope']
         log.info('geoInfo is %s'%geoInfo)
         c.list = []
         if 'scopeLevel' in request.params:
            scopeLevel = request.params['scopeLevel']
-           scopeList = getUserScopes(geoInfo, scopeLevel)
+           scopeList = getUserScopes(searchScope, scopeLevel)
            for gInfo in scopeList:
               c.list.append(getUserByID(gInfo.owner))
 
@@ -126,11 +127,12 @@ class ActionlistController(BaseController):
         log.info('searchGeoWorkshops')
         c.title = c.heading = 'List Nearby Workshops'
         geoInfo = getGeoInfo(c.authuser.id)
+        searchScope = geoInfo[0]['scope']
         log.info('geoInfo is %s'%geoInfo)
         c.list = []
         if 'scopeLevel' in request.params:
            scopeLevel = request.params['scopeLevel']
-           scopeList = getWorkshopScopes(geoInfo, scopeLevel)
+           scopeList = getWorkshopScopes(searchScope, scopeLevel)
            for gInfo in scopeList:
               w = getWorkshopByID(gInfo['workshopID'])
               if w['startTime'] != '0000-00-00' and w['deleted'] != '1':

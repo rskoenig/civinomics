@@ -68,12 +68,12 @@ def getGeoScope( postalCode, country ):
     geoScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
     return geoScope
 
-def getUserScopes(geoInfo, scopeLevel):
+def getUserScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
     ## format of scope attribute ||country||state||county||city|zip
     ##log.info('geoInfo is %s' % geoInfo)
-    searchScope = geoInfo[0]['scope']
+    #searchScope = geoInfo[0]['scope']
     scopeLevel = int(scopeLevel) + 1
     try:
         sList = searchScope.split('|')
@@ -86,12 +86,12 @@ def getUserScopes(geoInfo, scopeLevel):
     except sa.orm.exc.NoResultFound:
         return False
 
-def getWorkshopScopes(geoInfo, scopeLevel):
+def getWorkshopScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
     ## format of scope attribute ||country||state||county||city|zip
     ##log.info('geoInfo is %s' % geoInfo)
-    searchScope = geoInfo[0]['scope']
+    #searchScope = geoInfo[0]['scope']
     scopeLevel = int(scopeLevel) + 1
     try:
         sList = searchScope.split('|')
