@@ -138,13 +138,11 @@ class CommentController(BaseController):
                "dis['numComments'] = int(dis['numComments']) - 1"
                modTitle = "Comment Deleted"
                e = Event(modTitle, modCommentReason, comment, c.authuser)
-               events = getCommentEvent(comment.id)
-               latestEvent = events[len(events)-1]
                if 'deleteEvents' not in comment.keys():
-                    comment['deleteEvents'] = latestEvent.id
+                    comment['deleteEvents'] = e.e.id
                else:
                    "Should never need to be down here since anything can only be deleted once"
-                   comment['deleteEvents'] = comment['deleteEvents'] + ',' + str(latestEvent.id)
+                   comment['deleteEvents'] = comment['deleteEvents'] + ',' + str(e.e.id)
         commit(comment)
 
         h.flash(modTitle, 'success')
