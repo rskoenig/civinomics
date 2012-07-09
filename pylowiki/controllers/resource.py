@@ -272,7 +272,7 @@ class ResourceController(BaseController):
 
         c.author = getUserByID(c.resource.owner)
         
-        return render('/derived/resource_admin.html')
+        return render('/derived/resource_admin.bootstrap')
 
     @h.login_required
     def modResourceHandler(self):

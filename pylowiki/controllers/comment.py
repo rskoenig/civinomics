@@ -61,7 +61,7 @@ class CommentController(BaseController):
             h.flash('You are not authorized', 'error')
             return redirect('/')
 
-        return render('/derived/comment_admin.html')
+        return render('/derived/comment_admin.bootstrap')
 
     @h.login_required
     def modCommentHandler(self):

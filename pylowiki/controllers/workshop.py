@@ -314,7 +314,7 @@ class WorkshopController(BaseController):
                 log.info("form_errors "+ str(c.form_errors))
                 c.form_result['memberTags'] = wMemberTags
                 c.form_result['publicPostalList'] = plist
-                html = render('/derived/workshop_configure.html')
+                html = render('/derived/workshop_configure.bootstrap')
                 return htmlfill.render(
                     html,
                     defaults=c.form_result,
@@ -375,7 +375,7 @@ class WorkshopController(BaseController):
             h.flash("Errors found, please fix the highlighted areas", "warning")
             c.form_result = error.value
             c.form_errors = error.error_dict or {}
-            html = render('/derived/workshop_configure.html')
+            html = render('/derived/workshop_configure.bootstrap')
             return htmlfill.render(
                 html,
                 defaults=c.form_result,
@@ -664,7 +664,7 @@ class WorkshopController(BaseController):
 
         c.title = c.w['title']
 
-        return render('/derived/workshop_configure.html')
+        return render('/derived/workshop_configure.bootstrap')
     
     @h.login_required
     def admin(self, id1, id2):
@@ -688,7 +688,7 @@ class WorkshopController(BaseController):
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
         
-        return render('/derived/workshop_admin.html')
+        return render('/derived/workshop_admin.bootstrap')
     
     # ------------------------------------------
     #    Helper functions for wiki controller

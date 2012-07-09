@@ -244,7 +244,7 @@ class SuggestionController(BaseController):
            c.flagged = True
            c.flags = getFlags(c.s)
 
-        return render('/derived/suggestion_admin.html')
+        return render('/derived/suggestion_admin.bootstrap')
 
     """ Takes in edits to the suggestion, saves new revision to the database. """
     @h.login_required
