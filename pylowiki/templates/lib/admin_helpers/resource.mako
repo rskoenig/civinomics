@@ -61,7 +61,6 @@
 </%def>
 
 <%def name="resource_admin_options()">
-    <br /><br />
     <p>
     <strong class="gray">Administrate Resource</strong>
     <br /><br /><br />
