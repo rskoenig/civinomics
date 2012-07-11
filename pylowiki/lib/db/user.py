@@ -6,7 +6,7 @@ from pylons import tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 from hashlib import md5
 from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
@@ -57,6 +57,15 @@ def checkPassword(user, password):
     if user['password'] == hashPassword(password):
         return True
     return False
+
+def getUsersWithLevelGreater(level):
+    """
+        Returns a list of all users with an access level greater than the given level.
+    """
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(gtc('accessLevel', level))).all()
+    except:
+        return False
 
 # Setters
 
