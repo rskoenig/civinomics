@@ -104,7 +104,7 @@ class SlideshowController(BaseController):
         ]
 
         """
-
+    @h.login_required
     def editSlideshowDisplay(self, id1, id2):
         code = id1
         url = id2
@@ -186,6 +186,7 @@ class SlideshowController(BaseController):
             slideID    ->    The Thing id of a slide
             slideField ->    Either 'title' or 'caption'
     """
+    @h.login_required
     def edit(self):
         content = request.params['value']
         slideparams = request.params['id']
