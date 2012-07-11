@@ -36,15 +36,14 @@ class RatingController(BaseController):
         found = False
         if rKey in c.authuser.keys():
             """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
+                Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                Check to see if the commentID as a string is in the Dictionary keys
+                meaning it was already rated by this user
             """
-            l = pickle.loads(str(c.authuser[rKey]))
-            for tup in l:
-                if tup[0] == s.id:
-                    found = True
-                    changeRating(s, tup[1], amount)
+            sugRateDict = pickle.loads(str(c.authuser[rKey]))
+            if s.id in sugRateDict.keys():
+                found = True
+                changeRating(s, sugRateDict[s.id], amount)
             
         if not found:
             r = Rating(amount, s, c.authuser, 'overall')
@@ -63,15 +62,14 @@ class RatingController(BaseController):
         found = False
         if rKey in c.authuser.keys():
             """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
+                Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                Check to see if the commentID as a string is in the Dictionary keys
+                meaning it was already rated by this user
             """
-            l = pickle.loads(str(c.authuser[rKey]))
-            for tup in l:
-                if tup[0] == w.id:
-                    found = True
-                    changeRating(w, tup[1], amount)
+            facRateDict = pickle.loads(str(c.authuser[rKey]))
+            if w.id in facRateDict.keys():
+                found = True
+                changeRating(w, facRateDict[w.id], amount)
             
         if not found:
             r = Rating(amount, w, c.authuser, 'overall')
@@ -97,51 +95,50 @@ class RatingController(BaseController):
             amount = 0
             voteType = 1
         
-        rKey = 'ratedThings_article_overall'
+        rKey = 'ratedThings_resource_overall'
         res = getResource(code, url)
         found = False
         if rKey in c.authuser.keys():
             """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
+                Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                Check to see if the commentID as a string is in the Dictionary keys
+                meaning it was already rated by this user
             """
-            l = pickle.loads(str(c.authuser[rKey]))
-            for tup in l:
-                if tup[0] == res.id:
-                    found = True
-                    oldRating = int(getRatingByID(tup[1])['rating'])
-                    if voteType == 0:
-                        # user down voted
-                        if oldRating == -1:
-                            # User undoing old vote
-                            res['downs'] = int(res['downs']) - 1
-                            changeRating(res, tup[1], 0)
-                        elif oldRating == 0:
-                            # Change vote from neutral -> down
-                            changeRating(res, tup[1], amount)
-                            res['downs'] = int(res['downs']) + 1
-                        elif oldRating == 1:
-                            # Change vote from up -> down
-                            changeRating(res, tup[1], amount)
-                            res['ups'] = int(res['ups']) - 1
-                            res['downs'] = int(res['downs']) + 1
-                    elif voteType == 2:
-                        # User up voted
-                        if oldRating == -1:
-                            # Change vote from down -> up
-                            changeRating(res, tup[1], amount)
-                            res['ups'] = int(res['ups']) + 1
-                            res['downs'] = int(res['downs']) - 1
-                        elif oldRating == 0:
-                            # Change vote from neutral -> up
-                            res['ups'] = int(res['ups']) + 1
-                            changeRating(res, tup[1], amount)
-                        elif oldRating == 1:
-                            # User undoing old vote
-                            res['ups'] = int(res['ups']) - 1
-                            changeRating(res, tup[1], 0)
-                        
+            resRateDict = pickle.loads(str(c.authuser[rKey]))
+            if res.id in resRateDict.keys():
+                found = True
+                oldRating = int(getRatingByID(resRateDict[res.id])['rating'])
+                if voteType == 0:
+                    # user down voted
+                    if oldRating == -1:
+                        # User undoing old vote
+                        res['downs'] = int(res['downs']) - 1
+                        changeRating(res, resRateDict[res.id], 0)
+                    elif oldRating == 0:
+                        # Change vote from neutral -> down
+                        changeRating(res, resRateDict[res.id], amount)
+                        res['downs'] = int(res['downs']) + 1
+                    elif oldRating == 1:
+                        # Change vote from up -> down
+                        changeRating(res, resRateDict[res.id], amount)
+                        res['ups'] = int(res['ups']) - 1
+                        res['downs'] = int(res['downs']) + 1
+                elif voteType == 2:
+                    # User up voted
+                    if oldRating == -1:
+                        # Change vote from down -> up
+                        changeRating(res, resRateDict[res.id], amount)
+                        res['ups'] = int(res['ups']) + 1
+                        res['downs'] = int(res['downs']) - 1
+                    elif oldRating == 0:
+                        # Change vote from neutral -> up
+                        res['ups'] = int(res['ups']) + 1
+                        changeRating(res, resRateDict[res.id], amount)
+                    elif oldRating == 1:
+                        # User undoing old vote
+                        res['ups'] = int(res['ups']) - 1
+                        changeRating(res, resRateDict[res.id], 0)
+                    
         if not found:
             rating = Rating(amount, res, c.authuser, 'overall')
             if voteType == 0:
@@ -182,46 +179,45 @@ class RatingController(BaseController):
         found = False
         if cKey in c.authuser.keys():
             """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
+                Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                Check to see if the commentID as a string is in the Dictionary keys
+                meaning it was already rated by this user
             """
-            l = pickle.loads(str(c.authuser[cKey]))
-            log.info('cKey found: %s' % l)
-            for tup in l:
-                if tup[0] == com.id:
-                    found = True
-                    oldRating = int(getRatingByID(tup[1])['rating'])
-                    if voteType == 0:
-                        # user down voted
-                        if oldRating == -1:
-                            # User undoing old vote
-                            com['downs'] = int(com['downs']) - 1
-                            changeRating(com, tup[1], 0)
-                        elif oldRating == 0:
-                            # Change vote from neutral -> down
-                            changeRating(com, tup[1], amount)
-                            com['downs'] = int(com['downs']) + 1
-                        elif oldRating == 1:
-                            # Change vote from up -> down
-                            changeRating(com, tup[1], amount)
-                            com['ups'] = int(com['ups']) - 1
-                            com['downs'] = int(com['downs']) + 1
-                    elif voteType == 2:
-                        # User up voted
-                        if oldRating == -1:
-                            # Change vote from down -> up
-                            changeRating(com, tup[1], amount)
-                            com['ups'] = int(com['ups']) + 1
-                            com['downs'] = int(com['downs']) - 1
-                        elif oldRating == 0:
-                            # Change vote from neutral -> up
-                            com['ups'] = int(com['ups']) + 1
-                            changeRating(com, tup[1], amount)
-                        elif oldRating == 1:
-                            # User undoing old vote
-                            com['ups'] = int(com['ups']) - 1
-                            changeRating(com, tup[1], 0)
+            comRateDict = pickle.loads(str(c.authuser[cKey]))
+            log.info('cKey found: %s' % comRateDict)
+            if com.id in comRateDict.keys():
+                found = True
+                oldRating = int(getRatingByID(comRateDict[com.id])['rating'])
+                if voteType == 0:
+                    # user down voted
+                    if oldRating == -1:
+                        # User undoing old vote
+                        com['downs'] = int(com['downs']) - 1
+                        changeRating(com, comRateDict[com.id], 0)
+                    elif oldRating == 0:
+                        # Change vote from neutral -> down
+                        changeRating(com, comRateDict[com.id], amount)
+                        com['downs'] = int(com['downs']) + 1
+                    elif oldRating == 1:
+                        # Change vote from up -> down
+                        changeRating(com,comRateDict[com.id], amount)
+                        com['ups'] = int(com['ups']) - 1
+                        com['downs'] = int(com['downs']) + 1
+                elif voteType == 2:
+                    # User up voted
+                    if oldRating == -1:
+                        # Change vote from down -> up
+                        changeRating(com, comRateDict[com.id], amount)
+                        com['ups'] = int(com['ups']) + 1
+                        com['downs'] = int(com['downs']) - 1
+                    elif oldRating == 0:
+                        # Change vote from neutral -> up
+                        com['ups'] = int(com['ups']) + 1
+                        changeRating(com, comRateDict[com.id], amount)
+                    elif oldRating == 1:
+                        # User undoing old vote
+                        com['ups'] = int(com['ups']) - 1
+                        changeRating(com, comRateDict[com.id], 0)
         if not found:
             log.info('cKey not found')
             rating = Rating(amount, com, c.authuser, 'overall')

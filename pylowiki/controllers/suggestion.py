@@ -67,14 +67,13 @@ class SuggestionController(BaseController):
             c.rating = False
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
                 """
-                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                    a         ->    rated Thing's ID  (What was rated) 
-                    b         ->    rating Thing's ID (The rating object)
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
                 """
-                l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                for tup in l:
-                    if tup[0] == c.s.id:
-                        c.rating = getRatingByID(tup[1])
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                if c.s.id in sugRateDict.keys():
+                    c.rating = getRatingByID(sugRateDict[c.s.id])
                     
         return render('/derived/suggestion.html')
 
@@ -245,42 +244,56 @@ class SuggestionController(BaseController):
            c.flagged = True
            c.flags = getFlags(c.s)
 
-        
-        return render('/derived/suggestion_admin.html')
+        return render('/derived/suggestion_admin.bootstrap')
 
     """ Takes in edits to the suggestion, saves new revision to the database. """
     @h.login_required
     def modSuggestionHandler(self):
-        try:
-           w = False
-           s = False
-           workshopCode = request.params['workshopCode']
-           workshopURL = request.params['workshopURL']
-           w = getWorkshop(workshopCode, workshopURL) 
 
-           suggestionCode = request.params['suggestionCode']
-           suggestionURL = request.params['suggestionURL']
-           s = getSuggestion(suggestionCode, suggestionURL) 
+        workshopCode = request.params['workshopCode']
+        workshopURL = request.params['workshopURL']
+        w = getWorkshop(workshopCode, workshopURL) 
+
+        suggestionCode = request.params['suggestionCode']
+        suggestionURL = request.params['suggestionURL']
+        s = getSuggestion(suggestionCode, suggestionURL) 
+        
+        try:
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
               h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
-
+           modType = request.params['modType']
            modSuggestionReason = request.params['modSuggestionReason']
+           verifyModSuggestion = request.params['verifyModSuggestion']
+
         except:
-           h.flash('All fields required', 'error')
-           return redirect('/workshop/%s/%s/suggestion/%s/%s/modSuggestion'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+           "h.flash('All fields required', 'error')"
+           alert = {'type':'error'}
+           alert['title'] = 'All Fields Required'
+           alert['content'] = ''
+           "alert['content'] = 'Please check all Required Fields'"
+           session['alert'] = alert
+           session.save()
+           return redirect('/modSuggestion/%s/%s'%(s['urlCode'], s['url']))
 
         # disable or enable the suggestion, log the event
-        if s['disabled'] == '0':
-           s['disabled'] = True
-           modTitle = "Suggestion Disabled"
-        else:
-           s['disabled'] = False
-           modTitle = "Suggestion Enabled"
+        if modType == 'disable':
+            if s['disabled'] == '0':
+               s['disabled'] = True
+               modTitle = "Suggestion Disabled"
+            else:
+               s['disabled'] = False
+               modTitle = "Suggestion Enabled"
+        elif modType == 'delete':
+            s['disabled'] = False
+            s['deleted'] = True
+            modTitle = "Suggestion Deleted"
 
         commit(s)
+        if modSuggestionReason == "":
+            modSuggestionReason = "No Reason Given"
         e = Event(modTitle, modSuggestionReason, s, c.authuser)
 
         h.flash(modTitle, 'success')

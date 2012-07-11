@@ -1,31 +1,30 @@
 
-<%inherit file = "/base/template.html"/>
 
-<SCRIPT LANGUAGE="JavaScript">
-   function clearZipList () {
-     document.edit_issue.publicPostalList.value = '';
-     return 1;
-   }    
-   function clearEligibleCheckboxes (field) {
-     // document.edit_issue.publicscope.checked = 'unchecked';
-     // return 1;
-     for (i = 0; i < field.length; i++)
-           field[i].checked = false ;
-   }
-</SCRIPT>
+<%def name="fields_alert()">
+	% if 'alert' in session:
+		<% alert = session['alert'] %> 
+        <div class="alert alert-${alert['type']}">
+            <button data-dismiss="alert" class="close">×</button>
+            <strong>${alert['title']}</strong>
+            ##${alert['content']}
+        </div>
+        <% 
+           session.pop('alert')
+           session.save()
+        %>
+	% endif
+</%def>
+
+<%def name="configure()">
 
 % if c.w['startTime'] == '0000-00-00':
      <% wstarted = 0 %>
 % else:
      <% wstarted = 1 %>
 % endif
-
-    <div class="banner_div">
-        <h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h2>
-    </div>     
-    <br /> <br />
-    <br /> <br />
-
+    <div class="page-header"><h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h1>
+    </div>
+ 
 <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureWorkshopHandler" enctype="multipart/form-data" method="post" >
 
     <p>
@@ -39,7 +38,6 @@
     Workshop Goals: <span class="darkorange">*</span>
     <br />
     <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>
-    <br /><br />
     <br /><br />
     % if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
         <% yesChecked = 'checked' %>
@@ -165,8 +163,6 @@
        <input type="text" name = "memberTags" size="50" maxlength="50" value = "${c.w['memberTags']}"/>
        <br /><br />
     
-       <br />
-       <br />
        When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
    Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligible to participate. 
        <br />
@@ -186,31 +182,7 @@
      <br />
 
    % endif
-    <button type="submit" class="gold">Save Changes</button>
+    <button type="submit" class="btn btn-warning">Save Changes</button>
 </form>
 
-            
-<%def name = 'extraHTML()'>
-
-</%def>
-            
-<%def name = 'extraStyles()'>
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/styles/issue_create.css')}" />
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/js/markitup/skins/simple/style.css')}" />
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/js/markitup/sets/rst/style.css')}" />
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/css/pygments/pygments-tango.css')}" />
-</%def>
-
-<%def name = 'extraScripts()'>
-    <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
-    <script src = "${h.url_for('/js/markitup/jquery.markitup.js')}" type="text/javascript"></script>
-    <script src = "${h.url_for('/js/markitup/sets/rst/set.js')}" type="text/javascript"></script>
-    <script src = "${h.url_for('/js/javascript.js')}" type="text/javascript"></script>
-    
-    <script language="javascript">
-        $(document).ready(function()	{
-            $(".markitup").markItUp(mySettings);
-        });
-    </script>
-    
 </%def>

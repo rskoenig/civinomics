@@ -14,8 +14,8 @@ from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID
-from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop
+from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
+from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
@@ -239,7 +239,7 @@ class WorkshopController(BaseController):
               plist = plist.rstrip()
               plist = plist.replace(' ', ',')
               plist = plist.replace(',,', ',')
-              plist = plist.replace('	', ',')
+              plist = plist.replace('    ', ',')
               c.w['publicPostalList'] = plist
               if plist != '':
                  c.w['scopeMethod'] = 'publicPostalList'
@@ -302,13 +302,19 @@ class WorkshopController(BaseController):
             try:
                 c.form_result = formSchema.to_python(request.params)
             except formencode.Invalid, error:
+                alert = {'type':'error'}
+                alert['title'] = 'All * Fields Required'
+                alert['content'] = ''
+                "alert['content'] = 'Please check all Required Fields'"
+                session['alert'] = alert
+                session.save()
                 c.form_result = error.value
                 c.form_errors = error.error_dict or {}
                 log.info("form_result "+ str(c.form_result))
                 log.info("form_errors "+ str(c.form_errors))
                 c.form_result['memberTags'] = wMemberTags
                 c.form_result['publicPostalList'] = plist
-                html = render('/derived/workshop_configure.html')
+                html = render('/derived/workshop_configure.bootstrap')
                 return htmlfill.render(
                     html,
                     defaults=c.form_result,
@@ -316,7 +322,14 @@ class WorkshopController(BaseController):
                 )
             else:
                 if werror == 1:
-                    h.flash( werrMsg, 'error')
+                    alert = {'type':'error'}
+                    alert['title'] = 'Missing Info: Workshop Tags'
+                    alert['content'] = ''
+                    "alert['content'] = 'Please check all Required Fields'"
+                    session['alert'] = alert
+                    session.save()
+                    "h.flash( werrMsg, 'error')"
+                    return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
                 else:
                     if isFacilitator(c.authuser.id, c.w.id):
                         commit(c.w)
@@ -324,7 +337,14 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
         else:
            if werror == 1:
-              h.flash( werrMsg, 'error')
+                alert = {'type':'error'}
+                alert['title'] = 'Missing Info: Workshop Tags'
+                alert['content'] = ''
+                "alert['content'] = 'Please check all Required Fields'"
+                session['alert'] = alert
+                session.save()
+                "h.flash( werrMsg, 'error')"
+                return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
            else:
               if isFacilitator(c.authuser.id, c.w.id):
                  commit(c.w)
@@ -355,7 +375,7 @@ class WorkshopController(BaseController):
             h.flash("Errors found, please fix the highlighted areas", "warning")
             c.form_result = error.value
             c.form_errors = error.error_dict or {}
-            html = render('/derived/workshop_configure.html')
+            html = render('/derived/workshop_configure.bootstrap')
             return htmlfill.render(
                 html,
                 defaults=c.form_result,
@@ -482,18 +502,17 @@ class WorkshopController(BaseController):
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
-        l = []
         
         if 'user' in session:
             ratedSuggestionIDs = []
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
                 """
-                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                    a         ->    rated Thing's ID  (What was rated) 
-                    b         ->    rating Thing's ID (The rating object)
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
                 """
-                l = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                ratedSuggestionIDs = [tup[0] for tup in l]
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = sugRateDict.keys()
         
         for item in c.suggestions:
             """ Grab first 250 chars as a summary """
@@ -511,7 +530,7 @@ class WorkshopController(BaseController):
                 except:
                     pass
                 if found:
-                    item.rating = getRatingByID(l[index][1])
+                    item.rating = getRatingByID(sugRateDict[item.id])
                 else:
                     item.rating = False
 
@@ -618,16 +637,13 @@ class WorkshopController(BaseController):
         c.rating = False
         if 'ratedThings_workshop_overall' in c.authuser.keys():
             """
-                Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                a         ->    rated Thing's ID  (What was rated) 
-                b         ->    rating Thing's ID (The rating object)
+                Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                Check to see if the commentID as a string is in the Dictionary keys
+                meaning it was already rated by this user
             """
-            l = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
-            for tup in l:
-                ##log.info('c.w.id is %s tup[0] is %s tup[1] is %s' % (c.w.id, tup[0], tup[1]))
-                if tup[0] == c.w.id:
-                    c.rating = getRatingByID(tup[1])
-                    ##log.info('c.rating is %s' % c.rating)
+            workRateDict = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
+            if c.w.id in workRateDict.keys():
+                c.rating = getRatingByID(workRateDict[c.w.id])
 
         c.motd = getMessage(c.w.id)
         # kludge for now
@@ -648,7 +664,7 @@ class WorkshopController(BaseController):
 
         c.title = c.w['title']
 
-        return render('/derived/workshop_configure.html')
+        return render('/derived/workshop_configure.bootstrap')
     
     @h.login_required
     def admin(self, id1, id2):
@@ -664,13 +680,15 @@ class WorkshopController(BaseController):
         c.motd = getMessage(c.w.id)
 
         c.s = getActiveSuggestionsForWorkshop(code, urlify(url))
-        c.ds = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.disabledSug = getDisabledSuggestionsForWorkshop(code, urlify(url))
+        c.deletedSug = getDeletedSuggestionsForWorkshop(code, urlify(url))
         c.r = getActiveResourcesByWorkshopID(c.w.id)
-        c.dr = getInactiveResourcesByWorkshopID(c.w.id)
+        c.disabledRes = getDisabledResourcesByWorkshopID(c.w.id)
+        c.deletedRes = getDeletedResourcesByWorkshopID(c.w.id)
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
-
-        return render('/derived/workshop_admin.html')
+        
+        return render('/derived/workshop_admin.bootstrap')
     
     # ------------------------------------------
     #    Helper functions for wiki controller

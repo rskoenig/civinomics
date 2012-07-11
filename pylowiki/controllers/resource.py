@@ -57,14 +57,13 @@ class ResourceController(BaseController):
 
             if 'ratedThings_resource_overall' in c.authuser.keys():
                 """
-                    Here we get a list of tuples.  Each tuple is of the form (a, b), with the following mapping:
-                    a         ->    rated Thing's ID  (What was rated) 
-                    b         ->    rating Thing's ID (The rating object)
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
                 """
-                l = pickle.loads(str(c.authuser['ratedThings_resource_overall']))
-                for tup in l:
-                    if tup[0] == c.resource.id:
-                        c.rating = getRatingByID(tup[1])
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall']))
+                if c.resource.id in resRateDict.keys():
+                    c.rating = getRatingByID(resRateDict[c.resource.id])
         else:            
             c.isFacilitator = False
             c.isAdmin = False
@@ -273,41 +272,56 @@ class ResourceController(BaseController):
 
         c.author = getUserByID(c.resource.owner)
         
-        return render('/derived/resource_admin.html')
+        return render('/derived/resource_admin.bootstrap')
 
     @h.login_required
     def modResourceHandler(self):
-        try:
-           w = False
-           r = False
-           workshopCode = request.params['workshopCode']
-           workshopURL = request.params['workshopURL']
-           w = getWorkshop(workshopCode, workshopURL) 
 
-           resourceCode = request.params['resourceCode']
-           resourceURL = request.params['resourceURL']
-           r = getResource(resourceCode, urlify(resourceURL), w) 
+        workshopCode = request.params['workshopCode']
+        workshopURL = request.params['workshopURL']
+        w = getWorkshop(workshopCode, workshopURL) 
+
+        resourceCode = request.params['resourceCode']
+        resourceURL = request.params['resourceURL']
+        r = getResource(resourceCode, resourceURL) 
+        
+        try:
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
               h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
 
-
+           modType = request.params['modType']
            modResourceReason = request.params['modResourceReason']
            verifyModResource = request.params['verifyModResource']
         except:
-           h.flash('All fields required', 'error')
-           return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+           "h.flash('All fields required', 'error')"
+           alert = {'type':'error'}
+           alert['title'] = 'All Fields Required'
+           alert['content'] = ''
+           "alert['content'] = 'Please check all Required Fields'"
+           session['alert'] = alert
+           session.save()
+           return redirect('/workshop/%s/%s/resource/%s/%s/modResource'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
 
         # disable or enable the resource, log the event
-        if r['disabled'] == '0':
-           r['disabled'] = True
-           modTitle = "Resource Disabled"
-        else:
-           r['disabled'] = False
-           modTitle = "Resource Enabled"
+        if modType == 'disable':
+            if r['disabled'] == '0':
+               r['disabled'] = True
+               modTitle = "Resource Disabled"
+            else:
+               r['disabled'] = False
+               modTitle = "Resource Enabled"
+        elif modType == 'delete':
+            if r['deleted'] == '0':
+                r['disabled'] = False
+                r['deleted'] = True
+                modTitle = "Resource Deleted"
+
 
         commit(r)
+        if modResourceReason == "":
+            modResourceReason = "No Reason Given"
         e = Event(modTitle, modResourceReason, r, c.authuser)
 
         h.flash(modTitle, 'success')
@@ -315,16 +329,16 @@ class ResourceController(BaseController):
 
     @h.login_required
     def noteResourceHandler(self):
-        try:
-           w = False
-           r = False
-           workshopCode = request.params['workshopCode']
-           workshopURL = request.params['workshopURL']
-           w = getWorkshop(workshopCode, workshopURL) 
 
-           resourceCode = request.params['resourceCode']
-           resourceURL = request.params['resourceURL']
-           r = getResource(resourceCode, urlify(resourceURL), w) 
+        workshopCode = request.params['workshopCode']
+        workshopURL = request.params['workshopURL']
+        w = getWorkshop(workshopCode, workshopURL) 
+        
+        resourceCode = request.params['resourceCode']
+        resourceURL = request.params['resourceURL']
+        r = getResource(resourceCode, resourceURL) 
+        
+        try:
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
               h.flash('You are not authorized', 'error')

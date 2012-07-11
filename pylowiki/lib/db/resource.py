@@ -58,16 +58,34 @@ def getResourcesByWorkshopID(workshopID):
 
 def getActiveResourcesByWorkshopID(workshopID):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
     except:
         return False
 
-def getInactiveResourcesByWorkshopID(workshopID):
+def getDisabledResourcesByWorkshopID(workshopID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '1'))).all()
     except:
         return False
 
+def getDeletedResourcesByWorkshopID(workshopID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('deleted', '1'))).all()
+    except:
+        return False
+
+def getInactiveResourcesByWorkshopID(workshopID):
+    InactiveRes = []
+    DisabledRes = getDisabledResourcesByWorkshopID(workshopID)
+    DeletedRes = getDeletedResourcesByWorkshopID(workshopID)
+    if DisabledRes:
+        InactiveRes = DisabledRes
+    if DeletedRes:
+        InactiveRes += DeletedRes
+    if DisabledRes or DeletedRes:
+        return InactiveRes
+    else:
+        return False
 
 def getFlaggedResourcesByWorkshopID(workshopID):
     try:
@@ -119,6 +137,7 @@ class Resource(object):
         a['type'] = 'post'
         a['pending'] = False
         a['disabled'] = False
+        a['deleted'] = False
         a['allowComments'] = True
         a['ups'] = 0
         a['downs'] = 0
