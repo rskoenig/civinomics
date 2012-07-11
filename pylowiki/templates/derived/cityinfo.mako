@@ -1,6 +1,7 @@
 <%inherit file="/base/template.html" />
 
 <h1>${c.heading}</h1>
+
 <ul>
 <li>City is ${c.cityInfo['City']}</li>
 <li>County is ${c.cityInfo['County']}</li>

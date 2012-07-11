@@ -106,6 +106,7 @@ class addWorkshopForm(formencode.Schema):
 
 class WorkshopController(BaseController):
 
+    @h.login_required
     def addWorkshop(self):
         c.account = getUserAccount(c.authuser.id)
         if c.account and c.account['numRemaining'] > 0:

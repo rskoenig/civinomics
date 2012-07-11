@@ -113,7 +113,6 @@ def make_map():
     map.connect('/systemAdmin/handler/', controller = 'systemAdmin', action = 'handler')
 
 
-
     # Resources
     map.connect('/addResource/{id1}/{id2}', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
     map.connect('/addResource/{id1}/{id2}/', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
@@ -177,6 +176,67 @@ def make_map():
     map.connect('/noteSuggestionHandler', controller = 'suggestion', action = 'noteSuggestionHandler')
     map.connect('/noteSuggestionHandler/', controller = 'suggestion', action = 'noteSuggestionHandler')
 
+    # Surveys
+    map.connect('/survey/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/surveys/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/surveys/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+
+    map.connect('/showSurveys', controller = 'survey', action = 'showSurveys')
+    map.connect('/showSurveys/', controller = 'survey', action = 'showSurveys')
+    
+    map.connect('/viewResults/{id1}/{id2}', controller = 'survey', action = 'viewResults', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/viewResults/{id1}/{id2}/', controller = 'survey', action = 'viewResults', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/generateResults/{id1}/{id2}', controller = 'survey', action = 'generateResults', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/generateResults/{id1}/{id2}/', controller = 'survey', action = 'generateResults', id1 = '{id1}', id2 = '{id2}')
+    
+    # Survey admin
+    map.connect('/surveyAdmin', controller = 'survey', action = 'adminSurvey')
+    map.connect('/surveyAdmin/', controller = 'survey', action = 'adminSurvey')
+    map.connect('/surveyAdmin/setFeaturedSurvey', controller = 'survey', action = 'setFeaturedSurvey')
+    map.connect('/surveyAdmin/setFeaturedSurvey/', controller = 'survey', action = 'setFeaturedSurvey')
+    map.connect('/survey/addFacilitator', controller = 'survey', action = 'addFacilitator')
+    map.connect('/survey/addFacilitator/', controller = 'survey', action = 'addFacilitator')
+    map.connect('/survey/addAdmin', controller = 'survey', action = 'addAdmin')
+    map.connect('/survey/addAdmin/', controller = 'survey', action = 'addAdmin')
+    
+    # Adding surveys
+    map.connect('/addSurvey', controller = 'survey', action = 'addSurvey')
+    map.connect('/addSurvey/handler', controller = 'survey', action = 'addSurveyHandler')
+    
+    # Editing surveys
+    map.connect('/survey/{id1}/{id2}/edit', controller = 'survey', action = 'edit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/edit/', controller = 'survey', action = 'edit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/edit/handler', controller = 'survey', action = 'editHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/edit/handler/', controller = 'survey', action = 'editHandler', id1 = '{id1}', id2 = '{id2}')
+    
+    map.connect('/survey/{id1}/{id2}/upload', controller = 'survey', action = 'upload', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/upload/', controller = 'survey', action = 'upload', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/upload/handler', controller = 'survey', action = 'uploadSurveyHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/upload/handler/', controller = 'survey', action = 'uploadSurveyHandler', id1 = '{id1}', id2 = '{id2}')
+    
+    map.connect('/survey/{id1}/{id2}/addFacilitator', controller = 'survey', action = 'addFacilitatorToSurvey', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/addFacilitator/', controller = 'survey', action = 'addFacilitatorToSurvey', id1 = '{id1}', id2 = '{id2}')
+    
+    # Activating surveys
+    map.connect('/survey/{id1}/{id2}/activate', controller = 'survey', action = 'activate', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/activate/', controller = 'survey', action = 'activate', id1 = '{id1}', id2 = '{id2}')
+    
+    # Submitting survey answers
+    map.connect('/survey/submit/radio/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitRadio', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/radio/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitRadio', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/checkbox/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitCheckbox', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/checkbox/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitCheckbox', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/textarea/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitTextarea', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/textarea/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitTextarea', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/slider/{id1}/{id2}/{id3}/{id4}', controller = 'survey', action = 'submitSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/survey/submit/slider/{id1}/{id2}/{id3}/{id4}/', controller = 'survey', action = 'submitSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/survey/submit/multiSlider/{id1}/{id2}/{id3}/{id4}', controller = 'survey', action = 'submitMultiSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/survey/submit/multiSlider/{id1}/{id2}/{id3}/{id4}/', controller = 'survey', action = 'submitMultiSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/survey/submit/itemRank/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitItemRank', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/itemRank/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitItemRank', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    
+    
     # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
@@ -268,6 +328,8 @@ def make_map():
     
     map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
     map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
+    map.connect('/surveys', controller = 'actionlist', action='index', id='surveys')
+    map.connect('/surveys/', controller = 'actionlist', action='index', id='surveys')
     map.connect('/searchWorkshops/{id1}/{id2}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchWorkshops/{id1}/{id2}/', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchUsers/{id1}/{id2}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')

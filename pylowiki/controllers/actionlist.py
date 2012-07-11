@@ -8,9 +8,12 @@ from pylowiki.lib.base import BaseController, render
 
 from pylowiki.lib.db.page import get_all_pages
 from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID
+from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes
+from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
+
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
@@ -28,7 +31,6 @@ class ActionlistController(BaseController):
         """Create a list of pages with the given action/option """
         """Valid actions: edit, revision, delete, restore, sitemap """
         c.action = id
-
         if c.action == "sitemap":
             c.title = c.heading = c.action
             c.action = ""
@@ -36,26 +38,51 @@ class ActionlistController(BaseController):
         elif c.action == 'sitemapIssues':
             c.title = c.heading = 'Workshops'
             c.list = getActiveWorkshops()
+        elif c.action == 'surveys':
+            c.title = c.heading = 'Surveys'
+            c.list = getActiveSurveys()
         else:
             c.title = c.heading = "Which " + c.action + "?"
 
         if c.action == "restore":
             c.list = get_all_pages(1)
 
-        """
-        if c.action == "issues":
-            c.title = c.heading = c.action
-            c.action = ""
-        else:
-            c.list = get_all_pages()
-        """
+        if 'user' in session:
+            items = []
+            userZip = int(c.authuser['postalCode'])
+            for item in c.list:
+                itemZip = map(int, item['publicPostalList'].split(','))
+                if userZip in itemZip:
+                    items.append(item)
+            c.list = items
+            
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
             items_per_page = 10, item_count = c.count
         )
-
-        return render('/derived/list_workshops.html')
+        if len(c.list) >= 1:
+            featuredSurvey = getFeaturedSurvey()
+            if not featuredSurvey:
+                setFeaturedSurvey(c.list[0])
+                c.mainSurvey = c.list[0]
+                c.surveys = c.list[1:]
+            else:
+                featuredSurveyID = int(featuredSurvey['survey'])
+                featuredSurvey = getSurveyByID(featuredSurveyID)
+                log.info(featuredSurvey['active'])
+                if int(featuredSurvey['active']) == 0:
+                    c.mainSurvey = None
+                else:
+                    c.mainSurvey = featuredSurvey
+                for i in range(len(c.list)):
+                    if c.list[i].id == featuredSurveyID:
+                        c.list.pop(i)
+                        break
+                c.surveys = c.list
+        else:
+            c.mainSurvey = []
+        return render('/derived/list_surveys.bootstrap')
 
     def searchWorkshops( self, id1, id2  ):
         log.info('searchWorkshops %s %s' % (id1, id2))
