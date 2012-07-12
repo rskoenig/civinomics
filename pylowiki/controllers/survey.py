@@ -512,29 +512,8 @@ class SurveyController(BaseController):
                 f.write(line)
 
         # Assuming there are results to print, this is the header for them
-        #version 1
-        line = '\n\n%s\t%s\t%s\t%s\t%s\t' %('entry #', 'time', 'slide number', 'key', 'answer')
-        s += '%s\n' % line
-        f.write(line)
-        
-        # Write all the results.
-        userNum = 0
-        userNumDict = {}
-        for item in results:
-            owner = getUserByID(item.owner)
-            if owner['email'] not in userNumDict:
-                userNum += 1
-                userNumDict[owner['email']] = userNum
-            thisUser = userNumDict[owner['email']]
-            for key in item:
-                #log.info("key: "+key+", val: "+item[key])
-                if key.find('answer') >= 0:
-                    line = '%s\t%s\t%s\t%s\t%s\t' %(thisUser, item.date, item['slideNum'], key, item[key])
-                    s += '%s\n' % line
-                    f.write(line)
 
-        #version 2
-        line = '\n\n%s\t%s\t%s\t%s\t%s\t' %('entry #', 'time', 'slide number', 'key', 'answer')
+        line = '\n\n%s\t%s\t%s\t%s\t%s\t' %('user #', 'time', 'slide number', 'key', 'answer')
         s += '%s\n' % line
         f.write(line)
 
@@ -556,31 +535,6 @@ class SurveyController(BaseController):
                     line = '%s\t%s\t%s\t%s\t%s\t' %(thisUser, item.date, item['slideNum'], thisKey, item[key])
                     s += '%s\n' % line
                     f.write(line)
-
-        #version 3
-        line = '\n\n%s\t%s\t%s\t%s\t' %('entry #', 'time', 'slide number', 'answer')
-        s += '%s\n' % line
-        f.write(line)
-
-        for item in results:
-            owner = getUserByID(item.owner)
-            if owner['email'] not in userNumDict:
-                userNum += 1
-                userNumDict[owner['email']] = userNum
-            thisUser = userNumDict[owner['email']]
-            allAnswers = ''
-            for key in item:
-                if key.find('answer') >= 0:
-                    thisKey = key
-                    if thisKey.find('_') >= 0:
-                        thisKey = thisKey.replace('answer_','')
-                    if not allAnswers:
-                        allAnswers = '%s_%s' % (thisKey, item[key])
-                    else:
-                        allAnswers += ', %s_%s' % (thisKey, item[key])
-            line = '%s\t%s\t%s\t%s\t' %(thisUser, item.date, item['slideNum'], allAnswers)
-            s += '%s\n' % line
-            f.write(line)
 
         f.close()
         response.headers['Content-disposition'] = 'attachment; filename=%s'%filename
