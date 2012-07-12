@@ -1,0 +1,28 @@
+<%inherit file = "/base/template.html"/>
+<h1> Moderation Access </h1>
+<ul>
+    <li><a href = "/moderation/comments/disabled"> Disabled comments </a></li>
+    <li><a href = "/moderation/comments/pending"> Pending comments </a></li>
+    <li><a href = "/moderation/suggestions/disabled"> Disabled suggestions </a></li>
+    <li><a href = "/moderation/suggestions/pending"> Pending suggestions </a></li>
+    <li><a href = "/moderation/articles/disabled"> Disabled articles </a></li>
+    <li><a href = "/moderation/articles/pending"> Pending articles </a></li>
+    % if c.authuser.accessLevel >= 300:
+        <br />
+        <br />
+        <h1> Administration Access </h1>
+        <li> <a href = "/admin"> Admin Panel </a> </li>
+    % endif
+</ul>
+
+<%def name = 'extraStyles()'>
+	
+</%def>
+
+<%def name = 'extraScripts()'>
+	
+</%def>
+
+<%def name = 'extraHTML()'>
+
+</%def>
