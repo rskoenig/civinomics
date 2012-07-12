@@ -93,7 +93,7 @@ ${return_to()}
                         % if c.isAdmin or c.isFacilitator:
                             <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages" style="padding-left:10px;">Add slideshow images</a><br />
                             <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow" style="padding-left:10px;">Edit slideshow</a><br />
-                            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSettings" style="padding-left:10px;">Configure workshop</a><br /><br />
+                            <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/configure" style="padding-left:10px;">Configure workshop</a><br /><br />
                         % endif
                     % for facilitator in c.facilitators:
                          <% fuser = getUserByID(facilitator.owner)%>
@@ -113,13 +113,13 @@ ${return_to()}
                         </span>
                     </h3>
                     <ul class="related_links gray">
-                        ## Each issue has one article - the background wiki
+                        ## Each issue has one resource - the background wiki
                         % if int(c.w['numResources']) == 1:
                             <p class="clr" style="padding-left:10px; padding-top:10px;">
                                 No news!
                             </p>
                         % else:
-                            % for item in c.articles:
+                            % for item in c.resources:
                                 <% author = getUserByID(item.owner) %> 
                                 % if item['type'] == "post":
                                     <li>

@@ -11,9 +11,9 @@ from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.workshop import getWorkshop
 #from pylowiki.model import commit, Event, get_page
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.event import Event, getParentEvents
+from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
 from pylowiki.lib.db.page import get_page
-from pylowiki.lib.db.comment import Comment, getComment
+from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags
 
@@ -61,58 +61,93 @@ class CommentController(BaseController):
             h.flash('You are not authorized', 'error')
             return redirect('/')
 
-        return render('/derived/comment_admin.html')
+        return render('/derived/comment_admin.bootstrap')
 
     @h.login_required
     def modCommentHandler(self):
         backlink = '/'
+
+        commentID = request.params['commentID']
+        comment = getComment(commentID)
+
+        commentType = request.params['commentType']
+
+        workshopCode = request.params['workshopCode']
+        workshopURL = request.params['workshopURL']
+        w = getWorkshop(workshopCode, workshopURL)
+
+        otherCode = request.params['otherCode']
+        otherURL = request.params['otherURL']
+    
+        if commentType == 'resource':
+           backlink = "/workshop/%s/%s/resource/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
+        elif commentType == 'suggestion':
+           backlink = "/workshop/%s/%s/suggestion/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
+        elif commentType == 'background':
+           backlink = "/workshop/%s/%s/background"%(workshopCode, workshopURL)
+        elif commentType == 'feedback':
+           backlink = "/workshop/%s/%s/feedback"%(workshopCode, workshopURL)
+           
         try:
-           commentID = request.params['commentID']
-           comment = getComment(commentID)
-
-           commentType = request.params['commentType']
-
-           workshopCode = request.params['workshopCode']
-           workshopURL = request.params['workshopURL']
-           w = getWorkshop(workshopCode, workshopURL)
-
-           otherCode = request.params['otherCode']
-           otherURL = request.params['otherURL']
-
            modCommentReason = request.params['modCommentReason']
            verifyModComment = request.params['verifyModComment']
 
-           if commentType == 'resource':
-              backlink = "/workshop/%s/%s/resource/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
-           elif commentType == 'suggestion':
-              backlink = "/workshop/%s/%s/suggestion/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
-           elif commentType == 'background':
-              backlink = "/workshop/%s/%s/background"%(workshopCode, workshopURL)
-           elif commentType == 'feedback':
-              backlink = "/workshop/%s/%s/feedback"%(workshopCode, workshopURL)
+           modType = request.params['modType']
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
               h.flash('You are not authorized', 'error')
               return redirect(backlink)    
 
         except:
-           h.flash('All fields required', 'error')
+           backlink += "/modComment/%s"%(commentID)
+           "h.flash('All fields required', 'error')"
+           alert = {'type':'error'}
+           alert['title'] = 'All Fields Required'
+           alert['content'] = ''
+           "alert['content'] = 'Please check all Required Fields'"
+           session['alert'] = alert
+           session.save()
            return redirect(backlink)    
 
-        # disable or enable the comment, log the event
-        if comment['disabled'] == '0':
-           comment['disabled'] = True
-           modTitle = "Comment Disabled"
-        else:
-           comment['disabled'] = False
-           modTitle = "Comment Enabled %s"%commentID
+        if modCommentReason == "":
+            modCommentReason = "No Reason Given"
 
+        # disable or enable the comment, log the event        
+        modTitle = "" 
+        if modType == 'disable':
+            if comment['disabled'] == '0':
+               comment['disabled'] = True
+               modTitle = "Comment Disabled"
+            else:
+               comment['disabled'] = False
+               modTitle = "Comment Enabled"
+            e = Event(modTitle, modCommentReason, comment, c.authuser)
+           # events = getCommentEvent(comment.id)
+           # latestEvent = events[len(events)-1]
+
+            if 'disableEvents' not in comment.keys():
+                comment['disableEvents'] = e.e.id
+            else:
+                comment['disableEvents'] = comment['disableEvents'] + ',' + str(e.e.id)
+        # delete the object, take it out of the # of comments in a discussion
+        elif modType == 'delete':
+            dis = getDiscussionByID(int(comment['discussion_id']))
+            if comment['deleted'] == '0':
+               comment['deleted'] = True
+               comment['disabled'] = False
+               "dis['numComments'] = int(dis['numComments']) - 1"
+               modTitle = "Comment Deleted"
+               e = Event(modTitle, modCommentReason, comment, c.authuser)
+               if 'deleteEvents' not in comment.keys():
+                    comment['deleteEvents'] = e.e.id
+               else:
+                   "Should never need to be down here since anything can only be deleted once"
+                   comment['deleteEvents'] = comment['deleteEvents'] + ',' + str(e.e.id)
         commit(comment)
-        e = Event(modTitle, modCommentReason, comment, c.authuser)
 
         h.flash(modTitle, 'success')
         return redirect(backlink)
-
+    
     @h.login_required
     def addComment(self):
         try:
@@ -181,7 +216,7 @@ class CommentController(BaseController):
     @h.login_required   
     def disable(self, id):
         """disable a comment by id"""
-        comment = get_comment( id )
+        comment = getComment( id )
         if comment:
             if session['user'] == comment.event.user.name:
                 comment.disable()
@@ -192,6 +227,11 @@ class CommentController(BaseController):
             h.flash( "Invalid comment id", "error" )
         return redirect( session['return_to'] )
 
+    def adminCommentDelete(self, id):
+        comment = getComment(id)
+        deleteComment(comment)
+        return redirect( session['return_to'] )  
+    
     @h.login_required
     def edit(self, id):
         """

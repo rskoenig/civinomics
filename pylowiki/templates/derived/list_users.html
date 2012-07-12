@@ -14,56 +14,83 @@
                     % else:
                       <div class="blockthumb"><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" /></a></div>
                     % endif
-					<div><strong><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a></strong>
-					<br />
-					<a href="/account/edit">Edit My Profile</a>
-                                        </div>
-				</div>
-                                <div>
-                                        <h3>Public Spheres</h3>
-                                        <% c.geoInfo = getGeoInfo(c.authuser.id) %> 
-                               </div>
-                               <div class="blockcontainer">
-                        <a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
-                        <a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
-                        <a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
-                        <img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />&nbsp;&nbsp;United States</a><br>
-                        <img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
-                            </div>
-                            <div>
-                                 <h3>Show Me...</h3>
-                                 <br />
-                                 <form class="left" id="searchWorkshops" action="/searchName/" method = "post">
+                         <div><strong><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a></strong>
+                            <br />
+                            <a href="/profile/edit">Edit My Profile</a>
+                         </div>
+                      </div>
+                   <div>
+                      <h3>Public Spheres</h3>
+                      <% c.geoInfo = getGeoInfo(c.authuser.id) %> 
+                   </div>
+                   <div class="blockcontainer">
+                      <a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['cityTitle']}</a><br>
+                      <a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['countyTitle']}</a><br>
+                      <a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['stateTitle']}</a><br>
+                      <img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />&nbsp;&nbsp;United States</a><br>
+                      <img src="/images/flags/earth_thumb.gif" width="60" />&nbsp;&nbsp;Earth</a><br>
+                   </div>
+                <div>
+                <h3>Show Me...</h3>
+                <br />
+                <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post">
+                Members in my <select name="scopeLevel">
+                     <option value=8>City</option>
+                     <option value=6>County</option>
+                     <option value=4>State</option>
+                     <option value=2>Country</option>
+                </select>
+                <br />
+                <button type="submit" class="gold">Search</button>
+                </form>
+                <br /><br />
+             </div>
+                <div>
+                     <br />
+                     <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
+                     Workshops in my <select name="scopeLevel">
+                     <option value=8>City</option>
+                     <option value=6>County</option>
+                     <option value=4>State</option>
+                     <option value=2>Country</option>
+                     </select>
+                     <br />
+                     <button type="submit" class="gold">Search</button>
+                     </form>
+                     <br /><br />
+                </div>
+             <div>
+                <br />
+                <form class="left" id="searchWorkshops" action="/searchName/" method = "post">
                                  <select name="searchType">
                                  <option>Workshops</option> 
                                  <option>Members</option> 
                                  </select>&nbsp;&nbsp;&nbsp;named<br />
-                                 <input type=text name=searchString><br />
-                                 <br />
-                                 <button type="submit" class="gold">Search</button>
-                                 </form>
-                            </div>
-                                 <br /><br />
-                                 <br /><br />
-                                 <br />
-                            <div>
-                                 <h3>Public Tags</h3>
-                                 <% pTags = getPublicTagCount() %>
-                                 % for pT in pTags.keys():
-                                    <% fixedpT = pT.replace(" ", "_") %>
-                                 <a href=/searchTags/${fixedpT}/>${pT}</a> : ${pTags[pT]}<br />
-                                 % endfor
-                            </div>
-                            <div>
-                                 <h3>Member Tags</h3>
-                                 <% mTags = getMemberTagCount() %>
-                                 % for mT in mTags.keys():
-                                    <% fixedmT = mT.replace(" ", "_") %>
-                                 <a href=/searchTags/${fixedmT}/>${mT}</a> : ${mTags[mT]}<br />
-                                 % endfor
-                            </div>
-			</div><!-- col-1 -->
-			<div id="col-2">
+                <input type=text name=searchString><br />
+                <br />
+                <button type="submit" class="gold">Search</button>
+                </form>
+              </div>
+              <br /><br />
+              <br /><br />
+              <div>
+                 <h3>Public Tags</h3>
+                 <% pTags = getPublicTagCount() %>
+                 % for pT in pTags.keys():
+                    <% fixedpT = pT.replace(" ", "_") %>
+                    <a href=/searchTags/${fixedpT}/>${pT}</a> : ${pTags[pT]}<br />
+                 % endfor
+              </div>
+              <div>
+                 <h3>Member Tags</h3>
+                 <% mTags = getMemberTagCount() %>
+                 % for mT in mTags.keys():
+                    <% fixedmT = mT.replace(" ", "_") %>
+                    <a href=/searchTags/${fixedmT}/>${mT}</a> : ${mTags[mT]}<br />
+                 % endfor
+              </div>
+           </div><!-- col-1 -->
+           <div id="col-2">
 				<div class="banner_div">
 					<h2 class="banner">${c.heading}</h2>
 				</div>

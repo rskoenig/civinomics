@@ -31,7 +31,6 @@ def make_map():
     map.connect('/issue/{id}', controller = 'issue', action = 'home', id = '{id}')
     map.connect('/issue/{id}/leaderboard', controller = 'leaderboard', action = 'index', id = '{id}')
     map.connect('/issue/{id}/discussion', controller = 'discussion', action = 'index', id = '{id}')
-    map.connect('/issue/{id1}/news/{id2}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/issue/{id1}/suggestion/{id2}/rate/{id3}', controller = 'suggestion', action = 'rate', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/comment/{id}', controller = 'comment', action = 'index', id = '{id}')
     map.connect('/moderation', controller = 'moderation', action = 'index')
@@ -86,21 +85,17 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/background/', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
 
-    # Workshop settings
-    map.connect('/workshop/{id1}/{id2}/editSettings', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/editSettings/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshops/{id1}/{id2}/editSettings', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshops/{id1}/{id2}/editSettings/', controller = 'workshop', action = 'editSettings', id1 = '{id1}', id2 = '{id2}')
+    # Workshop configuration
+    map.connect('/workshop/{id1}/{id2}/configure', controller = 'workshop', action = 'configure', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configure/', controller = 'workshop', action = 'configure', id1 = '{id1}', id2 = '{id2}')
 
+    # Workshop configuration submit handler
+    map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler/', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    
     # Workshop feedback
     map.connect('/workshop/{id1}/{id2}/feedback', controller = 'workshop', action = 'feedback', id1 = '{id1}', id2 = '{id2}')
 
-    # Workshop settings submit handler
-    map.connect('/workshop/{id1}/{id2}/editWorkshopHandler', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/editWorkshopHandler/', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshops/{id1}/{id2}/editWorkshopHandler', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshops/{id1}/{id2}/editWorkshopHandler/', controller = 'workshop', action = 'editWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
-    
     # Workshop admin
     map.connect('/workshop/{id1}/{id2}/admin', controller = 'workshop', action = 'admin', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/admin/', controller = 'workshop', action = 'admin', id1 = '{id1}', id2 = '{id2}')
@@ -108,9 +103,6 @@ def make_map():
     # Workshop admin submit handler
     map.connect('/workshop/{id1}/{id2}/adminWorkshopHandler', controller = 'workshop', action = 'adminWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/adminWorkshopHandler/', controller = 'workshop', action = 'adminWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
-
-    # Workshop feedback
-    map.connect('/workshop/{id1}/{id2}/feedback', controller = 'workshop', action = 'feedback', id1 = '{id1}', id2 = '{id2}')
 
     # System Administration
     map.connect('/systemAdmin', controller = 'systemAdmin', action = 'index')
@@ -121,60 +113,165 @@ def make_map():
     map.connect('/systemAdmin/handler/', controller = 'systemAdmin', action = 'handler')
 
 
-
     # Resources
-    map.connect('/resource/handler/{id1}/{id2}', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/resource/handler/{id1}/{id2}/', controller = 'news', action = 'handler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'news', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/addResource/{id1}/{id2}', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/addResource/{id1}/{id2}/', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newResource/{id1}/{id2}', controller = 'resource', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newResource/{id1}/{id2}/', controller = 'resource', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editResource/{id1}/{id2}', controller = 'resource', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editResource/{id1}/{id2}/', controller = 'resource', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveResource/{id1}/{id2}', controller = 'resource', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveResource/{id1}/{id2}/', controller = 'resource', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
+
+    map.connect('/resource/handler/{id1}/{id2}', controller = 'resource', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/resource/handler/{id1}/{id2}/', controller = 'resource', action = 'handler', id1 = '{id1}', id2 = '{id2}')
+
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/inactiveResources', controller = 'workshop', action = 'inactiveResources', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/inactiveResources/', controller = 'workshop', action = 'inactiveResources', id1 = '{id1}', id2 = '{id2}')
+
     # Resource flagging
-    map.connect('/flagResource/{id1}', controller = 'news', action = 'flagResource', id1 = '{id1}')
+    map.connect('/flagResource/{id1}', controller = 'resource', action = 'flagResource', id1 = '{id1}')
 
     # Resource modding
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'news', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'news', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     
-    map.connect('/modResourceHandler', controller = 'news', action = 'modResourceHandler')
-    map.connect('/modResourceHandler/', controller = 'news', action = 'modResourceHandler')
+    map.connect('/modResourceHandler', controller = 'resource', action = 'modResourceHandler')
+    map.connect('/modResourceHandler/', controller = 'resource', action = 'modResourceHandler')
+    map.connect('/noteResourceHandler', controller = 'resource', action = 'noteResourceHandler')
+    map.connect('/noteResourceHandler/', controller = 'resource', action = 'noteResourceHandler')
 
     
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/addSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'newSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'newSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'editSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'editSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'saveSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/saveSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'saveSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshops/{id1}/{id2}/suggestion/{id3}/{id4}', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshops/{id1}/{id2}/suggestion/{id3}/{id4}/', controller = 'suggestion', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/inactiveSuggestions', controller = 'workshop', action = 'inactiveSuggestions', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/inactiveSuggestions/', controller = 'workshop', action = 'inactiveSuggestions', id1 = '{id1}', id2 = '{id2}')
 
     # Suggestion flagging
     map.connect('/flagSuggestion/{id1}', controller = 'suggestion', action = 'flagSuggestion', id1 = '{id1}')
 
     # Suggestion modding
-    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modSuggestion', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modSuggestion/', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/modSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/modSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}')
     
     map.connect('/modSuggestionHandler', controller = 'suggestion', action = 'modSuggestionHandler')
     map.connect('/modSuggestionHandler/', controller = 'suggestion', action = 'modSuggestionHandler')
+    map.connect('/adoptSuggestionHandler', controller = 'suggestion', action = 'adoptSuggestionHandler')
+    map.connect('/adoptSuggestionHandler/', controller = 'suggestion', action = 'adoptSuggestionHandler')
+    map.connect('/noteSuggestionHandler', controller = 'suggestion', action = 'noteSuggestionHandler')
+    map.connect('/noteSuggestionHandler/', controller = 'suggestion', action = 'noteSuggestionHandler')
 
+    # Surveys
+    map.connect('/survey/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/surveys/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/surveys/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+
+    map.connect('/showSurveys', controller = 'survey', action = 'showSurveys')
+    map.connect('/showSurveys/', controller = 'survey', action = 'showSurveys')
+    
+    map.connect('/viewResults/{id1}/{id2}', controller = 'survey', action = 'viewResults', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/viewResults/{id1}/{id2}/', controller = 'survey', action = 'viewResults', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/generateResults/{id1}/{id2}', controller = 'survey', action = 'generateResults', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/generateResults/{id1}/{id2}/', controller = 'survey', action = 'generateResults', id1 = '{id1}', id2 = '{id2}')
+    
+    # Survey admin
+    map.connect('/surveyAdmin', controller = 'survey', action = 'adminSurvey')
+    map.connect('/surveyAdmin/', controller = 'survey', action = 'adminSurvey')
+    map.connect('/surveyAdmin/setFeaturedSurvey', controller = 'survey', action = 'setFeaturedSurvey')
+    map.connect('/surveyAdmin/setFeaturedSurvey/', controller = 'survey', action = 'setFeaturedSurvey')
+    map.connect('/survey/addFacilitator', controller = 'survey', action = 'addFacilitator')
+    map.connect('/survey/addFacilitator/', controller = 'survey', action = 'addFacilitator')
+    map.connect('/survey/addAdmin', controller = 'survey', action = 'addAdmin')
+    map.connect('/survey/addAdmin/', controller = 'survey', action = 'addAdmin')
+    
+    # Adding surveys
+    map.connect('/addSurvey', controller = 'survey', action = 'addSurvey')
+    map.connect('/addSurvey/handler', controller = 'survey', action = 'addSurveyHandler')
+    
+    # Editing surveys
+    map.connect('/survey/{id1}/{id2}/edit', controller = 'survey', action = 'edit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/edit/', controller = 'survey', action = 'edit', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/edit/handler', controller = 'survey', action = 'editHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/edit/handler/', controller = 'survey', action = 'editHandler', id1 = '{id1}', id2 = '{id2}')
+    
+    map.connect('/survey/{id1}/{id2}/upload', controller = 'survey', action = 'upload', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/upload/', controller = 'survey', action = 'upload', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/upload/handler', controller = 'survey', action = 'uploadSurveyHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/upload/handler/', controller = 'survey', action = 'uploadSurveyHandler', id1 = '{id1}', id2 = '{id2}')
+    
+    map.connect('/survey/{id1}/{id2}/addFacilitator', controller = 'survey', action = 'addFacilitatorToSurvey', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/addFacilitator/', controller = 'survey', action = 'addFacilitatorToSurvey', id1 = '{id1}', id2 = '{id2}')
+    
+    # Activating surveys
+    map.connect('/survey/{id1}/{id2}/activate', controller = 'survey', action = 'activate', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/survey/{id1}/{id2}/activate/', controller = 'survey', action = 'activate', id1 = '{id1}', id2 = '{id2}')
+    
+    # Submitting survey answers
+    map.connect('/survey/submit/radio/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitRadio', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/radio/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitRadio', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/checkbox/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitCheckbox', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/checkbox/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitCheckbox', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/textarea/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitTextarea', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/textarea/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitTextarea', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/slider/{id1}/{id2}/{id3}/{id4}', controller = 'survey', action = 'submitSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/survey/submit/slider/{id1}/{id2}/{id3}/{id4}/', controller = 'survey', action = 'submitSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/survey/submit/multiSlider/{id1}/{id2}/{id3}/{id4}', controller = 'survey', action = 'submitMultiSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/survey/submit/multiSlider/{id1}/{id2}/{id3}/{id4}/', controller = 'survey', action = 'submitMultiSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/survey/submit/itemRank/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitItemRank', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/survey/submit/itemRank/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitItemRank', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    
+    
     # User profile
-    map.connect('/profile/{id1}/{id2}', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/', controller = 'account', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     
     # User profile follow/unfollow
-    map.connect('/profile/{id1}/{id2}/follow', controller = 'account', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/follow/', controller = 'account', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/unfollow', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/unfollow/', controller = 'account', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/follow', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/follow/', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/unfollow', controller = 'profile', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/unfollow/', controller = 'profile', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
     
     # User profile enable/disable
-    map.connect('/profile/{id1}/{id2}/enable', controller = 'account', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/enable/', controller = 'account', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/enable', controller = 'profile', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/enable/', controller = 'profile', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
 
     # User accessLevel
-    map.connect('/profile/{id1}/{id2}/privs', controller = 'account', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/privs/', controller = 'account', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/privs', controller = 'profile', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/privs/', controller = 'profile', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
+
+    # User admin
+    map.connect('/profile/{id1}/{id2}/admin', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/admin/', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
+
+    # User account admin
+    map.connect('/profile/{id1}/{id2}/account', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/account/', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
+
+    # Cofacilitation invitation and response
+    map.connect('/profile/{id1}/{id2}/coFacilitateInvite', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/coFacilitateInvite/', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
+
+    map.connect('/profile/{id1}/{id2}/coFacilitateHandler', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/coFacilitateHandler/', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
+
+    map.connect('/workshop/{id1}/{id2}/resignFacilitator', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/resignFacilitator/', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
 
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
@@ -231,6 +328,8 @@ def make_map():
     
     map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
     map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
+    map.connect('/surveys', controller = 'actionlist', action='index', id='surveys')
+    map.connect('/surveys/', controller = 'actionlist', action='index', id='surveys')
     map.connect('/searchWorkshops/{id1}/{id2}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchWorkshops/{id1}/{id2}/', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchUsers/{id1}/{id2}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
@@ -239,11 +338,14 @@ def make_map():
     map.connect('/searchTags/{id1}/', controller='actionlist', action='searchTags', id='searchTags', id1 = '{id1}')
     map.connect('/searchName/', controller='actionlist', action='searchName', id='searchName')
     map.connect('/searchName', controller='actionlist', action='searchName', id='searchName')
+    map.connect('/searchGeoUsers', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
+    map.connect('/searchGeoUsers/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
+    map.connect('/searchGeoWorkshops', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
+    map.connect('/searchGeoWorkshops/', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
 
-    map.connect('/account/edit', controller = 'account', action = 'edit')
-    map.connect('/account/editSubmit', controller = 'account', action = 'editSubmit')
-    #map.connect('/account/{id}', controller='account', action='user', id='{id}')
-    map.connect('/account/{id}', controller = 'home', action = 'mainPage', id = '{id}')
+    map.connect('/profile/edit', controller = 'profile', action = 'edit')
+    map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')
+    map.connect('/profile/{id}', controller = 'home', action = 'mainPage', id = '{id}')
 
     ################
     #  AreYouSure  #

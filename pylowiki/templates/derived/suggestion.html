@@ -1,5 +1,6 @@
 <%!
-    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.user import getUserByID, isAdmin
+    from pylowiki.lib.db.facilitator import isFacilitator
 %>
 
 <%inherit file = "/base/template.html"/>
@@ -13,7 +14,7 @@ ${return_to()}
                 <br/>
         	</div> <!-- left headline -->
         	<div id="suggestion_main" class="left clr">
-        		<h3>Suggestion <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span></h3>
+                        <h3>Suggestion <span class="right">add new suggestion<a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span></h3>
         		<div class="left" id="suggestion_info">
 					<p class="left">
 						<strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a></strong>
@@ -28,13 +29,21 @@ ${return_to()}
                             <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" alt="avatar" class="right"/></a>
                         % endif
 					    <br />
+                                        % if isAdmin(c.author.id):
+                                           <% uTitle = ' (Admin)' %>
+                                        % elif isFacilitator(c.author.id, c.w.id):
+                                           <% uTitle = ' (Facilitator)' %>
+                                        % else:
+                                           <% uTitle = '' %>
+                                        % endif
+
 					    <span class="right">
-					        Author: <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a>
+					        Author: <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a>${uTitle}
 				        </span>
 				    </p>
 		            <p class="clr suggestion_summary"></p>
 		                % if 'user' in session: 
-    		            	% if c.authuser.id == c.s.owner or int(c.authuser['accessLevel']) >= 200:
+    		            	% if c.authuser.id == c.s.owner or c.isFacilitator or c.isAdmin:
                                 ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
                                 <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
                                 <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
@@ -51,7 +60,7 @@ ${return_to()}
                                 </div>
                             </div>
                             
-                            <div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv0', 'edit0', 'edit')" id="edit0" style="font-size: 12px;">edit</a></div>
+                            ##<div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv0', 'edit0', 'edit')" id="edit0" style="font-size: 12px;">edit</a></div>
                             ${h.end_form()}
                             % else:
                             	${c.content}
@@ -61,6 +70,12 @@ ${return_to()}
                         % endif
 					<br />
 		            <br />
+                                % if c.authuser and (c.authuser.id == c.w.owner or c.isAdmin):
+                                  <div class="right">&nbsp; &nbsp;<a href="/modSuggestion/${c.s['urlCode']}/${c.s['url']}">admin suggestion</a></div>
+                                % endif
+                                % if c.authuser and (c.authuser.id == c.s.owner or c.isAdmin):
+                                  <div class="right"><a href="/editSuggestion/${c.s['urlCode']}/${c.s['url']}">edit suggestion</a></div>
+                                % endif
                     
                     % if "user" in session:
                         % if c.rating:
@@ -117,44 +132,6 @@ ${return_to()}
         	</div>
 
 <%def name = 'extraHTML()'>
-    <div id="pop">
-        <div id="suggestionMod">
-            <h2 class="clr left">
-                <p class="right close"><a href="#" class="x">X</a>close</p>
-                <p class="left">Moderate a Suggestion</p>
-            </h2>
-            <form class="left" id="suggestionmoddata" action="/modSuggestion/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}" method = "post">
-                <div id="suggestionmodform" class="left">
-                Foo: <input type=text name=foo value="foo">
-                <div id="suggestionmodshare" class="left">
-                    <button type="submit" class="gold">Submit</button>
-                </div>
-            </form>
-        </div><!-- suggestionMod -->
-        <div id="suggestion">
-            <h2 class="clr left">
-                <p class="right close"><a href="#" class="x">X</a>close</p>
-                <p class="left">Add a Suggestion</p>
-            </h2>
-            <form class="left" id="suggestiondata" action="/addSuggestion/${c.w['urlCode']}/${c.w['url']}" method = "post">
-                <div id="suggestionform" class="left">
-                    Title:
-                    <br />
-                    <input type="text" id="suggestiontitle" name = "title"/>
-                    <br />
-                    <br />
-                    Description:
-                    <br />
-                    <textarea id="suggestiontext" name="data" class="markitup"></textarea>
-                    <br />
-                    <br />
-                </div>
-                <div id="suggestionshare" class="left">
-                    <button type="submit" class="gold">Submit</button>
-                </div>
-            </form>
-        </div><!-- suggestion -->
-    </div><!-- pop -->
 </%def>
 
 <%def name = 'extraStyles()'>

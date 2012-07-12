@@ -154,6 +154,12 @@ properties = {
 })
 orm.mapper(Data, t_data)
     
+def getThingByID(id):
+    try:
+        return meta.Session.query(Thing).filter_by(id = id).one()
+    except:
+        return False
+
 ## Non-reflected tables may be defined and mapped at module level
 #foo_table = sa.Table("Foo", meta.metadata,
 #    sa.Column("id", sa.types.Integer, primary_key=True),

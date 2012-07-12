@@ -1,7 +1,8 @@
 <%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID
-    from pylowiki.lib.db.workshop import getWorkshop
+    from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, getWorkshopsByOwner
+    from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
     from pylowiki.lib.db.user import isAdmin
 %>
         	<div id="profileside" class="col left">
@@ -115,7 +116,7 @@
 		    	<br /> <br />
                         <% mStart = c.user.date.strftime('%B %d %Y') %>
 		    	Member since ${mStart}
-                       % if c.authuser['email'] != c.user['email']:
+                       % if c.authuser and c.authuser['email'] != c.user['email']:
 		    	<br /> <br />
                           % if c.isFollowing:
 <div class="button_container">
@@ -127,32 +128,41 @@
 </div>
                           % endif
                        % endif
-                       % if isAdmin(c.authuser.id):
-                          % if c.user['disabled'] == '1':
-                             <% eAction = 'Enable' %>
-                          % else:
-                             <% eAction = 'Disable' %>
+                       % if c.authuser and c.authuser.id == c.user.id:
+                          % if c.account and c.account['numRemaining'] != '0':
+                             <br /><br />
+                             <a href="/addWorkshop">Create New Workshop</a>
+                             <br />
                           % endif
-                          <br />
-                          <form method="post" name="enableUser" id="enableUser" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/">
-                          <input type=radio name="verifyEnableUser" value="0"> Verify ${eAction}
-                          &nbsp;&nbsp;<button type="submit" class="gold">${eAction} User</button>
-                          </form>
-                          <br />Current Access Level: ${c.user['accessLevel']}
-                          <form method="post" name="userPrivs" id="userPrivs" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/">
-                          % if c.user['accessLevel'] == '100':
-                          <input type=radio name="setPrivs" value="0"> User &nbsp; &nbsp; &nbsp;
-                          <input type=radio name="setPrivs" value="200"> Admin
-                          % elif int(c.user['accessLevel']) >= 200:
-                          <input type=radio name="setPrivs" value="0"> User &nbsp; &nbsp; &nbsp;
-                          <input type=radio name="setPrivs" value="100"> Facilitator
-                          % else:
-                          <input type=radio name="setPrivs" value="100"> Facilitator &nbsp; &nbsp; &nbsp;
-                          <input type=radio name="setPrivs" value="200"> Admin
-                          % endif
-                          &nbsp;&nbsp;<button type="submit" class="gold">Set Privs</button>
-                          </form>
                        % endif
+                       % if c.authuser:
+                           <% checkW = getWorkshopsByOwner(c.authuser.id) %>
+                           <% wList = [] %>
+                           % for w in checkW:
+                              % if w['deleted'] == '0':
+                                     % if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
+                                    <% wList.append(w) %>
+                                 % endif 
+                              % endif
+                           % endfor
+                           % if c.authuser.id != c.user.id and wList:
+                           <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/">
+                              <br />
+                              <button type="submit" class="gold">Invite</button> to co-facilitate <select name=inviteToFacilitate>
+                              % for myW in wList:
+                                 <br />
+                                 <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
+                                 <br /><br />
+                              % endfor                       
+                              </select>
+                           </form>
+                           % endif
+                           % if isAdmin(c.authuser.id):
+                              <br />
+                              <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin">Admin Member</a>
+                              <br />
+                           % endif
+                        % endif
                         </div><!-- blockleft --> 
                         <div class="blockrighthalf">
         		<!-- <a href="${c.geoInfo[0]['postalURL']}"><img src="${c.geoInfo[0]['postalFlagThumb']}" width="60" />&nbsp;&nbsp;${c.geoInfo[0]['postalTitle']}</a><br> -->
@@ -164,6 +174,46 @@
                         </div><!-- blockright -->
                         </div><!-- blockcontainer -->
 			</div><!-- profiletop -->
+                        % if c.pendingFacilitators and c.authuser.id == c.user.id:
+	        	   <h3>Invitations to CoFacilitate Workshops</h3>
+                           <% fLoop = 1 %>
+                           <% fCount = 0 %>
+                           <% fNum = len(c.pendingFacilitators) %>
+                           % for f in c.pendingFacilitators:
+                               <% workshop = getWorkshopByID(f['workshopID']) %>
+                               % if fLoop == 1:
+                                  <div class="blockcontainer">
+                                     <div class="blockleft">
+                               % else:
+                                     <div class="blockright">
+                               % endif
+                               <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateHandler/">
+                               <input type=hidden name=workshopCode value="${workshop['urlCode']}">
+                               <input type=hidden name=workshopURL value="${workshop['url']}">
+                               % if workshop['mainImage_hash'] == 'supDawg':
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/>
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+                               % else:
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/>
+                                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+                               % endif
+                               <br /> <br />
+                               &nbsp; &nbsp; &nbsp;<button type="submit" name=acceptInvite class="gold">Accept</button>
+                               &nbsp; &nbsp; &nbsp;<button type="submit" name=declineInvite class="gold">Decline</button>
+                               </form>
+                               </div><!-- inner block -->
+                               <% fLoop += 1 %>
+                               % if fLoop == 5 or fCount == fNum - 1:
+                                 <% fLoop = 1 %> 
+                                 </div><!-- block container -->
+                                 <br/>
+                               % endif
+                               <% fCount += 1 %>
+                           % endfor
+                           % if fLoop != 1:
+                                 </div><!-- block container -->
+                           % endif
+                        % endif
                         % if c.facilitatorWorkshops:
 	        	   <h3>Workshops I Am Facilitating</h3>
                            <% fLoop = 1 %>
@@ -431,6 +481,7 @@
 </%def>
 
 <%def name = 'extraScripts()'>
+        <script src="/js/h2banner.js" type="text/javascript"></script>
 	<script src = "${h.url_for('/js/slides.js')}" type="text/javascript"></script>
 	<script src = "${h.url_for('/js/follow.js')}" type="text/javascript"></script>
 </%def>

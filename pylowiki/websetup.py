@@ -61,7 +61,7 @@ def setup_app(command, conf, vars):
             u['activated'] = '1'
             u['disabled'] = '0'
             # Create event log entry
-            e = Event("Create", "Auto create admin acct.", u)
+            e = Event("Create", "Auto create admin acct.", u, u)
             # commented out by CCN - crashes
             log.info('hi!')
             commit(u)

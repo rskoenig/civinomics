@@ -1,6 +1,7 @@
 <%!
     import time, datetime
-    from pylowiki.lib.db.user import getUserByID
+    import pylowiki.lib.helpers as h
+    from pylowiki.lib.db.user import getUserByID, isAdmin
     from pylowiki.lib.utils import urlify
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.flag import checkFlagged
@@ -53,8 +54,19 @@
                        <strong>Ends:</strong> ${c.w['endTime']}
                     % endif
                     <br /> <br />
-                    <strong>Suggestions:</strong> ${len(c.suggestions)}
+                    <strong>Active Suggestions:</strong> ${len(c.suggestions)}
                     <br />
+                    % if c.dsuggestions:
+                        <strong><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/inactiveSuggestions">Inactive Suggestions</a>:</strong> ${len(c.dsuggestions)}
+                        <br />
+                    % endif
+                    <strong>Active Resources:</strong> ${len(c.resources)}
+                    <br />
+                    % if c.dresources:
+                        <strong><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/inactiveResources">Inactive Resources</a>:</strong> ${len(c.dresources)}
+                        <br />
+                    % endif
+
                     <strong>Participants:</strong> ${len(c.participants)}
                     <ul>
                         <% counter = 1 %>
@@ -84,8 +96,8 @@
         <div id="cols">
             <div class="col one left">
                 <h3>Resources 
-                 % if c.isScoped or c.isFacilitator:
-                        <span class="right">add resource<a href="#" class="media plus">+</a></span>
+                 % if (c.isScoped and c.w['allowResources'] == '1')  or c.isFacilitator:
+                        <span class="right">add a new resource<a href="/newResource/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span>
                  %endif
                  </h3>
                 <ul>
@@ -102,11 +114,19 @@
                                     <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">${item['title']}</a></span>
                                     <br />
                                     <p class="clr">
-                                         <img src="/images/icons/news_icon.jpg" height="40" width="40" style="float: left; margin-right: 5px;" /> ${item['comment'][:50]}...
+                                    <% rContent = h.literal(h.reST2HTML(item['comment'])) %>
+                                         <img src="/images/icons/news_icon.jpg" height="40" width="40" style="float: left; margin-right: 5px;" /> ${rContent[:50]}...
                                          <span class="right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${item['urlCode']}/${item['url']}">more</a></span>
                                     </p>
                                     <div class="clr">
-                                        <span class="gray">posted by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span> <span class="time">${timeSince(item.date)}</span> <span class="gray">ago</span>
+                                        % if isAdmin(author.id):
+                                           <% uTitle = ' (Admin)' %>
+                                        % elif isFacilitator(author.id, c.w.id):
+                                           <% uTitle = ' (Facilitator)' %>
+                                        % else:
+                                           <% uTitle = '' %>
+                                        % endif
+                                        <span class="gray">Posted by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>${uTitle}</span><br /><span class="time">${timeSince(item.date)}</span> <span class="gray">ago</span>
                                     </div>
                                 </li>
                             % endif
@@ -116,8 +136,8 @@
             </div><!-- .col one -->
             <div class="col two left">
                 <h3>suggestions 
-                % if c.isScoped or c.isFacilitator:
-                  <span class="right">add a suggestion<a href="#" class="suggestion plus">+</a></span>
+                % if (c.isScoped and c.w['allowSuggestions'] == '1')  or c.isFacilitator or c.isAdmin:
+                  <span class="right">add new suggestion<a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span>
                 % endif
                 </h3>
                 <ul>
@@ -134,7 +154,14 @@
                         <li class="sugg">
                             <span class="colhd"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${item['urlCode']}/${item['url']}">${item["title"]}</a></span>
                             <br />
-                            Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
+                            % if isAdmin(author.id):
+                               <% uTitle = ' (Admin)' %>
+                            % elif isFacilitator(author.id, c.w.id):
+                               <% uTitle = ' (Facilitator)' %>
+                             % else:
+                               <% uTitle = '' %>
+                            % endif
+                            Author: <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>${uTitle}
                             ${item["suggestionSummary"]}
                             <br />
                             
@@ -207,17 +234,20 @@
                     % if c.isAdmin or c.isFacilitator:
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages">Add slideshow images</a><br />
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow">Edit slideshow</a><br />
-                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSettings">Configure workshop</a><br />
+                        <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/configure">Configure workshop</a><br />
                         <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/admin">Admin workshop</a><br /><br />
                     % endif
                 % for facilitator in c.facilitators:
+                   % if facilitator['disabled'] != '1':
+                     <div>
                      <% fuser = getUserByID(facilitator.owner)%>
                      % if fuser['pictureHash'] == 'flash':
                         <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${fuser['name']}</a>
                      % else:
                         <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:50px;"/> ${fuser['name']}</a>
                      % endif
-                         ##<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/${fuser['pictureHash']}.thumbnail" />&nbsp;${fuser['name']}</a>
+                     </div>
+                   % endif
                 % endfor
                 % if c.motd['enabled'] == '1':
                   <br />
@@ -265,30 +295,6 @@
             </div><!-- photo_container -->
         </div><!-- slideshow -->
         
-        <div id="suggestion">
-			<h2 class="clr left">
-				<p class="right close"><a href="#" class="x">X</a>close</p>
-				<p class="left">Add a Suggestion</p>
-			</h2>
-			<form class="left" id="suggestiondata" action="/addSuggestion/${c.w['urlCode']}/${c.w['url']}" method = "post">
-				<div id="suggestionform" class="left">
-					Title:
-					<br />
-					<input type="text" id="suggestiontitle" name = "title"/>
-					<br />
-					<br />
-					Description:
-					<br />
-					<textarea id="suggestiontext" name="data" class="markitup"></textarea>
-					<br />
-					<br />
-				</div>
-				<div id="suggestionshare" class="left">
-					<button type="submit" class="gold">Submit</button>
-				</div>
-			</form>
-        </div><!-- suggestion -->
-		
         <div id="invite_pop">
 			<h2 class="clr left">
 				<p class="right close"><a href="#" class="x">X</a>close</p>
@@ -308,33 +314,33 @@
         </div><!-- invite_pop -->
 		
         <div id="add_media">
-			<h2 class="clr left">
-				<p class="right close"><a href="#" class="x">X</a>close</p>
-				<p class="left">Add Resource</p>
-			</h2>
-			<div class="left">
-			    <form action="/resource/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
-					<div class="wide">
-						<div>
-							Resource URL:
-						</div>
-						<div>
-							<input type="text" name = "url"/>
-						</div>
-					</div>
-                    <div class="wide">
+		<h2 class="clr left">
+		<p class="right close"><a href="#" class="x">X</a>close</p>
+		<p class="left">Add Resource</p>
+		</h2>
+		<div class="left">
+		    <form action="/resource/handler/${c.w['urlCode']}/${c.w['url']}" method = "post">
+			<div class="wide">
+				<div>
+					Resource URL:
+				</div>
+				<div>
+					<input type="text" name = "url"/>
+				</div>
+			</div>
+                        <div class="wide">
                         <div>
-							Title:
-						</div>
-						<div>
-							<input type="text" name = "title"/>
-						</div>
-					</div>
-					<div class="wide">
-						<div>
-							Add comment:
-						</div>
-						<div>
+					Title:
+			</div>
+				<div>
+					<input type="text" name = "title"/>
+				</div>
+			</div>
+			<div class="wide">
+				<div>
+					Add description:
+				</div>
+				<div>
 							<textarea name = "data"></textarea>
 						</div>
 					</div>

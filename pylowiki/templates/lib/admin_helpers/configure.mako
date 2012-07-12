@@ -1,35 +1,34 @@
 
-<%inherit file = "/base/template.html"/>
 
-<SCRIPT LANGUAGE="JavaScript">
-   function clearZipList () {
-     document.edit_issue.publicPostalList.value = '';
-     return 1;
-   }    
-   function clearEligibleCheckboxes (field) {
-     // document.edit_issue.publicscope.checked = 'unchecked';
-     // return 1;
-     for (i = 0; i < field.length; i++)
-           field[i].checked = false ;
-   }
-</SCRIPT>
+<%def name="fields_alert()">
+	% if 'alert' in session:
+		<% alert = session['alert'] %> 
+        <div class="alert alert-${alert['type']}">
+            <button data-dismiss="alert" class="close">×</button>
+            <strong>${alert['title']}</strong>
+            ##${alert['content']}
+        </div>
+        <% 
+           session.pop('alert')
+           session.save()
+        %>
+	% endif
+</%def>
+
+<%def name="configure()">
 
 % if c.w['startTime'] == '0000-00-00':
      <% wstarted = 0 %>
 % else:
      <% wstarted = 1 %>
 % endif
-
-    <div class="banner_div">
-        <h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h2>
-    </div>     
-    <br /> <br />
-    <br /> <br />
-
-<form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/editWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <div class="page-header"><h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h1>
+    </div>
+ 
+<form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureWorkshopHandler" enctype="multipart/form-data" method="post" >
 
     <p>
-    <strong class="gray">Edit Workshop Settings</strong>
+    <strong class="gray">Configure Workshop</strong>
     <br /><br />
     Workshop Name: <span class="darkorange">*</span>
     <br />
@@ -40,11 +39,34 @@
     <br />
     <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>
     <br /><br />
+    % if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
+        <% yesChecked = 'checked' %>
+        <% noChecked = '' %>
+    % elif 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '0':
+        <% yesChecked = '' %>
+        <% noChecked = 'checked' %>
+    % else:
+        <% yesChecked = 'checked' %>
+        <% noChecked = '' %>
+    % endif
+    Allow members to add suggestions: <input type=radio name=allowSuggestions value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowSuggestions value=0 ${noChecked}> No<br />
+    <br /><br />
+    % if 'allowResources' in c.w and c.w['allowResources'] == '1':
+        <% yesChecked = 'checked' %>
+        <% noChecked = '' %>
+    % elif 'allowResources' in c.w and c.w['allowResources'] == '0':
+        <% yesChecked = '' %>
+        <% noChecked = 'checked' %>
+    % else:
+        <% yesChecked = 'checked' %>
+        <% noChecked = '' %>
+    % endif
+    Allow members to add resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
     <br /><br />
     Workshop Home Postal Code: ${c.w['publicPostal']}
     <br /><br />
     % if wstarted == 0:
-       Who is eligable to participate in this workshop: <span class="darkorange">*</span>
+       Who is eligible to participate in this workshop: <span class="darkorange">*</span>
        <br />
        % if c.w['publicScope'] == '10':
            <% checked = 'checked' %>
@@ -141,13 +163,11 @@
        <input type="text" name = "memberTags" size="50" maxlength="50" value = "${c.w['memberTags']}"/>
        <br /><br />
     
-       <br />
-       <br />
        When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
-   Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligable to participate. 
+   Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligible to participate. 
        <br />
        <br />
-   Note that once a workshop has started, you may not change the workshop participant eligability or tags. 
+   Note that once a workshop has started, you may not change the workshop participant eligibility or tags. 
        <br />
        <input type="checkbox" name="startWorkshop" value="Start" /> Start Workshop &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Start Workshop
        <br />
@@ -155,38 +175,14 @@
        <br />
        <br />
    % else:
-     Members eligable to participate in this workshop: residents of ${c.w['publicScopeTitle']}
+     Members eligible to participate in this workshop: residents of ${c.w['publicScopeTitle']}
      <br />
      Workshop Tags: ${c.w['publicTags']} ${c.w['memberTags']}
      <br />
      <br />
 
    % endif
-    <button type="submit" class="gold">Save Changes</button>
+    <button type="submit" class="btn btn-warning">Save Changes</button>
 </form>
 
-            
-<%def name = 'extraHTML()'>
-
-</%def>
-            
-<%def name = 'extraStyles()'>
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/styles/issue_create.css')}" />
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/js/markitup/skins/simple/style.css')}" />
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/js/markitup/sets/rst/style.css')}" />
-    <link type="text/css" rel="stylesheet" href="${h.url_for('/css/pygments/pygments-tango.css')}" />
-</%def>
-
-<%def name = 'extraScripts()'>
-    <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
-    <script src = "${h.url_for('/js/markitup/jquery.markitup.js')}" type="text/javascript"></script>
-    <script src = "${h.url_for('/js/markitup/sets/rst/set.js')}" type="text/javascript"></script>
-    <script src = "${h.url_for('/js/javascript.js')}" type="text/javascript"></script>
-    
-    <script language="javascript">
-        $(document).ready(function()	{
-            $(".markitup").markItUp(mySettings);
-        });
-    </script>
-    
 </%def>

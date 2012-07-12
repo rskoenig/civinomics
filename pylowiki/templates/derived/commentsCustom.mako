@@ -1,8 +1,9 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
-    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.user import getUserByID, isAdmin
+    from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.flag import checkFlagged
-    from pylowiki.lib.db.comment import getComment
+    from pylowiki.lib.db.comment import getComment, getCommentByCode
     from pylowiki.lib.db.rating import getRatingByID
     from pylowiki.lib.sort import sortBinaryByTopPop
     
@@ -25,27 +26,25 @@
 
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
-	<span><img src="/images/avatars/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}" style="color:#86945A;">${author['name']}</a> says: </span>
+        % if isAdmin(author.id):
+           <% uTitle = ' (Admin)' %>
+        % elif isFacilitator(author.id, c.w.id):
+           <% uTitle = ' (Facilitator)' %>
+        % else:
+           <% uTitle = '' %>
+        % endif
+	<span><img src="/images/avatars/${author['pictureHash']}.thumbnail" /> <a href = "/profile/${author['urlCode']}/${author['url']}" style="color:#86945A;">${author['name']}</a>${uTitle} says: </span>
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
-## Passes info to the comment controller, edit function, with the comment id as the only argument
+## Passes info to the comment controller, edit function, with Facilitator comment id as the only argument
 <%def name="editComment(comment, counter)">
     <% thisID = comment.id + counter %>
     ${ h.form( url( controller = "comment", action ="edit", id = comment.id ), method="put" ) }
         <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
         <div id = "section${thisID}" ondblclick="toggle('textareadiv${thisID}', 'edit${thisID}')">${comment['data']}</div>
         </td></tr></table>
-        <div style="display:none; text-align:center;" id="textareadiv${thisID}">
-            <br />
-            <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment['data']}</textarea>
-            <div style="align:right;text-align:right;">
-            
-                <button type="submit" name = "submit" value = "submit" class="right green">Submit</button>
-                ##${h.submit('submit', 'Save')}
-                <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
-            </div>
-        </div>
+        <div style="display:none; text-align:center;" id="textareadiv${thisID}"></div>
         <div style="align:left;text-align:left;">
             <a href="javascript: toggle('textareadiv${thisID}', 'edit${thisID}', 'edit')" id="edit${thisID}" style="font-size: 12px; color:#86945A;">
                 edit
@@ -77,72 +76,73 @@
         <p class="time">Posted ${timeSince(datetime.strptime(comment['lastModified'], '%a %b %d %H:%M:%S %Y'))} ago </p>
         % if "user" in session:
             <p>
-                <a href="#" class="gray flag">Flag comment</a>
-                <a href="#" class="gray reply">Reply</a>
-                % if checkFlagged(comment): 
-                      % if c.isFacilitator or c.isAdmin:
-                         % if commentType == 'suggestionMain':
-                           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modComment/${comment.id}">Flagged</a>
-                         % elif commentType == 'resource':
-                           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modComment/${comment.id}">Flagged</a>
-                         % elif commentType == 'background':
-                           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background/modComment/${comment.id}">Flagged</a>
-                         % elif commentType == 'feedback':
-                           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback/modComment/${comment.id}">Flagged</a>
-                         % else:
-                            <strong class=gray> | Flagged</strong>
-                         % endif
-                      % endif
-                % endif
-                <% commentRatings = getCommentRatings() %>
-                % if commentRatings:
-                    <%
-                        found = False
-                        for item in commentRatings:
-                            if item[0] == comment.id:
+                % if int(c.commentsDisabled) == 0:
+                    <a href="#" class="gray flag">Flag comment</a>
+                    <a href="#" class="gray reply">Reply</a>
+                    % if checkFlagged(comment): 
+                          % if c.isFacilitator or c.isAdmin:
+                             % if commentType == 'suggestionMain':
+                               | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modComment/${comment.id}">Flagged</a>
+                             % elif commentType == 'resource':
+                               | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modComment/${comment.id}">Flagged</a>
+                             % elif commentType == 'background':
+                               | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background/modComment/${comment.id}">Flagged</a>
+                             % elif commentType == 'feedback':
+                               | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback/modComment/${comment.id}">Flagged</a>
+                             % else:
+                                <strong class=gray> | Flagged</strong>
+                             % endif
+                          % endif
+                    % endif
+                    <% commentRatings = getCommentRatings() %>
+                    % if commentRatings:
+                        <%
+                            found = False
+                            if comment.id in commentRatings.keys():
                                 found = True
-                                rating = int(getRatingByID(item[1])['rating'])
-                    %>
-                    % if found:
-                        % if rating > 0:
-                            <a href="/rateComment/${comment.id}/1" class="upVote voted">
-                                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png" height="15" width="15">
-                            </a>
-                            <a href="/rateComment/${comment.id}/-1" class="downVote">
-                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
-                            </a>
-                        % elif rating < 0:
-                            <a href="/rateComment/${comment.id}/1" class="upVote">
+                                rating = int(getRatingByID(commentRatings[comment.id])['rating'])
+                        %>
+                        % if found:
+                            % if rating > 0:
+                                <a href="/rateComment/${comment.id}/1" class="upVote voted">
+                                    <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png" height="15" width="15">
+                                </a>
+                                <a href="/rateComment/${comment.id}/-1" class="downVote">
+                                    <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                                </a>
+                            % elif rating < 0:
+                                <a href="/rateComment/${comment.id}/1" class="upVote">
+                                    <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                                </a>
+                                <a href="/rateComment/${comment.id}/-1" class="downVote voted">
+                                    <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png" height="15" width="15">
+                                </a>
+                            % else:
+                                <a href="/rateComment/${comment.id}/1" class="upVote">
                                 <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
-                            </a>
-                            <a href="/rateComment/${comment.id}/-1" class="downVote voted">
-                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png" height="15" width="15">
-                            </a>
+                                </a>
+                                <a href="/rateComment/${comment.id}/-1" class="downVote">
+                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                                </a>
+                            % endif
                         % else:
                             <a href="/rateComment/${comment.id}/1" class="upVote">
-                                <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                            <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
                             </a>
                             <a href="/rateComment/${comment.id}/-1" class="downVote">
-                                <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                            <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
                             </a>
                         % endif
                     % else:
                         <a href="/rateComment/${comment.id}/1" class="upVote">
-                            <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
+                        <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
                         </a>
                         <a href="/rateComment/${comment.id}/-1" class="downVote">
-                            <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
+                        <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
                         </a>
                     % endif
-                % else:
-                    <a href="/rateComment/${comment.id}/1" class="upVote">
-                        <img src="/images/icons/glyphicons/glyphicons_343_thumbs_up.png" height="15" width="15">
-                    </a>
-                    <a href="/rateComment/${comment.id}/-1" class="downVote">
-                        <img src="/images/icons/glyphicons/glyphicons_344_thumbs_down.png" height="15" width="15">
-                    </a>
-                % endif
-                Total: ${int(comment['ups']) - int(comment['downs'])}
+                    Total: ${int(comment['ups']) - int(comment['downs'])}
+                % endif ## check for disabled
             </p>
             
             </div><!-- comment_data -->
@@ -214,10 +214,16 @@
   % else:
      <% commentString = 'comments' %>
   % endif
+  % if isAdmin(c.lastmoduser.id):
+     <% uTitle = ' (Admin)' %>
+  % elif isFacilitator(c.lastmoduser.id, c.w.id):
+     <% uTitle = ' (Facilitator)' %>
+  % else:
+     <% uTitle = '' %>
+  % endif
   % if type == 'resource' and "user" in session:
-    <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag resource</a>
-    <% showFlagged = "" %> 
-    % if c.flagged == True:
+    <div class="gray comment_data left"><span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>${uTitle} <a href="#" class="gray flag">Flag resource</a>
+    % if checkFlagged(c.resource):
        % if c.isAdmin == True or c.isFacilitator == True:
           | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource/">Flagged</a> 
        % endif
@@ -238,16 +244,12 @@
   % elif type == 'resource':
     <span class="gray"><a href="#" style="color:#86945A;">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a style="color:#86945A;" href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
   % elif type == 'suggestionMain' and "user" in session:
-    <% showFlagged = "" %> 
-    % if c.flagged == True:
-       % if c.isAdmin == True or c.isFacilitator == True:
-          <% showFlagged = ' | Flagged' %> 
-       % endif
-    % endif
-    <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a> <a href="#" class="gray flag">Flag suggestion</a>
-       % if c.isAdmin == True or c.isFacilitator == True:
-          | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}/modSuggestion">Flagged</a> 
-       % endif
+    <div class="gray comment_data left"><span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>${uTitle} <a href="#" class="gray flag">Flag suggestion</a>
+       ##% if c.isAdmin == True or c.isFacilitator == True:
+         ## % if checkFlagged(c.s):
+           ##  | <a href="/modSuggestion/${c.s['urlCode']}/${c.s['url']}">Flagged</a> 
+          ##% endif
+       ##% endif
 </span></div>
 
     <div class="flag content left">
@@ -262,8 +264,28 @@
         </span>
     </div><!-- flag_content -->
   % else:
-    <span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a></span>
+    <span class="gray"><a href="#">${discussion['numComments']} ${commentString}</a> | Last edited <span class="time">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>${uTitle}</span>
   % endif
+
+    % if c.events:
+       <% numEvents = len(c.events) %>
+       <% eString = "Events" %>
+       % if numEvents == 1:
+          <% eString = "Event" %>
+       % endif
+    <div id="comments" class="left">
+    <br /><br />
+       <h3>Administrative Actions</h3>
+       <strong>${numEvents} ${eString}:</strong>
+       <br /><br />
+       % for event in c.events:
+          <% user = getUserByID(event.owner) %>
+          ${event['title']} ${event.date} by ${user['name']}<br />
+          Note: ${event['data']}
+          <br /><br />
+       %endfor
+       </div>
+    % endif
 
     <div id="comments" class="left">
   <h3>Comments</h3>
@@ -286,6 +308,7 @@
                 <input type="hidden" id="url" name="resourceURL" value="${c.resource['url']}" />
             % endif
             % if "user" in session:
+               % if int(c.commentsDisabled) == 0:
             add a comment
             <br />
             
@@ -296,6 +319,7 @@
                 <button type="submit" name = "submit" value = "submit" class="right green">Submit</button>
             </div>
             <br />
+               % endif
             % else:
             <h4 class="utility"> 
                 Please <a href="/">login</a> or <a href="/">register</a> to leave a comment!
@@ -303,7 +327,7 @@
             %endif
         </form>
         
-        <h4>Comments</h4>
+        ##<h4>Comments</h4>
         <ul id="featuredComments">
             <% 
                 counter = 1000

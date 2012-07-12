@@ -47,13 +47,14 @@
                 <li title="Home"><a href="/">Home</a></li>
                 % if 'user' in session:
                     ##<li title="Inbox"><a href = "#">Inbox</a></li>
-                    <li title="Profile"><a href = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a></li>
-                    <li title="Account">
-                        <a href = "/account/edit">Account</a>
+                    ##<li title="Profile"><a href = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a></li>
+                    ##<li title="Account">
+                    <li title="Profile">
+                        <a href = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a>
                         <a href="#" id="nav_dropdown_arrow">&#9660;</a>
                         <div id="nav_dropdown" class="group">
                             % if int(c.authuser['accessLevel']) >= 100:
-                                <a href = "/addWorkshop">Add Workshop</a>
+                                ##<a href = "/addWorkshop">Add Workshop</a>
                             % endif
                             % if int(c.authuser['accessLevel']) >= 200:
                                 ##<a href = "/moderation">Modding</a>
@@ -61,7 +62,7 @@
                             % if isAdmin(int(c.authuser.id)):
                                 <a href = "/systemAdmin">Sys Admin</a>
                             % endif
-                            <a href = "/account/edit"> Edit </a>
+                            <a href = "/profile/edit">Edit Profile</a>
                             <a href="/login/logout">Logout</a>
                         </div>
                     </li>

@@ -109,7 +109,16 @@
 					myRating = parseInt(myRating);
 					$(this).slider('value', myRating);
 				}
-				if ($(this).hasClass('normal_slider')) {
+				if ($(this).hasClass('survey_slider')) {
+					$(this).children(".ui-slider-handle").css( "width", "44px" );
+					$(this).children(".ui-slider-handle").css( "height", "41px" );
+					$(this).children(".ui-slider-handle").css( "cursor", "default" );
+					$(this).children(".ui-slider-handle").css( "margin-top", "5px" );
+					$(this).children(".ui-slider-handle").css( "margin-right", "20px" );
+					$(this).children(".ui-slider-handle").css( "margin-left", "-1em" );
+					$(this).children(".ui-slider-handle").css( "border", "none" );
+					$(this).children(".ui-slider-handle").css( "background-image", "url(/images/sliderHandle_survey.png)" );
+				} else if ($(this).hasClass('normal_slider')) {
 					$(this).children(".ui-slider-handle").css( "width", "20px" );
 					$(this).children(".ui-slider-handle").css( "height", "31px" );
 					$(this).children(".ui-slider-handle").css( "cursor", "default" );
