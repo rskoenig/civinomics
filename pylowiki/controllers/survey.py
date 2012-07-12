@@ -15,7 +15,7 @@ from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.surveyAnswer import SurveyAnswer, getSurveyAnswer, editSurveyAnswer, getAllAnswersForSurvey
 from pylowiki.lib.db.user import getUsersWithLevelGreater, getUserByID, getUserByEmail
-from pylowiki.lib.db.geoInfo import SurveyScope
+#from pylowiki.lib.db.geoInfo import SurveyScope
 from pylowiki.lib.utils import urlify
 
 from hashlib import md5
@@ -192,13 +192,17 @@ class SurveyController(BaseController):
             survey['description'] = request.params['description']
         
         if request.params['geoScope'] != '':
-            geoScope = survey['publicPostalList']
+            #geoScope = survey['publicPostalList']
+            geoScope = request.params['geoScope']
             geoScope = geoScope.replace(' ', '')
             geoScope = geoScope.split(',')
             # Later this will use the SurveyScope object, but right now storing a comma-separated list of zip codes
             # is OK and won't break any sort of cross/backwards compatability
             survey['publicPostalList'] = ','.join(map(str, geoScope))
-            
+        
+        if request.params['estimatedTime'] != '':
+            survey['estimatedTime'] = request.params['estimatedTime']
+
         commit(survey)
         return redirect('/showSurveys')
     
@@ -508,7 +512,8 @@ class SurveyController(BaseController):
                 f.write(line)
 
         # Assuming there are results to print, this is the header for them
-        line = '\n\n%s\t%s\t%s\t%s\t' %('entry #', 'time', 'slide number', 'answer')
+        #version 1
+        line = '\n\n%s\t%s\t%s\t%s\t%s\t' %('entry #', 'time', 'slide number', 'key', 'answer')
         s += '%s\n' % line
         f.write(line)
         
@@ -520,11 +525,63 @@ class SurveyController(BaseController):
             if owner['email'] not in userNumDict:
                 userNum += 1
                 userNumDict[owner['email']] = userNum
-            entryNum = userNumDict[owner['email']]
-            line = '%s\t%s\t%s\t%s\t' %(entryNum, item.date, item['slideNum'], item['answer'])
+            thisUser = userNumDict[owner['email']]
+            for key in item:
+                #log.info("key: "+key+", val: "+item[key])
+                if key.find('answer') >= 0:
+                    line = '%s\t%s\t%s\t%s\t%s\t' %(thisUser, item.date, item['slideNum'], key, item[key])
+                    s += '%s\n' % line
+                    f.write(line)
+
+        #version 2
+        line = '\n\n%s\t%s\t%s\t%s\t%s\t' %('entry #', 'time', 'slide number', 'key', 'answer')
+        s += '%s\n' % line
+        f.write(line)
+
+        for item in results:
+            owner = getUserByID(item.owner)
+            if owner['email'] not in userNumDict:
+                userNum += 1
+                userNumDict[owner['email']] = userNum
+            thisUser = userNumDict[owner['email']]
+            for key in item:
+                log.info("key: "+key)
+                log.info("val: "+item[key])
+                if key.find('answer') >= 0:
+                    thisKey = key
+                    if thisKey.find('_') >= 0:
+                        log.info("thisKey: "+thisKey)
+                        thisKey = thisKey.replace('answer_','')
+                        log.info("thisKey: "+thisKey)
+                    line = '%s\t%s\t%s\t%s\t%s\t' %(thisUser, item.date, item['slideNum'], thisKey, item[key])
+                    s += '%s\n' % line
+                    f.write(line)
+
+        #version 3
+        line = '\n\n%s\t%s\t%s\t%s\t' %('entry #', 'time', 'slide number', 'answer')
+        s += '%s\n' % line
+        f.write(line)
+
+        for item in results:
+            owner = getUserByID(item.owner)
+            if owner['email'] not in userNumDict:
+                userNum += 1
+                userNumDict[owner['email']] = userNum
+            thisUser = userNumDict[owner['email']]
+            allAnswers = ''
+            for key in item:
+                if key.find('answer') >= 0:
+                    thisKey = key
+                    if thisKey.find('_') >= 0:
+                        thisKey = thisKey.replace('answer_','')
+                    if not allAnswers:
+                        allAnswers = '%s_%s' % (thisKey, item[key])
+                    else:
+                        allAnswers += ', %s_%s' % (thisKey, item[key])
+            line = '%s\t%s\t%s\t%s\t' %(thisUser, item.date, item['slideNum'], allAnswers)
             s += '%s\n' % line
             f.write(line)
-            
+
         f.close()
         response.headers['Content-disposition'] = 'attachment; filename=%s'%filename
         return s
@@ -710,6 +767,7 @@ class SurveyController(BaseController):
         """
         survey, slide = self._basicSubmitSetup(id1, id2, id3)
         answer = request.params['feedback']
+        answer = answer.replace('\t','    ')
         sa, result = self._basicAnswerCreation(survey, slide, answer)
         return self._basicReturnResult(result, answer)
     
