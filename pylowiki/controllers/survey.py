@@ -512,11 +512,12 @@ class SurveyController(BaseController):
                 f.write(line)
 
         # Assuming there are results to print, this is the header for them
-
         line = '\n\n%s\t%s\t%s\t%s\t%s\t' %('user #', 'time', 'slide number', 'key', 'answer')
         s += '%s\n' % line
         f.write(line)
 
+        userNum = 0
+        userNumDict = {}
         for item in results:
             owner = getUserByID(item.owner)
             if owner['email'] not in userNumDict:
