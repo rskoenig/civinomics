@@ -1,0 +1,53 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/admin_survey/helpers.mako" />
+
+% if 'message' in session:
+    <div class="row">
+        <div class="span8 offset2">
+            <div class="alert alert-${session['message']['type']}">
+                <button data-dismiss="alert" class="close">×</button>
+                <strong>${session['message']['title']}</strong> ${session['message']['content']}
+            </div>
+        </div>
+    </div>
+% endif
+
+## Maybe set this up with tabs?
+
+<div class="fluid-row">
+    <div class="span6">
+        ${helpers.showTitle('Current facilitators')}
+        ${helpers.spacer()}
+        ${helpers.showFacilitators(c.facilitators)}
+    </div>
+    <div class="span6">
+        ${helpers.showTitle('Add facilitator')}
+        ${helpers.spacer()}
+        ${helpers.addFacilitatorForm()}
+        ${helpers.spacer()}
+        ${helpers.showTitle('Add admin')}
+        ${helpers.spacer()}
+        ${helpers.addAdminForm()}
+    </div>
+</div>
+
+<div class="fluid-row">
+    <div class="span12">
+        ${helpers.showTitle('Set Featured Survey')}
+        ${helpers.spacer()}
+        ${helpers.setFeaturedSurvey(c.surveys)}
+    </div>
+</div>
+
+<%def name = 'extraStyles()'>
+    
+</%def>
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+    
+</%def>
