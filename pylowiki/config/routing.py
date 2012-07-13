@@ -333,10 +333,12 @@ def make_map():
     # Action Lists #
     ################
     
-    map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
-    map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
     map.connect('/surveys', controller = 'actionlist', action='index', id='surveys')
     map.connect('/surveys/', controller = 'actionlist', action='index', id='surveys')
+
+    """
+    map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
+    map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
     map.connect('/searchWorkshops/{id1}/{id2}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchWorkshops/{id1}/{id2}/', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchUsers/{id1}/{id2}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
@@ -349,7 +351,8 @@ def make_map():
     map.connect('/searchGeoUsers/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
     map.connect('/searchGeoWorkshops', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
     map.connect('/searchGeoWorkshops/', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
-    
+    """
+
     ################
     # Application  #
     ################
