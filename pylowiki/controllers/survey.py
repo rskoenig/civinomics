@@ -48,7 +48,7 @@ class SurveyController(BaseController):
 
     @h.login_required
     def addSurvey(self):
-        if int(c.authuser['accessLevel']) < 100:
+        if int(c.authuser['accessLevel']) < 200:
             return redirect('/')
         c.title = c.heading = 'Add Survey'
         
@@ -56,7 +56,7 @@ class SurveyController(BaseController):
     
     @h.login_required
     def addSurveyHandler(self):
-        if int(c.authuser['accessLevel']) < 100:
+        if int(c.authuser['accessLevel']) < 200:
             return redirect('/')
         
         message = {}
@@ -168,7 +168,7 @@ class SurveyController(BaseController):
         url = id2
         c.survey = getSurvey(code, urlify(url))
         if int(c.authuser['accessLevel']) < 200:
-            if c.authuser.id != c.survey.owner:
+            if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
                 return redirect('/')
         c.title = c.header = 'Edit a survey'
         
@@ -183,7 +183,7 @@ class SurveyController(BaseController):
         url = id2
         survey = getSurvey(code, urlify(url))
         if int(c.authuser['accessLevel']) < 200:
-            if c.authuser.id != survey.owner:
+            if (c.authuser.id != survey.owner) and (c.authuser.id not in map(int, survey['facilitators'].split(','))):
                 return redirect('/')
         
         if request.params['surveyName'] != '':
@@ -219,6 +219,12 @@ class SurveyController(BaseController):
         url = id2
         c.title = c.header = 'Upload a file'
         c.survey = getSurvey(code, urlify(url))
+        if int(c.authuser['accessLevel']) < 200:
+            # if not an admin..
+            if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
+                # and you're not the owner AND you're not a facilitator..
+                return redirect('/')
+
         return render('/derived/add_survey_upload.bootstrap')
     
     @h.login_required
@@ -229,6 +235,11 @@ class SurveyController(BaseController):
         code = id1
         url = id2
         c.survey = survey = getSurvey(code, urlify(url))
+        if int(c.authuser['accessLevel']) < 200:
+            if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
+                # and you're not the owner AND you're not a facilitator for this survey..
+                return redirect('/')
+
         """
             Set up a basic scaling schema - no more than ~30k surveys in a given directory.
             Accept the file, create a hash for it, make all necessary directories, and extract the file.
@@ -360,6 +371,21 @@ class SurveyController(BaseController):
         slideHash = id3
         
         c.survey = getSurvey(code, urlify(url))
+
+        if int(c.authuser['accessLevel']) < 200:
+            # if not an admin..
+            if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
+                # and you're not the owner AND you're not a facilitator for this survey..
+                userZip = int(c.authuser['postalCode'])
+                surveyZip = map(int, c.survey['publicPostalList'].split(','))
+                # and if you're not in the zipcode..
+                for thisZip in surveyZip:
+                    log.info("zip: "+str(thisZip))
+
+                if userZip not in surveyZip:
+                    # you can't check out this survey
+                    return redirect('/')
+
         c.slide = getSurveySlide(slideHash, c.survey.id)
         
         # Now grab the correct list of slides
@@ -410,6 +436,12 @@ class SurveyController(BaseController):
         url = id2
         
         survey = getSurvey(code, urlify(url))
+        if int(c.authuser['accessLevel']) < 200:
+            # if not an admin..
+            if (c.authuser.id != survey.owner) and (c.authuser.id not in map(int, survey['facilitators'].split(','))):
+                # and you're not the owner AND you're not a facilitator for this survey..
+                return redirect('/')
+
         state = int(survey['active'])
         if state == 0:
             survey['active'] = 1
@@ -427,7 +459,7 @@ class SurveyController(BaseController):
     
     @h.login_required
     def setFeaturedSurvey(self):
-        if int(c.authuser['accessLevel']) < 100:
+        if int(c.authuser['accessLevel']) < 200:
             return redirect('/')
         result = request.params['radioButton']
         l = result.split('_')
@@ -446,6 +478,11 @@ class SurveyController(BaseController):
         code = id1
         url = urlify(id2)
         c.survey = survey = getSurvey(code, url)
+        if int(c.authuser['accessLevel']) < 200:
+            # if not an admin..
+            if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
+                # and you're not the owner AND you're not a facilitator for this survey..
+                return redirect('/')
         if survey:
             results = getAllAnswersForSurvey(survey)
             if results:
@@ -475,9 +512,11 @@ class SurveyController(BaseController):
         code = id1
         url = urlify(id2)
         survey = getSurvey(code, url)
-        
+
         if int(c.authuser['accessLevel']) < 200:
-            if c.authuser.id != survey.owner or c.authuser.id not in map(int, survey['facilitators'].split(',')):
+            # if you're not an admin..
+            if (c.authuser.id != survey.owner) and (c.authuser.id not in map(int, survey['facilitators'].split(','))):
+                # and you're not the owner or a facilitator, you can't do this
                 return redirect('/')
         
         results = getAllAnswersForSurvey(survey)
