@@ -24,6 +24,16 @@ class CorpController(BaseController):
             render_var['display_navigbar'] = True
             render_var['highlight_name'] = "about"
 
+        elif (page.lower() == 'careers') :
+            render_var['body_header'] = 'CAREERS'
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = 'careers'
+
+        elif (page.lower() == 'contact') :
+            render_var['body_header'] = 'CONTACT US'
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = 'contact'
+
         elif (page.lower() == 'features') :
             render_var['body_header'] = 'FEATURES'
             render_var['display_navigbar'] = True 
@@ -33,15 +43,15 @@ class CorpController(BaseController):
             render_var['body_header'] = 'PRIVACY POLICY'
             render_var['display_navigbar'] = False
 
-        elif (page.lower() == 'careers') :
-            render_var['body_header'] = 'CAREERS'
-            render_var['display_navigbar'] = True
-            render_var['highlight_name'] = 'careers'
-
         elif (page.lower() == 'outreach') :
             render_var['body_header'] = 'OUTREACH'
             render_var['display_navigbar'] = True
             render_var['highlight_name'] = 'outreach'
+
+        elif (page.lower() == 'team') :
+            render_var['body_header'] = 'TEAM'
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = 'team'
 
         elif (page.lower() == 'terms') :
             render_var['body_header'] = 'TERMS OF USE'
@@ -52,11 +62,6 @@ class CorpController(BaseController):
             render_var['body_header'] = 'SERVICES'
             render_var['display_navigbar'] = True
             render_var['highlight_name'] = 'services'
-
-        elif (page.lower() == 'contact') :
-            render_var['body_header'] = 'CONTACT US'
-            render_var['display_navigbar'] = True
-            render_var['highlight_name'] = 'contact'
         else:
             abort(404)
         

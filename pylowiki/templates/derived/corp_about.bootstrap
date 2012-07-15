@@ -8,256 +8,29 @@
         <div class="hero-unit">
             <h2>About Us</h2>
             </br>
-
-            <h3>"The people who are crazy enough to think they can change the world, are the ones who do."</h3>
-            <blockquote class="pull-right">
-                <small>Steve Jobs</small>
-            </blockquote>    
-            </br>
-            </br>
             <p>
-            <p>Civinomics is a startup based in Santa Cruz, CA. Founded by UCSC and Stanford grads, the company's mission is to improve social decision making through better information, increased public engagement, and the collective creativity of communities.</p>
+            <h3><em>Mission</em></h3>
+            <p>We improve social decision making through better information, increased public engagement, and the collective creativity of communities.</p>
+            </br>
+            <h3><em>How it Works</em></h3>
+            <p>Our web platform and iPad survey application enable an iterative process of citizen collaboration to fix their problems.
+                </p>
+                </br>
+                    <ul class="thumbnails">
+                          <li>
+                              <img class="thumbnail" width="600px" src="/images/corp/howitworks.png" alt="">
+                          </li>
+                    </ul>
+                </br>
+                <p> It starts with new suggestions (1) that are then refined and developed online (2). Participants can vote on these suggestions
+                    at all times and we even get more people involved through public outreach and iPad polling (3). When a representative number of people
+                    have weighed in we work with public representatives and legislative bodies to put idea into action (4).</p>
+                </br>
+            <h3><em>Recent Campaigns</em></h3>
+                </br>
+                <iframe src="http://player.vimeo.com/video/42731448" width="600" height="375" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> <p><a href="http://vimeo.com/42731448">Civinomics Land Trust Outreach</a> from <a href="http://vimeo.com/user10885436">Robert Singleton</a> on <a href="http://vimeo.com">Vimeo</a>.</p>
+         </div><!--/.hero-unit-->
          </div><!--/.hero-unit-->
 
-
-        <div class="row-fluid">
-            <h2>Team</h2>
-            </br>
-        </div>
-
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/todd_anderson.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3> Todd Anderson - Lead Mobile Engineer </h3>
-                    <p>Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/marshall_comden.png" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3> Marshall Comden - Community Representative</h3>
-                    <p>Marshall is an undergraduate student at UC Santa Cruz, majoring in Business Management Economics.  Since coming to Santa Cruz from Southern California, he has been passionate about educating and informing locals on community issues.  In his spare time, Marshall enjoys surfing, riding his bike, traveling and eating local organic cuisine.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/noelle_daley.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3> Noelle Daley - Social Media Intern</h3>
-                    <p>Noelle is a marketing handywoman.  With a diverse background in marketing, social media, and account management, Noelle helps maintain Civinomics' online presence.  She is passionate about bringing social justice and technology together, and believes in the collaborative, pragmatic nature of start-ups. Noelle is currently finishing her undergraduate degree at the University of California, Santa Cruz in Sociology, with emphases in urban studies and education.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/edolfo_garzalicudine.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3> Edolfo Garza-Licudine - CTO </h3>
-                    <p>Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010.</p>
-                </div>
-        </div><!--/.row-fluid-->    
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/evante_garzalicudine.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3> Evante Garza-Licudine - Front End Engineer </h3>
-                    <p>Evante recently graduated from UC Berkeley with a BA in math, though he spent much of his undergrad time in the newsroom. He has been a blogger, layout designer and web designer since 2009.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                        <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/manu_koenig.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Manu Koenig - CEO </h3>
-                    <p>Manu is Civinomic's organizational mastermind. Previously he was General Manager of Strategic Partnerships at Martini Media Network - a Venrock backed vertical ad network. There he also served as Operations Manager, running campaigns for clients including Lexus, Chanel, and British Air. Manu holds dual US-European citizenship and worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin. He studied German and Management Science at Stanford.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/nora_lewis.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Nora Lewis - Blogger </h3>
-                    <p>Nora Lewis is a soon-to-be graduate of UCSC with a degree in Politics. A busy bee, most of her out of class time is spent in a variety of places around town. She interns at NextSpace Santa Cruz, is a scooper at the Penny Ice Creamery and blogs about new, interesting and cool things happening locally for Civinomics.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/bianca_pisano.png" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Bianca Pisano - Community Representative </h3>
-                    <p>Bianca is a graduate from UCSB with a degree in Environmental Studies.  New to the Santa Cruz area, she spends a lot of her time exploring and hiking.  She is originally from New York so she likes to take advantage of all the Santa Cruz sunshine.  She loves good local food and good local people so you can often find her at the farmers markets.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/robert_singleton.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Robert Singleton - CMO </h3>
-                    <p>Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/nicolett_smith.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Nicolett Smith - Business Develpment Intern </h3>
-                    <p>Nicolett is a senior at UC Santa Cruz, majoring in both Legal Studies and Politics. She has vast experience in customer relations. Although Nicolett spends a significant portion of her time reading and writing about legal and political theory, she primarily enjoys traveling, exercising and socializing. </p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/aaron_white.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Aaron White - Community Representative </h3>
-                    <p><em>Aaron's bio coming soon</em> </p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row-fluid">
-            <h2>Advisors</h2>
-            </br>
-        </div>
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/kevin_bell.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Kevin Bell - Non-profit Relations</h3>
-                    <p>Kevin Bell has over thirty years experience in energy resource policy and energy-related innovation, working in a staff and consulting capacity in the public, private, and non-profit sectors as a researcher, regulator, and advocate of next-generation energy technologies. His expertise includes the design and implementation of energy and carbon models and public policies for enabling the low-carbon economy. He is the former CEO of a successful venture that developed a new generation of educational tools and technologies for teaching science. He received his Masters in Public Administration from the Harvard Kennedy School of Government.</p>
-                </div>
-        </div><!--/.row-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/michael_leahey.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Michael Leahey - Non-profit Formation</h3>
-                    <p>Michael's eclectic background includes consulting with companies from grassroots to corporate; coaching with entrepreneurs from high-tech to no-tech; writing, speaking, teaching, and living social entrepreneurship and sustainable development. Michael's personal interests are equally eclectic: from Yoga teacher training and Zen meditation, to organic gardening and Permaculture, to writing and spoken-word poetry. This unique perspective fuses the intellect and the intuitive, providing companies he works with to become resilient, impactful, and happy.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/chris_neklason.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Chris Neklason - Product Management</h3>
-                    <p>Chris Neklason has been involved with community networking since 1984, before the Internet, and has decades of experience as a UNIX software engineer and as co-founder of Cruzio, one of the oldest ongoing independent ISPs in the United States.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/david_pascal.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>David Pascal - Channel Development</h3>
-                    <p>David was most recently President of the San Francisco Carbon Collaborative. Previously, David was the Lead Clean Technology and Green Business Advocate for the City and County of San Francisco, where his time was split between the Mayor's Office of Economic and Workforce Development and the City's Department of the Environment. In that capacity, David was responsible for attracting and retaining companies whose products and services address our greatest environmental challenges. Prior to entering the government sector, David worked as an environmental sustainability consultant, and served as the Director of Events and Entertainment for Al Gore's Alliance for Climate Protection.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/roger_schoenman.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Roger Schoenman - Political Economy</h3>
-                    <p>Roger Schoenman is a faculty member at the University of California, Santa Cruz who researches the impact of social networks on economic development and the role of new media in mass protest. He is also experienced with machine coding and network analysis of very large collections of political debate. Recent publications investigate the impact of party-competition on the politicization of the economy and institutional development. He has recently completed a manuscript titled Networks, Uncertainty and Institution-Building in Europe's Emerging Markets (forthcoming, Cambridge University Press), that examines the impact of party systems and cleavages, business-elite origins, and the structure of business networks on institutional development in the evolving market democracies of the post-socialist area. He holds a PhD in political science from Columbia University and has been awarded fellowships at the European University Institute in Florence, Columbia University and by the American Council of Learned Societies.</p>
-                </br>
-                </br>
-                </br>
-                </div>
-        </div><!--/.row-fluid-->
-    </div><!--/.span8-->
-    
 </%def>
 
