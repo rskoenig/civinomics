@@ -59,7 +59,6 @@
     <title>Civinomics</title>
     <link href="/styles/bootstrap/civinomics_corp.css" rel="stylesheet">
     <link href="/styles/bootstrap/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-    <%namespace name="helpers" file="/derived/splash/helpers.mako" />
     
 </head>
 <body>
