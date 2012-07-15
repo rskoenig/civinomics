@@ -38,6 +38,16 @@ class CorpController(BaseController):
             render_var['display_navigbar'] = True
             render_var['highlight_name'] = 'careers'
 
+        elif (page.lower() == 'outreach') :
+            render_var['body_header'] = 'OUTREACH'
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = 'outreach'
+
+        elif (page.lower() == 'terms') :
+            render_var['body_header'] = 'TERMS OF USE'
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = 'terms'
+
         elif (page.lower() == 'services') :
             render_var['body_header'] = 'SERVICES'
             render_var['display_navigbar'] = True
@@ -51,5 +61,5 @@ class CorpController(BaseController):
             abort(404)
         
         c.title = render_var['body_header']
-        return render("/derived/corp_"+page+".mako", extra_vars=render_var)
+        return render("/derived/corp_"+page+".bootstrap", extra_vars=render_var)
 
