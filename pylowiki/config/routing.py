@@ -43,7 +43,6 @@ def make_map():
     ########################################################################################################
 
     """
-    map.connect('/', controller = 'home', action = 'index' ) # load the homepage.
     map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation
     map.connect('/comment/{id}', controller = 'comment', action = 'index', id = '{id}')
     map.connect('/moderation', controller = 'moderation', action = 'index')
@@ -356,6 +355,7 @@ def make_map():
     ################
     # Application  #
     ################
+    map.connect('/', controller = 'home', action = 'index' ) # load the homepage.
     """
     map.connect('/search', controller = 'search', action = 'index' ) # search root route
     map.connect('/search/handler', controller = 'search', action = 'handler' ) # search handler route
