@@ -86,7 +86,7 @@
 				</div> <!-- /.row -->
 				<div class="row">
 					<a href="/corp/about">About Us</a> |
-					<a href="/corp/contact">Contact</a> |
+					##<a href="/corp/contact">Contact</a> |
 					<a href="/corp/terms">Terms of Use</a> |
 					<a href="/corp/privacy">Privacy</a>
 				</div> <!-- /.row -->
