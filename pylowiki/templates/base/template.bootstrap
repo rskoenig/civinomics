@@ -58,7 +58,9 @@
     							        % if int(c.authuser['accessLevel']) >= 200:
     							         <li><a href="/surveyAdmin">Survey admin</a></li>
     							        % endif
-    							        <li><a href="/addSurvey">Add survey</a></li>
+    							        % if int(c.authuser['accessLevel']) >= 200:
+    							        	<li><a href="/addSurvey">Add survey</a></li>
+    							        % endif
     							        <li><a href="/showSurveys">My surveys</a></li>
     							    </ul>
     							</li>
