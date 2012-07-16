@@ -41,7 +41,8 @@ class CorpController(BaseController):
 
         elif (page.lower() == 'privacy') :
             render_var['body_header'] = 'PRIVACY POLICY'
-            render_var['display_navigbar'] = False
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = "privacy"
 
         elif (page.lower() == 'outreach') :
             render_var['body_header'] = 'OUTREACH'
