@@ -24,7 +24,7 @@
     <ul class="thumbnails">
         <li class="span3">
             <div class="thumbnail" style="background-color:#D1CCC3;">
-                <img src="/images/teaser/muni.jpg">
+                <img src="/images/corp/muni.png">
                 <div class="caption">
                     <h5 style="text-align:center;">MUNI</h5>
                     <p>
@@ -35,7 +35,7 @@
         </li>
         <li class="span3">
             <div class="thumbnail" style="background-color:#C4D198;">
-                <img src="/images/teaser/zynga_tech.jpg">
+                <img src="/images/corp/tech.png">
                 <div class="caption">
                     <h5 style="text-align:center;">SF Tech Economy</h5>
                     <p>
@@ -46,7 +46,7 @@
         </li>
         <li class="span3">
             <div class="thumbnail" style="background-color:#D1CCC3;">
-                <img src="/images/teaser/bevgs.jpg">
+                <img src="/images/corp/soda.png">
                 <div class="caption">
                     <h5 style="text-align:center;">Soda Tax</h5>
                     <p>
