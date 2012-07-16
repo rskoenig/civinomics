@@ -21,17 +21,30 @@ def make_map():
 
     # CUSTOM ROUTES HERE
 
+    ########################################################################################################
+    # 
+    # Administrative routes
+    # 
+    ########################################################################################################
+    """
+    # System Administration
+    map.connect('/systemAdmin', controller = 'systemAdmin', action = 'index')
+    map.connect('/systemAdmin/', controller = 'systemAdmin', action = 'index')
+
+    # System admin submit handler
+    map.connect('/systemAdmin/handler', controller = 'systemAdmin', action = 'handler')
+    map.connect('/systemAdmin/handler/', controller = 'systemAdmin', action = 'handler')
+    """
+
+    ########################################################################################################
+    # 
+    # Platform-specific routes
+    # 
+    ########################################################################################################
+
+    """
     map.connect('/', controller = 'home', action = 'index' ) # load the homepage.
     map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation
-    map.connect('/issue/{id}/background', controller = 'issue', action = 'background', id = '{id}')
-    map.connect('/issue/readThis', controller = 'issue', action = 'readThis')
-    map.connect('/issue/{id}/edit', controller = 'issue', action = 'edit', id = '{id}')
-    map.connect('/issue/{id}/edit_handler', controller = 'issue', action = 'edit_handler', id = '{id}')
-    map.connect('/issue/{id}/editSlideshow', controller = 'issue', action = 'editSlideshow', id = '{id}')
-    map.connect('/issue/{id}', controller = 'issue', action = 'home', id = '{id}')
-    map.connect('/issue/{id}/leaderboard', controller = 'leaderboard', action = 'index', id = '{id}')
-    map.connect('/issue/{id}/discussion', controller = 'discussion', action = 'index', id = '{id}')
-    map.connect('/issue/{id1}/suggestion/{id2}/rate/{id3}', controller = 'suggestion', action = 'rate', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/comment/{id}', controller = 'comment', action = 'index', id = '{id}')
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
@@ -104,15 +117,6 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/adminWorkshopHandler', controller = 'workshop', action = 'adminWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/adminWorkshopHandler/', controller = 'workshop', action = 'adminWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
 
-    # System Administration
-    map.connect('/systemAdmin', controller = 'systemAdmin', action = 'index')
-    map.connect('/systemAdmin/', controller = 'systemAdmin', action = 'index')
-
-    # System admin submit handler
-    map.connect('/systemAdmin/handler', controller = 'systemAdmin', action = 'handler')
-    map.connect('/systemAdmin/handler/', controller = 'systemAdmin', action = 'handler')
-
-
     # Resources
     map.connect('/addResource/{id1}/{id2}', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
     map.connect('/addResource/{id1}/{id2}/', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
@@ -144,7 +148,6 @@ def make_map():
     map.connect('/modResourceHandler/', controller = 'resource', action = 'modResourceHandler')
     map.connect('/noteResourceHandler', controller = 'resource', action = 'noteResourceHandler')
     map.connect('/noteResourceHandler/', controller = 'resource', action = 'noteResourceHandler')
-
     
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
@@ -175,6 +178,60 @@ def make_map():
     map.connect('/adoptSuggestionHandler/', controller = 'suggestion', action = 'adoptSuggestionHandler')
     map.connect('/noteSuggestionHandler', controller = 'suggestion', action = 'noteSuggestionHandler')
     map.connect('/noteSuggestionHandler/', controller = 'suggestion', action = 'noteSuggestionHandler')
+
+    # Cofacilitation invitation and response
+    map.connect('/profile/{id1}/{id2}/coFacilitateInvite', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/coFacilitateInvite/', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
+
+    map.connect('/profile/{id1}/{id2}/coFacilitateHandler', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/coFacilitateHandler/', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
+
+    map.connect('/workshop/{id1}/{id2}/resignFacilitator', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/resignFacilitator/', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
+
+    # Comments
+    map.connect('/addComment', controller = 'comment', action = 'addComment')
+    map.connect('/addComment/', controller = 'comment', action = 'addComment')
+    
+    # Comment flagging
+    map.connect('/flagComment/{id1}', controller = 'comment', action = 'flagComment', id1 = '{id1}')
+
+    # Comment modding
+    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
+    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
+
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'resource')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modComment/{id5}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'resource')
+
+    map.connect('/workshop/{id1}/{id2}/background/modComment/{id3}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'background', id5 = 'background', id6 = 'background')
+    map.connect('/workshop/{id1}/{id2}/background/modComment/{id3}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'background', id5 = 'background', id6 = 'background')
+
+    map.connect('/workshop/{id1}/{id2}/feedback/modComment/{id3}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
+    map.connect('/workshop/{id1}/{id2}/feedback/modComment/{id3}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
+
+    map.connect('/modCommentHandler', controller = 'comment', action = 'modCommentHandler')
+    map.connect('/modCommentHandler/', controller = 'comment', action = 'modCommentHandler')
+
+    # Ratings
+    map.connect('/rateSuggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/rateFacilitation/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateFacilitation', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/rateResource/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/rateComment/{id1}/{id2}', controller = 'rating', action = 'rateComment', id1 = '{id1}', id2 = '{id2}')
+
+    map.connect('/geo/postal/{id1}/{id2}', controller = 'geo', action = 'showPostalInfo', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/geo/city/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCityInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/geo/county/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCountyInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/geo/state/{id1}/{id2}', controller = 'geo', action = 'showStateInfo', id1 = '{id1}', id2 = '{id2}')
+
+    # Temporary
+    map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    """
+
+    ########################################################################################################
+    # 
+    # Online Survey specific routes
+    # 
+    ########################################################################################################
 
     # Surveys
     map.connect('/survey/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
@@ -236,11 +293,16 @@ def make_map():
     map.connect('/survey/submit/itemRank/{id1}/{id2}/page/{id3}', controller = 'survey', action = 'submitItemRank', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/survey/submit/itemRank/{id1}/{id2}/page/{id3}/', controller = 'survey', action = 'submitItemRank', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     
+    ########################################################################################################
+    # 
+    # User routes
+    # 
+    ########################################################################################################
     
     # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
-    
+    """
     # User profile follow/unfollow
     map.connect('/profile/{id1}/{id2}/follow', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/follow/', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
@@ -262,74 +324,21 @@ def make_map():
     # User account admin
     map.connect('/profile/{id1}/{id2}/account', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/account/', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
-
-    # Cofacilitation invitation and response
-    map.connect('/profile/{id1}/{id2}/coFacilitateInvite', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/coFacilitateInvite/', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
-
-    map.connect('/profile/{id1}/{id2}/coFacilitateHandler', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/coFacilitateHandler/', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
-
-    map.connect('/workshop/{id1}/{id2}/resignFacilitator', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/resignFacilitator/', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
-
-    # Comments
-    map.connect('/addComment', controller = 'comment', action = 'addComment')
-    map.connect('/addComment/', controller = 'comment', action = 'addComment')
     
-    # Comment flagging
-    map.connect('/flagComment/{id1}', controller = 'comment', action = 'flagComment', id1 = '{id1}')
-
-    # Comment modding
-    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
-    map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
-
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'resource')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modComment/{id5}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'resource')
-
-    map.connect('/workshop/{id1}/{id2}/background/modComment/{id3}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'background', id5 = 'background', id6 = 'background')
-    map.connect('/workshop/{id1}/{id2}/background/modComment/{id3}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'background', id5 = 'background', id6 = 'background')
-
-    map.connect('/workshop/{id1}/{id2}/feedback/modComment/{id3}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
-    map.connect('/workshop/{id1}/{id2}/feedback/modComment/{id3}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
-
-    map.connect('/modCommentHandler', controller = 'comment', action = 'modCommentHandler')
-    map.connect('/modCommentHandler/', controller = 'comment', action = 'modCommentHandler')
-
-    # Ratings
-    map.connect('/rateSuggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rateFacilitation/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateFacilitation', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rateResource/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rateComment/{id1}/{id2}', controller = 'rating', action = 'rateComment', id1 = '{id1}', id2 = '{id2}')
-
-    map.connect('/geo/postal/{id1}/{id2}', controller = 'geo', action = 'showPostalInfo', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/geo/city/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCityInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/geo/county/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCountyInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/geo/state/{id1}/{id2}', controller = 'geo', action = 'showStateInfo', id1 = '{id1}', id2 = '{id2}')
-
-    # Temporary
-    map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
-    
+    # Edit user info
+    map.connect('/profile/edit', controller = 'profile', action = 'edit')
+    map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')
+    """
     ################
     # Action Lists #
     ################
     
-    map.connect('/edit', controller='actionlist', action='index', id='edit')    
-    map.connect('/edit/', controller='actionlist', action='index', id='edit')
-    
-    map.connect('/revision', controller='actionlist', action='index', id='revision')    
-    map.connect('/revision/', controller='actionlist', action='index', id='revision')  
-    
-    map.connect('/delete', controller='actionlist', action='index', id='delete')    
-    map.connect('/delete/', controller='actionlist', action='index', id='delete')    
-
-    map.connect('/restore', controller='actionlist', action='index', id='restore')    
-    map.connect('/restore/', controller='actionlist', action='index', id='restore')
-    
-    map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
-    map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
     map.connect('/surveys', controller = 'actionlist', action='index', id='surveys')
     map.connect('/surveys/', controller = 'actionlist', action='index', id='surveys')
+
+    """
+    map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
+    map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
     map.connect('/searchWorkshops/{id1}/{id2}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchWorkshops/{id1}/{id2}/', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchUsers/{id1}/{id2}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
@@ -342,34 +351,12 @@ def make_map():
     map.connect('/searchGeoUsers/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
     map.connect('/searchGeoWorkshops', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
     map.connect('/searchGeoWorkshops/', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
+    """
 
-    map.connect('/profile/edit', controller = 'profile', action = 'edit')
-    map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')
-    map.connect('/profile/{id}', controller = 'home', action = 'mainPage', id = '{id}')
-
-    ################
-    #  AreYouSure  #
-    ################
-
-    map.connect('/revert/*id', controller = 'AreYouSure', action = 'revert', id = '{id}' ) # revert AreYouSure route
-    map.connect('/delete/*id', controller = 'AreYouSure', action = 'delete', id = '{id}' ) # delete AreYouSure route  
-    map.connect('/restore/*id', controller = 'AreYouSure', action = 'restore', id = '{id}' ) # restore AreYouSure route  
-    map.connect('/AreYouSure/handler/*id', controller = 'AreYouSure', action = 'handler' ) # revert handler
-    
     ################
     # Application  #
     ################
-
-    map.connect('/edit/handler/*id', controller = 'edit', action = 'handler' ) # edit handler
-    map.connect('/edit/*id', controller='edit', action='edit') # edit route
-  
-
-    map.connect('/revision/number/{id}', controller='revision', action='number') # revision view number
-    map.connect('/revision/*id', controller='revision', action='revisions') # all revisions for page
-
-    map.connect('/create', controller='create', action='index') # create route
-    map.connect('/create/assist/*id', controller='create', action='assist') # create route
-
+    """
     map.connect('/search', controller = 'search', action = 'index' ) # search root route
     map.connect('/search/handler', controller = 'search', action = 'handler' ) # search handler route
 
@@ -378,18 +365,18 @@ def make_map():
 
     map.connect('/comment/index/*id', controller='comment', action='index') # comment handler route
     map.connect('/comment/disable/{id}', controller='comment', action='disable') # set comment to disabled
-    
+    """    
     map.connect('/{controller}', controller='{controller}', action='index') # Maps url to controller index
     map.connect('/{controller}/', controller = '{controller}', action = 'index')
     map.connect('/{controller}/{action}', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/{id}')
-
+    """
     map.connect('/random', controller='wiki', action='random') # selects a random page
 
     #map.connect('/wiki/handler/*id', controller='wiki', action='handler') # wiki handler route
     map.connect('/wiki/handler/{id1}/{id2}', controller = 'wiki', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     #map.connect('/wiki/*id', controller = 'wiki', action = 'index')
     #map.connect('/*id', controller='wiki', action='index') # view or wiki route
-
+    """
     return map

@@ -344,34 +344,43 @@
 			rankItems.append({'title':title, 'label':label})
 	%>
 	${spacer()}
-	<form>
-		<fieldset>
-			<table class="table-bordered" style="position:absolute;display:block;top:15%;left:25%;">
-				<thead>
-					<tr style="background-color:#ccc;">
-						<th>${itemRankingHeader['header']}</th>
-						<th>${itemRankingHeader['title']}</th>
-					</tr>
-				</thead>
-				<tbody>
-					%for i in range(numRankItems):
-						<tr style="background-color:#fff;">
-							<td style="padding-bottom:8px;">Rank ${(i + 1)}</td>
-							<td>
-								<select name="${i + 1}">
-									<option value="0" selected="SELECTED">...</option>
-									% for rankItem in rankItems:
-										<option value="${rankItem['label']}" class="itemRank">${rankItem['title']}</option>
-									% endfor
-								</select>
-							</td>
-						</tr>
-					% endfor
-				</tbody>
-			</table>
-		</fieldset>
-        <a style="position:absolute;display:block;top:70%;left:46%;" class="btn btn-primary itemRankingSubmit" href="/survey/submit/itemRank/${survey['urlCode']}/${survey['url']}/page/${slide['hash']}">Save</a>
-    </form>
+	<div class="row-fluid">
+        <div class="span3">&nbsp;</div>
+        <div class="span6">
+            <form>
+        		<fieldset>
+        			##<table class="table-bordered" style="position:absolute;display:block;top:15%;left:25%;">
+                    <table class="table-bordered center">
+        				<thead>
+        					<tr style="background-color:#ccc;">
+        						<th>${itemRankingHeader['header']}</th>
+        						<th>${itemRankingHeader['title']}</th>
+        					</tr>
+        				</thead>
+        				<tbody>
+        					%for i in range(numRankItems):
+        						<tr style="background-color:#fff;">
+        							<td style="padding-bottom:8px;">Rank ${(i + 1)}</td>
+        							<td>
+        								<select name="${i + 1}">
+        									<option value="0" selected="SELECTED">...</option>
+        									% for rankItem in rankItems:
+        										<option value="${rankItem['label']}" class="itemRank">${rankItem['title']}</option>
+        									% endfor
+        								</select>
+        							</td>
+        						</tr>
+        					% endfor
+        				</tbody>
+        			</table>
+        		</fieldset>
+                ${spacer()}
+                <a class="btn btn-primary itemRankingSubmit" href="/survey/submit/itemRank/${survey['urlCode']}/${survey['url']}/page/${slide['hash']}">Save</a>
+                ##<a style="position:absolute;display:block;top:70%;left:46%;" class="btn btn-primary itemRankingSubmit" href="/survey/submit/itemRank/${survey['urlCode']}/${survey['url']}/page/${slide['hash']}">Save</a>
+            </form>
+        </div>
+        <div class="span3">&nbsp;</div>
+    </div>
 </%def>
 
 <%def name="multiSlider(survey, slide, answer)">

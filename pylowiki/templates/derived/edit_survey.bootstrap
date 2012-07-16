@@ -5,13 +5,12 @@
 
 ${lib.return_to()}
 
-% if 'message' in session:
-    <% message = session['message'] %>
+% if c.message:
     <div class="row">
         <div class="span8 offset2">
-            <div class="alert alert-${message['type']}">
+            <div class="alert alert-${c.message['type']}">
                 <button data-dismiss="alert" class="close">×</button>
-                <strong>${message['title']}</strong> ${message['content']}
+                <strong>${c.message['title']}</strong> ${c.message['content']}
             </div>
         </div>
     </div>
