@@ -35,6 +35,13 @@ def make_map():
     map.connect('/systemAdmin/handler', controller = 'systemAdmin', action = 'handler')
     map.connect('/systemAdmin/handler/', controller = 'systemAdmin', action = 'handler')
     """
+    ########################################################################################################
+    # 
+    # Corporate routes
+    # 
+    ########################################################################################################
+    map.connect('/corp/', controller = 'corp', action = 'index', id = 'None')
+    map.connect('/corp/{id}', controller = 'corp', action = 'index', id = '{id}')
 
     ########################################################################################################
     # 
@@ -43,7 +50,6 @@ def make_map():
     ########################################################################################################
 
     """
-    map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation
     map.connect('/comment/{id}', controller = 'comment', action = 'index', id = '{id}')
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
@@ -51,8 +57,6 @@ def make_map():
     map.connect('/addWorkshop', controller = 'workshop', action = 'addWorkshop')
     map.connect('/rating', controller = 'rating', action = 'index')
     map.connect('/admin', controller = 'admin', action = 'index')
-    map.connect('/corp/', controller = 'corp', action = 'index', id = 'None')
-    map.connect('/corp/{id}', controller = 'corp', action = 'index', id = '{id}')
     map.connect('/suggestion/rate', controller = 'suggestion', action = 'rate')
 
     map.connect('/slideshow/edit', controller = 'slideshow', action = 'edit')
@@ -301,6 +305,9 @@ def make_map():
     # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+
+    # User activation
+    map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation
     """
     # User profile follow/unfollow
     map.connect('/profile/{id1}/{id2}/follow', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
