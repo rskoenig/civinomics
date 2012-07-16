@@ -1,0 +1,19 @@
+/** folder tabs **/
+#fldtabs {
+    font-size: .7em;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px 0 0 275px;
+}
+#fldtabs a {
+    color: #aaa;
+}
+#fldtabs li {
+    display: block;
+    float: left;
+    width: 125px;
+    height: 18px;
+    padding-top: 17px;
+    margin: 0 5px;
+    background: rgba(255,255,255,.3);
+}

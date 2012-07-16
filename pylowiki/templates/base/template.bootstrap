@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>${c.title}</title>
+
+	<!-- styles -->
+	<link rel="stylesheet" href="/styles/bootstrap/civinomics.css">
+    <link type="text/css" rel="stylesheet" href = "/styles/flash.css" />
+	${self.extraStyles()}
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+<body>
+	<div class="navbar navbar-fixed-top"> <!-- begin navbar -->
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+				<a href="/" class="brand"><img src="/images/logo_header8.1.png"></a>
+				<div class="nav-collapse"> <!-- hides when display is too small -->
+					<ul class="nav pull-right nav-pills">
+						<li><a href="/">Home</a></li>
+						% if 'user' in session:
+							##<li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a></li>
+							<li><a href="/login/logout">Logout</a></li>
+							<li class="dropdown">
+							    <%doc>
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+									Account
+									<b class="caret"></b>
+								</a> <!-- /.dropdown-toggle -->
+								</%doc>
+								<ul class="dropdown-menu">
+									% if int(c.authuser['accessLevel']) >= 100:
+										<li><a href="/addWorkshop">Add Workshop</a></li>
+									% endif
+									% if int(c.authuser['accessLevel']) >= 200:
+										<li><a href="/systemAdmin">Sys Admin</a></li>
+									% endif
+									##<li><a href="/account/edit">Edit</a></li>
+									<li><a href="/login/logout">Logout</a></li>
+								</ul> <!-- /.dropdown-menu -->
+							</li> <!-- /.dropdown -->
+							% if int(c.authuser['accessLevel']) >= 100:
+    							<li class="dropdown">
+    							    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+    							        Surveys
+    							        <b class="caret"></b>
+    							    </a>
+    							    <ul class="dropdown-menu">
+    							        % if int(c.authuser['accessLevel']) >= 200:
+    							         <li><a href="/surveyAdmin">Survey admin</a></li>
+    							        % endif
+    							        <li><a href="/addSurvey">Add survey</a></li>
+    							        <li><a href="/showSurveys">My surveys</a></li>
+    							    </ul>
+    							</li>
+							% endif
+						% endif
+					</ul> <!-- /.nav -->
+				</div> <!-- /.nav-collapse -->
+			</div> <!-- /.container -->
+		</div> <!-- /.navbar-inner -->
+	</div> <!-- /.navbar -->
+	<div class="container-fluid"> <!-- responsive container for everything -->
+				
+		${next.body()}
+
+		${self.extraHTML()}
+		<div class="row-fluid">
+			<footer class="span12">
+				<div class="row">
+					<a href="/surveys">Surveys</a>
+					<%doc>
+					% if 'user' in session:
+						| <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a>
+					% endif
+					</%doc>
+				</div> <!-- /.row -->
+				<div class="row">
+					<a href="/corp/about">About Us</a> |
+					##<a href="/corp/contact">Contact</a> |
+					<a href="/corp/terms">Terms of Use</a> |
+					<a href="/corp/privacy">Privacy</a>
+				</div> <!-- /.row -->
+			</footer>
+		</div> <!-- /.row-fluid -->
+	</div> <!-- /.container-fluid -->
+
+	<!-- scripts go at the bottom so they don't keep the user waiting -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
+	${self.extraScripts()}
+	<div id="content">
+		${self.flasher()}
+	</div>
+</body>
+</html>
+
+<%def name="flasher()">
+	<% messages = h.flash.pop_messages() %>
+	% if messages:
+		% for m in messages:
+			<p id="flash" class="${m.category}" title="Dismiss this message.">
+				${m}
+			</p>
+			<script type="text/javascript">
+				$('p#flash').fadeIn(800).delay(6000).fadeOut(800);
+				$('p#flash').click(function() {
+					$(this).clearQueue();
+					$(this).fadeOut(800);
+				});
+			</script>
+		% endfor
+	% endif
+</%def>
