@@ -146,6 +146,17 @@ class WorkshopScope(object):
         w['scope'] = getGeoScope(postalCode, country)
         commit(w)
 
+class SurveyScope(object):
+    def __init__(self, postalCode, country, survey, owner):
+        s = Thing('sScope', owner.id)
+        s['postalCode'] = postalCode
+        s['country'] = country
+        s['workshopID'] = survey.id
+        s['deactivated'] = '0000-00-00'
+        s['scope'] = getGeoScope(postalCode, country)
+        commit(s)
+        return s
+
 class GeoInfo(object):
     def __init__(self, postalCode, country, ownerID ):
         g = Thing('geo', ownerID)
