@@ -63,6 +63,21 @@ class CorpController(BaseController):
             render_var['body_header'] = 'SERVICES'
             render_var['display_navigbar'] = True
             render_var['highlight_name'] = 'services'
+
+        elif (page.lower() == 'engfrontend') :
+            render_var['body_header'] = 'Engineer'
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = 'careers'
+
+        elif (page.lower() == 'engbackend') :
+            render_var['body_header'] = 'Engineer'
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = 'careers'
+
+        elif (page.lower() == 'communityrep') :
+            render_var['body_header'] = 'Community Representative'
+            render_var['display_navigbar'] = True
+            render_var['highlight_name'] = 'careers'
         else:
             abort(404)
         
