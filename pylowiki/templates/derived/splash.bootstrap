@@ -188,19 +188,21 @@
 
                     <div class="well" style="background-color:#bcbcbb;">
                         <h3>Sign In</h3>
-                        <form id="sign_in" action = "${c.site_secure_url}/login" class="form">         
+                        <form id="sign_in" action = "${c.site_secure_url}/login" class="form" method=POST>
                             <input type="text" placeholder="Email" name = "email"/>
                             <input type="password" style="width:142px;" placeholder="Password" name = "password"/>
                             <button class="btn btn-primary" style="vertical-align: top;" type="submit">Submit</button>
+                            <!--
                             <div>
                                 <label class="checkbox">                            
                                 <input type="checkbox" id="remember_me_checkbox" name = "remember_me_checkbox"/><text class="form-subtext"> Remember me | <a href="password.com"> Forgot password?</a></text>
                                 </label>
                             </div>
+                            -->
                         </form> 
                         <h3>Sign Up</h3>
                         <div id="sign_up"> 
-                            ${h.form(h.url(controller = 'register', action = 'register_handler'), method = 'post')}
+                            <form id="register" action = "${c.site_secure_url}/register/register_handler" method=POST class="form">
                                 <input type="hidden" name = "country" value="United States"/>
                                 <input type="hidden" name = "memberType" value="individual"/>
                                 <input type="text" name = "firstName" placeholder="First name*"/>
@@ -213,7 +215,7 @@
                                 <label class="checkbox">
                                     <input type="checkbox" name = "chkTOS"/> <a href="/corp/terms" class="form-subtext">I agree to the Terms of Use</a>          
                                 </label>
-                            ${h.end_form()}
+                            </form> 
                         </div>
                         <div class="modal hide fade" id="windowTitleDialog">
                             <div class="modal-header">
