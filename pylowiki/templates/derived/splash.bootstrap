@@ -59,6 +59,17 @@
     <title>Civinomics</title>
     <link href="/styles/bootstrap/civinomics_corp.css" rel="stylesheet">
     <link href="/styles/bootstrap/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <script src="/js/bootstrap/jquery.js"></script>
+    <script src="/js/bootstrap/bootstrap-alert.js"></script>
+    <script src="/js/bootstrap/jquery.placeholders-0.1.js"></script>
+    
+
+<script type='text/javascript'>
+$(document).ready(function(){
+        $("body").placeholders();
+});
+
+</script>
     
 </head>
 <body>
@@ -284,10 +295,6 @@
      ## Popper    
     ${self.popper()}    
         
-    <script src="/js/bootstrap/jquery.js"></script>
-    <script src="/js/bootstrap/bootstrap-modal.js"></script>
-    <script src="/js/bootstrap/bootstrap-alert.js"></script>
-    
     
    
 
