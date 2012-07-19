@@ -373,6 +373,7 @@ class SurveyController(BaseController):
         
         c.survey = getSurvey(code, urlify(url))
 
+        """
         if int(c.authuser['accessLevel']) < 200:
             # if not an admin..
             if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
@@ -386,7 +387,7 @@ class SurveyController(BaseController):
                 if userZip not in surveyZip:
                     # you can't check out this survey
                     return render('/derived/404.bootstrap')
-
+        """
         c.slide = getSurveySlide(slideHash, c.survey.id)
         
         # Now grab the correct list of slides
