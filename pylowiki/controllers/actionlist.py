@@ -48,6 +48,9 @@ class ActionlistController(BaseController):
             c.list = get_all_pages(1)
 
         if 'user' in session:
+            if not c.authuser:
+                session.delete()
+                return redirect('/')
             items = []
             userZip = int(c.authuser['postalCode'])
             for item in c.list:
