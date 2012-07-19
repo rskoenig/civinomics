@@ -1,0 +1,42 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%def name="page_specific_css()">
+    <!-- None -->
+</%def>
+<%def name="display_body_right_content()">
+    <div class="span8"><!--span body-->
+        <div class="row-fluid">
+            </br>
+            <h1>Software Engineer - Back End</h1>
+            <p class="lead">Fulltime - Santa Cruz</p>
+            </br>
+            <p>We're looking for a capable, quick learner to join our elite enginnering squad and build products for our members and clients. Our culture emphasizes creative problem solving, fast iteration and execution. Join us in our mission to empower communities.</p>
+            <p><strong>Required:</strong></p>
+                <ul>
+                    <li>Comfortable in a *nix environment</li>
+                    <li>Python 2.X</li>
+                    <li>MySQL</li>
+                    <li>An eye for detail</li>
+                    <li>Chooses to write maintainable code instead of brute-force or clever code, every time</li>
+                </ul>
+            <p><strong>Recommended:</strong></p>
+                <ul>
+                    <li>Experience working with open schemas</li>
+                    <li>Experience with scaling applications and databases</li>
+                    <li>Experience with the Pylons framework</li>
+                </ul>
+
+                </br>
+                <p>To apply for this position send a resume and cover letter to <a href="#">careers AT civinomics DOT com</a> with the subject line <em>Application for Software Engineer - Back End</em>.
+                </br>
+                </br>
+                </br>
+                </br>
+                </br>
+
+            </div>
+        </div><!--/.span8-->
+
+
+</%def>
+
+<%def name="display_body_bottom_content()"></%def>
