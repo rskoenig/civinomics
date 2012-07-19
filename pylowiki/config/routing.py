@@ -26,7 +26,7 @@ def make_map():
     # Administrative routes
     # 
     ########################################################################################################
-    """
+    
     # System Administration
     map.connect('/systemAdmin', controller = 'systemAdmin', action = 'index')
     map.connect('/systemAdmin/', controller = 'systemAdmin', action = 'index')
@@ -34,7 +34,7 @@ def make_map():
     # System admin submit handler
     map.connect('/systemAdmin/handler', controller = 'systemAdmin', action = 'handler')
     map.connect('/systemAdmin/handler/', controller = 'systemAdmin', action = 'handler')
-    """
+    
     ########################################################################################################
     # 
     # Corporate routes
@@ -49,7 +49,7 @@ def make_map():
     # 
     ########################################################################################################
 
-    """
+    
     map.connect('/comment/{id}', controller = 'comment', action = 'index', id = '{id}')
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
@@ -228,7 +228,7 @@ def make_map():
 
     # Temporary
     map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
-    """
+    
 
     ########################################################################################################
     # 
@@ -308,7 +308,7 @@ def make_map():
 
     # User activation
     map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation
-    """
+    
     # User profile follow/unfollow
     map.connect('/profile/{id1}/{id2}/follow', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/follow/', controller = 'profile', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
@@ -334,7 +334,7 @@ def make_map():
     # Edit user info
     map.connect('/profile/edit', controller = 'profile', action = 'edit')
     map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')
-    """
+    
     ################
     # Action Lists #
     ################
@@ -342,7 +342,7 @@ def make_map():
     map.connect('/surveys', controller = 'actionlist', action='index', id='surveys')
     map.connect('/surveys/', controller = 'actionlist', action='index', id='surveys')
 
-    """
+    
     map.connect('/sitemap', controller='actionlist', action='index', id='sitemap')
     map.connect('/workshops', controller='actionlist', action='index', id='sitemapIssues')
     map.connect('/searchWorkshops/{id1}/{id2}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
@@ -357,13 +357,13 @@ def make_map():
     map.connect('/searchGeoUsers/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
     map.connect('/searchGeoWorkshops', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
     map.connect('/searchGeoWorkshops/', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
-    """
+    
 
     ################
     # Application  #
     ################
     map.connect('/', controller = 'home', action = 'index' ) # load the homepage.
-    """
+    
     map.connect('/search', controller = 'search', action = 'index' ) # search root route
     map.connect('/search/handler', controller = 'search', action = 'handler' ) # search handler route
 
@@ -372,18 +372,18 @@ def make_map():
 
     map.connect('/comment/index/*id', controller='comment', action='index') # comment handler route
     map.connect('/comment/disable/{id}', controller='comment', action='disable') # set comment to disabled
-    """    
+        
     map.connect('/{controller}', controller='{controller}', action='index') # Maps url to controller index
     map.connect('/{controller}/', controller = '{controller}', action = 'index')
     map.connect('/{controller}/{action}', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/{id}')
-    """
+    
     map.connect('/random', controller='wiki', action='random') # selects a random page
 
     #map.connect('/wiki/handler/*id', controller='wiki', action='handler') # wiki handler route
     map.connect('/wiki/handler/{id1}/{id2}', controller = 'wiki', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     #map.connect('/wiki/*id', controller = 'wiki', action = 'index')
     #map.connect('/*id', controller='wiki', action='index') # view or wiki route
-    """
+    
     return map
