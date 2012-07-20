@@ -26,7 +26,6 @@ class ActionlistController(BaseController):
         if c.conf['public.sitemap'] != "true": 
             h.check_if_login_required()
 
-    
     def index( self, id ): # id is the action
         """Create a list of pages with the given action/option """
         """Valid actions: edit, revision, delete, restore, sitemap """
@@ -38,6 +37,14 @@ class ActionlistController(BaseController):
         elif c.action == 'sitemapIssues':
             c.title = c.heading = 'Workshops'
             c.list = getActiveWorkshops()
+
+            c.count = len( c.list )
+            c.paginator = paginate.Page(
+                c.list, page=int(request.params.get('page', 1)),
+                items_per_page = 10, item_count = c.count
+            )
+
+            return render('/derived/list_workshops.html')
         elif c.action == 'surveys':
             c.title = c.heading = 'Surveys'
             c.list = getActiveSurveys()

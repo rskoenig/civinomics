@@ -24,9 +24,10 @@ class HomeController(BaseController):
             c.wikilist = zip(HTMLlist, reSTlist)
             return render('/base/template.html')
         """
-        return render('/derived/services.bootstrap')
+        
         if session.get('user'):
-            return redirect('/surveys')
+            #return redirect('/surveys')
+            return render('/derived/services.bootstrap')
         else:
             c.site_base_url = config['app_conf']['site_base_url']
             c.site_secure_url = config['app_conf']['site_secure_url']
