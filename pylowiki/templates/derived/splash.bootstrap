@@ -93,19 +93,19 @@ $(document).ready(function(){
                                        <ul class="thumbnails">
                                             <li> 
                                                 <div class="thumbnail" style="height:450px">
-                                                   <img src="/images/fluid1_images/cemex.jpg" alt="">
+                                                   <img src="/images/splash/EastsideProject.thumbnail.png" alt="">
                                                         <div class="span5" style="width:400px; margin-left: 0px;">
-                                                            <h3>CEMEX Redwoods Conservation</h3>
-                                                            <p>Public Sphere: Santa Cruz County </br>
-                                                            Starts: 06-30-2012</p>
+                                                            <h3>Eastside Recycled Water Project</h3>
+                                                            <p>Public Sphere: City of San Francisco</br>
+                                                            Starts: 07-18-2012</p>
                                                         </div>
                                                         <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/sc_county.png"/>
+                                                            <img src="/images/splash/sfpuc_splashlogo.png"/>
                                                         </div>
                                                 </div>
                                              </li>
                                          </ul>
-                                    </div>
+                                    </div>  
                                     
                                      <div class="slide">
                                        <ul class="thumbnails">
@@ -118,30 +118,12 @@ $(document).ready(function(){
                                                             Starts: 06-30-2012</p>
                                                         </div>
                                                         <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/santacruz.png"/>
+                                                            <img src="/images/splash/SC_splashlogo.png"/>
                                                         </div>
                                                 </div>
                                              </li>
                                          </ul>
                                     </div>  
-                                   
-                                    <div class="slide">
-                                       <ul class="thumbnails">
-                                            <li> 
-                                                <div class="thumbnail" style="height:450px">
-                                                   <img src="/images/fluid1_images/eastside.png" alt="">
-                                                        <div class="span5" style="width:400px; margin-left: 0px;">
-                                                            <h3>Eastside Recycled Water Project</h3>
-                                                            <p>Public Sphere: City of San Francisco</br>
-                                                            Starts: 07-18-2012</p>
-                                                        </div>
-                                                        <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/sf_flag.png"/>
-                                                        </div>
-                                                </div>
-                                             </li>
-                                         </ul>
-                                    </div>
                                     
                                     <div class="slide">
                                        <ul class="thumbnails">
@@ -154,34 +136,12 @@ $(document).ready(function(){
                                                             Starts: 09-30-2012</p>
                                                         </div>
                                                         <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/santacruz.png"/>
+                                                            <img src="/images/splash/SC_splashlogo.png"/>
                                                         </div>
                                                 </div>
                                              </li>
                                          </ul>
                                     </div>
-                                    
-                                    <div class="slide">
-                                       <ul class="thumbnails">
-                                            <li> 
-                                                <div class="thumbnail" style="height:450px">
-                                                   <img src="/images/fluid1_images/uwf.jpg" alt="">
-                                                        <div class="span5" style="width:400px; margin-left: 0px;">
-                                                            <h3>Urban Watershed Framework</h3>
-                                                            <p>Public Sphere: City of San Francisco</br>
-                                                            Starts: 07-18-2012</p>
-                                                        </div>
-                                                        <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/sf_flag.png"/>
-                                                        </div>
-                                                </div>
-                                             </li>
-                                         </ul>
-                                    </div>
-                                    
-                                    
-                                     
-                                    
                                     
                                   </div>
                               </div>
