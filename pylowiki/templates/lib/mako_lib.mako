@@ -22,6 +22,7 @@
 
 <%! 
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.slideshow import getAllSlides
     from pylowiki.lib.fuzzyTime import timeSince
 %>
 
@@ -141,26 +142,25 @@
 			<!-- <span class="currSlide${counter}"></span> -->
 		</div>
 		<div class="slideshow${counter}">
+                <% slideshowID = c.w['mainSlideshow_id'] %>
+                <% slideList = getAllSlides(slideshowID) %>
+                %for slide in slideList:
+                    %if slide['deleted'] != '1':
+                        % if slide['pictureHash'] == 'supDawg':
 			<div class="slide">
-				<a title="By Maria Graham (Maria Callcott), published by Longman, Hurst, Rees, Orme, Brown, and Green. [Public domain], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3AEnglishBurialGround.jpg">
-					<img alt="EnglishBurialGround" src="//upload.wikimedia.org/wikipedia/commons/b/b2/EnglishBurialGround.jpg"/>
+				<a title="${slide['title']}" href="#">
+                                <img alt="<strong>${slide['title']}</strong>" src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/>
 				</a>
 			</div> <!-- /.slide -->
+                        %else:
 			<div class="slide">
-				<a title="Vasily Vereshchagin [Public domain], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3ADrawings_by_Wassili_Wassiljewitsch_Wereschtschagin.jpg">
-					<img alt="Drawings by Wassili Wassiljewitsch Wereschtschagin" src="//upload.wikimedia.org/wikipedia/commons/thumb/4/45/Drawings_by_Wassili_Wassiljewitsch_Wereschtschagin.jpg/256px-Drawings_by_Wassili_Wassiljewitsch_Wereschtschagin.jpg"/>
+				<a title="${slide['title']}" href="#">
+                                <img alt="<strong>${slide['title']}</strong>" src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/>
 				</a>
 			</div> <!-- /.slide -->
-			<div class="slide">
-				<a title="By Jahyer, Octave Edouard Jean (1826-18..? ) (Google) [Public domain], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3AJahyer_-_Les_deux_P%C3%AAcheurs.jpg">
-					<img alt="Jahyer - Les deux Pêcheurs" src="//upload.wikimedia.org/wikipedia/commons/thumb/5/51/Jahyer_-_Les_deux_P%C3%AAcheurs.jpg/512px-Jahyer_-_Les_deux_P%C3%AAcheurs.jpg"/>
-				</a>
-			</div> <!-- /.slide -->
-			<div class="slide">
-				<a title="By MyName (Gkc (talk)) (Own work) [CC-BY-SA-3.0 (www.creativecommons.org/licenses/by-sa/3.0) or GFDL (www.gnu.org/copyleft/fdl.html)], via Wikimedia Commons" href="http://commons.wikimedia.org/wiki/File%3ALaTeX_program_package_example01.png">
-					<img alt="LaTeX program package example01" src="//upload.wikimedia.org/wikipedia/commons/4/45/LaTeX_program_package_example01.png"/>
-				</a>
-			</div> <!-- /.slide -->
+                        %endif
+                     %endif
+                %endfor
 		</div> <!-- /.slideshow -->
 		<div class="caption${counter} caption"></div>
 	</div> <!-- /#slideshow${counter} -->
