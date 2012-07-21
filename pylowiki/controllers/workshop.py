@@ -554,7 +554,7 @@ class WorkshopController(BaseController):
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
 
 
-        return render('/derived/workshop.html')
+        return render('/derived/workshop_home.bootstrap')
 
     def inactiveSuggestions(self, id1, id2):
         code = id1

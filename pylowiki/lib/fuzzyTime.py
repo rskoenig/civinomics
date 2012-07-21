@@ -31,6 +31,13 @@ def timeSince(d, now=None):
       (60 * 60, lambda n: ungettext('hour', 'hours', n)),
       (60, lambda n: ungettext('minute', 'minutes', n)),
     )
+
+    # Check for unicodeness
+    if isinstance(d, unicode):
+        d = datetime.datetime.strptime(d, "%Y-%m-%d %H:%M:%S")
+    if isinstance(now, unicode):
+        now = datetime.datetime.strptime(now, "%Y-%m-%d %H:%M:%S")
+
     # Convert datetime.date to datetime.datetime for comparison.
     if not isinstance(d, datetime.datetime):
         d = datetime.datetime(d.year, d.month, d.day)
@@ -72,3 +79,8 @@ def timeuntil(d, now=None):
     if not now:
         now = datetime.datetime.now(utc if is_aware(d) else None)
     return timesince(now, d)
+
+def timeUntil(d, now=None):
+    if not now:
+        now = datetime.datetime.now(None)
+    return timeSince(now, d)
