@@ -44,7 +44,7 @@ class ActionlistController(BaseController):
                 items_per_page = 10, item_count = c.count
             )
 
-            return render('/derived/list_workshops.html')
+            return render('/derived/list_workshops.bootstrap')
         elif c.action == 'surveys':
             c.title = c.heading = 'Surveys'
             c.list = getActiveSurveys()
@@ -105,7 +105,7 @@ class ActionlistController(BaseController):
             items_per_page = 10, item_count = c.count
         )
 
-        return render('/derived/list_workshops.html')
+        return render('/derived/list_workshops.bootstrap')
 
     def searchName( self ):
         log.info('searchName')
@@ -122,7 +122,7 @@ class ActionlistController(BaseController):
                   items_per_page = 10, item_count = c.count
               )
 
-              return render('/derived/list_workshops.html')
+              return render('/derived/list_workshops.bootstrap')
 
            else:
               c.title = c.heading = 'Search Members: ' + searchString
@@ -133,7 +133,7 @@ class ActionlistController(BaseController):
                   items_per_page = 10, item_count = c.count
               )
 
-              return render('/derived/list_users.html')
+              return render('/derived/list_users.bootstrap')
         else:
            return redirect('/')
 
@@ -156,7 +156,7 @@ class ActionlistController(BaseController):
                      items_per_page = 10, item_count = c.count
                  )
 
-           return render('/derived/list_users.html')
+           return render('/derived/list_users.bootstrap')
         else:
            return redirect('/')
 
@@ -182,7 +182,7 @@ class ActionlistController(BaseController):
                      items_per_page = 10, item_count = c.count
                  )
 
-           return render('/derived/list_workshops.html')
+           return render('/derived/list_workshops.bootstrap')
         else:
            return redirect('/')
 
@@ -204,7 +204,7 @@ class ActionlistController(BaseController):
             items_per_page = 10, item_count = c.count
         )
 
-        return render('/derived/list_workshops.html')
+        return render('/derived/list_workshops.bootstrap')
 
     def searchUsers( self, id1, id2  ):
         log.info('searchUsers %s %s' % (id1, id2))
@@ -217,5 +217,5 @@ class ActionlistController(BaseController):
             items_per_page = 10, item_count = c.count
         )
 
-        return render('/derived/list_users.html')
+        return render('/derived/list_users.bootstrap')
 
