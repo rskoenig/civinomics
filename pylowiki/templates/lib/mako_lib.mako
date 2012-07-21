@@ -27,7 +27,11 @@
 
 <%def name="add_a(thing)">
 	% if c.isScoped or c.isFacilitator:
-	    <span class="pull-right ${thing}"><a href="#"><i class="icon-plus"></i></a></span>
+            %if thing == 'resource':
+	        <span class="pull-right ${thing}"><a href="/newResource/${c.w['urlCode']}/${c.w['url']}"><i class="icon-plus"></i></a></span>
+            %elif thing == 'suggestion':
+	        <span class="pull-right ${thing}"><a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}"><i class="icon-plus"></i></a></span>
+            %endif
 	% endif
 </%def>
 
