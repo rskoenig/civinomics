@@ -1,0 +1,19 @@
+/* comments */
+#comments {
+	width: 100%;
+}
+
+#comments form {
+	padding: 20px;
+	width: 90%;
+}
+
+#comments form textarea {
+	width: 100%;
+	height: 60px;
+	max-width: 105%;
+}
+
+#featuredComments {
+	padding-top: 4px;
+}

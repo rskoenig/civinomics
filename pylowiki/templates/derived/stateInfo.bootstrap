@@ -1,0 +1,31 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/postalInfo/helpers.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+${lib.return_to()}
+<div class="row">
+    <div class="well span4">
+        <h2><img src="${c.stateFlag}"> State of ${c.state}</h2>
+        <p>
+        <ul>
+        <li>Population in ${c.state} is ${c.stateInfo['Population']}</li>
+        <li>Population Median Age is ${c.stateInfo['Population_Median']}</li>
+        <li>Number of Households is ${c.stateInfo['Total_Households']}</li>
+        <li>Persons per Household is ${c.stateInfo['Average_Household_Size']}</li>
+    </div> <!-- span4 -->
+    <div class="span8">
+        ${helpers.showWorkshops(c.wscopes)}
+    </div>
+</div> <!-- row -->
+
+<%def name = 'extraStyles()'>
+
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+
+</%def>
+
