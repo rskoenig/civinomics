@@ -651,7 +651,7 @@ class WorkshopController(BaseController):
         if c.motd == False:
            c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        return render("/derived/workshop_feedback.html")
+        return render("/derived/workshop_feedback.bootstrap")
     
     @h.login_required
     def configure(self, id1, id2):

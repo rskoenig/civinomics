@@ -148,14 +148,14 @@
                     %if slide['deleted'] != '1':
                         % if slide['pictureHash'] == 'supDawg':
 			<div class="slide">
-				<a title="${slide['title']}" href="#">
-                                <img alt="<strong>${slide['title']}</strong>" src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/>
+				<a title="${slide['title']}<br/>${slide['caption']}" href="#">
+                                <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong> ${slide['caption']}"/>
 				</a>
 			</div> <!-- /.slide -->
                         %else:
 			<div class="slide">
-				<a title="${slide['title']}" href="#">
-                                <img alt="<strong>${slide['title']}</strong>" src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong><br/>${slide['caption']}"/>
+				<a title="${slide['title']}<br/>${slide['caption']}" href="#">
+                                <img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" alt="<strong>${slide['title']}</strong> ${slide['caption']}"/>
 				</a>
 			</div> <!-- /.slide -->
                         %endif
