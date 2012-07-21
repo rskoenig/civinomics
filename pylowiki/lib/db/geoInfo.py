@@ -82,7 +82,7 @@ def getUserScopes(searchScope, scopeLevel):
         searchScope = "|".join(sList)
         searchScope = searchScope + '%'
         ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
-        return meta.Session.query(Thing).filter_by(objType = 'geo').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'geo').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope))).all()
     except sa.orm.exc.NoResultFound:
         return False
 
@@ -100,7 +100,7 @@ def getWorkshopScopes(searchScope, scopeLevel):
         searchScope = "|".join(sList)
         searchScope = searchScope + '%'
         ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
-        return meta.Session.query(Thing).filter_by(objType = 'wscope').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'wscope').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope))).all()
     except sa.orm.exc.NoResultFound:
         return False
 
