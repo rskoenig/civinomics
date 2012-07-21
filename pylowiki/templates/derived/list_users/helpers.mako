@@ -13,7 +13,7 @@
 		<strong>${c.authuser['name']}</strong>
 	</a>
 	<br>
-	<a href="/account/edit">Edit my profile</a>
+	<a href="/profile/edit">Edit my profile</a>
 </%def>
 
 <%def name='list_public_spheres()'>
