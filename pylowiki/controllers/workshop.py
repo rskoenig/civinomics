@@ -114,6 +114,7 @@ class WorkshopController(BaseController):
         #if self._checkAccess(100):
             #return render('/derived/createIssue.mako')
             c.title = "Create Workshop"
+            c.heading = "Basic information"
             c.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
             c.days = range(1, 32)
             c.years = range(2012, 2021)
@@ -122,7 +123,7 @@ class WorkshopController(BaseController):
             numRemaining = int(numRemaining) - 1
             c.account['numRemaining'] = numRemaining
             commit(c.account)
-            return render('/derived/workshop_create.html')
+            return render('/derived/workshop_create.bootstrap')
         else:
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
