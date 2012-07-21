@@ -23,13 +23,17 @@ your community.
 <%def name="displaySlider()">
 	% if "user" in session:
 		% if c.rating:
+                    <div class = "gray rating wide">
 			<div id="overall_slider" class="ui-slider-container">
-				<div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_${c.w['url']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
+				<div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
 			</div>
+                    </div>
 		% else:
+                    <div class = "gray rating wide">
 			<div id="overall_slider" class="ui-slider-container">
-				<div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_${c.w['url']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
+				<div id="${c.w['urlCode']}_${c.w['url']}" class="normal_slider" data1="0_${c.w['urlCode']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
 			</div>
+                    </div>
 		% endif
 	% endif
 </%def>
