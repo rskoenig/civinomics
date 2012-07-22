@@ -117,16 +117,8 @@ class ProfileController(BaseController):
 
     @h.login_required
     def edit(self):
-        c.title = 'Edit your profile'
-        c.states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming']
-        c.months = ['Month', 'Jan', 'Feb', 'March', 'April', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
-        c.culturalBackground = ['Black', 'Indian', 'Latino', 'Middle Eastern', 'Native American', 'North East Asian', 'Pacific Islander', 'South East Asian', 'White', 'Mixed Race', 'Other']
-        c.genders = ['Female', 'Male', 'Other']
-        # Religious affiliation
-        c.religions = ['Christianity', 'Atheist/Agnostic/Non-religious', 'Judaism', 'Buddhism', 'Hinduism', 'Unitarian Universalist', 'Wiccan/Pagan/Druid', 'Spiritualist', 'Native American Religion', 'Baha\'i', 'New Age', 'Sikhism', 'Scientology', 'Humanism', 'Deity (Deist)', 'Taoism', 'Eckankar']
-        c.days = ['Day'] + [str(r) for r in range(1, 32)]
-        c.years = ['Year'] + [str(r) for r in range(1900, 2011)]
-        return render('/derived/account_create.html')
+        c.title = 'Edit Your Civinomics Profile'
+        return render('/derived/profile_edit.bootstrap')
 
     @h.login_required
     def editSubmit(self):

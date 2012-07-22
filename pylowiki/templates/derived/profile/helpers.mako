@@ -16,7 +16,7 @@
 	% endif
 	% if c.authuser['email'] == c.user['email']:
 		<br>
-		<a href="/account/edit" alt="edit profile">Edit my profile</a>
+		<a href="/profile/edit" alt="edit profile">Edit my profile</a>
 	% endif
 </%def>
 
