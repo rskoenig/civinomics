@@ -79,7 +79,7 @@ class ProfileController(BaseController):
            c.userFollowers.append(getUserByID(uID))
 
 
-        return render("/derived/profile.html")
+        return render("/derived/profile.bootstrap")
     
     @h.login_required
     def index( self ):

@@ -85,4 +85,4 @@ class HomeController(BaseController):
             c.user.numConnections = len(c.user.connections.split(','))
 
         c.title = c.user.name
-        return render('/derived/profile.html')
+        return render('/derived/profile.bootstrap')
