@@ -86,7 +86,7 @@
 				<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" width="50"> ${fuser['name']}</a>
 			% endif
 		% endfor
-		% if int(c.motd['enabled']) == 1:
+		% if c.motd and int(c.motd['enabled']) == 1:
 			<p>Facilitator message:</p> ${c.motd['messageSummary']}
 		% else:
 			

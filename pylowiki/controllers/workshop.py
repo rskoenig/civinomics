@@ -613,7 +613,7 @@ class WorkshopController(BaseController):
         c.lastmoddate = r.date
         c.lastmoduser = getUserByID(r.owner)
         
-        return render('/derived/workshop_background.html')
+        return render('/derived/workshop_bg.bootstrap')
 
     def feedback(self, id1, id2):
         code = id1

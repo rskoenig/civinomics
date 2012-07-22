@@ -173,7 +173,7 @@
 
   ##% if type == 'resource':
 	##${discussion['numComments']} ${commentString} | Last edited <span class="recent">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>
- ## % else:
+  ##% else:
 	##${discussion['numComments']} ${commentString} | Last edited <span class="recent">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>
   ##% endif
 	<div class="civ-col-inner">
