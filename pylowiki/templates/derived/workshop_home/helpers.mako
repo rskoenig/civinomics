@@ -24,9 +24,9 @@
 
     % if not c.isFacilitator:
 	    % if c.isFollowing:
-		    <button class="btn followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Following</button>
+		    <button class="btn btn-primary followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Following</button>
 		% else:
-			<button class="btn followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Follow</button>
+			<button class="btn btn-primary followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Follow</button>
 		% endif
 	% endif
 </%def>

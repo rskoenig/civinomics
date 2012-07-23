@@ -46,12 +46,12 @@
 </%def>
 
 <%def name="displayUserFollows()">
-	<% fnum = len(c.userFollowers) %>
+	<% fNum = len(c.userFollowers) %>
 	<div class="civ-col">
 		<h2 class="civ-col">Followers (${fNum})</h2>
 		<div class="civ-col-inner">
 			<ul class="unstyled civ-block-list">
-				% for user in userFollowers:
+				% for user in c.userFollowers:
 					<li>
 						${listUser(user)}
 					</li>
@@ -137,11 +137,13 @@
 			</li>
 		</ul> <!-- /.civ-col-list -->
 		% if c.authuser['email'] != c.user['email']:
-			% if c.following:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-danger"><i class="icon-minus icon-white"></i> Unfollow</button>
+                        <div class="button_container">
+			% if c.isFollowing:
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton following">Following</button>
 			% else:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-success"><i class="icon-plus icon-white"></i> Follow</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton unfollow">Follow</button>
 			% endif
+                        </div>
 		% endif
 	</div> <!-- /.civ-col-inner -->
 </%def>
