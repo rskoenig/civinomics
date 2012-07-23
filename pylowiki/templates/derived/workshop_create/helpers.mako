@@ -17,7 +17,7 @@
 <%def name="addWorkshop()">
     <div class="fluid-row">
         <div class="span4">
-            <form id="create_issue" action = "${c.site_secure_url}/workshop/addWorkshopHandler" class="form-horizontal" method = "post">
+            <form id="create_issue" action = "${c.site_secure_url}/workshop/addWorkshopHandler" class="form-vertical" method = "post">
                 <fieldset>
                     <div class="control-group">
                         <label class="control-label">Workshop Name:</label>

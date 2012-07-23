@@ -98,9 +98,10 @@ class ResourceController(BaseController):
         s = isScoped(c.authuser, c.w)
         if (s and c.w['allowResources'] == '1') or a or f:
             c.r = False
+            c.heading = "OTHER RESOURCES"
             c.otherResources = getResourcesByWorkshopID(c.w.id)
 
-            return render('/derived/resource_edit.html')
+            return render('/derived/resource_edit.bootstrap')
         else:
             h.flash('You are not authorized', 'error')
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
