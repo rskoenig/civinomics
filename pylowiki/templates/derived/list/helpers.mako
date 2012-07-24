@@ -3,7 +3,9 @@
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
-   #from pylowiki.lib.fuzzyTime import timeUntil
+   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID
+   from pylowiki.lib.db.user import getUserByID
+   from pylowiki.lib.fuzzyTime import timeSince
 %>
 <%namespace file="/lib/mako_lib.mako" name="lib" />
 
@@ -102,5 +104,39 @@
 		</ul>
 	% else:
 		<p>No member tags.</p>
+	% endif
+</%def>
+
+<%def name="recent_posts()">
+	<% mPosts = getRecentMemberPosts(20) %>
+	% if mPosts and len(mPosts) > 0:
+            <table class="table table-striped">
+            <tbody>
+			% for mObj in mPosts:
+                           <% muser = getUserByID(mObj.owner) %>
+                           <% mname = muser['name'] %>
+                           % if mObj.objType == 'resource':
+                               <% w = getWorkshopByID(mObj['workshop_id']) %>
+                               <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                               <% iType = "book" %>
+                           % elif mObj.objType == 'suggestion':
+                               <% iType = "pencil" %>
+                               <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                           %else:
+                               <% iType = "comment" %>
+                               <% oLink = "" %>
+                           %endif
+                           <tr>
+                           % if muser['pictureHash'] == 'flash':
+                               <td><a href="${oLink}"><i class="icon-${iType}"></i> ${mObj.objType.capitalize()}</a> <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="avatar" width="20" /> ${mname}</a><br>${timeSince(mObj.date)} ago</td>
+                           % else:
+                               <td><a href="${oLink}"><i class="icon-${iType}"></i> ${mObj.objType.capitalize()}</a> <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/thumbnail/${muser['pictureHash']}.thumbnail" alt="avatar" /> ${mname}</a><br>${timeSince(mObj.date)} ago</td>
+                           % endif
+                           </tr>
+			% endfor
+            </tbody>
+            </table>
+	% else:
+		<p>No member posts.</p>
 	% endif
 </%def>

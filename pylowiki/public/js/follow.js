@@ -33,12 +33,13 @@ $('button.followButton').live('click', function(e){
 $('button.followButton').hover(function(){
      $button = $(this);
     if($button.hasClass('following')){
+        $button.removeClass('unfollow');
         $button.addClass('unfollow');
-        $button.text('Unfollow');
+        $button.text('-Unfollow');
     }
 }, function(){
     if($button.hasClass('following')){
         $button.removeClass('unfollow');
-        $button.text('Following');
+        $button.text('+Following');
     }
 });
