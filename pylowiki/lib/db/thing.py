@@ -1,6 +1,7 @@
 """The application's model objects"""
 import sqlalchemy as sa
 from sqlalchemy import orm
+from sqlalchemy import or_
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
 # Functions used for querying/commiting to db

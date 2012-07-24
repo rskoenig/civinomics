@@ -84,6 +84,13 @@ def getParticipantsByID(id):
     except:
         return False
 
+def getRecentMemberPosts(number):
+    try:
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment'])).order_by('-date').limit(number).all()
+    except:
+        return False
+
+
 def isScoped(user, workshop):
    upostal = user['postalCode']
    if workshop['scopeMethod'] == 'publicPostalList':
