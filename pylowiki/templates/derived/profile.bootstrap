@@ -9,18 +9,17 @@
 		${helpers.sidebar()}
 	</div> <!-- /.span3 -->
 	<div class="span9">
-		${helpers.summary()}
 		<div class="row-fluid">
 			<div class="span6">
+		                ${helpers.summary()}
 				${helpers.followButton()}
-				${helpers.memberAdminControls()}
-				${helpers.inviteCoFacilitate()}
 			</div>
 			<div class="span6">
 				${helpers.geoInfo()}
 			</div>
 		</div>
 		<div class="civ-col">
+			${helpers.inviteCoFacilitate()}
 			${helpers.workshops()}
 			<h2 class="civ-col">Comments</h2>
 			<div class="row-fluid">

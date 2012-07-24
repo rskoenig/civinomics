@@ -18,8 +18,9 @@
 	% endif
 	% if c.authuser['email'] == c.user['email']:
 		<br>
-		<a href="/profile/edit" alt="edit profile">Edit my profile</a>
+		<a href="/profile/edit" alt="edit profile"><button class="btn btn-warning"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
 	% endif
+        ${memberAdminControls()}
 </%def>
 
 <%def name="listUser(user)">
@@ -141,9 +142,9 @@
 		% if c.authuser['email'] != c.user['email']:
                         <div class="button_container">
 			% if c.isFollowing:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton following">Following</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton following">+Following</button>
 			% else:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton unfollow">Follow</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton unfollow">+Follow</button>
 			% endif
                         </div>
 		% endif
@@ -174,11 +175,11 @@
 
 <%def name="displayWorkshop(workshop)">
 	% if workshop['mainImage_hash'] == 'supDawg':
-		<a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80"/></a><br>
-		<p><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80"/></a><br>
+		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
 	% else:
-		<a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80"/>
-		<p><a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80"/>
+		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
 	% endif
 </%def>
 
@@ -338,7 +339,7 @@
 
 <%def name="memberAdminControls()">
     % if isAdmin(c.authuser.id):
-        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-warning">Admin Member</button></a>
+        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-warning"><i class="icon-user icon-white"></i> Admin Member</button></a>
     % endif
 </%def>
 
@@ -392,9 +393,10 @@
         % endif
     % endfor
     % if c.authuser.id != c.user.id and wList:
-        <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/">
+        <h2 class="civ-col">Invite This Member to Facilitate</h2>
+        <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
         <br />
-        <button type="submit" class="gold">Invite</button> to co-facilitate <select name=inviteToFacilitate>
+        <button type="submit" class="btn btn-warning"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
         % for myW in wList:
             <br />
             <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
