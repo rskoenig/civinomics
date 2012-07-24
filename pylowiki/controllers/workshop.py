@@ -555,7 +555,7 @@ class WorkshopController(BaseController):
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
 
 
-        return render('/derived/workshop.html')
+        return render('/derived/workshop_home.bootstrap')
 
     def inactiveSuggestions(self, id1, id2):
         code = id1
@@ -614,7 +614,7 @@ class WorkshopController(BaseController):
         c.lastmoddate = r.date
         c.lastmoduser = getUserByID(r.owner)
         
-        return render('/derived/workshop_background.html')
+        return render('/derived/workshop_bg.bootstrap')
 
     def feedback(self, id1, id2):
         code = id1
@@ -652,7 +652,7 @@ class WorkshopController(BaseController):
         if c.motd == False:
            c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        return render("/derived/workshop_feedback.html")
+        return render("/derived/workshop_feedback.bootstrap")
     
     @h.login_required
     def configure(self, id1, id2):

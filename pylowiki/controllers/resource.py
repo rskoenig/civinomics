@@ -84,7 +84,7 @@ class ResourceController(BaseController):
             c.lastmoddate = c.resource.date
         c.lastmoduser = getUserByID(c.resource.owner)
         
-        return render('/derived/resource.html')
+        return render('/derived/resource.bootstrap')
 
     @h.login_required
     def newResource(self, id1, id2):
