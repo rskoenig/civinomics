@@ -23,7 +23,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-				<a href="/" class="brand">civinomics</a>
+				<a href="/" class="brand"><img src="/images/logo_header8.1.png"></a>
 				<div class="nav-collapse"> <!-- hides when display is too small -->
 					<ul class="nav pull-right nav-pills">
 						<li><a href="/">Home</a></li>
@@ -58,7 +58,9 @@
     							        % if int(c.authuser['accessLevel']) >= 200:
     							         <li><a href="/surveyAdmin">Survey admin</a></li>
     							        % endif
-    							        <li><a href="/addSurvey">Add survey</a></li>
+    							        % if int(c.authuser['accessLevel']) >= 200:
+    							        	<li><a href="/addSurvey">Add survey</a></li>
+    							        % endif
     							        <li><a href="/showSurveys">My surveys</a></li>
     							    </ul>
     							</li>
@@ -86,7 +88,7 @@
 				</div> <!-- /.row -->
 				<div class="row">
 					<a href="/corp/about">About Us</a> |
-					<a href="/corp/contact">Contact</a> |
+					##<a href="/corp/contact">Contact</a> |
 					<a href="/corp/terms">Terms of Use</a> |
 					<a href="/corp/privacy">Privacy</a>
 				</div> <!-- /.row -->

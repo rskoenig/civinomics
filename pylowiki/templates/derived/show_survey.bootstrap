@@ -11,6 +11,7 @@ ${lib.setLastPage(c.slideNum, c.survey, c.slide)}
 ${lib.setCurrentSurveyPage(c.survey, c.slide)}
 
 <div class="row-fluid">
+    ## Left column
     <div class="span3">
         
         <div style="text-align:center;">
@@ -41,26 +42,15 @@ ${lib.setCurrentSurveyPage(c.survey, c.slide)}
         
     </div>
 
+    ## Right column
     <div class="span9" style="text-align:center;">
-        <div class="row">
-            ${helpers.showTitle(c.survey)}
-        </div>
-        <div class="row">
-            ${helpers.showPrevSliderHelp()}
-        </div>
-        ${helpers.spacer()}
-        ## max-height:50px; style="overflow:scroll;"
-        <div class="row" >
-            ${helpers.inlineSpacer(1)}
-            <% key = '%s_%s_lastPage' %(c.survey['urlCode'], c.survey['url']) %>
-            % if key in session:
-                ${helpers.showPrevSlides(c.slides, session[key], c.survey)}
-            % else:
-                ${helpers.showPrevSlides(c.slides, c.slideNum, c.survey)}
-            % endif
-        </div>
+        ##<div class="row">
+        ##    ${helpers.showTitle(c.survey)}
+        ##</div>
         
         ${helpers.spacer()}
+        
+        ##${helpers.spacer()}
         
         <div class="row">
             <div class="row-fluid">
@@ -84,6 +74,22 @@ ${lib.setCurrentSurveyPage(c.survey, c.slide)}
                 </div>
                 ${helpers.inlineSpacer(1)}
             </div>
+
+            <div class="row">
+                ${helpers.showPrevSliderHelp()}
+            </div>
+            ${helpers.spacer()}
+            ## max-height:50px; style="overflow:scroll;"
+            <div class="row" >
+                ${helpers.inlineSpacer(1)}
+                <% key = '%s_%s_lastPage' %(c.survey['urlCode'], c.survey['url']) %>
+                % if key in session:
+                    ${helpers.showPrevSlides(c.slides, session[key], c.survey)}
+                % else:
+                    ${helpers.showPrevSlides(c.slides, c.slideNum, c.survey)}
+                % endif
+            </div>
+
         </div>
     </div>
 </div>

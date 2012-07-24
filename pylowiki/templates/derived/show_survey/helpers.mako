@@ -441,11 +441,20 @@
                                 href = "survey/submit/multiSlider">
                                 </div>
                             % else:
-                                <div id="urlCode_url" class="survey_multiSlider" 
-                                surveyCode = "${survey['urlCode']}" surveyURL = "${survey['url']}"
-                                slideCode = "${slide['hash']}" sliderLabel = "${slider['label']}" rating = "${answer['answer_%s'%slider['label']]}" 
-                                isRated = "true" href = "survey/submit/multiSlider">
-                                </div>
+                                <% key = 'answer_%s' % slider['label'] %>
+                                % if key in answer.keys():
+                                    <div id="urlCode_url" class="survey_multiSlider" 
+                                    surveyCode = "${survey['urlCode']}" surveyURL = "${survey['url']}"
+                                    slideCode = "${slide['hash']}" sliderLabel = "${slider['label']}" rating = "${answer[key]}" 
+                                    isRated = "true" href = "survey/submit/multiSlider">
+                                    </div>
+                                % else:
+                                    <div id="${survey['urlCode']}_${survey['url']}" class="survey_multiSlider" 
+                                    surveyCode = "${survey['urlCode']}" surveyURL = "${survey['url']}"
+                                    slideCode = "${slide['hash']}" sliderLabel = "${slider['label']}" rating = "50" isRated = "False"
+                                    href = "survey/submit/multiSlider">
+                                    </div>
+                                % endif
                             % endif
                         </div>
                     </td>

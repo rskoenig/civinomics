@@ -36,20 +36,21 @@ class SurveyController(BaseController):
     def adminSurvey(self):
         if int(c.authuser['accessLevel']) < 200:
             log.info('user %s tried to access adminSurvey()'%c.authuser.id)
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         c.title = c.heading = 'Survey adminstration'
         c.facilitators = getUsersWithLevelGreater(99)
         c.surveys = getActiveSurveys()
-        if session['message'] != False:
-            c.message = session['message']
-            session['message'] = False
-            session.save()
+        if 'message' in session:
+            if session['message'] != False:
+                c.message = session['message']
+                session['message'] = False
+                session.save()
         return render('/derived/admin_survey.bootstrap')
 
     @h.login_required
     def addSurvey(self):
         if int(c.authuser['accessLevel']) < 200:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         c.title = c.heading = 'Add Survey'
         
         return render('/derived/add_survey.bootstrap')
@@ -57,7 +58,7 @@ class SurveyController(BaseController):
     @h.login_required
     def addSurveyHandler(self):
         if int(c.authuser['accessLevel']) < 200:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         message = {}
         """
@@ -162,14 +163,14 @@ class SurveyController(BaseController):
     @h.login_required
     def edit(self, id1, id2):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         code = id1
         url = id2
         c.survey = getSurvey(code, urlify(url))
         if int(c.authuser['accessLevel']) < 200:
             if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
-                return redirect('/')
+                return render('/derived/404.bootstrap')
         c.title = c.header = 'Edit a survey'
         
         return render('/derived/edit_survey.bootstrap')
@@ -177,14 +178,14 @@ class SurveyController(BaseController):
     @h.login_required
     def editHandler(self, id1, id2):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         code = id1
         url = id2
         survey = getSurvey(code, urlify(url))
         if int(c.authuser['accessLevel']) < 200:
             if (c.authuser.id != survey.owner) and (c.authuser.id not in map(int, survey['facilitators'].split(','))):
-                return redirect('/')
+                return render('/derived/404.bootstrap')
         
         if request.params['surveyName'] != '':
             survey['title'] = request.params['surveyName']
@@ -213,7 +214,7 @@ class SurveyController(BaseController):
     @h.login_required
     def upload(self, id1, id2):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         code = id1
         url = id2
@@ -223,14 +224,14 @@ class SurveyController(BaseController):
             # if not an admin..
             if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
                 # and you're not the owner AND you're not a facilitator..
-                return redirect('/')
+                return render('/derived/404.bootstrap')
 
         return render('/derived/add_survey_upload.bootstrap')
     
     @h.login_required
     def uploadSurveyHandler(self, id1, id2):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         code = id1
         url = id2
@@ -238,7 +239,7 @@ class SurveyController(BaseController):
         if int(c.authuser['accessLevel']) < 200:
             if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
                 # and you're not the owner AND you're not a facilitator for this survey..
-                return redirect('/')
+                return render('/derived/404.bootstrap')
 
         """
             Set up a basic scaling schema - no more than ~30k surveys in a given directory.
@@ -372,6 +373,7 @@ class SurveyController(BaseController):
         
         c.survey = getSurvey(code, urlify(url))
 
+        """
         if int(c.authuser['accessLevel']) < 200:
             # if not an admin..
             if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
@@ -384,8 +386,8 @@ class SurveyController(BaseController):
 
                 if userZip not in surveyZip:
                     # you can't check out this survey
-                    return redirect('/')
-
+                    return render('/derived/404.bootstrap')
+        """
         c.slide = getSurveySlide(slideHash, c.survey.id)
         
         # Now grab the correct list of slides
@@ -420,18 +422,27 @@ class SurveyController(BaseController):
     @h.login_required
     def showSurveys(self):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         c.title = c.header = 'Show my surveys'
         if int(c.authuser['accessLevel']) >= 200:
             c.surveys = getAllSurveys()
         else:
-            c.surveys = getSurveysByMember(c.authuser)
+            ##allSurveys = getSurveysByMember(c.authuser)
+            allSurveys = getAllSurveys()
+            surveys = []
+            for survey in allSurveys:
+                if c.authuser.id == survey.owner:
+                    surveys.append(survey)
+                elif c.authuser.id in map(int, survey['facilitators'].split(',')):
+                    surveys.append(survey)
+                c.surveys = surveys
+
         return render('/derived/list_owned_surveys.bootstrap')
     
     @h.login_required
     def activate(self, id1, id2):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         code = id1
         url = id2
         
@@ -440,7 +451,7 @@ class SurveyController(BaseController):
             # if not an admin..
             if (c.authuser.id != survey.owner) and (c.authuser.id not in map(int, survey['facilitators'].split(','))):
                 # and you're not the owner AND you're not a facilitator for this survey..
-                return redirect('/')
+                return render('/derived/404.bootstrap')
 
         state = int(survey['active'])
         if state == 0:
@@ -460,7 +471,7 @@ class SurveyController(BaseController):
     @h.login_required
     def setFeaturedSurvey(self):
         if int(c.authuser['accessLevel']) < 200:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         result = request.params['radioButton']
         l = result.split('_')
         code = l[0]
@@ -474,7 +485,7 @@ class SurveyController(BaseController):
     @h.login_required
     def viewResults(self, id1, id2):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         code = id1
         url = urlify(id2)
         c.survey = survey = getSurvey(code, url)
@@ -482,7 +493,7 @@ class SurveyController(BaseController):
             # if not an admin..
             if (c.authuser.id != c.survey.owner) and (c.authuser.id not in map(int, c.survey['facilitators'].split(','))):
                 # and you're not the owner AND you're not a facilitator for this survey..
-                return redirect('/')
+                return render('/derived/404.bootstrap')
         if survey:
             results = getAllAnswersForSurvey(survey)
             if results:
@@ -502,12 +513,12 @@ class SurveyController(BaseController):
                 return render('/derived/view_results.bootstrap')
         
         # Silently fail here...should be changed
-        return redirect('/')
+        return render('/derived/404.bootstrap')
     
     @h.login_required
     def generateResults(self, id1, id2):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         code = id1
         url = urlify(id2)
@@ -517,7 +528,7 @@ class SurveyController(BaseController):
             # if you're not an admin..
             if (c.authuser.id != survey.owner) and (c.authuser.id not in map(int, survey['facilitators'].split(','))):
                 # and you're not the owner or a facilitator, you can't do this
-                return redirect('/')
+                return render('/derived/404.bootstrap')
         
         results = getAllAnswersForSurvey(survey)
         # make a csv
@@ -587,7 +598,7 @@ class SurveyController(BaseController):
     @h.login_required
     def addFacilitator(self):
         if int(c.authuser['accessLevel']) < 200:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         email = request.params['email']
         user = getUserByEmail(email)
@@ -606,7 +617,7 @@ class SurveyController(BaseController):
     @h.login_required
     def addAdmin(self):
         if int(c.authuser['accessLevel']) < 300:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         email = request.params['email']
         user = getUserByEmail(email)
@@ -626,7 +637,7 @@ class SurveyController(BaseController):
     @h.login_required
     def addFacilitatorToSurvey(self, id1, id2):
         if int(c.authuser['accessLevel']) < 100:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
         
         code = id1
         url = id2
@@ -634,7 +645,7 @@ class SurveyController(BaseController):
         
         if int(c.authuser['accessLevel']) < 200:
             if c.authuser.id not in map(int, survey['facilitators'].split(',')):
-                return redirect('/')
+                return render('/derived/404.bootstrap')
         
         email = request.params['email']
         user = getUserByEmail(email)
@@ -650,7 +661,7 @@ class SurveyController(BaseController):
         
         facilitators = map(int, survey['facilitators'].split(','))
         if user.id not in facilitators:
-            if user['accessLevel'] >= 100:
+            if int(user['accessLevel']) >= 100:
                 survey['facilitators'] = survey['facilitators'] + ',' + str(user.id)
                 commit(survey)
             else:

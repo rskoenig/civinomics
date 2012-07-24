@@ -25,6 +25,10 @@ class LoginController(BaseController):
     def index(self):
         """ Display and Handle Login """
         c.title = c.heading = "Login"  
+        c.splashMsg = False
+        splashMsg = {}
+        splashMsg['type'] = 'error'
+        splashMsg['title'] = 'Error'
 
         try:
             email = request.params["email"].lower()
@@ -37,6 +41,8 @@ class LoginController(BaseController):
                     if user['disabled'] == True or user['activated'] == False:
                         log.warning("disabled account attempting to login - " + email )
                         h.flash( "This account has been disabled.", "warning" )
+                        splashMsg['content'] = 'This account has been disabled.'
+                        c.splashMsg = splashMsg
                     elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
                         user['laston'] = time.time()
@@ -49,26 +55,23 @@ class LoginController(BaseController):
                         c.authuser = user
                         
                         log.info( "Successful login attempt with credentials - " + email )
-                        h.flash( "Welcome " + session["user"] + "!", "success" )
                         try:
-                            #return redirect(session['return_to'])
-                            #return redirect("/home/mainPage/%s" % user.name)
                             return redirect("/derived/issuehome.html")
                         except:
-                            #return redirect("/home/mainPage/%s" % user.name)
                             return redirect(config['app_conf']['site_base_url'])
                     else:
                         log.warning("incorrect username or password - " + email )
-                        h.flash( "incorrect username or password", "warning" )
+                        splashMsg['content'] = 'incorrect username or password'
+                        c.splashMsg = splashMsg
                 else:
                     log.warning("incorrect username or password - " + email )
-                    h.flash( "incorrect username or password", "warning" )
+                    splashMsg['content'] = 'incorrect username or password'
+                    c.splashMsg = splashMsg
             else:
-                h.flash( "missing username or password", "warning" )
+                splashMsg['content'] = 'missing username or password'
+                c.splashMsg = splashMsg
             
-            #return render("/derived/signup.html")
-            #return render("/derived/login.mako" )
-            return render("/derived/splash.html")
+            return render("/derived/splash.bootstrap")
 
         except KeyError:
             if "user" in session:

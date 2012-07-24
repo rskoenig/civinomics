@@ -29,7 +29,7 @@ class HomeController(BaseController):
         else:
             c.site_base_url = config['app_conf']['site_base_url']
             c.site_secure_url = config['app_conf']['site_secure_url']
-            return render('/derived/splash.html')
+            return render('/derived/splash.bootstrap')
 
     @h.login_required
     def mainPage(self, id):
