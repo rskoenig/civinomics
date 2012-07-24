@@ -26,7 +26,7 @@ class ErrorController(BaseController):
         """Fox Created this code... """
         c.title = c.heading = "This page does not exist yet..."
 
-        return render('/derived/404.html')
+        return render('/derived/404.bootstrap')
 
         """
         resp = request.environ.get('pylons.original_response')

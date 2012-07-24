@@ -36,93 +36,114 @@ class RegisterController(BaseController):
     def register_handler( self ):
         """ Handler for registration, validates """
         c.title = c.heading = "Registration"
-        try:
-            
-            #username = request.params['username'].lower()
+        c.splashMsg = False
+        splashMsg = {}
+        splashMsg['type'] = 'error'
+        splashMsg['title'] = 'Error'
+        if  'password' not in request.params:
+            log.info('password missing')
+        else:
             password = request.params['password']
+        if  'password2' not in request.params:
+            log.info('password2 missing')
+        else:
             password2 = request.params['password2']
+        if  'email' not in request.params:
+            log.info('email missing')
+        else:
             email = request.params['email']
+        if  'postalCode' not in request.params:
+            log.info('postalCode missing')
+        else:
             postalCode = request.params['postalCode']
+        if  'country' not in request.params:
+            log.info('country missing')
+        else:
             country = request.params['country']
+        if  'memberType' not in request.params:
+            log.info('memberType missing')
+        else:
             memberType = request.params['memberType']
+        if  'firstName' not in request.params:
+            log.info('firstName missing')
+        else:
             firstName = request.params['firstName']
+        if  'lastName' not in request.params:
+            log.info('lastName missing')
+        else:
             lastName = request.params['lastName']
+        if  'chkTOS' not in request.params:
+            log.info('chkTOS missing')
+        else:
             checkTOS = request.params['chkTOS']
 
-            schema = plaintextForm()
-            try:
-                nameTst = schema.to_python(dict(username = firstName))
-            except formencode.Invalid, error:
-                h.flash("Error: " + unicode(error), "warning")
-                #return render("/derived/signup.html")
-                return render('/derived/splash.html')
-            try:
-                nameTst = schema.to_python(dict(username = lastName))
-            except formencode.Invalid, error:
-                h.flash("Error: " + unicode(error), "warning")
-                #return render("/derived/signup.html")
-                return render('/derived/splash.html')
-            username = "%s %s" %(firstName, lastName)
-            maxChars = 50;
-            errorFound = False;
-            # These warnings should all be collected onto the stack, then at the end we should render the page
-            if firstName and lastName and password and password2 and email and checkTOS:
-                if len(firstName) > maxChars:
-                    h.flash("Error: First name: First name can be " + unicode(maxChars) + " characters at most", "warning")
-                    log.info("Error: Long first name")
-                    errorFound = True
-                if len(lastName) > maxChars:
-                    h.flash("Error: Last name: Last name can me " + unicode(maxChars) + " characters at most", "warning")
-                    log.info("Error: Long last name")
-                    errorFound = True
-                if len(email) > maxChars:
-                    h.flash("Error: Email: Email can be " + unicode(maxChars) + " characters at most", "warning")
-                    log.info("Error: Long email")
-                    errorFound = True
-                if len(password) > maxChars:
-                    h.flash("Error: Password: Password can be " + unicode(maxChars) + " characters at most", "warning")
-                    log.info("Error: Long password")
-                    errorFound = True
-                if postalCode:
-                    pInfo = getPostalInfo(postalCode, 'United States')
-                    if pInfo == None:
-                        h.flash("Error: invalid postal code", "warning")
-                        log.info("Error: Bad Postal Code password")
-                        errorFound = True
-                else: 
-                    h.flash("Error: invalid postal code", "warning")
+        schema = plaintextForm()
+        try:
+            nameTst = schema.to_python(dict(username = firstName))
+        except formencode.Invalid, error:
+            splashMsg['content'] = "Error: " + unicode(error)
+            c.splashMsg = splashMsg 
+            return render('/derived/splash.bootstrap')
+        try:
+            nameTst = schema.to_python(dict(username = lastName))
+        except formencode.Invalid, error:
+            splashMsg['content'] = "Error: " + unicode(error)
+            c.splashMsg = splashMsg 
+            return render('/derived/splash.bootstrap')
+        username = "%s %s" %(firstName, lastName)
+        maxChars = 50;
+        errorFound = False;
+        # These warnings should all be collected onto the stack, then at the end we should render the page
+        if firstName and lastName and password and password2 and email and checkTOS:
+            if len(firstName) > maxChars:
+                firstName = firstName[:50]
+            if len(lastName) > maxChars:
+                lastName = lastName[:50]
+            if len(email) > maxChars:
+                log.info("Error: Long email")
+                errorFound = True
+                splashMsg['content'] = "Email can be " + unicode(maxChars) + " characters at most"
+                c.splashMsg = splashMsg 
+            if len(password) > maxChars:
+                log.info("Error: Long password")
+                errorFound = True
+                splashMsg['content'] = "Password can be " + unicode(maxChars) + " characters at most"
+                c.splashMsg = splashMsg 
+            if postalCode:
+                pInfo = getPostalInfo(postalCode, 'United States')
+                if pInfo == None:
                     log.info("Error: Bad Postal Code password")
                     errorFound = True
-                if errorFound:
-                    #return render("/derived/signup.html")
-                    return render('/derived/splash.html')
-                username = "%s %s" %(firstName, lastName)
-                if getUserByEmail( email ) == False:
-                    if password == password2:
-                        u = User(email, firstName, lastName, password, country, memberType, postalCode)
-                        message = "The user '" + username + "' was created successfully!"
+                    splashMsg['content'] = "Invalid postal code"
+                    c.splashMsg = splashMsg 
+            else: 
+                log.info("Error: Bad Postal Code")
+                errorFound = True
+                splashMsg['content'] = "Invalid postal code"
+                c.splashMsg = splashMsg 
+            if errorFound:
+                return render('/derived/splash.bootstrap')
+            username = "%s %s" %(firstName, lastName)
+            if getUserByEmail( email ) == False:
+                if password == password2:
+                    u = User(email, firstName, lastName, password, country, memberType, postalCode)
+                    message = "The user '" + username + "' was created successfully!"
                                 
-                        log.info( message )
-                        
-                        session['popup'] = True
-                        c.popper = {}
-                        c.popper['leftTitle'] = 'SIGN UP'
-                        c.popper['subject'] = 'Thank you for registering'
-                        c.popper['message'] = 'Check your email to finish setting up your account'
-                                
-                        return render('/derived/splash.html')
-                    else:
-                        h.flash( "The password and confirmation do not match", "warning" )
+                    log.info( message )
+                    splashMsg['type'] = 'success'
+                    splashMsg['title'] = 'Success'
+                    splashMsg['content'] = 'Check your email to finish setting up your account'
+                    c.splashMsg = splashMsg
+                      
+                    return render('/derived/splash.bootstrap')
                 else:
-                    h.flash( "The email '" + email + "' is already in use", "warning" )
+                    splashMsg['content'] = "The password and confirmation do not match"
+                    c.splashMsg = splashMsg 
             else:
-                h.flash( "Please fill all fields", "warning" )
-      
-        except KeyError:
-            if "user" in session:
-                #return redirect( "/" )
-                return render('/derived/splash.html')
-            h.flash( "Please fill all fields.", "error" )
-        #return render( "/derived/register.mako" )
-        #return render("/derived/signup.html")
-        return render('/derived/splash.html')
+                splashMsg['content'] = "The email '" + email + "' is already in use"
+                c.splashMsg = splashMsg 
+        else:
+            splashMsg['content'] = "Please fill all fields"
+            c.splashMsg = splashMsg 
+   
+        return render('/derived/splash.bootstrap')

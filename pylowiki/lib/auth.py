@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pylons.controllers.util import redirect
-from pylons import session, config
+from pylons import session, config, tmpl_context as c
 from decorator import decorator #easy_install decorator   http://pypi.python.org/pypi/decorator
 import helpers as h
 
@@ -19,6 +19,10 @@ def check_if_login_required():
     if 'user' not in session:
         h.flash( "Oops, you must be logged in to use that.", "warning" )
         #return redirect( h.url(controller='login', action="index") )
+        return redirect(h.url(controller = 'home', action = 'index'))
+    if not c.authuser:
+        session.delete()
+        h.flash( "Oops, you must be logged in to use that.", "warning" )
         return redirect(h.url(controller = 'home', action = 'index'))
 
 # Deprecated

@@ -48,6 +48,9 @@ class ActionlistController(BaseController):
             c.list = get_all_pages(1)
 
         if 'user' in session:
+            if not c.authuser:
+                session.delete()
+                return redirect('/')
             items = []
             userZip = int(c.authuser['postalCode'])
             for item in c.list:
@@ -61,6 +64,14 @@ class ActionlistController(BaseController):
             c.list, page=int(request.params.get('page', 1)),
             items_per_page = 10, item_count = c.count
         )
+
+        # Hack to get around undiscussed conflicts in 'featured' item 
+        # listing with respect to geographic scoping
+        if len(c.list) >= 1:
+            featuredSurvey = c.list.pop()
+            c.mainSurvey = featuredSurvey
+            c.surveys = c.list
+        """
         if len(c.list) >= 1:
             featuredSurvey = getFeaturedSurvey()
             if not featuredSurvey:
@@ -82,6 +93,7 @@ class ActionlistController(BaseController):
                 c.surveys = c.list
         else:
             c.mainSurvey = []
+          """
         return render('/derived/list_surveys.bootstrap')
 
     def searchWorkshops( self, id1, id2  ):
