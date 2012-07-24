@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID
     from pylowiki.lib.db.workshop import getWorkshop
+    from pylowiki.lib.db.user import isAdmin
 %>
 
 
@@ -329,4 +330,13 @@
 	% else:
 		<div class="alert alert-warning">No resources read.</div>
 	% endif
+</%def>
+
+<%def name="memberAdminControls()">
+    % if isAdmin(c.authuser.id):
+        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-warning">Admin Member</button></a>
+    % endif
+</%def>
+
+<%def name="pendingFacilitateInvitations()">
 </%def>

@@ -13,6 +13,7 @@
 		<div class="row-fluid">
 			<div class="span6">
 				${helpers.followButton()}
+				${helpers.memberAdminControls()}
 			</div>
 			<div class="span6">
 				${helpers.geoInfo()}
