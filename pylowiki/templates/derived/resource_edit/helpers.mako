@@ -45,7 +45,7 @@
                     <div class="control-group">
                         <label class="control-label"><strong>Resource URL:</strong></label>
                         <div class="controls docs-input-sizes">
-                            <input type="text" class="span2" id="resourceurl" name = "link" value="${linkValue}"/>
+                            <input type="text" id="resourceurl" name = "link" value="${linkValue}"/>
                         </div>
                     </div>
                     
@@ -53,7 +53,7 @@
                         <label class="control-label"><strong>Resource Title:</strong></label>
                         <label class="control-label">Keep the title short and informative as possible.</label>
                         <div class="controls docs-input-sizes">
-                            <input type="text" class="span2" id="resourcetitle" name = "title" value="${titleValue}"/>
+                            <input type="text" id="resourcetitle" name = "title" value="${titleValue}"/>
                         </div>
                     </div>
 
