@@ -86,7 +86,7 @@ def getParticipantsByID(id):
 
 def getRecentMemberPosts(number):
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment'])).order_by('-date').limit(number).all()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource'])).order_by('-date').limit(number).all()
     except:
         return False
 

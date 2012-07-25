@@ -3,7 +3,7 @@
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
-   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID
+   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.fuzzyTime import timeSince, timeUntil
 %>
@@ -117,20 +117,39 @@
                            % if mObj.objType == 'resource':
                                <% w = getWorkshopByID(mObj['workshop_id']) %>
                                <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                               <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                                <% iType = "book" %>
                            % elif mObj.objType == 'suggestion':
                                <% iType = "pencil" %>
                                <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                               <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
+                               <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
                            %else:
                                <% iType = "comment" %>
                                <% oLink = "" %>
                            %endif
+                           %if len(w['title']) > 18:
+                               <% wTitle = w['title'][0:14] + '...' %>
+                           %else:
+                               <% wTitle = w['title'] %>
+                           %endif
                            <tr>
+                           <td>
+                           <div class="thumbnail">
                            % if muser['pictureHash'] == 'flash':
-                               <td><a href="${oLink}"><i class="icon-${iType}"></i> ${mObj.objType.capitalize()}</a> <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="avatar" width="20" /> ${mname}</a><br>${timeSince(mObj.date)} ago</td>
+                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" style="width:40px;" alt="${mname}"/> 
                            % else:
-                               <td><a href="${oLink}"><i class="icon-${iType}"></i> ${mObj.objType.capitalize()}</a> <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/thumbnail/${muser['pictureHash']}.thumbnail" alt="avatar" /> ${mname}</a><br>${timeSince(mObj.date)} ago</td>
+                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" style="width:40px;"/></a>
                            % endif
+                           </div>
+                           </td>
+                           <td>
+                              <ul class="unstyled">
+                              <li><a href="${wLink}"><i class="icon-cog"></i> ${wTitle}</a></li>
+                              <li><a href="${oLink}"><i class="icon-${iType}"></i> New ${mObj.objType.capitalize()}</a></li>
+                              <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
+                              <ul>
+                           </td>
                            </tr>
 			% endfor
             </tbody>
