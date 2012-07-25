@@ -1,13 +1,15 @@
-<%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.user import getUserByID
 %>  
 
-    <div class="banner_div">
-        <h2 class="banner"><a href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.title}</a></h2>
+<%def name="user()">
+    <div class="page-header">
+        <h1><a href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.title}</a></h1>
     </div>     
     <br /><br />
-    <br /><br />
+</%def>
+
+<%def name="user_events()">
     % if c.events:
        <% numEvents = len(c.events) %>
        <% eString = "Events" %>
@@ -23,8 +25,9 @@
           <br /><br />
        %endfor
     % endif
-    
-    <br /><br />
+</%def>
+
+<%def name="user_admin()">
     <p>
     <strong class="gray">Administrate Member</strong>
     <br /><br />
@@ -38,7 +41,7 @@
     <form method="post" name="enableUser" id="enableUser" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/">
        Reason for Member ${eAction}: <input type=text name=enableUserReason> <br /><br />
        <input type=radio name="verifyEnableUser" value="0"> Verify ${eAction}
-       &nbsp;&nbsp;<button type="submit" class="gold">${eAction} Member</button>
+       &nbsp;&nbsp;<button type="submit" class="btn btn-warning">${eAction} Member</button>
     </form>
     <br /><br />
     <strong>Change Access Level</strong><br /><br />
@@ -55,7 +58,7 @@
         <input type=radio name="setPrivs" value="100"> Facilitator &nbsp; &nbsp; &nbsp;
         <input type=radio name="setPrivs" value="200"> Admin
      % endif
-     &nbsp;&nbsp;<button type="submit" class="gold">Set Privs</button>
+     &nbsp;&nbsp;<button type="submit" class="btn btn-warning">Set Privs</button>
      </form>
     <br /><br />
     % if c.account:
@@ -86,7 +89,7 @@
        <option>10</option>
        </select>
        <br /><br />
-       <button type="submit" class="gold">Update Account</button>
+       <button type="submit" class="btn btn-warning">Update Account</button>
        </form> 
     % else:
        <strong>Create User Account</strong><br /><br />
@@ -105,18 +108,7 @@
        <option>10</option>
        </select>
        <br /><br />
-       <button type="submit" class="gold">Add Account</button>
+       <button type="submit" class="btn btn-warning">Add Account</button>
        </form> 
     % endif
-<%def name = 'extraHTML()'>
-
-</%def>
-
-<%def name = 'extraStyles()'>
-
-</%def>
-
-<%def name = 'extraScripts()'>
-    <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
-
 </%def>
