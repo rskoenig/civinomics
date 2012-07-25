@@ -16,10 +16,6 @@
 	% else:
 		<img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" width="200"/>
 	% endif
-	% if c.authuser['email'] == c.user['email']:
-		<br>
-		<a href="/profile/edit" alt="edit profile"><button class="btn btn-warning"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
-	% endif
         ${memberAdminControls()}
 </%def>
 

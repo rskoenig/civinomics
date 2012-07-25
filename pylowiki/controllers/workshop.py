@@ -647,9 +647,7 @@ class WorkshopController(BaseController):
                 c.rating = getRatingByID(workRateDict[c.w.id])
 
         c.motd = getMessage(c.w.id)
-        # kludge for now
-        if c.motd == False:
-           c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+        c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
 
         return render("/derived/workshop_feedback.bootstrap")
     

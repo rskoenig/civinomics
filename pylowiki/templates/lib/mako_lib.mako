@@ -78,12 +78,13 @@
 	% if c.facilitators == False or len(c.facilitators) == 0:
 		<div class="alert alert-warning">No facilitators!</div>
 	% else:
+                <ul class="unstyled">
 		% for facilitator in c.facilitators:
 			<% fuser = getUserByID(facilitator.owner) %>
 			% if fuser['pictureHash'] == 'flash':
-				<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" width="50"> ${fuser['name']}</a>
+				<li><a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" width="40"> ${fuser['name']}</a></li>
 			% else:
-				<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" width="50"> ${fuser['name']}</a>
+				<li><a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" width="40"> ${fuser['name']}</a></li>
 			% endif
 		% endfor
 		% if c.motd and int(c.motd['enabled']) == 1:
@@ -110,6 +111,7 @@
 		pages = {
 			"home": "",
 			"background": "background",
+			"feedback": "feedback",
 			"stats": "stats",
 			"discussion": "discussion"
 		}

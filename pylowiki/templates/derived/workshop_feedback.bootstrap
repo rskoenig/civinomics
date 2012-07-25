@@ -6,10 +6,13 @@
 
 <div class="left">
    <h2><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2>
+   <p>
+   ${lib.nav_thing('feedback')}
+   </p>
 <br/>
 </div>
 <div class="row-fluid">
-	<div class="span8">
+	<div class="span9">
 		<div class="civ-col">
 			<h2 class="civ-col">Workshop Feedback</h2>
 			<div class="civ-col-inner">
@@ -26,22 +29,21 @@
 			</div>
 		</div>
 	</div>
-	<div class="span4">
+	<div class="span3">
 		<div class="civ-col">
 			<h2 class="civ-col">About facilitation</h2>
 			<div class="civ-col-inner">
-   The <strong>Facilitator</strong> is the host of the workshop,
-and we as a community appreciate their tending of this work space. They have
-some administrative privileges in this workhop which include the ability
-to moderate member contributions which are off topic or violate the
-Terms of Use, point to related information in other
-workhops, and otherwise facilitate a smooth experience in this space.
+   The <strong>Facilitator</strong> is the host of the workshop, working to
+facilitate a productive exploration of the topic and goals of this workshop.
+Facilitators have some administrative privileges in this workhop which 
+include the ability to moderate member contributions which are off 
+topic or violate the Terms of Use. 
 			</div>
 		</div>
 		<div class="civ-col">
 			<h2 class="civ-col">${lib.facilitator()}</h2>
 			<div class="civ-col-inner">
-				${helpers.your_facilitator()}
+				${lib.your_facilitator()}
 			</div>
 		</div>
 	</div>
