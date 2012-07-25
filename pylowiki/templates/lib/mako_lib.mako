@@ -15,7 +15,13 @@
 
 <%def name="avatar( hash, size, float='none' )">
     <% avatarURL = "/images/avatars/%s.thumbnail" %(hash) %>
-    <img src = "${avatarURL}" style = "width: ${size}px; float: ${float}; padding-right: 5px; vertical-align: middle;">
+    <ul class="thumbnails">
+    <li>
+        <div class="thumbnail">
+            <img src= "${avatarURL}" style = "width: ${size}px; float: ${float}; padding-right: 5px; vertical-align: middle;">
+        </div>
+    </li>
+    </ul>
 </%def>
 
 ## Bootstrap
@@ -222,11 +228,15 @@
 </%def>
 
 <%def name="displayProfilePicture()">
+        <ul class="thumbnails">
+        <li>
 	% if c.authuser['pictureHash'] == 'flash':
-		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatars/flash.profile"></a>
+		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" alt="${c.authuser['name']}"></a>
 	% else:
-		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
-			<img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile">
+		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail">
+			<img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" alt="${c.authuser['name']}">
 		</a>
 	% endif
+        </li>
+        </ul>
 </%def>

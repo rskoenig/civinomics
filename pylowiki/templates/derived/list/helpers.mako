@@ -5,13 +5,12 @@
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
    from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID
    from pylowiki.lib.db.user import getUserByID
-   from pylowiki.lib.fuzzyTime import timeSince
+   from pylowiki.lib.fuzzyTime import timeSince, timeUntil
 %>
 <%namespace file="/lib/mako_lib.mako" name="lib" />
 
 <%def name='draw_avatar()'>
 	${lib.displayProfilePicture()}
-	<br>
 	<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
 		<strong>${c.authuser['name']}</strong>
 	</a>

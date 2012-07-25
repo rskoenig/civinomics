@@ -3,7 +3,7 @@
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
-   #from pylowiki.lib.fuzzyTime import timeUntil
+   from pylowiki.lib.fuzzyTime import timeUntil
 %>
 <%namespace file="/lib/mako_lib.mako" name="lib" />
 
@@ -49,7 +49,7 @@
                 Public Sphere: ${item['publicScopeTitle']}<br>
                 Suggestions: ${len(getSuggestionsForWorkshop(item['urlCode'], item['url']))}<br>
                 Followers: ${len(getWorkshopFollowers(item.id))}<br>
-                Ends: <span class="old">${item['endTime']}</span>
+                Ends: <span class="old">${timeUntil(item['endTime'])}</span> from now
 			</li>
 		% endfor
 	</ul> <!-- /.civ-col-list -->

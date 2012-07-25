@@ -11,11 +11,17 @@
 </%def>
 
 <%def name="displayProfilePicture()">
-	% if c.user['pictureHash'] == 'flash':
-		<img src="/images/avatars/flash.profile" width="200"/>
-	% else:
-		<img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" width="200"/>
-	% endif
+        <ul class="thumbnails">
+        <li>
+        <div class="thumbnail">
+        % if c.user['pictureHash'] == 'flash':
+                <img src="/images/avatars/flash.profile" alt="${c.user['name']}">
+        % else:
+            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}">
+        % endif
+        </div>
+        </li>
+        </ul>
         ${memberAdminControls()}
 </%def>
 
