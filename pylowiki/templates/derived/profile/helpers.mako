@@ -69,8 +69,8 @@
                    %else:
                        <% wTitle = w['title'] %>
                    %endif
-                   <li><i class="icon-cog"></i><a href="${wLink}">${wTitle}</a></li>
-                   <li><i class="icon-${iType}"></i><a href="${oLink}">${oTitle}</a></li>
+                   <li><i class="icon-cog"></i><a href="${wLink}"> ${wTitle}</a></li>
+                   <li><i class="icon-${iType}"></i><a href="${oLink}"> ${oTitle}</a></li>
                % endif
                % if mObj.objType == 'comment':
                    <li><i class="icon-${iType}"></i> New comment</a></li>

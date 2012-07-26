@@ -1,5 +1,6 @@
 <%! 
    from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
+   from pylowiki.lib.db.resource import getResourcesByWorkshopID
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
@@ -47,8 +48,11 @@
                 % endif
                 <h4><a href="/workshops/${item['urlCode']}/${item['url']}">${item['title']}</a></h4>
                 Public Sphere: ${item['publicScopeTitle']}<br>
+                <span class="badge badge-success"><i class="icon-white icon-pencil"></i> ${len(getSuggestionsForWorkshop(item['urlCode'], item['url']))}</span> <span class="badge badge-important"><i class="icon-white icon-book"></i> ${len(getResourcesByWorkshopID(item.id))}</span> <span class="badge badge-info"><i class="icon-white icon-user"></i> ${len(getWorkshopFollowers(item.id))}</span><br>
+                <!--
                 Suggestions: ${len(getSuggestionsForWorkshop(item['urlCode'], item['url']))}<br>
                 Followers: ${len(getWorkshopFollowers(item.id))}<br>
+                -->
                 Ends: <span class="old">${timeUntil(item['endTime'])}</span> from now
 			</li>
 		% endfor
