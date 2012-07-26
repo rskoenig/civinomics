@@ -10,14 +10,14 @@
     % if c.geoType == 'postal':
         <li><img src="${c.cityFlag}"> City is <a href="${c.cityLink}">${c.city}</a></li>
         <li><img src="${c.countyFlag}"> County is <a href="${c.countyLink}">${c.county}</a></li>
-        <li><img src="${c.stateFlag}"> State is <a href="{c.stateLink}">${c.state}</a></li>
+        <li><img src="${c.stateFlag}"> State is <a href="${c.stateLink}">${c.state}</a></li>
     % elif c.geoType == 'city':
         <li><img src="${c.cityFlag}"> City of ${c.city}</li>
         <li><img src="${c.countyFlag}"> County is <a href="${c.countyLink}">${c.county}</a></li>
-        <li><img src="${c.stateFlag}"> State is <a href="{c.stateLink}">${c.state}</a></li>
+        <li><img src="${c.stateFlag}"> State is <a href="${c.stateLink}">${c.state}</a></li>
     % elif c.geoType == 'county':
         <li><img src="${c.countyFlag}"> County of ${c.county}</li>
-        <li><img src="${c.stateFlag}"> State is <a href="{c.stateLink}">${c.state}</a></li>
+        <li><img src="${c.stateFlag}"> State is <a href="${c.stateLink}">${c.state}</a></li>
     % elif c.geoType == 'state':
         <li><img src="${c.stateFlag}"> State of ${c.state}</li>
     %endif

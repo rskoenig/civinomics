@@ -172,20 +172,9 @@
 
 <%def name="followButton()">
 	<div class="civ-col-inner">
-		<ul class="unstyled civ-col-list">
-			<li>
-				<img src="${iconPath()}/glyphicons_006_user_add.png"> ${len(c.userFollowers)} followers
-			</li>
-			<li>
-				<%
-					if int(c.user['totalPoints']) == 1:
-						s = ""
-					else:
-						s = "s"
-				%>
-				<img src="${iconPath()}/glyphicons_037_credit.png"> ${c.user['totalPoints']} point${s}
-			</li>
-		</ul> <!-- /.civ-col-list -->
+        <p>
+	<span class="badge badge-info"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info"><i class="icon-white icon-ok"></i> ${len(c.user['totalPoints'])}</span> <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${c.flags}</span> <span class="badge badge-info"><i class="icon-white icon-file"></i> ${c.posts}</span> 
+                </p>
 		% if c.authuser['email'] != c.user['email']:
                         <div class="button_container">
 			% if c.isFollowing:
