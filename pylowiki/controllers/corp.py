@@ -11,7 +11,8 @@ log = logging.getLogger(__name__)
 
 class CorpController(BaseController):
     
-    def index(self, id):
+    def index(self, id = 'None'):
+        log.info('We are in corp controller index function, id was %s' % id)
         if id == 'None':
             id = 'about'
         return self.render_corp_page(id)

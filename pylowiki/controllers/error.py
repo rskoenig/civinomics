@@ -25,7 +25,7 @@ class ErrorController(BaseController):
         """Render the error document"""
         """Fox Created this code... """
         c.title = c.heading = "This page does not exist yet..."
-
+        
         return render('/derived/404.bootstrap')
 
         """
