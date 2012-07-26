@@ -4,8 +4,10 @@ from pylons import request, response, session, tmpl_context as c
 from string import capwords
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getGeoScope, getWorkshopScopes
+from pylowiki.lib.db.workshop import getWorkshopByID
 
 from pylowiki.lib.base import BaseController, render
+import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 
 import re
@@ -18,63 +20,144 @@ class GeoController(BaseController):
         c.country = geoDeurlify(id1)
         c.postal = id2
         
-        c.heading = 'Civinomics: ' + c.country + ' ' + c.postal + ' Information'
-        
-        c.postalInfo = getPostalInfo(c.postal, c.country)
-        c.city = capwords(c.postalInfo['City'])
+        c.heading = "Workshops in Postal Code " + c.postal
+        c.geoType = 'postal'
+        c.geoInfo = getPostalInfo(c.postal, c.country)
+        c.city = capwords(c.geoInfo['City'])
         c.cityFlag = '/images/flags/country/united-states/city_thumb.png'
-        c.county = capwords(c.postalInfo['County'])
+        c.cityLink = '/geo/city/' + c.country + '/' + urlify(c.geoInfo['StateFullName']) + '/' + urlify(c.geoInfo['City']) 
+        c.county = capwords(c.geoInfo['County'])
         c.countyFlag = '/images/flags/country/united-states/county_thumb.png'
-        c.state = capwords(c.postalInfo['StateFullName'])
+        c.countyLink = '/geo/county/' + c.country + '/' + urlify(c.geoInfo['StateFullName']) + '/' + urlify(c.geoInfo['County']) 
+        c.state = capwords(c.geoInfo['StateFullName'])
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
+        c.stateLink = '/geo/state/' + c.country + '/' + urlify(c.geoInfo['StateFullName'])
+        c.population = c.geoInfo['Population']
+        c.medianAge = c.geoInfo['MedianAge']
+        c.numberHouseholds = c.geoInfo['HouseholdsPerZipCode']
+        c.personsHousehold = c.geoInfo['PersonsPerHousehold']
         scope = getGeoScope(c.postal, c.country)
-        c.wscopes = getWorkshopScopes(scope, 9)
-        return render('/derived/postalInfo.bootstrap')
+        wscopes = getWorkshopScopes(scope, 9)
+        c.list = []
+        for s in wscopes:
+           wID = s['workshopID']
+           w = getWorkshopByID(wID)
+           if w['deleted'] != 1 and w['startTime'] != '0000-00-00':
+               if w not in c.list:
+                   c.list.append(w)
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 10, item_count = c.count
+        )
+        return render('/derived/list_geo.bootstrap')
 
     def showCityInfo(self, id1, id2, id3):
         c.country = geoDeurlify(id1)
         c.state = geoDeurlify(id2)
         c.city = geoDeurlify(id3)
         
-        c.heading = 'Civinomics: ' + c.country + ' City of ' + c.city + ' Information'
+        c.heading = "Workshops scoped for the City of " + capwords(c.city)
+        c.geoType = 'city'
         
-        c.cityInfo = getCityInfo(c.city, c.state, c.country)
+        c.geoInfo = getCityInfo(c.city, c.state, c.country)
         c.city = capwords(c.city)
         c.cityFlag = '/images/flags/country/united-states/city_thumb.png'
-        c.county = capwords(c.cityInfo['County'])
+        c.cityLink = '/geo/city/' + c.country + '/' + c.geoInfo['StateFullName'] + '/' + c.geoInfo['City'] 
+        c.county = capwords(c.geoInfo['County'])
         c.countyFlag = '/images/flags/country/united-states/county_thumb.png'
+        c.countyLink = '/geo/county/' + c.country + '/' + c.geoInfo['StateFullName'] + '/' + c.geoInfo['County'] 
+        c.state = capwords(c.geoInfo['StateFullName'])
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
-        c.state = capwords(c.cityInfo['StateFullName'])
+        c.stateLink = '/geo/state/' + c.country + '/' + c.geoInfo['StateFullName']
+        c.population = c.geoInfo['Population']
+        c.medianAge = c.geoInfo['Population_Median']
+        c.numberHouseholds = c.geoInfo['Total_Households']
+        c.personsHousehold = c.geoInfo['Average_Household_Size']
         scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + urlify(c.county) + '||' + urlify(c.city) + '|' +  '00000'
-        c.wscopes = getWorkshopScopes(scope, 8)
-        return render('/derived/cityInfo.bootstrap')
+        wscopes = getWorkshopScopes(scope, 8)
+        c.list = []
+        for s in wscopes:
+           wID = s['workshopID']
+           w = getWorkshopByID(wID)
+           if w['deleted'] != 1 and w['startTime'] != '0000-00-00':
+               if w not in c.list:
+                   c.list.append(w)
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 10, item_count = c.count
+        )
+
+        return render('/derived/list_geo.bootstrap')
 
     def showCountyInfo(self, id1, id2, id3):
         c.country = geoDeurlify(id1)
         c.state = geoDeurlify(id2)
         c.county = geoDeurlify(id3)
         
-        c.heading = 'Civinomics: ' + c.country + ' County of ' + c.county + '  Information'
+        c.heading = "Workshops scoped for the County of " + capwords(c.county)
+        c.geoType = 'county'
         
-        c.countyInfo = getCountyInfo(c.county, c.state, c.country)
-        c.county = capwords(c.countyInfo['County'])
+        c.geoInfo = getCountyInfo(c.county, c.state, c.country)
+        c.county = capwords(c.geoInfo['County'])
         c.countyFlag = '/images/flags/country/united-states/county_thumb.png'
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
-        c.state = capwords(c.countyInfo['StateFullName'])
+        c.stateLink = '/geo/state/' + c.country + '/' + c.geoInfo['StateFullName']
+        c.state = capwords(c.geoInfo['StateFullName'])
+        c.population = c.geoInfo['Population']
+        c.medianAge = c.geoInfo['Population_Median']
+        c.numberHouseholds = c.geoInfo['Total_Households']
+        c.personsHousehold = c.geoInfo['Average_Household_Size']
         scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + urlify(c.county) + '||' + 'LaLaLa|00000'
-        c.wscopes = getWorkshopScopes(scope, 6)
-        return render('/derived/countyInfo.bootstrap')
+        wscopes = getWorkshopScopes(scope, 6)
+        c.list = []
+        for s in wscopes:
+           wID = s['workshopID']
+           w = getWorkshopByID(wID)
+           if w['deleted'] != 1 and w['startTime'] != '0000-00-00':
+               if w not in c.list:
+                   c.list.append(w)
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 10, item_count = c.count
+        )
+
+        return render('/derived/list_geo.bootstrap')
 
     def showStateInfo(self, id1, id2):
         c.country = geoDeurlify(id1)
         c.state = geoDeurlify(id2)
         
-        c.heading = 'Civinomics: ' + c.country + ' State of ' + c.state + ' Information'
-        c.stateInfo = getStateInfo(c.state, c.country)
+        c.heading = "Workshops scoped for the State of " + capwords(c.state)
+        c.geoType = 'state'
+
+        c.geoInfo = getStateInfo(c.state, c.country)
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
-        c.state = capwords(c.stateInfo['StateFullName'])
+        c.state = capwords(c.geoInfo['StateFullName'])
+        c.population = c.geoInfo['Population']
+        c.medianAge = c.geoInfo['Population_Median']
+        c.numberHouseholds = c.geoInfo['Total_Households']
+        c.personsHousehold = c.geoInfo['Average_Household_Size']
         scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + 'LaLaLa||LaLaLa|00000'
-        c.wscopes = getWorkshopScopes(scope, 4)
-        
-        return render('/derived/stateInfo.bootstrap')
+        wscopes = getWorkshopScopes(scope, 4)
+        c.list = []
+        for s in wscopes:
+           wID = s['workshopID']
+           w = getWorkshopByID(wID)
+           if w['deleted'] != 1 and w['startTime'] != '0000-00-00':
+               if w not in c.list:
+                   c.list.append(w)
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 10, item_count = c.count
+        )
+
+        return render('/derived/list_geo.bootstrap')
 

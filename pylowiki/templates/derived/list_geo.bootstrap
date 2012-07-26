@@ -1,0 +1,70 @@
+<%inherit file="/base/template.bootstrap"/>
+<%namespace name="list_helpers" file="/derived/list/helpers.mako" />
+<%namespace name="workshop_helpers" file="/derived/list_workshops/helpers.mako" />
+<%namespace name="helpers" file="/derived/list_geo/helpers.mako" />
+<%namespace file="/lib/mako_lib.mako" import="civ_col_img" />
+
+<div class="row-fluid">
+	<div class="span3">
+		<div class="civ-col">
+			<div class="civ-col-inner">
+				${list_helpers.draw_avatar()}
+			</div> <!-- /.civ-col-inner -->
+		</div> <!-- /.civ-col -->
+		
+		<div class="civ-col">
+			<h2 class="civ-col">Public Spheres</h2>
+			<div class="civ-col-inner">
+				${list_helpers.list_public_spheres()}
+			</div> <!-- /.civ-col-inner -->
+			
+			<h2 class="civ-col">Show me ... </h2>
+			<div class="civ-col-inner">
+				${list_helpers.show_me()}
+			</div> <!-- /.civ-col-inner -->
+			
+			<h2 class="civ-col">Public Tags</h2>
+			<div class="civ-col-inner">
+				${list_helpers.public_tags()}
+			</div> <!-- /.civ-col-inner -->
+
+			<h2 class="civ-col">Member Tags</h2>
+			<div class="civ-col-inner">
+				${list_helpers.member_tags()}
+			</div> <!-- /.civ-col-inner -->
+		</div> <!-- /.civ-col -->
+	</div>
+	<div class="span6">
+		<div class="civ-col">
+			<h2 class="civ-col">${c.heading}</h2>
+			<div class="civ-col-inner">
+				${helpers.show_geo()}
+	        </div> <!-- /.civ-col-inner -->
+			<div class="civ-col-inner">
+				${workshop_helpers.list_workshops()}
+			</div> <!-- /.civ-col-inner -->
+			<div class="civ-col-inner">
+				${workshop_helpers.list_total_workshops()}
+			</div> <!-- /.civ-col-inner -->
+		</div> <!-- /.civ-col -->
+	</div> <!-- /.span6 -->
+	<div class="span3">
+		<div class="civ-col">
+			<h2 class="civ-col">News</h2>
+			<div class="civ-col-inner">
+				${workshop_helpers.list_news()}
+				${list_helpers.recent_posts()}
+			</div> <!-- /.civ-col-inner -->
+		</div> <!-- /.civ-col -->
+	</div> <!-- /.span3 -->
+</div> <!-- /.row-fluid -->
+
+<%def name = 'extraStyles()'>
+
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+	${civ_col_img()}
+</%def>
