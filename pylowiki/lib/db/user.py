@@ -53,6 +53,12 @@ def searchUsers( uKey, uValue):
     except:
         return False
 
+def getUserLastPost(user):
+    try:
+        return meta.Session.query(Thing).filter_by(owner = user.id).filter(Thing.objType.in_(['suggestion', 'resource', 'comment'])).order_by('-date').one()
+    except:
+        return False
+
 def checkPassword(user, password):
     if user['password'] == hashPassword(password):
         return True

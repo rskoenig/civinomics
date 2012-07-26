@@ -128,25 +128,30 @@
                                <% iType = "comment" %>
                                <% oLink = "" %>
                            %endif
-                           %if len(w['title']) > 18:
-                               <% wTitle = w['title'][0:14] + '...' %>
+                           %if len(w['title']) > 20:
+                               <% wTitle = w['title'][0:16] + '...' %>
                            %else:
                                <% wTitle = w['title'] %>
+                           %endif
+                           %if len(mObj['title']) > 20:
+                               <% oTitle = mObj['title'][0:16] + '...' %>
+                           %else:
+                               <% oTitle = mObj['title'] %>
                            %endif
                            <tr>
                            <td>
                            <div class="thumbnail">
                            % if muser['pictureHash'] == 'flash':
-                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" style="width:40px;" alt="${mname}"/> 
+                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" title="${mname}" style="width:40px;" alt="${mname}"/> 
                            % else:
-                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" style="width:40px;"/></a>
+                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" title="${mname}" style="width:40px;"/></a>
                            % endif
                            </div>
                            </td>
                            <td>
                               <ul class="unstyled">
                               <li><a href="${wLink}"><i class="icon-cog"></i> ${wTitle}</a></li>
-                              <li><a href="${oLink}"><i class="icon-${iType}"></i> New ${mObj.objType.capitalize()}</a></li>
+                              <li><a href="${oLink}"><i class="icon-${iType}"></i> ${oTitle}</a></li>
                               <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
                               <ul>
                            </td>

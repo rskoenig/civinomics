@@ -28,6 +28,8 @@
 					<ul class="nav pull-right nav-pills">
 						<li><a href="/"><i class="icon-home"></i> Home</a></li>
 						% if 'user' in session:
+						        <li><a href="/surveys"><i class="icon-exclamation-sign"></i> Surveys</a></li>
+						        <li><a href="/workshops"><i class="icon-cog"></i> Workshops</a></li>
                                                         <li class="dropdown">
                                                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i>
                                                                 Profile
@@ -39,38 +41,27 @@
 							<li><a href="/login/logout">Logout</a></li>
                                                             </ul>
                                                         </li>
-                                                       % if int(c.authuser['accessLevel']) >= 100:
-							<li class="dropdown">
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-cog"></i>
-									Workshops
-									<b class="caret"></b>
-								</a> <!-- /.dropdown-toggle -->
-								<ul class="dropdown-menu">
-										                                                                    <li><a href="/workshops">View Workshops</a></li>
-									% if int(c.authuser['accessLevel']) >= 100:
-										<li><a href="/addWorkshop">Add Workshop</a></li>
-									% endif
-									% if int(c.authuser['accessLevel']) >= 200:
-										<li><a href="/systemAdmin">Sys Admin</a></li>
-									% endif
-								</ul> <!-- /.dropdown-menu -->
-							</li> <!-- /.dropdown -->
-                                                        %endif
-							% if int(c.authuser['accessLevel']) >= 100:
+                                                        % if int(c.authuser['accessLevel']) >= 100:
     							<li class="dropdown">
-    							    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-exclamation-sign"></i>
-    							        Surveys
+    							    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-star"></i>
+    							        Admin
     							        <b class="caret"></b>
     							    </a>
     							    <ul class="dropdown-menu">
-										                                                                    <li><a href="/surveys">View Surveys</a></li>
+                                                                        % if int(c.authuser['accessLevel']) >= 100:
+                                                                                <li><a href="/addWorkshop">Add Workshop</a></li>
+                                                                        % endif
+                                                                        % if int(c.authuser['accessLevel']) >= 200:
+                                                                                <li><a href="/systemAdmin">Workshop Admin</a></li>
+                                                                        % endif
+
     							        % if int(c.authuser['accessLevel']) >= 200:
-    							         <li><a href="/surveyAdmin">Survey admin</a></li>
+    							         <li><a href="/surveyAdmin">Survey Admin</a></li>
     							        % endif
     							        % if int(c.authuser['accessLevel']) >= 200:
-    							        	<li><a href="/addSurvey">Add survey</a></li>
+    							        	<li><a href="/addSurvey">Add Survey</a></li>
     							        % endif
-    							        <li><a href="/showSurveys">My surveys</a></li>
+    							        <li><a href="/showSurveys">My Surveys</a></li>
     							    </ul>
     							</li>
 							% endif

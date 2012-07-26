@@ -84,15 +84,29 @@
 	% if c.facilitators == False or len(c.facilitators) == 0:
 		<div class="alert alert-warning">No facilitators!</div>
 	% else:
-                <ul class="unstyled">
+                <table class="table table-striped">
+                <tbody>
 		% for facilitator in c.facilitators:
 			<% fuser = getUserByID(facilitator.owner) %>
-			% if fuser['pictureHash'] == 'flash':
-				<li><a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" width="40"> ${fuser['name']}</a></li>
+                        <tr>
+                        <td>
+                            <ul class="unstyled thumbnails">
+                            <li>
+			    % if fuser['pictureHash'] == 'flash':
+				<a href="/profile/${fuser['urlCode']}/${fuser['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:40px;" alt="${fuser['name']}" title="${fuser['name']}"></a>
 			% else:
-				<li><a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" width="40"> ${fuser['name']}</a></li>
-			% endif
+				<a href="/profile/${fuser['urlCode']}/${fuser['url']}" class="thumbnail"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:40px;" alt="${fuser['name']}" title="${fuser['name']}"></a>
+			    % endif
+                            </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="/profile/${fuser['urlCode']}/${fuser['url']}">${fuser['name']}</a>
+                        </td>
+                        </tr>
 		% endfor
+                </tbody>
+                </table>
 		% if c.motd and int(c.motd['enabled']) == 1:
 			<p>Facilitator message:</p> ${c.motd['messageSummary']}
 		% else:
@@ -231,10 +245,10 @@
         <ul class="thumbnails">
         <li>
 	% if c.authuser['pictureHash'] == 'flash':
-		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" alt="${c.authuser['name']}"></a>
+		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}"></a>
 	% else:
 		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail">
-			<img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" alt="${c.authuser['name']}">
+			<img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}">
 		</a>
 	% endif
         </li>

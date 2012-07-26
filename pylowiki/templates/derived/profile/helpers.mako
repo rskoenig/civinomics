@@ -2,7 +2,8 @@
     from pylowiki.lib.db.suggestion import getSuggestionByID
     from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
-    from pylowiki.lib.db.user import isAdmin
+    from pylowiki.lib.db.user import isAdmin, getUserLastPost
+    from pylowiki.lib.fuzzyTime import timeSince
 %>
 
 
@@ -15,9 +16,9 @@
         <li>
         <div class="thumbnail">
         % if c.user['pictureHash'] == 'flash':
-                <img src="/images/avatars/flash.profile" alt="${c.user['name']}">
+                <img src="/images/avatars/flash.profile" alt="${c.user['name']}" title="${c.user['name']}">
         % else:
-            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}">
+            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}">
         % endif
         </div>
         </li>
@@ -26,44 +27,83 @@
 </%def>
 
 <%def name="listUser(user)">
-	% if user['pictureHash'] == 'flash':
-		<a href="/profile/${user['urlCode']}/${user['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/>${user['name']}</a>
-	% else:
-		<a href="/profile/${user['urlCode']}/${user['url']}"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:50px;"/></a>
-		<a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a>
-	% endif
+        <tr>
+        <td>
+           <ul class="thumbnails">
+           <li>
+	   % if user['pictureHash'] == 'flash':
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:30px;" alt="${user['name']}" title="${user['name']}"/></a>
+	   % else:
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:30px;" alt="${user['name']}" title="${user['name']}"/></a>
+	   % endif
+           </li>
+           </ul>
+        </td>
+        <td>
+           <% mObj = getUserLastPost(user) %>
+           <ul class="unstyled">
+           <li><a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a></li>
+           % if mObj:
+               % if mObj.objType == 'comment':
+                   <% iType = "comment" %>
+                   <% w = 0 %>
+               % elif mObj.objType == 'resource':
+                   <% w = getWorkshopByID(mObj['workshop_id']) %>
+                   <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
+                   <% iType = "book" %>
+               % elif mObj.objType == 'suggestion':
+                   <% iType = "pencil" %>
+                   <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
+                   <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+               % endif
+               % if w and w != 0:
+                   %if len(mObj['title']) > 20:
+                       <% oTitle = mObj['title'][0:16] + '...' %>
+                   %else:
+                       <% oTitle = mObj['title'] %>
+                   %endif
+                   %if len(w['title']) > 20:
+                       <% wTitle = w['title'][0:16] + '...' %>
+                   %else:
+                       <% wTitle = w['title'] %>
+                   %endif
+                   <li><i class="icon-cog"></i><a href="${wLink}">${wTitle}</a></li>
+                   <li><i class="icon-${iType}"></i><a href="${oLink}">${oTitle}</a></li>
+               % endif
+               % if mObj.objType == 'comment':
+                   <li><i class="icon-${iType}"></i> New comment</a></li>
+               % endif
+                    <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
+                % endif
+            </ul>
+        </td>
+        </tr>
 </%def>
 
 <%def name="displayFollowingUsers()">
-	<div class="civ-col">
-		<% fNum = len(c.followingUsers) %>
-		<h2 class="civ-col">Following (${fNum})</h2>
-		<div class="civ-col-inner">
-			<ul class="unstyled civ-block-list">
-				% for user in c.followingUsers:
-					<li>
-						${listUser(user)}
-					</li>
-				% endfor
-			</ul> <!-- /.civ-block-list -->
-		</div> <!-- /.civ-col-inner -->
-	</div> <!-- /.civ-col -->
+    <% fNum = len(c.followingUsers) %>
+    <h2 class="civ-col">Following (${fNum})</h2>
+    <table class="table table-striped table-condensed">
+    <tbody>
+    % for user in c.followingUsers:
+        ${listUser(user)}
+    % endfor
+    </tbody>
+    </table>
 </%def>
 
 <%def name="displayUserFollows()">
-	<% fNum = len(c.userFollowers) %>
-	<div class="civ-col">
-		<h2 class="civ-col">Followers (${fNum})</h2>
-		<div class="civ-col-inner">
-			<ul class="unstyled civ-block-list">
-				% for user in c.userFollowers:
-					<li>
-						${listUser(user)}
-					</li>
-				% endfor
-			</ul> <!-- /.civ-block-list -->
-		</div> <!-- /.civ-col-inner -->
-	</div> <!-- /.civ-col -->
+    <% fNum = len(c.userFollowers) %>
+    <h2 class="civ-col">Followers (${fNum})</h2>
+    <table class="table table-striped table-condensed">
+    <tbody>
+    % for user in c.userFollowers:
+        ${listUser(user)}
+    % endfor
+    </tbody>
+    </table>
 </%def>
 
 <%def name="displayConnections()">
