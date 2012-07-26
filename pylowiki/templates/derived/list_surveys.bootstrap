@@ -8,15 +8,14 @@
 
 <div class="row-fluid">
     
+    <%doc>
     ## Left column
     <div class="span3">
-        <%doc>
         <div class="civ-col">
             <div class="civ-col-inner">
                 ${helpers.draw_avatar()}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
-        </%doc>
         
         <div class="civ-col">
             <h2 class="civ-col">Upcoming Workshops</h2>
@@ -26,9 +25,10 @@
             
         </div> <!-- /.civ-col -->
     </div>
-    
+    </%doc>
+
     ## Right column
-    <div class="span9" style="text-align:center;">
+    <div class="span12" style="text-align:center;">
         % if c.message:
             ${helpers.showMessage()}
         % endif

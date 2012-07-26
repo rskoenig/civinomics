@@ -79,9 +79,10 @@
     <br />
     % if survey:
         <% slideIDs = map(int, survey['slides'].split(',')) %>
-        <div class="offset1">
+        ##<div class="offset1">
             <ul class="thumbnails">
-                <li class="span7">
+                <div class="container">
+                <li class="span12">
                     <div class="thumbnail">
                         <% firstSlide = getSurveySlideByID(slideIDs[0]) %>
                         <a class="thumbnail" href="/survey/${survey['urlCode']}/${survey['url']}/page/${firstSlide['hash']}">
@@ -98,15 +99,16 @@
                         </div>
                     </div>
                 </li>
+                </div>
             </ul>
-        </div>
+        ##</div>
     % else:
         <p>There doesn't seem to be anything here!</p>
     % endif
 </%def>
 
 <%def name='list_surveys(surveys)'>
-    <h2 style="text-align:center;"> Other Surveys </h2>
+    <h2> Other Surveys </h2>
     <br />
     % if len(surveys) == 0:
         <p>There doesn't seem to be anything here!</p>
