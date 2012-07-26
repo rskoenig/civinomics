@@ -2,7 +2,7 @@
     from pylowiki.lib.db.suggestion import getSuggestionByID
     from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
-    from pylowiki.lib.db.user import isAdmin, getUserLastPost
+    from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.fuzzyTime import timeSince
 %>
 
@@ -40,7 +40,12 @@
            </ul>
         </td>
         <td>
-           <% mObj = getUserLastPost(user) %>
+           <% mList = getUserPosts(user) %>
+           % if mList:
+               <% mObj = mList[0] %>
+           % else:
+               <% mObj = False %>
+           %endif 
            <ul class="unstyled">
            <li><a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a></li>
            % if mObj:

@@ -5,6 +5,7 @@ from pylons import tmpl_context as c
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
+from sqlalchemy import or_
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 from hashlib import md5
@@ -53,9 +54,9 @@ def searchUsers( uKey, uValue):
     except:
         return False
 
-def getUserLastPost(user):
+def getUserPosts(user):
     try:
-        return meta.Session.query(Thing).filter_by(owner = user.id).filter(Thing.objType.in_(['suggestion', 'resource', 'comment'])).order_by('-date').one()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['resource', 'suggestion', 'comment'])).filter_by(owner = user.id).order_by('-date').all()
     except:
         return False
 
