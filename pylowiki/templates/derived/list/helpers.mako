@@ -20,26 +20,22 @@
 
 <%def name='list_public_spheres()'>
 	<% c.geoInfo = getGeoInfo(c.authuser.id) %>
-	<ul class="unstyled civ-col-list">
-		<li>
-	        <a href="${c.geoInfo[0]['cityURL']}">
-	        	<img src="${c.geoInfo[0]['cityFlagThumb']}" alt="${c.geoInfo[0]['cityTitle']}" class="thumbnail" style="max-width: 70px;"> ${c.geoInfo[0]['cityTitle']}
-	        </a>
-		</li>
-		<li>
-			<a href="${c.geoInfo[0]['countyURL']}">
-				<img src="${c.geoInfo[0]['countyFlagThumb']}" alt="${c.geoInfo[0]['countyTitle']}" class="thumbnail" style="max-width: 70px"> ${c.geoInfo[0]['countyTitle']}
-			</a>
-		</li>
-		<li>
-			<a href="${c.geoInfo[0]['stateURL']}">
-				<img src="${c.geoInfo[0]['stateFlagThumb']}" alt="${c.geoInfo[0]['stateTitle']}" class="thumbnail" style="max-width: 70px"> ${c.geoInfo[0]['stateTitle']}
-			</a>
-		</li>
-		<li>
-				<img src="${c.geoInfo[0]['countryFlagThumb']}" alt="${c.geoInfo[0]['countryTitle']}" class="thumbnail" style="max-width: 70px"> ${c.geoInfo[0]['countryTitle']}
-		</li>
-	</ul> <!-- /.civ-col-list -->
+        <table>
+        <tbody>
+        <tr>
+        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" alt="${c.geoInfo[0]['cityTitle']}" class="thumbnail" style="max-width: 70px;"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">${c.geoInfo[0]['cityTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" alt="${c.geoInfo[0]['countyTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['countyURL']}">${c.geoInfo[0]['countyTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" alt="${c.geoInfo[0]['stateTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['stateURL']}">${c.geoInfo[0]['stateTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><img src="${c.geoInfo[0]['countryFlagThumb']}" alt="${c.geoInfo[0]['countryTitle']}" class="thumbnail" style="max-width: 70px"></td><td>${c.geoInfo[0]['countryTitle']}</td>
+        </tr>
+        </tbody>
+        </table>
 </%def>
 
 <%def name="show_me()">

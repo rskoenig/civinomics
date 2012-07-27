@@ -26,15 +26,22 @@
         ${memberAdminControls()}
 </%def>
 
-<%def name="listUser(user)">
+<%def name="listUser(user, wide)">
+        % if wide == 1:
+           <% pixels = 60 %>
+           <% maxlen = 40 %>
+        % else:
+           <% pixels = 30 %>
+           <% maxlen = 20 %>
+        % endif
         <tr>
         <td>
            <ul class="thumbnails">
            <li>
 	   % if user['pictureHash'] == 'flash':
-<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:30px;" alt="${user['name']}" title="${user['name']}"/></a>
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="${user['name']}" title="${user['name']}"/></a>
 	   % else:
-<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:30px;" alt="${user['name']}" title="${user['name']}"/></a>
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="${user['name']}" title="${user['name']}"/></a>
 	   % endif
            </li>
            </ul>
@@ -64,13 +71,13 @@
                    <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
                % endif
                % if w and w != 0:
-                   %if len(mObj['title']) > 20:
-                       <% oTitle = mObj['title'][0:16] + '...' %>
+                   %if len(mObj['title']) > maxlen:
+                       <% oTitle = mObj['title'][0:(maxlen - 4)] + '...' %>
                    %else:
                        <% oTitle = mObj['title'] %>
                    %endif
-                   %if len(w['title']) > 20:
-                       <% wTitle = w['title'][0:16] + '...' %>
+                   %if len(w['title']) > maxlen:
+                       <% wTitle = w['title'][0:(maxlen - 4)] + '...' %>
                    %else:
                        <% wTitle = w['title'] %>
                    %endif
@@ -93,7 +100,7 @@
     <table class="table table-striped table-condensed">
     <tbody>
     % for user in c.followingUsers:
-        ${listUser(user)}
+        ${listUser(user, 0)}
     % endfor
     </tbody>
     </table>
@@ -105,7 +112,7 @@
     <table class="table table-striped table-condensed">
     <tbody>
     % for user in c.userFollowers:
-        ${listUser(user)}
+        ${listUser(user, 0)}
     % endfor
     </tbody>
     </table>
@@ -189,23 +196,25 @@
 
 <%def name="geoInfo()">
 	<div class="civ-col-inner">
-		<ul class="unstyled civ-col-list">
-			<li>
-				<a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />${c.geoInfo[0]['cityTitle']}</a>
-			</li>
-			<li>
-				<a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />${c.geoInfo[0]['countyTitle']}</a>
-			</li>
-			<li>
-				<a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />${c.geoInfo[0]['stateTitle']}</a>
-			</li>
-			<li>
-				<img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />United States</a>
-			</li>
-			<li>
-				<img src="/images/flags/earth_thumb.gif" width="60" />Earth</a>
-			</li>
-		</ul> <!-- /.unstyled -->
+        <table>
+        <tbody>
+        <tr>
+        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" / class="thumbnail"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">${c.geoInfo[0]['cityTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" class="thumbnail"/></a></td><td><a href="${c.geoInfo[0]['countyURL']}">${c.geoInfo[0]['countyTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" class="thumbnail"/></a></td><td><a href="${c.geoInfo[0]['stateURL']}">${c.geoInfo[0]['stateTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" class="thumbnail"/></td><td>United States</a></td>
+        </tr>
+        <tr>
+        <td><img src="/images/flags/earth_thumb.gif" width="60" class="thumbnail"/></td><td>Earth</td>
+        </tr>
+        </tbody>
+        </table>
 	</div> <!-- /.civ-col-inner -->
 </%def>
 
