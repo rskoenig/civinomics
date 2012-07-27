@@ -42,9 +42,9 @@
 		% for item in c.paginator:
 			<li>
                 % if item['mainImage_hash'] == 'supDawg':
-                    <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" style="width: 120px; height: 80px;"/></a>
+                    <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/thumbnail/${item['mainImage_hash']}.thumbnail" class="thumbnail" alt="mtn" style="width: 120px; height: 80px;"/></a>
                 % else:
-                    <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/${item['mainImage_directoryNum']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class="left" style = "width: 120px; height: 80px;"/></a>
+                    <a href="/workshops/${item['urlCode']}/${item['url']}"><img src="/images/${item['mainImage_identifier']}/${item['mainImage_directoryNum']}/thumbnail/${item['mainImage_hash']}.thumbnail" alt="mtn" class=" thumbnail left" style = "width: 120px; height: 80px;"/></a>
                 % endif
                 <h4><a href="/workshops/${item['urlCode']}/${item['url']}">${item['title']}</a></h4>
                 Public Sphere: ${item['publicScopeTitle']}<br>

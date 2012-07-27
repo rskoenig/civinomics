@@ -5,19 +5,16 @@
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
 %>
 <%namespace file="/lib/mako_lib.mako" name="lib" />
+<%namespace name="profile_helpers" file="/derived/profile/helpers.mako" />
 
 <%def name="list_users()">
-	<ul class="unstyled civ-col-list">
-		% for item in c.paginator:
-			<li>
-                       % if item['pictureHash'] == 'flash':
-                         <a href="/profile/${item['urlCode']}/${item['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/> ${item['name']}</a>
-                       % else:
-                         <div class="blockthumb"><a href="/profile/${item['urlCode']}/${item['url']}"><img src="/images/avatar/${item['directoryNumber']}/profile/${item['pictureHash']}.profile" style="width:50px;"/></a></div><a href="/profile/${item['urlCode']}/${item['url']}"> ${item['name']}</a>
-                       % endif
-			</li>
-		% endfor
-	</ul> <!-- /.civ-col-list -->
+    <table class="table table-striped table-condensed">
+    <tbody>
+    % for item in c.paginator:
+        ${profile_helpers.listUser(item)}
+    % endfor
+    </tbody>
+    </table>
 </%def>
 
 <%def name="list_total_users()">

@@ -23,21 +23,21 @@
 	<ul class="unstyled civ-col-list">
 		<li>
 	        <a href="${c.geoInfo[0]['cityURL']}">
-	        	<img src="${c.geoInfo[0]['cityFlagThumb']}" alt="${c.geoInfo[0]['cityTitle']}" style="max-width: 70px;"> ${c.geoInfo[0]['cityTitle']}
+	        	<img src="${c.geoInfo[0]['cityFlagThumb']}" alt="${c.geoInfo[0]['cityTitle']}" class="thumbnail" style="max-width: 70px;"> ${c.geoInfo[0]['cityTitle']}
 	        </a>
 		</li>
 		<li>
 			<a href="${c.geoInfo[0]['countyURL']}">
-				<img src="${c.geoInfo[0]['countyFlagThumb']}" alt="${c.geoInfo[0]['countyTitle']}" style="max-width: 70px"> ${c.geoInfo[0]['countyTitle']}
+				<img src="${c.geoInfo[0]['countyFlagThumb']}" alt="${c.geoInfo[0]['countyTitle']}" class="thumbnail" style="max-width: 70px"> ${c.geoInfo[0]['countyTitle']}
 			</a>
 		</li>
 		<li>
 			<a href="${c.geoInfo[0]['stateURL']}">
-				<img src="${c.geoInfo[0]['stateFlagThumb']}" alt="${c.geoInfo[0]['stateTitle']}" style="max-width: 70px"> ${c.geoInfo[0]['stateTitle']}
+				<img src="${c.geoInfo[0]['stateFlagThumb']}" alt="${c.geoInfo[0]['stateTitle']}" class="thumbnail" style="max-width: 70px"> ${c.geoInfo[0]['stateTitle']}
 			</a>
 		</li>
 		<li>
-				<img src="${c.geoInfo[0]['countryFlagThumb']}" alt="${c.geoInfo[0]['countryTitle']}" style="max-width: 70px"> ${c.geoInfo[0]['countryTitle']}
+				<img src="${c.geoInfo[0]['countryFlagThumb']}" alt="${c.geoInfo[0]['countryTitle']}" class="thumbnail" style="max-width: 70px"> ${c.geoInfo[0]['countryTitle']}
 		</li>
 	</ul> <!-- /.civ-col-list -->
 </%def>

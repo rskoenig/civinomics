@@ -48,7 +48,7 @@
 		<div class="civ-col">
 			<h2 class="civ-col">News</h2>
 			<div class="civ-col-inner">
-				${helpers.list_news()}
+				${list_helpers.recent_posts()}
 			</div> <!-- /.civ-col-inner -->
 		</div> <!-- /.civ-col -->
 	</div> <!-- /.span3 -->
