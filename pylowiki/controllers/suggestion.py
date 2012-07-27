@@ -52,6 +52,7 @@ class SuggestionController(BaseController):
         r = get_revision(int(c.s['mainRevision_id']))
         
         c.title = c.s['title']
+        c.heading = "OTHER SUGGESTIONS"
         c.content = h.literal(h.reST2HTML(c.s['data']))
         ##c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
         
@@ -75,7 +76,7 @@ class SuggestionController(BaseController):
                 if c.s.id in sugRateDict.keys():
                     c.rating = getRatingByID(sugRateDict[c.s.id])
                     
-        return render('/derived/suggestion.html')
+        return render('/derived/suggestion.bootstrap')
 
     @h.login_required
     def newSuggestion(self, id1, id2):
@@ -364,12 +365,11 @@ class SuggestionController(BaseController):
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
     @h.login_required
-    def handler(self, id):
-        l = id.split('_')
-        workshop_id = l[0]
-        suggestion_id = l[1]
-        s = getSuggestionByID(suggestion_id)
-        w = getWorkshopByID(workshop_id)
+    def handler(self, id1, id2):
+        suggestionCode = id1
+        suggestionURL = id2
+        
+        s = getSuggestion(suggestionCode, urlify(suggestionURL))
         p = getPageByID(s['page_id'])
         
         # Does the user have an access level of at least 200?

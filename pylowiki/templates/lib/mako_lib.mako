@@ -1,3 +1,12 @@
+<%!    
+    import logging
+    log = logging.getLogger(__name__)
+%>
+
+################################################
+## General
+################################################
+
 <%def name="return_to()">
 
     <% 
@@ -24,8 +33,46 @@
     </ul>
 </%def>
 
-## Bootstrap
+<%def name="setProduct()">
+	<%
+		if 'survey' in request.path_info:
+			session['product'] = 'surveys'
+		elif 'workshop' in request.path_info:
+			session['product'] = 'workshops'
+		session.save()
+		log.info(session)
+	%>
+</%def>
 
+################################################
+## Survey-specific
+################################################
+
+<%def name="setLastPage(pageNum, survey, slide)">
+    <% 
+        if slide['surveySection'] == 'before':
+            key = '%s_%s_lastPage' %(survey['urlCode'], survey['url'])
+            if key in session:
+                if int(session[key]) < pageNum:
+                    session[key] = pageNum
+            else:
+                session[key] = pageNum
+            session.save()
+    %>
+</%def>
+
+<%def name="setCurrentSurveyPage(survey, slide)">
+    <% 
+        if slide.id in map(int, survey['slides'].split(',')):
+            key = '%s_%s_currentPage' %(survey['urlCode'], survey['url'])
+            session[key] = int(slide['slideNum'])
+            session.save()
+    %>
+</%def>
+
+################################################
+## Platform-specific
+################################################
 <%! 
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.slideshow import getAllSlides

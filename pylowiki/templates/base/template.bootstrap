@@ -1,11 +1,21 @@
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
 <!DOCTYPE HTML>
 <html lang="en-US">
 <head>
 	<meta charset="UTF-8">
 	<title>${c.title}</title>
-
+	${lib.setProduct()}
 	<!-- styles -->
-	<link rel="stylesheet" href="/styles/bootstrap/civinomics.css">
+	% if 'product' in session:
+		% if session['product'] == 'workshops':
+			<link rel="stylesheet" href="/styles/bootstrap/civinomics-workshops.css">
+		% elif session['product'] == 'surveys':
+			<link rel="stylesheet" href="/styles/bootstrap/civinomics-surveys.css">
+		% endif
+	% else:
+		<link rel="stylesheet" href="/styles/bootstrap/civinomics-surveys.css">
+	% endif
     <link type="text/css" rel="stylesheet" href = "/styles/flash.css" />
 	${self.extraStyles()}
 
