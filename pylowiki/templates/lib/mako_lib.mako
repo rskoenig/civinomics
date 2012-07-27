@@ -173,15 +173,6 @@
             </li>
         % endif
     % endfor
-    % if page == "leaderboard":
-        <li>
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/leaderboard/explaination">Leaderboard Explaination</a>
-        </li>
-    % elif page == "explaination":
-        <li class="current">
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/leaderboard/explaination">Leaderboard Explaination</a>
-        </li>    
-    % endif
     </ul> <!-- /.nav-thing -->
 </%def>
 

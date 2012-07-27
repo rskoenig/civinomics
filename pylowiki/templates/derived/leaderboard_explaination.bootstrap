@@ -6,7 +6,7 @@
 ${lib.nav_thing("explaination")}
 </br></br>
 <div class="row">
-    <div class="span2 offset1">
+    <div class="span3">
         </br></br>
         <center>${helpers.UserPhoto()}</center>
     </div>

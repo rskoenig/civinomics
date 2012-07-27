@@ -13,30 +13,18 @@
     <div class="well">
         <div class="civ-col-inner">
             <div class="row">
-                <button class="btn btn-warning" href="leaderboard" >Main LeaderBoard</button>
+                <a href="leaderboard" class="btn btn-warning btn-large" id='btn1'>Main LeaderBoard</a>
             </div>
             <div class="row">
-                <button class="btn btn-warning" href='#' >My Rankings</button>
+                <a href='leaderboard_UserRanks' class="btn btn-large btn-warning" id='btn2'>My Workshop Rankings</a>
             </div>
             <div class="row">
-                <button class="btn btn-warning" href="leaderboard_followedPersons" >Followed Persons</button>
+                <a href="leaderboard_followedPersons" class="btn btn-large btn-warning" id='btn3'>Followed Persons</a>
+            </div>
+            <div class="row">
+                <a href="leaderboard_explaination" class="btn btn-large btn-warning" id='btn4'>Leaderboards Explained</a>
             </div>
         </div>
-        <ul class="nav nav-pills nav-stacked">
-            <li><a href="leaderboard_followedPersons">Followed Persons&nbsp&nbsp&nbsp&nbsp&nbsp</a></li>
-            <li><a href='#'>Followed Suggestions</a></li>
-            <li><a href='#'>Followed Resources&nbsp&nbsp</a></li>
-        </ul>
-        <select id="select0">
-            <option>City</option>
-            <option>County</option>
-            <option>Country</option>
-        </select>
-        <select id="select1">
-            <option>Santa Cruz</option>
-            <option>San Fransisco</option>
-            <option>San Jose</option>
-        </select>
    </div>
 </%def>
 
@@ -49,6 +37,7 @@
                     <tr>
                         <th>Category</th>
                         <th>Rank</th>
+                        <th>Title</th>
                         <th>Metric of Ranking</th>
                     </tr>
                 </thead>
@@ -59,10 +48,17 @@
                             <a href=${item[1]}>${item[0]}
                         </td>
                         <td>${item[2]}</td>
-                        % if itemCount == len(c.userRankings):
-                            <td id=${c.leaderboardList[0]['hrefKey']}>${item[3]}</td>
+                        <td>
+                        % if isinstance(item[3], list):
+                            <a href=${item[3][1]}>${item[3][0]}
                         % else:
-                            <td>${item[3]}</td>
+                            ${item[3]}
+                        % endif
+                        </td>
+                        % if itemCount == len(c.userRankings):
+                            <td id=${c.leaderboardList[0]['hrefKey']}>${item[4]}</td>
+                        % else:
+                            <td>${item[4]}</td>
                             <% itemCount += 1 %>
                         % endif
                     </tr>
@@ -98,7 +94,9 @@
                         <% rowCount = 1 %>
                         % for row in board['tablebody']:
                             % if rowCount > 5:
-                                <% break %>
+                                % if c.mainLeaderboard == 'yes':
+                                    <% break %>
+                                % endif
                             % else:
                                 <% rowCount += 1 %>
                             % endif
@@ -140,14 +138,20 @@
 </%def>
 
 <%def name="UserPhoto()">
-    % if c.authuser['pictureHash'] == 'flash':
-        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatars/flash.profile" width="160" ></a>
-    % else:
-        <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
-            <img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" width="160">
-        </a>
-    % endif
-    <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
-        <center>${c.authuser['name']}</center>
-    </a>
+    <div class="well">
+        <div class="civ-col-inner">
+            % if c.authuser['pictureHash'] == 'flash':
+                <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatars/flash.profile" width="160" ></a>
+            % else:
+                <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
+                    <img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" width="160">
+                </a>
+            % endif
+        </div>
+        <div class="civ-col-inner">
+            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
+                <center>${c.authuser['name']}</center>
+            </a>
+        </div>
+    </div>
 </%def>

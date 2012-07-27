@@ -107,15 +107,21 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/leaderboard', controller = 'leaderboard', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/leaderboard/', controller = 'leaderboard', action = 'index', id1 = '{id1}', id2 = '{id2}')
     # Workshop leaderboard explaination page
-    map.connect('/workshop/{id1}/{id2}/leaderboard/explaination/', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/leaderboard/explaination', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshops/{id1}/{id2}/leaderboard/explaination/', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshops/{id1}/{id2}/leaderboard/explaination', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/leaderboard_explaination/', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/leaderboard_explaination', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_explaination/', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_explaination', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
     # Workshop leaderboard followed Persons page
     map.connect('/workshop/{id1}/{id2}/leaderboard_followedPersons', controller = 'leaderboard', action = 'followedPersons', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/leaderboard_followedPersons/', controller = 'leaderboard', action = 'followedPersons', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/leaderboard_followedPersons/', controller = 'leaderboard', action = 'followedPersons', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/leaderboard_followedPersons', controller = 'leaderboard', action = 'followedPersons', id1 = '{id1}', id2 = '{id2}')
+    # Workshop leaderboard followed Persons page
+    map.connect('/workshop/{id1}/{id2}/leaderboard_UserRanks', controller = 'leaderboard', action = 'UserRankings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/leaderboard_UserRanks/', controller = 'leaderboard', action = 'UserRankings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_UserRanks/', controller = 'leaderboard', action = 'UserRankings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_UserRanks', controller = 'leaderboard', action = 'UserRankings', id1 = '{id1}', id2 = '{id2}')
+
 
     # Workshop configuration
     map.connect('/workshop/{id1}/{id2}/configure', controller = 'workshop', action = 'configure', id1 = '{id1}', id2 = '{id2}')

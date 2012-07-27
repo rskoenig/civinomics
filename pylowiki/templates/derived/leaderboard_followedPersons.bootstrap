@@ -5,19 +5,19 @@
 ${lib.nav_thing("leaderboard")}
 </br></br>
 <div class="row">
-    <div class="span2 offset1">
+    <div class="span3">
         </br></br>
         <center>${helpers.UserPhoto()}</center>
     </div>
-    <div class="span9">
+    <div class="span10">
         ${helpers.Overall_Leaderboard()}
-    </div>  
-<div class="row"></div>
-    <div class="span2 offset1">
-        </br></br>
+    </div>
+</div>
+<div class="row">
+    <div class="span3">
         <center>${helpers.Menu()}</center>
     </div>
-    <div class="span9">
+    <div class="span10">
         ${helpers.DisplayLeaderboards()}
     </div>
 </div> <!-- /.row-fluid -->
@@ -31,5 +31,5 @@ ${lib.nav_thing("leaderboard")}
 </%def>
 
 <%def name = 'extraScripts()'>
-
+    <script type="text/javascript" src="/js/leaderboard.js"></script>
 </%def>

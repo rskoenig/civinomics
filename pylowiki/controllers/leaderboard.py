@@ -38,6 +38,72 @@ def MostActiveSuggestions(sug):
     else:
         return 0
 
+def SugActivityBoard(page, suggestions):
+
+    " Sorted by most actions per amount of time, basically actions/(duration of existence)"
+    sugActiveList = sorted(suggestions, key=lambda x: MostActiveSuggestions(x))
+
+    userSugActiveRank = [i for i,x in enumerate(sugActiveList) if x.owner == c.authuser.id]
+    value = '--'
+    if userSugActiveRank != []:
+        sug = sugActiveList[userSugActiveRank[0]]
+        sugCreated = time.mktime(sug.date.timetuple())
+        curTime = time.time()
+        elapsedTime = -(sugCreated - curTime)
+        value = str(getSuggestionPopularity(sug)) + ' Comments/Ratings Over ' + str(round(elapsedTime/3600, 2)) + ' Hours'
+        title = [sug['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + sug['urlCode'] + '/' + sug['url'])] 
+    addRanks('Suggestion Activity', 'sugActivity', userSugActiveRank, len(sugActiveList), title, value) 
+
+
+    if page == 'index':
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Comments', 'Total Ratings', 'Average Rating'] 
+        rows = [] 
+        count = 1 
+        
+        for s in sugActiveList:
+            row = [] 
+            name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
+            totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
+            numRatings = len(s['ratingIDs_overall'].split(',')) 
+            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
+            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+                                    
+            row.append(count) 
+            row.append(name) 
+            row.append(totalComs) 
+            row.append(numRatings) 
+            row.append(str(fuzzLowerAvgRating) + " - " + str(fuzzUpperAvgRating))
+            
+            rows.append(row) 
+            count += 1 
+            
+        addBoardDict('Suggestion Activity', 'sugActivity', headers, rows) 
+        
+    if page == 'userRanks' and userSugActiveRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Comments', 'Total Ratings', 'Average Rating'] 
+        rows = [] 
+        
+        for index in userSugActiveRank:
+            s = sugActiveList[index]
+            row = [] 
+            name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
+            totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
+            numRatings = len(s['ratingIDs_overall'].split(',')) 
+            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
+            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+                                    
+            row.append(str(index+1) + ' / ' + str(len(sugActiveList))) 
+            row.append(name) 
+            row.append(totalComs) 
+            row.append(numRatings) 
+            row.append(str(fuzzLowerAvgRating) + " - " + str(fuzzUpperAvgRating))
+            
+            rows.append(row) 
+            
+        addBoardDict('Suggestion Activity', 'sugActivity', headers, rows) 
+        
 
 def MostActiveResource(res):
     "Gets when the suggestion was created as "
@@ -50,6 +116,89 @@ def MostActiveResource(res):
         return Activity 
     else:
         return 0
+
+def ResActivityBoard(page, resources):
+    
+    " Sorted by most actions per amount of time, basically actions/(duration of existence)"
+    resActiveList = sorted(resources, key=lambda x: MostActiveResource(x))
+
+    userResActiveRank = [i for i,x in enumerate(resActiveList) if x.owner == c.authuser.id]
+    value = '--'
+    if userResActiveRank != []:
+        res = resActiveList[userResActiveRank[0]]
+        resCreated = time.mktime(res.date.timetuple())
+        curTime = time.time()
+        elapsedTime = -(resCreated - curTime)
+        value = str(getResourcePopularity(getDiscussionByID(res['discussion_id']))) + ' Comments/Ratings Over ' + str(round(elapsedTime/3600, 2)) + ' Hours'
+        title = [res['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + res['urlCode'] + '/' + res['url'])]
+    addRanks('Resource Activity', 'resActivity', userResActiveRank, len(resActiveList), title, value) 
+ 
+    if page == 'index':
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Votes', 'You Rated', 'Overall Rating'] 
+        rows = [] 
+        count = 1     
+
+        for r in resActiveList:
+            row = [] 
+            name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
+            numRatings = int(r['ups']) + int(r['downs'])
+            userVote = '--' 
+            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+            if r.id in resRateDict.keys():
+                userVote = getRatingByID(resRateDict[r.id])['rating']
+            if userVote == '1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+            elif userVote == '-1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(r['ups']) > 0 or int(r['downs']) > 0:    
+                PercentRating = int(5*round(((int(r['ups'])/(int(r['ups'])+int(r['downs'])))*100)/5))
+            
+            row.append(count) 
+            row.append(name) 
+            row.append(numRatings) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            count += 1 
+            
+        addBoardDict('Resource Activity', 'resActivity', headers, rows) 
+
+    if page == 'userRanks' and userResActiveRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Votes', 'You Rated', 'Overall Rating'] 
+        rows = [] 
+
+        for index in userResActiveRank:
+            r = resActiveList[index]
+            row = [] 
+            name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
+            numRatings = int(r['ups']) + int(r['downs'])
+            userVote = '--' 
+            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+            if r.id in resRateDict.keys():
+                userVote = getRatingByID(resRateDict[r.id])['rating']
+            if userVote == '1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+            elif userVote == '-1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(r['ups']) > 0 or int(r['downs']) > 0:    
+                PercentRating = int(5*round(((int(r['ups'])/(int(r['ups'])+int(r['downs'])))*100)/5))
+            
+            row.append((str(index+1) + ' / ' + str(len(resActiveList))) ) 
+            row.append(name) 
+            row.append(numRatings) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            
+        addBoardDict('Resource Activity', 'resActivity', headers, rows) 
 
 def getSuggestionPopularity(sug):
     ratingsList = sug['ratingIDs_overall'].split(',')
@@ -64,9 +213,17 @@ def SugPopularityBoard(page, suggestions):
     "Sorted By most comments and ratings"
     sugPopularList = sorted(suggestions, key=lambda x: getSuggestionPopularity(x), reverse = True)
 
+    userSugPopularRank = [i for i,x in enumerate(sugPopularList) if x.owner == c.authuser.id]
+    value = '--'
+    if userSugPopularRank != []:
+        s = sugPopularList[userSugPopularRank[0]]
+        value = str(getSuggestionPopularity(s)) + ' Comments/Ratings' 
+        title = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
+    addRanks('Suggestion Popularity', 'sugPopular', userSugPopularRank, len(sugPopularList), title, value) 
+
     if page == 'index':
         "Setting up LeaderBoard Dictionary Addition"
-        headers = ['Rank', 'Name', 'Total Comments', 'Total Ratings', 'Average Rating'] 
+        headers = ['Rank', 'Title', 'Total Comments', 'Total Ratings', 'Average Rating'] 
         rows = [] 
         count = 1 
         
@@ -75,34 +232,61 @@ def SugPopularityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
+            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
+            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
             
             row.append(count) 
             row.append(name) 
             row.append(totalComs) 
             row.append(numRatings) 
-            row.append(s['ratingAvg_overall'])
+            row.append(str(fuzzLowerAvgRating) + " - " + str(fuzzUpperAvgRating))
             
             rows.append(row) 
             count += 1 
             
         addBoardDict('Suggestion Popularity', 'sugPopular', headers, rows) 
     
-
-    userSugPopularRank = [i for i,x in enumerate(sugPopularList) if x.owner == c.authuser.id]
-    value = '-'
-    if userSugPopularRank != []:
-        value = str(getSuggestionPopularity(sugPopularList[userSugPopularRank[0]])) + ' Comments/Ratings' 
-    addRanks('Suggestion Popularity', 'sugPopular', userSugPopularRank, len(sugPopularList), value) 
+    if page == 'userRanks' and userSugPopularRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Comments', 'Total Ratings', 'Average Rating'] 
+        rows = [] 
+        
+        for index in userSugPopularRank:
+            s = sugPopularList[index]
+            row = [] 
+            name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
+            totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
+            numRatings = len(s['ratingIDs_overall'].split(',')) 
+            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
+            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+            
+            row.append(str(index+1) + ' / ' + str(len(sugPopularList))) 
+            row.append(name) 
+            row.append(totalComs) 
+            row.append(numRatings) 
+            row.append(str(fuzzLowerAvgRating) + " - " + str(fuzzUpperAvgRating))
+            
+            rows.append(row) 
+            
+        addBoardDict('Suggestion Popularity', 'sugPopular', headers, rows) 
 
 "Best Suggestion Rating LeaderBoard"
 def SugRatingBoard(page, suggestions):
     
     "Sorted By Rating (Avg of all slider bar ratings)"
     sugRatingList = sorted(suggestions, key=lambda x: float(x['ratingAvg_%s' % 'overall']), reverse = True)
+
+    userSugRatingRank = [i for i,x in enumerate(sugRatingList) if x.owner == c.authuser.id]
+    value = '--'
+    if userSugRatingRank != []:
+        s = sugRatingList[userSugRatingRank[0]]
+        value = str(s['ratingAvg_%s' % 'overall']) + ' Average Rating' 
+        title = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
+    addRanks('Suggestion Rating', 'sugRating', userSugRatingRank, len(sugRatingList), title, value) 
     
     if page == 'index':
         "Setting up LeaderBoard Dictionary Addition"
-        headers = ['Rank', 'Name', 'Total Ratings', 'You Rated', 'Average Rating'] 
+        headers = ['Rank', 'Title', 'Total Ratings', 'You Rated', 'Average Rating'] 
         rows = [] 
         count = 1  
            
@@ -114,33 +298,70 @@ def SugRatingBoard(page, suggestions):
             sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall'])) 
             if s.id in sugRateDict.keys():
                 userRate = getRatingByID(sugRateDict[s.id])['rating']
+
+            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
+            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
     
             row.append(count) 
             row.append(name) 
             row.append(numRatings) 
             row.append(userRate) 
-            row.append(s['ratingAvg_overall'])
+            row.append(str(fuzzLowerAvgRating) + " - " + str(fuzzUpperAvgRating))
             
             rows.append(row) 
             count += 1 
             
         addBoardDict('Suggestion Rating', 'sugRating', headers, rows) 
 
-    
-    userSugRatingRank = [i for i,x in enumerate(sugRatingList) if x.owner == c.authuser.id]
-    value = '-'
-    if userSugRatingRank != []:
-        value = str(sugRatingList[userSugRatingRank[0]]['ratingAvg_%s' % 'overall']) + ' Average Rating' 
-    addRanks('Suggestion Rating', 'sugRating', userSugRatingRank, len(sugRatingList), value) 
+    if page == 'userRanks' and userSugRatingRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Ratings', 'You Rated', 'Average Rating'] 
+        rows = [] 
+           
+        for index in userSugRatingRank:
+            s = sugRatingList[index]
+            row = [] 
+            name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
+            numRatings = len(s['ratingIDs_overall'].split(',')) 
+            userRate = '-' 
+            sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall'])) 
+            if s.id in sugRateDict.keys():
+                userRate = getRatingByID(sugRateDict[s.id])['rating']
 
+            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
+            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+    
+            row.append(str(index+1) + ' / ' + str(len(sugRatingList))) 
+            row.append(name) 
+            row.append(numRatings) 
+            row.append(userRate) 
+            row.append(str(fuzzLowerAvgRating) + " - " + str(fuzzUpperAvgRating))
+            
+            rows.append(row) 
+            
+        addBoardDict('Suggestion Rating', 'sugRating', headers, rows) 
+        
+        
 def ResRatingBoard(page, resources):
 
     "Sorted by Ratings : ups/(ups + downs)"
     resRatingList = sorted(resources, key=lambda x: 0 if (int(x['ups'])+int(x['downs']) ==0) else (float(x['ups'])/(float(x['ups'])+float(x['downs']))), reverse = True)
+
+    userResRatingRank = [i for i,x in enumerate(resRatingList) if x.owner == c.authuser.id]
+    value = '--'
+    if userResRatingRank != []:
+        r = resRatingList[userResRatingRank[0]]
+        PercentRating = '--'
+        if int(r['ups']) > 0 or int(r['downs']) > 0:    
+            PercentRating = int(5*round(((int(r['ups'])/(int(r['ups'])+int(r['downs'])))*100)/5))
+        value = str(PercentRating) + ' Average Rating' 
+        title = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
+    addRanks('Resource Rating', 'resRating', userResRatingRank, len(resRatingList), title, value) 
  
+
     if page == 'index':
         "Setting up LeaderBoard Dictionary Addition"
-        headers = ['Rank', 'Name', 'Total Votes', 'You Rated', 'Overall Rating'] 
+        headers = ['Rank', 'Title', 'Total Votes', 'You Rated', 'Overall Rating'] 
         rows = [] 
         count = 1     
 
@@ -173,15 +394,41 @@ def ResRatingBoard(page, resources):
             
         addBoardDict('Resource Rating', 'resRating', headers, rows) 
 
-    
-    userResRatingRank = [i for i,x in enumerate(resRatingList) if x.owner == c.authuser.id]
-    value = '-'
-    if userResRatingRank != []:
-        PercentRating = '--'
-        if int(resRatingList[userResRatingRank[0]]['ups']) > 0 or int(resRatingList[userResRatingRank[0]]['downs']) > 0:    
-            PercentRating = int(5*round(((int(resRatingList[userResRatingRank[0]]['ups'])/(int(resRatingList[userResRatingRank[0]]['ups'])+int(resRatingList[userResRatingRank[0]]['downs'])))*100)/5))
-        value = str(PercentRating) + ' Average Rating' 
-    addRanks('Resource Rating', 'resRating', userResRatingRank, len(resRatingList), value) 
+    if page == 'userRanks' and userResRatingRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Votes', 'You Rated', 'Overall Rating'] 
+        rows = [] 
+
+        for index in userResRatingRank:
+            r = resRatingList[index]
+            row = [] 
+            count = 1 
+            name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
+            numRatings = int(r['ups']) + int(r['downs'])
+            userVote = '--' 
+            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+            if r.id in resRateDict.keys():
+                userVote = getRatingByID(resRateDict[r.id])['rating']
+            if userVote == '1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+            elif userVote == '-1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(r['ups']) > 0 or int(r['downs']) > 0:    
+                PercentRating = int(5*round(((int(r['ups'])/(int(r['ups'])+int(r['downs'])))*100)/5))
+            
+            row.append(str(index+1) + ' / ' + str(len(resRatingList))) 
+            row.append(name) 
+            row.append(numRatings) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            count += 1 
+            
+        addBoardDict('Resource Rating', 'resRating', headers, rows) 
+
 
 " Get Resource Popularity through number of comments and votes for each comment "
 def getResourcePopularity(disc):
@@ -198,15 +445,23 @@ def ResPopularityBoard(page, resources):
     "Sorted by comments + rating votes"
     resPopularList = sorted(resources, key=lambda x: (getResourcePopularity(getDiscussionByID(x['discussion_id'])) + int(x['ups']) + int(x['downs'])), reverse = True)
 
+    userResPopularRank = [i for i,x in enumerate(resPopularList) if x.owner == c.authuser.id]
+    value = '--'
+    if userResPopularRank != []:
+        r = resPopularList[userResPopularRank[0]]
+        value = str(getResourcePopularity(getDiscussionByID(r['discussion_id']))) + ' Comments/Ratings' 
+        title = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
+    addRanks('Resource Popularity', 'resPopular', userResPopularRank, len(resPopularList), title, value) 
+
+    
     if page == 'index':
         "Setting up LeaderBoard Dictionary Addition"
-        headers = ['Rank', 'Name', 'Total Comments', 'Total Votes', 'Your Vote', 'Overall Rating'] 
+        headers = ['Rank', 'Title', 'Total Comments', 'Total Votes', 'Your Vote', 'Overall Rating'] 
         rows = [] 
         count = 1 
                 
         for r in resPopularList:
             row = [] 
-            count = 1 
             name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
             numRatings = int(r['ups']) + int(r['downs'])
             totalComs = getDiscussionByID(int(r['discussion_id']))['numComments']
@@ -234,22 +489,71 @@ def ResPopularityBoard(page, resources):
             count += 1 
             
         addBoardDict('Resource Popularity', 'resPopular', headers, rows) 
+
+    if page == 'userRanks' and userResPopularRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Comments', 'Total Votes', 'Your Vote', 'Overall Rating'] 
+        rows = [] 
+                
+        for index in userResPopularRank:
+            r = resPopularList[index]
+            row = [] 
+            name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
+            numRatings = int(r['ups']) + int(r['downs'])
+            totalComs = getDiscussionByID(int(r['discussion_id']))['numComments']
+            userVote = '--' 
+            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+            if r.id in resRateDict.keys():
+                userVote = getRatingByID(resRateDict[r.id])['rating']
+            if userVote == '1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+            elif userVote == '-1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(r['ups']) > 0 or int(r['downs']) > 0:    
+                PercentRating = int(5*round(((int(r['ups'])/(int(r['ups'])+int(r['downs'])))*100)/5))
+            
+            row.append(str(index+1) + ' / ' + str(len(resPopularList))) 
+            row.append(name) 
+            row.append(totalComs)
+            row.append(numRatings) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            
+        addBoardDict('Resource Popularity', 'resPopular', headers, rows) 
     
-
-    userResPopularRank = [i for i,x in enumerate(resPopularList) if x.owner == c.authuser.id]
-    value = '-'
-    if userResPopularRank != []:
-        value = str(getResourcePopularity(getDiscussionByID(resPopularList[userResPopularRank[0]]['discussion_id']))) + ' Comments/Ratings' 
-    addRanks('Resource Popularity', 'resPopular', userResPopularRank, len(resPopularList), value) 
-
 def CommentRatingBoard(page, comList):
 
     " Sorted by Ratings : ups/(ups + downs) "
     comRatingList = sorted(comList, key=lambda x: 0 if (int(x['ups'])+int(x['downs']) ==0) else (float(x['ups'])/(float(x['ups'])+float(x['downs']))), reverse = True)
 
+    userComRatingRank = [i for i,x in enumerate(comRatingList) if x.owner == c.authuser.id]
+    value = '--'
+    if userComRatingRank != []:
+        com = comRatingList[userComRatingRank[0]]
+        PercentRating = '--'
+        if int(com['ups']) > 0 or int(com['downs']) > 0:    
+            PercentRating = int(5*round(((int(com['ups'])/(int(com['ups'])+int(com['downs'])))*100)/5))
+        value = str(PercentRating) + ' Average Rating' 
+        
+        Disc = getDiscussionByID(int(com['discussion_id']))
+        href = ''
+        if Disc['discType'] == 'suggestion':
+            href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + Disc['suggestionCode'] + '/' + Disc['suggestionURL']
+        elif Disc['discType'] == 'resource':
+            href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + Disc['resourceCode'] + '/' + Disc['resourceURL']
+        elif Disc['discType'] == 'feedback':
+            href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/feedback'
+        title = [com['data'][:15], href] 
+        
+    addRanks('Comment Rating', 'comRating', userComRatingRank, len(comRatingList), title, value) 
+
     if page == 'index':
         "Setting up LeaderBoard Dictionary Addition"
-        headers = ['Rank', 'Name', 'Total Votes', 'You Rated', 'Overall Rating'] 
+        headers = ['Rank', 'Entry', 'Total Votes', 'You Rated', 'Overall Rating'] 
         rows = [] 
         count = 1 
     
@@ -292,15 +596,51 @@ def CommentRatingBoard(page, comList):
             
         addBoardDict('Comment Rating', 'comRating', headers, rows) 
 
+    if page == 'userRanks' and userComRatingRank !=[]:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Entry', 'Total Votes', 'You Rated', 'Overall Rating'] 
+        rows = [] 
+        count = 1 
     
-    userComRatingRank = [i for i,x in enumerate(comRatingList) if x.owner == c.authuser.id]
-    value = '-'
-    if userComRatingRank != []:
-        PercentRating = '--'
-        if int(comRatingList[userComRatingRank[0]]['ups']) > 0 or int(comRatingList[userComRatingRank[0]]['downs']) > 0:    
-            PercentRating = int(5*round(((int(comRatingList[userComRatingRank[0]]['ups'])/(int(comRatingList[userComRatingRank[0]]['ups'])+int(comRatingList[userComRatingRank[0]]['downs'])))*100)/5))
-        value = str(PercentRating) + ' Average Rating' 
-    addRanks('Comment Rating', 'comRating', userComRatingRank, len(comRatingList), value) 
+        for index in userComRatingRank:
+            com = comRatingList[index]
+            row = [] 
+            
+            Disc = getDiscussionByID(int(com['discussion_id']))
+            href = ''
+            if Disc['discType'] == 'suggestion':
+                href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + Disc['suggestionCode'] + '/' + Disc['suggestionURL']
+            elif Disc['discType'] == 'resource':
+                href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + Disc['resourceCode'] + '/' + Disc['resourceURL']
+            elif Disc['discType'] == 'feedback':
+                href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/feedback'
+            
+            name = [com['data'][:15], href] 
+            
+            numVotes = int(com['ups']) + int(com['downs'])
+            userVote = '--' 
+            comRateDict = pickle.loads(str(c.authuser['ratedThings_comment_overall'])) 
+            if com.id in comRateDict.keys():
+                userVote = getRatingByID(comRateDict[com.id])['rating']
+            if userVote == '1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+            elif userVote == '-1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(com['ups']) > 0 or int(com['downs']) > 0:    
+                PercentRating = int(5*round(((int(com['ups'])/(int(com['ups'])+int(com['downs'])))*100)/5))
+            
+            row.append(str(index+1) + ' / ' + str(len(comRatingList))) 
+            row.append(name) 
+            row.append(numVotes) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            
+        addBoardDict('Comment Rating', 'comRating', headers, rows) 
+
 
 def getCommentPopularity(com):
     children = 0
@@ -325,10 +665,29 @@ def CommentPopularityBoard(page, comList):
 
     " Sorted by comment children + rating votes "
     comPopularList = sorted(comList, key=lambda x: getCommentPopularity(x), reverse = True)
+    
+    userComPopularRank = [i for i,x in enumerate(comPopularList) if x.owner == c.authuser.id]
+    value = '--'
+    if userComPopularRank != []:
+        com = comPopularList[userComPopularRank[0]]
+        value = str(getCommentPopularity(com)) + ' SubComments/Ratings'    
+                 
+        Disc = getDiscussionByID(int(com['discussion_id']))
+        href = ''
+        if Disc['discType'] == 'suggestion':
+            href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + Disc['suggestionCode'] + '/' + Disc['suggestionURL']
+        elif Disc['discType'] == 'resource':
+            href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + Disc['resourceCode'] + '/' + Disc['resourceURL']
+        elif Disc['discType'] == 'feedback':
+            href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/feedback'
+            
+        title = [com['data'][:15], href] 
+    
+    addRanks('Comment Popularity', 'comPopular', userComPopularRank, len(comPopularList), title, value) 
 
     if page == 'index':
         "Setting up LeaderBoard Dictionary Addition"
-        headers = ['Rank', 'Name', 'Total SubComments', 'Total Votes', 'Your Vote', 'Overall Rating'] 
+        headers = ['Rank', 'Entry', 'Total SubComments', 'Total Votes', 'Your Vote', 'Overall Rating'] 
         rows = [] 
         count = 1 
         
@@ -372,18 +731,68 @@ def CommentPopularityBoard(page, comList):
             count += 1 
             
         addBoardDict('Comment Popularity', 'comPopular', headers, rows) 
-    
 
-    userComPopularRank = [i for i,x in enumerate(comPopularList) if x.owner == c.authuser.id]
-    value = '-'
-    if userComPopularRank != []:
-        value = str(getCommentPopularity(comPopularList[userComPopularRank[0]])) + ' SubComments/Ratings' 
-    addRanks('Comment Popularity', 'comPopular', userComPopularRank, len(comPopularList), value) 
+    if page == 'userRanks' and userComPopularRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Entry', 'Total SubComments', 'Total Votes', 'Your Vote', 'Overall Rating'] 
+        rows = [] 
+        count = 1 
+        
+        for index in userComPopularRank:
+            com = comPopularList[index]
+            row = [] 
+
+            Disc = getDiscussionByID(int(com['discussion_id']))
+            href = ''
+            if Disc['discType'] == 'suggestion':
+                href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + Disc['suggestionCode'] + '/' + Disc['suggestionURL']
+            elif Disc['discType'] == 'resource':
+                href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + Disc['resourceCode'] + '/' + Disc['resourceURL']
+            elif Disc['discType'] == 'feedback':
+                href = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/feedback'
+                
+            name = [com['data'][:15], href] 
+            
+            numVotes = int(com['ups']) + int(com['downs'])
+            totalComs = getSubComments(com)
+            userVote = '--' 
+            comRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+            if com.id in comRateDict.keys():
+                userVote = getRatingByID(comRateDict[com.id])['rating']
+            if userVote == '1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+            elif userVote == '-1':
+                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(com['ups']) > 0 or int(com['downs']) > 0:    
+                PercentRating = int(5*round(((int(com['ups'])/(int(com['ups'])+int(com['downs'])))*100)/5))
+            
+            row.append(str(index) + ' / ' + str(len(comPopularList))) 
+            row.append(name) 
+            row.append(totalComs)
+            row.append(numVotes) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            count += 1 
+            
+        addBoardDict('Comment Popularity', 'comPopular', headers, rows) 
 
 "User Most Followers leaderboard"
 def peoplefollowsBoard(page, userList):
 
     followList = sorted(userList, key=lambda x: len(getUserFollows(x.id)), reverse = True)
+
+    "Adding to the User's leaderboard"
+    userFollowerRank = [i for i,x in enumerate(followList) if x.id == c.authuser.id]
+    value = '--'
+    if userFollowerRank != []:
+        value = str(len(getUserFollows(followList[userFollowerRank[0]].id))) + ' Followers' 
+        title = [c.authuser['name'], ('/profile/' + c.authuser['urlCode'] + '/' + c.authuser['url'])]
+    addRanks('Followers', 'Followers', userFollowerRank, len(followList), title, value) 
+
     
     if page == 'index':
         "Setting up LeaderBoard Dictionary Addition"
@@ -418,14 +827,7 @@ def peoplefollowsBoard(page, userList):
             
         addBoardDict('Followers', 'Followers', headers, rows)
         
-    
-    "Adding to the User's leaderboard"
-    userFollowerRank = [i for i,x in enumerate(followList) if x.id == c.authuser.id]
-    value = '-'
-    if userFollowerRank != []:
-        value = str(len(getUserFollows(followList[userFollowerRank[0]].id))) + ' Followers' 
-    addRanks('Followers', 'Followers', userFollowerRank, len(followList), value) 
-
+        
 def UserWorkshopInput(user, sugs, res, coms):
     input = 0;
     for s in sugs:
@@ -483,15 +885,9 @@ def followedPersonsBoard(sugs, res, coms):
         
     addBoardDict('Followed Persons Listing', 'peoplefollowed', headers, rows) 
 
-def GenerateLists(code, url):
-    
-    # Sorted By most Activity
-    c.sugActiveList = sorted(suggestions, key=lambda x: MostActiveSuggestions(x))
+def myRankingsBoard(sugs, res, coms):
 
-    # Grabbing the Resources of the Workshop
-    c.resActiveList = sorted(resList, key=lambda x: MostActiveResource(x))
-    
-    c.comLengthList = sorted(comList, key=lambda x: len(x['data']), reverse = True)
+    return ""
     
 "Adding Dictionary to the leaderboard List of Boards"
 def addBoardDict(title, hrefKey, headers, rows):
@@ -504,9 +900,9 @@ def addBoardDict(title, hrefKey, headers, rows):
 
 
 "Takes in the Listing key(title), the List containing the userRanking, and the originalList"
-def addRanks(title, key, userRanks, origListLength, value):
-    
-    RankList = [title, ('#'+key)] 
+def addRanks(category, key, userRanks, origListLength, title, value):
+            
+    RankList = [category, ('#'+key)] 
     
     if userRanks == []:
         userRanks = '-' 
@@ -514,6 +910,7 @@ def addRanks(title, key, userRanks, origListLength, value):
         userRanks = userRanks[0] + 1 
 
     RankList.append(str(userRanks) + ' / ' + (str(origListLength))) 
+    RankList.append(title)
     RankList.append(str(value)) 
     
     "List contain title as [0] and then a List of stuff related to the Leaderboard"
@@ -544,24 +941,25 @@ def GenerateRanks(code, url, page):
     # Grabbing all Active users
     userList = []
     userList = getActiveUsers()
-    peoplefollowsBoard(page, userList) 
-    
-    c.suggestions = []
-    # Grabbing the Suggestions of the Workshop
-    c.suggestions = getActiveSuggestionsForWorkshop(code, url) 
-    SugRatingBoard(page, c.suggestions) 
-    SugPopularityBoard(page, c.suggestions) 
-
-    c.resList = []
     # Grabbing the Resources of the Workshop
     c.resList = getActiveResourcesByWorkshopID(c.w.id)
+    # Grabbing the Suggestions of the Workshop
+    c.suggestions = getActiveSuggestionsForWorkshop(code, url) 
+
+    
+    peoplefollowsBoard(page, userList) 
+    
+    SugRatingBoard(page, c.suggestions) 
+    SugPopularityBoard(page, c.suggestions) 
+    SugActivityBoard(page, c.suggestions)
+
     ResRatingBoard(page, c.resList)
     ResPopularityBoard(page, c.resList)
-
-    c.comList = []
+    ResActivityBoard(page, c.resList)
     
+    c.comList = []
     " Grabbing the Comments of the Workshop "
-    " First build up the comList Using the Workshop general comments + all the suggestions comments "
+    " First build up the comList Using the Workshop general comments + all the suggestions comments + resource comments"
     Disc = getDiscussionByID(int(c.w['feedbackDiscussion_id'])) 
     c.comList += getCommentList(Disc) 
     for sug in c.suggestions:
@@ -586,6 +984,8 @@ class LeaderboardController(BaseController):
         
         GenerateRanks(id1, id2, 'index')
         
+        c.mainLeaderboard = 'yes'
+        
         return render('/derived/leaderboard.bootstrap')
 
 
@@ -606,10 +1006,14 @@ class LeaderboardController(BaseController):
         addExplaination('Suggestion Rating', explaination)   
         explaination = "Ranked by number of comments plus number of ratings recieved on that suggestions"
         addExplaination('Suggestion Popularity', explaination)
+        explaination = "Ranked by number of comments and rating over the duration of time the suggestion has existed"
+        addExplaination('Suggestion Activity', explaination)
         explaination = "Ranked by number of up votes versus number of up plus down votes on the resource"
         addExplaination('Resource Rating', explaination)
         explaination = "Ranked by Comments plus Votes on the resource"
         addExplaination('Resource Popularity', explaination)
+        explaination = "Ranked by number of comments and rating over the duration of time the resource has existed"
+        addExplaination('Resource Activity', explaination)
         explaination = "Ranked by number of up votes versus number of up plus down votes"
         addExplaination('Comment Rating', explaination)
         explaination = "Ranked by number of SubComments to a comment as well as votes on the comment"
@@ -621,7 +1025,14 @@ class LeaderboardController(BaseController):
     
     def followedPersons(self, id1, id2):
         
-        GenerateRanks(id1, id2, 'other')
+        GenerateRanks(id1, id2, 'followedPersons')
         
         followedPersonsBoard(c.suggestions, c.resList, c.comList) 
         return render('/derived/leaderboard_followedPersons.bootstrap')
+
+    def UserRankings(self, id1, id2):
+        
+        GenerateRanks(id1, id2, 'userRanks')
+        
+        myRankingsBoard(c.suggestions, c.resList, c.comList) 
+        return render('/derived/leaderboard_UserRanks.bootstrap')

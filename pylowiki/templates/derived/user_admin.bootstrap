@@ -6,12 +6,18 @@
         ${helpers.user()}    
     </div>
 </div>
-    <div class="span4 offset2">
-        ${helpers.user_events()}
-    </div>
-    <div class="span6">
-        ${helpers.user_admin()}
-    </div>
+    % if c.events:
+        <div class="span4 offset2">
+            ${helpers.user_events()}
+        </div>
+        <div class="span6">
+            ${helpers.user_admin()}
+        </div>
+    % else:
+        <div class="span8 offset2">
+            ${helpers.user_admin()}
+        </div>
+    % endif
 </div>
 
 <%def name = 'extraHTML()'>
