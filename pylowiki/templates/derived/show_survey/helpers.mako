@@ -583,6 +583,8 @@
 
 <%def name='showNavElements(pageNum, totalPages, nextSlide, prevSlide, survey)'>
     ## The navigation buttons and numerical progress
+
+    <%doc>
     <h2>
     % if pageNum == 0:
         <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_224_thin_arrow_left.png">
@@ -609,6 +611,36 @@
         
         <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}">
             <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_223_thin_right_arrow.png">
+        </a>
+    % endif
+    </h2>
+    </%doc>
+    <h2 style="text-decoration: none;">
+    % if pageNum == 0:
+        <button class="btn" disabled="disabled">prev</button>
+    
+        ${pageNum} / ${totalPages - 1}
+        
+        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}">
+            <button class="btn">next</button>
+        </a>
+    % elif pageNum == totalPages - 1:
+        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${prevSlide['hash']}">
+            <button class="btn">prev</button>
+        </a>
+    
+        ${pageNum} / ${totalPages - 1}
+        
+        <button class="btn" disabled="disabled">next</button>
+    % else:
+        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${prevSlide['hash']}">
+            <button class="btn">prev</button>
+        </a>
+    
+        ${pageNum} / ${totalPages - 1}
+        
+        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}">
+            <button class="btn">next</button>
         </a>
     % endif
     </h2>
