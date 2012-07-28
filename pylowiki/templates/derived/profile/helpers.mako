@@ -220,10 +220,10 @@
 
 <%def name="displayWorkshop(workshop)">
 	% if workshop['mainImage_hash'] == 'supDawg':
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80"/></a><br>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80" class="thumbnail"></a>
 		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
 	% else:
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80"/>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']} width="120" height="80" class="thumbnail"></a>
 		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
 	% endif
 </%def>

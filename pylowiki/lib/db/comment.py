@@ -29,7 +29,7 @@ def getUserComments(user, disabled = False):
 
 def getCommentByCode( code ):
     try:
-        return meta.Session.query( Thing ).filter_by(objType = 'comment').filter_by( urlCode = code ).one()
+        return meta.Session.query( Thing ).filter_by(objType = 'comment').filter(Thing.data.any(wc('urlCode', code))).one()
     except sa.orm.exc.NoResultFound:
         return False
 
@@ -117,9 +117,27 @@ class Comment(object):
         c['data'] = data
         if len(data) > 10:
            cData = data[:10]
-           c['urlCode'] = toBase62('%s_%s_%s'%(cData, owner['name'], int(time())))
         else:
-           c['urlCode'] = toBase62('%s_%s_%s'%(data, owner['name'], int(time())))
+           cData = data
+
+        testCode = toBase62('%s_%s_%s'%(cData, owner['name'], int(time())))
+        testCount = 0
+        while testCount < 20:
+            testCode = toBase62('%s_%s_%s'%(cData, owner['name'], int(time())))
+            if getCommentByCode(testCode):
+                testCount = testCount + 1
+                if testCount == 20:
+                    toEmail = "chris@civinomics.com" 
+                    frEmail = "chris@civinomics.com"
+                    subject = 'Comment Hash Problem'
+                    message = '''Comment hash in lib/db/comment went 20 times without generating unique hash!\n\n'''
+
+                    send( toEmail, frEmail, subject, message )
+                    break
+
+            else:
+              testCount = 20
+        c['urlCode'] = testCode
         c['discussion_id'] = discussion.id
         c['pending'] = False
         c['ups'] = 0
