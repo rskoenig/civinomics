@@ -9,6 +9,21 @@
     <br /><br />
 </%def>
 
+<%def name="fields_alert()">
+    % if 'alert' in session:
+        <% alert = session['alert'] %> 
+        <div class="alert alert-${alert['type']}">
+            <button data-dismiss="alert" class="close">×</button>
+            <strong>${alert['title']}</strong>
+            ${alert['content']}
+        </div>
+        <% 
+           session.pop('alert')
+           session.save()
+        %>
+    % endif
+</%def>
+
 <%def name="user_events()">
     % if c.events:
        <% numEvents = len(c.events) %>
@@ -48,17 +63,17 @@
     Current Access Level: ${c.user['accessLevel']}
     <form method="post" name="userPrivs" id="userPrivs" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/">
      Reason for Member Access Level Change: <input type=text name=changeAccessReason><br /><br /> 
-     % if c.user['accessLevel'] == '100':
-        <input type=radio name="setPrivs" value="0"> User &nbsp; &nbsp; &nbsp;
-        <input type=radio name="setPrivs" value="200"> Admin
-     % elif int(c.user['accessLevel']) >= 200:
-        <input type=radio name="setPrivs" value="0"> User &nbsp; &nbsp; &nbsp;
-        <input type=radio name="setPrivs" value="100"> Facilitator
+     % if c.user['accessLevel'] == '0':
+        <input type=radio name="setPrivsFacil" value="100"> Facilitator &nbsp; &nbsp; &nbsp;
+        <input type=radio name="setPrivsAdmin" value="200"> Admin
+     % elif c.user['accessLevel'] == '100':
+        <input type=radio name="setPrivsUser" value="0"> User &nbsp; &nbsp; &nbsp;
+        <input type=radio name="setPrivsAdmin" value="200"> Admin
      % else:
-        <input type=radio name="setPrivs" value="100"> Facilitator &nbsp; &nbsp; &nbsp;
-        <input type=radio name="setPrivs" value="200"> Admin
+        <input type=radio name="setPrivsUser" value="0"> User &nbsp; &nbsp; &nbsp;
+        <input type=radio name="setPrivsFacil" value="100"> Facilitator
      % endif
-     &nbsp;&nbsp;<button type="submit" class="btn btn-warning">Set Privs</button>
+     &nbsp;&nbsp;<button type="submit" name="setPrivs" class="btn btn-warning">Set Privs</button>
      </form>
     <br /><br />
     % if c.account:

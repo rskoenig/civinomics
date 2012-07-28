@@ -1,4 +1,4 @@
-<%def name="Explaination()">
+<%def name="Explanation()">
     <div class="civ-col">
         % for explaination in c.Explain:
             <h3 class="civ-col">${explaination[0]}</h2>
@@ -22,7 +22,7 @@
                 <a href="leaderboard_followedPersons" class="btn btn-large btn-warning" id='btn3'>Followed Persons</a>
             </div>
             <div class="row">
-                <a href="leaderboard_explaination" class="btn btn-large btn-warning" id='btn4'>Leaderboards Explained</a>
+                <a href="leaderboard_explanation" class="btn btn-large btn-warning" id='btn4'>Leaderboards Explained</a>
             </div>
         </div>
    </div>
@@ -155,3 +155,4 @@
         </div>
     </div>
 </%def>
+

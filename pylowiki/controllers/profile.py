@@ -279,19 +279,30 @@ class ProfileController(BaseController):
         if 'verifyEnableUser' in request.params and 'enableUserReason' in request.params and len(request.params['enableUserReason']) > 0:
            log.info('disabled is %s' % c.user['disabled'])
            enableUserReason = request.params['enableUserReason']
+
            if c.user['disabled'] == '1':
               c.user['disabled'] = 0
               eAction = 'User Enabled'
+              alert = {'type':'success'}
+              alert['title'] = 'Enabled:'
+              alert['content'] = 'Account Enabled'
            else:
               c.user['disabled'] = 1
               eAction = 'User Disabled'
- 
+              alert = {'type':'warning'}
+              alert['title'] = 'Disabled:'
+              alert['content'] = 'Account Disabled'
+              
            e = Event(eAction, enableUserReason, c.user, c.authuser)
            commit(c.user)
-           
-           h.flash(eAction, 'success')
+           session['alert'] = alert
+           session.save()
         else:
-           h.flash('Error: Enter reason and verify action before submit', 'error')
+           alert = {'type':'error'}
+           alert['title'] = 'Error:'
+           alert['content'] = 'Enter reason and verify action before submit'
+           session['alert'] = alert
+           session.save()
 
         return redirect("/profile/" + code + "/" + url + "/admin" )
 
@@ -301,17 +312,33 @@ class ProfileController(BaseController):
         url = id2
         c.user = get_user(code, url)
         log.info('privHandler %s %s' % (code, url))
-
-        if 'setPrivs' in request.params and 'changeAccessReason' in request.params and request.params['changeAccessReason'] != '':
-           eAction = 'Access Level Changed from ' + c.user['accessLevel'] + ' to ' + request.params['setPrivs']
-           c.user['accessLevel'] = request.params['setPrivs']
+        "Check which of three radio type buttons was bubbled in"
+        if ('changeAccessReason' in request.params) and (request.params['changeAccessReason'] != '') and ('setPrivsUser' in request.params or 'setPrivsFacil' in request.params or 'setPrivsAdmin' in request.params):
+           eAction = 'Access Level Changed from ' + c.user['accessLevel'] + ' to '
+           if 'setPrivsUser' in request.params:
+               c.user['accessLevel'] = 0
+               eAction += '0'
+           elif 'setPrivsFacil' in request.params:
+               c.user['accessLevel'] = 100
+               eAction += '0'
+           else:
+               c.user['accessLevel'] = 200
+               eAction += '0'
            changeAccessReason = request.params['changeAccessReason']
            e = Event(eAction, changeAccessReason, c.user, c.authuser)
            commit(c.user)
-           h.flash('New Access Level Set', 'success')
+           alert = {'type':'success'}
+           alert['title'] = 'Success:'
+           alert['content'] = 'New Access Level Set'
+           session['alert'] = alert
+           session.save()
         else:
-           h.flash('Error: Enter reason and pecify a new access level', 'error')
+           alert = {'type':'error'}
+           alert['title'] = 'Error:'
+           alert['content'] = 'Enter reason and specify a new access level'
+           session['alert'] = alert
+           session.save()
 
         return redirect("/profile/" + code + "/" + url + "/admin" )
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+

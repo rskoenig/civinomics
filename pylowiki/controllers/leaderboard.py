@@ -10,6 +10,8 @@ from pylowiki.lib.db.resource import getActiveResourcesByWorkshopID
 from pylowiki.lib.db.follow import getUserFollows, isFollowing
 from pylowiki.lib.db.user import getActiveUsers, getUserByID
 from pylowiki.lib.db.rating import getRatingByID
+from pylowiki.lib.fuzzyTime import timeSince
+
 
 from pylowiki.lib.base import BaseController, render
 
@@ -50,7 +52,7 @@ def SugActivityBoard(page, suggestions):
         sugCreated = time.mktime(sug.date.timetuple())
         curTime = time.time()
         elapsedTime = -(sugCreated - curTime)
-        value = str(getSuggestionPopularity(sug)) + ' Comments/Ratings Over ' + str(round(elapsedTime/3600, 2)) + ' Hours'
+        value = str(getSuggestionPopularity(sug)) + ' Comments/Ratings Over ' + str(timeSince(sug.date))
         title = [sug['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + sug['urlCode'] + '/' + sug['url'])] 
     addRanks('Suggestion Activity', 'sugActivity', userSugActiveRank, len(sugActiveList), title, value) 
 
@@ -129,7 +131,7 @@ def ResActivityBoard(page, resources):
         resCreated = time.mktime(res.date.timetuple())
         curTime = time.time()
         elapsedTime = -(resCreated - curTime)
-        value = str(getResourcePopularity(getDiscussionByID(res['discussion_id']))) + ' Comments/Ratings Over ' + str(round(elapsedTime/3600, 2)) + ' Hours'
+        value = str(getResourcePopularity(getDiscussionByID(res['discussion_id']))) + ' Comments/Ratings Over ' + str(str(timeSince(res.date)))
         title = [res['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + res['urlCode'] + '/' + res['url'])]
     addRanks('Resource Activity', 'resActivity', userResActiveRank, len(resActiveList), title, value) 
  
@@ -972,8 +974,8 @@ def GenerateRanks(code, url, page):
     CommentRatingBoard(page, c.comList)
     CommentPopularityBoard(page, c.comList)
     
-def addExplaination(title, explaination):
-    ExplainedBoard = [title, explaination]
+def addexplanation(title, explanation):
+    ExplainedBoard = [title, explanation]
     c.Explain.append(ExplainedBoard)
     
 class LeaderboardController(BaseController):
@@ -995,33 +997,33 @@ class LeaderboardController(BaseController):
         url = id2
         c.w = getWorkshop(code, url)
         
-        "Putting all leaderboard title with explaination as list into a list"
+        "Putting all leaderboard title with explanation as list into a list"
         c.Explain = []
         
-        explaination = "The Overall Leaderboard Ranking list shows your best ranking for each category on the main leaderboard page of that workshop"
-        addExplaination('Overall Rankings', explaination)
-        explaination = "The Follows list is ranked by number of followers a user has, most to least"
-        addExplaination('Follows', explaination)
-        explaination = "Ranked by best average Suggestion Rating (total ratings sum/total ratings)"
-        addExplaination('Suggestion Rating', explaination)   
-        explaination = "Ranked by number of comments plus number of ratings recieved on that suggestions"
-        addExplaination('Suggestion Popularity', explaination)
-        explaination = "Ranked by number of comments and rating over the duration of time the suggestion has existed"
-        addExplaination('Suggestion Activity', explaination)
-        explaination = "Ranked by number of up votes versus number of up plus down votes on the resource"
-        addExplaination('Resource Rating', explaination)
-        explaination = "Ranked by Comments plus Votes on the resource"
-        addExplaination('Resource Popularity', explaination)
-        explaination = "Ranked by number of comments and rating over the duration of time the resource has existed"
-        addExplaination('Resource Activity', explaination)
-        explaination = "Ranked by number of up votes versus number of up plus down votes"
-        addExplaination('Comment Rating', explaination)
-        explaination = "Ranked by number of SubComments to a comment as well as votes on the comment"
-        addExplaination('Comment Popularity', explaination)
-        explaination = "List of your followed Person with that person's total numbers of input"
-        addExplaination('Followed Persons Listing', explaination)
+        explanation = "The Overall Leaderboard Ranking list shows your best ranking for each category on the main leaderboard page of that workshop"
+        addexplanation('Overall Rankings', explanation)
+        explanation = "The Follows list is ranked by number of followers a user has, most to least"
+        addexplanation('Follows', explanation)
+        explanation = "Ranked by best average Suggestion Rating (total ratings sum/total ratings)"
+        addexplanation('Suggestion Rating', explanation)   
+        explanation = "Ranked by number of comments plus number of ratings recieved on that suggestions"
+        addexplanation('Suggestion Popularity', explanation)
+        explanation = "Ranked by number of comments and rating over the duration of time the suggestion has existed"
+        addexplanation('Suggestion Activity', explanation)
+        explanation = "Ranked by number of up votes versus number of up plus down votes on the resource"
+        addexplanation('Resource Rating', explanation)
+        explanation = "Ranked by Comments plus Votes on the resource"
+        addexplanation('Resource Popularity', explanation)
+        explanation = "Ranked by number of comments and rating over the duration of time the resource has existed"
+        addexplanation('Resource Activity', explanation)
+        explanation = "Ranked by number of up votes versus number of up plus down votes"
+        addexplanation('Comment Rating', explanation)
+        explanation = "Ranked by number of SubComments to a comment as well as votes on the comment"
+        addexplanation('Comment Popularity', explanation)
+        explanation = "List of your followed Person with that person's total numbers of input"
+        addexplanation('Followed Persons Listing', explanation)
                                 
-        return render('/derived/leaderboard_explaination.bootstrap')
+        return render('/derived/leaderboard_explanation.bootstrap')
     
     def followedPersons(self, id1, id2):
         
