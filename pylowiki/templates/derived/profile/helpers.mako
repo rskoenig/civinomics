@@ -1,8 +1,10 @@
 <%!
-    from pylowiki.lib.db.suggestion import getSuggestionByID
+    from pylowiki.lib.db.suggestion import getSuggestionByID, getSuggestion
+    from pylowiki.lib.db.resource import getResource
     from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
     from pylowiki.lib.db.user import isAdmin, getUserPosts
+    from pylowiki.lib.db.discussion import getDiscussionByID
     from pylowiki.lib.fuzzyTime import timeSince
 %>
 
@@ -57,38 +59,68 @@
            <li><a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a></li>
            % if mObj:
                % if mObj.objType == 'comment':
-                   <% iType = "comment" %>
-                   <% w = 0 %>
+                   <% oLink = "/comment/" + mObj['urlCode'] %>
+                   <% oiType = "comment" %>
+                   <% d = getDiscussionByID(mObj['discussion_id']) %>
+                   <% w = getWorkshop(d['workshopCode'], d['workshopURL']) %>
+                   <% wLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] %>
+                   <% ooTitle = d['discType'] %>
+                   <% ooLink = "foo" %>
+                   <% ooiType = "comment" %>
+
+                   % if d['discType'] == 'feedback':
+                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/feedback" %>
+                       <% ooTitle = "Workshop Feedback" %>
+                       <% ooiType = "volume-up" %>
+                   % elif d['discType'] == 'suggestion':
+                       <% s = getSuggestion(d['suggestionCode'], d['suggestionURL']) %>
+                       <% ooTitle = s['title'] %>
+                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] %>
+                       <% ooiType = "pencil" %>
+                   % elif d['discType'] == 'resource':
+                       <% r = getResource(d['resourceCode'], d['resourceURL']) %>
+                       <% ooTitle = r['title'] %>
+                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
+                       <% ooiType = "book" %>
+                   % elif d['discType'] == 'sresource':
+                   % endif
                % elif mObj.objType == 'resource':
                    <% w = getWorkshopByID(mObj['workshop_id']) %>
                    <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
                    <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
-                   <% iType = "book" %>
+                   <% oiType = "book" %>
                % elif mObj.objType == 'suggestion':
-                   <% iType = "pencil" %>
+                   <% oiType = "pencil" %>
                    <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
                    <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
                    <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
                % endif
-               % if w and w != 0:
+               %if len(w['title']) > maxlen:
+                   <% wTitle = w['title'][0:(maxlen - 4)] + '...' %>
+               %else:
+                   <% wTitle = w['title'] %>
+               %endif
+               <li><i class="icon-cog"></i><a href="${wLink}"> ${wTitle}</a></li>
+               %if mObj.objType == 'comment':
+                   %if len(ooTitle) > maxlen:
+                       <% ooTitle = ooTitle[0:(maxlen - 4)] + '...' %>
+                   %endif:
+                   %if len(mObj['data']) > maxlen:
+                       <% oTitle = mObj['data'][0:(maxlen - 4)] + '...' %>
+                   %else:
+                       <% oTitle = mObj['data'] %>
+                   %endif
+                   <li><i class="icon-${ooiType}"></i><a href="${ooLink}"> ${ooTitle}</a></li>
+               % else:
                    %if len(mObj['title']) > maxlen:
-                       <% oTitle = mObj['title'][0:(maxlen - 4)] + '...' %>
+                      <% oTitle = mObj['title'][0:(maxlen - 4)] + '...' %>
                    %else:
-                       <% oTitle = mObj['title'] %>
+                      <% oTitle = mObj['title'] %>
                    %endif
-                   %if len(w['title']) > maxlen:
-                       <% wTitle = w['title'][0:(maxlen - 4)] + '...' %>
-                   %else:
-                       <% wTitle = w['title'] %>
-                   %endif
-                   <li><i class="icon-cog"></i><a href="${wLink}"> ${wTitle}</a></li>
-                   <li><i class="icon-${iType}"></i><a href="${oLink}"> ${oTitle}</a></li>
-               % endif
-               % if mObj.objType == 'comment':
-                   <li><i class="icon-${iType}"></i> New comment</a></li>
-               % endif
-                    <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
-                % endif
+               %endif
+               <li><i class="icon-${oiType}"></i><a href="${oLink}"> ${oTitle}</a></li>
+               <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
+            % endif
             </ul>
         </td>
         </tr>
