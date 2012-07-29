@@ -91,7 +91,7 @@ class SuggestionController(BaseController):
             c.s = False
             c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
 
-            return render('/derived/suggestion_edit.html')
+            return render('/derived/suggestion_edit.bootstrap')
         else:
            h.flash('You are not authorized', 'error')
            return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
@@ -106,7 +106,7 @@ class SuggestionController(BaseController):
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser, c.w)
         if (c.authuser.id == c.s.owner) or a or f:
-            return render('/derived/suggestion_edit.html')
+            return render('/derived/suggestion_edit.bootstrap')
         else:
            h.flash('You are not authorized', 'error')
            return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.s['urlCode'], urlify(c.s['url'])))
