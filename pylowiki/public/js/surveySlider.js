@@ -65,6 +65,7 @@ Changelog:
                 isRated = $(this).attr('isRated'),      // if user has rated this yet
                 handler = $(this).attr('href'), // The handler for the ajax
                 sliderLabel = $(this).attr('sliderLabel');  // Unique identifier for the slider
+                var isMsie = $.browser.msie;
 
                 $(this).slider({
                     orientation: "horizontal",
@@ -72,12 +73,23 @@ Changelog:
                     max: 100,
                     value: 50,
                     step: 1,
+                    start: function(event, ui) {
+                        var sliderVal = ui.value;
+                        hex = hexFromInput( sliderVal );
+                        $(this).css( "background", "#" + hex );
+                        $(this).children(" .ui-widget-header").css( "background", "#" + hex );
+                        if (!isMsie) {
+                            $(this).children(" .ui-slider-handle").html( '<span class="handleVal"></span>' );
+                        }
+                    },
                     slide: function(event, ui) {
                         var sliderVal = ui.value;
                         hex = hexFromInput( sliderVal );
                         $(this).css( "background", "#" + hex );
                         $(this).children(" .ui-widget-header").css( "background", "#" + hex );
-                        $(this).children(" .ui-slider-handle").html( '<span class="handleVal">'+sliderVal+'</span>' );
+                        if (!isMsie) {
+                            $(this).children(" .ui-slider-handle").html( '<span class="handleVal">'+sliderVal+'</span>' );
+                        }
                     },
                     change: function(event, ui) {
                         var sliderVal = ui.value;
