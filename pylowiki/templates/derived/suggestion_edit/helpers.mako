@@ -27,8 +27,6 @@
 </%def>
 
 <%def name="addSuggestionForm(c)">
-    <div class="fluid-row">
-        <div class="span4">
             % if c.s:
                 <form id="edit_suggestion" action = "${c.site_secure_url}/saveSuggestion/${c.s['urlCode']}/${c.s['url']}" class="form-vertical" method = "post">
                     <% dataValue = c.s['data'] %>
@@ -86,9 +84,6 @@
                     </div>
                 </fieldset>
             </form>
-
-        </div>
-    </div>
 </%def>
 
 <%def name="listOtherSuggestions(c, author)">

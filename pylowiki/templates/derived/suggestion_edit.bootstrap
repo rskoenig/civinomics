@@ -19,16 +19,7 @@
             % else:
                 <h2 class="civ-col">Add Suggestion</h2>
             % endif
-            <div class="row-fluid">
-                <div class="span9">
-                    ${helpers.addSuggestionForm(c)}
-                </div> <!-- /.span10 -->
-        
-                <div class="span3">
-                    ${helpers.spacer()}
-                </div> <!-- /.span2 -->
-            </div> <!-- /.row-fluid -->
-
+            ${helpers.addSuggestionForm(c)}
         </div> <!-- /.civ-col -->
     </div>
     
@@ -38,7 +29,7 @@
             ${helpers.showMessage()}
         % endif
         <div class="civ-col">
-            <h2 class="civ-col">${c.heading}</h2>
+            <h2 class="civ-col">Other Suggestions</h2>
             <div class="civ-col-inner">
                 ${helpers.spacer()}
                 ${helpers.listOtherSuggestions(c, author)}

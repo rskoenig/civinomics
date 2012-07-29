@@ -27,8 +27,6 @@
 </%def>
 
 <%def name="addResourceForm(c)">
-    <div class="fluid-row">
-        <div class="span4">
             % if c.r:
                 <form id="edit_resource" action = "${c.site_secure_url}/saveResource/${c.r['urlCode']}/${c.r['url']}" class="form-vertical" method = "post">
                     <% linkValue = c.r['link'] %>
@@ -93,9 +91,6 @@
                     </div>
                 </fieldset>
             </form>
-
-        </div>
-    </div>
 </%def>
 
 <%def name="listOtherResources(c, author)">
