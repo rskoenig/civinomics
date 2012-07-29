@@ -91,8 +91,9 @@ def getWorkshopScopes(searchScope, scopeLevel):
     ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
     ## format of scope attribute ||country||state||county||city|zip
     ##log.info('geoInfo is %s' % geoInfo)
+    ##log.info('searchScope is %s scopeLevel is %s' %(searchScope, scopeLevel))
     #searchScope = geoInfo[0]['scope']
-    scopeLevel = int(scopeLevel) + 1
+    scopeLevel = int(scopeLevel) + 0
     try:
         sList = searchScope.split('|')
         ##log.info('sList is %s' % len(sList))

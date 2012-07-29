@@ -177,7 +177,18 @@ class ActionlistController(BaseController):
               w = getWorkshopByID(gInfo['workshopID'])
               if w['startTime'] != '0000-00-00' and w['deleted'] != '1':
                   if w not in c.list:
-                      c.list.append(w)
+                      doit = 1
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
+                             doit = 0
+
+                      if doit:
+                          offset = 10 - int(scopeLevel)
+                          offset = offset * -1
+                          wTest = gInfo['scope'].split('|')
+                          sTest = searchScope.split('|')
+                          ##log.info('offset is %s'%offset)
+                          if wTest[:offset] == sTest[:offset]:
+                              c.list.append(w)
 
            c.count = len( c.list )
            c.paginator = paginate.Page(
