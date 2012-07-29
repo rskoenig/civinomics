@@ -1,0 +1,26 @@
+<%inherit file = "/base/template.html"/>
+
+% for row in c.wikilist:
+    <br>-----<br>
+    ${"len(%s): %d" %(row, len(row[1].split("\r\n")))}
+% endfor
+
+<br>
+<br>
+
+${c.authuser.id}
+<br>
+<br>
+${c.owners}
+
+<%def name = 'extraStyles()'>
+	
+</%def>
+
+<%def name = 'extraScripts()'>
+	
+</%def>
+
+<%def name = 'extraHTML()'>
+
+</%def>
