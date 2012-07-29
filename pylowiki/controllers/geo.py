@@ -37,7 +37,7 @@ class GeoController(BaseController):
         c.numberHouseholds = c.geoInfo['HouseholdsPerZipCode']
         c.personsHousehold = c.geoInfo['PersonsPerHousehold']
         scope = getGeoScope(c.postal, c.country)
-        scopeLevel = '09'
+        scopeLevel = '10'
         wscopes = getWorkshopScopes(scope, scopeLevel)
         c.list = []
         for s in wscopes:
@@ -88,8 +88,8 @@ class GeoController(BaseController):
         c.numberHouseholds = c.geoInfo['Total_Households']
         c.personsHousehold = c.geoInfo['Average_Household_Size']
         scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + urlify(c.county) + '||' + urlify(c.city) + '|' +  '00000'
-        scopeLevel = "08"
-        wscopes = getWorkshopScopes(scope, 8)
+        scopeLevel = "09"
+        wscopes = getWorkshopScopes(scope, scopeLevel)
         c.list = []
         for s in wscopes:
            wID = s['workshopID']

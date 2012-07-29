@@ -88,7 +88,7 @@ def getUserScopes(searchScope, scopeLevel):
 
 def getWorkshopScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
-    ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
+    ## scopeLevel: country = 3, state = 5, county = 7, city = 9, zip = 10
     ## format of scope attribute ||country||state||county||city|zip
     ##log.info('geoInfo is %s' % geoInfo)
     ##log.info('searchScope is %s scopeLevel is %s' %(searchScope, scopeLevel))
