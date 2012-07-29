@@ -60,19 +60,19 @@
 	</form>
         <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post">
                      Members in my <select name="scopeLevel">
-                     <option value=8>City</option>
-                     <option value=6>County</option>
-                     <option value=4>State</option>
-                     <option value=2>Country</option>
+                     <option value="09">City</option>
+                     <option value="07">County</option>
+                     <option value="05">State</option>
+                     <option value="03">Country</option>
                      </select>
                      <button class="btn" type="submit">Search</button>
                      </form>
                      <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
                      Workshops in my <select name="scopeLevel">
-                     <option value=8>City</option>
-                     <option value=6>County</option>
-                     <option value=4>State</option>
-                     <option value=2>Country</option>
+                     <option value="09">City</option>
+                     <option value="07">County</option>
+                     <option value="05">State</option>
+                     <option value="03">Country</option>
                      </select>
                      <button class="btn" type="submit">Search</button>
                      </form>
