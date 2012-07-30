@@ -7,6 +7,7 @@ from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
+from pylowiki.lib.db.resource import getActiveResourcesByParentID
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.revision import get_revision, Revision
@@ -43,7 +44,7 @@ class SuggestionController(BaseController):
         else:
             c.commentsDisabled = 0
         c.events = getParentEvents(c.s)
-        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
+        c.resources = getActiveResourcesByParentID(c.s.id)
         for i in range(len(c.suggestions)):
             suggestion = c.suggestions[i]
             if suggestion.id == c.s.id:
@@ -52,7 +53,6 @@ class SuggestionController(BaseController):
         r = get_revision(int(c.s['mainRevision_id']))
         
         c.title = c.s['title']
-        c.heading = "OTHER SUGGESTIONS"
         c.content = h.literal(h.reST2HTML(c.s['data']))
         ##c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
         

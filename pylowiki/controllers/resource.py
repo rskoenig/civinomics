@@ -8,7 +8,8 @@ from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getResourceByID, getResource
+from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getResourceByID, getResource, getActiveResourcesByParentID
+from pylowiki.lib.db.suggestion import getSuggestion
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
@@ -100,6 +101,27 @@ class ResourceController(BaseController):
             c.r = False
             c.heading = "OTHER RESOURCES"
             c.otherResources = getResourcesByWorkshopID(c.w.id)
+
+            return render('/derived/resource_edit.bootstrap')
+        else:
+            h.flash('You are not authorized', 'error')
+            return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
+
+    @h.login_required
+    def newSResource(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.s = getSuggestion(code, urlify(url))
+        c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
+
+        a = isAdmin(c.authuser.id)
+        f =  isFacilitator(c.authuser.id, c.w.id)
+        s = isScoped(c.authuser, c.w)
+        if (s and c.w['allowResources'] == '1') or a or f:
+            c.r = False
+            c.heading = "OTHER RESOURCES"
+            c.otherResources = getActiveResourcesByParentID(c.s.id)
 
             return render('/derived/resource_edit.bootstrap')
         else:
@@ -233,24 +255,35 @@ class ResourceController(BaseController):
         if rerror:
             h.flash(rerrorMsg, 'error')
         else:
+            if 'suggestionCode' in request.params and 'suggestionURL' in request.params:
+                suggestionCode = request.params['suggestionCode']
+                suggestionURL = request.params['suggestionCode']
+                s = getSuggestion(suggestionCode, suggestionURL)
+            else:
+                s = False
+
             w = getWorkshop(code, urlify(url))
             # make sure link not already submitted
             a = getResourceByLink(link, w)
             if a:
-                h.flash('Link already submitted for this issue', 'warning')
+                h.flash('Link already submitted for this workshop', 'warning')
                 return redirect('/workshop/%s/%s'%(code, url))
 
-            r = Resource(link, title, comment, c.authuser, allowComments, w)
-            if 'resources' not in w.keys():
-                w['resources'] = r.a.id
+            if s:
+                r = Resource(link, title, comment, c.authuser, allowComments, w, s)
+                return redirect('/workshop/%s/%s/suggestion/%s/%s'%(code, url, suggestionCode, suggestionURL))
             else:
-                w['resources'] = w['resources'] + ',' + str(r.a.id)
+                r = Resource(link, title, comment, c.authuser, allowComments, w)
+                if 'resources' not in w.keys():
+                    w['resources'] = r.a.id
+                else:
+                    w['resources'] = w['resources'] + ',' + str(r.a.id)
 
-            w['numResources'] = int(w['numResources']) + 1
-            commit(w)
+                w['numResources'] = int(w['numResources']) + 1
+                commit(w)
+                return redirect('/workshop/%s/%s'%(code, url))
 
         
-        return redirect('/workshop/%s/%s'%(code, url))
 
     @h.login_required
     def modResource(self, id1, id2, id3, id4):

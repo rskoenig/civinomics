@@ -49,20 +49,18 @@ class Discussion(object):
             d['workshopURL'] = kwargs['workshop']['url']
             d['resourceCode'] = attachedThing['urlCode']
             d['resourceURL'] = attachedThing['url']
-        elif attachedThing.objType == 'sresource':
-            d['workshopCode'] = kwargs['workshop']['urlCode']
-            d['workshopURL'] = kwargs['workshop']['url']
-            d['resourceCode'] = attachedThing['urlCode']
-            d['resourceURL'] = attachedThing['url']
-            sID = attachedThing['parent_id']
-            s = getThingByID(sID)
-            d['suggestionCode'] = s['urlCode']
-            d['suggestionURL'] = s['url']
+
+        if discType == 'sresource':
+            d['suggestionCode'] = kwargs['suggestion']['urlCode']
+            d['suggestionURL'] = kwargs['suggestion']['url']
+
         d['title'] = title
         d['url'] = urlify(title)
         d['urlCode'] = toBase62('%s_%s'%(title, int(time())))
         d['numComments'] = 0
         d['attachedThing_id'] = attachedThing.id
         commit(d)
+        attachedThing['discussion_id'] = d.id
+        commit(attachedThing)
         
         self.d = d

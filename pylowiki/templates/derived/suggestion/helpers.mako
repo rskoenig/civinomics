@@ -112,35 +112,21 @@
     </div>
 </%def>
 
-<%def name="relatedSuggestions(cSuggestions, cW, author)">
-    <ul id="related_suggestion" class="unstyled">
-        % if len(cSuggestions) == 0:
+<%def name="showResources()">
+    <ul id="show_resources" class="unstyled">
+        % if len(c.resources) == 0:
             <li>
-                No other suggestions!
+                No resources!
             </li>
         % else:
-            % for suggestion in cSuggestions:
-                <% author = getUserByID(suggestion.owner)%>
+            % for resource in c.resources:
+                <% author = getUserByID(resource.owner)%>
                 <li>
-                    <strong class="issue_name"><a href="/workshop/${cW['urlCode']}/${cW['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a></strong>
+                    <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a></strong>
                     <br />
                     <span class="gray">By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span>
                 </li>
             % endfor
         % endif
-    </ul> <!-- related_suggestion -->
-    <ul class="unstyled share suggest invite">
-        <li>
-            <img src="/images/handdove.png" />
-            <a href="#">
-                Invite to Civinomics
-            </a>
-        </li>
-        <li>
-            <img src="/images/suggest_an_issue.png" /> 
-            <a href="#">
-                Suggest a workshop
-            </a>
-        </li>
-    </ul>
+    </ul> <!-- show_resource -->
 </%def>

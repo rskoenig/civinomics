@@ -125,6 +125,8 @@ def make_map():
     map.connect('/addResource/{id1}/{id2}/', controller = 'resource', action = 'addResource', id1 = '{id1}', id2 = '{id2}')
     map.connect('/newResource/{id1}/{id2}', controller = 'resource', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
     map.connect('/newResource/{id1}/{id2}/', controller = 'resource', action = 'newResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newSResource/{id1}/{id2}', controller = 'resource', action = 'newSResource', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newSResource/{id1}/{id2}/', controller = 'resource', action = 'newSResource', id1 = '{id1}', id2 = '{id2}')
     map.connect('/editResource/{id1}/{id2}', controller = 'resource', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
     map.connect('/editResource/{id1}/{id2}/', controller = 'resource', action = 'editResource', id1 = '{id1}', id2 = '{id2}')
     map.connect('/saveResource/{id1}/{id2}', controller = 'resource', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')

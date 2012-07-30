@@ -53,10 +53,10 @@ ${lib.return_to()}
             ${helpers.showMessage()}
         % endif
         <div class="civ-col">
-            <h2 class="civ-col">${c.heading}</h2>
+            <h2 class="civ-col">Resources <span class="pull-right"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}"><i class="icon-plus"></i></a></span></h2>
             <div class="civ-col-inner">
                 ${helpers.spacer()}
-                ${helpers.relatedSuggestions(c.suggestions, c.w, author)}
+                ${helpers.showResources()}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->
