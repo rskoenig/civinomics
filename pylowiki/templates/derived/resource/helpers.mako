@@ -3,6 +3,14 @@
 	from pylowiki.lib.db.user import getUserByID
 %>
 
+<%def name="nav_thing()">
+    % if c.suggestion:
+        <p>
+        <strong><a href="/workshop/${c.suggestion['workshopCode']}/${c.suggestion['workshopURL']}/suggestion/${c.suggestion['urlCode']}/${c.suggestion['url']}">${c.suggestion['title']}</a></strong>
+        </p>
+    % endif
+</%def>
+
 <%def name="displayType()">
 	Resource &mdash; ${c.resource['type']}
 </%def>

@@ -9,7 +9,7 @@ from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getResourceByID, getResource, getActiveResourcesByParentID
-from pylowiki.lib.db.suggestion import getSuggestion
+from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
@@ -37,9 +37,12 @@ class ResourceController(BaseController):
         resourceURL = id4
         
         c.w = getWorkshop(workshopCode, workshopURL)
-        
         c.title = c.w['title']
         c.resource = getResource(resourceCode, urlify(resourceURL))
+        if c.resource['parent_id'] != None and c.resource['parent_type'] != None:
+            if c.resource['parent_type'] == 'suggestion':
+                c.suggestion = getSuggestionByID(c.resource['parent_id'])
+
         c.events = getParentEvents(c.resource)
         if c.resource['disabled'] == '1' or c.resource['allowComments'] == '0':
             c.commentsDisabled = 1
@@ -71,7 +74,10 @@ class ResourceController(BaseController):
 
         c.poster = getUserByID(c.resource.owner)
         
-        c.otherResources = getActiveResourcesByWorkshopID(c.w.id)
+        if c.suggestion:
+            c.otherResources = getActiveResourcesByParentID(c.suggestion.id)
+        else:
+            c.otherResources = getActiveResourcesByWorkshopID(c.w.id)
         for i in range(len(c.otherResources)):
             resource = c.otherResources[i]
             if resource.id == c.resource.id:
