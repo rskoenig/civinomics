@@ -1,0 +1,43 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="helpers" file="/lib/admin_helpers/comment.mako" />
+
+    
+<div class="container">
+	<div class="span12">
+		<div class="row">	
+		    <br /><br />
+		    <br /><br />
+			<div class="span3 offset9">
+				${helpers.fields_alert()}		
+			</div>
+		    <div class="banner_div">
+		       <h2 class="banner">Moderate Comment</h2>
+		    </div> 
+		    <br />
+		</div>
+		<div class="row">
+			<div class="span6">
+			${helpers.comment_admin()}
+			</div>
+			<div class="span6">
+    			<strong>Moderate Comment</strong>
+				<div class="row">
+				${helpers.moderateComments()}
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
+
+</%def>
