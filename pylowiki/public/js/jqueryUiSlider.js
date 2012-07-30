@@ -64,6 +64,7 @@
                 isRated = $(this).attr('data1').split('_')[4];      // if user has rated this yet
                 ratingHandler = $(this).attr('data1').split('_')[5],        // for the ajax handler URL below
                 thingURL = $(this).attr('data2');   // this page's url
+                var isMsie = $.browser.msie;
 
 				$(this).slider({
 					orientation: "horizontal",
@@ -71,13 +72,24 @@
 					max: 100,
 					value: 50,
 					step: 1,
-					slide: function(event, ui) {
-						var sliderVal = ui.value;
-						hex = hexFromInput( sliderVal );
-						$(this).css( "background", "#" + hex );
-						$(this).children(" .ui-widget-header").css( "background", "#" + hex );
-						$(this).children(" .ui-slider-handle").html( '<span class="handleVal">'+sliderVal+'</span>' );
-					},
+                    start: function(event, ui) {
+                        var sliderVal = ui.value;
+                        hex = hexFromInput( sliderVal );
+                        $(this).css( "background", "#" + hex );
+                        $(this).children(" .ui-widget-header").css( "background", "#" + hex );
+                        if (!isMsie) {
+                            $(this).children(" .ui-slider-handle").html( '<span class="handleVal"></span>' );
+                        }
+                    },
+                    slide: function(event, ui) {
+                        var sliderVal = ui.value;
+                        hex = hexFromInput( sliderVal );
+                        $(this).css( "background", "#" + hex );
+                        $(this).children(" .ui-widget-header").css( "background", "#" + hex );
+                        if (!isMsie) {
+                            $(this).children(" .ui-slider-handle").html( '<span class="handleVal">'+sliderVal+'</span>' );
+                        }
+                    },
 					change: function(event, ui) {
 						var sliderVal = ui.value;
 						hex = hexFromInput( sliderVal );
