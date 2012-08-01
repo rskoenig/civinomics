@@ -2,6 +2,7 @@
    from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
+   from pylowiki.lib.db.suggestion import getSuggestionByID
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
    from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
    from pylowiki.lib.db.user import getUserByID
@@ -108,6 +109,7 @@
             <table class="table table-striped">
             <tbody>
 			% for mObj in mPosts:
+                           <% ooTitle = False %>
                            <% muser = getUserByID(mObj.owner) %>
                            <% mname = muser['name'] %>
                            % if mObj.objType == 'resource':
@@ -115,6 +117,17 @@
                                <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
                                <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                                <% iType = "book" %>
+                               % if mObj['parent_id'] != None:
+                                   <% s = getSuggestionByID(mObj['parent_id']) %>
+                                   %if len(s['title']) > 20:
+                                       <% ooTitle = s['title'][0:16] + '...' %>
+                                   %else:
+                                       <% ooTitle = s['title'] %>
+                                   %endif
+                                   <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + s['urlCode'] + "/" + s['url'] %>
+                                   <% ooiType = "pencil" %>
+                               % endif
+                               <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
                            % elif mObj.objType == 'suggestion':
                                <% iType = "pencil" %>
                                <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
@@ -136,17 +149,18 @@
                            %endif
                            <tr>
                            <td>
-                           <div class="thumbnail">
                            % if muser['pictureHash'] == 'flash':
-                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" title="${mname}" style="width:40px;" alt="${mname}"/> 
+                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" title="${mname}" style="width:40px;" alt="${mname}"/ class="thumbnail"></a> 
                            % else:
-                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" title="${mname}" style="width:40px;"/></a>
+                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" title="${mname}" style="width:40px;"/ class="thumbnail"></a>
                            % endif
-                           </div>
                            </td>
                            <td>
                               <ul class="unstyled">
                               <li><a href="${wLink}"><i class="icon-cog"></i> ${wTitle}</a></li>
+                              % if ooTitle:
+                                  <li><a href="${ooLink}"><i class="icon-${ooiType}"></i> ${ooTitle}</a></li>
+                              % endif
                               <li><a href="${oLink}"><i class="icon-${iType}"></i> ${oTitle}</a></li>
                               <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
                               <ul>
