@@ -269,8 +269,15 @@ class ResourceController(BaseController):
                 s = False
 
             w = getWorkshop(code, urlify(url))
+
             # make sure link not already submitted
-            a = getResourceByLink(link, w)
+            if s:
+                a = getResourceByLink(link, s)
+            else:
+                a = getResourceByLink(link, w)
+
+            log.info('a is %s link is %s' % (a, link))
+
             if a:
                 h.flash('Link already submitted for this workshop', 'warning')
                 return redirect('/workshop/%s/%s'%(code, url))

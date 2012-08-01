@@ -117,8 +117,9 @@
                                <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
                                <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                                <% iType = "book" %>
-                               % if mObj['parent_id'] != None:
+                               % if mObj['parent_id'] != '0':
                                    <% s = getSuggestionByID(mObj['parent_id']) %>
+                                   <% ooTitle = mObj['parent_id'] %>
                                    %if len(s['title']) > 20:
                                        <% ooTitle = s['title'][0:16] + '...' %>
                                    %else:
