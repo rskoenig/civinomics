@@ -21,7 +21,7 @@ from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
-from pylowiki.lib.db.follow import Follow, getFollow, isFollowing
+from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
 from pylowiki.lib.db.account import Account, getUserAccount
 from pylowiki.lib.db.event import Event
 
@@ -483,6 +483,7 @@ class WorkshopController(BaseController):
               fList.append(f)
         
         c.facilitators = fList
+        c.followers = getWorkshopFollowers(c.w.id)
 
         ##log.info('c.isFollowing is %s' % c.isFollowing)
         if c.w['startTime'] != '0000-00-00':

@@ -1,7 +1,7 @@
 <%inherit file="/base/template.bootstrap"/>
 
 <%namespace name="helpers" file="/derived/suggestion/helpers.mako" />
-<%namespace name="comments" file="/derived/commentsCustomBootstrap.mako" />
+<%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 ${lib.return_to()}
@@ -42,7 +42,7 @@ ${lib.return_to()}
                 ${helpers.spacer()}
             </div> <!-- /.row-fluid -->
             <div class="row-fluid">
-                ${comments.comments("suggestionMain")}
+                ${comments("suggestionMain")}
             </div> <!-- /.row-fluid -->
         </div> <!-- /.civ-col -->
     </div>

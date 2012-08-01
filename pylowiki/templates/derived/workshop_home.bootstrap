@@ -48,7 +48,7 @@
     </div> <!-- /.span5 -->
     <div class="span3">
         <div class="civ-col">
-            <h2 class="civ-col">Info &amp; Feedback</h2>
+            <h2 class="civ-col">Info &amp; Feedback <div class="pull-right"><i class="icon-volume-up"></i></h2>
             <div class="civ-col-inner">
                 ${helpers.info_and_feedback()}
             </div> <!-- /.civ-col-inner -->
