@@ -581,69 +581,82 @@
     % endif
 </%def>
 
+<%def name="showNumericalProgress(pageNum, totalPages)">
+    ## As in showNavElements(), but only the numerical progress (no navigational buttons)
+    <p style="font-size:20px;">
+    ${pageNum} / ${totalPages - 1} 
+    </p>
+</%def>
+
+<%def name="showNextPrev(pageNum, totalPages, nextSlide, prevSlide, survey)">
+    ## As in showNavElements(), but only the navigational buttons (no numerical progress)
+    <span style="color:black; font-size:24px; font-weight:bold;">
+    % if pageNum == 0:
+        <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_216_circle_arrow_left@2x.png">
+    
+        Prev | 
+        
+        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}" style="color:black;">
+            Next
+            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_217_circle_arrow_right@2x.png">
+        </a>
+    % elif pageNum == totalPages - 1:
+        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${prevSlide['hash']}" style="color:black;">
+            <img class="leftArrow" src="/images/glyphicons_pro/glyphicons/png/glyphicons_216_circle_arrow_left@2x.png">
+            Prev
+        </a>
+    
+         | Next
+        
+        <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_217_circle_arrow_right@2x.png">
+    % else:
+        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${prevSlide['hash']}" style="color:black;">
+            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_216_circle_arrow_left@2x.png">
+            Prev
+        </a>
+    
+         | 
+        
+        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}" style="color:black;">
+            Next
+            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_217_circle_arrow_right@2x.png">
+        </a>
+    % endif
+    </span>
+</%def>
+
 <%def name='showNavElements(pageNum, totalPages, nextSlide, prevSlide, survey)'>
     ## The navigation buttons and numerical progress
 
-    <%doc>
-    <h2>
+    <span style="color:black; font-size:24px; font-weight:bold;">
     % if pageNum == 0:
-        <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_224_thin_arrow_left.png">
+        <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_216_circle_arrow_left@2x.png">
     
-        ${pageNum} / ${totalPages - 1}
+        Prev | ${pageNum} / ${totalPages - 1} | Next
         
         <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}">
-            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_223_thin_right_arrow.png">
+            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_217_circle_arrow_right@2x.png">
         </a>
     % elif pageNum == totalPages - 1:
         <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${prevSlide['hash']}">
-            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_224_thin_arrow_left.png">
+            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_216_circle_arrow_left@2x.png">
         </a>
     
-        ${pageNum} / ${totalPages - 1}
+        Prev | ${pageNum} / ${totalPages - 1} | Next
         
-        <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_223_thin_right_arrow.png">
+        <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_217_circle_arrow_right@2x.png">
     % else:
         <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${prevSlide['hash']}">
-            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_224_thin_arrow_left.png">
+            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_216_circle_arrow_left@2x.png">
         </a>
     
         ${pageNum} / ${totalPages - 1}
         
         <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}">
-            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_223_thin_right_arrow.png">
+            <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_217_circle_arrow_right@2x.png">
         </a>
     % endif
-    </h2>
-    </%doc>
-    <h2 style="text-decoration: none;">
-    % if pageNum == 0:
-        <button class="btn" disabled="disabled">prev</button>
-    
-        ${pageNum} / ${totalPages - 1}
-        
-        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}">
-            <button class="btn">next</button>
-        </a>
-    % elif pageNum == totalPages - 1:
-        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${prevSlide['hash']}">
-            <button class="btn">prev</button>
-        </a>
-    
-        ${pageNum} / ${totalPages - 1}
-        
-        <button class="btn" disabled="disabled">next</button>
-    % else:
-        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${prevSlide['hash']}">
-            <button class="btn">prev</button>
-        </a>
-    
-        ${pageNum} / ${totalPages - 1}
-        
-        <a href="/surveys/${survey['urlCode']}/${survey['url']}/page/${nextSlide['hash']}">
-            <button class="btn">next</button>
-        </a>
-    % endif
-    </h2>
+    </span>
     <br />
 </%def>
 

@@ -12,6 +12,7 @@ ${lib.setCurrentSurveyPage(c.survey, c.slide)}
 
 <div class="row-fluid">
     ## Left column
+    <%doc>
     <div class="span3">
         
         <div style="text-align:center;">
@@ -41,18 +42,21 @@ ${lib.setCurrentSurveyPage(c.survey, c.slide)}
         </div>
         
     </div>
-
+    </%doc>
     ## Right column
-    <div class="span9" style="text-align:center;">
+    <div class="span12" style="text-align:center;">
         ##<div class="row">
         ##    ${helpers.showTitle(c.survey)}
         ##</div>
         
-        ${helpers.spacer()}
-        
-        ##${helpers.spacer()}
-        
         <div class="row">
+            <div class="span9 offset1">
+                ${helpers.showProgressBar(c.slideNum, c.numSlides)}
+            </div>
+            <div class="span2">
+                ${helpers.showNumericalProgress(c.slideNum, c.numSlides)}
+                ##${helpers.showNavElements(c.slideNum, c.numSlides, c.nextSlide, c.prevSlide, c.survey)}
+            </div>
             <div class="row-fluid">
                 <div class="span12">
                     <div class="row-fluid">
@@ -64,15 +68,21 @@ ${lib.setCurrentSurveyPage(c.survey, c.slide)}
                     ${helpers.inlineSpacer(1)}
                 </div>
             </div>
-            ${helpers.spacer()}
             
             ## An additional blurb about the slide that would typically be vocalized.
-            <div class="row-fluid">
-                ${helpers.inlineSpacer(1)}
-                <div class="span10">
-                    ${helpers.showVocalText(c.slide)}
+            % if c.slide['vocal'] != '':
+                <div class="row-fluid">
+                    ${helpers.inlineSpacer(1)}
+                    <div class="span10">
+                        ${helpers.showVocalText(c.slide)}
+                    </div>
+                    ${helpers.inlineSpacer(1)}
                 </div>
-                ${helpers.inlineSpacer(1)}
+            % endif
+
+            <div class="row">
+                ##${helpers.showNavElements(c.slideNum, c.numSlides, c.nextSlide, c.prevSlide, c.survey)}
+                ${helpers.showNextPrev(c.slideNum, c.numSlides, c.nextSlide, c.prevSlide, c.survey)}
             </div>
 
             <div class="row">
