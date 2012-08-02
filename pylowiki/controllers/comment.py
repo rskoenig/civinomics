@@ -192,26 +192,20 @@ class CommentController(BaseController):
         #for key in request.params:
         #        log.info("key:::value ---> %s:::%s"%(key, request.params[key]))
         
-        try:
-            request.params['submit']
-            discussionID = request.params['discussionID']
-            parentCommentID = request.params['parentID']
-            type = request.params['type']
-            data = request.params['comment-textarea']
-            p = get_page(id)
-            i = p.issue
-            if type == "suggestionMain": 
-                suggestionURL = request.params['url']
-            c = addComment(discussionID, data, parentCommentID, type)
-        except KeyError:
-            # Check if the 'submit' variable is in the posted variables.
-            h.flash('Do not access a handler directly', 'error')
-        except:
-            h.flash('Unknown error', 'error')
-        if request.params['type'] == 'background':
-            return redirect( "/issue/%s/background" %str(id) )
-        elif request.params['type'] == 'suggestionMain':
-            return redirect( "/issue/%s/suggestion/%s" %(str(id), suggestionURL) )
+        c.comment = getCommentByCode(id)
+        d = getDiscussionByID(c.comment['discussion_id'])
+        wLink = '/workshop/' + d['workshopCode'] + '/' + d['workshopURL']
+        if d['discType'] == 'feedback':
+           oLink = wLink + '/feedback'
+        elif d['discType'] == 'suggestion':
+           oLink = wLink + '/suggestion/' + d['suggestionCode'] + '/' + d['suggestionURL']
+        elif d['discType'] == 'resource':
+           oLink = wLink + '/resource/' + d['resourceCode'] + '/' + d['resourceURL']
+        elif d['discType'] == 'sresource':
+           oLink = wLink + '/suggestion/' + d['suggestionCode'] + '/' + d['suggestionURL']
+    
+        
+        return redirect( oLink )
 
     @h.login_required   
     def disable(self, id):

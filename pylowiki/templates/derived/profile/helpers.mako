@@ -1,8 +1,11 @@
 <%!
-    from pylowiki.lib.db.suggestion import getSuggestionByID
+    from pylowiki.lib.db.suggestion import getSuggestionByID, getSuggestion
+    from pylowiki.lib.db.resource import getResource
     from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
-    from pylowiki.lib.db.user import isAdmin
+    from pylowiki.lib.db.user import isAdmin, getUserPosts
+    from pylowiki.lib.db.discussion import getDiscussionByID
+    from pylowiki.lib.fuzzyTime import timeSince
 %>
 
 
@@ -11,57 +14,140 @@
 </%def>
 
 <%def name="displayProfilePicture()">
-	% if c.user['pictureHash'] == 'flash':
-		<img src="/images/avatars/flash.profile" width="200"/>
-	% else:
-		<img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" width="200"/>
-	% endif
-	% if c.authuser['email'] == c.user['email']:
-		<br>
-		<a href="/profile/edit" alt="edit profile"><button class="btn btn-warning"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
-	% endif
+        <ul class="thumbnails">
+        <li>
+        <div class="thumbnail">
+        % if c.user['pictureHash'] == 'flash':
+                <img src="/images/avatars/flash.profile" alt="${c.user['name']}" title="${c.user['name']}">
+        % else:
+            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}">
+        % endif
+        </div>
+        </li>
+        </ul>
         ${memberAdminControls()}
 </%def>
 
-<%def name="listUser(user)">
-	% if user['pictureHash'] == 'flash':
-		<a href="/profile/${user['urlCode']}/${user['url']}"><img src="/images/avatars/flash.profile" style="width:50px;"/>${user['name']}</a>
-	% else:
-		<a href="/profile/${user['urlCode']}/${user['url']}"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:50px;"/></a>
-		<a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a>
-	% endif
+<%def name="listUser(user, wide)">
+        % if wide == 1:
+           <% pixels = 60 %>
+           <% maxlen = 40 %>
+        % else:
+           <% pixels = 30 %>
+           <% maxlen = 20 %>
+        % endif
+        <tr>
+        <td>
+           <ul class="thumbnails">
+           <li>
+	   % if user['pictureHash'] == 'flash':
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="${user['name']}" title="${user['name']}"/></a>
+	   % else:
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="${user['name']}" title="${user['name']}"/></a>
+	   % endif
+           </li>
+           </ul>
+        </td>
+        <td>
+           <% mList = getUserPosts(user) %>
+           % if mList:
+               <% mObj = mList[0] %>
+           % else:
+               <% mObj = False %>
+           %endif 
+           <ul class="unstyled">
+           <li><a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a></li>
+           % if mObj:
+               % if mObj.objType == 'comment':
+                   <% oLink = "/comment/" + mObj['urlCode'] %>
+                   <% oiType = "comment" %>
+                   <% d = getDiscussionByID(mObj['discussion_id']) %>
+                   <% w = getWorkshop(d['workshopCode'], d['workshopURL']) %>
+                   <% wLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] %>
+                   <% ooTitle = d['discType'] %>
+                   <% ooLink = "foo" %>
+                   <% ooiType = "comment" %>
+
+                   % if d['discType'] == 'feedback':
+                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/feedback" %>
+                       <% ooTitle = "Workshop Feedback" %>
+                       <% ooiType = "volume-up" %>
+                   % elif d['discType'] == 'suggestion':
+                       <% s = getSuggestion(d['suggestionCode'], d['suggestionURL']) %>
+                       <% ooTitle = s['title'] %>
+                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] %>
+                       <% ooiType = "pencil" %>
+                   % elif d['discType'] == 'resource':
+                       <% r = getResource(d['resourceCode'], d['resourceURL']) %>
+                       <% ooTitle = r['title'] %>
+                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
+                       <% ooiType = "book" %>
+                   % elif d['discType'] == 'sresource':
+                   % endif
+               % elif mObj.objType == 'resource':
+                   <% w = getWorkshopByID(mObj['workshop_id']) %>
+                   <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
+                   <% oiType = "book" %>
+               % elif mObj.objType == 'suggestion':
+                   <% oiType = "pencil" %>
+                   <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
+                   <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+               % endif
+               %if len(w['title']) > maxlen:
+                   <% wTitle = w['title'][0:(maxlen - 4)] + '...' %>
+               %else:
+                   <% wTitle = w['title'] %>
+               %endif
+               <li><i class="icon-cog"></i><a href="${wLink}"> ${wTitle}</a></li>
+               %if mObj.objType == 'comment':
+                   %if len(ooTitle) > maxlen:
+                       <% ooTitle = ooTitle[0:(maxlen - 4)] + '...' %>
+                   %endif:
+                   %if len(mObj['data']) > maxlen:
+                       <% oTitle = mObj['data'][0:(maxlen - 4)] + '...' %>
+                   %else:
+                       <% oTitle = mObj['data'] %>
+                   %endif
+                   <li><i class="icon-${ooiType}"></i><a href="${ooLink}"> ${ooTitle}</a></li>
+               % else:
+                   %if len(mObj['title']) > maxlen:
+                      <% oTitle = mObj['title'][0:(maxlen - 4)] + '...' %>
+                   %else:
+                      <% oTitle = mObj['title'] %>
+                   %endif
+               %endif
+               <li><i class="icon-${oiType}"></i><a href="${oLink}"> ${oTitle}</a></li>
+               <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
+            % endif
+            </ul>
+        </td>
+        </tr>
 </%def>
 
 <%def name="displayFollowingUsers()">
-	<div class="civ-col">
-		<% fNum = len(c.followingUsers) %>
-		<h2 class="civ-col">Following (${fNum})</h2>
-		<div class="civ-col-inner">
-			<ul class="unstyled civ-block-list">
-				% for user in c.followingUsers:
-					<li>
-						${listUser(user)}
-					</li>
-				% endfor
-			</ul> <!-- /.civ-block-list -->
-		</div> <!-- /.civ-col-inner -->
-	</div> <!-- /.civ-col -->
+    <% fNum = len(c.followingUsers) %>
+    <h2 class="civ-col">Following (${fNum})</h2>
+    <table class="table table-striped table-condensed">
+    <tbody>
+    % for user in c.followingUsers:
+        ${listUser(user, 0)}
+    % endfor
+    </tbody>
+    </table>
 </%def>
 
 <%def name="displayUserFollows()">
-	<% fNum = len(c.userFollowers) %>
-	<div class="civ-col">
-		<h2 class="civ-col">Followers (${fNum})</h2>
-		<div class="civ-col-inner">
-			<ul class="unstyled civ-block-list">
-				% for user in c.userFollowers:
-					<li>
-						${listUser(user)}
-					</li>
-				% endfor
-			</ul> <!-- /.civ-block-list -->
-		</div> <!-- /.civ-col-inner -->
-	</div> <!-- /.civ-col -->
+    <% fNum = len(c.userFollowers) %>
+    <h2 class="civ-col">Followers (${fNum})</h2>
+    <table class="table table-striped table-condensed">
+    <tbody>
+    % for user in c.userFollowers:
+        ${listUser(user, 0)}
+    % endfor
+    </tbody>
+    </table>
 </%def>
 
 <%def name="displayConnections()">
@@ -125,20 +211,9 @@
 
 <%def name="followButton()">
 	<div class="civ-col-inner">
-		<ul class="unstyled civ-col-list">
-			<li>
-				<img src="${iconPath()}/glyphicons_006_user_add.png"> ${len(c.userFollowers)} followers
-			</li>
-			<li>
-				<%
-					if int(c.user['totalPoints']) == 1:
-						s = ""
-					else:
-						s = "s"
-				%>
-				<img src="${iconPath()}/glyphicons_037_credit.png"> ${c.user['totalPoints']} point${s}
-			</li>
-		</ul> <!-- /.civ-col-list -->
+        <p>
+	<span class="badge badge-info"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info"><i class="icon-white icon-ok"></i> ${len(c.user['totalPoints'])}</span> <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${c.flags}</span> <span class="badge badge-info"><i class="icon-white icon-file"></i> ${c.posts}</span> 
+                </p>
 		% if c.authuser['email'] != c.user['email']:
                         <div class="button_container">
 			% if c.isFollowing:
@@ -153,32 +228,34 @@
 
 <%def name="geoInfo()">
 	<div class="civ-col-inner">
-		<ul class="unstyled civ-col-list">
-			<li>
-				<a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" />${c.geoInfo[0]['cityTitle']}</a>
-			</li>
-			<li>
-				<a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" />${c.geoInfo[0]['countyTitle']}</a>
-			</li>
-			<li>
-				<a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" />${c.geoInfo[0]['stateTitle']}</a>
-			</li>
-			<li>
-				<img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" />United States</a>
-			</li>
-			<li>
-				<img src="/images/flags/earth_thumb.gif" width="60" />Earth</a>
-			</li>
-		</ul> <!-- /.unstyled -->
+        <table>
+        <tbody>
+        <tr>
+        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" / class="thumbnail"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">${c.geoInfo[0]['cityTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" class="thumbnail"/></a></td><td><a href="${c.geoInfo[0]['countyURL']}">${c.geoInfo[0]['countyTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" class="thumbnail"/></a></td><td><a href="${c.geoInfo[0]['stateURL']}">${c.geoInfo[0]['stateTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" class="thumbnail"/></td><td>United States</a></td>
+        </tr>
+        <tr>
+        <td><img src="/images/flags/earth_thumb.gif" width="60" class="thumbnail"/></td><td>Earth</td>
+        </tr>
+        </tbody>
+        </table>
 	</div> <!-- /.civ-col-inner -->
 </%def>
 
 <%def name="displayWorkshop(workshop)">
 	% if workshop['mainImage_hash'] == 'supDawg':
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80"/></a><br>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80" class="thumbnail"></a>
 		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
 	% else:
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80"/>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']} width="120" height="80" class="thumbnail"></a>
 		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
 	% endif
 </%def>

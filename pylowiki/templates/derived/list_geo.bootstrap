@@ -1,6 +1,7 @@
 <%inherit file="/base/template.bootstrap"/>
 <%namespace name="list_helpers" file="/derived/list/helpers.mako" />
-<%namespace name="helpers" file="/derived/list_users/helpers.mako" />
+<%namespace name="workshop_helpers" file="/derived/list_workshops/helpers.mako" />
+<%namespace name="helpers" file="/derived/list_geo/helpers.mako" />
 <%namespace file="/lib/mako_lib.mako" import="civ_col_img" />
 
 <div class="row-fluid">
@@ -37,10 +38,13 @@
 		<div class="civ-col">
 			<h2 class="civ-col">${c.heading}</h2>
 			<div class="civ-col-inner">
-				${helpers.list_users()}
+				${helpers.show_geo()}
+	        </div> <!-- /.civ-col-inner -->
+			<div class="civ-col-inner">
+				${workshop_helpers.list_workshops()}
 			</div> <!-- /.civ-col-inner -->
 			<div class="civ-col-inner">
-				${helpers.list_total_users()}
+				${workshop_helpers.list_total_workshops()}
 			</div> <!-- /.civ-col-inner -->
 		</div> <!-- /.civ-col -->
 	</div> <!-- /.span6 -->
@@ -48,6 +52,7 @@
 		<div class="civ-col">
 			<h2 class="civ-col">News</h2>
 			<div class="civ-col-inner">
+				${workshop_helpers.list_news()}
 				${list_helpers.recent_posts()}
 			</div> <!-- /.civ-col-inner -->
 		</div> <!-- /.civ-col -->

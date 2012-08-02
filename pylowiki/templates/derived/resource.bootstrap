@@ -8,6 +8,7 @@ ${lib.return_to()}
 <div class="row-fluid">
 	<div class="span12">
 		${lib.nav_thing("")}
+                ${helpers.nav_thing()}
 	</div> <!-- ./span12 -->
 </div> <!-- ./row-fluid -->
 

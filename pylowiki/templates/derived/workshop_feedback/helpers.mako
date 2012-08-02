@@ -37,18 +37,3 @@ your community.
 		% endif
 	% endif
 </%def>
-
-<%def name="your_facilitator()">
-	% if c.facilitators == False or len(c.facilitators) == 0:
-		<div class="alert alert-warning">No facilitators!</div>
-	% else:
-		% for facilitator in c.facilitators:
-			<% fuser = getUserByID(facilitator.owner) %>
-			% if fuser['pictureHash'] == 'flash':
-				<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" width="50"> ${fuser['name']}</a>
-			% else:
-				<a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" width="50"> ${fuser['name']}</a>
-			% endif
-		% endfor
-	% endif
-</%def>

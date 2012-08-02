@@ -50,6 +50,18 @@ def getResourceByURL(url, workshopID):
     except:
         return False
 
+def getResourcesByParentID(parentID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('parent_id', parentID))).all()
+    except:
+        return False
+
+def getActiveResourcesByParentID(parentID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('parent_id', parentID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+    except:
+        return False
+
 def getResourcesByWorkshopID(workshopID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).all()
@@ -58,7 +70,7 @@ def getResourcesByWorkshopID(workshopID):
 
 def getActiveResourcesByWorkshopID(workshopID):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('parent_type', None))).all()
     except:
         return False
 
@@ -144,7 +156,7 @@ class Resource(object):
         commit(a)
         if parent != None:
             if parent.objType == 'suggestion':
-                d = Discussion(owner = owner, discType = 'sresource', attachedThing = a, workshop = workshop, title = title)
+                d = Discussion(owner = owner, discType = 'sresource', attachedThing = a, workshop = workshop, title = title, suggestion = parent)
         else:
             d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
         a['discussion_id'] = d.d.id

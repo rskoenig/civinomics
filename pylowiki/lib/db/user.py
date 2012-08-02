@@ -5,6 +5,7 @@ from pylons import tmpl_context as c
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
+from sqlalchemy import or_
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 from hashlib import md5
@@ -56,6 +57,12 @@ def isAdmin(id):
 def searchUsers( uKey, uValue):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wcl(uKey, uValue))).all()
+    except:
+        return False
+
+def getUserPosts(user):
+    try:
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['resource', 'suggestion', 'comment'])).filter_by(owner = user.id).order_by('-date').all()
     except:
         return False
 

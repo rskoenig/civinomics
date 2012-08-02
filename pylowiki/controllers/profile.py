@@ -12,13 +12,14 @@ from pylons import config
 
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
-from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword
+from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, getUserPosts
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.account import Account, getUserAccount
+from pylowiki.lib.db.flag import getFlags
 
 
 from hashlib import md5
@@ -78,6 +79,13 @@ class ProfileController(BaseController):
            uID = u.owner
            c.userFollowers.append(getUserByID(uID))
 
+        pList = getUserPosts(c.user)
+        c.flags = 0
+        c.posts = len(pList)
+        for p in pList:
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
 
         return render("/derived/profile.bootstrap")
     

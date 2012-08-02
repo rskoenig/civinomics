@@ -11,7 +11,7 @@ from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWor
 from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
-from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes
+from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
 
 import webhelpers.paginate as paginate
@@ -139,13 +139,15 @@ class ActionlistController(BaseController):
 
     def searchGeoUsers( self ):
         log.info('searchGeoUsers')
-        c.title = c.heading = 'List Nearby Members'
         geoInfo = getGeoInfo(c.authuser.id)
         searchScope = geoInfo[0]['scope']
-        log.info('geoInfo is %s'%geoInfo)
+        ##log.info('geoInfo is %s'%geoInfo)
         c.list = []
         if 'scopeLevel' in request.params:
            scopeLevel = request.params['scopeLevel']
+           scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
+           c.title = c.heading = 'List Members: ' + scopeTitle
+           log.info('postalCode is %s scopeLevel is %s'%(geoInfo[0]['postalCode'], scopeLevel))
            scopeList = getUserScopes(searchScope, scopeLevel)
            for gInfo in scopeList:
               c.list.append(getUserByID(gInfo.owner))
@@ -161,20 +163,32 @@ class ActionlistController(BaseController):
            return redirect('/')
 
     def searchGeoWorkshops( self ):
-        log.info('searchGeoWorkshops')
-        c.title = c.heading = 'List Nearby Workshops'
+        #log.info('searchGeoWorkshops')
         geoInfo = getGeoInfo(c.authuser.id)
         searchScope = geoInfo[0]['scope']
-        log.info('geoInfo is %s'%geoInfo)
+        #log.info('geoInfo is %s'%geoInfo)
         c.list = []
         if 'scopeLevel' in request.params:
            scopeLevel = request.params['scopeLevel']
+           scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
+           c.title = c.heading = 'List Workshops: ' + scopeTitle
            scopeList = getWorkshopScopes(searchScope, scopeLevel)
            for gInfo in scopeList:
               w = getWorkshopByID(gInfo['workshopID'])
               if w['startTime'] != '0000-00-00' and w['deleted'] != '1':
                   if w not in c.list:
-                      c.list.append(w)
+                      doit = 1
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
+                             doit = 0
+
+                      if doit:
+                          offset = 10 - int(scopeLevel)
+                          offset = offset * -1
+                          wTest = gInfo['scope'].split('|')
+                          sTest = searchScope.split('|')
+                          ##log.info('offset is %s'%offset)
+                          if wTest[:offset] == sTest[:offset]:
+                              c.list.append(w)
 
            c.count = len( c.list )
            c.paginator = paginate.Page(
