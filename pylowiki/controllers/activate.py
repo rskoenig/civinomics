@@ -2,6 +2,7 @@ import logging
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
+from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 
@@ -19,6 +20,9 @@ class ActivateController(BaseController):
     def index(self, id):
         hash, sep, email = id.partition('__')
         user = get_user_by_email(email)
+        c.site_base_url = config['app_conf']['site_base_url']
+        c.site_secure_url = config['app_conf']['site_secure_url']
+        message = {}
         if user:
             log.info('user exists')
             if int(user['activated']) == 0:
@@ -28,20 +32,25 @@ class ActivateController(BaseController):
                     user['activated'] = 1
                     user['laston'] = time.time()
                     if commit(user):
-                        #toEmail = user['email'];
-                        #frEmail = c.conf['contact.email']
-                        #subject = 'Account Activation - Password'
-                        #message = 'We have activated your account and set your temporary password to: %s' % user.password
-                        #send(toEmail, frEmail, subject, message)
-                        return 'Congratulations %s, you are now registered!' % email
-                        #session['user'] = user.name
-                        #return redirect('/')
+                        message['type'] = 'success'
+                        message['title'] = 'Congratulations!  '
+                        message['content'] = '%s, you are now registered!  Please login below.' % email
                     else:
-                        return 'Unknown error in activating %s.' % email
+                        message['type'] = 'error'
+                        message['title'] = 'Error: '
+                        message['content'] = 'Unknown error in activating %s.' % email
+                        log.debug('Commit error on activating %s' % email)
                 else:
-                    return 'Error: Incorrect activation string given.  Please check link and try again.'
+                    message['type'] = 'error'
+                    message['title'] = 'Error: '
+                    message['content'] = 'Incorrect activation string given.  Please check link and try again.'
             else:
-                return 'Error: %s is already marked as active!' %email
+                message['type'] = ''
+                message['title'] = 'Warning: '
+                message['content'] = '%s is already marked as active!' % email
         else:
-            return ('User not found!')
-
+            message['type'] = ''
+            message['title'] = 'Error: '
+            message['content'] = 'Specified user not found!'
+        c.splashMsg = message
+        return render('/derived/splash.bootstrap')
