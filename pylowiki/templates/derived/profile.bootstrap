@@ -1,0 +1,77 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/derived/profile/helpers.mako" />
+
+
+<div class="row-fluid">
+	<div class="span3">
+		${helpers.sidebar()}
+	</div> <!-- /.span3 -->
+	<div class="span9">
+		<div class="row-fluid">
+			<div class="span6">
+		                ${helpers.summary()}
+				${helpers.followButton()}
+			</div>
+			<div class="span6">
+				${helpers.geoInfo()}
+			</div>
+		</div>
+		<div class="civ-col">
+			${helpers.inviteCoFacilitate()}
+			${helpers.workshops()}
+			<h2 class="civ-col">Comments</h2>
+			<div class="row-fluid">
+				<div class="span3">
+					<div class="civ-col-inner">
+						${helpers.totalComments()}
+					</div> <!-- /.civ-col-inner -->
+				</div> <!-- /.span3 -->
+				<div class="span9">
+					<div class="civ-col-inner">
+						${helpers.latestComments()}
+					</div> <!-- /.civ-col-inner -->
+				</div> <!-- /.span9 -->
+			</div> <!-- /.row-fluid -->
+			<h2 class="civ-col">Suggestions</h2>
+			<div class="row-fluid">
+				<div class="span3">
+					<div class="civ-col-inner">
+						${helpers.totalSuggestions()}
+					</div> <!-- /.civ-col-inner -->
+				</div> <!-- /.span3 -->
+				<div class="span9">
+					<div class="civ-col-inner">
+						${helpers.latestSuggestions()}
+					</div> <!-- /.civ-col-inner -->
+				</div> <!-- /.span9 -->
+			</div> <!-- /.row-fluid -->
+			<h2 class="civ-col">Resources</h2>
+			<div class="row-fluid">
+				<div class="span3">
+					<div class="civ-col-inner">
+						${helpers.totalResources()}
+					</div> <!-- /.civ-col-inner -->
+				</div> <!-- /.span3 -->
+				<div class="span9">
+					<div class="civ-col-inner">
+						${helpers.latestResources()}
+					</div> <!-- /.civ-col-inner -->
+				</div> <!-- /.span9 -->
+			</div> <!-- /.row-fluid -->
+		</div> <!-- /.civ-col -->
+	</div> <!-- /.span9 -->
+</div> <!-- /.row-fluid -->
+
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="/js/follow.js" type="text/javascript"></script>
+</%def>

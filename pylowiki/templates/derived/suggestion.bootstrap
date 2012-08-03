@@ -1,0 +1,100 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/suggestion/helpers.mako" />
+<%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+${lib.return_to()}
+
+% if 'directoryNumber' in c.author:
+    <% directoryNumber = c.author['directoryNumber'] %>
+% else:
+    <% directoryNumber = 0 %>
+% endif
+
+<div class="row-fluid">
+    ${helpers.spacer()}
+    <div class="span12">
+        ${helpers.workshopTitle(c.w)}
+        ${helpers.spacer()}
+    </div>
+</div>
+
+<div class="row-fluid">    
+    ## Left column
+    <div class="span7">
+        <div class="civ-col">
+            <h2 class="civ-col">SUGGESTION</h2>
+            <div class="row-fluid">
+                <div class="span9">
+                    ${helpers.suggestionAndWorkshopTitle(c.w, c.s)}
+                </div> <!-- /.span10 -->
+        
+                <div class="span3">
+                    ${helpers.suggestionAuthor(directoryNumber, c.author, c.w.id)}
+                </div> <!-- /.span2 -->
+            </div> <!-- /.row-fluid -->
+            <div class="row-fluid">
+                ${helpers.suggestionContent(c.content)}
+            </div> <!-- /.row-fluid -->
+            <div class="row-fluid">
+                ${helpers.suggestionEditAdminRating(c.authuser, c.w.owner, c.s, c.isAdmin, session, c.rating)}
+                ${helpers.spacer()}
+            </div> <!-- /.row-fluid -->
+            <div class="row-fluid">
+                ${comments("suggestionMain")}
+            </div> <!-- /.row-fluid -->
+        </div> <!-- /.civ-col -->
+    </div>
+    
+    ## Right column
+    <div class="span3" style="text-align:left;">
+        % if c.message:
+            ${helpers.showMessage()}
+        % endif
+        <div class="civ-col">
+            <h2 class="civ-col">Resources <span class="pull-right"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}"><i class="icon-plus"></i></a></span></h2>
+            <div class="civ-col-inner">
+                ${helpers.spacer()}
+                ${helpers.showResources()}
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
+    </div> <!-- /.span3 -->
+</div> <!-- /.row-fluid -->
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/suggestion.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/comments.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+    <script src = "/js/slides.js" type="text/javascript"></script>
+    <script src = "/js/comment.js" type="text/javascript"></script>
+    <script src = "/js/h2banner.js" type="text/javascript"></script>
+    <script src = "/js/javascript.js" type="text/javascript"></script>
+    <script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type = "text/javascript"></script>
+    <script src = "/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+    <script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".normal_slider").jColorSlider();
+        });
+    </script>
+
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+
+    <script language="javascript">
+        $(document).ready(function()    {
+            $(".markitup").markItUp(mySettings);
+        });
+    </script>
+    
+    <script src = "/js/upDown.js" type="text/javascript"></script>
+</%def>

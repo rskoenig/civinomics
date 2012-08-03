@@ -1,0 +1,35 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/lib/admin_helpers/suggestion.mako" />
+
+<div class="container">
+	<div class="span3 offset9">
+		${helpers.fields_alert()}		
+	</div>
+	${helpers.sug_admin_banner()}
+
+	<div class="row">
+		<div class="span6">
+			${helpers.suggestion_events_flags()}
+		</div>
+		<div class="span6">		
+			${helpers.suggestion_admin()}
+		</div>
+	</div>
+</div>	
+</br>
+</br>
+</br>
+    
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
+
+</%def>
