@@ -13,8 +13,7 @@ ${lib.return_to()}
 </div> <!-- ./row-fluid -->
 
 
-<div class="row">
-
+<div class="row-fluid">
 	<div class="span8">
 		<div class="civ-col">
 			<h2 class="civ-col">${helpers.displayType()}</h2>

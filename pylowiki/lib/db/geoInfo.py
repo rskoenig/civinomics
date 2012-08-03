@@ -68,6 +68,28 @@ def getGeoScope( postalCode, country ):
     geoScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
     return geoScope
 
+def getGeoTitles( postalCode, country ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT ZipCode, CityMixedCase, County, StateFullName from US_Postal WHERE ZipCode = %s""",(postalCode,))
+    rlist = c.fetchone()
+    log.info("rlist is %s",rlist)
+    c.close()
+    db.close()
+    if rlist != None:
+        #postalCode = rlist['ZipCode']
+        city = rlist['CityMixedCase']
+        county = rlist['County']
+        state = rlist['StateFullName']
+        country = geoDeurlify(country)
+        if county and state:
+            geoScope = '||' + country.title() + '||' + state.title() + '||' + county.title() + '||' + city.title() + '|' +  postalCode
+            return geoScope
+        else:
+            return "0"
+    else:
+        return "0"
+
 def getUserScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9

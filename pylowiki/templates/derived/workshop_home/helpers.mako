@@ -9,6 +9,7 @@
 %>
 
 <%def name="at_a_glance()">
+    <p><strong>Name</strong>: ${c.w['title']}</p>
     <p><strong>Goals</strong>: ${c.w['goals']}</p>
     <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
     <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>

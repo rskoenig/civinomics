@@ -3,12 +3,14 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from string import capwords
 from pylowiki.lib.utils import urlify
-from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getGeoScope, getWorkshopScopes
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getGeoScope, getGeoTitles, getWorkshopScopes
 from pylowiki.lib.db.workshop import getWorkshopByID
 
 from pylowiki.lib.base import BaseController, render
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
+
+import simplejson as json
 
 import re
 
@@ -210,4 +212,14 @@ class GeoController(BaseController):
         )
 
         return render('/derived/list_geo.bootstrap')
+
+    ##@h.login_required
+    def geoHandler(self, id1, id2):
+        country = id1
+        postalCode = id2
+        ##log.info('geoHandler %s %s' % (postalCode, country))
+
+        titles = getGeoTitles(postalCode, country)
+        ##log.info('geoHandler titles %s' % titles)
+        return json.dumps({'result':titles})
 

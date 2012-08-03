@@ -9,7 +9,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.workshop import Workshop, getWorkshop, isScoped
-from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope
+from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoTitles
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow
 from pylowiki.lib.db.slide import getSlide
@@ -110,19 +110,16 @@ class WorkshopController(BaseController):
     def addWorkshop(self):
         c.account = getUserAccount(c.authuser.id)
         if c.account and c.account['numRemaining'] > 0:
-        #if int(c.authuser['accessLevel']) >= 100:
-        #if self._checkAccess(100):
-            #return render('/derived/createIssue.mako')
-            c.title = "Create Workshop"
+            c.title = "Create New Workshop"
             c.heading = "Basic information"
-            c.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            c.days = range(1, 32)
-            c.years = range(2012, 2021)
-            c.maxSlideshowEntries = 10
+
+            # tracks remaining number of workshops which can
+            # be created by this user
             numRemaining = c.account['numRemaining'] 
             numRemaining = int(numRemaining) - 1
             c.account['numRemaining'] = numRemaining
             commit(c.account)
+
             return render('/derived/workshop_create.bootstrap')
         else:
             h.flash("You are not authorized to view that page", "warning")
@@ -357,14 +354,6 @@ class WorkshopController(BaseController):
     @h.login_required
     def addWorkshopHandler(self):
         workshopName = request.params['workshopName']
-        """
-        goals = request.params['goals']
-        day = request.params['workshopDay']
-        month = request.params['workshopMonth']
-        year = request.params['workshopYear']
-        backgroundWiki = request.params['backgroundWiki']
-        c.numSlideshowEntries = request.params['numSlideshowEntries']
-        """
         try:
             publicPrivate = request.params['publicPrivate']
         except:
@@ -388,7 +377,14 @@ class WorkshopController(BaseController):
         c.workshop_id = w.w.id # TEST
         c.title = 'Add slideshow'
         c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
-        return redirect('/workshops/%s/%s'%(w.w['urlCode'], w.w['url']))
+        c.postal = w.w['publicPostal']
+        titles = getGeoTitles('united-states', c.postal)
+        sList = titles.split('|')
+        c.country = sList[2].title()
+        c.state = sList[4].title()
+        c.county = sList[6].title()
+        c.city = sList[8].title()
+        return redirect('/workshop/%s/%s/configure'%(w.w['urlCode'], w.w['url']))
     
     @h.login_required
     def adminWorkshopHandler(self, id1, id2):
@@ -662,8 +658,6 @@ class WorkshopController(BaseController):
         if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
             h.flash("You are not authorized", "warning")
             return render('/')
-
-        c.title = c.w['title']
 
         return render('/derived/workshop_configure.bootstrap')
     

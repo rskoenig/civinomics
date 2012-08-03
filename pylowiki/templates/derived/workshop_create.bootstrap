@@ -6,41 +6,20 @@
 <%inherit file="/base/template.bootstrap"/>
 <%namespace name="helpers" file="/derived/workshop_create/helpers.mako" />
 
-<div class="row-fluid">
-    
-    ## Left column
-    <div class="span3">
-        <%doc>
-        <div class="civ-col">
-            <div class="civ-col-inner">
-                
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-        </%doc>
-        
-        <div class="civ-col">
-            <h2 class="civ-col">${c.title}</h2>
-            <div class="civ-col-inner">
-                
-            </div> <!-- /.civ-col-inner -->
-            
-        </div> <!-- /.civ-col -->
-    </div>
-    
-    ## Right column
-    <div class="span9" style="text-align:center;">
-        % if c.message:
-            ${helpers.showMessage()}
-        % endif
-        <div class="civ-col">
-            <h2 class="civ-col">${c.heading}</h2>
-            <div class="civ-col-inner">
-                ${helpers.spacer()}
-                ${helpers.addWorkshop()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-    </div> <!-- /.span6 -->
-</div> <!-- /.row-fluid -->
+<div class="container-fluid">
+    ${helpers.showTitle(c.title)}
+    <div class="row-fluid">
+        <div class="offset2 span10">
+            <div class="civ-col">
+                <h2 class="civ-col">${c.heading}</h2>
+                <div class="civ-col-inner">
+                    ${helpers.spacer()}
+                    ${helpers.addWorkshop()}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span6 -->
+    </div> <!-- /.row-fluid -->
+</div><!-- container -->
 
 <%def name = 'extraStyles()'>
 

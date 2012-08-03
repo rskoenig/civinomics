@@ -1,4 +1,6 @@
-
+<%!
+    from pylowiki.lib.db.geoInfo import getGeoTitles
+%>
 
 <%def name="fields_alert()">
 	% if 'alert' in session:
@@ -22,17 +24,14 @@
 % else:
      <% wstarted = 1 %>
 % endif
-    <div class="page-header"><h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h1>
-    </div>
- 
+    <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h1>
+    <h2 class="civ-col">Configure Workshop</h2>
 <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureWorkshopHandler" enctype="multipart/form-data" method="post" >
 
-    <p>
-    <strong class="gray">Configure Workshop</strong>
     <br /><br />
     Workshop Name: <span class="darkorange">*</span>
     <br />
-    <input type="text" name = "title" size="50" maxlength="50" value = "${c.title}"/>
+    <input type="text" name="title" size="50" maxlength="50" value = "${c.title}"/>
     <br />
     <br />
     Workshop Goals: <span class="darkorange">*</span>
@@ -63,55 +62,6 @@
     % endif
     Allow members to add resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
     <br /><br />
-    Workshop Home Postal Code: ${c.w['publicPostal']}
-    <br /><br />
-    % if wstarted == 0:
-       Who is eligible to participate in this workshop: <span class="darkorange">*</span>
-       <br />
-       % if c.w['publicScope'] == '10':
-           <% checked = 'checked' %>
-        % else:
-           <% checked = 'unchecked' %>
-        % endif
-       People in <input type="radio" name = "publicScope" value = "10" ${checked} onClick="clearZipList()" /> My Postal Code &nbsp;&nbsp;&nbsp;
-       % if c.w['publicScope'] == '09':
-           <% checked = 'checked' %>
-        % else:
-           <% checked = 'unchecked' %>
-        % endif
-       <input type="radio" name = "publicScope" value = "09" ${checked} onClick="clearZipList()" /> My City &nbsp;&nbsp;&nbsp;
-       % if c.w['publicScope'] == '07':
-           <% checked = 'checked' %>
-        % else:
-           <% checked = 'unchecked' %>
-        % endif
-       <input type="radio" name = "publicScope" value = "07" ${checked} onClick="clearZipList()" /> My County &nbsp;&nbsp;&nbsp;
-       % if c.w['publicScope'] == '05':
-           <% checked = 'checked' %>
-        % else:
-           <% checked = 'unchecked' %>
-        % endif
-       <input type="radio" name = "publicScope" value = "05" ${checked} onClick="clearZipList()" /> My State &nbsp;&nbsp;&nbsp;
-       % if c.w['publicScope'] == '03':
-           <% checked = 'checked' %>
-        % else:
-           <% checked = 'unchecked' %>
-        % endif
-       <input type="radio" name = "publicScope" value = "03" ${checked} onClick="clearZipList()" /> My Country &nbsp;&nbsp;&nbsp;
-       % if c.w['publicScope'] == '01':
-           <% checked = 'checked' %>
-        % else:
-           <% checked = 'unchecked' %>
-        % endif
-       <input type="radio" name = "publicScope" value = "01" ${checked} onClick="clearZipList()" /> My Planet &nbsp;&nbsp;&nbsp;
-       <br /><br />
-       OR
-       <br /><br />
-       People in these postal codes (enter at least one): <span class="darkorange">*</span>
-       <br />
-       <textarea name = "publicPostalList" onClick="clearEligibleCheckboxes(document.edit_issue.publicScope)" rows="2" cols="50">${c.w['publicPostalList']}</textarea>
-    
-       <br /><br />
        Workshop Tags: <span class="darkorange">*</span>
        <br />
        <% tags = c.w['publicTags'] %>
@@ -162,7 +112,70 @@
        Enter at least one, separate multiple tags with a comma:<br />
        <input type="text" name = "memberTags" size="50" maxlength="50" value = "${c.w['memberTags']}"/>
        <br /><br />
+    % if wstarted == 0:
+    <br /><br />
+    <strong>Workshop Eligiblity</strong>
+    <p>This establishes the geographic jurisdiction, or public sphere, in which people need to reside to participate in this workshop.</p>
+    <p>The public sphere can be expressed either as a jurisdiction with a single "home" postal code in the middle, or as a set of different postal codes.</p>
+    Who is eligible to participate in the workshop:
+    <table class="table table-striped table-bordered">
+    <tbody>
+    <tr>
+    <td>
+    <% titles = getGeoTitles(c.w['publicPostal'], 'united-states') %>
+    <% sList = titles.split('|') %>
+    Workshop Home Postal Code: <input type="text" id="publicPostal" name="publicPostal" value="${c.w['publicPostal']}"> <button class="btn btn-primary btn-mini geoButton">Set New Postal Code</button>
+    <br />
+    <span id="werror"></span>
+    <br /><br />
+    People in:<br/>
+    % if c.w['publicScope'] == '10':
+        <% checked = 'checked' %>
+    % else:
+        <% checked = 'unchecked' %>
+    % endif
+    <input type="radio" name = "publicScope" value = "10" ${checked} onClick="clearZipList()" /> <span id="wpostal">${sList[9]}</span><br>
+     % if c.w['publicScope'] == '09':
+         <% checked = 'checked' %>
+     % else:
+         <% checked = 'unchecked' %>
+     % endif
+     <input type="radio" name = "publicScope" value = "09" ${checked} onClick="clearZipList()" /> <span id="wcity">${sList[8]}</span><br> 
+     % if c.w['publicScope'] == '07':
+         <% checked = 'checked' %>
+     % else:
+         <% checked = 'unchecked' %>
+     % endif
+     <input type="radio" name = "publicScope" value = "07" ${checked} onClick="clearZipList()" /> <span id="wcounty">${sList[6]}</span><br>
+     % if c.w['publicScope'] == '05':
+         <% checked = 'checked' %>
+     % else:
+         <% checked = 'unchecked' %>
+     % endif
+     <input type="radio" name = "publicScope" value = "05" ${checked} onClick="clearZipList()" /> <span id="wstate">${sList[4]}</span><br>
+     % if c.w['publicScope'] == '03':
+         <% checked = 'checked' %>
+     % else:
+         <% checked = 'unchecked' %>
+     % endif
+     <input type="radio" name = "publicScope" value = "03" ${checked} onClick="clearZipList()" /> <span id="wcountry">${sList[2]}</span><br>
+     % if c.w['publicScope'] == '01':
+         <% checked = 'checked' %>
+     % else:
+         <% checked = 'unchecked' %>
+     % endif
+     <input type="radio" name = "publicScope" value = "01" ${checked} onClick="clearZipList()" /> The Planet<br>
+       </td>
+       <td>
+       People in these postal codes (enter at least one): <span class="darkorange">*</span>
+       <br />
+       <textarea name = "publicPostalList" onClick="clearEligibleCheckboxes(document.edit_issue.publicScope)" rows="2" cols="50">${c.w['publicPostalList']}</textarea>
+       </td>
+       </tr>
+       </tbody>
+       </table>
     
+       <br /><br />
        When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
    Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligible to participate. 
        <br />
