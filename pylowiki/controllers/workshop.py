@@ -213,11 +213,11 @@ class WorkshopController(BaseController):
 
 
         # Hmm... Take this out so they can't change it?
-        #if 'publicPostal' in request.params:
-        #   c.w['publicPostal'] = request.params['publicPostal']
-        #else:
-        #   werror = 1
-        #   werrMsg = 'No Workshop Postal'
+        if 'publicPostal' in request.params:
+           c.w['publicPostal'] = request.params['publicPostal']
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Postal'
 
         if not wstarted:
             werrCheckParticipants = False
