@@ -365,7 +365,10 @@ class ResourceController(BaseController):
         e = Event(modTitle, modResourceReason, r, c.authuser)
 
         h.flash(modTitle, 'success')
-        return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+        if modType == 'delete':
+            return redirect('/workshop/%s/%s/resource/'%(w['urlCode'], w['url']))
+        else:
+            return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
 
     @h.login_required
     def noteResourceHandler(self):

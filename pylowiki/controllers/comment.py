@@ -181,6 +181,10 @@ class CommentController(BaseController):
             suggestionCode = request.params['suggestionCode']
             suggestionURL = request.params['suggestionURL']
             return redirect('/workshop/%s/%s/suggestion/%s/%s'%(workshopCode, workshopURL, suggestionCode, suggestionURL))
+        elif comType == 'discussion':
+            discussionCode = discussion['urlCode']
+            discussionURL = discussion['url']
+            return redirect('/workshop/%s/%s/discussion/%s/%s'%(workshopCode, workshopURL, discussionCode, discussionURL))
         else:
             return redirect('/')
             

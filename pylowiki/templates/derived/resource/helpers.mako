@@ -16,10 +16,16 @@
 </%def>
 
 <%def name="displayRating()">
-		<a href="#"><i class="icon-chevron-up"></i></a>
-		<div>rating</div>
-		<a href="#"><i class="icon-chevron-down"></i></a>
+    <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote voted">
+        <i class="icon-chevron-up"></i>
+    </a>
+    <% rating = int(c.resource['ups']) - int(c.resource['downs']) %>
+    <div>${rating}</div>
+    <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/-1" class="downVote voted">
+        <i class="icon-chevron-down"></i>
+    </a>
 </%def>
+
 
 <%def name="displayMetaData()">
 	<h3><a href="${c.resource['link']}" target="_blank" alt="${c.resource['title']}">${c.resource['title']}</a></h3>

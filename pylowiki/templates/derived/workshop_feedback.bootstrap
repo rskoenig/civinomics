@@ -4,6 +4,7 @@
 <%namespace name="helpers" file="/derived/workshop_feedback/helpers.mako" />
 <%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
 
+${lib.return_to()}
 <div class="left">
    <h2><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2>
    <p>
