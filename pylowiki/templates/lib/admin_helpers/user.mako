@@ -9,21 +9,6 @@
     <br /><br />
 </%def>
 
-<%def name="fields_alert()">
-    % if 'alert' in session:
-        <% alert = session['alert'] %> 
-        <div class="alert alert-${alert['type']}">
-            <button data-dismiss="alert" class="close">×</button>
-            <strong>${alert['title']}</strong>
-            ${alert['content']}
-        </div>
-        <% 
-           session.pop('alert')
-           session.save()
-        %>
-    % endif
-</%def>
-
 <%def name="user_events()">
     % if c.events:
        <% numEvents = len(c.events) %>

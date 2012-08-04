@@ -1,9 +1,10 @@
 <%inherit file = "/base/template.bootstrap"/>
 <%namespace name="helpers" file="/lib/admin_helpers/user.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 
 
 <div class="span3 offset9">
-    ${helpers.fields_alert()}       
+    ${lib.fields_alert()}       
 </div>
 <div class="row">
     <div class="span10 offset2">
