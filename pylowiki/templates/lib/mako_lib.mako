@@ -132,7 +132,11 @@
                                <h3>
                                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
                                </h3>
-                               ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                               % if len(resource['comment']) > 50:
+                                   ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                               % else:
+                                   ${resource['comment']}
+                               % endif
                             </td>
                             </tr>
                             <tr>
