@@ -108,6 +108,14 @@ def make_map():
     # Workshop configuration submit handler
     map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler/', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureBasicWorkshopHandler', controller = 'workshop', action = 'configureBasicWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureBasicWorkshopHandler/', controller = 'workshop', action = 'configureBasicWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureSingleWorkshopHandler', controller = 'workshop', action = 'configureSingleWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureSingleWorkshopHandler/', controller = 'workshop', action = 'configureSingleWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureMultipleWorkshopHandler', controller = 'workshop', action = 'configureMultipleWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureMultipleWorkshopHandler/', controller = 'workshop', action = 'configureMultipleWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureStartWorkshopHandler', controller = 'workshop', action = 'configureStartWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureStartWorkshopHandler/', controller = 'workshop', action = 'configureStartWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     
     # Workshop feedback
     map.connect('/workshop/{id1}/{id2}/feedback', controller = 'workshop', action = 'feedback', id1 = '{id1}', id2 = '{id2}')

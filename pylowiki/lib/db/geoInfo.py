@@ -62,11 +62,14 @@ def getGeoScope( postalCode, country ):
     rlist = c.fetchone()
     c.close()
     db.close()
-    city = rlist['CityMixedCase']
-    county = rlist['County']
-    state = rlist['StateFullName']
-    geoScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
-    return geoScope
+    if rlist != None:
+       city = rlist['CityMixedCase']
+       county = rlist['County']
+       state = rlist['StateFullName']
+       geoScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
+       return geoScope
+    else:
+       return False
 
 def getGeoTitles( postalCode, country ):
     db = getDB()
