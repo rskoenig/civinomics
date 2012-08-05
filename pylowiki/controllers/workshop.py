@@ -392,6 +392,100 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
+    def configureStartWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Configure Workshop"
+
+        c.w = getWorkshop(code, urlify(url))
+        werror = 0
+        wstarted = 0
+        if c.w['startTime'] != '0000-00-00':
+           wstarted = 1
+
+        ##log.info('wstarted is %s' % wstarted)
+
+        # Is there anything more painful than form validation?
+        # I don't think so...
+        if not isFacilitator(c.authuser.id, c.w.id) and not isAdmin(c.authuser.id):
+            alert = {'type':'error'}
+            alert['title'] = 'You are not authorized'
+            session['alert'] = alert
+            session.save()
+            return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
+
+        if 'startWorkshop' in request.params:
+            startButtons = request.params.getall('startWorkshop')
+            if 'Start' in startButtons and 'VerifyStart' in startButtons:
+                # Make sure we have all the information we need
+                werror == 0
+                werrMsg = ''
+                goalsDefault = 'No goals set'
+                if c.w['title'] == '':
+                    werrMsg = werrMsg + 'No name set. '
+                    werror = 1
+
+                if c.w['goals'] == '' or c.w['goals'] == goalsDefault:
+                    werrMsg = werrMsg + 'No goals set. '
+                    werror = 1
+
+                if c.w['publicTags'] == 'none':
+                    werrMsg = werrMsg + 'No workshop tags set. '
+                    werror = 1
+
+                if c.w['memberTags'] == 'none' or c.w['memberTags'] == '':
+                    werrMsg = werrMsg + 'No additional tags set. '
+                    werror = 1
+
+                # if we have everything...
+                if werror == 1:
+                    alert = {'type':'error'}
+                    alert['title'] = werrMsg
+                    session['alert'] = alert
+                    session.save()
+                    return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+
+                # Set workshop start and end time
+                startTime = datetime.datetime.now()
+                c.w['startTime'] = startTime
+                endTime = datetime.datetime.now()
+                endTime = endTime.replace(year = endTime.year + 1)
+                c.w['endTime'] = endTime
+                commit(c.w)
+
+                # Make the Tag objects
+                for pTag in c.w['publicTags'].split(','):
+                   pTag = pTag.lstrip()
+                   pTag = pTag.rstrip()
+                   Tag('system', pTag, c.w.id, c.w.owner)
+                for mTag in c.w['memberTags'].split(','):
+                   mTag = mTag.lstrip()
+                   mTag = mTag.rstrip()
+                   Tag('member', mTag, c.w.id, c.w.owner)
+
+                # Set the geo scope objects
+                if c.w['scopeMethod'] == 'publicPostalList':
+                    pString = c.w['publicPostalList']
+                    pList = pString.split(',')
+                    for p in pList:
+                       if p != '':
+                          WorkshopScope(p, 'United States', c.w.id, c.w.owner)
+                elif c.w['scopeMethod'] == 'publicScope':
+                    p = c.w['publicPostal']
+                    WorkshopScope(p, 'United States', c.w.id, c.w.owner)
+
+                alert = {'type':'success'}
+                alert['title'] = 'Workshop Started!'
+                session['alert'] = alert
+                session.save()
+            else:
+                alert = {'type':'error'}
+                alert['title'] = werrMsg
+                session['alert'] = alert
+                session.save()
+
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+    @h.login_required
     def configureWorkshopHandler(self, id1, id2):
         code = id1
         url = id2

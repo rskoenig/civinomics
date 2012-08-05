@@ -19,11 +19,11 @@
 
 <%def name="configure()">
 
-% if c.w['startTime'] == '0000-00-00':
-     <% wstarted = 0 %>
-% else:
-     <% wstarted = 1 %>
-% endif
+    % if c.w['startTime'] == '0000-00-00':
+         <% wstarted = 0 %>
+    % else:
+         <% wstarted = 1 %>
+    % endif
     <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
     <h2 class="civ-col">Configure Workshop</h2>
     <br />
@@ -69,6 +69,7 @@
     <button type="submit" class="btn btn-warning">Save Basic Information</button>
     </td>
     <td>
+    % if wstarted == 0: 
        Workshop Tags: <span class="darkorange">*</span>
        <br />
        <% tags = c.w['publicTags'] %>
@@ -136,15 +137,19 @@
        Enter at least one, separate multiple tags with a comma:<br />
        <input type="text" name = "memberTags" size="50" maxlength="50" value = "${c.w['memberTags']}"/>
        <br /><br />
-    % if wstarted == 0:
+    % else:
+      <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
+      <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>
+    % endif
     <br />
     </td>
     </tr>
     </tbody>
     </table>
     </form>
-
     <br /><br />
+
+    % if wstarted == 0:
     <strong>Workshop Eligiblity</strong>
     <p>This establishes the geographic area, or <em>public sphere</em>, in which people need to reside to participate in this workshop.</p>
     <p>The public sphere for this workshop can be defined either as a single jurisdiction with a central "home" postal, or as a set of multiple postal codes.</p>
@@ -231,24 +236,17 @@
        <br /><br />
        When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
    Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligible to participate. 
-       <br />
-       <br />
+       <br /><br />
    Note that once a workshop has started, you may not change the workshop participant eligibility or tags. 
+       <div class="well">
+        <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
        <br />
        <input type="checkbox" name="startWorkshop" value="Start" /> Start Workshop &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Start Workshop
-       <br />
-       <br />
-       <br />
-       <br />
-   % else:
-     Members eligible to participate in this workshop: residents of ${c.w['publicScopeTitle']}
-     <br />
-     Workshop Tags: ${c.w['publicTags']} ${c.w['memberTags']}
-     <br />
-     <br />
+       <br /><br />
+       <button type="submit" class="btn btn-warning">Start Workshop</button>
+       </form>
+       </div>
 
    % endif
-    <button type="submit" class="btn btn-warning">Save Changes</button>
-</form>
 
 </%def>
