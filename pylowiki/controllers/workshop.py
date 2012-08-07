@@ -167,6 +167,8 @@ class WorkshopController(BaseController):
 
         c.w = getWorkshop(code, urlify(url))
         werror = 0
+        wchanges = 0
+        weventMsg = ''
         werrMsg = 'Missing Info: '
         wstarted = 0
         if c.w['startTime'] != '0000-00-00':
@@ -181,11 +183,10 @@ class WorkshopController(BaseController):
             wTitle = request.params['title']
             wTitle = wTitle.lstrip()
             wTitle = wTitle.rstrip()
-            if wTitle:
+            if wTitle and wTitle != c.w['title']:
                 c.w['title'] = wTitle
-            else:
-                werrMsg += 'Name '
-                werror = 1
+                wchanges = 1
+                weventMsg = weventMsg + "Updated name. "
         else:
             werrMsg += 'Name '
             werror = 1
@@ -194,11 +195,10 @@ class WorkshopController(BaseController):
            wGoals = str(request.params['goals'])
            wGoals = wGoals.lstrip()
            wGoals = wGoals.rstrip()
-           if wGoals:
+           if wGoals and wGoals != c.w['goals']:
                c.w['goals'] = wGoals
-           else:
-               werror = 1
-               werrMsg += 'Goals '
+               wchanges = 1
+               weventMsg = weventMsg + "Updated goals. "
         else:
            werror = 1
            werrMsg += 'Goals '
@@ -206,7 +206,9 @@ class WorkshopController(BaseController):
         ##log.info('Got wGoals %s' % wGoals)
         if 'allowSuggestions' in request.params:
            allowSuggestions = request.params['allowSuggestions']
-           if allowSuggestions == '1' or allowSuggestions == '0':
+           if (allowSuggestions == '1' or allowSuggestions == '0') and allowSuggestions != c.w['allowSuggestions']:
+              wchanges = 1
+              weventMsg = weventMsg + "Changed allowSuggestions from " + c.w['allowSuggestions'] + " to " + allowSuggestions + "."
               c.w['allowSuggestions'] = allowSuggestions
         else:
            werror = 1
@@ -214,7 +216,9 @@ class WorkshopController(BaseController):
 
         if 'allowResources' in request.params:
            allowResources = request.params['allowResources']
-           if allowResources == '1' or allowResources == '0':
+           if (allowResources == '1' or allowResources == '0') and allowResources != c.w['allowResources']:
+              wchanges = 1
+              weventMsg = weventMsg + "Changed allowResources from " + c.w['allowResources'] + " to " + allowResources + "."
               c.w['allowResources'] = allowResources
         else:
            werror = 1
@@ -223,7 +227,11 @@ class WorkshopController(BaseController):
         if not wstarted:
             if 'publicTags' in request.params:
               publicTags = request.params.getall('publicTags')
-              c.w['publicTags'] = ','.join(publicTags)
+              wpTags = ','.join(publicTags)
+              if wpTags and wpTags != c.w['publicTags']:
+                  wchanges = 1
+                  weventMsg = weventMsg + "Updated workshop tags."
+                  c.w['publicTags'] = wpTags
             else:
               werror = 1
               werrMsg += 'System Tags '
@@ -232,7 +240,9 @@ class WorkshopController(BaseController):
               wMemberTags = request.params['memberTags']
               wMemberTags = wMemberTags.lstrip()
               wMemberTags = wMemberTags.rstrip()
-              if wMemberTags:
+              if wMemberTags and c.w['memberTags'] != wMemberTags:
+                  wchanges = 1
+                  weventMsg = weventMsg + "Updated facilitator contributed tags."
                   c.w['memberTags'] = wMemberTags
               else:
                 werror = 1
@@ -240,6 +250,11 @@ class WorkshopController(BaseController):
             else:
               werror = 1
               werrMsg += 'Member Tags '
+
+        # save successful changes
+        if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
+            commit(c.w)
+            Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
 
         if werror:
             alert = {'type':'error'}
@@ -303,6 +318,7 @@ class WorkshopController(BaseController):
            alert['title'] = "Workshop Eligibility Saved!"
            session['alert'] = alert
            session.save()
+           Event('Workshop Config Updated by %s'%c.authuser['name'], 'Public Sphere updated.', c.w, c.authuser)
            commit(c.w)
         else:
            alert = {'type':'error'}
@@ -378,6 +394,7 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
 
         if isFacilitator(c.authuser.id, c.w.id) and werror == 0:
+            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Public Sphere postal code list updated.', c.w, c.authuser)
             commit(c.w)
             alert = {'type':'success'}
             alert['title'] = 'Workshop Multiple Postal Codes Saved!'
@@ -451,6 +468,7 @@ class WorkshopController(BaseController):
                 endTime = datetime.datetime.now()
                 endTime = endTime.replace(year = endTime.year + 1)
                 c.w['endTime'] = endTime
+                Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
                 commit(c.w)
 
                 # Make the Tag objects
