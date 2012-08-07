@@ -2,8 +2,9 @@
 
 <%namespace name="helpers" file="/lib/admin_helpers/workshop.mako" />
 
-<div class="container">
+<div class="container-fluid">
   	${helpers.banner_name()}
+        <h2 class="civ-col">Administrate Workshop</h2>
 	<div class="row">
 		<div class="span6">
 			${helpers.admin_show()}
