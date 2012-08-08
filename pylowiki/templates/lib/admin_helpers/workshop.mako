@@ -42,6 +42,7 @@
     <br /><br />
     <button type="submit" class="btn btn-warning">Save Changes</button>
     </form>
+    </div>
 </%def>
 
 <%def name="admin_info()">
