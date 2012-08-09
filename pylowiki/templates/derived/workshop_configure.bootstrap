@@ -1,4 +1,5 @@
 <%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib_helpers" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/admin_helpers/configure.mako" />
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
 
@@ -17,6 +18,9 @@
 
 <div class="container-fluid">
     <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+    <br />
+    ${lib_helpers.nav_thing("configure")}
+    <br />
     <h2 class="civ-col">Configure Workshop</h2>
     <br />
     Use this control panel to configure your workshop settings.<br />

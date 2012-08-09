@@ -1,8 +1,11 @@
 <%!    
     import logging
+    from ordereddict import OrderedDict
     log = logging.getLogger(__name__)
     from pylowiki.lib.db.flag import getFlags
     from pylowiki.lib.db.discussion import getDiscussionByID
+    from pylowiki.lib.db.user import isAdmin
+    from pylowiki.lib.db.facilitator import isFacilitator
 %>
 
 ################################################
@@ -206,25 +209,20 @@
 </%def>
 
 <%def name="nav_thing(page)">
-	<%
-		pages = {
-			"home": "",
-			"background": "background",
-			"feedback": "feedback",
-			"stats": "stats",
-			"discussion": "discussion"
-		}
-	%>
+	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("feedback", "feedback"), ("stats", "stats"), ("discussion", "discussion")])  %>
+
 	<ul class="unstyled nav-thing">
-	% for li in pages:
+	% for li in pages.keys():
+                <% lclass="nothingspecial" %>
 		% if page == li:
-			<li class="current">
-				<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a>
-			</li>
-		% else:
-			<li>
-				<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a>
-			</li>
+                        <% lclass="current" %>
+                % endif
+                % if li == 'configure' or li == 'administrate':
+                    % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+			<li class="${lclass}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a></li>
+                    % endif
+                % else:
+                    <li class="${lclass}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a></li>
 		% endif
 	% endfor
 	</ul> <!-- /.nav-thing -->

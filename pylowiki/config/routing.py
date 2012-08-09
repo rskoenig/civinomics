@@ -123,6 +123,8 @@ def make_map():
     # Workshop admin
     map.connect('/workshop/{id1}/{id2}/admin', controller = 'workshop', action = 'admin', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/admin/', controller = 'workshop', action = 'admin', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/administrate', controller = 'workshop', action = 'admin', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/administrate/', controller = 'workshop', action = 'admin', id1 = '{id1}', id2 = '{id2}')
 
     # Workshop admin submit handler
     map.connect('/workshop/{id1}/{id2}/adminWorkshopHandler', controller = 'workshop', action = 'adminWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
