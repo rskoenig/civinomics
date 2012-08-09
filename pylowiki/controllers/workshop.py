@@ -11,7 +11,7 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.db.workshop import Workshop, getWorkshop, isScoped
 from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles
 from pylowiki.lib.db.revision import get_revision
-from pylowiki.lib.db.slideshow import getSlideshow
+from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
@@ -166,6 +166,9 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
         werror = 0
         wchanges = 0
         weventMsg = ''
@@ -278,6 +281,9 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
         werror = 0
         wstarted = 0
         if c.w['startTime'] != '0000-00-00':
@@ -335,6 +341,9 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
         werror = 0
         werrMsg = 'Missing Info: '
         wstarted = 0
@@ -415,6 +424,9 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
         werror = 0
         wstarted = 0
         if c.w['startTime'] != '0000-00-00':
@@ -1039,6 +1051,9 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
         if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
             h.flash("You are not authorized", "warning")
             return render('/')

@@ -24,10 +24,6 @@
     % else:
          <% wstarted = 1 %>
     % endif
-    <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
-    <h2 class="civ-col">Configure Workshop</h2>
-    <br />
-    <strong>Basic Information</strong><br /><br />
     ${fields_alert()}
     <table class="table well">
     <tbody>

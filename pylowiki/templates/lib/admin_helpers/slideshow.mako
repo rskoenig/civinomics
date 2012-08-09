@@ -1,4 +1,3 @@
-<%inherit file = "/base/template.html"/>
 <!--
 /*
  * jQuery File Upload Plugin Demo 6.5.1
@@ -12,18 +11,12 @@
  */
 -->
 
-<div class="container clr left">
-    <div class="page-header">
-        <h1>Upload images</h1>
-        <p>
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}">
-                Return to workshop
-            </a>
-        </p>
-    </div>
-    <br>
+<%def name="add_slides()">
+
+   <div class="container-fluid clr left">
     <!-- The file upload form used as target for the file upload widget -->
-    <form id="fileupload" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
+    <form id="fileupload" class="well" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
+        <p><strong>Add slides to slideshow</strong></p>
         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
         <div class="row fileupload-buttonbar">
             <div class="span7">
@@ -41,11 +34,13 @@
                     <i class="icon-ban-circle icon-white"></i>
                     <span>Cancel upload</span>
                 </button>
+                <!--
                 <button type="button" class="btn btn-danger delete">
                     <i class="icon-trash icon-white"></i>
                     <span>Delete</span>
                 </button>
                 <input type="checkbox" class="toggle">
+                -->
             </div>
             <div class="span5">
                 <!-- The global progress bar -->
@@ -60,8 +55,9 @@
         <!-- The table listing the files available for upload/download -->
         <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
     </form>
-    <br>
+    <br />
 </div>
+
 <!-- modal-gallery is the modal dialog used for the image gallery -->
 <div id="modal-gallery" class="modal modal-gallery hide fade">
     <div class="modal-header">
@@ -88,6 +84,7 @@
         </a>
     </div>
 </div>
+
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
@@ -148,53 +145,98 @@
     </tr>
 {% } %}
 </script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
-<script src="/js/vendor/jquery.ui.widget.js"></script>
-<!-- The Templates plugin is included to render the upload/download listings -->
-<script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"></script>
-<!-- The Load Image plugin is included for the preview images and image resizing functionality -->
-<script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>
-<!-- The Canvas to Blob plugin is included for image resizing functionality -->
-<script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"></script>
-<!-- Bootstrap JS and Bootstrap Image Gallery are not required, but included for the demo -->
-<script src="http://blueimp.github.com/cdn/js/bootstrap.min.js"></script>
-<script src="http://blueimp.github.com/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"></script>
-<!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
-<script src="/js/jquery.iframe-transport.js"></script>
-<!-- The basic File Upload plugin -->
-<script src="/js/jquery.fileupload.js"></script>
-<!-- The File Upload image processing plugin -->
-<script src="/js/jquery.fileupload-ip.js"></script>
-<!-- The File Upload user interface plugin -->
-<script src="/js/jquery.fileupload-ui.js"></script>
-<!-- The localization script -->
-<script src="/js/locale.js"></script>
-<!-- The main application script -->
-<script src="/js/main.js"></script>
-<!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
-<!--[if gte IE 8]><script src="js/cors/jquery.xdr-transport.js"></script><![endif]-->
-
-<%def name = 'extraStyles()'>
-    <link rel="stylesheet" href="/styles/bootstrap.min.css">
-    <!-- Generic page styles -->
-    ##<link rel="stylesheet" href="/styles/style.css">
-    <!-- Bootstrap styles for responsive website layout, supporting different screen sizes -->
-    <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">
-    <!-- Bootstrap CSS fixes for IE6 -->
-    <!--[if lt IE 7]><link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-ie6.min.css"><![endif]-->
-    <!-- Bootstrap Image Gallery styles -->
-    <link rel="stylesheet" href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
-    <!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
-    <link rel="stylesheet" href="/styles/jquery.fileupload-ui.css">
-    <!-- Shim to make HTML5 elements usable in older Internet Explorer versions -->
-    <!--[if lt IE 9]><script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </%def>
 
-<%def name = 'extraScripts()'>
-    
-</%def>
+<%def name="edit_slideshow()">
+    <script language="javascript">
+    $(function() {
+        /*
+        $( ".column" ).sortable({
+            connectWith: ".column"
+        });
+        */
+       
+        $(".column").sortable(
+            { items: ".portlet" },
+            { connectWith: ".column" },
+            { update: function(event, ui) {
+                $.post("/slideshow/editPosition", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
+            }
+        });
+        
+       /*
+        $(".column").sortable(
+            { connectWith: '.column' }, { update: function(event, ui) {
+               alert($(this).sortable('serialize'));
+               alert($(this).id);
+            }
+        });
+        */
 
-<%def name = 'extraHTML()'>
+        $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
+            .find( ".portlet-header" )
+                .addClass( "ui-widget-header ui-corner-all" )
+                .prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
+                .end()
+            .find( ".portlet-content" );
+
+        $( ".portlet-title .ui-icon" ).click(function() {
+            $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
+            $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
+        });
+
+        //$( ".column" ).disableSelection();
+    });
+    </script>
+<p>Click and drag to re-arrange a slideshow's order.  </p>
+<br />
+<p>Click on a title or a caption to edit it.  Press enter to save your title or caption
+    edits, press escape to cancel an edit.</p>
+<div class="demo">
+
+<div class="column" id="published">
+        <h2 style="text-align:center;">Published slides</h2>
+    ##<h2 style="text-align:center;">Published slides</h2>
+    % for slide in c.slideshow:
+        % if int(slide['deleted']) == 0:
+            <div class="portlet" id = "portlet_${slide.id}">
+                <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
+                <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
+                <div class = "portlet-image">
+                    % if slide['pictureHash'] == 'supDawg':
+                        <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                    % else:
+                        <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.thumbnail">
+                    % endif
+                </div>
+            </div>
+        % endif
+    % endfor
+</div>
+
+<div class="column" id="unpublished">
+    <h2 style="text-align:center;" class="unsortable">Unpublished slides</h2>
+    ##<div class="portlet">
+    ##    <div class="portlet-header">Shopping</div>
+    ##    <div class="portlet-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit</div>
+    ##</div>
+    % for slide in c.slideshow:
+        % if int(slide['deleted']) == 1:
+            <div class="portlet" id = "portlet_${slide.id}">
+                <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
+                <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
+                <div class = "portlet-image">
+                    % if slide['pictureHash'] == 'supDawg':
+                        <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                    % else:
+                        <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.thumbnail">
+                    % endif
+                </div>
+            </div>
+        % endif
+    % endfor
+</div>
+
+</div><!-- End demo -->
 
 </%def>
