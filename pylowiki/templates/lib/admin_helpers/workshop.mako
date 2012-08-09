@@ -45,6 +45,78 @@
     </div>
 </%def>
 
+<%def name="admin_event_log()">
+    <% wEvents = getParentEvents(c.w) %>
+    <br /><br />
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-bookmark"></i>Workshop Events</th></tr>
+    </thead>
+    <tbody>
+    % if wEvents:
+        <br /><br />
+        % for wE in wEvents:
+            <tr><td><strong>${wE.date} ${wE['title']}</strong> ${wE['data']}</td></tr>
+        % endfor
+    % endif
+    </tbody>
+    </table>
+</%def>
+
+
+<%def name="admin_facilitators()">
+    <br /><br />
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-user"></i>Current Facilitators</th></tr>
+    </thead>
+    <tbody>
+    % for f in c.f:
+       <% fUser = getUserByID(f.owner) %>
+       <% fEvents = getParentEvents(f) %>
+       <% fPending = "" %>
+       % if pending in f and f['pending'] == '1':
+          <% fPending = "(Pending)" %>
+       % endif
+       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
+       % if fEvents:
+          % for fE in fEvents:
+          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+          % endfor
+       % endif
+       % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
+           <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
+               &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
+               <button type="submit" class="gold" value="Resign">Resign</button>
+           <br />
+           </form>
+       % endif
+       </td></tr>
+    % endfor
+    </tbody>
+    </table>
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-user"></i>Disabled Facilitators</th></tr>
+    </thead>
+    <tbody>
+    % for f in c.df:
+       <% fUser = getUserByID(f.owner) %>
+       <% fEvents = getParentEvents(f) %>
+       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
+       % if fEvents:
+          % for fE in fEvents:
+          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+          % endfor
+       % endif
+       </tr></td>
+    % endfor
+    </tbody>
+    </table>
+
+</%def>
+
+
 <%def name="admin_info()">
     <% wEvents = getParentEvents(c.w) %>
     <br /><br />
@@ -113,7 +185,7 @@
     <br /><br />
 </%def>
 
-<%def name="flagged()">
+<%def name="admin_flagged()">
 	<br />
     <table class="table table-bordered">
     <thead>
@@ -212,7 +284,7 @@
     </table>
 </%def>
 
-<%def name="disabled()">
+<%def name="admin_disabled()">
     <br /><br />
     <table class="table table-bordered">
     <thead>
@@ -325,7 +397,7 @@
         </table>
 </%def>
 
-<%def name="deleted()">
+<%def name="admin_deleted()">
     <br /><br />
     <table class="table table-bordered">
     <thead>

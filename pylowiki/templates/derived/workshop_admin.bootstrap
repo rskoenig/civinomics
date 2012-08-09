@@ -9,18 +9,43 @@
         ${lib_helpers.nav_thing("administrate")}
         <br />
         <h2 class="civ-col">Administrate Workshop</h2>
-	<div class="row">
-		<div class="span6">
+        <br /><br />
+        <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-user"></i> Facilitators</a></li>
+            <li><a href="#tab2" data-toggle="tab"><i class="icon-flag"></i> Flagged</a></li>
+            <li><a href="#tab3" data-toggle="tab"><i class="icon-ban-circle"></i> Disabled</a></li>
+            <li><a href="#tab4" data-toggle="tab"><i class="icon-trash"></i> Deleted</a></li>
+        </ul>
+
+	<div class="tab-content">
+		<div class="tab-pane active" id="tab1">
+                        <div class="comtainer-fluid">
+                        <div class="row-fluid">
+                        <div class="span4">
 			${helpers.admin_show()}
-			${helpers.admin_info()}
+                        </div><!-- span4 -->
+                        <div class="span8">
+			${helpers.admin_facilitators()}
+                        </div><!-- span8 -->
+                        </div><!-- row-fluid -->
+                        </div><!-- container-fluid -->
 		</div>
-	    <div class="span4 offset1">	
-			${helpers.flagged()}
-			${helpers.disabled()}
-			${helpers.deleted()}
+	        <div class="tab-pane" id="tab2">	
+			${helpers.admin_flagged()}
+                </div>
+	        <div class="tab-pane" id="tab3">	
+			${helpers.admin_disabled()}
+                </div>
+	        <div class="tab-pane" id="tab4">	
+			${helpers.admin_deleted()}
 		</div>
-	</div>
-</div>	
+	        <div class="tab-pane" id="tab5">	
+			${helpers.admin_event_log()}
+		</div>
+	</div><!-- tab-content -->
+        </div><!-- nav-tabs -->
+</div><!-- tabbable -->	
 </br>
 </br>
 </br>
