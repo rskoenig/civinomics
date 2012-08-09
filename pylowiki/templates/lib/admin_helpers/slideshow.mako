@@ -148,6 +148,11 @@
 </%def>
 
 <%def name="edit_slideshow()">
+    <div class="container-fluid">
+    <table class="table table-bordered" >
+    <thead>
+    <tr><td>
+    <div class="container-fluid">
     <script language="javascript">
     $(function() {
         /*
@@ -188,7 +193,8 @@
         //$( ".column" ).disableSelection();
     });
     </script>
-<p>Click and drag to re-arrange a slideshow's order.  </p>
+   <p><strong>Edit Slideshow</strong></p>
+<p>Click and drag to re-arrange a slideshow's orde.  </p>
 <br />
 <p>Click on a title or a caption to edit it.  Press enter to save your title or caption
     edits, press escape to cancel an edit.</p>
@@ -238,5 +244,10 @@
 </div>
 
 </div><!-- End demo -->
+</div><!-- container -->
+</td></tr>
+</thead>
+</table>
+</div><!-- container -->
 
 </%def>
