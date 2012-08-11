@@ -19,7 +19,7 @@ ${lib.return_to()}
 <div class="row-fluid">
 	<div class="span8">
 		<div class="civ-col">
-			<h2 class="civ-col">Resource</h2>
+			<h2 class="civ-col"><i class="icon-book"></i> Resource</h2>
 			<div class="civ-col-inner">
 				<div class="row-fluid">
 					${helpers.displayResource()}
@@ -28,7 +28,7 @@ ${lib.return_to()}
 		</div> <!-- /.civ-col -->
 
 		<div class="civ-col">
-			<h2 class="civ-col">Comments</h2>
+			<h2 class="civ-col"><i class="icon-comment"></i> Comments</h2>
 			<div class="civ-col-inner">
 				${comments("resource")}
 			</div> <!-- /.civ-col-innner -->
@@ -37,9 +37,9 @@ ${lib.return_to()}
 
 	<div class="span4">
 		<div class="civ-col">
-			<h2 class="civ-col">Other Resources</h2>
+			<h2 class="civ-col"><i class="icon-book"></i> Other Resources</h2>
 			<div class="civ-col-inner">
-				${helpers.displayOtherResources()}
+				${lib.list_resources()}
 			</div> <!-- .civ-col-inner -->
 		</div> <!-- /.civ-col -->
 	</div> <!-- /.span8 -->

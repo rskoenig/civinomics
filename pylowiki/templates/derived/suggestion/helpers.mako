@@ -41,9 +41,9 @@
     <ul class="unstyled civ-col-list">
     <li class="post">
     % if author['pictureHash'] == 'flash':
-        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" alt="avatar" class="thumbnail" style="width:30px;}"/></a>
+        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.thumbnail" alt="${author['name']}" title="${author['name']}" class="thumbnail" style="width:30px;}"/></a>
     % else:
-        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" alt="avatar" class="thumbnail"/></a>
+        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail"/></a>
     % endif
             &nbsp;By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>${uTitle} <span class="recent">${timeSince(c.lastmoddate)}</span> ago</li>
     </li>
@@ -99,7 +99,9 @@
 </%def>
 
 <%def name="showSuggestions()">
-    <ul id="show_suggestions" class="unstyled civ-col-list">
+    % if len(c.resources) < 3:
+        <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
+        <ul id="show_suggestions" class="unstyled civ-col-list">
         % if len(c.suggestions) == 0:
             <li>
                 No suggestions!
@@ -111,13 +113,50 @@
                     <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a></strong>
                     <br />
                     % if author['pictureHash'] == 'flash':
-                        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" alt="avatar" class="thumbnail" style="width:30px;}"/></a>
+                        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail" style="width:30px;}"/></a>
                     % else:
-                        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" alt="avatar" class="thumbnail"/></a>
+                        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail"/></a>
                     % endif
                     &nbsp;By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
                 </li>
             % endfor
         % endif
-    </ul> <!-- show_suggestion -->
+        </ul> <!-- show_suggestion -->
+    % endif <!-- resources less than 3 -->
+</%def>
+
+<%def name="showResources()">
+        <h2 class="civ-col"><i class="icon-book"></i> Suggestion Resources <span class="pull-right"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Add a resource with information about this suggestion"><i class="icon-plus"></i></a></span></h2>
+	% if len(c.resources) == 0:
+		<div class="alert alert-warning">
+			No information resources for this suggestion found. Be the first to add one!
+		</div> <!-- /.alert.alert-danger -->
+	% else:
+		<ul class="unstyled civ-col-list">
+		% for resource in c.resources:
+			<% author = getUserByID(resource.owner) %>
+			% if resource['type'] == "post":
+				<li class="post">
+					<h3>
+						<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">
+							${resource['title']}
+						</a>
+					</h3>
+					<p>
+						<i class="icon-book"></i>${resource['comment'][:40]}...<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+					<p>
+                                         % if author['pictureHash'] == 'flash':
+                                             <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
+                                         % else:
+                                             <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
+                                         % endif
+
+						&nbsp;by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
+						<span class="old">${timeSince(resource.date)}</span> ago
+					</p>
+				</li>
+			% endif
+		% endfor
+		</ul>
+	% endif
 </%def>

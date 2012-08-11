@@ -11,13 +11,8 @@
         </div> <!-- /.civ-col-inner -->
     </div> <!-- /.span7 -->
     <div class="span5">
-        <div class="civ-col well">
-            <h2 class="civ-col">
-                <i class="icon-cog"></i> At-A-Glance <i class="icon-eye-open"></i>
-            </h2>
-            <div class="civ-col-inner">
+        <div class="civ-col">
                 ${helpers.at_a_glance()}
-            </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span5 -->
 </div> <!-- /.row-fluid -->
@@ -26,7 +21,7 @@
     <div class="span4">
         <div class="civ-col">
             <h2 class="civ-col">
-                Resources
+                <i class="icon-book"></i> Resources
                 ${lib.add_a('resource')}
             </h2>
             <div class="civ-col-inner">
@@ -37,7 +32,7 @@
     <div class="span5">
         <div class="civ-col">
             <h2 class="civ-col">
-                Suggestions
+                <i class="icon-pencil"></i> Suggestions
                 ${lib.add_a('suggestion')}
             </h2>
             <div class="civ-col-inner">
@@ -47,7 +42,7 @@
     </div> <!-- /.span5 -->
     <div class="span3">
         <div class="civ-col">
-            <h2 class="civ-col">Info &amp; Feedback <div class="pull-right"><i class="icon-volume-up"></i></h2>
+            <h2 class="civ-col"><i class="icon-volume-up"></i> Info &amp; Feedback <div class="pull-right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback" title="Add feedback about this workshop"><i class="icon-plus"></i></a></h2>
             <div class="civ-col-inner">
                 ${helpers.info_and_feedback()}
             </div> <!-- /.civ-col-inner -->

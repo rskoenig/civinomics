@@ -1,6 +1,7 @@
 <%inherit file="/base/template.bootstrap"/>
 
 <%namespace name="helpers" file="/derived/resource_edit/helpers.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <div class="row-fluid">
     ${helpers.spacer()}
@@ -41,7 +42,7 @@
             <h2 class="civ-col">${c.heading}</h2>
             <div class="civ-col-inner">
                 ${helpers.spacer()}
-                ${helpers.listOtherResources(c, author)}
+                ${lib.list_resources()}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->

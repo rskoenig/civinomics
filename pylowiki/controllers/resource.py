@@ -75,13 +75,13 @@ class ResourceController(BaseController):
         c.poster = getUserByID(c.resource.owner)
         
         if c.suggestion:
-            c.otherResources = getActiveResourcesByParentID(c.suggestion.id)
+            c.resources = getActiveResourcesByParentID(c.suggestion.id)
         else:
-            c.otherResources = getActiveResourcesByWorkshopID(c.w.id)
-        for i in range(len(c.otherResources)):
-            resource = c.otherResources[i]
+            c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        for i in range(len(c.resources)):
+            resource = c.resources[i]
             if resource.id == c.resource.id:
-                c.otherResources.pop(i)
+                c.resources.pop(i)
                 break
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
         if 'mainRevision_id' in c.resource:
@@ -106,7 +106,7 @@ class ResourceController(BaseController):
         if (s and c.w['allowResources'] == '1') or a or f:
             c.r = False
             c.heading = "OTHER RESOURCES"
-            c.otherResources = getResourcesByWorkshopID(c.w.id)
+            c.resources = getResourcesByWorkshopID(c.w.id)
 
             return render('/derived/resource_edit.bootstrap')
         else:

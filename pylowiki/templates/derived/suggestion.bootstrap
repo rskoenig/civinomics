@@ -25,18 +25,18 @@ ${lib.return_to()}
     <div class="row-fluid">    
         <div class="span8">
             <div class="civ-col">
-                <h2 class="civ-col">SUGGESTION</h2>
+                <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION</h2>
                 <div class="civ-col-inner">
                     <div class="row-fluid">
                         ${helpers.suggestionInfo()}
-                    ${helpers.suggestionContent(c.content)}
-                    ${helpers.suggestionEditAdminRating(c.authuser, c.w.owner, c.s, c.isAdmin, session, c.rating)}
-                    ${helpers.spacer()}
+                        ${helpers.suggestionContent(c.content)}
+                        ${helpers.suggestionEditAdminRating(c.authuser, c.w.owner, c.s, c.isAdmin, session, c.rating)}
+                        ${helpers.spacer()}
                     </div> <!-- /.row-fluid -->
                 </div><!-- civ-col-inner -->
             </div><!-- civ-col -->
             <div class="civ-col">
-                <h2 class="civ-col">Comments</h2>
+                <h2 class="civ-col"><i class="icon-comment"></i> Comments</h2>
                 <div class="civ-col-inner">
                     ${comments("suggestionMain")}
                 </div> <!-- /.civ-col-innner -->
@@ -48,12 +48,11 @@ ${lib.return_to()}
                 ${helpers.showMessage()}
             % endif
             <div class="civ-col">
-                <h2 class="civ-col">Workshop Goals</h2>
-                <p>${c.w['goals']}</p>
-                <br />
-                <h2 class="civ-col">Other Suggestions</h2>
+                    <h2 class="civ-col"><i class="icon-book"></i> Suggestion Resources</h2>
+                    ${lib.list_resources()}
                 <div class="civ-col-inner">
-                    ${helpers.showSuggestions()}
+                    <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
+                    ${lib.list_suggestions()}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span4 -->

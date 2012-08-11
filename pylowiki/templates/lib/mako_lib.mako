@@ -76,7 +76,7 @@
 </%def>
 
 ################################################
-## Platform-specific
+## Workshop-specific
 ################################################
 <%! 
     from pylowiki.lib.db.user import getUserByID
@@ -87,15 +87,15 @@
 <%def name="add_a(thing)">
 	% if c.isScoped or c.isFacilitator:
             %if thing == 'resource':
-	        <span class="pull-right ${thing}"><a href="/newResource/${c.w['urlCode']}/${c.w['url']}"><i class="icon-book"></i><i class="icon-plus"></i></a></span>
+	        <span class="pull-right ${thing}"><a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Add a new information resource to this workshop"><i class="icon-plus"></i></a></span>
             %elif thing == 'suggestion':
-	        <span class="pull-right ${thing}"><a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}"><i class="icon-pencil"></i><i class="icon-plus"></i></a></span>
+	        <span class="pull-right ${thing}"><a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Add a new suggestion to this workshop"><i class="icon-plus"></i></a></span>
             %endif
 	% endif
 </%def>
 
 <%def name="list_resources()">
-	% if int(c.w['numResources']) == 1:
+	% if len(c.resources) == 0:
 		<p>No resources.</p>
 	% else:
 		<div class="civ-col-list">
@@ -132,7 +132,7 @@
                                 % endif
                             </td>
                             <td>
-                                 <i class="icon-book"></i> <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
+                                 <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                                  <span class="badge badge-info"><i class="icon-white icon-comment"></i>${numComments}</span>
                                  <span class="badge badge-important"><i class="icon-white icon-flag"></i>${numFlags}</span>
                              </td>
@@ -153,6 +153,64 @@
                 </div>
 	% endif
 </%def>
+
+<%def name="list_suggestions()">
+	% if len(c.suggestions) == 0:
+		<p>No suggestions.</p>
+	% else:
+            <div class="civ-col-list">
+            <table>
+            <tbody>
+            % for suggestion in c.suggestions:
+                <% author = getUserByID(suggestion.owner) %>
+                <% flags = getFlags(suggestion) %>
+                % if flags:
+                    <% numFlags = len(flags) %>
+                % else:
+                    <% numFlags = 0 %>
+                % endif
+                <% disc = getDiscussionByID(suggestion['discussion_id']) %>
+                <% numComments = 0 %>
+                % if disc:
+                    <% numComments = disc['numComments'] %>
+                % endif
+                <tr>
+                <td colspan=2>
+                    <h3>
+                    <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
+                    </h3>
+                    ${suggestion['data'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">more</a>
+                </td>
+                </tr>
+                <tr>
+                <td>
+                    % if author['pictureHash'] == 'flash':
+                        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
+                    % else:
+                        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
+                    % endif
+                </td>
+                <td>
+                    <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
+                    <span class="badge badge-info"><i class="icon-white icon-comment"></i>${numComments}</span>
+                    <span class="badge badge-important"><i class="icon-white icon-flag"></i>${numFlags}</span>
+                </td>
+                </tr>
+                <tr>
+                <td colspan=2>
+                    <i class="icon-time"></i> <span class="old">${timeSince(suggestion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
+                </td>
+                </tr> 
+                <tr>
+                <td colspan=2><hr></td>
+                </tr>
+                % endfor
+                </tbody>
+                </table>
+                </div>
+% endif
+</%def>
+
 
 <%def name="facilitator()">
 	% if len(c.facilitators) == 1:
@@ -230,6 +288,7 @@
 
 
 <%def name="slideshow(counter)">
+        <div class="well" style="border: 1px solid;">
 	<div id="slideshow${counter}" class="slideshow-container">
 		<div id="pager${counter}" class="pager">
 			<ul id="nav${counter}" class="unstyled">
@@ -263,6 +322,7 @@
 		</div> <!-- /.slideshow -->
 		<div class="caption${counter} caption"></div>
 	</div> <!-- /#slideshow${counter} -->
+        </div>
 </%def>
 
 <%def name="slideshowHandler(counter)">

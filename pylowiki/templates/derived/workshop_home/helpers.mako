@@ -9,22 +9,71 @@
 %>
 
 <%def name="at_a_glance()">
-    <p><strong>Name</strong>: ${c.w['title']}</p>
-    <p><strong>Goals</strong>: ${c.w['goals']}</p>
-    <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
-    <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>
+    <div class="container-fluid well" style="border:1px solid;">
+    <table>
+    <thead>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png"></td><td><strong>Name</strong>: ${c.w['title']}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_025_binoculars.png"></td><td><strong>Goals</strong>: ${c.w['goals']}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_066_tags.png"></td><td><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png"></td><td><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_054_clock.png"></td>
 
-        % if c.w['startTime'] != '0000-00-00': 
-	     <p><strong>Started:</strong> <span class="recent">${timeSince(c.w['startTime'])}</span> ago<br />
-	     <strong>Ends:</strong> <span class="old">${timeUntil(c.w['endTime'])}</span> from now</p>
-        % else:
-	     <p><strong>Started:</strong> <span class="recent">Not yet published.</span> ago<br />
-	     <strong>Ends:</strong> <span class="old">Not yet published.</span> from now</p>
-        % endif
+    % if c.w['startTime'] != '0000-00-00': 
+        <td><strong>Started:</strong> <span class="recent">${timeSince(c.w['startTime'])}</span> ago<br />
+        <strong>Ends:</strong> <span class="old">${timeUntil(c.w['endTime'])}</span> from now</td>
+    % else:
+        <td><strong>Started:</strong> <span class="recent">Not yet started.</span><br />
+        <strong>Ends:</strong> <span class="old">Not yet started.</span></td>
+    % endif
+    <tr><td>&nbsp;</td></tr>
+    </tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_280_settings.png"></td>
+    <td><strong>Participation</strong>: <span class="badge badge-success"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> &nbsp;&nbsp; <span class="badge badge-success"><i class="icon-white icon-book"></i>${len(c.resources)}</span> &nbsp;&nbsp; <span class="badge badge-info"><i class="icon-white icon-user"></i>${len(c.followers)}</span></td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    % if len(c.facilitators) == 1:
+        <% fTitle = "Facilitator" %>
+    % else:
+        <% fTitle = "Facilitators" %>
+    % endif
 
-    <p><span class="badge badge-success"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> <span class="badge badge-success"><i class="icon-white icon-book"></i>${len(c.resources)}</span> <span class="badge badge-info"><i class="icon-white icon-user"></i>${len(c.followers)}</span></p>
-    <p><strong>Participants</strong>: ${len(c.participants)}</p>
-
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_355_announcement.png"></td><td><table><thead><tr><td><strong>${fTitle}</strong>:</td>
+                <td>&nbsp;&nbsp;</td>
+                % for facilitator in c.facilitators:
+                        <td>
+                        <% fuser = getUserByID(facilitator.owner) %>
+                        % if fuser['pictureHash'] == 'flash':
+                            <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.thumbnail" alt="${fuser['name']}" title="${fuser['name']}" class="thumbnail"></a>
+                        % else:
+                            <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/thumbnail/${fuser['pictureHash']}.thumbnail" alt="${fuser['name']}" title="${fuser['name']}" class="thumbnail"></a>
+                        % endif
+                        </td>
+                        <td>&nbsp;&nbsp;</td>
+                %endfor
+                </tr>
+                </thead>
+                </table>
+    </td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    </thead>
+    </table>
+    <br /><br />
     % if not c.isFacilitator:
 	    % if c.isFollowing:
 		    <button class="btn btn-primary followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Following</button>
@@ -32,30 +81,7 @@
 			<button class="btn btn-primary followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Follow</button>
 		% endif
 	% endif
-</%def>
-
-<%def name="facilitate()">
-    % if c.isAdmin or c.isFacilitator:
-	    <div class="pull-right dropdown" id="workshop_config">
-	    	<a class="dropdown-toggle" data-toggle="dropdown" href="#workshop_config">
-	    		<img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png" height="12" width="12">
-	    	</a>
-	    	<ul class="dropdown-menu normal">
-	    		<li>
-	    			<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages">Add slideshow images</a>
-	    		</li>
-	    		<li>
-	    			<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow">Edit slideshow</a>
-	    		</li>
-	    		<li>
-	    			<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/configure">Configure workshop</a>
-	    		</li>
-	    		<li>
-	    			<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/admin">Admin workshop</a>
-	    		</li>
-	    	</ul>
-	    </div>
-    % endif
+    </div><!-- container-fluid -->
 </%def>
 
 <%def name="list_suggestions()">
