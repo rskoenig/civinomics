@@ -16,6 +16,7 @@
             <li><a href="#tab2" data-toggle="tab"><i class="icon-flag"></i> Flagged</a></li>
             <li><a href="#tab3" data-toggle="tab"><i class="icon-ban-circle"></i> Disabled</a></li>
             <li><a href="#tab4" data-toggle="tab"><i class="icon-trash"></i> Deleted</a></li>
+            <li><a href="#tab5" data-toggle="tab"><i class="icon-bookmark"></i> Event Log</a></li>
         </ul>
 
 	<div class="tab-content">
