@@ -33,9 +33,9 @@
     <br /><br />
     <div class="tabbable">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab1" data-toggle="tab">Basic Information</a></li>
-            <li><a href="#tab2" data-toggle="tab">Slideshow</a></li>
-            <li><a href="#tab3" data-toggle="tab">Background</a></li>
+            <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-list-alt"></i> Basic Information</a></li>
+            <li><a href="#tab2" data-toggle="tab"><i class="icon-picture"></i> Slideshow</a></li>
+            <li><a href="#tab3" data-toggle="tab"><i class="icon-book"></i> Background</a></li>
         </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="tab1">

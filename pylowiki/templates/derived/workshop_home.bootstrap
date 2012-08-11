@@ -11,10 +11,9 @@
         </div> <!-- /.civ-col-inner -->
     </div> <!-- /.span7 -->
     <div class="span5">
-        <div class="civ-col civ-well">
+        <div class="civ-col well">
             <h2 class="civ-col">
-                At-A-Glance
-                ${helpers.facilitate()}
+                <i class="icon-cog"></i> At-A-Glance <i class="icon-eye-open"></i>
             </h2>
             <div class="civ-col-inner">
                 ${helpers.at_a_glance()}

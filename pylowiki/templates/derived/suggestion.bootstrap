@@ -4,7 +4,6 @@
 <%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
-${lib.return_to()}
 
 % if 'directoryNumber' in c.author:
     <% directoryNumber = c.author['directoryNumber'] %>
@@ -12,55 +11,54 @@ ${lib.return_to()}
     <% directoryNumber = 0 %>
 % endif
 
-<div class="row-fluid">
-    ${helpers.spacer()}
-    <div class="span12">
-        ${helpers.workshopTitle(c.w)}
-        ${helpers.spacer()}
-    </div>
-</div>
+${lib.return_to()}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            ${helpers.workshopTitle()}
+            <br />
+            ${lib.nav_thing("")}
+            <br />
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
 
-<div class="row-fluid">    
-    ## Left column
-    <div class="span7">
-        <div class="civ-col">
-            <h2 class="civ-col">SUGGESTION</h2>
-            <div class="row-fluid">
-                <div class="span9">
-                    ${helpers.suggestionAndWorkshopTitle(c.w, c.s)}
-                </div> <!-- /.span10 -->
-        
-                <div class="span3">
-                    ${helpers.suggestionAuthor(directoryNumber, c.author, c.w.id)}
-                </div> <!-- /.span2 -->
-            </div> <!-- /.row-fluid -->
-            <div class="row-fluid">
-                ${helpers.suggestionContent(c.content)}
-            </div> <!-- /.row-fluid -->
-            <div class="row-fluid">
-                ${helpers.suggestionEditAdminRating(c.authuser, c.w.owner, c.s, c.isAdmin, session, c.rating)}
-                ${helpers.spacer()}
-            </div> <!-- /.row-fluid -->
-            <div class="row-fluid">
-                ${comments("suggestionMain")}
-            </div> <!-- /.row-fluid -->
-        </div> <!-- /.civ-col -->
-    </div>
-    
-    ## Right column
-    <div class="span3" style="text-align:left;">
-        % if c.message:
-            ${helpers.showMessage()}
-        % endif
-        <div class="civ-col">
-            <h2 class="civ-col">Resources <span class="pull-right"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}"><i class="icon-plus"></i></a></span></h2>
-            <div class="civ-col-inner">
-                ${helpers.spacer()}
-                ${helpers.showResources()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-    </div> <!-- /.span3 -->
-</div> <!-- /.row-fluid -->
+    <div class="row-fluid">    
+        <div class="span8">
+            <div class="civ-col">
+                <h2 class="civ-col">SUGGESTION</h2>
+                <div class="civ-col-inner">
+                    <div class="row-fluid">
+                        ${helpers.suggestionInfo()}
+                    ${helpers.suggestionContent(c.content)}
+                    ${helpers.suggestionEditAdminRating(c.authuser, c.w.owner, c.s, c.isAdmin, session, c.rating)}
+                    ${helpers.spacer()}
+                    </div> <!-- /.row-fluid -->
+                </div><!-- civ-col-inner -->
+            </div><!-- civ-col -->
+            <div class="civ-col">
+                <h2 class="civ-col">Comments</h2>
+                <div class="civ-col-inner">
+                    ${comments("suggestionMain")}
+                </div> <!-- /.civ-col-innner -->
+            </div> <!-- .civ-col -->
+        </div><!-- span8 -->
+        ## Right column
+        <div class="span4">
+            % if c.message:
+                ${helpers.showMessage()}
+            % endif
+            <div class="civ-col">
+                <h2 class="civ-col">Workshop Goals</h2>
+                <p>${c.w['goals']}</p>
+                <br />
+                <h2 class="civ-col">Other Suggestions</h2>
+                <div class="civ-col-inner">
+                    ${helpers.showSuggestions()}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span4 -->
+    </div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
 
 <%def name = 'extraStyles()'>
     <link type="text/css" rel="stylesheet" href="/styles/suggestion.css" />

@@ -44,7 +44,7 @@ class SuggestionController(BaseController):
         else:
             c.commentsDisabled = 0
         c.events = getParentEvents(c.s)
-        c.resources = getActiveResourcesByParentID(c.s.id)
+        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, workshopURL)
         for i in range(len(c.suggestions)):
             suggestion = c.suggestions[i]
             if suggestion.id == c.s.id:

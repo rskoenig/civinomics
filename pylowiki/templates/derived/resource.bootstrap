@@ -5,10 +5,13 @@
 <%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
 
 ${lib.return_to()}
-<div class="row-fluid">
+<div class="container-fluid">
+    <div class="row-fluid">
 	<div class="span12">
+                <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1><br />
 		${lib.nav_thing("")}
                 ${helpers.nav_thing()}
+                <br />
 	</div> <!-- ./span12 -->
 </div> <!-- ./row-fluid -->
 
@@ -16,7 +19,7 @@ ${lib.return_to()}
 <div class="row-fluid">
 	<div class="span8">
 		<div class="civ-col">
-			<h2 class="civ-col">${helpers.displayType()}</h2>
+			<h2 class="civ-col">Resource</h2>
 			<div class="civ-col-inner">
 				<div class="row-fluid">
 					${helpers.displayResource()}
@@ -40,7 +43,8 @@ ${lib.return_to()}
 			</div> <!-- .civ-col-inner -->
 		</div> <!-- /.civ-col -->
 	</div> <!-- /.span8 -->
-</div> <!-- /.row -->
+    </div> <!-- /.row -->
+</div><!-- coontainer-fluid -->
 
 <%def name="extraHTML()">
 

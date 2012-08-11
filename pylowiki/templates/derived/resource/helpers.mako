@@ -71,12 +71,15 @@
 						</a>
 					</h3>
 					<p>
-						<img src="/images/glyphicons_pro/glyphicons/png/glyphicons_039_notes@2x.png" height="50" width="40" style="float: left; margin-right: 5px;">${resource['comment'][:50]}...
-					</p>
-					<p><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+						<i class="icon-book"></i>${resource['comment'][:40]}...<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
 					<p>
-						posted by 
-						<a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
+                                         % if author['pictureHash'] == 'flash':
+                                             <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
+                                         % else:
+                                             <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
+                                         % endif
+
+						&nbsp;by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
 						<span class="old">${timeSince(resource.date)}</span> ago
 					</p>
 				</li>
