@@ -85,18 +85,22 @@
 %>
 
 <%def name="add_a(thing)">
-	% if c.isScoped or c.isFacilitator:
+	% if c.isScoped or c.isFacilitator or c.isAdmin:
             %if thing == 'resource':
 	        <span class="pull-right ${thing}"><a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Add a new information resource to this workshop"><i class="icon-plus"></i></a></span>
+            %elif thing == 'sresource':
+	        <span class="pull-right resource"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Add a new information resource to this suggestion"><i class="icon-plus"></i></a></span>
             %elif thing == 'suggestion':
 	        <span class="pull-right ${thing}"><a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Add a new suggestion to this workshop"><i class="icon-plus"></i></a></span>
+            %elif thing == 'feedback':
+	        <span class="pull-right ${thing}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback" title="Add feedback about this workshop"><i class="icon-plus"></i></a></span>
             %endif
 	% endif
 </%def>
 
-<%def name="list_resources()">
+<%def name="list_resources(errorMsg)">
 	% if len(c.resources) == 0:
-		<p>No resources.</p>
+            <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
 		<div class="civ-col-list">
                 <table>
@@ -154,9 +158,9 @@
 	% endif
 </%def>
 
-<%def name="list_suggestions()">
+<%def name="list_suggestions(errorMsg)">
 	% if len(c.suggestions) == 0:
-		<p>No suggestions.</p>
+            <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
             <div class="civ-col-list">
             <table>

@@ -14,7 +14,7 @@
 ${lib.return_to()}
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="span12">
+        <div class="span12 well">
             ${helpers.workshopTitle()}
             <br />
             ${lib.nav_thing("")}
@@ -48,11 +48,14 @@ ${lib.return_to()}
                 ${helpers.showMessage()}
             % endif
             <div class="civ-col">
-                    <h2 class="civ-col"><i class="icon-book"></i> Suggestion Resources</h2>
-                    ${lib.list_resources()}
+                    <h2 class="civ-col">
+                        <i class="icon-book"></i> Suggestion Resources
+                        ${lib.add_a("sresource")}
+                        </h2>
+                    ${lib.list_resources("There are no information resources for this suggestion. Be the first to add one!")}
                 <div class="civ-col-inner">
                     <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
-                    ${lib.list_suggestions()}
+                    ${lib.list_suggestions("There are no other suggestions for this workshop.")}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span4 -->

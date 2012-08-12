@@ -102,7 +102,10 @@ class WikiController(BaseController):
         except KeyError: 
             h.flash( "Do not access a handler directly", "error" )
             
-        return redirect( "/workshops/%s/%s/background" %(code, url) )
+        if 'configure' in request.params:
+            return redirect( "/workshop/%s/%s/configure" %(code, url) )
+        else:
+            return redirect( "/workshops/%s/%s/background" %(code, url) )
     
     @h.login_required
     def previewer( self, id ):

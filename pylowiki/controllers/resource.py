@@ -121,12 +121,11 @@ class ResourceController(BaseController):
         c.s = getSuggestion(code, urlify(url))
         c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
 
-        a = isAdmin(c.authuser.id)
-        f =  isFacilitator(c.authuser.id, c.w.id)
-        s = isScoped(c.authuser, c.w)
-        if (s and c.w['allowResources'] == '1') or a or f:
+        c.isAdmin = isAdmin(c.authuser.id)
+        c.isFacilitator =  isFacilitator(c.authuser.id, c.w.id)
+        c.isScoped = isScoped(c.authuser, c.w)
+        if (c.isScoped and c.w['allowResources'] == '1') or c.isAdmin or c.isFacilitator:
             c.r = False
-            c.heading = "OTHER RESOURCES"
             c.otherResources = getActiveResourcesByParentID(c.s.id)
 
             return render('/derived/resource_edit.bootstrap')

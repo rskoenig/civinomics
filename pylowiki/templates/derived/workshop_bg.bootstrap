@@ -38,7 +38,7 @@ ${lib.return_to()}
 				${lib.add_a('resource')}
 			</h2>
 			<div class="civ-col-inner">
-				${lib.list_resources()}
+				${lib.list_resources("There are no information resources for this workshop. Be the first to add one!")}
 			</div>
 		</div>
 		<div class="civ-col">

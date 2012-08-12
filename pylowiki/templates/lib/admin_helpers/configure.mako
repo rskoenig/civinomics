@@ -17,6 +17,42 @@
 	% endif
 </%def>
 
+
+<%def name="edit_background()">
+    ${h.form(url(controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']),method="put")}
+    <% counter = 0 %>
+    % for row in c.wikilist:
+        <div id="wiki-section-break">
+            <% numrows = 10 %>
+            % if c.authuser.id == c.w.owner or int(c.authuser['accessLevel']) >= 200:
+                <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                    <div id = "section${counter}" ondblclick="toggle('textareadiv${counter}', 'edit${counter}', 'edit')">${row[0]}</div>
+                </td></tr></table>
+            % else:
+                <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                    <div id = "section${counter}" >${row[0]}</div>
+                </td></tr></table>
+            % endif
+
+
+            <div class="well" id="textareadiv${counter}">
+                <br />
+                <textarea rows="${numrows}" id="textarea${counter}" name="textarea${counter}" onkeyup="previewAjax( 'textarea${counter}', 'section${counter}' )" class="markitup">${row[1]}</textarea>
+                <div style="text-align:right; padding-right:35px;">
+                    <input type="text" id="remark${counter}"  name="remark${counter}" class="text tiny" placeholder="Optional remark"/>
+
+                    ${h.submit('submit', 'Save')}
+                </div>
+            </div>
+        </div> <!-- /#wiki-section-break -->
+        <% counter += 1 %>
+    % endfor
+    ${h.hidden("count",counter)}
+    ${h.hidden("configure","configure")}
+    ${h.end_form()}
+    <br /><br />
+</%def>
+
 <%def name="configure()">
 
     % if c.w['startTime'] == '0000-00-00':

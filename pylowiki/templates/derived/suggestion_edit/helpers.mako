@@ -5,19 +5,6 @@
     log = logging.getLogger(__name__)
 %>
 
-<%def name='spacer()'>
-    ## A spacer
-    <div class="row-fluid">
-        <br />
-    </div>
-</%def>
-
-<%def name='inlineSpacer(amount)'>
-    <div class="span${amount}">
-        <p></p>
-    </div>
-</%def>
-
 <%def name="addSuggestionForm(c)">
     % if c.s:
         <form id="edit_suggestion" action = "${c.site_secure_url}/saveSuggestion/${c.s['urlCode']}/${c.s['url']}" class="form-vertical" method = "post">
@@ -76,23 +63,6 @@
             </div>
         </fieldset>
     </form>
-</%def>
-
-<%def name="listOtherSuggestions(c, author)">
-    <ul id="related_suggestion" class="unstyled">
-        % if len(c.suggestions) == 0:
-            <li>No other suggestions!</li>
-        % else:
-            % for suggestion in c.suggestions:
-                <% author = getUserByID(suggestion.owner)%>
-                <li>
-                    <strong><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a></strong>
-                    <br />
-                    <span class="gray">By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span>
-                </li>
-            % endfor
-        % endif
-    </ul> <!-- related_suggestion -->
 </%def>
 
 <%def name="showTitle(title)">

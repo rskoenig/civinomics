@@ -1051,12 +1051,26 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
-        slideshow = getSlideshow(c.w['mainSlideshow_id'])
-        c.slideshow = getAllSlides(slideshow.id)
-
         if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
             h.flash("You are not authorized", "warning")
             return render('/')
+
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.facilitators = getFacilitatorsByWorkshop(c.w.id)
+        r = get_revision(int(c.w['mainRevision_id']))
+        reST = r['data']
+        reSTlist = self.get_reSTlist(reST)
+        HTMLlist = self.get_HTMLlist(reST)
+
+        c.wikilist = zip(HTMLlist, reSTlist)
+        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
+        c.lastmoddate = r.date
+        c.lastmoduser = getUserByID(r.owner)
+
 
         return render('/derived/workshop_configure.bootstrap')
     

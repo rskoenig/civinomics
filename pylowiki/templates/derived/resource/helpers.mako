@@ -4,10 +4,15 @@
 %>
 
 <%def name="nav_thing()">
-    % if c.suggestion:
+    % if c.suggestion or c.s:
+        % if c.s:
+            <% s = c.s %>
+        % else:
+            <% s = c.suggestion %>
+        % endif
         <br />
         <p>
-        <strong><i class="icon-pencil"></i> <a href="/workshop/${c.suggestion['workshopCode']}/${c.suggestion['workshopURL']}/suggestion/${c.suggestion['urlCode']}/${c.suggestion['url']}">${c.suggestion['title']}</a></strong>
+        <strong><i class="icon-pencil"></i> <a href="/workshop/${s['workshopCode']}/${s['workshopURL']}/suggestion/${s['urlCode']}/${s['url']}">${s['title']}</a></strong>
         </p>
     % endif
 </%def>

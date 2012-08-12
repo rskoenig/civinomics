@@ -25,7 +25,7 @@
                 ${lib.add_a('resource')}
             </h2>
             <div class="civ-col-inner">
-                ${lib.list_resources()}
+                ${lib.list_resources("There are no information resources for this workshop. Be the first to add one!")}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span4 -->
@@ -36,13 +36,16 @@
                 ${lib.add_a('suggestion')}
             </h2>
             <div class="civ-col-inner">
-                ${helpers.list_suggestions()}
+                ${lib.list_suggestions("There are no suggestions yet for this workshop. Be the first to add one!")}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span5 -->
     <div class="span3">
         <div class="civ-col">
-            <h2 class="civ-col"><i class="icon-volume-up"></i> Info &amp; Feedback <div class="pull-right"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback" title="Add feedback about this workshop"><i class="icon-plus"></i></a></h2>
+            <h2 class="civ-col">
+                <i class="icon-volume-up"></i> Info &amp; Feedback 
+                ${lib.add_a('feedback')}
+            </h2>
             <div class="civ-col-inner">
                 ${helpers.info_and_feedback()}
             </div> <!-- /.civ-col-inner -->

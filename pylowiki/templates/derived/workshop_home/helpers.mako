@@ -137,68 +137,6 @@
     % endif
 </%def>
 
-<%def name="list_suggestions()">
-	% if c.suggestions == None or len(c.suggestions) == 0:
-		<p>No suggestions.</p>
-	% else:
-		<div class="civ-col-list">
-                <table>
-                <tbody>
-		<% counter = 1 %>
-		% for suggestion in c.suggestions:
-                        <tr>
-                        <td colspan=3>
-			<% author = getUserByID(suggestion.owner) %>
-			<% discussion = getDiscussionByID(suggestion['discussion_id']) %>
-                        <% flags = getFlags(suggestion) %>
-                        <% resources = getResourcesByParentID(suggestion.id) %>
-                        <h3>
-                        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
-                        </h3>
-                        ${suggestion['suggestionSummary']}
-                        </td>
-                        </tr>
-                        <tr>
-                        <td valign="top">
-                        % if author['pictureHash'] == 'flash':
-                            <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
-                        % else:
-                            <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
-                        % endif
-                        </td>
-                        <td valign="top">
-                            <i class="icon-pencil"></i><a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
-                            <span class="badge badge-info"><i class="icon-white icon-book"></i>${len(resources)}</span> <span class="badge badge-info"><i class="icon-white icon-comment"></i>${discussion['numComments']}</span> <span class="badge badge-important"><i class="icon-white icon-flag"></i>${len(flags)}</span>
-                        </td>
-                        <td valign="top">
-
-                            % if 'user' in session:
-                                <div id="ratings${counter}" class="rating">
-                                    <div id="overall_slider" class="ui-slider-container clearfix">
-            			    % if suggestion.rating:
-                                        <div id="${suggestion['urlCode']}_${suggestion['url']}" class="small_slider" data1="0_${suggestion['urlCode']}_${suggestion.rating['rating']}_overall_true_rateSuggestion" data2="${suggestion['url']}"></div>
-                                    % else:
-                                        <div id="${suggestion['urlCode']}_${suggestion['url']}" class="small_slider" data1="0_${suggestion['urlCode']}_0_overall_false_rateSuggestion" data2="${suggestion['url']}"></div>
-                                    % endif
-                                    </div> <!-- /#overall_slider -->
-                                </div> <!-- /#ratings${counter} -->
-                            % endif
-                            </td>
-                            </tr>
-                            <tr>
-                            <td colspan=3>
-                	        <i class="icon-time"></i> <span class="recent">${timeSince(suggestion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave a comment</a>
-                             </td>
-                             </tr>
-                             <tr><td colspan=3><hr></td></tr>
-			<% counter += 1 %>
-		% endfor
-                </tbody>
-                </table>
-		</div>
-	% endif
-</%def>
-
 <%def name="info_and_feedback()">
 	<p>
 		<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Learn more</a> about the workshop and facilitation process.
