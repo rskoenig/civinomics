@@ -153,7 +153,7 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/inactiveResources/', controller = 'workshop', action = 'inactiveResources', id1 = '{id1}', id2 = '{id2}')
 
     # Resource flagging
-    map.connect('/flagResource/{id1}', controller = 'resource', action = 'flagResource', id1 = '{id1}')
+    map.connect('/flagResource/{id1}/{id2}', controller = 'resource', action = 'flagResource', id1 = '{id1}', id2 = '{id2}')
 
     # Resource modding
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
@@ -181,7 +181,7 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/inactiveSuggestions/', controller = 'workshop', action = 'inactiveSuggestions', id1 = '{id1}', id2 = '{id2}')
 
     # Suggestion flagging
-    map.connect('/flagSuggestion/{id1}', controller = 'suggestion', action = 'flagSuggestion', id1 = '{id1}')
+    map.connect('/flagSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'flagSuggestion', id1 = '{id1}', id2 = '{id2}')
 
     # Suggestion modding
     map.connect('/modSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}')

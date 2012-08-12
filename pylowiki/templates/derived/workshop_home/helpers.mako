@@ -59,23 +59,23 @@
     <table>
     <thead>
     <tr>
-    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png"></td><td><strong>Name</strong>: ${c.w['title']}</td>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png" alt="Workshop Name" title="Workshop Name"></td><td><strong>Name</strong>: ${c.w['title']}</td>
     </tr>
     <tr><td>&nbsp;</td></tr>
     <tr>
-    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_025_binoculars.png"></td><td><strong>Goals</strong>: ${c.w['goals']}</td>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_025_binoculars.png" alt="Workshop Goals" title="Workshop Goals"></td><td><strong>Goals</strong>: ${c.w['goals']}</td>
     </tr>
     <tr><td>&nbsp;</td></tr>
     <tr>
-    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_066_tags.png"></td><td><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</td>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_066_tags.png" alt="Workshop Tags" title="Workshop Tags"></td><td><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</td>
     </tr>
     <tr><td>&nbsp;</td></tr>
     <tr>
-    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png"></td><td><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</td>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png" alt="Workshop Public Sphere" title="Workshop Public Sphere"></td><td><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</td>
     </tr>
     <tr><td>&nbsp;</td></tr>
     <tr>
-    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_054_clock.png"></td>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_054_clock.png" alt="Workshop Start and End" title="Workshop Start and End"></td>
 
     % if c.w['startTime'] != '0000-00-00': 
         <td><strong>Started:</strong> <span class="recent">${timeSince(c.w['startTime'])}</span> ago<br />
@@ -87,8 +87,8 @@
     <tr><td>&nbsp;</td></tr>
     </tr>
     <tr>
-    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_280_settings.png"></td>
-    <td><strong>Activity</strong>: <span class="badge badge-success"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> &nbsp; <span class="badge badge-success"><i class="icon-white icon-book"></i>${len(c.resources)}</span> &nbsp; <span class="badge badge-success"><i class="icon-white icon-comment"></i>${numComments}</span> &nbsp; <span class="badge badge-info"><i class="icon-white icon-user"></i>${len(c.followers)}</span> &nbsp; <span class="badge badge-important"><i class="icon-white icon-flag"></i>${numFlags}</span></td>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_280_settings.png" alt="Workshop Total Activity" title="Workshop Total Activity"></td>
+    <td><strong>Activity</strong>: <span class="badge badge-info" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> &nbsp; <span class="badge badge-info" title="Information resources in workshop"><i class="icon-white icon-book"></i>${len(c.resources)}</span> &nbsp; <span class="badge badge-info" title="Comments in workshop"><i class="icon-white icon-comment"></i>${numComments}</span> &nbsp; <span class="badge badge-success" title="Workshop followers"><i class="icon-white icon-user"></i>${len(c.followers)}</span> &nbsp; <span class="badge badge-success" title="Adopted suggestions in workshop"><i class="icon-white icon-heart"></i>${len(c.asuggestions)}</span> &nbsp; <span class="badge badge-important" title="Flags in workshop"><i class="icon-white icon-flag"></i>${numFlags}</span></td>
     </tr>
     <tr><td>&nbsp;</td></tr>
     <tr>
@@ -98,7 +98,7 @@
         <% fTitle = "Facilitators" %>
     % endif
 
-    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_029_notes_2.png"></td><td><table><thead><tr><td><strong>${fTitle}</strong>:</td>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_029_notes_2.png" alt="Workshop ${fTitle}" title="Workshop ${fTitle}"></td><td><table><thead><tr><td><strong>${fTitle}</strong>:</td>
                 <td>&nbsp;&nbsp;</td>
                 % for facilitator in c.facilitators:
                         <td>

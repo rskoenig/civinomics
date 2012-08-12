@@ -59,20 +59,9 @@
 <%def name="suggestionEditAdminRating(cAuthuser, cwOwner, cs, cIsAdmin, session, cRating)">
     <div class="row">
         <div class="span4 offset4">
+            <br />
             <table>
                 <tbody>
-                    <tr>
-                        <td>
-                            % if cAuthuser and (cAuthuser.id == cwOwner or cIsAdmin):
-                                <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}">admin suggestion</a>&nbsp;&nbsp;
-                            % endif
-                        </td>
-                        <td>
-                            % if cAuthuser and (cAuthuser.id == csOwner or cIsAdmin):
-                                <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}">edit suggestion</a>
-                            % endif
-                        </td>
-                    </tr>
                     <tr>
                         <td colspan="2">
                             % if "user" in session:
@@ -90,6 +79,17 @@
                                     </div>
                                 % endif
                             % endif
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan=2>
+                            % if cAuthuser and (cAuthuser.id == cwOwner or cIsAdmin):
+                                <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Administrate Suggestion"><i class="icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
+                            % endif
+                            % if cAuthuser and (cAuthuser.id == csOwner or cIsAdmin):
+                                <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Edit Suggestion"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
+                            % endif
+                            <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Flag Suggestion"><i class="icon-flag"></i> Flag</a> &nbsp; &nbsp;
                         </td>
                     </tr>
                 </tbody>

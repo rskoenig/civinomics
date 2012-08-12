@@ -15,7 +15,7 @@ from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
-from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
+from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
@@ -897,6 +897,7 @@ class WorkshopController(BaseController):
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.asuggestions = getAdoptedSuggestionsForWorkshop(code, urlify(url))
         
         if 'user' in session:
             ratedSuggestionIDs = []

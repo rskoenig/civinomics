@@ -389,15 +389,16 @@ class SuggestionController(BaseController):
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
     @h.login_required
-    def flagSuggestion(self, id1):
-        suggestionID = id1
-        suggestion = getSuggestionByID(suggestionID)
+    def flagSuggestion(self, id1, id2):
+        code = id1
+        url = id2
+        suggestion = getSuggestion(code, urlify(url))
         if not suggestion:
-            return json.dumps({'id':suggestionID, 'result':'ERROR'})
+            return json.dumps({'id':suggestion.id, 'result':'ERROR'})
         if not isFlagged(suggestion, c.authuser):
             f = Flag(suggestion, c.authuser)
-            return json.dumps({'id':suggestionID, 'result':"Successfully flagged!"})
+            return json.dumps({'id':suggestion.id, 'result':"Successfully flagged!"})
         else:
-            return json.dumps({'id':suggestionID, 'result':"Already flagged!"})
+            return json.dumps({'id':suggestion.id, 'result':"Already flagged!"})
 
 

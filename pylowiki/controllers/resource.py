@@ -149,7 +149,7 @@ class ResourceController(BaseController):
                     c.otherResources.pop(i)
                     break
 
-            return render('/derived/resource_edit.html')
+            return render('/derived/resource_edit.bootstrap')
         else:
             h.flash('You are not authorized a is %s and f is %s'%(a, f), 'error')
             return redirect('/workshop/%s/%s/resource/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.r['urlCode'], urlify(c.r['url'])))
@@ -441,9 +441,11 @@ class ResourceController(BaseController):
         return redirect('/issue/%s/resource/%s'%(i.page.url, a.title))
 
     @h.login_required
-    def flagResource(self, id1):
-        resourceID = id1
-        resource = getResourceByID(resourceID)
+    def flagResource(self, id1, id2):
+        code = id1
+        url = id2
+        resource = getResource(code, urlify(url))
+        resourceID = resource.id
         if not resource:
             return json.dumps({'id':resourceID, 'result':'ERROR'})
         if not isFlagged(resource, c.authuser):
