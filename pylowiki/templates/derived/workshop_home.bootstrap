@@ -46,11 +46,8 @@
             <div class="civ-col-inner">
                 ${helpers.info_and_feedback()}
             </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-        <div class="civ-col">
-            <h2 class="civ-col">${lib.facilitator()}</h2>
             <div class="civ-col-inner">
-                ${lib.your_facilitator()}
+                ${helpers.motd()}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->
