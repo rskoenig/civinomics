@@ -6,6 +6,7 @@
     from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.db.discussion import getDiscussionByID
     from pylowiki.lib.fuzzyTime import timeSince
+    import textwrap
 %>
 
 
@@ -253,33 +254,26 @@
 <%def name="displayWorkshop(workshop)">
 	% if workshop['mainImage_hash'] == 'supDawg':
 		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80" class="thumbnail"></a>
-		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
 	% else:
 		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']} width="120" height="80" class="thumbnail"></a>
-		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
 	% endif
+        <% counter = 0 %>
+        <a href="/workshop/${workshop['urlCode']}/${workshop['url']}">
+        % for line in textwrap.wrap(workshop['title'], 18):
+            <% counter = counter + 1 %>
+            ${line}<br />
+        % endfor
+        </a>
 </%def>
 
 <%def name="listWorkshops(set)">
-		<% wNum = 0 %>
-		% for workshop in set:
-			% if wNum % 6 == 0: ## begin a new row
-			<ul class="unstyled civ-block-list">
-				<li>
-					${displayWorkshop(workshop)}
-				</li>
-			% elif wNum % 6 == 5: ## end a row
-				<li>
-					${displayWorkshop(workshop)}
-				</li>
-			</ul> <!-- /.unstyled -->
-			% else: ## somewhere in between
-				<li>
-					${displayWorkshop(workshop)}
-				</li>
-			% endif
-			<% wNum += 1 %>
-		% endfor
+    <ul class="unstyled civ-block-list">
+    % for workshop in set:
+        <li>
+        ${displayWorkshop(workshop)}
+        </li>
+    % endfor
+    </ul>
 </%def>
 
 <%def name="workshops()">
