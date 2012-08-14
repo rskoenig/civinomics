@@ -63,7 +63,7 @@
     <div class="modal-header">
         <a class="close" data-dismiss="modal">&times;</a>
         <h3 class="modal-title"></h3>
-    </div>
+    </div><!-- modal-header ->
     <div class="modal-body"><div class="modal-image"></div></div>
     <div class="modal-footer">
         <a class="btn modal-download" target="_blank">
@@ -82,8 +82,8 @@
             <span>Next</span>
             <i class="icon-arrow-right icon-white"></i>
         </a>
-    </div>
-</div>
+    </div><!-- modal-footer -->
+</div><!-- modal-gallery -->
 
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">

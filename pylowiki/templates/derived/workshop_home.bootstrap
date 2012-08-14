@@ -36,7 +36,7 @@
                 ${lib.add_a('suggestion')}
             </h2>
             <div class="civ-col-inner">
-                ${lib.list_suggestions("There are no suggestions yet for this workshop. Be the first to add one!")}
+                ${lib.list_suggestions("There are no suggestions yet for this workshop. Be the first to add one!", 1)}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span5 -->

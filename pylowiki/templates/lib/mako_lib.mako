@@ -6,6 +6,7 @@
     from pylowiki.lib.db.discussion import getDiscussionByID
     from pylowiki.lib.db.user import isAdmin
     from pylowiki.lib.db.facilitator import isFacilitator
+    from pylowiki.lib.db.resource import getResourcesByParentID
 %>
 
 ################################################
@@ -137,8 +138,8 @@
                             </td>
                             <td>
                                  <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
-                                 <span class="badge badge-info"><i class="icon-white icon-comment"></i>${numComments}</span>
-                                 <span class="badge badge-important"><i class="icon-white icon-flag"></i>${numFlags}</span>
+                                 <span class="badge badge-info" title="Resource comments"><i class="icon-white icon-comment"></i>${numComments}</span>
+                                 <span class="badge badge-important"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
                              </td>
                              </tr>
                              <tr>
@@ -158,16 +159,18 @@
 	% endif
 </%def>
 
-<%def name="list_suggestions(errorMsg)">
+<%def name="list_suggestions(errorMsg, doSlider = False)">
 	% if len(c.suggestions) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
             <div class="civ-col-list">
+            <% counter = 1 %>
             <table>
             <tbody>
             % for suggestion in c.suggestions:
                 <% author = getUserByID(suggestion.owner) %>
                 <% flags = getFlags(suggestion) %>
+                <% resources = getResourcesByParentID(suggestion.id) %>
                 % if flags:
                     <% numFlags = len(flags) %>
                 % else:
@@ -179,7 +182,7 @@
                     <% numComments = disc['numComments'] %>
                 % endif
                 <tr>
-                <td colspan=2>
+                <td colspan=3>
                     <h3>
                     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
                     </h3>
@@ -196,18 +199,35 @@
                 </td>
                 <td>
                     <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
-                    <span class="badge badge-info"><i class="icon-white icon-comment"></i>${numComments}</span>
-                    <span class="badge badge-important"><i class="icon-white icon-flag"></i>${numFlags}</span>
+                    <span class="badge badge-info" title="Suggestion information resources"><i class="icon-white icon-book"></i>${len(resources)}</span>
+                    <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
+                    <span class="badge badge-important" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
                 </td>
+                % if 'user' in session and doSlider:
+                    <td>
+                        <div id="ratings${counter}" class="rating pull-left">
+                            <div id="overall_slider" class="ui-slider-container clearfix">
+                                % if suggestion.rating:
+                                    <div id="${suggestion['urlCode']}_${suggestion['url']}" class="small_slider" data1="0_${suggestion['urlCode']}_${suggestion.rating['rating']}_overall_true_rateSuggestion" data2="${suggestion['url']}"></div>
+                                % else:
+                                    <div id="${suggestion['urlCode']}_${suggestion['url']}" class="small_slider" data1="0_${suggestion['urlCode']}_0_overall_false_rateSuggestion" data2="${suggestion['url']}"></div>
+                                % endif
+                             </div> <!-- /#overall_slider -->
+                         </div> <!-- /#ratings${counter} -->
+                    </td>
+                % else:
+                    <td>&nbsp;</td>
+                % endif
                 </tr>
                 <tr>
-                <td colspan=2>
+                <td colspan=3>
                     <i class="icon-time"></i> <span class="old">${timeSince(suggestion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
                 </td>
                 </tr> 
                 <tr>
-                <td colspan=2><hr></td>
+                <td colspan=3><hr></td>
                 </tr>
+                <% counter += 1 %>
                 % endfor
                 </tbody>
                 </table>

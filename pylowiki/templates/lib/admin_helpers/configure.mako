@@ -196,74 +196,73 @@
     <div class="tabbable">
         <ul class="nav nav-tabs">
         <li class="${sActive}">
-            <a href="#tab1" data-toggle="tab">Single Jurisdiction</a>
+            <a href="#tab11" data-toggle="tab">Single Jurisdiction</a>
         </li>
         <li class="${mActive}">
-            <a href="#tab2" data-toggle="tab">Multiple Postal Codes</a>
+            <a href="#tab12" data-toggle="tab">Multiple Postal Codes</a>
         </li>
         </ul>
         <div class="tab-content">
-            <div class="tab-pane ${sActive} well" id="tab1">
-<form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureSingleWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <% titles = getGeoTitles(c.w['publicPostal'], 'united-states') %>
-    <% sList = titles.split('|') %>
-    <br /> <br />
-    Enter New Home Postal Code: <input type="text" id="publicPostal" name="publicPostal" value="${c.w['publicPostal']}" style="width:60px;"> <button class="btn btn-primary btn-mini geoButton">Check New Postal Code</button>
-    <br />
-    <span id="werror"></span>
-    <br />
-    Public Sphere: (choose one)<br><br>
-    % if c.w['publicScope'] == '10':
-        <% checked = 'checked' %>
-    % else:
-        <% checked = 'unchecked' %>
-    % endif
-    <input type="radio" name = "publicScope" value = "10" ${checked} onClick="clearZipList()" /> Postal Code <span id="wpostal">${sList[9]}</span><br>
-     % if c.w['publicScope'] == '09':
-         <% checked = 'checked' %>
-     % else:
-         <% checked = 'unchecked' %>
-     % endif
-     <input type="radio" name = "publicScope" value = "09" ${checked} onClick="clearZipList()" /> City of <span id="wcity">${sList[8]}</span><br> 
-     % if c.w['publicScope'] == '07':
-         <% checked = 'checked' %>
-     % else:
-         <% checked = 'unchecked' %>
-     % endif
-     <input type="radio" name = "publicScope" value = "07" ${checked} onClick="clearZipList()" /> County of <span id="wcounty">${sList[6]}</span><br>
-     % if c.w['publicScope'] == '05':
-         <% checked = 'checked' %>
-     % else:
-         <% checked = 'unchecked' %>
-     % endif
-     <input type="radio" name = "publicScope" value = "05" ${checked} onClick="clearZipList()" /> State of <span id="wstate">${sList[4]}</span><br>
-     % if c.w['publicScope'] == '03':
-         <% checked = 'checked' %>
-     % else:
-         <% checked = 'unchecked' %>
-     % endif
-     <input type="radio" name = "publicScope" value = "03" ${checked} onClick="clearZipList()" /> Country of <span id="wcountry">${sList[2]}</span><br>
-     % if c.w['publicScope'] == '01':
-         <% checked = 'checked' %>
-     % else:
-         <% checked = 'unchecked' %>
-     % endif
-     <input type="radio" name = "publicScope" value = "01" ${checked} onClick="clearZipList()" /> The Planet<br>
-    <br />
-    <button type="submit" class="btn btn-warning">Save Single Jurisdiction</button>
-    </form>
-    </div><!-- tab-pane -->
-    <div class="tab-pane well ${mActive}" id="tab2">
-<form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureMultipleWorkshopHandler" enctype="multipart/form-data" method="post" >
-       <br />
-       <br />
-       Enter at least one postal code. Separate multiple postal codes with a comma.<br>
-       <textarea name = "publicPostalList" onClick="clearEligibleCheckboxes(document.edit_issue.publicScope)" rows="4" cols="60">${c.w['publicPostalList']}</textarea><br /><br />
-       <button type="submit" class="btn btn-warning">Save Multiple Postal Codes</button>
-    </form>
-    </div><!-- tab-pane -->
-    </div><!-- tab-content -->
-    </div><!-- tabbable -->
+            <div class="tab-pane ${sActive} well" id="tab11">
+                <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureSingleWorkshopHandler" enctype="multipart/form-data" method="post" >
+                <% titles = getGeoTitles(c.w['publicPostal'], 'united-states') %>
+                <% sList = titles.split('|') %>
+                <br /> <br />
+                Enter New Home Postal Code: <input type="text" id="publicPostal" name="publicPostal" value="${c.w['publicPostal']}" style="width:60px;"> <button class="btn btn-primary btn-mini geoButton">Check New Postal Code</button>
+                <br />
+                <span id="werror"></span>
+                <br />
+                Public Sphere: (choose one)<br><br>
+                % if c.w['publicScope'] == '10':
+                    <% checked = 'checked' %>
+                % else:
+                    <% checked = 'unchecked' %>
+                % endif
+                <input type="radio" name = "publicScope" value = "10" ${checked} onClick="clearZipList()" /> Postal Code <span id="wpostal">${sList[9]}</span><br>
+                 % if c.w['publicScope'] == '09':
+                     <% checked = 'checked' %>
+                 % else:
+                     <% checked = 'unchecked' %>
+                 % endif
+                 <input type="radio" name = "publicScope" value = "09" ${checked} onClick="clearZipList()" /> City of <span id="wcity">${sList[8]}</span><br> 
+                 % if c.w['publicScope'] == '07':
+                     <% checked = 'checked' %>
+                 % else:
+                     <% checked = 'unchecked' %>
+                 % endif
+                 <input type="radio" name = "publicScope" value = "07" ${checked} onClick="clearZipList()" /> County of <span id="wcounty">${sList[6]}</span><br>
+                 % if c.w['publicScope'] == '05':
+                     <% checked = 'checked' %>
+                 % else:
+                     <% checked = 'unchecked' %>
+                 % endif
+                 <input type="radio" name = "publicScope" value = "05" ${checked} onClick="clearZipList()" /> State of <span id="wstate">${sList[4]}</span><br>
+                 % if c.w['publicScope'] == '03':
+                     <% checked = 'checked' %>
+                 % else:
+                     <% checked = 'unchecked' %>
+                 % endif
+                 <input type="radio" name = "publicScope" value = "03" ${checked} onClick="clearZipList()" /> Country of <span id="wcountry">${sList[2]}</span><br>
+                 % if c.w['publicScope'] == '01':
+                     <% checked = 'checked' %>
+                 % else:
+                     <% checked = 'unchecked' %>
+                 % endif
+                 <input type="radio" name = "publicScope" value = "01" ${checked} onClick="clearZipList()" /> The Planet<br>
+                <br />
+                <button type="submit" class="btn btn-warning">Save Single Jurisdiction</button>
+                </form>
+            </div><!-- tab-pane tab11 configure -->
+            <div class="tab-pane well ${mActive}" id="tab12">
+                <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureMultipleWorkshopHandler" enctype="multipart/form-data" method="post" >
+                <br /><br />
+                Enter at least one postal code. Separate multiple postal codes with a comma.<br>
+                <textarea name = "publicPostalList" onClick="clearEligibleCheckboxes(document.edit_issue.publicScope)" rows="4" cols="60">${c.w['publicPostalList']}</textarea><br /><br />
+                <button type="submit" class="btn btn-warning">Save Multiple Postal Codes</button>
+                </form>
+            </div><!-- tab-pane tab12 configure -->
+        </div><!-- tab-content configure -->
+    </div><!-- tabbable configure -->
     
        <br /><br />
        When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
@@ -278,7 +277,6 @@
        <button type="submit" class="btn btn-warning">Start Workshop</button>
        </form>
        </div>
-
    % endif
 
 </%def>

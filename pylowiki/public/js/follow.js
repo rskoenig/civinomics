@@ -14,7 +14,7 @@ $('button.followButton').live('click', function(e){
         
         $button.removeClass('following');
         $button.removeClass('unfollow');
-        var bText = 'Follow';
+        var bText = '+Follow';
         $button.text(bText);
     } else {
         
@@ -26,7 +26,7 @@ $('button.followButton').live('click', function(e){
         });
                    
         $button.addClass('following');
-        $button.text('Unfollow');
+        $button.text('-Unfollow');
     }
 });
 

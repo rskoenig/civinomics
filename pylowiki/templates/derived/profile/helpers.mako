@@ -205,25 +205,28 @@
 			% endif
 			<% mStart = c.user.date.strftime('%B %d, %Y') %>
 			<br>
-			User since <span class="recent">${mStart}</span>
+			Member since <span class="recent">${mStart}</span>
 		</p>
 	</div> <!-- /.civ-col-inner -->
 </%def>
 
-<%def name="followButton()">
+<%def name="badgesButtons()">
 	<div class="civ-col-inner">
         <p>
-	<span class="badge badge-info"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info"><i class="icon-white icon-ok"></i> ${len(c.user['totalPoints'])}</span> <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${c.flags}</span> <span class="badge badge-info"><i class="icon-white icon-file"></i> ${c.posts}</span> 
+	<span class="badge badge-success" title="Followers"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info" title="Rating"><i class="icon-white icon-ok"></i> ${len(c.user['totalPoints'])}</span> <span class="badge badge-info" title="Resource and suggestion contributions"><i class="icon-white icon-file"></i> ${c.posts}</span> <span class="badge badge-important" title="Flags on contributions"><i class="icon-white icon-flag"></i> ${c.flags}</span>
                 </p>
 		% if c.authuser['email'] != c.user['email']:
-                        <div class="button_container">
+                        <span class="button_container">
 			% if c.isFollowing:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton following">+Following</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-info followButton following">+Following</button>
 			% else:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton unfollow">+Follow</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-info followButton unfollow">+Follow</button>
 			% endif
-                        </div>
+                        </span>
 		% endif
+                % if isAdmin(c.authuser.id):
+                   <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning"><i class="icon-list-alt icon-white"></i> Admin</button></a>
+                % endif
 	</div> <!-- /.civ-col-inner -->
 </%def>
 
@@ -409,9 +412,6 @@
 </%def>
 
 <%def name="memberAdminControls()">
-    % if isAdmin(c.authuser.id):
-        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-warning"><i class="icon-user icon-white"></i> Admin Member</button></a>
-    % endif
 </%def>
 
 <%def name="pendingFacilitateInvitations()">
@@ -439,8 +439,8 @@
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
         % endif
         <br /> <br />
-        <button type="submit" name=acceptInvite class="btn btn-success">Accept</button>
-        <button type="submit" name=declineInvite class="btn btn-danger">Decline</button>
+        <button type="submit" name=acceptInvite class="btn btn-mini btn-success">Accept</button>
+        <button type="submit" name=declineInvite class="btn btn-mini btn-danger">Decline</button>
         </form>
         <li>
         <% wNum = wNum + 1 %>
@@ -467,7 +467,7 @@
         <h2 class="civ-col">Invite This Member to Facilitate</h2>
         <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
         <br />
-        <button type="submit" class="btn btn-warning"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
+        <button type="submit" class="btn btn-mini btn-warning"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
         % for myW in wList:
             <br />
             <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>

@@ -145,4 +145,3 @@
 		<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback"><span class="badge badge-info"><i class="icon-white icon-comment"></i>${c.discussion['numComments']}</span></a> | <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Give feedback</a>
 	</p>
 </%def>
-

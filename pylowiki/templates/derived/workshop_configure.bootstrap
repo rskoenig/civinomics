@@ -4,26 +4,13 @@
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
 <%namespace file="/lib/comments.mako" import="buttonHandler" />
 
-<SCRIPT LANGUAGE="JavaScript">
-   function clearZipList () {
-     document.edit_issue.publicPostalList.value = '';
-     return 1;
-   }    
-   function clearEligibleCheckboxes (field) {
-     // document.edit_issue.publicscope.checked = 'unchecked';
-     // return 1;
-     for (i = 0; i < field.length; i++)
-           field[i].checked = false ;
-   }
-</SCRIPT>
-
 <div class="container-fluid">
     <div class="well">
-    <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
-    <br />
-    ${lib_helpers.nav_thing("configure")}
-    <br />
-    </div>
+        <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+        <br />
+        ${lib_helpers.nav_thing("configure")}
+        <br />
+    </div><!-- well -->
     <h2 class="civ-col">Configure Workshop</h2>
     <br />
     Use this control panel to configure your workshop settings.<br />
@@ -43,16 +30,16 @@
     <div class="tab-content">
         <div class="tab-pane active" id="tab1">
             ${helpers.configure()}
-        </div>
+        </div><!-- tab-pane template tab1 -->
         <div class="tab-pane" id="tab2">
              ${slide_helpers.add_slides()}
              ${slide_helpers.edit_slideshow()}
-        </div>
+        </div><!-- tab-pane template tab2 -->
         <div class="tab-pane" id="tab3">
             ${helpers.edit_background()}
-        </div>
-    </div><!-- tab-content -->
-</div><!-- tabbable -->	
+        </div><!-- tab-pane template tab3 -->
+    </div><!-- tab-content template -->
+</div><!-- tabbable template -->	
 </div>
             
 <%def name = 'extraHTML()'>
