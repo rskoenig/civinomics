@@ -89,7 +89,8 @@
                             % if cAuthuser and (cAuthuser.id == csOwner or cIsAdmin):
                                 <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Edit Suggestion"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
                             % endif
-                            <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Flag Suggestion"><i class="icon-flag"></i> Flag</a> &nbsp; &nbsp;
+                            <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini flagButton" title="Flag Suggestion"><i class="icon-flag"></i> Flag</a> &nbsp; &nbsp;
+                            <span id="flag_0"></span>
                         </td>
                     </tr>
                 </tbody>

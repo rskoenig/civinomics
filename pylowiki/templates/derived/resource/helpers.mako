@@ -70,7 +70,7 @@
                                <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini" title="Edit Resource"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
                            % endif
                                <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini flagButton" title="Flag Resource"><i class="icon-flag"></i> Flag</a> &nbsp; &nbsp;
-                        <span id="flag_response"></span>
+                        <span id="flag_0"></span>
 			</div> <!-- .span12 -->
 		</div> <!-- .row-fluid -->
 

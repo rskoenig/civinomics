@@ -121,7 +121,7 @@
 				##<form action="/flagComment/${comment.id}" class="left wide">
 					<strong>Are you sure you want to flag this comment?</strong>
 					<br>
-					<a href="/flagComment/${comment.id}"class="btn btn-danger flagButton">Yes</a>
+					<a href="/flagComment/${comment.id}"class="btn btn-danger flagCommentButton">Yes</a>
 					<a class="btn" id="flag${comment.id}">No</a>
 					<span id = 'flagged_${comment.id}'></span>
 				##</form>
