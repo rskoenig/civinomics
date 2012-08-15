@@ -40,45 +40,57 @@
 </%def>
 
 <%def name="show_me()">
-	<form action="/searchName/" method="post" id="searchWorkshops">
-		<fieldset>
-			<div class="control-group">
-				<div class="controls">
-                                        <select class="span8" name="searchType" id="searchType"> named
-						<option value="Workshops">Workshops named</option>
-						<option value="Members">Members named</option>
-					</select>
-				</div>
-			</div>
-			<div class="control-group">
-				<div class="controls">
-					<div class="input-append">
-						<input type="text" name="searchString" class="span8"><button class="btn" type="submit">Search</button>
-					</div>
-				</div>
-			</div>
-		</fieldset>
-	</form>
-        % if 'user' in session:
-            <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post">
-                 Members in my <select name="scopeLevel">
-                     <option value="09">City</option>
-                     <option value="07">County</option>
-                     <option value="05">State</option>
-                     <option value="03">Country</option>
-                 </select>
-                 <button class="btn" type="submit">Search</button>
-             </form>
-             <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
-                 Workshops in my <select name="scopeLevel">
-                     <option value="09">City</option>
-                     <option value="07">County</option>
-                     <option value="05">State</option>
-                     <option value="03">Country</option>
-                 </select>
-                 <button class="btn" type="submit">Search</button>
-              </form>
-         % endif            
+    <script type="text/javascript">
+    function setAction()
+    {
+        var searchType = document.getElementById('searchType').value;
+        var searchString = document.getElementById('searchString').value;
+        if (searchString == null || searchString == '')
+        {
+            var searchString = "%";
+        }
+        document.getElementById('searchWorkshops').action = '/searchName/' + searchType + '/' + searchString + '/';
+    }
+    </script>
+    <form action="/searchName/" method="post" id="searchWorkshops" onsubmit="setAction(); return true;">
+        <fieldset>
+        <div class="control-group">
+            <div class="controls">
+                <select class="span8" name="searchType" id="searchType"> named
+                    <option value="Workshops">Workshops named</option>
+                    <option value="Members">Members named</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" name="searchString" class="span8" id="searchString"><button class="btn" type="submit">Search</button>
+                </div>
+            </div>
+        </div>
+        </fieldset>
+    </form>
+    % if 'user' in session:
+        <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post">
+            Members in my <select name="scopeLevel">
+            <option value="09">City</option>
+            <option value="07">County</option>
+            <option value="05">State</option>
+            <option value="03">Country</option>
+            </select>
+            <button class="btn" type="submit">Search</button>
+        </form>
+        <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
+            Workshops in my <select name="scopeLevel">
+            <option value="09">City</option>
+            <option value="07">County</option>
+            <option value="05">State</option>
+            <option value="03">Country</option>
+            </select>
+            <button class="btn" type="submit">Search</button>
+        </form>
+    % endif            
 </%def>
 
 <%def name="public_tags()">

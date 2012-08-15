@@ -8,6 +8,7 @@
     from pylowiki.lib.db.flag import getFlags
     from pylowiki.lib.fuzzyTime import timeSince, timeUntil
 %>
+<%namespace file="/lib/mako_lib.mako" name="lib" />
 
 <%def name="at_a_glance()">
     <% numComments = 0 %>
@@ -54,10 +55,9 @@
     % if cF:
         <% numFlags = numFlags + len(cF) %>
     % endif
-        
-    <div class="container-fluid well" style="border:1px solid;">
     <table>
     <thead>
+    <tr><td>&nbsp;</td></tr>
     <tr>
     <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png" alt="Workshop Name" title="Workshop Name"></td><td><strong>Name</strong>: ${c.w['title']}</td>
     </tr>
@@ -92,6 +92,21 @@
     </tr>
     <tr><td>&nbsp;</td></tr>
     <tr>
+	    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_023_cogwheels.png" alt="Participate!" title="Participate!"></td><td><strong>Participate!</strong> 
+    ${lib.add_a("resource")}
+    ${lib.add_a("suggestion")}
+    ${lib.add_a("feedback")}
+    % if not c.isFacilitator:
+        % if c.isFollowing:
+            <button class="btn btn-primary btn-mini followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}" title="Click to follow/unfollow this workshop">+Following</button>
+        % else:
+            <button class="btn btn-primary btn-mini followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}" title="Click to follow/unfollow this workshop">+Follow</button>
+        % endif
+    % endif 
+    </td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
     % if len(c.facilitators) == 1:
         <% fTitle = "Facilitator" %>
     % else:
@@ -120,14 +135,6 @@
     </thead>
     </table>
     <br /><br />
-    % if not c.isFacilitator:
-	    % if c.isFollowing:
-		    <button class="btn btn-primary followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Following</button>
-		% else:
-			<button class="btn btn-primary followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Follow</button>
-		% endif
-	% endif
-    </div><!-- container-fluid -->
 </%def>
 
 <%def name="motd()">

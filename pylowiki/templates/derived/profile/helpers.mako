@@ -37,9 +37,9 @@
            <ul class="thumbnails">
            <li>
 	   % if user['pictureHash'] == 'flash':
-<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="${user['name']}" title="${user['name']}"/></a>
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}"/></a>
 	   % else:
-<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="${user['name']}" title="${user['name']}"/></a>
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}"/></a>
 	   % endif
            </li>
            </ul>
@@ -209,18 +209,25 @@
         <p>
 	<span class="badge badge-success" title="Followers"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info" title="Rating"><i class="icon-white icon-ok"></i> ${len(c.user['totalPoints'])}</span> <span class="badge badge-info" title="Resource and suggestion contributions"><i class="icon-white icon-file"></i> ${c.posts}</span> <span class="badge badge-important" title="Flags on contributions"><i class="icon-white icon-flag"></i> ${c.flags}</span>
                 </p>
+                <br />
+                % if c.authuser.id == c.user.id:
+                   % if c.account and c.account['numRemaining'] != '0':
+                      <a href="/addWorkshop"><button class="btn btn-mini btn-primary" title="Click to create a new workshop"><i class="icon-cog icon-white"></i> New Workshop</button></a>
+                    % endif
+                    <a href="/profile/edit"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
+                % endif
+                % if isAdmin(c.authuser.id):
+                   <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning" title="Click to administrate this member"><i class="icon-list-alt icon-white"></i> Admin</button></a>
+                % endif
 		% if c.authuser['email'] != c.user['email']:
                         <span class="button_container">
 			% if c.isFollowing:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-info followButton following">+Following</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-primary followButton following" title="Click to follow/unfollow this member">+Following</button>
 			% else:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-info followButton unfollow">+Follow</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-info followButton unfollow" title="Click to follow/unfollow this member">+Follow</button>
 			% endif
                         </span>
 		% endif
-                % if isAdmin(c.authuser.id):
-                   <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning"><i class="icon-list-alt icon-white"></i> Admin</button></a>
-                % endif
 	</div> <!-- /.civ-col-inner -->
 </%def>
 
@@ -228,13 +235,13 @@
         <table>
         <tbody>
         <tr>
-        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" / class="thumbnail"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">City of ${c.geoInfo[0]['cityTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" / class="thumbnail" alt="Click to list workshops scoped within the City of ${c.geoInfo[0]['cityTitle']}" title="Click to list workshops scoped within the City of ${c.geoInfo[0]['cityTitle']}"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">City of ${c.geoInfo[0]['cityTitle']}</a></td>
         </tr>
         <tr>
-        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" class="thumbnail"/></a></td><td><a href="${c.geoInfo[0]['countyURL']}">County of ${c.geoInfo[0]['countyTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" class="thumbnail" alt="Click to list workshops scoped within the County of ${c.geoInfo[0]['countyTitle']}" title="Click to list workshops scoped within the County of ${c.geoInfo[0]['countyTitle']}"/></a></td><td><a href="${c.geoInfo[0]['countyURL']}">County of ${c.geoInfo[0]['countyTitle']}</a></td>
         </tr>
         <tr>
-        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" class="thumbnail"/></a></td><td><a href="${c.geoInfo[0]['stateURL']}">State of ${c.geoInfo[0]['stateTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" class="thumbnail" alt="Click to list workshops scoped within the State of ${c.geoInfo[0]['stateTitle']}" title="Click to list workshops scoped within the State of ${c.geoInfo[0]['stateTitle']}"/></a></td><td><a href="${c.geoInfo[0]['stateURL']}">State of ${c.geoInfo[0]['stateTitle']}</a></td>
         </tr>
         <tr>
         <td><img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" class="thumbnail"/></td><td>United States</a></td>
@@ -248,9 +255,9 @@
 
 <%def name="displayWorkshop(workshop)">
 	% if workshop['mainImage_hash'] == 'supDawg':
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80" class="thumbnail"></a>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}" width="120" height="80" class="thumbnail"></a>
 	% else:
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']} width="120" height="80" class="thumbnail"></a>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" width="120" height="80" class="thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}"></a>
 	% endif
         <% counter = 0 %>
         <a href="/workshop/${workshop['urlCode']}/${workshop['url']}">
@@ -431,8 +438,8 @@
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
         % endif
         <br /> <br />
-        <button type="submit" name=acceptInvite class="btn btn-mini btn-success">Accept</button>
-        <button type="submit" name=declineInvite class="btn btn-mini btn-danger">Decline</button>
+        <button type="submit" name=acceptInvite class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
+        <button type="submit" name=declineInvite class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
         </form>
         <li>
         <% wNum = wNum + 1 %>
@@ -459,7 +466,7 @@
         <h2 class="civ-col">Invite This Member to Facilitate</h2>
         <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
         <br />
-        <button type="submit" class="btn btn-mini btn-warning"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
+        <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
         % for myW in wList:
             <br />
             <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>

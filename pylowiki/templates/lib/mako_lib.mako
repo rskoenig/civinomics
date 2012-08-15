@@ -87,14 +87,14 @@
 
 <%def name="add_a(thing)">
 	% if c.isScoped or c.isFacilitator or c.isAdmin:
-            %if thing == 'resource':
-	        <span class="pull-right ${thing}"><a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Add a new information resource to this workshop"><i class="icon-plus"></i></a></span>
-            %elif thing == 'sresource':
-	        <span class="pull-right resource"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Add a new information resource to this suggestion"><i class="icon-plus"></i></a></span>
-            %elif thing == 'suggestion':
-	        <span class="pull-right ${thing}"><a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Add a new suggestion to this workshop"><i class="icon-plus"></i></a></span>
+            %if thing == 'resource' and c.w['allowResources'] == '1':
+	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
+            %elif thing == 'sresource' and c.s['allowComments'] == '1':
+	        <span class="pull-right resource" style="font-size:xx-small; text-transform:lowercase;"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">new<i class="icon-white icon-book"></i></a></span>
+            %elif thing == 'suggestion' and c.w['allowSuggestions'] == '1':
+	        <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-pencil"></i></a>
             %elif thing == 'feedback':
-	        <span class="pull-right ${thing}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback" title="Add feedback about this workshop"><i class="icon-plus"></i></a></span>
+	        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback" title="Click to add feedback about this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-volume-up"></i></a>
             %endif
 	% endif
 </%def>
@@ -312,7 +312,6 @@
 
 
 <%def name="slideshow(counter)">
-        <div class="well" style="border: 1px solid;">
 	<div id="slideshow${counter}" class="slideshow-container">
 		<div id="pager${counter}" class="pager">
 			<ul id="nav${counter}" class="unstyled">
@@ -346,7 +345,6 @@
 		</div> <!-- /.slideshow -->
 		<div class="caption${counter} caption"></div>
 	</div> <!-- /#slideshow${counter} -->
-        </div>
 </%def>
 
 <%def name="slideshowHandler(counter)">
