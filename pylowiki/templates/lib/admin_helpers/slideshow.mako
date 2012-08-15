@@ -14,8 +14,8 @@
 <%def name="add_slides()">
 
    <div class="container-fluid clr left">
-    <!-- The file upload form used as target for the file upload widget -->
-    <form id="fileupload" class="well" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
+   <!-- The file upload form used as target for the file upload widget -->
+   <form id="fileupload" class="well" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
         <p><strong>Add slides to slideshow</strong></p>
         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
         <div class="row fileupload-buttonbar">
@@ -34,13 +34,6 @@
                     <i class="icon-ban-circle icon-white"></i>
                     <span>Cancel upload</span>
                 </button>
-                <!--
-                <button type="button" class="btn btn-danger delete">
-                    <i class="icon-trash icon-white"></i>
-                    <span>Delete</span>
-                </button>
-                <input type="checkbox" class="toggle">
-                -->
             </div>
             <div class="span5">
                 <!-- The global progress bar -->
@@ -48,7 +41,7 @@
                     <div class="bar" style="width:0%;"></div>
                 </div>
             </div>
-        </div>
+        </div><!-- file upload button bar -->
         <!-- The loading indicator is shown during image processing -->
         <div class="fileupload-loading"></div>
         <br>
@@ -56,14 +49,14 @@
         <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
     </form>
     <br />
-</div>
+</div><!-- container-fluid -->
 
 <!-- modal-gallery is the modal dialog used for the image gallery -->
 <div id="modal-gallery" class="modal modal-gallery hide fade">
     <div class="modal-header">
         <a class="close" data-dismiss="modal">&times;</a>
         <h3 class="modal-title"></h3>
-    </div><!-- modal-header ->
+    </div><!-- modal-header -->
     <div class="modal-body"><div class="modal-image"></div></div>
     <div class="modal-footer">
         <a class="btn modal-download" target="_blank">

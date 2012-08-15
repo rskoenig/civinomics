@@ -61,10 +61,10 @@
          <% wstarted = 1 %>
     % endif
     ${fields_alert()}
+<form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
     <table class="table well">
     <tbody>
     <tr>
-<form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
     <td>
     Workshop Name: <span class="darkorange">*</span>
     <br />
@@ -152,9 +152,7 @@
         % else:
            <% checked = 'unchecked' %>
         % endif
-       <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights<br /> 
-
-       <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response<br />
+       <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response<br /> 
 
        % if 'Business' in workshopTags:
            <% checked = 'checked' %>

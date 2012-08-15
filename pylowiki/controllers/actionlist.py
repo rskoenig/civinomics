@@ -41,7 +41,7 @@ class ActionlistController(BaseController):
             c.count = len( c.list )
             c.paginator = paginate.Page(
                 c.list, page=int(request.params.get('page', 1)),
-                items_per_page = 10, item_count = c.count
+                items_per_page = 15, item_count = c.count
             )
 
             return render('/derived/list_workshops.bootstrap')
@@ -69,7 +69,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
         if len(c.list) >= 1:
             featuredSurvey = getFeaturedSurvey()
@@ -102,7 +102,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_workshops.bootstrap')
@@ -119,7 +119,7 @@ class ActionlistController(BaseController):
               c.count = len( c.list )
               c.paginator = paginate.Page(
                   c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 10, item_count = c.count
+                  items_per_page = 15, item_count = c.count
               )
 
               return render('/derived/list_workshops.bootstrap')
@@ -130,7 +130,7 @@ class ActionlistController(BaseController):
               c.count = len( c.list )
               c.paginator = paginate.Page(
                   c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 10, item_count = c.count
+                  items_per_page = 15, item_count = c.count
               )
 
               return render('/derived/list_users.bootstrap')
@@ -155,7 +155,7 @@ class ActionlistController(BaseController):
            c.count = len( c.list )
            c.paginator = paginate.Page(
                      c.list, page=int(request.params.get('page', 1)),
-                     items_per_page = 10, item_count = c.count
+                     items_per_page = 15, item_count = c.count
                  )
 
            return render('/derived/list_users.bootstrap')
@@ -175,7 +175,9 @@ class ActionlistController(BaseController):
            scopeList = getWorkshopScopes(searchScope, scopeLevel)
            for gInfo in scopeList:
               w = getWorkshopByID(gInfo['workshopID'])
-              if w['startTime'] != '0000-00-00' and w['deleted'] != '1':
+              if w['startTime'] == '0000-00-00' or w['deleted'] == '1':
+                  continue
+              else:
                   if w not in c.list:
                       doit = 1
                       if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
@@ -193,7 +195,7 @@ class ActionlistController(BaseController):
            c.count = len( c.list )
            c.paginator = paginate.Page(
                      c.list, page=int(request.params.get('page', 1)),
-                     items_per_page = 10, item_count = c.count
+                     items_per_page = 15, item_count = c.count
                  )
 
            return render('/derived/list_workshops.bootstrap')
@@ -215,7 +217,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_workshops.bootstrap')
@@ -228,7 +230,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_users.bootstrap')

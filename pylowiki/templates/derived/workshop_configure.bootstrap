@@ -2,9 +2,8 @@
 <%namespace name="lib_helpers" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/admin_helpers/configure.mako" />
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
-<%namespace file="/lib/comments.mako" import="buttonHandler" />
 
-<div class="container-fluid">
+<div class="container-fluid"><!-- header -->
     <div class="well">
         <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
         <br />
@@ -27,20 +26,20 @@
             <li><a href="#tab2" data-toggle="tab"><i class="icon-picture"></i> Slideshow</a></li>
             <li><a href="#tab3" data-toggle="tab"><i class="icon-book"></i> Background</a></li>
         </ul>
-    <div class="tab-content">
-        <div class="tab-pane active" id="tab1">
-            ${helpers.configure()}
-        </div><!-- tab-pane template tab1 -->
-        <div class="tab-pane" id="tab2">
-             ${slide_helpers.add_slides()}
-             ${slide_helpers.edit_slideshow()}
-        </div><!-- tab-pane template tab2 -->
-        <div class="tab-pane" id="tab3">
+        <div class="tab-content">
+            <div class="tab-pane active" id="tab1">
+                ${helpers.configure()}
+            </div><!-- tab-pane template tab1 -->
+            <div class="tab-pane" id="tab2">
+                 ${slide_helpers.add_slides()}
+                 ${slide_helpers.edit_slideshow()}
+            </div><!-- tab-pane template tab2 -->
+            <div class="tab-pane" id="tab3">
             ${helpers.edit_background()}
-        </div><!-- tab-pane template tab3 -->
-    </div><!-- tab-content template -->
-</div><!-- tabbable template -->	
-</div>
+            </div><!-- tab-pane template tab3 -->
+        </div><!-- tab-content template -->
+    </div><!-- tabbable template -->	
+</div><!-- container-fluid -->
             
 <%def name = 'extraHTML()'>
 
@@ -79,8 +78,6 @@
 <!-- The Canvas to Blob plugin is included for image resizing functionality -->
 <script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"></script>
 <!-- Bootstrap JS and Bootstrap Image Gallery are not required, but included for the demo -->
-<script src="http://blueimp.github.com/cdn/js/bootstrap.min.js"></script>
-<script src="http://blueimp.github.com/Bootstrap-Image-Gallery/js/bootstrap-image-gallery.min.js"></script>
 <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
 <script src="/js/jquery.iframe-transport.js"></script>
 <!-- The basic File Upload plugin -->
@@ -113,7 +110,6 @@
             });
         });
     </script>
-    ${buttonHandler()}
     <script language="javascript">
     $(function() {
         /*
@@ -151,7 +147,6 @@
             $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
         });
 
-        //$( ".column" ).disableSelection();
     });
     </script>
     

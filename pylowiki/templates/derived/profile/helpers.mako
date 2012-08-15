@@ -15,18 +15,13 @@
 </%def>
 
 <%def name="displayProfilePicture()">
-        <ul class="thumbnails">
-        <li>
-        <div class="thumbnail">
         % if c.user['pictureHash'] == 'flash':
-                <img src="/images/avatars/flash.profile" alt="${c.user['name']}" title="${c.user['name']}">
+                <img src="/images/avatars/flash.profile" alt="${c.user['name']}" title="${c.user['name']}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
         % else:
-            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}">
+            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
         % endif
-        </div>
         </li>
         </ul>
-        ${memberAdminControls()}
 </%def>
 
 <%def name="listUser(user, wide)">
@@ -177,7 +172,6 @@
 </%def>
 
 <%def name="sidebar()">
-	${displayProfilePicture()}
 	% if c.followingUsers:
 		${displayFollowingUsers()}
 	% endif
@@ -204,7 +198,7 @@
 				No tagline.
 			% endif
 			<% mStart = c.user.date.strftime('%B %d, %Y') %>
-			<br>
+			<br /> <br />
 			Member since <span class="recent">${mStart}</span>
 		</p>
 	</div> <!-- /.civ-col-inner -->
@@ -231,7 +225,6 @@
 </%def>
 
 <%def name="geoInfo()">
-	<div class="civ-col-inner">
         <table>
         <tbody>
         <tr>
@@ -251,7 +244,6 @@
         </tr>
         </tbody>
         </table>
-	</div> <!-- /.civ-col-inner -->
 </%def>
 
 <%def name="displayWorkshop(workshop)">

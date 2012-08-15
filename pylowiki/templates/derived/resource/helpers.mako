@@ -1,6 +1,7 @@
 <%!
 	from pylowiki.lib.fuzzyTime import timeSince
 	from pylowiki.lib.db.user import getUserByID
+	from pylowiki.lib.db.flag import getFlags
 %>
 
 <%def name="nav_thing()">
@@ -64,12 +65,16 @@
 		<div class="row-fluid">
 			<div class="span12">
                            % if c.isFacilitator or c.isAdmin:
+                               <% rFlags = getFlags(c.resource) %>
+                               % if rFlags and len(rFlags) > 0:
+                                   <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
+                               % endif
                                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini" title="Administrate Resource"><i class="icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
                            % endif
                            % if (c.authuser and c.authuser.id == c.poster.id) or c.isAdmin or c.isFacilitator:
                                <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini" title="Edit Resource"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
                            % endif
-                               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini flagButton" title="Flag Resource"><i class="icon-flag"></i> Flag</a> &nbsp; &nbsp;
+                           <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini flagButton" title="Flag Resource"><i class="icon-flag"></i> Flag</a> &nbsp; 
                         <span id="flag_0"></span>
 			</div> <!-- .span12 -->
 		</div> <!-- .row-fluid -->

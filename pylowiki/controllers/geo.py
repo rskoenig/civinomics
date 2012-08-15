@@ -45,7 +45,7 @@ class GeoController(BaseController):
         for s in wscopes:
            wID = s['workshopID']
            w = getWorkshopByID(wID)
-           if w['deleted'] != 1 and w['startTime'] != '0000-00-00':
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
                       if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
@@ -63,7 +63,7 @@ class GeoController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
         return render('/derived/list_geo.bootstrap')
 
@@ -96,7 +96,7 @@ class GeoController(BaseController):
         for s in wscopes:
            wID = s['workshopID']
            w = getWorkshopByID(wID)
-           if w['deleted'] != 1 and w['startTime'] != '0000-00-00':
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
                       if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
@@ -114,7 +114,7 @@ class GeoController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_geo.bootstrap')
@@ -144,7 +144,7 @@ class GeoController(BaseController):
         for s in wscopes:
            wID = s['workshopID']
            w = getWorkshopByID(wID)
-           if w['deleted'] != 1 and w['startTime'] != '0000-00-00':
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
                       if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
@@ -163,7 +163,7 @@ class GeoController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_geo.bootstrap')
@@ -189,7 +189,7 @@ class GeoController(BaseController):
         for s in wscopes:
            wID = s['workshopID']
            w = getWorkshopByID(wID)
-           if w['deleted'] != 1 and w['startTime'] != '0000-00-00':
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
                       if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
@@ -208,7 +208,7 @@ class GeoController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_geo.bootstrap')
