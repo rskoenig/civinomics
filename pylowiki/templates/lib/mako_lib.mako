@@ -86,12 +86,12 @@
 %>
 
 <%def name="add_a(thing)">
-	% if c.isScoped or c.isFacilitator or c.isAdmin:
-            %if thing == 'resource' and c.w['allowResources'] == '1':
+	% if c.isScoped:
+            %if thing == 'resource' and (c.w['allowResources'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
-            %elif thing == 'sresource' and c.s['allowComments'] == '1':
+            %elif thing == 'sresource' and (c.s['allowComments'] == '1' or c.isFacilitator or c.isAdmin):
 	        <span class="pull-right resource" style="font-size:xx-small; text-transform:lowercase;"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">new<i class="icon-white icon-book"></i></a></span>
-            %elif thing == 'suggestion' and c.w['allowSuggestions'] == '1':
+            %elif thing == 'suggestion' and (c.w['allowSuggestions'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-pencil"></i></a>
             %elif thing == 'feedback':
 	        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback" title="Click to add feedback about this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-volume-up"></i></a>
