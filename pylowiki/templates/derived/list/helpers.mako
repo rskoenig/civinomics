@@ -2,6 +2,7 @@
    from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
+   from pylowiki.lib.db.suggestion import getSuggestionByID
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
    from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
    from pylowiki.lib.db.user import getUserByID
@@ -39,43 +40,57 @@
 </%def>
 
 <%def name="show_me()">
-	<form action="/searchName/" method="post" id="searchWorkshops">
-		<fieldset>
-			<div class="control-group">
-				<div class="controls">
-                                        <select class="span8" name="searchType" id="searchType"> named
-						<option value="Workshops">Workshops named</option>
-						<option value="Members">Members named</option>
-					</select>
-				</div>
-			</div>
-			<div class="control-group">
-				<div class="controls">
-					<div class="input-append">
-						<input type="text" name="searchString" class="span8"><button class="btn" type="submit">Search</button>
-					</div>
-				</div>
-			</div>
-		</fieldset>
-	</form>
+    <script type="text/javascript">
+    function setAction()
+    {
+        var searchType = document.getElementById('searchType').value;
+        var searchString = document.getElementById('searchString').value;
+        if (searchString == null || searchString == '')
+        {
+            var searchString = "%";
+        }
+        document.getElementById('searchWorkshops').action = '/searchName/' + searchType + '/' + searchString + '/';
+    }
+    </script>
+    <form action="/searchName/" method="post" id="searchWorkshops" onsubmit="setAction(); return true;">
+        <fieldset>
+        <div class="control-group">
+            <div class="controls">
+                <select class="span8" name="searchType" id="searchType"> named
+                    <option value="Workshops">Workshops named</option>
+                    <option value="Members">Members named</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <div class="input-append">
+                    <input type="text" name="searchString" class="span8" id="searchString"><button class="btn" type="submit">Search</button>
+                </div>
+            </div>
+        </div>
+        </fieldset>
+    </form>
+    % if 'user' in session:
         <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post">
-                     Members in my <select name="scopeLevel">
-                     <option value="09">City</option>
-                     <option value="07">County</option>
-                     <option value="05">State</option>
-                     <option value="03">Country</option>
-                     </select>
-                     <button class="btn" type="submit">Search</button>
-                     </form>
-                     <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
-                     Workshops in my <select name="scopeLevel">
-                     <option value="09">City</option>
-                     <option value="07">County</option>
-                     <option value="05">State</option>
-                     <option value="03">Country</option>
-                     </select>
-                     <button class="btn" type="submit">Search</button>
-                     </form>
+            Members in my <select name="scopeLevel">
+            <option value="09">City</option>
+            <option value="07">County</option>
+            <option value="05">State</option>
+            <option value="03">Country</option>
+            </select>
+            <button class="btn" type="submit">Search</button>
+        </form>
+        <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
+            Workshops in my <select name="scopeLevel">
+            <option value="09">City</option>
+            <option value="07">County</option>
+            <option value="05">State</option>
+            <option value="03">Country</option>
+            </select>
+            <button class="btn" type="submit">Search</button>
+        </form>
+    % endif            
 </%def>
 
 <%def name="public_tags()">
@@ -108,6 +123,7 @@
             <table class="table table-striped">
             <tbody>
 			% for mObj in mPosts:
+                           <% ooTitle = False %>
                            <% muser = getUserByID(mObj.owner) %>
                            <% mname = muser['name'] %>
                            % if mObj.objType == 'resource':
@@ -115,6 +131,18 @@
                                <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
                                <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                                <% iType = "book" %>
+                               % if mObj['parent_id'] != '0':
+                                   <% s = getSuggestionByID(mObj['parent_id']) %>
+                                   <% ooTitle = mObj['parent_id'] %>
+                                   %if len(s['title']) > 20:
+                                       <% ooTitle = s['title'][0:16] + '...' %>
+                                   %else:
+                                       <% ooTitle = s['title'] %>
+                                   %endif
+                                   <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + s['urlCode'] + "/" + s['url'] %>
+                                   <% ooiType = "pencil" %>
+                               % endif
+                               <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
                            % elif mObj.objType == 'suggestion':
                                <% iType = "pencil" %>
                                <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
@@ -136,17 +164,18 @@
                            %endif
                            <tr>
                            <td>
-                           <div class="thumbnail">
                            % if muser['pictureHash'] == 'flash':
-                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" title="${mname}" style="width:40px;" alt="${mname}"/> 
+                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" title="${mname}" style="width:40px;" alt="${mname}"/ class="thumbnail"></a> 
                            % else:
-                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" title="${mname}" style="width:40px;"/></a>
+                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" title="${mname}" style="width:40px;"/ class="thumbnail"></a>
                            % endif
-                           </div>
                            </td>
                            <td>
                               <ul class="unstyled">
                               <li><a href="${wLink}"><i class="icon-cog"></i> ${wTitle}</a></li>
+                              % if ooTitle:
+                                  <li><a href="${ooLink}"><i class="icon-${ooiType}"></i> ${ooTitle}</a></li>
+                              % endif
                               <li><a href="${oLink}"><i class="icon-${iType}"></i> ${oTitle}</a></li>
                               <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
                               <ul>

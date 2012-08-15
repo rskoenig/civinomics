@@ -26,8 +26,7 @@ class HomeController(BaseController):
         """
         
         if session.get('user'):
-            #return redirect('/surveys')
-            return render('/derived/services.bootstrap')
+            return redirect('/workshops')
         else:
             c.site_base_url = config['app_conf']['site_base_url']
             c.site_secure_url = config['app_conf']['site_secure_url']

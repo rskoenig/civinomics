@@ -41,7 +41,7 @@ class ActionlistController(BaseController):
             c.count = len( c.list )
             c.paginator = paginate.Page(
                 c.list, page=int(request.params.get('page', 1)),
-                items_per_page = 10, item_count = c.count
+                items_per_page = 15, item_count = c.count
             )
 
             return render('/derived/list_workshops.bootstrap')
@@ -69,7 +69,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
         if len(c.list) >= 1:
             featuredSurvey = getFeaturedSurvey()
@@ -102,40 +102,38 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_workshops.bootstrap')
 
-    def searchName( self ):
+    def searchName( self, id1, id2 ):
+        searchType = id1
+        searchString = id2
+        if searchString == '%':
+           searchString = ''
         log.info('searchName')
-        if 'searchType' in request.params and 'searchString' in request.params:
-           searchType = request.params['searchType']
-           searchString = request.params['searchString']
-
-           if searchType == 'Workshops':
+        if searchType == 'Workshops':
               c.title = c.heading = 'Search Workshops: ' + searchString
               c.list = searchWorkshops('title', searchString)
               c.count = len( c.list )
               c.paginator = paginate.Page(
                   c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 10, item_count = c.count
+                  items_per_page = 15, item_count = c.count
               )
 
               return render('/derived/list_workshops.bootstrap')
 
-           else:
+        else:
               c.title = c.heading = 'Search Members: ' + searchString
               c.list = searchUsers('name', searchString)
               c.count = len( c.list )
               c.paginator = paginate.Page(
                   c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 10, item_count = c.count
+                  items_per_page = 15, item_count = c.count
               )
 
               return render('/derived/list_users.bootstrap')
-        else:
-           return redirect('/')
 
     def searchGeoUsers( self ):
         log.info('searchGeoUsers')
@@ -155,7 +153,7 @@ class ActionlistController(BaseController):
            c.count = len( c.list )
            c.paginator = paginate.Page(
                      c.list, page=int(request.params.get('page', 1)),
-                     items_per_page = 10, item_count = c.count
+                     items_per_page = 15, item_count = c.count
                  )
 
            return render('/derived/list_users.bootstrap')
@@ -175,7 +173,9 @@ class ActionlistController(BaseController):
            scopeList = getWorkshopScopes(searchScope, scopeLevel)
            for gInfo in scopeList:
               w = getWorkshopByID(gInfo['workshopID'])
-              if w['startTime'] != '0000-00-00' and w['deleted'] != '1':
+              if w['startTime'] == '0000-00-00' or w['deleted'] == '1':
+                  continue
+              else:
                   if w not in c.list:
                       doit = 1
                       if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
@@ -193,7 +193,7 @@ class ActionlistController(BaseController):
            c.count = len( c.list )
            c.paginator = paginate.Page(
                      c.list, page=int(request.params.get('page', 1)),
-                     items_per_page = 10, item_count = c.count
+                     items_per_page = 15, item_count = c.count
                  )
 
            return render('/derived/list_workshops.bootstrap')
@@ -202,20 +202,22 @@ class ActionlistController(BaseController):
 
 
     def searchTags( self, id1 ):
-        log.info('searchTags %s' % id1)
+        ##log.info('searchTags %s' % id1)
         id1 = id1.replace("_", " ")
         c.title = c.heading = 'Search Workshops by Tag: ' + id1
         tList = searchTags(id1)
-        log.info('tList %s' % tList)
+        ##log.info('tList %s' % tList)
         c.list = []
         for t in tList:
-           log.info('t %s' % t)
-           c.list.append(getWorkshopByID(t['thingID']))
+           ##log.info('t %s' % t)
+           w = getWorkshopByID(t['thingID'])
+           if w['deleted'] == '0' and w['startTime'] != '0000-00-00':
+               c.list.append(getWorkshopByID(t['thingID']))
 
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_workshops.bootstrap')
@@ -228,7 +230,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_users.bootstrap')

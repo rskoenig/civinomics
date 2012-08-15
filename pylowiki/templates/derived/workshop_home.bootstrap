@@ -3,64 +3,59 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/derived/workshop_home/helpers.mako" />
 
-<div class="row-fluid">
-    <div class="span7">
-            ${lib.slideshow(1)}
-        <div class="civ-col-inner">
-            ${lib.nav_thing("home")}
-        </div> <!-- /.civ-col-inner -->
-    </div> <!-- /.span7 -->
-    <div class="span5">
-        <div class="civ-col civ-well">
-            <h2 class="civ-col">
-                At-A-Glance
-                ${helpers.facilitate()}
-            </h2>
-            <div class="civ-col-inner">
-                ${helpers.at_a_glance()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-    </div> <!-- /.span5 -->
-</div> <!-- /.row-fluid -->
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="container-fluid">
+            <div class="span12">
+                <div class="row">
+                    <div class="span7 well" style="border:1px solid black;">
+                        ${lib.slideshow(1)}
+                        ${lib.nav_thing("home")}
+                    </div><!-- span7 -->
+                    <div class="span5">
+                        ${helpers.at_a_glance()}
+                    </div><!-- span5 -->
+                </div><!-- row -->
+            </div><!-- span12 -->
+        </div><!-- container-fluid -->
+    </div> <!-- /.row-fluid -->
 
-<div class="row-fluid">
-    <div class="span4">
-        <div class="civ-col">
-            <h2 class="civ-col">
-                Resources
-                ${lib.add_a('resource')}
-            </h2>
-            <div class="civ-col-inner">
-                ${lib.list_resources()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-    </div> <!-- /.span4 -->
-    <div class="span5">
-        <div class="civ-col">
-            <h2 class="civ-col">
-                Suggestions
-                ${lib.add_a('suggestion')}
-            </h2>
-            <div class="civ-col-inner">
-                ${helpers.list_suggestions()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-    </div> <!-- /.span5 -->
-    <div class="span3">
-        <div class="civ-col">
-            <h2 class="civ-col">Info &amp; Feedback <div class="pull-right"><i class="icon-volume-up"></i></h2>
-            <div class="civ-col-inner">
-                ${helpers.info_and_feedback()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-        <div class="civ-col">
-            <h2 class="civ-col">${lib.facilitator()}</h2>
-            <div class="civ-col-inner">
-                ${lib.your_facilitator()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-    </div> <!-- /.span3 -->
-</div> <!-- /.row-fluid -->
+    <div class="row-fluid">
+        <div class="span4">
+            <div class="civ-col">
+                <h2 class="civ-col">
+                    <i class="icon-book"></i> Resources
+                </h2>
+                <div class="civ-col-inner">
+                    ${lib.list_resources("There are no information resources for this workshop. Be the first to add one!")}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span4 -->
+        <div class="span5">
+            <div class="civ-col">
+                <h2 class="civ-col">
+                    <i class="icon-pencil"></i> Suggestions
+                </h2>
+                <div class="civ-col-inner">
+                    ${lib.list_suggestions("There are no suggestions yet for this workshop. Be the first to add one!", 1)}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span5 -->
+        <div class="span3">
+            <div class="civ-col">
+                <h2 class="civ-col">
+                    <i class="icon-volume-up"></i> Feedback 
+                </h2>
+                <div class="civ-col-inner">
+                    ${helpers.info_and_feedback()}
+                </div> <!-- /.civ-col-inner -->
+                <div class="civ-col-inner">
+                    ${helpers.motd()}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span3 -->
+    </div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
             
 <%def name = 'extraHTML()'>
 

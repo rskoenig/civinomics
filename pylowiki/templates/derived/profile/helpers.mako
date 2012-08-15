@@ -6,6 +6,7 @@
     from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.db.discussion import getDiscussionByID
     from pylowiki.lib.fuzzyTime import timeSince
+    import textwrap
 %>
 
 
@@ -14,18 +15,13 @@
 </%def>
 
 <%def name="displayProfilePicture()">
-        <ul class="thumbnails">
-        <li>
-        <div class="thumbnail">
         % if c.user['pictureHash'] == 'flash':
-                <img src="/images/avatars/flash.profile" alt="${c.user['name']}" title="${c.user['name']}">
+                <img src="/images/avatars/flash.profile" alt="${c.user['name']}" title="${c.user['name']}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
         % else:
-            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}">
+            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
         % endif
-        </div>
         </li>
         </ul>
-        ${memberAdminControls()}
 </%def>
 
 <%def name="listUser(user, wide)">
@@ -41,9 +37,9 @@
            <ul class="thumbnails">
            <li>
 	   % if user['pictureHash'] == 'flash':
-<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="${user['name']}" title="${user['name']}"/></a>
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}"/></a>
 	   % else:
-<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="${user['name']}" title="${user['name']}"/></a>
+<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}"/></a>
 	   % endif
            </li>
            </ul>
@@ -176,7 +172,6 @@
 </%def>
 
 <%def name="sidebar()">
-	${displayProfilePicture()}
 	% if c.followingUsers:
 		${displayFollowingUsers()}
 	% endif
@@ -203,83 +198,84 @@
 				No tagline.
 			% endif
 			<% mStart = c.user.date.strftime('%B %d, %Y') %>
-			<br>
-			User since <span class="recent">${mStart}</span>
+			<br /> <br />
+			Member since <span class="recent">${mStart}</span>
 		</p>
 	</div> <!-- /.civ-col-inner -->
 </%def>
 
-<%def name="followButton()">
+<%def name="badgesButtons()">
 	<div class="civ-col-inner">
         <p>
-	<span class="badge badge-info"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info"><i class="icon-white icon-ok"></i> ${len(c.user['totalPoints'])}</span> <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${c.flags}</span> <span class="badge badge-info"><i class="icon-white icon-file"></i> ${c.posts}</span> 
+	<span class="badge badge-success" title="Followers"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info" title="Rating"><i class="icon-white icon-ok"></i> ${len(c.user['totalPoints'])}</span> <span class="badge badge-info" title="Resource and suggestion contributions"><i class="icon-white icon-file"></i> ${c.posts}</span> <span class="badge badge-important" title="Flags on contributions"><i class="icon-white icon-flag"></i> ${c.flags}</span>
                 </p>
+                <br />
+                % if c.authuser.id == c.user.id:
+                   % if c.account and c.account['numRemaining'] != '0':
+                      <a href="/addWorkshop"><button class="btn btn-mini btn-primary" title="Click to create a new workshop"><i class="icon-cog icon-white"></i> New Workshop</button></a>
+                    % endif
+                    <a href="/profile/edit"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
+                % endif
+                % if isAdmin(c.authuser.id):
+                   <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning" title="Click to administrate this member"><i class="icon-list-alt icon-white"></i> Admin</button></a>
+                % endif
 		% if c.authuser['email'] != c.user['email']:
-                        <div class="button_container">
+                        <span class="button_container">
 			% if c.isFollowing:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton following">+Following</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-primary followButton following" title="Click to follow/unfollow this member">+Following</button>
 			% else:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-primary followButton unfollow">+Follow</button>
+				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-info followButton unfollow" title="Click to follow/unfollow this member">+Follow</button>
 			% endif
-                        </div>
+                        </span>
 		% endif
 	</div> <!-- /.civ-col-inner -->
 </%def>
 
 <%def name="geoInfo()">
-	<div class="civ-col-inner">
         <table>
         <tbody>
         <tr>
-        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" / class="thumbnail"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">${c.geoInfo[0]['cityTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" width="60" / class="thumbnail" alt="Click to list workshops scoped within the City of ${c.geoInfo[0]['cityTitle']}" title="Click to list workshops scoped within the City of ${c.geoInfo[0]['cityTitle']}"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">City of ${c.geoInfo[0]['cityTitle']}</a></td>
         </tr>
         <tr>
-        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" class="thumbnail"/></a></td><td><a href="${c.geoInfo[0]['countyURL']}">${c.geoInfo[0]['countyTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" width="60" class="thumbnail" alt="Click to list workshops scoped within the County of ${c.geoInfo[0]['countyTitle']}" title="Click to list workshops scoped within the County of ${c.geoInfo[0]['countyTitle']}"/></a></td><td><a href="${c.geoInfo[0]['countyURL']}">County of ${c.geoInfo[0]['countyTitle']}</a></td>
         </tr>
         <tr>
-        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" class="thumbnail"/></a></td><td><a href="${c.geoInfo[0]['stateURL']}">${c.geoInfo[0]['stateTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" class="thumbnail" alt="Click to list workshops scoped within the State of ${c.geoInfo[0]['stateTitle']}" title="Click to list workshops scoped within the State of ${c.geoInfo[0]['stateTitle']}"/></a></td><td><a href="${c.geoInfo[0]['stateURL']}">State of ${c.geoInfo[0]['stateTitle']}</a></td>
         </tr>
         <tr>
         <td><img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" class="thumbnail"/></td><td>United States</a></td>
         </tr>
         <tr>
-        <td><img src="/images/flags/earth_thumb.gif" width="60" class="thumbnail"/></td><td>Earth</td>
+        <td><img src="/images/flags/earth_thumb.gif" width="60" class="thumbnail"/></td><td>Planet Earth</td>
         </tr>
         </tbody>
         </table>
-	</div> <!-- /.civ-col-inner -->
 </%def>
 
 <%def name="displayWorkshop(workshop)">
 	% if workshop['mainImage_hash'] == 'supDawg':
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']}" width="120" height="80" class="thumbnail"></a>
-		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}" width="120" height="80" class="thumbnail"></a>
 	% else:
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="${workshop['mainImage_hash']} width="120" height="80" class="thumbnail"></a>
-		<p><a href="/workshop/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a></p>
+		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" width="120" height="80" class="thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}"></a>
 	% endif
+        <% counter = 0 %>
+        <a href="/workshop/${workshop['urlCode']}/${workshop['url']}">
+        % for line in textwrap.wrap(workshop['title'], 18):
+            <% counter = counter + 1 %>
+            ${line}<br />
+        % endfor
+        </a>
 </%def>
 
 <%def name="listWorkshops(set)">
-		<% wNum = 0 %>
-		% for workshop in set:
-			% if wNum % 6 == 0: ## begin a new row
-			<ul class="unstyled civ-block-list">
-				<li>
-					${displayWorkshop(workshop)}
-				</li>
-			% elif wNum % 6 == 5: ## end a row
-				<li>
-					${displayWorkshop(workshop)}
-				</li>
-			</ul> <!-- /.unstyled -->
-			% else: ## somewhere in between
-				<li>
-					${displayWorkshop(workshop)}
-				</li>
-			% endif
-			<% wNum += 1 %>
-		% endfor
+    <ul class="unstyled civ-block-list">
+    % for workshop in set:
+        <li>
+        ${displayWorkshop(workshop)}
+        </li>
+    % endfor
+    </ul>
 </%def>
 
 <%def name="workshops()">
@@ -415,9 +411,6 @@
 </%def>
 
 <%def name="memberAdminControls()">
-    % if isAdmin(c.authuser.id):
-        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-warning"><i class="icon-user icon-white"></i> Admin Member</button></a>
-    % endif
 </%def>
 
 <%def name="pendingFacilitateInvitations()">
@@ -445,8 +438,8 @@
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
         % endif
         <br /> <br />
-        <button type="submit" name=acceptInvite class="btn btn-success">Accept</button>
-        <button type="submit" name=declineInvite class="btn btn-danger">Decline</button>
+        <button type="submit" name=acceptInvite class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
+        <button type="submit" name=declineInvite class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
         </form>
         <li>
         <% wNum = wNum + 1 %>
@@ -473,7 +466,7 @@
         <h2 class="civ-col">Invite This Member to Facilitate</h2>
         <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
         <br />
-        <button type="submit" class="btn btn-warning"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
+        <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
         % for myW in wList:
             <br />
             <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>

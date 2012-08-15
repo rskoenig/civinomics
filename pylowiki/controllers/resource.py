@@ -75,13 +75,13 @@ class ResourceController(BaseController):
         c.poster = getUserByID(c.resource.owner)
         
         if c.suggestion:
-            c.otherResources = getActiveResourcesByParentID(c.suggestion.id)
+            c.resources = getActiveResourcesByParentID(c.suggestion.id)
         else:
-            c.otherResources = getActiveResourcesByWorkshopID(c.w.id)
-        for i in range(len(c.otherResources)):
-            resource = c.otherResources[i]
+            c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        for i in range(len(c.resources)):
+            resource = c.resources[i]
             if resource.id == c.resource.id:
-                c.otherResources.pop(i)
+                c.resources.pop(i)
                 break
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
         if 'mainRevision_id' in c.resource:
@@ -106,7 +106,7 @@ class ResourceController(BaseController):
         if (s and c.w['allowResources'] == '1') or a or f:
             c.r = False
             c.heading = "OTHER RESOURCES"
-            c.otherResources = getResourcesByWorkshopID(c.w.id)
+            c.resources = getResourcesByWorkshopID(c.w.id)
 
             return render('/derived/resource_edit.bootstrap')
         else:
@@ -121,12 +121,11 @@ class ResourceController(BaseController):
         c.s = getSuggestion(code, urlify(url))
         c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
 
-        a = isAdmin(c.authuser.id)
-        f =  isFacilitator(c.authuser.id, c.w.id)
-        s = isScoped(c.authuser, c.w)
-        if (s and c.w['allowResources'] == '1') or a or f:
+        c.isAdmin = isAdmin(c.authuser.id)
+        c.isFacilitator =  isFacilitator(c.authuser.id, c.w.id)
+        c.isScoped = isScoped(c.authuser, c.w)
+        if (c.isScoped and c.w['allowResources'] == '1') or c.isAdmin or c.isFacilitator:
             c.r = False
-            c.heading = "OTHER RESOURCES"
             c.otherResources = getActiveResourcesByParentID(c.s.id)
 
             return render('/derived/resource_edit.bootstrap')
@@ -150,7 +149,7 @@ class ResourceController(BaseController):
                     c.otherResources.pop(i)
                     break
 
-            return render('/derived/resource_edit.html')
+            return render('/derived/resource_edit.bootstrap')
         else:
             h.flash('You are not authorized a is %s and f is %s'%(a, f), 'error')
             return redirect('/workshop/%s/%s/resource/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.r['urlCode'], urlify(c.r['url'])))
@@ -269,8 +268,15 @@ class ResourceController(BaseController):
                 s = False
 
             w = getWorkshop(code, urlify(url))
+
             # make sure link not already submitted
-            a = getResourceByLink(link, w)
+            if s:
+                a = getResourceByLink(link, s)
+            else:
+                a = getResourceByLink(link, w)
+
+            log.info('a is %s link is %s' % (a, link))
+
             if a:
                 h.flash('Link already submitted for this workshop', 'warning')
                 return redirect('/workshop/%s/%s'%(code, url))
@@ -435,9 +441,11 @@ class ResourceController(BaseController):
         return redirect('/issue/%s/resource/%s'%(i.page.url, a.title))
 
     @h.login_required
-    def flagResource(self, id1):
-        resourceID = id1
-        resource = getResourceByID(resourceID)
+    def flagResource(self, id1, id2):
+        code = id1
+        url = id2
+        resource = getResource(code, urlify(url))
+        resourceID = resource.id
         if not resource:
             return json.dumps({'id':resourceID, 'result':'ERROR'})
         if not isFlagged(resource, c.authuser):

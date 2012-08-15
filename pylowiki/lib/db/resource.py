@@ -38,10 +38,18 @@ def getResourceOld3(urlCode, url, workshop):
     except:
         return False
 
-def getResourceByLink(link, workshop):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('workshop_id', workshop.id))).one()
-    except:
+def getResourceByLink(link, item):
+    if item.objType == 'workshop':
+        try:
+            return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('workshop_id', item.id))).filter(Thing.data.any(wc('parent_id', '0'))).all()
+        except:
+            return False
+    elif item.objType == 'suggestion':
+        try:
+            return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('parent_id', item.id))).all()
+        except:
+            return False
+    else:
         return False
 
 def getResourceByURL(url, workshopID):
@@ -144,7 +152,7 @@ class Resource(object):
              a['parent_id'] = parent.id
              a['parent_type'] = parent.objType
         else:
-             a['parent_id'] = None
+             a['parent_id'] = 0
              a['parent_type'] = None
         a['type'] = 'post'
         a['pending'] = False

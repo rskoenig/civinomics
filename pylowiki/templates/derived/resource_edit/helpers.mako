@@ -5,40 +5,6 @@
     log = logging.getLogger(__name__)
 %>
 
-<%def name='spacer()'>
-    ## A spacer
-    <div class="row-fluid">
-        <br />
-    </div>
-</%def>
-
-<%def name='inlineSpacer(amount)'>
-    <div class="span${amount}">
-        <p></p>
-    </div>
-</%def>
-
-<%def name="workshopTitle(cW)">
-    <ul class="unstyled nav-thing">
-        <li>
-            <a href = "/workshop/${cW['urlCode']}/${cW['url']}">${cW['title']}</a>
-        </li>
-        % if c.s:
-            <li>
-                <a href = "/workshop/${cW['urlCode']}/${cW['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a>
-            </li>
-        % endif
-    </ul>
-</%def>
-
-<%def name="suggestionTitle(cW, cS)">
-    <ul class="unstyled nav-thing">
-        <li>
-            <a href = "/workshop/${cW['urlCode']}/${cW['url']}">${cW['title']}</a>
-        </li>
-    </ul>
-</%def>
-
 <%def name="addResourceForm(c)">
             % if c.r:
                 <form id="edit_resource" action = "${c.site_secure_url}/saveResource/${c.r['urlCode']}/${c.r['url']}" class="form-vertical" method = "post">
@@ -57,6 +23,7 @@
             % endif
 
             <fieldset>
+                <br />
                 <div class="control-group">
                     <label class="control-label"><strong>Resource URL:</strong></label>
                     <div class="controls docs-input-sizes">

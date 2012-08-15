@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.db.user import getUserByID, isAdmin
     from pylowiki.lib.db.facilitator import isFacilitator
+    from pylowiki.lib.fuzzyTime import timeSince
 
     import logging
     log = logging.getLogger(__name__)
@@ -19,49 +20,34 @@
     </div>
 </%def>
 
-<%def name="workshopTitle(cW)">
-    <ul class="unstyled nav-thing">
-        <li class="current">
-            <a href = "/workshop/${cW['urlCode']}/${cW['url']}">${cW['title']}</a>
-        </li>
-    </ul>
+<%def name="workshopTitle()">
+    <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
 </%def>
 
 <%def name="showTitle(title)">
     <h1 style="text-align:center;">${title}</h1>
 </%def>
 
-<%def name="suggestionAndWorkshopTitle(cW, cS)">
-    <p>
-        <strong class="issue_name"><a href="/workshop/${cW['urlCode']}/${cW['url']}/suggestion/${cS['urlCode']}/${cS['url']}">${cS['title']}</a></strong>
-        <br />
-        Workshop: <a href="/workshop/${cW['urlCode']}/${cW['url']}">${cW['title']}</a>
-        <br />
-    </p>
-</%def>
-
-<%def name="suggestionAuthor(directoryNumber, cAuthor, wId)">
-    <div class="row-fluid">
-        <div class="span4">
-            % if cAuthor['pictureHash'] == 'flash':
-                <a href="/profile/${cAuthor['urlCode']}/${cAuthor['url']}"><img src="/images/avatars/flash.profile" alt="avatar" class="right" style="width:50px;}"/></a>
-            % else:
-                <a href="/profile/${cAuthor['urlCode']}/${cAuthor['url']}"><img src="/images/avatar/${directoryNumber}/thumbnail/${cAuthor['pictureHash']}.thumbnail" alt="avatar" class="right"/></a>
-            % endif
-        </div>
-    </div>
-    % if isAdmin(cAuthor.id):
+<%def name="suggestionInfo()">
+    <% author = getUserByID(c.s.owner) %>
+    % if isAdmin(c.s.owner):
        <% uTitle = ' (Admin)' %>
-    % elif isFacilitator(cAuthor.id, wId):
+    % elif isFacilitator(c.s.owner, c.w.id):
        <% uTitle = ' (Facilitator)' %>
     % else:
        <% uTitle = '' %>
     % endif
-    <div class="row-fluid">
-        <span style="text-align:right;">
-            Author: <a href="/profile/${cAuthor['urlCode']}/${cAuthor['url']}">${cAuthor['name']}</a>${uTitle}
-        </span>
-    </div>
+    <h3><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a></h3>
+    <ul class="unstyled civ-col-list">
+    <li class="post">
+    % if author['pictureHash'] == 'flash':
+        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.thumbnail" alt="${author['name']}" title="${author['name']}" class="thumbnail" style="width:30px;}"/></a>
+    % else:
+        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail"/></a>
+    % endif
+            &nbsp;By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>${uTitle} <span class="recent">${timeSince(c.lastmoddate)}</span> ago</li>
+    </li>
+    <ul>
 </%def>
 
 <%def name="suggestionContent(content)">
@@ -73,20 +59,9 @@
 <%def name="suggestionEditAdminRating(cAuthuser, cwOwner, cs, cIsAdmin, session, cRating)">
     <div class="row">
         <div class="span4 offset4">
+            <br />
             <table>
                 <tbody>
-                    <tr>
-                        <td>
-                            % if cAuthuser and (cAuthuser.id == cwOwner or cIsAdmin):
-                                <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}">admin suggestion</a>&nbsp;&nbsp;
-                            % endif
-                        </td>
-                        <td>
-                            % if cAuthuser and (cAuthuser.id == csOwner or cIsAdmin):
-                                <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}">edit suggestion</a>
-                            % endif
-                        </td>
-                    </tr>
                     <tr>
                         <td colspan="2">
                             % if "user" in session:
@@ -106,27 +81,83 @@
                             % endif
                         </td>
                     </tr>
+                    <tr>
+                        <td colspan=2>
+                            % if cAuthuser and (cAuthuser.id == cwOwner or cIsAdmin):
+                                <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Administrate Suggestion"><i class="icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
+                            % endif
+                            % if cAuthuser and (cAuthuser.id == csOwner or cIsAdmin):
+                                <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Edit Suggestion"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
+                            % endif
+                            <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini flagButton" title="Flag Suggestion"><i class="icon-flag"></i> Flag</a> &nbsp; &nbsp;
+                            <span id="flag_0"></span>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
 </%def>
 
-<%def name="showResources()">
-    <ul id="show_resources" class="unstyled">
-        % if len(c.resources) == 0:
+<%def name="showSuggestions()">
+    % if len(c.resources) < 3:
+        <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
+        <ul id="show_suggestions" class="unstyled civ-col-list">
+        % if len(c.suggestions) == 0:
             <li>
-                No resources!
+                No suggestions!
             </li>
         % else:
-            % for resource in c.resources:
-                <% author = getUserByID(resource.owner)%>
-                <li>
-                    <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a></strong>
+            % for suggestion in c.suggestions:
+                <% author = getUserByID(suggestion.owner)%>
+                <li class="post">
+                    <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a></strong>
                     <br />
-                    <span class="gray">By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span>
+                    % if author['pictureHash'] == 'flash':
+                        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail" style="width:30px;}"/></a>
+                    % else:
+                        <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail"/></a>
+                    % endif
+                    &nbsp;By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
                 </li>
             % endfor
         % endif
-    </ul> <!-- show_resource -->
+        </ul> <!-- show_suggestion -->
+    % endif <!-- resources less than 3 -->
+</%def>
+
+<%def name="showResources()">
+        <h2 class="civ-col"><i class="icon-book"></i> Suggestion Resources <span class="pull-right"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Add a resource with information about this suggestion"><i class="icon-plus"></i></a></span></h2>
+	% if len(c.resources) == 0:
+		<div class="alert alert-warning">
+			No information resources for this suggestion found. Be the first to add one!
+		</div> <!-- /.alert.alert-danger -->
+	% else:
+		<ul class="unstyled civ-col-list">
+		% for resource in c.resources:
+			<% author = getUserByID(resource.owner) %>
+			% if resource['type'] == "post":
+				<li class="post">
+					<h3>
+						<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">
+							${resource['title']}
+						</a>
+					</h3>
+					<p>
+						<i class="icon-book"></i>${resource['comment'][:40]}...<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
+					<p>
+                                         % if author['pictureHash'] == 'flash':
+                                             <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
+                                         % else:
+                                             <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
+                                         % endif
+
+						&nbsp;by <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
+						<span class="old">${timeSince(resource.date)}</span> ago
+					</p>
+				</li>
+			% endif
+		% endfor
+		</ul>
+	% endif
 </%def>

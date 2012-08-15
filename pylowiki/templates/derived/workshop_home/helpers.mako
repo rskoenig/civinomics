@@ -3,133 +3,152 @@
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.discussion import getDiscussionByID
+    from pylowiki.lib.db.comment import getFlaggedDiscussionComments
     from pylowiki.lib.db.resource import getResourcesByParentID
     from pylowiki.lib.db.flag import getFlags
     from pylowiki.lib.fuzzyTime import timeSince, timeUntil
 %>
+<%namespace file="/lib/mako_lib.mako" name="lib" />
 
 <%def name="at_a_glance()">
-    <p><strong>Goals</strong>: ${c.w['goals']}</p>
-    <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
-    <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>
-
-        % if c.w['startTime'] != '0000-00-00': 
-	     <p><strong>Started:</strong> <span class="recent">${timeSince(c.w['startTime'])}</span> ago<br />
-	     <strong>Ends:</strong> <span class="old">${timeUntil(c.w['endTime'])}</span> from now</p>
-        % else:
-	     <p><strong>Started:</strong> <span class="recent">Not yet published.</span> ago<br />
-	     <strong>Ends:</strong> <span class="old">Not yet published.</span> from now</p>
+    <% numComments = 0 %>
+    <% numFlags = 0 %>
+    % for item in c.resources:
+        <% d = getDiscussionByID(item['discussion_id']) %>
+        <% cF = getFlaggedDiscussionComments(d.id) %>
+        % if cF:
+            <% numFlags = numFlags + len(cF) %>
         % endif
+        <% numComments = numComments + int(d['numComments']) %>
+        <% nF = getFlags(item.id) %>
+        % if nF:
+            <% numFlags = numFlags + len(nF) %>
+        % endif
+    % endfor
+    % for item in c.suggestions:
+        <% d = getDiscussionByID(item['discussion_id']) %>
+        <% cF = getFlaggedDiscussionComments(d.id) %>
+        % if cF:
+            <% numFlags = numFlags + len(cF) %>
+        % endif
+        <% numComments = numComments + int(d['numComments']) %>
+        <% sResources = getResourcesByParentID(item.id) %>
+        <% nF = getFlags(item.id) %>
+        % if nF:
+            <% numFlags = numFlags + len(nF) %>
+        % endif
+        % for sR in sResources:
+           <% d = getDiscussionByID(sR['discussion_id']) %>
+           <% cF = getFlaggedDiscussionComments(d.id) %>
+           % if cF:
+               <% numFlags = numFlags + len(cF) %>
+           % endif
+           <% numComments = numComments + int(d['numComments']) %>
+           <% nF = getFlags(sR.id) %>
+           % if nF:
+               <% numFlags = numFlags + len(nF) %>
+           % endif
+        % endfor
+    % endfor
+    <% numComments = numComments + int(c.discussion['numComments']) %>
+    <% cF = getFlaggedDiscussionComments(c.discussion.id) %>
+    % if cF:
+        <% numFlags = numFlags + len(cF) %>
+    % endif
+    <table>
+    <thead>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png" alt="Workshop Name" title="Workshop Name"></td><td><strong>Name</strong>: ${c.w['title']}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_025_binoculars.png" alt="Workshop Goals" title="Workshop Goals"></td><td><strong>Goals</strong>: ${c.w['goals']}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_066_tags.png" alt="Workshop Tags" title="Workshop Tags"></td><td><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png" alt="Workshop Public Sphere" title="Workshop Public Sphere"></td><td><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_054_clock.png" alt="Workshop Start and End" title="Workshop Start and End"></td>
 
-    <p><span class="badge badge-success"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> <span class="badge badge-success"><i class="icon-white icon-book"></i>${len(c.resources)}</span> <span class="badge badge-info"><i class="icon-white icon-user"></i>${len(c.followers)}</span></p>
-    <p><strong>Participants</strong>: ${len(c.participants)}</p>
-
+    % if c.w['startTime'] != '0000-00-00': 
+        <td><strong>Started:</strong> <span class="recent">${timeSince(c.w['startTime'])}</span> ago<br />
+        <strong>Ends:</strong> <span class="old">${timeUntil(c.w['endTime'])}</span> from now</td>
+    % else:
+        <td><strong>Started:</strong> <span class="recent">Not yet started.</span><br />
+        <strong>Ends:</strong> <span class="old">Not yet started.</span></td>
+    % endif
+    <tr><td>&nbsp;</td></tr>
+    </tr>
+    <tr>
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_280_settings.png" alt="Workshop Total Activity" title="Workshop Total Activity"></td>
+    <td><strong>Activity</strong>: <span class="badge badge-info" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> &nbsp; <span class="badge badge-info" title="Information resources in workshop"><i class="icon-white icon-book"></i>${len(c.resources)}</span> &nbsp; <span class="badge badge-info" title="Comments in workshop"><i class="icon-white icon-comment"></i>${numComments}</span> &nbsp; <span class="badge badge-success" title="Workshop followers"><i class="icon-white icon-user"></i>${len(c.followers)}</span> &nbsp; <span class="badge badge-success" title="Adopted suggestions in workshop"><i class="icon-white icon-heart"></i>${len(c.asuggestions)}</span> &nbsp; <span class="badge badge-important" title="Flags in workshop"><i class="icon-white icon-flag"></i>${numFlags}</span></td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+	    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_023_cogwheels.png" alt="Participate!" title="Participate!"></td><td><strong>Participate!</strong> 
+    ${lib.add_a("resource")}
+    ${lib.add_a("suggestion")}
+    ${lib.add_a("feedback")}
     % if not c.isFacilitator:
-	    % if c.isFollowing:
-		    <button class="btn btn-primary followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Following</button>
-		% else:
-			<button class="btn btn-primary followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}">Follow</button>
-		% endif
-	% endif
+        % if c.isFollowing:
+            <button class="btn btn-primary btn-mini followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}" title="Click to follow/unfollow this workshop">+Following</button>
+        % else:
+            <button class="btn btn-primary btn-mini followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}" title="Click to follow/unfollow this workshop">+Follow</button>
+        % endif
+    % endif 
+    </td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr>
+    % if len(c.facilitators) == 1:
+        <% fTitle = "Facilitator" %>
+    % else:
+        <% fTitle = "Facilitators" %>
+    % endif
+
+    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_029_notes_2.png" alt="Workshop ${fTitle}" title="Workshop ${fTitle}"></td><td><table><thead><tr><td><strong>${fTitle}</strong>:</td>
+                <td>&nbsp;&nbsp;</td>
+                % for facilitator in c.facilitators:
+                        <td>
+                        <% fuser = getUserByID(facilitator.owner) %>
+                        % if fuser['pictureHash'] == 'flash':
+                            <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.thumbnail" alt="${fuser['name']}" title="${fuser['name']}" class="thumbnail"></a>
+                        % else:
+                            <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/thumbnail/${fuser['pictureHash']}.thumbnail" alt="${fuser['name']}" title="${fuser['name']}" class="thumbnail"></a>
+                        % endif
+                        </td>
+                        <td>&nbsp;&nbsp;</td>
+                %endfor
+                </tr>
+                </thead>
+                </table>
+    </td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    </thead>
+    </table>
+    <br /><br />
 </%def>
 
-<%def name="facilitate()">
-    % if c.isAdmin or c.isFacilitator:
-	    <div class="pull-right dropdown" id="workshop_config">
-	    	<a class="dropdown-toggle" data-toggle="dropdown" href="#workshop_config">
-	    		<img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png" height="12" width="12">
-	    	</a>
-	    	<ul class="dropdown-menu normal">
-	    		<li>
-	    			<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/addImages">Add slideshow images</a>
-	    		</li>
-	    		<li>
-	    			<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/editSlideshow">Edit slideshow</a>
-	    		</li>
-	    		<li>
-	    			<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/configure">Configure workshop</a>
-	    		</li>
-	    		<li>
-	    			<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/admin">Admin workshop</a>
-	    		</li>
-	    	</ul>
-	    </div>
+<%def name="motd()">
+    % if c.motd:
+        <h2 class="civ-col"><i class="icon-list-alt"></i> Facilitator Message</h2>
+        <p>${c.motd['data']}</p>
     % endif
 </%def>
 
-<%def name="list_suggestions()">
-	% if c.suggestions == None or len(c.suggestions) == 0:
-		<p>No suggestions.</p>
-	% else:
-		<div class="civ-col-list">
-                <table>
-                <tbody>
-		<% counter = 1 %>
-		% for suggestion in c.suggestions:
-                        <tr>
-                        <td colspan=3>
-			<% author = getUserByID(suggestion.owner) %>
-			<% discussion = getDiscussionByID(suggestion['discussion_id']) %>
-                        <% flags = getFlags(suggestion) %>
-                        <% resources = getResourcesByParentID(suggestion.id) %>
-                        <h3>
-                        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
-                        </h3>
-                        ${suggestion['suggestionSummary']}
-                        </td>
-                        </tr>
-                        <tr>
-                        <td valign="top">
-                        % if author['pictureHash'] == 'flash':
-                            <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
-                        % else:
-                            <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
-                        % endif
-                        </td>
-                        <td valign="top">
-                            <i class="icon-pencil"></i><a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
-                            <span class="badge badge-info"><i class="icon-white icon-book"></i>${len(resources)}</span> <span class="badge badge-info"><i class="icon-white icon-comment"></i>${discussion['numComments']}</span> <span class="badge badge-important"><i class="icon-white icon-flag"></i>${len(flags)}</span>
-                        </td>
-                        <td valign="top">
-
-                            % if 'user' in session:
-                                <div id="ratings${counter}" class="rating">
-                                    <div id="overall_slider" class="ui-slider-container clearfix">
-            			    % if suggestion.rating:
-                                        <div id="${suggestion['urlCode']}_${suggestion['url']}" class="small_slider" data1="0_${suggestion['urlCode']}_${suggestion.rating['rating']}_overall_true_rateSuggestion" data2="${suggestion['url']}"></div>
-                                    % else:
-                                        <div id="${suggestion['urlCode']}_${suggestion['url']}" class="small_slider" data1="0_${suggestion['urlCode']}_0_overall_false_rateSuggestion" data2="${suggestion['url']}"></div>
-                                    % endif
-                                    </div> <!-- /#overall_slider -->
-                                </div> <!-- /#ratings${counter} -->
-                            % endif
-                            </td>
-                            </tr>
-                            <tr>
-                            <td colspan=3>
-                	        <i class="icon-time"></i> <span class="recent">${timeSince(suggestion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave a comment</a>
-                             </td>
-                             </tr>
-                             <tr><td colspan=3><hr></td></tr>
-			<% counter += 1 %>
-		% endfor
-                </tbody>
-                </table>
-		</div>
-	% endif
-</%def>
-
 <%def name="info_and_feedback()">
-	% if c.discussion['numComments'] == 1:
-		<% commentString = 'comment' %>
-	% else:
-		<% commentString = 'comments' %>
-	% endif
 	<p>
 		<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Learn more</a> about the workshop and facilitation process.
 	</p>
 	<p>
-		<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">${c.discussion['numComments']} ${commentString}</a> | <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Give feedback</a>
+		<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback"><span class="badge badge-info"><i class="icon-white icon-comment"></i>${c.discussion['numComments']}</span></a> | <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Give feedback</a>
 	</p>
 </%def>
-
