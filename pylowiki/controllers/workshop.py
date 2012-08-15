@@ -4,6 +4,7 @@ import time, datetime
 from formencode import validators, htmlfill
 from formencode.compound import All
 from formencode.foreach import ForEach
+from ordereddict import OrderedDict
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -1058,6 +1059,13 @@ class WorkshopController(BaseController):
 
         slideshow = getSlideshow(c.w['mainSlideshow_id'])
         c.slideshow = getAllSlides(slideshow.id)
+        c.published_slides = []
+        slide_ids = [int(item) for item in slideshow['slideshow_order'].split(
+',')]
+        for id in slide_ids:
+            s = getSlide(id) # Don't grab deleted slides
+            if s:
+                c.published_slides.append(s)
 
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitatorsByWorkshop(c.w.id)

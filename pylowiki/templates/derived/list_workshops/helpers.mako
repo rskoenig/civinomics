@@ -10,15 +10,15 @@
 
 <%def name="featured_workshop()">
 	% if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode'] and c.action == 'sitemapIssues':
-		<div class="civ-img-cap">
-		    <% mainWorkshop = c.paginator.pop() %>
+		<div class="civ-img-cap" style="border:1px solid black;">
+		    <% mainWorkshop = c.paginator.pop(0) %>
 		    % if mainWorkshop['mainImage_hash'] == 'supDawg':
 		        <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'>
-				    <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" style="max-width: 100%">
+				    <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" style="max-width: 100%" alt="${mainWorkshop['title']}" title="${mainWorkshop['title']}">
 				</a>
 			% else:
 				<a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'>
-					<img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_directoryNum']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" style="max-width: 100%">
+					<img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_directoryNum']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" style="max-width: 100%" alt="${mainWorkshop['title']}" title="${mainWorkshop['title']}">
 				</a>
 			% endif
 			<div class="cap">

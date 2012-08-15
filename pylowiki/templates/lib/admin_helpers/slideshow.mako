@@ -196,7 +196,7 @@
 <div class="column" id="published">
         <h2 style="text-align:center;">Published slides</h2>
     ##<h2 style="text-align:center;">Published slides</h2>
-    % for slide in c.slideshow:
+    % for slide in c.published_slides:
         % if int(slide['deleted']) == 0:
             <div class="portlet" id = "portlet_${slide.id}">
                 <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>

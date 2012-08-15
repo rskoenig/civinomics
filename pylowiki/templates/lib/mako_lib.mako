@@ -323,8 +323,12 @@
 			<!-- <span class="currSlide${counter}"></span> -->
 		</div>
 		<div class="slideshow${counter}">
-                <% slideshowID = c.w['mainSlideshow_id'] %>
-                <% slideList = getAllSlides(slideshowID) %>
+                % if c.slides:
+                     <% slideList = c.slides %>
+                % else:
+                     <% slideshowID = c.w['mainSlideshow_id'] %>
+                     <% slideList = getAllSlides(slideshowID) %>
+                % endif
                 %for slide in slideList:
                     %if slide['deleted'] != '1':
                         % if slide['pictureHash'] == 'supDawg':
