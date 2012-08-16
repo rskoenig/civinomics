@@ -99,6 +99,21 @@
 	% endif
 </%def>
 
+<%def name="fields_alert()">
+    % if 'alert' in session:
+        <% alert = session['alert'] %> 
+        <div class="alert alert-${alert['type']}">
+            <button data-dismiss="alert" class="close">Ã—</button>
+            <strong>${alert['title']}</strong>
+            ${alert['content']}
+        </div>
+        <% 
+           session.pop('alert')
+           session.save()
+        %>
+    % endif
+</%def>
+
 <%def name="list_resources(errorMsg)">
 	% if len(c.resources) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
