@@ -9,6 +9,7 @@
 </%def>
 
 <%def name="resource_events()">   
+    <p><h3><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}">${c.resource['title']}</a></h3></p>
     Added by member <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a> 
     <br /><br />
     Link: ${c.resource['link']}

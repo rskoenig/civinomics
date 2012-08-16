@@ -1,41 +1,46 @@
 <%inherit file="/base/template.bootstrap"/>
 
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/derived/suggestion_edit/helpers.mako" />
+<%namespace name="suggestion_helpers" file="/derived/suggestion/helpers.mako" />
 
+<div class="container-fluid">
 <div class="row-fluid">
-    ${helpers.spacer()}
-    <div class="span12">
-        ${helpers.workshopTitle(c.w)}
-        ${helpers.spacer()}
+    <div class="span12 well">
+        ${suggestion_helpers.workshopTitle()}
+        <br />
+        ${lib.nav_thing("")}
+        <br />
     </div>
 </div>
 
 <div class="row-fluid">    
     ## Left column
-    <div class="span7">
+    <div class="span8">
         <div class="civ-col">
             % if c.s:
-                <h2 class="civ-col">Edit Suggestion</h2>
+                <h2 class="civ-col"><i class="icon-pencil"></i> Edit Suggestion</h2>
             % else:
-                <h2 class="civ-col">Add Suggestion</h2>
+                <h2 class="civ-col"><i class="icon-pencil"></i> Add Suggestion</h2>
             % endif
             ${helpers.addSuggestionForm(c)}
         </div> <!-- /.civ-col -->
     </div>
     
     ## Right column
-    <div class="span3" style="text-align:left;">
+    <div class="span4" style="text-align:left;">
         % if c.message:
             ${helpers.showMessage()}
         % endif
         <div class="civ-col">
-            <h2 class="civ-col">Other Suggestions</h2>
-            <div class="civ-col-inner">
-                ${helpers.spacer()}
-                ${helpers.listOtherSuggestions(c, author)}
-            </div> <!-- /.civ-col-inner -->
+            <h2 class="civ-col"><i class="icon-cog"></i> Workshop Goals</h2>
+            ${c.w['goals']}
+            <br /> <br />
+            <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
+            ${lib.list_suggestions("No other suggestions for this workshop.")}
         </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->
+</div>
 </div> <!-- /.row-fluid -->
 
 <%def name = 'extraStyles()'>

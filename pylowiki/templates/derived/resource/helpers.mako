@@ -1,18 +1,21 @@
 <%!
 	from pylowiki.lib.fuzzyTime import timeSince
 	from pylowiki.lib.db.user import getUserByID
+	from pylowiki.lib.db.flag import getFlags
 %>
 
 <%def name="nav_thing()">
-    % if c.suggestion:
+    % if c.suggestion or c.s:
+        % if c.s:
+            <% s = c.s %>
+        % else:
+            <% s = c.suggestion %>
+        % endif
+        <br />
         <p>
-        <strong><a href="/workshop/${c.suggestion['workshopCode']}/${c.suggestion['workshopURL']}/suggestion/${c.suggestion['urlCode']}/${c.suggestion['url']}">${c.suggestion['title']}</a></strong>
+        <strong><i class="icon-pencil"></i> <a href="/workshop/${s['workshopCode']}/${s['workshopURL']}/suggestion/${s['urlCode']}/${s['url']}">${s['title']}</a></strong>
         </p>
     % endif
-</%def>
-
-<%def name="displayType()">
-	Resource &mdash; ${c.resource['type']}
 </%def>
 
 <%def name="displayRating()">
@@ -31,7 +34,16 @@
 	<h3><a href="${c.resource['link']}" target="_blank" alt="${c.resource['title']}">${c.resource['title']}</a></h3>
 	(${c.resource['domain']}.${c.resource['tld']})
 	<br>
-	Posted <span class="recent">${timeSince(c.resource.date)}</span> by <a href="/profile/${c.poster['urlCode']}/${c.poster['url']}">${c.poster['name']}</a>
+        <% author = c.poster %>
+        <ul class="unstyled civ-col-list">
+        <li class="post">
+        % if author['pictureHash'] == 'flash':
+            <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail" style="width:30px;}"/></a>
+        % else:
+            <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail"/></a>
+        % endif
+        &nbsp;By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> <span class="recent">${timeSince(c.resource.date)}</span> ago
+        </li>
 </%def>
 
 <%def name="displayResourceComment()">
@@ -51,43 +63,27 @@
 				${displayMetaData()}
 			</div>
 		</div>
-
 		<div class="row-fluid resource-comment">
 			<div class="span12">
 				${displayResourceComment()}
 			</div> <!-- .span12 -->
 		</div> <!-- .row-fluid -->
-	</div> <!-- /.span11 -->
-</%def>
+		<div class="row-fluid">
+			<div class="span12">
+                           % if c.isFacilitator or c.isAdmin:
+                               <% rFlags = getFlags(c.resource) %>
+                               % if rFlags and len(rFlags) > 0:
+                                   <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
+                               % endif
+                               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini" title="Administrate Resource"><i class="icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
+                           % endif
+                           % if (c.authuser and c.authuser.id == c.poster.id) or c.isAdmin or c.isFacilitator:
+                               <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini" title="Edit Resource"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
+                           % endif
+                           <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini flagButton" title="Flag Resource"><i class="icon-flag"></i> Flag</a> &nbsp; 
+                        <span id="flag_0"></span>
+			</div> <!-- .span12 -->
+		</div> <!-- .row-fluid -->
 
-<%def name="displayOtherResources()">
-	% if len(c.otherResources) == 0:
-		<div class="alert alert-danger">
-			No other resources found.
-		</div> <!-- /.alert.alert-danger -->
-	% else:
-		<ul class="unstyled civ-col-list">
-		% for resource in c.otherResources:
-			<% author = getUserByID(resource.owner) %>
-			% if resource['type'] == "post":
-				<li class="post">
-					<h3>
-						<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">
-							${resource['title']}
-						</a>
-					</h3>
-					<p>
-						<img src="/images/glyphicons_pro/glyphicons/png/glyphicons_039_notes@2x.png" height="50" width="40" style="float: left; margin-right: 5px;">${resource['comment'][:50]}...
-					</p>
-					<p><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a></p>
-					<p>
-						posted by 
-						<a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a>
-						<span class="old">${timeSince(resource.date)}</span> ago
-					</p>
-				</li>
-			% endif
-		% endfor
-		</ul>
-	% endif
+	</div> <!-- /.span11 -->
 </%def>

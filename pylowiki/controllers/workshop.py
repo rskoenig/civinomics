@@ -4,18 +4,19 @@ import time, datetime
 from formencode import validators, htmlfill
 from formencode.compound import All
 from formencode.foreach import ForEach
+from ordereddict import OrderedDict
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.workshop import Workshop, getWorkshop, isScoped
-from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope
+from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles
 from pylowiki.lib.db.revision import get_revision
-from pylowiki.lib.db.slideshow import getSlideshow
+from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
-from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
+from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
@@ -110,19 +111,16 @@ class WorkshopController(BaseController):
     def addWorkshop(self):
         c.account = getUserAccount(c.authuser.id)
         if c.account and c.account['numRemaining'] > 0:
-        #if int(c.authuser['accessLevel']) >= 100:
-        #if self._checkAccess(100):
-            #return render('/derived/createIssue.mako')
-            c.title = "Create Workshop"
+            c.title = "Create New Workshop"
             c.heading = "Basic information"
-            c.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-            c.days = range(1, 32)
-            c.years = range(2012, 2021)
-            c.maxSlideshowEntries = 10
+
+            # tracks remaining number of workshops which can
+            # be created by this user
             numRemaining = c.account['numRemaining'] 
             numRemaining = int(numRemaining) - 1
             c.account['numRemaining'] = numRemaining
             commit(c.account)
+
             return render('/derived/workshop_create.bootstrap')
         else:
             h.flash("You are not authorized to view that page", "warning")
@@ -163,6 +161,362 @@ class WorkshopController(BaseController):
         return "ok"
 
     @h.login_required
+    def configureBasicWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Configure Workshop"
+
+        c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
+        werror = 0
+        wchanges = 0
+        weventMsg = ''
+        werrMsg = 'Missing Info: '
+        wstarted = 0
+        if c.w['startTime'] != '0000-00-00':
+           wstarted = 1
+
+        ##log.info('wstarted is %s' % wstarted)
+
+        # Is there anything more painful than form validation?
+        # I don't think so...
+
+        if 'title' in request.params:
+            wTitle = request.params['title']
+            wTitle = wTitle.lstrip()
+            wTitle = wTitle.rstrip()
+            if wTitle and wTitle != c.w['title']:
+                c.w['title'] = wTitle
+                wchanges = 1
+                weventMsg = weventMsg + "Updated name. "
+        else:
+            werrMsg += 'Name '
+            werror = 1
+
+        if 'goals' in request.params:
+           wGoals = str(request.params['goals'])
+           wGoals = wGoals.lstrip()
+           wGoals = wGoals.rstrip()
+           if wGoals and wGoals != c.w['goals']:
+               c.w['goals'] = wGoals
+               wchanges = 1
+               weventMsg = weventMsg + "Updated goals. "
+        else:
+           werror = 1
+           werrMsg += 'Goals '
+
+        ##log.info('Got wGoals %s' % wGoals)
+        if 'allowSuggestions' in request.params:
+           allowSuggestions = request.params['allowSuggestions']
+           if (allowSuggestions == '1' or allowSuggestions == '0') and allowSuggestions != c.w['allowSuggestions']:
+              wchanges = 1
+              weventMsg = weventMsg + "Changed allowSuggestions from " + c.w['allowSuggestions'] + " to " + allowSuggestions + "."
+              c.w['allowSuggestions'] = allowSuggestions
+        else:
+           werror = 1
+           werrMsg += 'Allow Suggestions '
+
+        if 'allowResources' in request.params:
+           allowResources = request.params['allowResources']
+           if (allowResources == '1' or allowResources == '0') and allowResources != c.w['allowResources']:
+              wchanges = 1
+              weventMsg = weventMsg + "Changed allowResources from " + c.w['allowResources'] + " to " + allowResources + "."
+              c.w['allowResources'] = allowResources
+        else:
+           werror = 1
+           werrMsg += 'Allow Resources '
+
+        if not wstarted:
+            if 'publicTags' in request.params:
+              publicTags = request.params.getall('publicTags')
+              wpTags = ','.join(publicTags)
+              if wpTags and wpTags != c.w['publicTags']:
+                  wchanges = 1
+                  weventMsg = weventMsg + "Updated workshop tags."
+                  c.w['publicTags'] = wpTags
+            else:
+              werror = 1
+              werrMsg += 'System Tags '
+   
+            if 'memberTags' in request.params:
+              wMemberTags = request.params['memberTags']
+              wMemberTags = wMemberTags.lstrip()
+              wMemberTags = wMemberTags.rstrip()
+              if wMemberTags and c.w['memberTags'] != wMemberTags:
+                  wchanges = 1
+                  weventMsg = weventMsg + "Updated facilitator contributed tags."
+                  c.w['memberTags'] = wMemberTags
+              else:
+                werror = 1
+                werrMsg += 'Member Tags '
+            else:
+              werror = 1
+              werrMsg += 'Member Tags '
+
+        # save successful changes
+        if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
+            commit(c.w)
+            Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+
+        if werror:
+            alert = {'type':'error'}
+            alert['title'] = werrMsg
+            session['alert'] = alert
+            session.save()
+        else:
+            if isFacilitator(c.authuser.id, c.w.id):
+                commit(c.w)
+                alert = {'type':'success'}
+                alert['title'] = 'Workshop basic information saved!'
+                session['alert'] = alert
+                session.save()
+
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+
+    @h.login_required
+    def configureSingleWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Configure Workshop"
+
+        c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
+        werror = 0
+        wstarted = 0
+        if c.w['startTime'] != '0000-00-00':
+           wstarted = 1
+
+        ##log.info('wstarted is %s' % wstarted)
+
+        # Is there anything more painful than form validation?
+        # I don't think so...
+
+        if 'publicPostal' in request.params:
+           pTest = request.params['publicPostal']
+           sTest = getGeoScope(pTest, 'united-states')
+           if sTest:
+               c.w['publicPostal'] = request.params['publicPostal']
+           else:
+              werror = 1
+              werrMsg = 'Postal Code of ' + pTest + ' does not exist.'
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Home Postal'
+
+        if 'publicScope' in request.params:
+           c.w['publicScope'] = request.params['publicScope']
+           c.w['scopeMethod'] = 'publicScope'
+           c.w['publicScopeTitle'] = getScopeTitle(c.w['publicPostal'], 'United States', c.w['publicScope'])
+           c.w['publicPostalList'] = ''
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Public Sphere'
+           alert = {'type':'error'}
+           alert['title'] = werrMsg
+           session['alert'] = alert
+           session.save()
+           return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+        if isFacilitator(c.authuser.id, c.w.id) and werror == 0:
+           alert = {'type':'success'}
+           alert['title'] = "Workshop Eligibility Saved!"
+           session['alert'] = alert
+           session.save()
+           Event('Workshop Config Updated by %s'%c.authuser['name'], 'Public Sphere updated.', c.w, c.authuser)
+           commit(c.w)
+        else:
+           alert = {'type':'error'}
+           alert['title'] = werrMsg
+           session['alert'] = alert
+           session.save()
+
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+
+    @h.login_required
+    def configureMultipleWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Configure Workshop"
+
+        c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
+        werror = 0
+        werrMsg = 'Missing Info: '
+        wstarted = 0
+        if c.w['startTime'] != '0000-00-00':
+           wstarted = 1
+
+        ##log.info('wstarted is %s' % wstarted)
+
+        # Is there anything more painful than form validation?
+        # I don't think so...
+
+        if 'publicPostalList' in request.params:
+           pString = request.params['publicPostalList']
+           log.info('publicPostalList is %s' % pString)
+           pString = pString.lstrip()
+           pString = pString.rstrip()
+           pString = pString.replace(' ', ',')
+           pString = pString.replace(',,', ',')
+           pString = pString.replace('    ', ',')
+           pList = pString.split(',')
+           pBad = []
+           pGood = []
+           for pCode in pList:
+              pTest = getGeoTitles(pCode, 'united-states')
+              log.info('pCode is %s pString is %s pTest is %s'%(pCode,pString, pTest))
+              if pTest != '0':
+                  log.info('adding pGood %s'%pCode)
+                  pGood.append(pCode)
+              else:
+                  log.info('adding pBad %s'%pCode)
+                  pBad.append(pCode)
+        if pBad:
+            werrMsg = ','.join(pBad)
+            ##werror = 1
+
+        if pGood:
+            c.w['publicPostalList'] = ','.join(pGood)
+            log.info('publicPostalList is %s'%c.w['publicPostalList'])
+
+        if pList != '' and pGood:
+            c.w['scopeMethod'] = 'publicPostalList'
+            c.w['publicScope'] = '00'
+
+        else:
+          werror = 1
+          werrMsg += 'Public Postal List '
+           
+        if c.w['scopeMethod'] == 'publicPostalList':
+          c.w['publicScopeTitle'] = 'postal codes of ' + c.w['publicPostalList']
+          c.w['publicScope'] = ''
+
+        if werror == 1:
+            alert = {'type':'error'}
+            alert['title'] = werrMsg
+            session['alert'] = alert
+            session.save()
+            return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
+
+        if isFacilitator(c.authuser.id, c.w.id) and werror == 0:
+            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Public Sphere postal code list updated.', c.w, c.authuser)
+            commit(c.w)
+            alert = {'type':'success'}
+            alert['title'] = 'Workshop Multiple Postal Codes Saved!'
+            session['alert'] = alert
+            session.save()
+        else:
+            alert = {'type':'error'}
+            alert['title'] = werrMsg
+            session['alert'] = alert
+            session.save()
+
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+
+    @h.login_required
+    def configureStartWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Configure Workshop"
+
+        c.w = getWorkshop(code, urlify(url))
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+
+        werror = 0
+        wstarted = 0
+        if c.w['startTime'] != '0000-00-00':
+           wstarted = 1
+
+        ##log.info('wstarted is %s' % wstarted)
+
+        # Is there anything more painful than form validation?
+        # I don't think so...
+        if not isFacilitator(c.authuser.id, c.w.id) and not isAdmin(c.authuser.id):
+            alert = {'type':'error'}
+            alert['title'] = 'You are not authorized'
+            session['alert'] = alert
+            session.save()
+            return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
+
+        if 'startWorkshop' in request.params:
+            startButtons = request.params.getall('startWorkshop')
+            if 'Start' in startButtons and 'VerifyStart' in startButtons:
+                # Make sure we have all the information we need
+                werror == 0
+                werrMsg = ''
+                goalsDefault = 'No goals set'
+                if c.w['title'] == '':
+                    werrMsg = werrMsg + 'No name set. '
+                    werror = 1
+
+                if c.w['goals'] == '' or c.w['goals'] == goalsDefault:
+                    werrMsg = werrMsg + 'No goals set. '
+                    werror = 1
+
+                if c.w['publicTags'] == 'none':
+                    werrMsg = werrMsg + 'No workshop tags set. '
+                    werror = 1
+
+                if c.w['memberTags'] == 'none' or c.w['memberTags'] == '':
+                    werrMsg = werrMsg + 'No additional tags set. '
+                    werror = 1
+
+                # if we have everything...
+                if werror == 1:
+                    alert = {'type':'error'}
+                    alert['title'] = werrMsg
+                    session['alert'] = alert
+                    session.save()
+                    return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+
+                # Set workshop start and end time
+                startTime = datetime.datetime.now()
+                c.w['startTime'] = startTime
+                endTime = datetime.datetime.now()
+                endTime = endTime.replace(year = endTime.year + 1)
+                c.w['endTime'] = endTime
+                Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
+                commit(c.w)
+
+                # Make the Tag objects
+                for pTag in c.w['publicTags'].split(','):
+                   pTag = pTag.lstrip()
+                   pTag = pTag.rstrip()
+                   Tag('system', pTag, c.w.id, c.w.owner)
+                for mTag in c.w['memberTags'].split(','):
+                   mTag = mTag.lstrip()
+                   mTag = mTag.rstrip()
+                   Tag('member', mTag, c.w.id, c.w.owner)
+
+                # Set the geo scope objects
+                if c.w['scopeMethod'] == 'publicPostalList':
+                    pString = c.w['publicPostalList']
+                    pList = pString.split(',')
+                    for p in pList:
+                       if p != '':
+                          WorkshopScope(p, 'United States', c.w.id, c.w.owner)
+                elif c.w['scopeMethod'] == 'publicScope':
+                    p = c.w['publicPostal']
+                    WorkshopScope(p, 'United States', c.w.id, c.w.owner)
+
+                alert = {'type':'success'}
+                alert['title'] = 'Workshop Started!'
+                session['alert'] = alert
+                session.save()
+            else:
+                alert = {'type':'error'}
+                alert['title'] = werrMsg
+                session['alert'] = alert
+                session.save()
+
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+    @h.login_required
     def configureWorkshopHandler(self, id1, id2):
         code = id1
         url = id2
@@ -182,7 +536,13 @@ class WorkshopController(BaseController):
 
         if 'title' in request.params:
             wTitle = request.params['title']
-            c.w['title'] = wTitle
+            wTitle = wTitle.lstrip()
+            wTitle = wTitle.rstrip()
+            if wTitle:
+                c.w['title'] = wTitle
+            else:
+                werrMsg += 'Name '
+                werror = 1
         else:
             werrMsg += 'Name '
             werror = 1
@@ -192,7 +552,11 @@ class WorkshopController(BaseController):
            wGoals = wGoals.lstrip()
            wGoals = wGoals.rstrip()
            ##c.w['goals'] = request.params['goals']
-           c.w['goals'] = wGoals
+           if wGoals:
+               c.w['goals'] = wGoals
+           else:
+               werror = 1
+               werrMsg += 'Goals '
         else:
            werror = 1
            werrMsg += 'Goals '
@@ -214,13 +578,18 @@ class WorkshopController(BaseController):
            werror = 1
            werrMsg += 'Allow Resources '
 
-
         # Hmm... Take this out so they can't change it?
-        #if 'publicPostal' in request.params:
-        #   c.w['publicPostal'] = request.params['publicPostal']
-        #else:
-        #   werror = 1
-        #   werrMsg = 'No Workshop Postal'
+        if 'publicPostal' in request.params:
+           pTest = request.params['publicPostal']
+           sTest = getGeoScope(pTest, 'united-states')
+           if sTest:
+               c.w['publicPostal'] = request.params['publicPostal']
+           else:
+              werror = 1
+              werrMsg = 'Postal Code of ' + pTest + ' does not exist.'
+        else:
+           werror = 1
+           werrMsg = 'No Workshop Postal'
 
         if not wstarted:
             werrCheckParticipants = False
@@ -236,22 +605,43 @@ class WorkshopController(BaseController):
               werrCheckParticipants = True
 
             if 'publicPostalList' in request.params:
-              plist = request.params['publicPostalList']
-              plist = plist.lstrip()
-              plist = plist.rstrip()
-              plist = plist.replace(' ', ',')
-              plist = plist.replace(',,', ',')
-              plist = plist.replace('    ', ',')
-              c.w['publicPostalList'] = plist
-              if plist != '':
+              pString = request.params['publicPostalList']
+              pString = pString.lstrip()
+              pString = pString.rstrip()
+              pString = pString.replace(' ', ',')
+              pString = pString.replace(',,', ',')
+              pString = pString.replace('    ', ',')
+              pList = pString.split(',')
+              pBad = []
+              pGood = []
+              for pCode in pList:
+                  pTest = getGeoTitles(pCode, 'united-states')
+                  log.info('pCode is %s pString is %s pTest is %s'%(pCode,pString, pTest))
+                  if pTest != '0':
+                      log.info('adding pGood %s'%pCode)
+                      pGood.append(pCode)
+                  else:
+                      log.info('adding pBad %s'%pCode)
+                      pBad.append(pCode)
+              if pBad:
+                  werrMsg = ','.join(pBad)
+                  ##werror = 1
+
+              if pGood:
+                  c.w['publicPostalList'] = ','.join(pGood)
+                  log.info('publicPostalList is %s'%c.w['publicPostalList'])
+
+              if pList != '' and pGood:
                  c.w['scopeMethod'] = 'publicPostalList'
                  c.w['publicScope'] = '00'
+
             else:
               werror = 1
               werrMsg += 'Public Postal List '
            
             if c.w['scopeMethod'] == 'publicScope':
               c.w['publicScopeTitle'] = getScopeTitle(c.w['publicPostal'], 'United States', c.w['publicScope'])
+              c.w['publicPostalList'] = ''
             elif c.w['scopeMethod'] == 'publicPostalList':
               c.w['publicScopeTitle'] = 'postal codes of ' + c.w['publicPostalList']
 
@@ -266,7 +656,11 @@ class WorkshopController(BaseController):
               wMemberTags = request.params['memberTags']
               wMemberTags = wMemberTags.lstrip()
               wMemberTags = wMemberTags.rstrip()
-              c.w['memberTags'] = wMemberTags
+              if wMemberTags:
+                  c.w['memberTags'] = wMemberTags
+              else:
+                werror = 1
+                werrMsg += 'Member Tags '
             else:
               werror = 1
               werrMsg += 'Member Tags '
@@ -325,7 +719,7 @@ class WorkshopController(BaseController):
             else:
                 if werror == 1:
                     alert = {'type':'error'}
-                    alert['title'] = 'Missing Info: Workshop Tags'
+                    alert['title'] = werrMsg
                     alert['content'] = ''
                     "alert['content'] = 'Please check all Required Fields'"
                     session['alert'] = alert
@@ -357,14 +751,6 @@ class WorkshopController(BaseController):
     @h.login_required
     def addWorkshopHandler(self):
         workshopName = request.params['workshopName']
-        """
-        goals = request.params['goals']
-        day = request.params['workshopDay']
-        month = request.params['workshopMonth']
-        year = request.params['workshopYear']
-        backgroundWiki = request.params['backgroundWiki']
-        c.numSlideshowEntries = request.params['numSlideshowEntries']
-        """
         try:
             publicPrivate = request.params['publicPrivate']
         except:
@@ -388,7 +774,14 @@ class WorkshopController(BaseController):
         c.workshop_id = w.w.id # TEST
         c.title = 'Add slideshow'
         c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
-        return redirect('/workshops/%s/%s'%(w.w['urlCode'], w.w['url']))
+        c.postal = w.w['publicPostal']
+        titles = getGeoTitles(c.postal, 'united-states')
+        sList = titles.split('|')
+        c.country = sList[2].title()
+        c.state = sList[4].title()
+        c.county = sList[6].title()
+        c.city = sList[8].title()
+        return redirect('/workshop/%s/%s/configure'%(w.w['urlCode'], w.w['url']))
     
     @h.login_required
     def adminWorkshopHandler(self, id1, id2):
@@ -505,6 +898,7 @@ class WorkshopController(BaseController):
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.asuggestions = getAdoptedSuggestionsForWorkshop(code, urlify(url))
         
         if 'user' in session:
             ratedSuggestionIDs = []
@@ -663,7 +1057,29 @@ class WorkshopController(BaseController):
             h.flash("You are not authorized", "warning")
             return render('/')
 
-        c.title = c.w['title']
+        slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = getAllSlides(slideshow.id)
+        c.published_slides = []
+        slide_ids = [int(item) for item in slideshow['slideshow_order'].split(
+',')]
+        for id in slide_ids:
+            s = getSlide(id) # Don't grab deleted slides
+            if s:
+                c.published_slides.append(s)
+
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.facilitators = getFacilitatorsByWorkshop(c.w.id)
+        r = get_revision(int(c.w['mainRevision_id']))
+        reST = r['data']
+        reSTlist = self.get_reSTlist(reST)
+        HTMLlist = self.get_HTMLlist(reST)
+
+        c.wikilist = zip(HTMLlist, reSTlist)
+        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+
+        c.lastmoddate = r.date
+        c.lastmoduser = getUserByID(r.owner)
+
 
         return render('/derived/workshop_configure.bootstrap')
     

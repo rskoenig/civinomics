@@ -4,7 +4,7 @@
 %>
 
 <%def name="showTitle(title)">
-    <h1 style="text-align:center;">${title}</h1>
+    <h1 style="text-align:left;">${title}</h1>
 </%def>
 
 <%def name='spacer()'>
@@ -18,29 +18,12 @@
     <div class="fluid-row">
         <div class="span4">
             <form id="create_issue" action = "${c.site_secure_url}/workshop/addWorkshopHandler" class="form-vertical" method = "post">
+            <input type="hidden" name="publicPrivate" value="public">
                 <fieldset>
                     <div class="control-group">
                         <label class="control-label">Workshop Name:</label>
                         <div class="controls docs-input-sizes">
-                            <input type="text" class="span2" placeholder="workshop name" name = "workshopName"/>
-                        </div>
-                    </div>
-                    
-                    <div class="control-group">
-                        
-                        <div class="controls">
-                            <label class="radio">
-                                <input type="radio" name="publicPrivate" value="public">
-                                
-                                    Public
-                                
-                            </label>
-                            <label class="radio">
-                                <input type="radio" name="publicPrivate" value="private">
-                                
-                                    Private
-                                
-                            </label>
+                            <input type="text" name = "workshopName"/>
                         </div>
                     </div>
                     <div class="form-actions">

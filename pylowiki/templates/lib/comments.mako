@@ -115,43 +115,43 @@
 
 ## Displays the footer of the comment (post date, flag, reply, rate)
 <%def name="commentFeedback(comment, commentType)">
-    <div class="buttons collapse in hide${comment.id}">
-        % if "user" in session:
-        </div><!-- /.buttons -->
-        ## Must be wrapped or a tiny bit will show
-        <div class="collapse flag${comment.id}">
-            <div class="alert">
-                ##<form action="/flagComment/${comment.id}" class="left wide">
-                    <strong>Are you sure you want to flag this comment?</strong>
-                    <br>
-                    <a href="/flagComment/${comment.id}"class="btn btn-danger">Yes</a>
-                    <a class="btn" id="flag${comment.id}">No</a>
-                    <span id = 'flagged_${comment.id}'></span>
-                ##</form>
-            </div> <!-- /.alert -->
-        </div> <!-- /.collapse.flag${comment.id} -->
-        <div class="reply textarea collapse reply${comment.id}">
-            <form action="/addComment">
-                <textarea name="comment-textarea" style="width: 85%" rows="1"></textarea>
-                
-                <input type="hidden" id="type" name="type" value="${commentType}" />
-                <input type="hidden" name="discussionID" value="${c.discussion.id}" />
-                <input type="hidden" name="parentID" value="${comment.id}" />
-                <input type="hidden" name="workshopCode" value="${c.w['urlCode']}" />
-                <input type="hidden" name="workshopURL" value="${c.w['url']}" />
-                % if commentType == 'suggestionMain':
-                    <input type="hidden" name = "suggestionCode" value = "${c.s['urlCode']}" />
-                    <input type="hidden" name = "suggestionURL" value = "${c.s['url']}" />
-                % elif commentType == 'resource':
-                    <input type="hidden" name = "resourceCode" value = "${c.resource['urlCode']}" />
-                    <input type="hidden" name = "resourceURL" value = "${c.resource['url']}" />
-                % endif
-                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
-            </form>
-        </div> <!-- /.reply.textarea -->
-    % else:
-        </div> <!-- /.buttons -->
-    % endif
+	<div class="buttons collapse in hide${comment.id}">
+		% if "user" in session:
+		</div><!-- /.buttons -->
+		## Must be wrapped or a tiny bit will show
+		<div class="collapse flag${comment.id}">
+			<div class="alert">
+				##<form action="/flagComment/${comment.id}" class="left wide">
+					<strong>Are you sure you want to flag this comment?</strong>
+					<br>
+					<a href="/flagComment/${comment.id}"class="btn btn-danger flagCommentButton">Yes</a>
+					<a class="btn" id="flag${comment.id}">No</a>
+					<span id = 'flagged_${comment.id}'></span>
+				##</form>
+			</div> <!-- /.alert -->
+		</div> <!-- /.collapse.flag${comment.id} -->
+		<div class="reply textarea collapse reply${comment.id}">
+			<form action="/addComment">
+				<textarea name="comment-textarea" style="width: 85%" rows="1"></textarea>
+				
+				<input type="hidden" id="type" name="type" value="${commentType}" />
+				<input type="hidden" name="discussionID" value="${c.discussion.id}" />
+				<input type="hidden" name="parentID" value="${comment.id}" />
+				<input type="hidden" name="workshopCode" value="${c.w['urlCode']}" />
+				<input type="hidden" name="workshopURL" value="${c.w['url']}" />
+				% if commentType == 'suggestionMain':
+					<input type="hidden" name = "suggestionCode" value = "${c.s['urlCode']}" />
+					<input type="hidden" name = "suggestionURL" value = "${c.s['url']}" />
+				% elif commentType == 'resource':
+					<input type="hidden" name = "resourceCode" value = "${c.resource['urlCode']}" />
+					<input type="hidden" name = "resourceURL" value = "${c.resource['url']}" />
+				% endif
+				<button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
+			</form>
+		</div> <!-- /.reply.textarea -->
+	% else:
+		</div> <!-- /.buttons -->
+	% endif
 </%def>
 
 ## Main function that gets called by the template
