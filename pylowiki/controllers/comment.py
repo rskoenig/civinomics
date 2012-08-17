@@ -203,6 +203,8 @@ class CommentController(BaseController):
            oLink = wLink + '/feedback'
         elif d['discType'] == 'suggestion':
            oLink = wLink + '/suggestion/' + d['suggestionCode'] + '/' + d['suggestionURL']
+        elif d['discType'] == 'general':
+           oLink = wLink + '/discussion/' + d['urlCode'] + '/' + d['url']
         elif d['discType'] == 'resource':
            oLink = wLink + '/resource/' + d['resourceCode'] + '/' + d['resourceURL']
         elif d['discType'] == 'sresource':

@@ -85,10 +85,22 @@ def getParticipantsByID(id):
         return False
 
 def getRecentMemberPosts(number):
-    try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource'])).order_by('-date').limit(number).all()
-    except:
-        return False
+        counter = 0
+        returnList = []
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).order_by('-date').all()
+        for item in postList:
+           if item.objType == 'suggestion' or item.objType == 'resource':
+               returnList.append(item)
+               counter += 1
+           elif item.objType == 'discussion':
+               if item['discType'] == 'general':
+                   returnList.append(item)
+                   counter += 1
+ 
+           if counter > number:
+               break
+
+        return returnList
 
 
 def isScoped(user, workshop):

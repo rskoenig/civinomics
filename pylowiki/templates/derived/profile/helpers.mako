@@ -73,6 +73,10 @@
                        <% ooTitle = s['title'] %>
                        <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] %>
                        <% ooiType = "pencil" %>
+                   % elif d['discType'] == 'general':
+                       <% ooTitle = d['title'] %>
+                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/discussion/" + d['urlCode'] + "/" + d['url'] %>
+                       <% ooiType = "comment" %>
                    % elif d['discType'] == 'resource':
                        <% r = getResource(d['resourceCode'], d['resourceURL']) %>
                        <% ooTitle = r['title'] %>
@@ -88,6 +92,11 @@
                % elif mObj.objType == 'suggestion':
                    <% oiType = "pencil" %>
                    <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
+                   <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+               % elif mObj.objType == 'discussion':
+                   <% oiType = "comment" %>
+                   <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
                    <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
                    <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
                % endif

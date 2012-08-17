@@ -148,6 +148,11 @@
                                <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
                                <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
                                <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+                           % elif mObj.objType == 'discussion':
+                               <% iType = "comment" %>
+                               <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                               <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
+                               <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
                            %else:
                                <% iType = "comment" %>
                                <% oLink = "" %>
