@@ -61,7 +61,7 @@
                 thingCode = $(this).attr('data1').split('_')[1],    // this page's code
                 myRating  = parseFloat($(this).attr('data1').split('_')[2]),    // user's own rating
                 ratingType = $(this).attr('data1').split('_')[3],   // type of the rating
-                isRated = $(this).attr('data1').split('_')[4];      // if user has rated this yet
+                isRated = $(this).attr('data1').split('_')[4],      // if user has rated this yet
                 ratingHandler = $(this).attr('data1').split('_')[5],        // for the ajax handler URL below
                 thingURL = $(this).attr('data2');   // this page's url
 
