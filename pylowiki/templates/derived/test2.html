@@ -1,0 +1,19 @@
+##<%inherit file = '/base/template.html'/>
+
+<form id="testForm" action="/tester/checkboxHandler" method = "post">
+Birthday: <input type="checkbox" name="hideBirth" id="hideBirth"/>
+##Check?: ${h.checkbox("hideBirth")}
+<input type="submit">Save Changes</input>
+</form>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>
+
+<%def name = 'extraHTML()'>
+
+</%def>
