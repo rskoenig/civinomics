@@ -310,7 +310,7 @@
 </%def>
 
 <%def name="nav_thing(page)">
-	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("feedback", "feedback"), ("stats", "stats"), ("discussion", "discussion")])  %>
+	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("feedback", "feedback"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])  %>
 
 	<ul class="unstyled nav-thing">
 	% for li in pages.keys():

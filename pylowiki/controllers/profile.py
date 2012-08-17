@@ -5,6 +5,7 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
+from pylowiki.lib.utils import urlify
 
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
@@ -132,14 +133,29 @@ class ProfileController(BaseController):
     def editSubmit(self):
         perror = 0
         perrorMsg = ""
+        changeMsg = ""
+
+        # see if an admin is doing this
+        if 'memberCode' in request.params and 'memberURL' in request.params and isAdmin(c.authuser.id):
+            code = request.params['memberCode']
+            url = request.params['memberURL']
+            u = get_user(code, urlify(url))
+            returnURL = "/profile/" + code + "/" + url + "/admin"
+        else:
+            u = c.authuser
+            returnURL = "/profile/edit"
+
+        # make sure they are authorized to do this
+        if u.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
+            return redirect('/')
+
         if 'pictureFile' in request.POST:
             picture = request.POST['pictureFile']
             if picture == "":
                 picture = False
         else:
             picture = False
-        log.info('picture is %s'%picture)
-        u = c.authuser
+        ##log.info('picture is %s'%picture)
         if 'password' in request.params:
             password = request.params['password']
         else:
@@ -151,7 +167,8 @@ class ProfileController(BaseController):
 
         if password and verify_password and password == verify_password:
             changePassword(u, password)
-            log.info('changed password for  %s'%c.authuser['name'])
+            changeMsg = changeMsg + "Password updated. "
+            ##log.info('changed password for  %s'%u['name'])
 
         if password and verify_password and password != verify_password:
             perror = 1
@@ -183,16 +200,20 @@ class ProfileController(BaseController):
             u['firstName'] = firstName
             nameChange = True
             anyChange = True
+            changeMsg = changeMsg + "First name updated. "
         if lastName and lastName != '' and lastName != c.authuser['lastName']:
             u['lastName'] = lastName
             nameChange = True
             anyChange = True
+            changeMsg = changeMsg + "Last name updated. "
         if tagline and tagline != '' and tagline != c.authuser['tagline']:
             if len(tagline)>140:
                 u['tagline'] = tagline[:140]
             else:
                 u['tagline'] = tagline
                 anyChange = True
+
+            changeMsg = changeMsg + "Tagline updated. "
 
         log.info('before doing new picture for %s'%c.authuser['name'])
         if picture != False:
@@ -206,19 +227,21 @@ class ProfileController(BaseController):
            resizeImage(identifier, hash, 25, 25, 'thumbnail')
            log.info('Saving picture change for %s'%c.authuser['name'])
            anyChange = True
+           changeMsg = changeMsg + "Picture updated. "
 
         if nameChange:
             u['name'] = '%s %s' %(u['firstName'], u['lastName'])
             log.info('Changed name')
         if anyChange and perror == 0:
             commit(u)
+            Event('Profile updated.', changeMsg, u, c.authuser)
             h.flash('Changes saved.', 'success')
         elif anyChange and perror == 1:
             h.flash(perrorMsg, 'error')
         else:
             h.flash('No changes submitted.', 'success')
 
-        return redirect('/profile/edit')
+        return redirect(returnURL)
     
     def hashPicture(self, username, title):
         return md5(username + title).hexdigest()
@@ -274,7 +297,7 @@ class ProfileController(BaseController):
         c.workshops = getWorkshopsByOwner(c.user.id)
         log.info('userAdmin %s %s' % (code, url))
 
-        return render("/derived/user_admin.bootstrap")
+        return render("/derived/member_admin.bootstrap")
 
 
     @h.login_required
