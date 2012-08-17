@@ -99,6 +99,21 @@
 	% endif
 </%def>
 
+<%def name="fields_alert()">
+    % if 'alert' in session:
+        <% alert = session['alert'] %> 
+        <div class="alert alert-${alert['type']}">
+            <button data-dismiss="alert" class="close">Ã—</button>
+            <strong>${alert['title']}</strong>
+            ${alert['content']}
+        </div>
+        <% 
+           session.pop('alert')
+           session.save()
+        %>
+    % endif
+</%def>
+
 <%def name="list_resources(errorMsg)">
 	% if len(c.resources) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
@@ -125,7 +140,11 @@
                                <h3>
                                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
                                </h3>
-                               ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                               % if len(resource['comment']) > 50:
+                                   ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                               % else:
+                                   ${resource['comment']}
+                               % endif
                             </td>
                             </tr>
                             <tr>
@@ -309,7 +328,6 @@
 	% endfor
 	</ul> <!-- /.nav-thing -->
 </%def>
-
 
 <%def name="slideshow(counter)">
 	<div id="slideshow${counter}" class="slideshow-container">

@@ -25,6 +25,12 @@ def get_user(hash, url):
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('urlCode', hash))).filter(Thing.data.any(wc('url', url))).one()
     except sa.orm.exc.NoResultFound:
         return False
+    
+def getActiveUsers(disabled = False):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('disabled', disabled))).all()
+    except:
+        return False
 
 def getUserByEmail(email):
     try:

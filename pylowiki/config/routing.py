@@ -101,6 +101,61 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/background', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/background/', controller = 'workshop', action = 'background', id1 = '{id1}', id2 = '{id2}')
 
+    # Workshop leaderboard page
+    map.connect('/workshop/{id1}/{id2}/leaderboard', controller = 'leaderboard', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/leaderboard/', controller = 'leaderboard', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard', controller = 'leaderboard', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard/', controller = 'leaderboard', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    # Workshop leaderboard explanation page
+    map.connect('/workshop/{id1}/{id2}/leaderboard_explanation/', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/leaderboard_explanation', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_explanation/', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_explanation', controller = 'leaderboard', action = 'explain', id1 = '{id1}', id2 = '{id2}')
+    # Workshop leaderboard followed Persons page
+    map.connect('/workshop/{id1}/{id2}/leaderboard_followedPersons', controller = 'leaderboard', action = 'followedPersons', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/leaderboard_followedPersons/', controller = 'leaderboard', action = 'followedPersons', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_followedPersons/', controller = 'leaderboard', action = 'followedPersons', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_followedPersons', controller = 'leaderboard', action = 'followedPersons', id1 = '{id1}', id2 = '{id2}')
+    # Workshop leaderboard followed Persons page
+    map.connect('/workshop/{id1}/{id2}/leaderboard_UserRanks', controller = 'leaderboard', action = 'UserRankings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/leaderboard_UserRanks/', controller = 'leaderboard', action = 'UserRankings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_UserRanks/', controller = 'leaderboard', action = 'UserRankings', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/leaderboard_UserRanks', controller = 'leaderboard', action = 'UserRankings', id1 = '{id1}', id2 = '{id2}')
+
+    # Workshop discussion listing page
+    map.connect('/workshop/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/discussion/', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/discussion/', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
+    # Add discussion topic for Workshop
+    map.connect('/workshop/{id1}/{id2}/addDiscussion', controller = 'discussion', action = 'addDiscussion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/addDiscussion/', controller = 'discussion', action = 'addDiscussion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/addDiscussion', controller = 'discussion', action = 'addDiscussion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshops/{id1}/{id2}/addDiscussion/', controller = 'discussion', action = 'addDiscussion', id1 = '{id1}', id2 = '{id2}')
+    # New discussion
+    map.connect('/newDiscussion/{id1}/{id2}', controller = 'discussion', action = 'newDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/newDiscussion/{id1}/{id2}/', controller = 'discussion', action = 'newDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
+    # Edit discussion Handler
+    map.connect('/editDiscussionHandler/{id1}/{id2}', controller = 'discussion', action = 'editDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editDiscussionHandler/{id1}/{id2}/', controller = 'discussion', action = 'editDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
+    # Admin discussion Handler
+    map.connect('/adminDiscussionHandler/', controller = 'discussion', action = 'adminDiscussionHandler', id1 = '{id1}', id2 = '{id2}')    
+    map.connect('/adminDiscussionHandler', controller = 'discussion', action = 'adminDiscussionHandler', id1 = '{id1}', id2 = '{id2}')    
+
+    
+    # Workshop Discussion Admin/Edit:
+    map.connect('/editDiscussion/{id1}/{id2}', controller = 'discussion', action = 'editDiscussion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/editDiscussion/{id1}/{id2}/', controller = 'discussion', action = 'editDiscussion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/adminDiscussion/{id1}/{id2}', controller = 'discussion', action = 'adminDiscussion', id1 = '{id1}', id2 = '{id2}')    
+    map.connect('/adminDiscussion/{id1}/{id2}/', controller = 'discussion', action = 'adminDiscussion', id1 = '{id1}', id2 = '{id2}')    
+
+    # Workshop individual discussion page
+    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}/', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/discussion/{id3}/{id4}', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshops/{id1}/{id2}/discussion/{id3}/{id4}/', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+
+
     # Workshop configuration
     map.connect('/workshop/{id1}/{id2}/configure', controller = 'workshop', action = 'configure', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configure/', controller = 'workshop', action = 'configure', id1 = '{id1}', id2 = '{id2}')
@@ -231,6 +286,7 @@ def make_map():
     map.connect('/rateSuggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/rateFacilitation/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateFacilitation', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/rateResource/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/rateDiscussion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateDiscussion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/rateComment/{id1}/{id2}', controller = 'rating', action = 'rateComment', id1 = '{id1}', id2 = '{id2}')
 
     map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')

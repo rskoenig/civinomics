@@ -2,21 +2,6 @@
     from pylowiki.lib.db.user import getUserByID
 %>
 
-<%def name="fields_alert()">
-	% if 'alert' in session:
-		<% alert = session['alert'] %> 
-        <div class="alert alert-${alert['type']}">
-            <button data-dismiss="alert" class="close">×</button>
-            <strong>${alert['title']}</strong>
-            ##${alert['content']}
-        </div>
-        <% 
-           session.pop('alert')
-           session.save()
-        %>
-	% endif
-</%def>
-
 <%def name="comment_admin()">
     % if c.commentType == 'suggestion':
        Back to <a href="/workshop/${c.wCode}/${c.wURL}/suggestion/${c.oCode}/${c.oURL}">Suggestion</a>

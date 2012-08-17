@@ -1,28 +1,26 @@
 <%inherit file = "/base/template.bootstrap"/>
 
-<%namespace name="helpers" file="/lib/admin_helpers/suggestion.mako" />
+<%namespace name="helpers" file="/lib/admin_helpers/discussion.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
-
 
 <div class="container">
 	<div class="span3 offset9">
 		${lib.fields_alert()}		
 	</div>
-	${helpers.sug_admin_banner()}
-
+	${helpers.dis_admin_header()}
 	<div class="row">
 		<div class="span6">
-			${helpers.suggestion_events_flags()}
+			##${helpers.resource_events()}
 		</div>
-		<div class="span6">		
-			${helpers.suggestion_admin()}
+		<div class="span6">
+			${helpers.discussion_admin_options()}
 		</div>
 	</div>
 </div>	
-</br>
-</br>
-</br>
-    
+
+<br /><br />
+<br /><br /> 
+            
 <%def name = 'extraHTML()'>
 
 </%def>

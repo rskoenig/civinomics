@@ -299,7 +299,12 @@ class SuggestionController(BaseController):
         e = Event(modTitle, modSuggestionReason, s, c.authuser)
 
         h.flash(modTitle, 'success')
-        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+        if modType == 'delete':
+            return redirect('/workshop/%s/%s/' %(w['urlCode'], w['url']))
+        else:
+            return redirect('/workshop/%s/%s/suggestion/%s/%s' %(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
 
     @h.login_required
     def adoptSuggestionHandler(self):
