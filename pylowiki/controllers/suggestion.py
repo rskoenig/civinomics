@@ -65,6 +65,7 @@ class SuggestionController(BaseController):
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.isScoped = isScoped(c.authuser, c.w)
             
             c.rating = False
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
@@ -76,7 +77,11 @@ class SuggestionController(BaseController):
                 sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
                 if c.s.id in sugRateDict.keys():
                     c.rating = getRatingByID(sugRateDict[c.s.id])
-                    
+        else:
+            c.isAdmin = False
+            c.isFacilitator = False
+            c.isScoped = False
+            
         return render('/derived/suggestion.bootstrap')
 
     @h.login_required

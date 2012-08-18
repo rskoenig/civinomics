@@ -3,12 +3,18 @@
 <%namespace name="helpers" file="/lib/admin_helpers/discussion.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
-<div class="container">
-	<div class="span3 offset9">
-		${lib.fields_alert()}		
-	</div>
-	${helpers.dis_admin_header()}
-	<div class="row">
+<div class="container-fluid">
+    <div class="well">
+        <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>        
+        <br />
+        ${lib.nav_thing("discussion")}
+        <br />
+    </div><!-- well -->
+    <h2 class="civ-col"><i class="icon-folder-open"></i> Administrate Discussion</h2>
+    ${lib.fields_alert()}		
+    <br />
+    <h3><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${c.discussion['urlCode']}/${c.discussion['url']}/">${c.discussion['title']}</a></h3>
+    <div class="row">
 		<div class="span6">
 			##${helpers.resource_events()}
 		</div>
@@ -17,8 +23,6 @@
 		</div>
 	</div>
 </div>	
-
-<br /><br />
 <br /><br /> 
             
 <%def name = 'extraHTML()'>

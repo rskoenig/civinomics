@@ -33,6 +33,18 @@ def getActiveDiscussionsForWorkshop(code, url, discType = 'general'):
     except:
         return False
     
+def getDisabledDiscussionsForWorkshop(code, url, discType = 'general'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('disabled', '1'))).all()
+    except:
+        return False
+    
+def getDeletedDiscussionsForWorkshop(code, url, discType = 'general'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('deleted', '1'))).all()
+    except:
+        return False
+    
 class Discussion(object):
     # If the owner is None, the discussion is a system generated discussion, like the comments in the background wiki.
     # If the owner is not None, then the discussion was actively created by some user.

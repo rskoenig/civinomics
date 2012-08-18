@@ -9,9 +9,7 @@
 </%def>
 
 <%def name="discussion_admin_options()">
-    <p>
-    <strong class="gray">Administrate Discussion</strong>
-    <br /><br /><br />
+    <br /><br />
 ##    <strong>Post Event Note on Discussion</strong>
 ##    <form name="note_discussion" id="note_discussion" class="left" action = "/adminDiscussionHandler" enctype="multipart/form-data" method="post" >
 ##    <input type=hidden name=workshopCode value="${c.w['urlCode']}">

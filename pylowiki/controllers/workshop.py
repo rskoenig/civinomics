@@ -14,7 +14,7 @@ from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, g
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
-from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.discussion import getDiscussionByID, getActiveDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop
 from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
@@ -1102,6 +1102,9 @@ class WorkshopController(BaseController):
         c.r = getActiveResourcesByWorkshopID(c.w.id)
         c.disabledRes = getDisabledResourcesByWorkshopID(c.w.id)
         c.deletedRes = getDeletedResourcesByWorkshopID(c.w.id)
+        c.d = getActiveDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
+        c.disabledDisc = getDisabledDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
+        c.deletedDisc = getDeletedDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
         

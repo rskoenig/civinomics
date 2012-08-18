@@ -58,6 +58,7 @@ class ResourceController(BaseController):
         if 'user' in session:
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
             c.isAdmin = isAdmin(c.authuser.id)
+            c.isScoped = isScoped(c.authuser, c.w)
 
             if 'ratedThings_resource_overall' in c.authuser.keys():
                 """
@@ -71,6 +72,7 @@ class ResourceController(BaseController):
         else:            
             c.isFacilitator = False
             c.isAdmin = False
+            c.isScoped = False
 
         c.poster = getUserByID(c.resource.owner)
         
