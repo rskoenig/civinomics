@@ -4,43 +4,47 @@
 <%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
 
 ${lib.return_to()}
-<div class="row-fluid">
-    <div class="span12">
+
+<div class="container-fluid">
+    <div class="well">
+        <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+        <br />        
         ${lib.nav_thing("discussion")}
-    </div>
-</div>
-<div class="row">
-    <div class="span8">
-        <div class="civ-col">
-            <h2 class="civ-col">${helpers.discTopicPageTitle()}</h2>
-            <div class="civ-col-inner">
-                <div class="row-fluid">
-                    ${helpers.displayTopicContent()}
+        <br />
+    </div><!-- well -->
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="civ-col">
+                <h2 class="civ-col"><i class="icon-folder-open"></i> Discussion Topic</h2>
+                <div class="civ-col-inner">
+                    <div class="row-fluid">
+                        ${helpers.displayTopicContent()}
+                        % if 'user' in session:
+                            ${helpers.Edit_Admin()}
+                        % endif
+                    </div>
                 </div>
-                <div class="row-fluid">
-                    ${helpers.Edit_Admin()}
+            </div>
+            <div class="civ-col">
+                <h2 class="civ-col">Comments</h2>
+                <div class="civ-col-inner">
+                    ${comments("discussion")}
                 </div>
             </div>
         </div>
-        <div class="civ-col">
-            <h2 class="civ-col">Comments</h2>
-            <div class="civ-col-inner">
-                ${comments("discussion")}
+        <div class="span4">
+            <div class="civ-col">
+                <h2 class="civ-col">
+                    Topics
+                    ${helpers.addTopic()}
+                </h2>
+                <div class="civ-col-inner">
+                    ${helpers.displayTopics()}
+                </div>
             </div>
         </div>
     </div>
-    <div class="span4">
-        <div class="civ-col">
-            <h2 class="civ-col">
-                Topics
-                ${helpers.addTopic()}
-            </h2>
-            <div class="civ-col-inner">
-                ${helpers.displayTopics()}
-            </div>
-        </div>
-    </div>
-</div>
+</div><!-- container-fluid -->
 
 <%def name = 'extraHTML()'>
 
@@ -56,6 +60,7 @@ ${lib.return_to()}
     <script src = "/js/javascript.js" type="text/javascript"></script>
     <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
     <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+    <script src = "/js/flag.js" type="text/javascript"></script>
 
     <script type="text/javascript">
         $(document).ready(function()    {

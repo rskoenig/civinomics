@@ -58,15 +58,12 @@
 </%def>
 
 <%def name="Edit_Admin()">
-    <div class="span1"></div>
-    <div class="span11">
-        <div class="span2">
-            <a href="/editDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}">edit discussion </a>
-        </div>
-        <div class="span3">
-            <a href="/adminDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}">admin discussion</a>
-        </div>
-    </div>
+    % if c.authuser.id == c.discussion.owner or c.isAdmin or c.isFacilitator:
+        <a href="/editDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-primary btn-mini"><i class="icon-white icon-edit"></i> edit</a>
+    % endif
+    % if c.isAdmin or c.isFacilitator:
+        <a href="/adminDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-warning btn-mini"><i class="icon-white icon-list-alt"></i> admin</a>
+    % endif
 </%def>
 
 <%def name="addTopic()">

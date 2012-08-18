@@ -1,11 +1,14 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import getFlags
+    from pylowiki.lib.db.comment import getComment, getFlaggedDiscussionComments
 %>
 
 <%def name="addTopic()">
     <span class="pull-right topic"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Add a topic"><i class="icon-plus"></i></a></span>
 </%def>
+
 
 <%def name="displayDiscussionRating(discussion)">
     <a href="/rateDiscussion/${discussion['urlCode']}/${discussion['url']}/1" class="upVote voted">
@@ -21,10 +24,10 @@
 <%def name="userphoto(discussion)">
     <% owner = getUserByID(discussion.owner) %>
     % if owner['pictureHash'] == 'flash':
-        <a href="/profile/${owner['urlCode']}/${owner['url']}"><img src="/images/avatars/flash.profile" width="35" ></a>
+        <a href="/profile/${owner['urlCode']}/${owner['url']}"><img src="/images/avatars/flash.profile" width="35" class="thumbnail"></a>
     % else:
         <a href="/profile/${owner['urlCode']}/${owner['url']}">
-            <img src="/images/avatar/${owner['directoryNumber']}/profile/${owner['pictureHash']}.profile" width="35">
+            <img src="/images/avatar/${owner['directoryNumber']}/profile/${owner['pictureHash']}.profile" width="35" class="thumbnail">
         </a>
     % endif
 </%def>
@@ -33,9 +36,27 @@
     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${discussion['urlCode']}/${discussion['url']}">${discussion['title']}</a></p>    
 </%def>
 
+<%def name="discussionPostedDate(discussion)">
+    <br />
+    <p><i class="icon-time"></i> <span class="recent">${timeSince(discussion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${discussion['urlCode']}/${discussion['url']}"> Leave comment</a></p>
+
+</%def>
+
 <%def name="discussionMetaData(discussion)">
     <% owner = getUserByID(discussion.owner) %>
-    <p>Posted <span class="recent">${timeSince(discussion.date)}</span> ago by <a href="/profile/${owner['urlCode']}/${owner['url']}">${owner['name']}</a></p>
+    <% fComments = getFlaggedDiscussionComments(discussion.id) %>
+    <% numFlags = 0 %>
+    % for commentID in fComments:
+        <% comment = getComment(commentID) %>
+        <% flags = getFlags(comment) %>
+        % if flags:
+            <% numFlags += len(flags) %>
+        % endif
+    % endfor
+    <a href="/profile/${owner['urlCode']}/${owner['url']}">${owner['name']}</a><br>
+    <span class="badge badge-info"><i class="icon-white icon-comment"></i> ${discussion['numComments']}</span>
+    <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${numFlags}</span>
+    <br />
 </%def>
 
 <%def name="discussionComments(discussion)">
@@ -61,9 +82,15 @@
                         <div class="span8">        
                                 <h4>${displayDiscussionTitle(discussion)}</h4>
                                 ${discussionMetaData(discussion)}
-                                ${discussionComments(discussion)}
-                        </div>     
+                        </div><!-- span8 -->
                     </div> <!-- /.row-fluid -->
+                    <div class="row-fluid">
+                        <div class="span1">
+                        </div>
+                        <div class="span8">
+                            ${discussionPostedDate(discussion)}
+                        </div><!-- span9 -->
+                    </div><!-- row-fluid -->
                 </li>
             % endfor
         </ul>

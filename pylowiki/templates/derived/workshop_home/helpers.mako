@@ -2,7 +2,7 @@
     import datetime
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.facilitator import isFacilitator
-    from pylowiki.lib.db.discussion import getDiscussionByID
+    from pylowiki.lib.db.discussion import getDiscussionByID, getActiveDiscussionsForWorkshop
     from pylowiki.lib.db.comment import getFlaggedDiscussionComments
     from pylowiki.lib.db.resource import getResourcesByParentID
     from pylowiki.lib.db.flag import getFlags
@@ -13,6 +13,14 @@
 <%def name="at_a_glance()">
     <% numComments = 0 %>
     <% numFlags = 0 %>
+    <% t = getActiveDiscussionsForWorkshop(c.w['urlCode'], c.w['url']) %>
+    % for d in t:
+        <% cF = getFlaggedDiscussionComments(d.id) %>
+        % if cF:
+            <% numFlags = numFlags + len(cF) %>
+        % endif
+        <% numComments = numComments + int(d['numComments']) %>
+    % endfor
     % for item in c.resources:
         <% d = getDiscussionByID(item['discussion_id']) %>
         <% cF = getFlaggedDiscussionComments(d.id) %>
@@ -88,23 +96,26 @@
     </tr>
     <tr>
     <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_280_settings.png" alt="Workshop Total Activity" title="Workshop Total Activity"></td>
-    <td><strong>Activity</strong>: <span class="badge badge-info" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> &nbsp; <span class="badge badge-info" title="Information resources in workshop"><i class="icon-white icon-book"></i>${len(c.resources)}</span> &nbsp; <span class="badge badge-info" title="Comments in workshop"><i class="icon-white icon-comment"></i>${numComments}</span> &nbsp; <span class="badge badge-success" title="Workshop followers"><i class="icon-white icon-user"></i>${len(c.followers)}</span> &nbsp; <span class="badge badge-success" title="Adopted suggestions in workshop"><i class="icon-white icon-heart"></i>${len(c.asuggestions)}</span> &nbsp; <span class="badge badge-important" title="Flags in workshop"><i class="icon-white icon-flag"></i>${numFlags}</span></td>
+    <td><strong>Activity</strong>: <span class="badge badge-info" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> &nbsp; <span class="badge badge-info" title="Information resources in workshop"><i class="icon-white icon-book"></i>${len(c.resources)}</span> &nbsp; <span class="badge badge-info" title="Discussion topics in workshop"><i class="icon-white icon-folder-open"></i> ${len(t)}</span> &nbsp; <span class="badge badge-info" title="Comments in workshop"><i class="icon-white icon-comment"></i>${numComments}</span> &nbsp; <span class="badge badge-success" title="Workshop followers"><i class="icon-white icon-user"></i>${len(c.followers)}</span> &nbsp; <span class="badge badge-success" title="Adopted suggestions in workshop"><i class="icon-white icon-heart"></i>${len(c.asuggestions)}</span> &nbsp; <span class="badge badge-important" title="Flags in workshop"><i class="icon-white icon-flag"></i>${numFlags}</span></td>
     </tr>
     <tr><td>&nbsp;</td></tr>
-    <tr>
+    % if 'user' in session:
+        <tr>
 	    <td><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_023_cogwheels.png" alt="Participate!" title="Participate!"></td><td><strong>Participate!</strong> 
-    ${lib.add_a("resource")}
-    ${lib.add_a("suggestion")}
-    ${lib.add_a("feedback")}
-    % if not c.isFacilitator:
-        % if c.isFollowing:
-            <button class="btn btn-primary btn-mini followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}" title="Click to follow/unfollow this workshop">+Following</button>
-        % else:
-            <button class="btn btn-primary btn-mini followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}" title="Click to follow/unfollow this workshop">+Follow</button>
-        % endif
-    % endif 
-    </td>
-    </tr>
+            ${lib.add_a("resource")}
+            ${lib.add_a("suggestion")}
+            ${lib.add_a("feedback")}
+            ${lib.add_a("discussion")}
+            % if not c.isFacilitator:
+                % if c.isFollowing:
+                    <button class="btn btn-primary btn-mini followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}" title="Click to follow/unfollow this workshop">+Following</button>
+                % else:
+                    <button class="btn btn-primary btn-mini followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}" title="Click to follow/unfollow this workshop">+Follow</button>
+                % endif
+            % endif 
+            </td>
+        </tr>
+    % endif
     <tr><td>&nbsp;</td></tr>
     <tr>
     % if len(c.facilitators) == 1:

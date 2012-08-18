@@ -3,37 +3,36 @@
 <%namespace name="helpers" file="/lib/discussion_helpers/landing.mako" />
 
 ${lib.return_to()}
-<div class="row-fluid">
-    <div class="span12">
+
+<div class="container-fluid">
+    <div class="well">
+        <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+        <br />
         ${lib.nav_thing("discussion")}
-    </div>
-</div>
-${lib.fields_alert()}
-<div class="row">
-    <div class="span8">
-        <div class="civ-col">
-            <h2 class="civ-col">
-                <a href="#">Discussions</a> 
-                in 
-                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}">
-                    ${c.w['title']}
-                </a>
-                ${helpers.addTopic()}
-            </h2>
-            <div class="civ-col-inner">
-                ${helpers.listDiscussions()}
-            </div>
-        </div>
-    </div>
-    <div class="span4">
-        <div class="civ-col">
-            <h2 class="civ-col">Message of the Day</h2>
-            <div class="civ-col-inner">
-                ${helpers.displayMOTD()}
-            </div>
-        </div>
-    </div>
-</div>
+        <br />
+    </div><!-- well -->
+    ${lib.fields_alert()}
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="civ-col">
+                <h2 class="civ-col"><i class="icon-folder-open"></i> Discussion Topics
+                    <span class="pull-right" style="font-size:xx-small; text-transform:lowercase;">${lib.add_a("discussion")}</span>
+                </h2>
+                <div class="civ-col-inner">
+                    ${helpers.listDiscussions()}
+                </div><!-- civ-col-inner -->
+            </div><!-- civ-col -->
+        </div><!-- span8 -->
+        <div class="span4">
+            <div class="civ-col">
+                <h2 class="civ-col">Message of the Day</h2>
+                <div class="civ-col-inner">
+                    ${helpers.displayMOTD()}
+                </div><!-- civ-col-inner -->
+            </div><!-- civ-col -->
+        </div><!-- span4 -->
+    </div><!-- row-fluid -->
+</div><!-- container-fluid -->
 
 <%def name = 'extraHTML()'>
 

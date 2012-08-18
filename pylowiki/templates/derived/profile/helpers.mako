@@ -76,7 +76,7 @@
                    % elif d['discType'] == 'general':
                        <% ooTitle = d['title'] %>
                        <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/discussion/" + d['urlCode'] + "/" + d['url'] %>
-                       <% ooiType = "comment" %>
+                       <% ooiType = "folder-open" %>
                    % elif d['discType'] == 'resource':
                        <% r = getResource(d['resourceCode'], d['resourceURL']) %>
                        <% ooTitle = r['title'] %>

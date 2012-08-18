@@ -20,11 +20,16 @@ log = logging.getLogger(__name__)
 
 class DiscussionController(BaseController):
 
-    @h.login_required
+    ##@h.login_required
     def index(self, id1, id2):
         workshopCode = id1
         workshopURL = id2
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+        else:
+            c.isScoped = False
+
         log.info(c.w)
         c.title = c.w['title']
         c.code = c.w['urlCode']
@@ -33,7 +38,7 @@ class DiscussionController(BaseController):
 
         return render('/derived/discussion_landing.bootstrap')
 
-    @h.login_required
+    ##@h.login_required
     def topic(self, id1, id2, id3, id4):
         workshopCode = id1
         workshopUrl = id2
@@ -41,6 +46,13 @@ class DiscussionController(BaseController):
         discussionUrl = id4
         
         c.w = getWorkshop(workshopCode, urlify(workshopUrl))
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+        else:
+            c.isScoped = False
+
+        c.isAdmin = isAdmin(c.authuser.id)
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.discussion = getDiscussion(discussionCode, urlify(discussionUrl))
         c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
         if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
@@ -59,6 +71,7 @@ class DiscussionController(BaseController):
 
         return render('/derived/discussion_edit.bootstrap')
 
+    @h.login_required
     def newDiscussionHandler(self, id1, id2):
         code = id1
         url = id2
@@ -88,6 +101,7 @@ class DiscussionController(BaseController):
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (code, url, d.d['urlCode'], d.d['url']))
     
+    @h.login_required
     def editDiscussion(self, id1, id2):
         code = id1
         url = id2
@@ -96,6 +110,7 @@ class DiscussionController(BaseController):
         
         return render('/derived/discussion_edit.bootstrap')
         
+    @h.login_required
     def editDiscussionHandler(self, id1, id2):
         code = id1
         url = id2
@@ -127,15 +142,16 @@ class DiscussionController(BaseController):
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (w['urlCode'], w['url'], discussion['urlCode'], discussion['url']))
     
         
+    @h.login_required
     def adminDiscussion(self, id1, id2):
         code = id1
         url = id2
         c.discussion = getDiscussion(code, urlify(url))
         c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
         
-        
         return render('/derived/discussion_admin.bootstrap')
 
+    @h.login_required
     def adminDiscussionHandler(self):
         
         workshopCode = request.params['workshopCode']
