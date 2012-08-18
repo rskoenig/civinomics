@@ -11,23 +11,27 @@
 
 
 <%def name="displayDiscussionRating(discussion)">
-    <a href="/rateDiscussion/${discussion['urlCode']}/${discussion['url']}/1" class="upVote voted">
-        <i class="icon-chevron-up"></i>
-    </a>
     <% rating = int(discussion['ups']) - int(discussion['downs']) %>
-    <div>${rating}</div>
-    <a href="/rateDiscussion/${discussion['urlCode']}/${discussion['url']}/-1" class="downVote voted">
+    % if 'user' in session and c.isScoped:
+        <a href="/rateDiscussion/${discussion['urlCode']}/${discussion['url']}/1" class="upVote voted">
+        <i class="icon-chevron-up"></i>
+        </a>
+        <div>${rating}</div>
+        <a href="/rateDiscussion/${discussion['urlCode']}/${discussion['url']}/-1" class="downVote voted">
         <i class="icon-chevron-down"></i>
-    </a>
+        </a>
+    % else:
+        <div>${rating}</div>
+    % endif
 </%def>
 
 <%def name="userphoto(discussion)">
     <% owner = getUserByID(discussion.owner) %>
     % if owner['pictureHash'] == 'flash':
-        <a href="/profile/${owner['urlCode']}/${owner['url']}"><img src="/images/avatars/flash.profile" width="35" class="thumbnail"></a>
+        <a href="/profile/${owner['urlCode']}/${owner['url']}"><img src="/images/avatars/flash.profile" width="35" class="thumbnail" alt="${owner['name']}" title="${owner['name']}"></a>
     % else:
         <a href="/profile/${owner['urlCode']}/${owner['url']}">
-            <img src="/images/avatar/${owner['directoryNumber']}/profile/${owner['pictureHash']}.profile" width="35" class="thumbnail">
+            <img src="/images/avatar/${owner['directoryNumber']}/profile/${owner['pictureHash']}.profile" width="35" class="thumbnail" alt="${owner['name']}" title="${owner['name']}">
         </a>
     % endif
 </%def>
@@ -38,7 +42,10 @@
 
 <%def name="discussionPostedDate(discussion)">
     <br />
-    <p><i class="icon-time"></i> <span class="recent">${timeSince(discussion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${discussion['urlCode']}/${discussion['url']}"> Leave comment</a></p>
+    <p><i class="icon-time"></i> <span class="recent">${timeSince(discussion.date)}</span> ago 
+    % if ('user' in session and c.isScoped) or c.isAdmin or c.isFacilitator:
+        | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${discussion['urlCode']}/${discussion['url']}"> Leave comment</a></p>
+    % endif
 
 </%def>
 
@@ -54,8 +61,8 @@
         % endif
     % endfor
     <a href="/profile/${owner['urlCode']}/${owner['url']}">${owner['name']}</a><br>
-    <span class="badge badge-info"><i class="icon-white icon-comment"></i> ${discussion['numComments']}</span>
-    <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${numFlags}</span>
+    <span class="badge badge-info" title="Comments in discussion"><i class="icon-white icon-comment"></i> ${discussion['numComments']}</span>
+    <span class="badge badge-important" title="Flagged comments in discussion"><i class="icon-white icon-flag"></i> ${numFlags}</span>
     <br />
 </%def>
 

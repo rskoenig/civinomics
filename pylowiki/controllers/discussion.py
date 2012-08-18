@@ -48,11 +48,13 @@ class DiscussionController(BaseController):
         c.w = getWorkshop(workshopCode, urlify(workshopUrl))
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         else:
             c.isScoped = False
+            c.isAdmin = False
+            c.isFacilitator = False
 
-        c.isAdmin = isAdmin(c.authuser.id)
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.discussion = getDiscussion(discussionCode, urlify(discussionUrl))
         c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
         if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':

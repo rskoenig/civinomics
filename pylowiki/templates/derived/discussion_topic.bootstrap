@@ -35,8 +35,10 @@ ${lib.return_to()}
         <div class="span4">
             <div class="civ-col">
                 <h2 class="civ-col">
-                    Topics
-                    ${helpers.addTopic()}
+                    <i class="icon-folder-open"></i> Other Topics
+                    % if 'user' in session:
+                        <span class="pull-right" style="text-transform:lowercase; font-size:xx-small;">${lib.add_a("discussion")}</span>
+                    % endif
                 </h2>
                 <div class="civ-col-inner">
                     ${helpers.displayTopics()}

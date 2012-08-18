@@ -72,11 +72,13 @@
 ## Displays the content of the comment
 <%def name="commentContent(comment, counter)">
     <div class="collapse in hide${comment.id}">
-        % if c.authuser['accessLevel'] >= 200:
-            ${editComment(comment, counter)}
-        % elif "user" in session:
-            ${h.literal(h.reST2HTML(comment['data']))}
-            ${displayButtons(comment, counter)}
+        % if "user" in session:
+            % if c.authuser['accessLevel'] >= 200:
+                ${editComment(comment, counter)}
+            % else:
+                ${h.literal(h.reST2HTML(comment['data']))}
+                ${displayButtons(comment, counter)}
+            % endif
         % else:
             ${h.literal(h.reST2HTML(comment['data']))}
         % endif
@@ -85,12 +87,16 @@
 
 ## Sets up the rating system
 <%def name="displayRating(comment, commentType)">
+    % if 'user' in session and c.isScoped:
     <a href="/rateComment/${comment.id}/1" class="upVote voted">
         <i class="icon-chevron-up"></i>
     </a>    <div>${int(comment['ups']) - int(comment['downs'])}</div>
     <a href="/rateComment/${comment.id}/-1" class="downVote voted">
         <i class="icon-chevron-down"></i>
     </a>
+    % else:
+        <div>${int(comment['ups']) - int(comment['downs'])}</div>
+    % endif
 </%def>
 
 <%def name="displayButtons(comment, counter)">
@@ -209,9 +215,11 @@
                         <button type="submit" name = "submit" value = "submit" class="btn">Submit</button>
                     <br />
                     % else:
+                    <!--
                     <h3 class="utility">
                       Please <a href="/login">login</a> or <a href="/register">register</a> to leave a comment!
                     </h3>
+                    -->
                     %endif
                 </form>
             </div> <!-- /.span12 -->
