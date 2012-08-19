@@ -81,12 +81,16 @@ class ProfileController(BaseController):
            c.userFollowers.append(getUserByID(uID))
 
         pList = getUserPosts(c.user)
+        c.totalPoints = 0
         c.flags = 0
         c.posts = len(pList)
         for p in pList:
            fList = getFlags(p)
            if fList:
               c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
 
         return render("/derived/profile.bootstrap")
     

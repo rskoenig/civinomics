@@ -19,14 +19,18 @@
 </%def>
 
 <%def name="displayRating()">
-    <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote voted">
-        <i class="icon-chevron-up"></i>
-    </a>
     <% rating = int(c.resource['ups']) - int(c.resource['downs']) %>
-    <div>${rating}</div>
-    <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/-1" class="downVote voted">
-        <i class="icon-chevron-down"></i>
-    </a>
+    % if 'user' in session and c.isScoped: 
+        <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote voted">
+            <i class="icon-chevron-up"></i>
+        </a>
+        <div>${rating}</div>
+        <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/-1" class="downVote voted">
+            <i class="icon-chevron-down"></i>
+        </a>
+    % else:
+        <div>${rating}</div>
+    % endif
 </%def>
 
 
@@ -80,8 +84,10 @@
                            % if (c.authuser and c.authuser.id == c.poster.id) or c.isAdmin or c.isFacilitator:
                                <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini" title="Edit Resource"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
                            % endif
-                           <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini flagButton" title="Flag Resource"><i class="icon-flag"></i> Flag</a> &nbsp; 
-                        <span id="flag_0"></span>
+                           % if 'user' in session:
+                               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini flagButton" title="Flag Resource"><i class="icon-flag"></i> Flag</a> &nbsp; 
+                               <span id="flag_0"></span>
+                           % endif
 			</div> <!-- .span12 -->
 		</div> <!-- .row-fluid -->
 

@@ -90,7 +90,7 @@
             %if thing == 'resource' and (c.w['allowResources'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'sresource' and (c.s['allowComments'] == '1' or c.isFacilitator or c.isAdmin):
-	        <span class="pull-right resource" style="font-size:xx-small; text-transform:lowercase;"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">new<i class="icon-white icon-book"></i></a></span>
+	        <a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'suggestion' and (c.w['allowSuggestions'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-pencil"></i></a>
             %elif thing == 'feedback':
@@ -160,13 +160,15 @@
                             <td>
                                  <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                                  <span class="badge badge-info" title="Resource comments"><i class="icon-white icon-comment"></i>${numComments}</span>
-                                 <span class="badge badge-important"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
+                                 <span class="badge badge-inverse"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
                              </td>
                              </tr>
                              <tr>
                              <td colspan=2>
-                                 <i class="icon-time"></i> <span class="old">${timeSince(resource.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
-           
+                                 <i class="icon-time"></i> Added <span class="old">${timeSince(resource.date)}</span> ago 
+                            % if 'user' in session and c.isScoped:
+                                | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
+                            % endif
                              </td>
                              </tr>
                              <tr>
@@ -222,7 +224,7 @@
                     <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                     <span class="badge badge-info" title="Suggestion information resources"><i class="icon-white icon-book"></i>${len(resources)}</span>
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
-                    <span class="badge badge-important" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
+                    <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
                 </td>
                 % if 'user' in session and doSlider:
                     <td>
@@ -242,7 +244,10 @@
                 </tr>
                 <tr>
                 <td colspan=3>
-                    <i class="icon-time"></i> <span class="old">${timeSince(suggestion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
+                    <i class="icon-time"></i> Added <span class="old">${timeSince(suggestion.date)}</span> ago 
+                    % if 'user' in session and c.isScoped:
+                        | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
+                    % endif
                 </td>
                 </tr> 
                 <tr>
