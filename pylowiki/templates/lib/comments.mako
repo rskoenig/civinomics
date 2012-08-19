@@ -22,16 +22,22 @@
         c.author = author
     %>
     <p>
+    <div class="row-fluid">
+        <div class="span2"> 
         <button class="btn btn-mini" id="hide${comment.id}" title="Hide comment and any replies" alt="Hide comment and any replies"><i class="icon-minus"></i> hide</button>
-        
+        </div><!-- span2 -->
+        <div class="span1">
         % if author['pictureHash'] == 'flash':
-            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="avatar" width="20" /></a>
+            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="${c.author['name']}" title="${c.author['name']}" class="thumbnail" width="20" /></a>
         % else:
-            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" alt="avatar" /></a>
+            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" class="thumbnail" alt="${c.author['name']}" title="${c.author['name']}" class="thumbnail" /></a>
         % endif
-
+        </div><!-- span1 -->
+        <div class="span8 pull-left">
         <a href = "/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> &mdash;
         <span class="recent">${timeSince(datetime.strptime(comment['lastModified'], '%a %b %d %H:%M:%S %Y'))}</span> ago &mdash; ${numReplies} ${replies}
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
     </p>
 </%def>
 
@@ -55,7 +61,7 @@
 
                 <div class="controls">
                     <div class="input-append">
-                        <input type="text" id="remark${thisID}" name="remark${thisID}" placeholder="optional remark" class="span7"/><button type="submit" name="submit" value="submit" class="btn">Submit</button>
+                        <input type="text" id="remark${thisID}" name="remark${thisID}" placeholder="optional remark" class="span7"/><button type="submit" name="submit" value="submit" class="btn">Save changes</button>
                     </div>
                 </div>
             
@@ -107,15 +113,15 @@
                 parent = getComment(comment['parent'])
                 parentOwner = getUserByID(parent.owner)
             %>
-            <a class="btn btn-mini thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-comment"></i> parent</a>
+            <a class="btn btn-mini btn-primary thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-white icon-comment"></i> parent</a>
         % endif
-        <a data-toggle="collapse" data-target=".reply${comment.id}" class="btn btn-mini" title="Reply to comment" alt="Reply to comment"><i class="icon-repeat"></i> reply</a>
-        <a data-toggle="collapse" data-target=".flag${comment.id}" class="btn btn-mini" title="Flag this comment" alt="Flag this comment"><i class="icon-flag"></i> flag</a>
+        <a data-toggle="collapse" data-target=".reply${comment.id}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
         % if c.authuser['accessLevel'] >= 200:
-            <a id="edit${counter + comment.id}" class="btn btn-mini pull-right" data-toggle="collapse" data-target="#textareadiv${counter + comment.id}">
-                <i class="icon-edit"></i> edit
+            <a id="edit${counter + comment.id}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${counter + comment.id}">
+                <i class="icon-white icon-edit"></i> edit
             </a>
         % endif
+        <a data-toggle="collapse" data-target=".flag${comment.id}" class="btn btn-mini btn-inverse" title="Flag this comment" alt="Flag this comment"><i class="icon-white icon-flag"></i> flag</a>
     </p> <!-- /.btn-group -->
 </%def>
 

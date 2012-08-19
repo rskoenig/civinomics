@@ -79,13 +79,13 @@
                                % if rFlags and len(rFlags) > 0:
                                    <span class="badge badge-inverse"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
                                % endif
-                               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini" title="Administrate Resource"><i class="icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
+                               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini btn-warning" title="Administrate Resource"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
                            % endif
                            % if (c.authuser and c.authuser.id == c.poster.id) or c.isAdmin or c.isFacilitator:
-                               <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini" title="Edit Resource"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
+                               <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-primary" title="Edit Resource"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
                            % endif
                            % if 'user' in session:
-                               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini flagButton" title="Flag Resource"><i class="icon-flag"></i> Flag</a> &nbsp; 
+                               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Resource"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; 
                                <span id="flag_0"></span>
                            % endif
 			</div> <!-- .span12 -->

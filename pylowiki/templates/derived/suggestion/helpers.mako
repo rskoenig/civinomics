@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.db.user import getUserByID, isAdmin
     from pylowiki.lib.db.facilitator import isFacilitator
+    from pylowiki.lib.db.flag import getFlags
     from pylowiki.lib.fuzzyTime import timeSince
 
     import logging
@@ -84,13 +85,14 @@
                     <tr>
                         <td colspan=2>
                             % if cAuthuser and (cAuthuser.id == cwOwner or cIsAdmin):
-                                <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Administrate Suggestion"><i class="icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
+                                <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${len(getFlags(cs))}</span>
+                                <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-warning" title="Administrate Suggestion"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
                             % endif
                             % if cAuthuser and (cAuthuser.id == csOwner or cIsAdmin):
-                                <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini" title="Edit Suggestion"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
+                                <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-primary" title="Edit Suggestion"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
                             % endif
                             % if 'user' in session:
-                                <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini flagButton" title="Flag Suggestion"><i class="icon-flag"></i> Flag</a> &nbsp; &nbsp;
+                                <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Suggestion"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; &nbsp;
                                 <span id="flag_0"></span>
                             % endif
                         </td>
