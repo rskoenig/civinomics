@@ -187,7 +187,7 @@
 	% if c.userFollowers:
 		${displayUserFollows()}
 	% endif
-	% if c.authuser['email'] != c.user['email']:
+	% if 'user' in session and c.authuser['email'] != c.user['email']:
 		<div class="civ-col">
 			<h2 class="civ-col">Connections</h2>
 			<div class="civ-col-inner">
@@ -219,16 +219,16 @@
 	<span class="badge badge-success" title="Followers"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info" title="Total ups - downs of contributed resources, comments and discussions"><i class="icon-white icon-ok"></i> ${c.totalPoints}</span> <span class="badge badge-info" title="Resource and suggestion contributions"><i class="icon-white icon-file"></i> ${c.posts}</span> <span class="badge badge-inverse" title="Flags on contributions"><i class="icon-white icon-flag"></i> ${c.flags}</span>
                 </p>
                 <br />
-                % if c.authuser.id == c.user.id:
+                % if 'user' in session and c.authuser.id == c.user.id:
                    % if c.account and c.account['numRemaining'] != '0':
                       <a href="/addWorkshop"><button class="btn btn-mini btn-primary" title="Click to create a new workshop"><i class="icon-cog icon-white"></i> New Workshop</button></a>
                     % endif
                     <a href="/profile/edit"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
                 % endif
-                % if isAdmin(c.authuser.id):
+                % if 'user' in session and isAdmin(c.authuser.id):
                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning" title="Click to administrate this member"><i class="icon-list-alt icon-white"></i> Admin</button></a>
                 % endif
-		% if c.authuser['email'] != c.user['email']:
+		% if 'user' in session and c.authuser['email'] != c.user['email']:
                         <span class="button_container">
 			% if c.isFollowing:
 				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-primary followButton following" title="Click to follow/unfollow this member">+Following</button>
@@ -423,7 +423,7 @@
 </%def>
 
 <%def name="pendingFacilitateInvitations()">
-% if c.pendingFacilitators and c.authuser.id == c.user.id:      
+% if 'user' in session and (c.pendingFacilitators and c.authuser.id == c.user.id):      
     <h2 class="civ-col">Invitations to CoFacilitate Workshops</h2>
     <% fNum = len(c.pendingFacilitators) %>
     <% wNum = 0 %>
@@ -461,7 +461,7 @@
 </%def>
 
 <%def name="inviteCoFacilitate()">
-%if c.authuser:
+%if 'user' in session and c.authuser:
     <% checkW = getWorkshopsByOwner(c.authuser.id) %>
     <% wList = [] %>
     % for w in checkW:

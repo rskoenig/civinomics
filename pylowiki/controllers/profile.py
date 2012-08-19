@@ -38,9 +38,11 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = False
-        if c.authuser:
+        if 'user' in session and c.authuser:
            c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
-        
+        else:
+           c.isFollowing = False
+
         c.account = getUserAccount(c.user.id)
 
         fList = getFacilitatorsByUser(c.user.id)
@@ -54,8 +56,9 @@ class ProfileController(BaseController):
               myW = getWorkshopByID(wID)
               if myW['startTime'] == '0000-00-00':
                  # show to the workshop owner, show to the facilitator owner
-                 if c.authuser.id == f.owner or c.authuser.id == myW.owner:
-                    c.facilitatorWorkshops.append(myW)
+                 if 'user' in session: 
+                     if c.authuser.id == f.owner or c.authuser.id == myW.owner:
+                         c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
 
