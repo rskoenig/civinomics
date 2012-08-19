@@ -62,7 +62,7 @@
     % endfor
     <a href="/profile/${owner['urlCode']}/${owner['url']}">${owner['name']}</a><br>
     <span class="badge badge-info" title="Comments in discussion"><i class="icon-white icon-comment"></i> ${discussion['numComments']}</span>
-    <span class="badge badge-important" title="Flagged comments in discussion"><i class="icon-white icon-flag"></i> ${numFlags}</span>
+    <span class="badge badge-inverse" title="Flagged comments in discussion"><i class="icon-white icon-flag"></i> ${numFlags}</span>
     <br />
 </%def>
 

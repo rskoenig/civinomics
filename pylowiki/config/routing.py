@@ -141,6 +141,7 @@ def make_map():
     # Admin discussion Handler
     map.connect('/adminDiscussionHandler/', controller = 'discussion', action = 'adminDiscussionHandler', id1 = '{id1}', id2 = '{id2}')    
     map.connect('/adminDiscussionHandler', controller = 'discussion', action = 'adminDiscussionHandler', id1 = '{id1}', id2 = '{id2}')    
+    map.connect('/flagDiscussion/{id1}/{id2}', controller = 'discussion', action = 'flagDiscussion', id1 = '{id1}', id2 = '{id2}')
 
     
     # Workshop Discussion Admin/Edit:

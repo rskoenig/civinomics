@@ -11,10 +11,12 @@ from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDiscu
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
+from pylowiki.lib.db.flag import Flag, isFlagged, getFlags
 
 from pylowiki.lib.db.discussion import Discussion
 
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -56,6 +58,7 @@ class DiscussionController(BaseController):
             c.isFacilitator = False
 
         c.discussion = getDiscussion(discussionCode, urlify(discussionUrl))
+        c.flags = getFlags(c.discussion)
         c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
         if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
             c.otherDiscussions.remove(c.discussion)
@@ -143,7 +146,19 @@ class DiscussionController(BaseController):
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (w['urlCode'], w['url'], discussion['urlCode'], discussion['url']))
     
-        
+    @h.login_required
+    def flagDiscussion(self, id1, id2):
+        code = id1
+        url = id2
+        discussion = getDiscussion(code, urlify(url))
+        if not discussion:
+            return json.dumps({'id':discussion.id, 'result':'ERROR'})
+        if not isFlagged(discussion, c.authuser):
+            f = Flag(discussion, c.authuser)
+            return json.dumps({'id':discussion.id, 'result':"Successfully flagged!"})
+        else:
+            return json.dumps({'id':discussion.id, 'result':"Already flagged!"})
+
     @h.login_required
     def adminDiscussion(self, id1, id2):
         code = id1

@@ -1,5 +1,5 @@
 <%!
-    from pylowiki.lib.db.flag import checkFlagged
+    from pylowiki.lib.db.flag import checkFlagged, getFlags
     from pylowiki.lib.db.event import getParentEvents
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.comment import getPureFlaggedDiscussionComments, getComment, getDisabledComments, getDeletedComments
@@ -289,9 +289,9 @@
     </thead>
     <tbody>
     % for d in c.d:
-       % if checkFlagged(d): 
+       % if d and checkFlagged(d): 
           <tr><td>${len(getFlags(d))}
-          % if int(s['numFlags']) > 1:
+          % if int(len(getFlags(d))) > 1:
           	 Flags:
           % else:
              Flag:

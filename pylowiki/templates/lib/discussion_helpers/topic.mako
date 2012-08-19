@@ -82,12 +82,15 @@
 </%def>
 
 <%def name="Edit_Admin()">
+    <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${len(c.flags)}</span>
     % if c.authuser.id == c.discussion.owner or c.isAdmin or c.isFacilitator:
         <a href="/editDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-primary btn-mini"><i class="icon-white icon-edit"></i> edit</a>
     % endif
     % if c.isAdmin or c.isFacilitator:
         <a href="/adminDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-warning btn-mini"><i class="icon-white icon-list-alt"></i> admin</a>
     % endif
+    <a href="/flagDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-inverse btn-mini flagButton"><i class="icon-white icon-flag"></i> Flag</a>
+    <span id="flag_0"></span>
 </%def>
 
 <%def name="addTopic()">
