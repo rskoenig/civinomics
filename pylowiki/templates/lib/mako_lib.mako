@@ -182,15 +182,15 @@
 	% endif
 </%def>
 
-<%def name="list_suggestions(errorMsg, doSlider = False)">
-	% if len(c.suggestions) == 0:
+<%def name="list_suggestions(sList, errorMsg, doSlider = False)">
+	% if len(sList) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
             <div class="civ-col-list">
             <% counter = 1 %>
             <table>
             <tbody>
-            % for suggestion in c.suggestions:
+            % for suggestion in sList:
                 <% author = getUserByID(suggestion.owner) %>
                 <% flags = getFlags(suggestion) %>
                 <% resources = getResourcesByParentID(suggestion.id) %>

@@ -37,7 +37,7 @@
                     <i class="icon-pencil"></i> Suggestions
                 </h2>
                 <div class="civ-col-inner">
-                    ${lib.list_suggestions("There are no suggestions yet for this workshop. Be the first to add one!", 1)}
+                    ${lib.list_suggestions(c.suggestions, "There are no suggestions yet for this workshop. Be the first to add one!", 1)}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span5 -->
@@ -52,6 +52,14 @@
                 <div class="civ-col-inner">
                     ${helpers.motd()}
                 </div> <!-- /.civ-col-inner -->
+                % if c.asuggestions:
+                    <h2 class="civ-col">
+                        <i class="icon-heart"></i> Adopted Suggestions
+                    </h2>
+                    <div class="civ-col-inner">
+                        ${lib.list_suggestions(c.asuggestions, "There are no adopted suggestions yet for this workshop.", 0)}
+                    </div> <!-- /.civ-col-inner -->
+                % endif
             </div> <!-- /.civ-col -->
         </div> <!-- /.span3 -->
     </div> <!-- /.row-fluid -->
