@@ -223,9 +223,9 @@
 				      ${com['numFlags']} flags:
 				  % endif
 			      % if len(com['data']) > 20:
-					  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+					  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 				  % else:
-					  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data']}</a>
+					  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 			      % endif
 	             <br />
           	 % endfor
@@ -271,9 +271,9 @@
 			      ${com['numFlags']} Flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
              <br />
           % endfor
@@ -318,9 +318,9 @@
 			      ${com['numFlags']} Flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
              <br />
           % endfor
@@ -376,9 +376,9 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor
@@ -431,9 +431,9 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor
@@ -487,9 +487,9 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor
@@ -546,9 +546,9 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor
@@ -601,9 +601,9 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor
@@ -657,9 +657,9 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor

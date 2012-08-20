@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
-    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.user import getUserByID, isAdmin
+    from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment
     import logging
     from datetime import datetime
@@ -79,7 +80,7 @@
 <%def name="commentContent(comment, counter)">
     <div class="collapse in hide${comment.id}">
         % if "user" in session:
-            % if c.authuser['accessLevel'] >= 200:
+            % if isAdmin(c.authuser.id):
                 ${editComment(comment, counter)}
             % else:
                 ${h.literal(h.reST2HTML(comment['data']))}
@@ -116,9 +117,12 @@
             <a class="btn btn-mini btn-primary thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-white icon-comment"></i> parent</a>
         % endif
         <a data-toggle="collapse" data-target=".reply${comment.id}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
-        % if c.authuser['accessLevel'] >= 200:
+        % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
             <a id="edit${counter + comment.id}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${counter + comment.id}">
                 <i class="icon-white icon-edit"></i> edit
+            </a>
+            <a href="/adminComment/${comment['urlCode']}" class="btn btn-mini btn-warning pull-right" title="Admin comment">
+                <i class="icon-white icon-list-alt"></i> admin
             </a>
         % endif
         <a data-toggle="collapse" data-target=".flag${comment.id}" class="btn btn-mini btn-inverse" title="Flag this comment" alt="Flag this comment"><i class="icon-white icon-flag"></i> flag</a>

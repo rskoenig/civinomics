@@ -85,7 +85,7 @@
                     <tr>
                         <td colspan=2>
                             % if cAuthuser and (cAuthuser.id == cwOwner or cIsAdmin):
-                                <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${len(getFlags(cs))}</span>
+                                <span class="badge badge-inverse" title="Flags on this suggestion"><i class="icon-white icon-flag"></i>${len(getFlags(cs))}</span>
                                 <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-warning" title="Administrate Suggestion"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
                             % endif
                             % if cAuthuser and (cAuthuser.id == csOwner or cIsAdmin):

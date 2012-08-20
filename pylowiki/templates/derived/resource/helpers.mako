@@ -77,7 +77,7 @@
                            % if c.isFacilitator or c.isAdmin:
                                <% rFlags = getFlags(c.resource) %>
                                % if rFlags and len(rFlags) > 0:
-                                   <span class="badge badge-inverse"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
+                                   <span class="badge badge-inverse" title="Flags on this resource"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
                                % endif
                                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini btn-warning" title="Administrate Resource"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
                            % endif

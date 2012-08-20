@@ -18,10 +18,10 @@
     ${c.comment['data']}
     <br /><br />
     <% fString = "Flags" %>
-    % if c.comment['numFlags'] == '1':
+    % if len(c.flags) == '1':
        <% fString = "Flag" %>
     % endif
-    <strong>${c.comment['numFlags']} ${fString}:</strong>
+    <strong>${len(c.flags)} ${fString}:</strong>
     <br /><br />
     % for flag in c.flags:
        <% user = getUserByID(flag.owner) %>
@@ -49,7 +49,7 @@
 <%def name="moderateComments()">
     <p>
     % if c.comment['deleted'] == '0':
-	    <form name="moderate_comment" id="moderate_comment" class="left" action = "/modCommentHandler" enctype="multipart/form-data" method="post" >
+	    <form name="moderate_comment" id="moderate_comment" class="left" action = "/modCommentHandler/${c.comment['urlCode']}" enctype="multipart/form-data" method="post" >
 	    <input type=hidden name=commentID value="${c.commentID}">
 	    <input type=hidden name=commentType value="${c.commentType}">
 	    <input type=hidden name=workshopCode value="${c.wCode}">
@@ -69,7 +69,7 @@
 	       </button>
 	    % else:
 	       <button type="submit" name=modType value="disable" class="btn btn-warning">
-	           <i class="icon-ok icon-white"></i>Enable Suggestion
+	           <i class="icon-ok icon-white"></i>Enable Comment
 	       </button>
 	       <button type="submit" name=modType value="delete" class="btn btn-danger">
 	       		<i class="icon-trash icon-white"></i> Delete Comment

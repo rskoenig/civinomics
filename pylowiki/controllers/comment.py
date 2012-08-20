@@ -4,6 +4,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
+from pylowiki.lib.utils import urlify
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.comments import addDiscussion, addComment, editComment
 from pylowiki.lib.db.user import getUserByID, isAdmin
@@ -38,6 +39,25 @@ class CommentController(BaseController):
             return json.dumps({'id':commentID, 'result':"Already flagged!"})
 
     @h.login_required
+    def adminComment(self, id1):
+        code = id1
+        c.comment = getCommentByCode(urlify(code))
+        log.info('c.comment is %s'%c.comment)
+        c.discussion = getDiscussionByID(c.comment['discussion_id'])
+        c.w = getWorkshop(c.discussion['workshopCode'], c.discussion['workshopURL'])
+        c.commentType = c.discussion['discType']
+        c.flags = getFlags(c.comment)
+        log.info('len of c.flags is %s'%len(c.flags))
+        c.events = getParentEvents(c.comment)
+        c.user = getUserByID(c.comment.owner)
+
+        if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, c.w.id):
+            h.flash('You are not authorized', 'error')
+            return redirect('/')
+
+        return render('/derived/comment_admin.bootstrap')
+
+    @h.login_required
     def modComment(self, id1, id2, id3, id4, id5, id6):
         c.wCode = id1
         c.wURL = id2
@@ -64,25 +84,25 @@ class CommentController(BaseController):
         return render('/derived/comment_admin.bootstrap')
 
     @h.login_required
-    def modCommentHandler(self):
+    def modCommentHandler(self, id1):
+        code = id1
         backlink = '/'
 
-        commentID = request.params['commentID']
-        comment = getComment(commentID)
+        comment = getCommentByCode(urlify(code))
+        discussion = getDiscussionByID(comment['discussion_id'])
 
-        commentType = request.params['commentType']
+        commentType = discussion['discType']
 
-        workshopCode = request.params['workshopCode']
-        workshopURL = request.params['workshopURL']
+        workshopCode = discussion['workshopCode']
+        workshopURL = discussion['workshopURL']
         w = getWorkshop(workshopCode, workshopURL)
 
-        otherCode = request.params['otherCode']
-        otherURL = request.params['otherURL']
-    
         if commentType == 'resource':
-           backlink = "/workshop/%s/%s/resource/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
+           backlink = "/workshop/%s/%s/resource/%s/%s"%(workshopCode, workshopURL, discussion['resourceCode'], discussion['resourceURL'])
         elif commentType == 'suggestion':
-           backlink = "/workshop/%s/%s/suggestion/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
+           backlink = "/workshop/%s/%s/suggestion/%s/%s"%(workshopCode, workshopURL, discussion['suggestionCode'], discussion['suggestionURL'])
+        elif commentType == 'general':
+           backlink = "/workshop/%s/%s/discussion/%s/%s"%(workshopCode, workshopURL, discussion['urlCode'], discussion['url'])
         elif commentType == 'background':
            backlink = "/workshop/%s/%s/background"%(workshopCode, workshopURL)
         elif commentType == 'feedback':
