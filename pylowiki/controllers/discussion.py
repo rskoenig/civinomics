@@ -11,7 +11,7 @@ from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDiscu
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
-from pylowiki.lib.db.flag import Flag, isFlagged, getFlags
+from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 
 from pylowiki.lib.db.discussion import Discussion
 
@@ -75,6 +75,43 @@ class DiscussionController(BaseController):
         c.title = c.w['title']
 
         return render('/derived/discussion_edit.bootstrap')
+
+    @h.login_required
+    def clearDiscussionFlagsHandler(self, id1, id2):
+        code = id1
+        url = id2
+        clearError = 0
+        clearMessage = ""
+        c.discussion = getDiscussion(code, urlify(url))
+        if 'clearDiscussionFlagsReason' in request.params:
+            clearReason = request.params['clearDiscussionFlagsReason']
+            if clearReason != '':
+                clearFlags(c.discussion)
+                clearTitle = "Flags cleared"
+                e = Event(clearTitle, clearReason, c.discussion, c.authuser)
+            else:
+                clearError = 1
+                clearMessage = "Please include a reason for your action"
+        else:
+            clearError = 1
+            clearMessage = "Please include a reason for your action"
+
+        if clearError:
+            alert = {'type':'error'}
+            alert['title'] = "Flags not cleared"
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+        else:
+            clearMessage = "Flags cleared from this discussion"
+            alert = {'type':'success'}
+            alert['title'] = 'Flags cleared!'
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+
+        returnURL = "/adminDiscussion/" + code + "/" + url
+        return redirect(returnURL)
 
     @h.login_required
     def newDiscussionHandler(self, id1, id2):

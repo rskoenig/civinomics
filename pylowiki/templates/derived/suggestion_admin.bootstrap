@@ -17,7 +17,7 @@
     </div><!-- civ-col -->
 
     <div class="row-fluid">
-	<div class="span3 offset9">
+	<div class="span12">
 		${lib.fields_alert()}		
 	</div>
     </div><!-- row-fluid -->

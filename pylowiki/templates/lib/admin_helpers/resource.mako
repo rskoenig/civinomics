@@ -1,5 +1,6 @@
 <%!
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import getFlags
 %>
 
 <%def name="res_admin_header()">
@@ -49,6 +50,18 @@
 <%def name="resource_admin_options()">
     <p>
     <strong class="gray">Administrate Resource</strong>
+    % if len(getFlags(c.resource)) > 0:
+        <br /><br /><br />
+        <strong>Clear Resource Flags</strong>
+        <form name="note_resource" id="note_resource" class="left" action = "/clearResourceFlagsHandler/${c.resource['urlCode']}/${c.resource['url']}" enctype="multipart/form-data" method="post" >
+            Reason for clearing flags: &nbsp;
+            <input type=text name=clearResourceFlagsReason>
+            <br /><br />
+            <button type="submit" class="btn btn-warning">Clear Flags</button>
+            <br /><br />
+        </form>
+    % endif
+
     <br /><br /><br />
     <strong>Post Event Note on Resource</strong>
     <form name="note_resource" id="note_resource" class="left" action = "/noteResourceHandler" enctype="multipart/form-data" method="post" >
@@ -61,9 +74,9 @@
     <input type=text name=noteResourceText><br /><br />
     <button type="submit" class="btn btn-warning">Save Note</button>
 </form>
+    <br /><br /><br />
     <strong>Moderate Resource</strong>
 	% if c.resource['deleted'] == '0':
-	    <strong>Moderate Resource</strong>
 		<form name="moderate_resource" id="moderate_resource" class="left" action = "/modResourceHandler" enctype="multipart/form-data" method="post" >
 	    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
 	    <input type=hidden name=workshopURL value="${c.w['url']}">

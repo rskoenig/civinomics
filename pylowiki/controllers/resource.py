@@ -12,7 +12,7 @@ from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, g
 from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
+from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags, clearFlags
 from pylowiki.lib.db.page import Page, getPageByID, get_page
 from pylowiki.lib.db.revision import Revision, get_revision
 
@@ -310,6 +310,59 @@ class ResourceController(BaseController):
         
         c.title = c.w['title']
         c.resource = getResource(resourceCode, urlify(resourceURL))
+        c.flags = getFlags(c.resource)
+        if not c.flags:
+           c.resource['numFlags'] = 0
+        c.events = getParentEvents(c.resource)
+
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.isAdmin = isAdmin(c.authuser.id)
+
+        c.author = getUserByID(c.resource.owner)
+        
+        return render('/derived/resource_admin.bootstrap')
+
+    @h.login_required
+    def clearResourceFlagsHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.resource = getResource(code, urlify(url))
+        c.author = getUserByID(c.resource.owner)
+        c.w = getWorkshopByID(c.resource['workshop_id'])
+        clearError = 0
+        clearMessage = ""
+
+        if 'clearResourceFlagsReason' in request.params:
+            clearReason = request.params['clearResourceFlagsReason']
+            if clearReason != '':
+                clearFlags(c.resource)
+                clearTitle = "Flags cleared"
+                e = Event(clearTitle, clearReason, c.resource, c.authuser)
+            else:
+                clearError = 1
+                clearMessage = "Please include a reason for your action"
+        else:
+            clearError = 1
+            clearMessage = "Please include a reason for your action"
+
+        if clearError:
+            alert = {'type':'error'}
+            alert['title'] = "Flags not cleared"
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+        else:
+            clearMessage = "Flags cleared from this resource"
+            alert = {'type':'success'}
+            alert['title'] = 'Flags cleared!'
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+
+        returnURL = "/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/resource/" + c.resource['urlCode'] + "/" + c.resource['url'] + "/modResource"
+        return redirect(returnURL)
+
+        
         c.flags = getFlags(c.resource)
         if not c.flags:
            c.resource['numFlags'] = 0

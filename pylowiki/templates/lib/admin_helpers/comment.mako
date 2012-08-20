@@ -1,16 +1,19 @@
 <%!
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import getFlags
 %>
 
 <%def name="comment_admin()">
     % if c.commentType == 'suggestion':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/suggestion/${c.oCode}/${c.oURL}">Suggestion</a>
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/suggestion/${c.discussion['suggestionCode']}/${c.discussion['suggestionURL']}">Suggestion</a>
     % elif c.commentType == 'resource':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/resource/${c.oCode}/${c.oURL}">Resource</a>
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/resource/${c.discussion['resourceCode']}/${c.discussion['resourceURL']}">Resource</a>
+    % elif c.commentType == 'sresource':
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/resource/${c.discussion['resourceCode']}/${c.discussion['resourceURL']}">Suggestion Resource</a>
     % elif c.commentType == 'background':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/background">Background</a>
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/background">Background</a>
     % elif c.commentType == 'feedback':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/feedback">Feedback</a>
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/feedback">Feedback</a>
     % endif
     <br /><br />
     Added ${c.comment['lastModified']} by ${c.user['name']}
@@ -44,6 +47,24 @@
           <br /><br />
        %endfor
     % endif
+</%def>
+
+<%def name="clearCommentFlags()">
+    % if len(getFlags(c.comment)) > 0:
+        <br /><br />
+        <strong>Clear Flags</strong>
+        <form name="moderate_comment" id="moderate_comment" class="left" action = "/clearCommentFlagsHandler/${c.comment['urlCode']}" enctype="multipart/form-data" method="post" >
+
+	    <br /><br />
+	    Reason for clearing flags: &nbsp;
+	    <input type=text name=clearCommentFlagsReason><br /><br />
+	    <button type="submit" name=modType value="disable" class="btn btn-warning">
+            <i class="icon-ban-circle icon-white"></i> Clear Flags
+            </button>
+
+        </form>
+    % endif
+    <br /><br />
 </%def>
 
 <%def name="moderateComments()">

@@ -16,7 +16,7 @@ from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
 from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.flag import Flag, isFlagged, getFlags
+from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 
 import simplejson as json
 
@@ -82,6 +82,49 @@ class CommentController(BaseController):
             return redirect('/')
 
         return render('/derived/comment_admin.bootstrap')
+
+    @h.login_required
+    def clearCommentFlagsHandler(self, id1):
+        code = id1
+
+        c.comment = getCommentByCode(code)
+        fList = getFlags(c.comment)
+
+        clearError = 0
+        clearMessage = ""
+        c.discussion = getDiscussionByID(c.comment['discussion_id'])
+
+        if 'clearCommentFlagsReason' in request.params:
+            clearReason = request.params['clearCommentFlagsReason']
+            if clearReason != '':
+                clearFlags(c.comment)
+                clearTitle = "Flags cleared"
+                e = Event(clearTitle, clearReason, c.comment, c.authuser)
+            else:
+                clearError = 1
+                clearMessage = "Please include a reason for your action"
+        else:
+            clearError = 1
+            clearMessage = "Please include a reason for your action"
+
+        if clearError:
+            alert = {'type':'error'}
+            alert['title'] = "Flags not cleared"
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+        else:
+            clearMessage = "Flags cleared from this comment"
+            alert = {'type':'success'}
+            alert['title'] = 'Flags cleared!'
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+
+        returnURL = "/adminComment/" + code
+        return redirect(returnURL)
+
+     
 
     @h.login_required
     def modCommentHandler(self, id1):
