@@ -916,7 +916,8 @@ class WorkshopController(BaseController):
             if len(item['data']) <= 250:
                 item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
             else:
-                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
+                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
+                ##item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
         
             if 'user' in session:    
                 """ Grab the associated rating, if it exists """
@@ -1001,6 +1002,7 @@ class WorkshopController(BaseController):
             HTMLlist = self.get_HTMLlist(reST)
             
             c.wikilist = zip(HTMLlist, reSTlist)
+            c.content = h.literal(h.reST2HTML(r['data']))
         else:
             c.content = h.literal(h.reST2HTML(r['data']))
         
