@@ -60,47 +60,47 @@
 <%def name="suggestionEditAdminRating(cAuthuser, cwOwner, cs, cIsAdmin, session, cRating)">
     <div class="row">
         <div class="span4 offset4">
-            <br />
-            <table>
-                <tbody>
-                    <tr>
-                        <td colspan="2">
-                            % if "user" in session:
-                                % if cRating:
-                                    <div class = "gray rating wide">
-                                        <div id="overall_slider" class="ui-slider-container">
-                                            <div id="${cs['urlCode']}_${cs['url']}" class="normal_slider" data1="0_${cs['urlCode']}_${cRating['rating']}_overall_true_rateSuggestion" data2="${cs['url']}"></div>
-                                        </div>
-                                    </div>
-                                % else:
-                                    <div class = "gray rating wide">
-                                        <div id="overall_slider" class="ui-slider-container">
-                                            <div id="${cs['urlCode']}_${cs['url']}" class="normal_slider" data1="0_${cs['urlCode']}_0_overall_false_rateSuggestion" data2="${cs['url']}"></div>
-                                        </div>
-                                    </div>
-                                % endif
-                            % endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan=2>
-                            % if cAuthuser and (cAuthuser.id == cwOwner or cIsAdmin):
-                                <span class="badge badge-inverse" title="Flags on this suggestion"><i class="icon-white icon-flag"></i>${len(getFlags(cs))}</span>
-                                <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-warning" title="Administrate Suggestion"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
-                            % endif
-                            % if cAuthuser and (cAuthuser.id == csOwner or cIsAdmin):
-                                <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-primary" title="Edit Suggestion"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
-                            % endif
-                            % if 'user' in session:
-                                <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Suggestion"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; &nbsp;
-                                <span id="flag_0"></span>
-                            % endif
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <br />
+        <table>
+        <tbody>
+        <tr>
+        <td colspan="2">
+        % if "user" in session:
+            % if cRating:
+                <div class = "gray rating wide">
+                    <div id="overall_slider" class="ui-slider-container">
+                        <div id="${cs['urlCode']}_${cs['url']}" class="normal_slider" data1="0_${cs['urlCode']}_${cRating['rating']}_overall_true_rateSuggestion" data2="${cs['url']}"></div>
+                    </div>
+                </div>
+            % else:
+                <div class = "gray rating wide">
+                    <div id="overall_slider" class="ui-slider-container">
+                        <div id="${cs['urlCode']}_${cs['url']}" class="normal_slider" data1="0_${cs['urlCode']}_0_overall_false_rateSuggestion" data2="${cs['url']}"></div>
+                    </div>
+                </div>
+            % endif
+        % endif
+        </td>
+        </tr>
+        <tr>
+        <td colspan=2>
+        % if cAuthuser and (cAuthuser.id == cwOwner or cIsAdmin):
+            <span class="badge badge-inverse" title="Flags on this suggestion"><i class="icon-white icon-flag"></i>${len(getFlags(cs))}</span>
+            <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-warning" title="Administrate Suggestion"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
+        % endif
+        % if cAuthuser and (cAuthuser.id == cs.owner or cIsAdmin):
+            <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-primary" title="Edit Suggestion"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
+        % endif
+        % if 'user' in session:
+            <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Suggestion"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; &nbsp;
+            <span id="flag_0"></span>
+        % endif
+        </td>
+        </tr>
+        </tbody>
+        </table>
     </div>
+</div>
 </%def>
 
 <%def name="showSuggestions()">
