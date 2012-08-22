@@ -79,7 +79,8 @@ def clearFlags(thing):
             commit(thing)
 
 def checkFlagged(thing):
-    if 'numFlags' in thing.keys() and int(thing['numFlags']) != 0:
+    ##if 'numFlags' in thing.keys() and int(thing['numFlags']) != 0:
+    if len(getFlags(thing)) > 0:
        return True
     else:
        return False

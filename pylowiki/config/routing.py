@@ -422,6 +422,8 @@ def make_map():
     # Action Lists #
     ################
     
+    map.connect('/help', controller = 'actionlist', action='help')
+    map.connect('/help/', controller = 'actionlist', action='help')
     map.connect('/surveys', controller = 'actionlist', action='index', id='surveys')
     map.connect('/surveys/', controller = 'actionlist', action='index', id='surveys')
 

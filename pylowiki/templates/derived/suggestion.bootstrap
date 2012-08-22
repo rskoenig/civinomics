@@ -25,7 +25,11 @@ ${lib.return_to()}
     <div class="row-fluid">    
         <div class="span8">
             <div class="civ-col">
-                <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION</h2>
+                % if c.s['adopted'] == '1':
+                    <h2 class="civ-col"><i class="icon-heart"></i> Adopted Suggestion</h2>
+                % else:
+                    <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION</h2>
+                % endif
                 <div class="civ-col-inner">
                     <div class="row-fluid">
                         ${helpers.suggestionInfo()}

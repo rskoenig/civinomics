@@ -94,6 +94,9 @@ class ActionlistController(BaseController):
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
 
+    def help( self ):
+        return render('/derived/help.bootstrap')
+
     def searchWorkshops( self, id1, id2  ):
         log.info('searchWorkshops %s %s' % (id1, id2))
         id2 = id2.replace("_", " ")

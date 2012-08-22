@@ -12,6 +12,7 @@
 
 <%def name="at_a_glance()">
     <% numComments = 0 %>
+    <% numResources = len(c.resources) %>
     <% numFlags = 0 %>
     <% t = getActiveDiscussionsForWorkshop(c.w['urlCode'], c.w['url']) %>
     % for d in t:
@@ -41,6 +42,7 @@
         % endif
         <% numComments = numComments + int(d['numComments']) %>
         <% sResources = getResourcesByParentID(item.id) %>
+        <% numResources = numResources + len(sResources) %>
         <% nF = getFlags(item.id) %>
         % if nF:
             <% numFlags = numFlags + len(nF) %>
@@ -77,7 +79,7 @@
         <dt>Ends:</dt><dd><span class="old">Not yet started.</span><br /><br /></dd>
     % endif
     <dt>Activity:</dt>
-    <dd><span class="badge badge-info" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> <span class="badge badge-info" title="Information resources in workshop"><i class="icon-white icon-book"></i>${len(c.resources)}</span> <span class="badge badge-info" title="Discussion topics in workshop"><i class="icon-white icon-folder-open"></i> ${len(t)}</span> <span class="badge badge-info" title="Comments in workshop"><i class="icon-white icon-comment"></i>${numComments}</span> <span class="badge badge-success" title="Workshop followers"><i class="icon-white icon-user"></i>${len(c.followers)}</span> <span class="badge badge-success" title="Adopted suggestions in workshop"><i class="icon-white icon-heart"></i>${len(c.asuggestions)}</span> <span class="badge badge-inverse" title="Flags in workshop"><i class="icon-white icon-flag"></i>${numFlags}</span><br /><br /></dd>
+    <dd><span class="badge badge-info" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> <span class="badge badge-info" title="Information resources in workshop"><i class="icon-white icon-book"></i>${numResources}</span> <span class="badge badge-info" title="Discussion topics in workshop"><i class="icon-white icon-folder-open"></i> ${len(t)}</span> <span class="badge badge-info" title="Comments in workshop"><i class="icon-white icon-comment"></i>${numComments}</span> <span class="badge badge-success" title="Workshop followers"><i class="icon-white icon-user"></i>${len(c.followers)}</span> <span class="badge badge-success" title="Adopted suggestions in workshop"><i class="icon-white icon-heart"></i>${len(c.asuggestions)}</span> <span class="badge badge-inverse" title="Flags in workshop"><i class="icon-white icon-flag"></i>${numFlags}</span><br /><br /></dd>
 
     % if 'user' in session:
 	    <dt>Participate:</dt><dd>
