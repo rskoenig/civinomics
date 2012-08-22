@@ -5,10 +5,7 @@
 
 <div class="container-fluid"><!-- header -->
     <div class="well">
-        <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
-        <br />
-        ${lib_helpers.nav_thing("configure")}
-        <br />
+        ${lib_helpers.displayWorkshopHeader('configure')}
     </div><!-- well -->
     <h2 class="civ-col">Configure Workshop</h2>
     <br />

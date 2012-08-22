@@ -442,3 +442,26 @@
         </li>
         </ul>
 </%def>
+
+<%def name="displayWorkshopHeader(page)">
+   <table cellpadding=6>
+   <thead>
+   <tr>
+   <td>
+    % if c.w['mainImage_hash'] == 'supDawg':
+        <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" class="thumbnail" alt="${c.w['title']}" title="${c.w['title']}" style="width: 120px; height: 80px;"/></a>
+    % else:
+        <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_directoryNum']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" alt="${c.w['title']}" title="${c.w['title']}" class="thumbnail left" style = "width: 120px; height: 80px;"/></a>
+    % endif
+ </td>
+   <td>
+   <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+   <br />
+   ${nav_thing(page)}
+   <br/>
+   </td>
+   </tr>
+   </thead>
+   </table>
+
+</%def>

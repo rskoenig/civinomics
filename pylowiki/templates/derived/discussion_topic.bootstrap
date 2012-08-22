@@ -7,10 +7,7 @@ ${lib.return_to()}
 
 <div class="container-fluid">
     <div class="well">
-        <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
-        <br />        
-        ${lib.nav_thing("discussion")}
-        <br />
+        ${lib.displayWorkshopHeader('discussion')}
     </div><!-- well -->
     <div class="row-fluid">
         <div class="span8">
