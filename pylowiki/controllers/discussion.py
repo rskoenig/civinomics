@@ -1,4 +1,4 @@
-import logging
+import logging, pickle
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to, redirect
@@ -10,8 +10,9 @@ from pylowiki.lib.db.workshop import getWorkshop, isScoped
 from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin
-from pylowiki.lib.db.facilitator import isFacilitator
+from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
+from pylowiki.lib.db.rating import getRatingByID
 
 from pylowiki.lib.db.discussion import Discussion
 
@@ -27,10 +28,23 @@ class DiscussionController(BaseController):
         workshopCode = id1
         workshopURL = id2
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
+        c.rating = False
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
+            if 'ratedThings_workshop_overall' in c.authuser.keys():
+                workRateDict = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
+                if c.w.id in workRateDict.keys():
+                    c.rating = getRatingByID(workRateDict[c.w.id])
         else:
             c.isScoped = False
+
+        fList = []
+        for f in (getFacilitatorsByWorkshop(c.w.id)):
+           if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
+              fList.append(f)
+
+        c.facilitators = fList
+
 
         log.info(c.w)
         c.title = c.w['title']

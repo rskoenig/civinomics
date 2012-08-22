@@ -7,10 +7,9 @@
 <div class="container-fluid">
 <div class="row-fluid">
     <div class="span12 well">
-        <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1><br />
-         ${lib.nav_thing("")}
-         ${resource_helpers.nav_thing()}
-         <br />
+        ${lib.displayWorkshopHeader('')}
+        ${resource_helpers.nav_thing()}
+        <br />
     </div>
 </div>
 

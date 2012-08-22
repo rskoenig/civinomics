@@ -7,10 +7,7 @@
 <div class="container-fluid">
 <div class="row-fluid">
     <div class="span12 well">
-        ${suggestion_helpers.workshopTitle()}
-        <br />
-        ${lib.nav_thing("")}
-        <br />
+        ${lib.displayWorkshopHeader('')}
     </div>
 </div>
 

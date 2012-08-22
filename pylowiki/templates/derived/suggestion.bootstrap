@@ -15,10 +15,7 @@ ${lib.return_to()}
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 well">
-            ${helpers.workshopTitle()}
-            <br />
-            ${lib.nav_thing("")}
-            <br />
+            ${lib.displayWorkshopHeader('')}
         </div><!-- span12 -->
     </div><!-- row-fluid -->
 

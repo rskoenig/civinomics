@@ -22,9 +22,15 @@ ${lib.return_to()}
         </div><!-- span8 -->
         <div class="span4">
             <div class="civ-col">
-                <h2 class="civ-col">Message of the Day</h2>
+                <h2 class="civ-col"><i class="icon-volume-up"></i> Feedback</h2>
                 <div class="civ-col-inner">
-                    ${helpers.displayMOTD()}
+                    How well is this workshop running?<br /> 
+                    ${lib.displayFeedbackSlider()}
+                </div><!-- civ-col-inner -->
+                <br /><br />
+                <h2 class="civ-col"><i class="icon-list-alt"></i> ${lib.facilitator()}</h2>
+                <div class="civ-col-inner">
+                    ${lib.your_facilitator()}
                 </div><!-- civ-col-inner -->
             </div><!-- civ-col -->
         </div><!-- span4 -->
@@ -36,9 +42,18 @@ ${lib.return_to()}
 </%def>
 
 <%def name = 'extraStyles()'>
-
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom
+.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
 </%def>
 
 <%def name = 'extraScripts()'>
-
+        <script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+        <script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
+        <script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
+        <script type="text/javascript">
+                $(document).ready(function(){
+                        $(".small_slider").jColorSlider();
+                });
+        </script>
 </%def>

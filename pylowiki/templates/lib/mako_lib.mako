@@ -93,8 +93,6 @@
 	        <a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'suggestion' and (c.w['allowSuggestions'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-pencil"></i></a>
-            %elif thing == 'feedback':
-	        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback" title="Click to add feedback about this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-volume-up"></i></a>
             %elif thing == 'discussion':
 	        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-folder-open"></i></a>
             %endif
@@ -264,9 +262,9 @@
 
 <%def name="facilitator()">
 	% if len(c.facilitators) == 1:
-		Your facilitator
+		facilitator
 	% else:
-		Your facilitators
+		facilitators
 	% endif
 </%def>
 
@@ -317,7 +315,7 @@
 </%def>
 
 <%def name="nav_thing(page)">
-	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("feedback", "feedback"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])  %>
+	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])  %>
 
 	<ul class="unstyled nav-thing">
 	% for li in pages.keys():
@@ -465,3 +463,18 @@
    </table>
 
 </%def>
+
+<%def name="displayFeedbackSlider()">
+    % if "user" in session:
+        <div id="ratings0" class="rating pull-left">
+            <div id="overall_slider" class="ui-slider-container clearfix">
+                % if c.rating:
+                    <div id="${c.w['urlCode']}_${c.w['url']}" class="small_slider" data1="0_${c.w['urlCode']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
+                % else:
+                    <div id="${c.w['urlCode']}_${c.w['url']}" class="small_slider" data1="0_${c.w['urlCode']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
+                % endif
+            </div>
+        </div>
+    % endif
+</%def>
+
