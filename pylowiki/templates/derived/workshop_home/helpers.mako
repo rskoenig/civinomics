@@ -130,12 +130,11 @@
 
 <%def name="info_and_feedback()">
 	<p>
-		<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Learn more</a> about the workshop and facilitation process.
+		<a href = "/help">Learn more</a> about the workshop and facilitation process.
 	</p>
 	<p>
-		<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback"><span class="badge badge-info"><i class="icon-white icon-comment"></i>${c.discussion['numComments']}</span></a> 
                 % if 'user' in session and c.isScoped:
-                    | <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/feedback">Give feedback</a>
+                    <a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/discussion">Give feedback</a> to the workshop Facilitators.
                 % endif
 	</p>
 </%def>

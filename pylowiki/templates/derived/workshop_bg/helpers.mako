@@ -45,4 +45,5 @@
 	% else:
 		${c.content}
 	% endif
+        Last updated ${c.lastmoddate} by <a href="/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>
 </%def>

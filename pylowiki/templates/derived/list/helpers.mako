@@ -79,6 +79,7 @@
             </select>
             <button class="btn" type="submit">Search</button>
         </form>
+        <!-- CCN
         <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
             Workshops in my <select name="scopeLevel">
             <option value="09">City</option>
@@ -88,6 +89,7 @@
             </select>
             <button class="btn" type="submit">Search</button>
         </form>
+        -->
     % endif            
 </%def>
 

@@ -44,7 +44,7 @@
         <div class="span3">
             <div class="civ-col">
                 <h2 class="civ-col">
-                    <i class="icon-volume-up"></i> Feedback 
+                    <i class="icon-question-sign"></i> Help 
                 </h2>
                 <div class="civ-col-inner">
                     ${helpers.info_and_feedback()}

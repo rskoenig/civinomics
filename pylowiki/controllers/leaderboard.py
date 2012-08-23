@@ -69,8 +69,8 @@ def SugActivityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
-            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
-            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
+            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
                                     
             row.append(count) 
             row.append(name) 
@@ -94,8 +94,8 @@ def SugActivityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
-            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
-            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
+            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
                                     
             row.append(str(index+1) + ' / ' + str(len(sugActiveList))) 
             row.append(name) 
@@ -237,8 +237,8 @@ def SugPopularityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
-            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
-            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
+            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
             
             row.append(count) 
             row.append(name) 
@@ -262,8 +262,8 @@ def SugPopularityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
-            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
-            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
+            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
             
             row.append(str(index+1) + ' / ' + str(len(sugPopularList))) 
             row.append(name) 
@@ -304,9 +304,12 @@ def SugRatingBoard(page, suggestions):
             sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall'])) 
             if s.id in sugRateDict.keys():
                 userRate = getRatingByID(sugRateDict[s.id])['rating']
+                ##log.info('ratingAvg_overall is %s'%int(float(s['ratingAvg_overall'])))
+            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
+            ##log.info('fuzzUpperAvgRating is %s'%fuzzUpperAvgRating)
 
-            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
-            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
+            ##log.info('fuzzLowerAvgRating is %s'%fuzzLowerAvgRating)
     
             row.append(count) 
             row.append(name) 
@@ -334,8 +337,8 @@ def SugRatingBoard(page, suggestions):
             if s.id in sugRateDict.keys():
                 userRate = getRatingByID(sugRateDict[s.id])['rating']
 
-            fuzzUpperAvgRating = (int(s['ratingAvg_overall'])) + (5-(int(s['ratingAvg_overall']))%5)
-            fuzzLowerAvgRating = (int(s['ratingAvg_overall'])) - ((int(s['ratingAvg_overall']))%5)
+            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
+            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
     
             row.append(str(index+1) + ' / ' + str(len(sugRatingList))) 
             row.append(name) 
