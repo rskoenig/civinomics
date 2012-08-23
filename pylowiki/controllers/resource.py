@@ -128,7 +128,7 @@ class ResourceController(BaseController):
         c.isScoped = isScoped(c.authuser, c.w)
         if (c.isScoped and c.w['allowResources'] == '1') or c.isAdmin or c.isFacilitator:
             c.r = False
-            c.otherResources = getActiveResourcesByParentID(c.s.id)
+            c.resources = getActiveResourcesByParentID(c.s.id)
 
             return render('/derived/resource_edit.bootstrap')
         else:

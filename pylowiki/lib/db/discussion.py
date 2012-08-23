@@ -104,5 +104,8 @@ class Discussion(object):
         d['urlCode'] = toBase62('%s_%s'%(title, int(time())))
         d['numComments'] = 0
         commit(d)
+
+        attachedThing['discussion_id'] = d.id
+        commit(attachedThing)
         
         self.d = d
