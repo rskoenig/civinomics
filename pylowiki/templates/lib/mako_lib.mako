@@ -4,7 +4,7 @@
     log = logging.getLogger(__name__)
     from pylowiki.lib.db.flag import getFlags
     from pylowiki.lib.db.discussion import getDiscussionByID
-    from pylowiki.lib.db.user import isAdmin
+    from pylowiki.lib.db.user import isAdmin, getUserByID
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.resource import getResourcesByParentID
 %>
@@ -478,3 +478,15 @@
     % endif
 </%def>
 
+<%def name="displayEvents()">
+    % if c.events:
+        <h2 class="civ-col">Change Log</h2>
+
+        <ul class="unstyled">
+        % for e in c.events:
+            <% eOwner = getUserByID(e.owner) %>
+            <li>${e['title']} : by <a href="/profile/${eOwner['urlCode']}/${eOwner['url']}">${eOwner['name']}</a> ${e.date} : ${e['data']}</li>
+        % endfor
+        </ul>
+    % endif
+</%def>

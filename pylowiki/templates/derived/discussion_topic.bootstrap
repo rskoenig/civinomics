@@ -21,6 +21,7 @@ ${lib.return_to()}
                         % endif
                     </div>
                 </div>
+                ${lib.displayEvents()}
             </div>
             <div class="civ-col">
                 <h2 class="civ-col">Comments</h2>

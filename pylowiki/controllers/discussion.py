@@ -10,6 +10,7 @@ from pylowiki.lib.db.workshop import getWorkshop, isScoped
 from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin
+from pylowiki.lib.db.event import getParentEvents
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 from pylowiki.lib.db.rating import getRatingByID
@@ -73,6 +74,7 @@ class DiscussionController(BaseController):
 
         c.discussion = getDiscussion(discussionCode, urlify(discussionUrl))
         c.flags = getFlags(c.discussion)
+        c.events = getParentEvents(c.discussion)
         c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
         if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
             c.otherDiscussions.remove(c.discussion)
@@ -192,8 +194,17 @@ class DiscussionController(BaseController):
             return redirect('/editDiscussion/%s/%s' % (code, url))
 
         else:
-            discussion['title'] = title
-            discussion['text'] = text
+            dMsg = ''
+            if discussion['title'] != title:
+                discussion['title'] = title
+                dMsg = dMsg + "Title updated. "
+
+            if discussion['text'] != text:
+                discussion['text'] = text
+                dMsg = dMsg + "Text updated. "
+
+            Event('Discussion Edited', dMsg, discussion, c.authuser)
+            commit(discussion)
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (w['urlCode'], w['url'], discussion['urlCode'], discussion['url']))
     
