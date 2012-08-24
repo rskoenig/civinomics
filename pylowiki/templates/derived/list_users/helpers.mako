@@ -11,7 +11,7 @@
     <table class="table table-striped table-condensed">
     <tbody>
     % for item in c.paginator:
-        ${profile_helpers.listUser(item)}
+        ${profile_helpers.listUser(item, 1)}
     % endfor
     </tbody>
     </table>

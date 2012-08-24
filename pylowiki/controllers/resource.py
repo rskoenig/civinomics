@@ -8,7 +8,8 @@ from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getResourceByID, getResource
+from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getResourceByID, getResource, getActiveResourcesByParentID
+from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
@@ -36,9 +37,12 @@ class ResourceController(BaseController):
         resourceURL = id4
         
         c.w = getWorkshop(workshopCode, workshopURL)
-        
         c.title = c.w['title']
         c.resource = getResource(resourceCode, urlify(resourceURL))
+        if c.resource['parent_id'] != None and c.resource['parent_type'] != None:
+            if c.resource['parent_type'] == 'suggestion':
+                c.suggestion = getSuggestionByID(c.resource['parent_id'])
+
         c.events = getParentEvents(c.resource)
         if c.resource['disabled'] == '1' or c.resource['allowComments'] == '0':
             c.commentsDisabled = 1
@@ -70,11 +74,14 @@ class ResourceController(BaseController):
 
         c.poster = getUserByID(c.resource.owner)
         
-        c.otherResources = getActiveResourcesByWorkshopID(c.w.id)
-        for i in range(len(c.otherResources)):
-            resource = c.otherResources[i]
+        if c.suggestion:
+            c.resources = getActiveResourcesByParentID(c.suggestion.id)
+        else:
+            c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        for i in range(len(c.resources)):
+            resource = c.resources[i]
             if resource.id == c.resource.id:
-                c.otherResources.pop(i)
+                c.resources.pop(i)
                 break
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
         if 'mainRevision_id' in c.resource:
@@ -99,7 +106,27 @@ class ResourceController(BaseController):
         if (s and c.w['allowResources'] == '1') or a or f:
             c.r = False
             c.heading = "OTHER RESOURCES"
-            c.otherResources = getResourcesByWorkshopID(c.w.id)
+            c.resources = getResourcesByWorkshopID(c.w.id)
+
+            return render('/derived/resource_edit.bootstrap')
+        else:
+            h.flash('You are not authorized', 'error')
+            return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
+
+    @h.login_required
+    def newSResource(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.s = getSuggestion(code, urlify(url))
+        c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
+
+        c.isAdmin = isAdmin(c.authuser.id)
+        c.isFacilitator =  isFacilitator(c.authuser.id, c.w.id)
+        c.isScoped = isScoped(c.authuser, c.w)
+        if (c.isScoped and c.w['allowResources'] == '1') or c.isAdmin or c.isFacilitator:
+            c.r = False
+            c.otherResources = getActiveResourcesByParentID(c.s.id)
 
             return render('/derived/resource_edit.bootstrap')
         else:
@@ -122,7 +149,7 @@ class ResourceController(BaseController):
                     c.otherResources.pop(i)
                     break
 
-            return render('/derived/resource_edit.html')
+            return render('/derived/resource_edit.bootstrap')
         else:
             h.flash('You are not authorized a is %s and f is %s'%(a, f), 'error')
             return redirect('/workshop/%s/%s/resource/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.r['urlCode'], urlify(c.r['url'])))
@@ -233,24 +260,42 @@ class ResourceController(BaseController):
         if rerror:
             h.flash(rerrorMsg, 'error')
         else:
+            if 'suggestionCode' in request.params and 'suggestionURL' in request.params:
+                suggestionCode = request.params['suggestionCode']
+                suggestionURL = request.params['suggestionCode']
+                s = getSuggestion(suggestionCode, suggestionURL)
+            else:
+                s = False
+
             w = getWorkshop(code, urlify(url))
+
             # make sure link not already submitted
-            a = getResourceByLink(link, w)
+            if s:
+                a = getResourceByLink(link, s)
+            else:
+                a = getResourceByLink(link, w)
+
+            log.info('a is %s link is %s' % (a, link))
+
             if a:
-                h.flash('Link already submitted for this issue', 'warning')
+                h.flash('Link already submitted for this workshop', 'warning')
                 return redirect('/workshop/%s/%s'%(code, url))
 
-            r = Resource(link, title, comment, c.authuser, allowComments, w)
-            if 'resources' not in w.keys():
-                w['resources'] = r.a.id
+            if s:
+                r = Resource(link, title, comment, c.authuser, allowComments, w, s)
+                return redirect('/workshop/%s/%s/suggestion/%s/%s'%(code, url, suggestionCode, suggestionURL))
             else:
-                w['resources'] = w['resources'] + ',' + str(r.a.id)
+                r = Resource(link, title, comment, c.authuser, allowComments, w)
+                if 'resources' not in w.keys():
+                    w['resources'] = r.a.id
+                else:
+                    w['resources'] = w['resources'] + ',' + str(r.a.id)
 
-            w['numResources'] = int(w['numResources']) + 1
-            commit(w)
+                w['numResources'] = int(w['numResources']) + 1
+                commit(w)
+                return redirect('/workshop/%s/%s'%(code, url))
 
         
-        return redirect('/workshop/%s/%s'%(code, url))
 
     @h.login_required
     def modResource(self, id1, id2, id3, id4):
@@ -326,7 +371,10 @@ class ResourceController(BaseController):
         e = Event(modTitle, modResourceReason, r, c.authuser)
 
         h.flash(modTitle, 'success')
-        return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
+        if modType == 'delete':
+            return redirect('/workshop/%s/%s/resource/'%(w['urlCode'], w['url']))
+        else:
+            return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
 
     @h.login_required
     def noteResourceHandler(self):
@@ -396,9 +444,11 @@ class ResourceController(BaseController):
         return redirect('/issue/%s/resource/%s'%(i.page.url, a.title))
 
     @h.login_required
-    def flagResource(self, id1):
-        resourceID = id1
-        resource = getResourceByID(resourceID)
+    def flagResource(self, id1, id2):
+        code = id1
+        url = id2
+        resource = getResource(code, urlify(url))
+        resourceID = resource.id
         if not resource:
             return json.dumps({'id':resourceID, 'result':'ERROR'})
         if not isFlagged(resource, c.authuser):

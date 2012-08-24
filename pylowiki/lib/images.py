@@ -29,7 +29,8 @@ def resizeImage(identifier, hash, x, y, postfix):
         if not os.path.exists(pathname):
             os.makedirs(pathname)
         
-        im.save(pathname + '/' + hash + '.' + postfix, 'PNG')
+        quality = 80
+        im.save(pathname + '/' + hash + '.' + postfix, 'JPEG', quality=quality)
         #log.info('Successfully resized %s' % hash)
         return True
     except:

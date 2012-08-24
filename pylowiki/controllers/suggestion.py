@@ -7,6 +7,7 @@ from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
+from pylowiki.lib.db.resource import getActiveResourcesByParentID
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.revision import get_revision, Revision
@@ -43,7 +44,8 @@ class SuggestionController(BaseController):
         else:
             c.commentsDisabled = 0
         c.events = getParentEvents(c.s)
-        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
+        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, workshopURL)
+        c.resources = getActiveResourcesByParentID(c.s.id)
         for i in range(len(c.suggestions)):
             suggestion = c.suggestions[i]
             if suggestion.id == c.s.id:
@@ -52,7 +54,6 @@ class SuggestionController(BaseController):
         r = get_revision(int(c.s['mainRevision_id']))
         
         c.title = c.s['title']
-        c.heading = "OTHER SUGGESTIONS"
         c.content = h.literal(h.reST2HTML(c.s['data']))
         ##c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
         
@@ -91,7 +92,7 @@ class SuggestionController(BaseController):
             c.s = False
             c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
 
-            return render('/derived/suggestion_edit.html')
+            return render('/derived/suggestion_edit.bootstrap')
         else:
            h.flash('You are not authorized', 'error')
            return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
@@ -106,7 +107,7 @@ class SuggestionController(BaseController):
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser, c.w)
         if (c.authuser.id == c.s.owner) or a or f:
-            return render('/derived/suggestion_edit.html')
+            return render('/derived/suggestion_edit.bootstrap')
         else:
            h.flash('You are not authorized', 'error')
            return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.s['urlCode'], urlify(c.s['url'])))
@@ -298,7 +299,12 @@ class SuggestionController(BaseController):
         e = Event(modTitle, modSuggestionReason, s, c.authuser)
 
         h.flash(modTitle, 'success')
-        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+        if modType == 'delete':
+            return redirect('/workshop/%s/%s/' %(w['urlCode'], w['url']))
+        else:
+            return redirect('/workshop/%s/%s/suggestion/%s/%s' %(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
 
     @h.login_required
     def adoptSuggestionHandler(self):
@@ -388,15 +394,16 @@ class SuggestionController(BaseController):
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
     @h.login_required
-    def flagSuggestion(self, id1):
-        suggestionID = id1
-        suggestion = getSuggestionByID(suggestionID)
+    def flagSuggestion(self, id1, id2):
+        code = id1
+        url = id2
+        suggestion = getSuggestion(code, urlify(url))
         if not suggestion:
-            return json.dumps({'id':suggestionID, 'result':'ERROR'})
+            return json.dumps({'id':suggestion.id, 'result':'ERROR'})
         if not isFlagged(suggestion, c.authuser):
             f = Flag(suggestion, c.authuser)
-            return json.dumps({'id':suggestionID, 'result':"Successfully flagged!"})
+            return json.dumps({'id':suggestion.id, 'result':"Successfully flagged!"})
         else:
-            return json.dumps({'id':suggestionID, 'result':"Already flagged!"})
+            return json.dumps({'id':suggestion.id, 'result':"Already flagged!"})
 
 

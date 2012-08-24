@@ -3,30 +3,15 @@
     from pylowiki.lib.db.user import getUserByID
 %>
 
-<%def name="fields_alert()">
-	% if 'alert' in session:
-		<% alert = session['alert'] %> 
-        <div class="alert alert-${alert['type']}">
-            <button data-dismiss="alert" class="close">×</button>
-            <strong>${alert['title']}</strong>
-            ##${alert['content']}
-        </div>
-        <% 
-           session.pop('alert')
-           session.save()
-        %>
-	% endif
-</%def>
-
 <%def name="sug_admin_banner()">
-    <div class="page-header">
-    	<h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.title}</a></h1>
-    </div>   
-
+    <div class="well">
+    <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/">${c.w['title']}</a></h1>
+    </div>
 </%def>
 
 <%def name="suggestion_events_flags()">
 
+    <p><h3><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a></h3></p>
     Added by member <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a> 
     <br /><br />
     Last modified date: ${c.lastmoddate}

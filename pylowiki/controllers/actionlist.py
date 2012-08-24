@@ -11,7 +11,7 @@ from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWor
 from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
-from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes
+from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
 from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
 
 import webhelpers.paginate as paginate
@@ -41,7 +41,7 @@ class ActionlistController(BaseController):
             c.count = len( c.list )
             c.paginator = paginate.Page(
                 c.list, page=int(request.params.get('page', 1)),
-                items_per_page = 10, item_count = c.count
+                items_per_page = 15, item_count = c.count
             )
 
             return render('/derived/list_workshops.bootstrap')
@@ -69,7 +69,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
         if len(c.list) >= 1:
             featuredSurvey = getFeaturedSurvey()
@@ -102,50 +102,50 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_workshops.bootstrap')
 
-    def searchName( self ):
+    def searchName( self, id1, id2 ):
+        searchType = id1
+        searchString = id2
+        if searchString == '%':
+           searchString = ''
         log.info('searchName')
-        if 'searchType' in request.params and 'searchString' in request.params:
-           searchType = request.params['searchType']
-           searchString = request.params['searchString']
-
-           if searchType == 'Workshops':
+        if searchType == 'Workshops':
               c.title = c.heading = 'Search Workshops: ' + searchString
               c.list = searchWorkshops('title', searchString)
               c.count = len( c.list )
               c.paginator = paginate.Page(
                   c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 10, item_count = c.count
+                  items_per_page = 15, item_count = c.count
               )
 
               return render('/derived/list_workshops.bootstrap')
 
-           else:
+        else:
               c.title = c.heading = 'Search Members: ' + searchString
               c.list = searchUsers('name', searchString)
               c.count = len( c.list )
               c.paginator = paginate.Page(
                   c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 10, item_count = c.count
+                  items_per_page = 15, item_count = c.count
               )
 
               return render('/derived/list_users.bootstrap')
-        else:
-           return redirect('/')
 
     def searchGeoUsers( self ):
         log.info('searchGeoUsers')
-        c.title = c.heading = 'List Nearby Members'
         geoInfo = getGeoInfo(c.authuser.id)
         searchScope = geoInfo[0]['scope']
-        log.info('geoInfo is %s'%geoInfo)
+        ##log.info('geoInfo is %s'%geoInfo)
         c.list = []
         if 'scopeLevel' in request.params:
            scopeLevel = request.params['scopeLevel']
+           scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
+           c.title = c.heading = 'List Members: ' + scopeTitle
+           log.info('postalCode is %s scopeLevel is %s'%(geoInfo[0]['postalCode'], scopeLevel))
            scopeList = getUserScopes(searchScope, scopeLevel)
            for gInfo in scopeList:
               c.list.append(getUserByID(gInfo.owner))
@@ -153,7 +153,7 @@ class ActionlistController(BaseController):
            c.count = len( c.list )
            c.paginator = paginate.Page(
                      c.list, page=int(request.params.get('page', 1)),
-                     items_per_page = 10, item_count = c.count
+                     items_per_page = 15, item_count = c.count
                  )
 
            return render('/derived/list_users.bootstrap')
@@ -161,25 +161,39 @@ class ActionlistController(BaseController):
            return redirect('/')
 
     def searchGeoWorkshops( self ):
-        log.info('searchGeoWorkshops')
-        c.title = c.heading = 'List Nearby Workshops'
+        #log.info('searchGeoWorkshops')
         geoInfo = getGeoInfo(c.authuser.id)
         searchScope = geoInfo[0]['scope']
-        log.info('geoInfo is %s'%geoInfo)
+        #log.info('geoInfo is %s'%geoInfo)
         c.list = []
         if 'scopeLevel' in request.params:
            scopeLevel = request.params['scopeLevel']
+           scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
+           c.title = c.heading = 'List Workshops: ' + scopeTitle
            scopeList = getWorkshopScopes(searchScope, scopeLevel)
            for gInfo in scopeList:
               w = getWorkshopByID(gInfo['workshopID'])
-              if w['startTime'] != '0000-00-00' and w['deleted'] != '1':
+              if w['startTime'] == '0000-00-00' or w['deleted'] == '1':
+                  continue
+              else:
                   if w not in c.list:
-                      c.list.append(w)
+                      doit = 1
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
+                             doit = 0
+
+                      if doit:
+                          offset = 10 - int(scopeLevel)
+                          offset = offset * -1
+                          wTest = gInfo['scope'].split('|')
+                          sTest = searchScope.split('|')
+                          ##log.info('offset is %s'%offset)
+                          if wTest[:offset] == sTest[:offset]:
+                              c.list.append(w)
 
            c.count = len( c.list )
            c.paginator = paginate.Page(
                      c.list, page=int(request.params.get('page', 1)),
-                     items_per_page = 10, item_count = c.count
+                     items_per_page = 15, item_count = c.count
                  )
 
            return render('/derived/list_workshops.bootstrap')
@@ -188,20 +202,22 @@ class ActionlistController(BaseController):
 
 
     def searchTags( self, id1 ):
-        log.info('searchTags %s' % id1)
+        ##log.info('searchTags %s' % id1)
         id1 = id1.replace("_", " ")
         c.title = c.heading = 'Search Workshops by Tag: ' + id1
         tList = searchTags(id1)
-        log.info('tList %s' % tList)
+        ##log.info('tList %s' % tList)
         c.list = []
         for t in tList:
-           log.info('t %s' % t)
-           c.list.append(getWorkshopByID(t['thingID']))
+           ##log.info('t %s' % t)
+           w = getWorkshopByID(t['thingID'])
+           if w['deleted'] == '0' and w['startTime'] != '0000-00-00':
+               c.list.append(getWorkshopByID(t['thingID']))
 
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_workshops.bootstrap')
@@ -214,7 +230,7 @@ class ActionlistController(BaseController):
         c.count = len( c.list )
         c.paginator = paginate.Page(
             c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 10, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/list_users.bootstrap')

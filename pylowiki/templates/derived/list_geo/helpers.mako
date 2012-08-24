@@ -1,36 +1,35 @@
 <%!
    from pylons import request
 %>
-<%def name='show_geo()'>
-    <table class="table">
-    <body>
-    <tr>
-    <td>
+
+<%def name='show_geo_info()'>
     <ul class="unstyled">
-    % if c.geoType == 'postal':
-        <li><img src="${c.cityFlag}"> City is <a href="${c.cityLink}">${c.city}</a></li>
-        <li><img src="${c.countyFlag}"> County is <a href="${c.countyLink}">${c.county}</a></li>
-        <li><img src="${c.stateFlag}"> State is <a href="${c.stateLink}">${c.state}</a></li>
-    % elif c.geoType == 'city':
-        <li><img src="${c.cityFlag}"> City of ${c.city}</li>
-        <li><img src="${c.countyFlag}"> County is <a href="${c.countyLink}">${c.county}</a></li>
-        <li><img src="${c.stateFlag}"> State is <a href="${c.stateLink}">${c.state}</a></li>
-    % elif c.geoType == 'county':
-        <li><img src="${c.countyFlag}"> County of ${c.county}</li>
-        <li><img src="${c.stateFlag}"> State is <a href="${c.stateLink}">${c.state}</a></li>
-    % elif c.geoType == 'state':
-        <li><img src="${c.stateFlag}"> State of ${c.state}</li>
-    %endif
-    </ul>
-    </td>
-    <td>
-    <ul>
     <li>Population is ${c.population}</li>
     <li>Median Age is ${c.medianAge}</li>
     <li>Number of Households is ${c.numberHouseholds}</li>
     <li>Persons per Household is ${c.personsHousehold}</li>
-    </td>
-    </tr>
+    </ul>
+</%def>
+
+<%def name='show_geo()'>
+    <div class="well">
+    <table width="100%">
+    <body>
+    % if c.geoType == 'postal':
+        <tr><td><img src="${c.cityFlag}" class="thumbnail"></td><td>City is <a href="${c.cityLink}">${c.city}</a></td><td rowspan=4>${show_geo_info()}</td><tr>
+        <tr><td><img src="${c.countyFlag}" class="thumbnail"></td><td>County is <a href="${c.countyLink}">${c.county}</a></td></tr>
+        <tr><td><img src="${c.stateFlag}" class="thumbnail"></td><td>State is <a href="${c.stateLink}">${c.state}</a></td></tr>
+    % elif c.geoType == 'city':
+        <tr><td><img src="${c.cityFlag}" class="thumbnail"></td><td>City of ${c.city}</td><td rowspan=3>${show_geo_info()}</td><tr>
+        <tr><td><img src="${c.countyFlag}" class="thumbnail"></td><td>County is <a href="${c.countyLink}">${c.county}</a></td></tr>
+        <tr><td><img src="${c.stateFlag}" class="thumbnail"></td><td>State is <a href="${c.stateLink}">${c.state}</a></td></tr>
+    % elif c.geoType == 'county':
+        <tr><td><img src="${c.countyFlag}" class="thumbnail"></td><td>County of ${c.county}</td><td rowspan=2>${show_geo_info()}</td></tr>
+        <tr><td><img src="${c.stateFlag}" class="thumbnail"></td><td>State is <a href="${c.stateLink}">${c.state}</a></td></tr>
+    % elif c.geoType == 'state':
+        <tr><td><img src="${c.stateFlag}" class="thumbnail"></td><td>State of ${c.state}</td><td>${show_geo_info()}</td><tr>
+    %endif
     </tbody>
-    </table>
+    </table> 
+    </div>
 </%def>

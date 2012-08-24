@@ -1,23 +1,27 @@
 <%inherit file="/base/template.bootstrap"/>
 
 <%namespace name="helpers" file="/derived/resource_edit/helpers.mako" />
+<%namespace name="resource_helpers" file="/derived/resource/helpers.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 
+<div class="container-fluid">
 <div class="row-fluid">
-    ${helpers.spacer()}
-    <div class="span12">
-        ${helpers.workshopTitle(c.w)}
-        ${helpers.spacer()}
+    <div class="span12 well">
+        <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1><br />
+         ${lib.nav_thing("")}
+         ${resource_helpers.nav_thing()}
+         <br />
     </div>
 </div>
 
 <div class="row-fluid">    
     ## Left column
-    <div class="span7">
+    <div class="span8">
         <div class="civ-col">
             % if c.r:
-                <h2 class="civ-col">EDIT RESOURCE</h2>
+                <h2 class="civ-col"><i class="icon-book"></i> EDIT RESOURCE</h2>
             % else:
-                <h2 class="civ-col">ADD RESOURCE</h2>
+                <h2 class="civ-col"><i class="icon-book"></i> ADD RESOURCE</h2>
             % endif
             <div class="row-fluid">
                 <div class="span9">
@@ -25,7 +29,6 @@
                 </div> <!-- /.span10 -->
         
                 <div class="span3">
-                    ${helpers.spacer()}
                 </div> <!-- /.span2 -->
             </div> <!-- /.row-fluid -->
 
@@ -33,19 +36,19 @@
     </div>
     
     ## Right column
-    <div class="span3" style="text-align:left;">
+    <div class="span4" style="text-align:left;">
         % if c.message:
             ${helpers.showMessage()}
         % endif
         <div class="civ-col">
-            <h2 class="civ-col">${c.heading}</h2>
+            <h2 class="civ-col"><i class="icon-book"></i> Other Resources</h2>
             <div class="civ-col-inner">
-                ${helpers.spacer()}
-                ${helpers.listOtherResources(c, author)}
+                ${lib.list_resources("There are no other resources.")}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->
 </div> <!-- /.row-fluid -->
+<div><!-- container fluid -->
 
 <%def name = 'extraStyles()'>
     <link type="text/css" rel="stylesheet" href="/styles/suggestion.css" />

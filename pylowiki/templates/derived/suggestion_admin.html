@@ -1,11 +1,12 @@
 <%inherit file = "/base/template.bootstrap"/>
 
 <%namespace name="helpers" file="/lib/admin_helpers/suggestion.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
 
 <div class="container">
-	</br></br></br></br>
 	<div class="span3 offset9">
-		${helpers.fields_alert()}		
+		${lib.fields_alert()}		
 	</div>
 	${helpers.sug_admin_banner()}
 

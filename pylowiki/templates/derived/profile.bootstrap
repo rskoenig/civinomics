@@ -4,20 +4,33 @@
 <%namespace name="helpers" file="/derived/profile/helpers.mako" />
 
 
-<div class="row-fluid">
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h2 class="civ-col">
+            <i class="icon icon-user"></i> Member Profile
+            </h2>
+            <div class="well">
+                <div class="row">
+	            <div class="span3">
+                        ${helpers.displayProfilePicture()}
+                    </div><!-- span3 -->
+	            <div class="span5">
+                        ${helpers.summary()}
+                        ${helpers.badgesButtons()}
+                    </div><!-- span5 -->
+	            <div class="span4">
+                        ${helpers.geoInfo()}
+                    </div><!-- span4 -->
+                </div><!-- well -->
+            </div><!-- row -->
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
+    <div class="row-fluid">
 	<div class="span3">
-		${helpers.sidebar()}
-	</div> <!-- /.span3 -->
+            ${helpers.sidebar()}
+        </div><!-- span3 -->
 	<div class="span9">
-		<div class="row-fluid">
-			<div class="span6">
-		                ${helpers.summary()}
-				${helpers.followButton()}
-			</div>
-			<div class="span6">
-				${helpers.geoInfo()}
-			</div>
-		</div>
 		<div class="civ-col">
 			${helpers.inviteCoFacilitate()}
 			${helpers.workshops()}
@@ -63,6 +76,7 @@
 		</div> <!-- /.civ-col -->
 	</div> <!-- /.span9 -->
 </div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
 
 
 <%def name = 'extraHTML()'>

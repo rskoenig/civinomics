@@ -10,11 +10,12 @@ BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
 def urlify(url):
+    import re
+    pattern = re.compile('[^-\w]+')
     url = url.strip()
     url = url.lower()
     url = url.replace(' ', '-')
-    url = url.replace('/', '-')
-    url = url.replace('\\', '-')
+    url = pattern.sub('', url)
     url = url.encode('utf8')
     url = quote(url)
     return url

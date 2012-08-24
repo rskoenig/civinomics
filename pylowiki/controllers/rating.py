@@ -2,7 +2,8 @@ import logging
 import pickle
 
 from pylons import request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
+from pylons.controllers.util import abort, redirect_to, redirect
+from pylowiki.lib.utils import urlify
 
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.suggestion import getSuggestion
@@ -10,6 +11,7 @@ from pylowiki.lib.db.suggestion import getSuggestion
 from pylowiki.lib.db.rating import Rating, changeRating, getRatingByID
 from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.resource import getResource
+from pylowiki.lib.db.discussion import getDiscussion
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.comment import getComment
 
@@ -74,7 +76,83 @@ class RatingController(BaseController):
         if not found:
             r = Rating(amount, w, c.authuser, 'overall')
         return "ok"
+
+    @h.login_required
+    def rateDiscussion(self, id1, id2, id3):
+        code = id1
+        url = id2
+        amount = int(id3)
+        """
+            voteType:   0    ->    down
+                        1    ->    neutral
+                        2    ->    up
+        """
+        voteType = 0
+        if amount < 0:
+            amount = -1
+        elif amount > 0:
+            voteType = 2
+            amount = 1
+        else:
+            amount = 0
+            voteType = 1
         
+        dKey = 'ratedThings_discussion_overall'
+        dis = getDiscussion(code, urlify(url))
+        found = False
+        if dKey in c.authuser.keys():
+            """
+                Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                Check to see if the commentID as a string is in the Dictionary keys
+                meaning it was already rated by this user
+            """
+            disRateDict = pickle.loads(str(c.authuser[dKey]))
+            if dis.id in disRateDict.keys():
+                found = True
+                oldRating = int(getRatingByID(disRateDict[dis.id])['rating'])
+                if voteType == 0:
+                    # user down voted
+                    if oldRating == -1:
+                        # User undoing old vote
+                        dis['downs'] = int(dis['downs']) - 1
+                        changeRating(dis, disRateDict[dis.id], 0)
+                    elif oldRating == 0:
+                        # Change vote from neutral -> down
+                        changeRating(dis, disRateDict[dis.id], amount)
+                        dis['downs'] = int(dis['downs']) + 1
+                    elif oldRating == 1:
+                        # Change vote from up -> down
+                        changeRating(dis, disRateDict[dis.id], amount)
+                        dis['ups'] = int(dis['ups']) - 1
+                        dis['downs'] = int(dis['downs']) + 1
+                elif voteType == 2:
+                    # User up voted
+                    if oldRating == -1:
+                        # Change vote from down -> up
+                        changeRating(dis, disRateDict[dis.id], amount)
+                        dis['ups'] = int(dis['ups']) + 1
+                        dis['downs'] = int(dis['downs']) - 1
+                    elif oldRating == 0:
+                        # Change vote from neutral -> up
+                        dis['ups'] = int(dis['ups']) + 1
+                        changeRating(dis, disRateDict[dis.id], amount)
+                    elif oldRating == 1:
+                        # User undoing old vote
+                        dis['ups'] = int(dis['ups']) - 1
+                        changeRating(dis, disRateDict[dis.id], 0)
+                    
+        if not found:
+            rating = Rating(amount, dis, c.authuser, 'overall')
+            if voteType == 0:
+                dis['downs'] = int(dis['downs']) + 1
+            elif voteType == 1:
+                pass
+                # Nothing to do here, we don't need to change the vote
+            else:
+                dis['ups'] = int(dis['ups']) + 1
+        commit(dis)
+        return redirect(session['return_to'])
+            
     @h.login_required
     def rateResource(self, id1, id2, id3):
         code = id1
@@ -149,7 +227,7 @@ class RatingController(BaseController):
             else:
                 res['ups'] = int(res['ups']) + 1
         commit(res)
-        return "OK"
+        return redirect(session['return_to'])
     
     @h.login_required
     def rateComment(self, id1, id2):
@@ -226,4 +304,4 @@ class RatingController(BaseController):
             elif voteType == 2:
                 com['ups'] = int(com['ups']) + 1
         commit(com)
-        return "OK"
+        return redirect(session['return_to'])

@@ -4,12 +4,13 @@
 <%namespace name="helpers" file="/derived/workshop_feedback/helpers.mako" />
 <%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
 
-<div class="left">
-   <h2><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2>
-   <p>
+${lib.return_to()}
+<div class="container-fluid">
+<div class="well">
+   <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+   <br />
    ${lib.nav_thing('feedback')}
-   </p>
-<br/>
+   <br/>
 </div>
 <div class="row-fluid">
 	<div class="span9">
@@ -48,6 +49,7 @@ topic or violate the Terms of Use.
 		</div>
 	</div>
 </div>
+</div><!-- container-fluid -->
 
 <%def name = 'extraHTML()'>
 
