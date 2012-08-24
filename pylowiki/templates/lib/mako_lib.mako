@@ -239,8 +239,13 @@
                 % endif
                 </tr>
                 <tr>
-                <td colspan=3>
-                    <i class="icon-time"></i> <span class="old">${timeSince(suggestion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
+                <td colspan=2>
+                    <i class="icon-time"></i> <span class="old">${timeSince(suggestion.date)}</span> ago  
+                </td>
+                <td class="floatRight">
+                    <span class="label label-info" title="Comment">
+                        <a class="white" href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Comment</a>
+                    </span>
                 </td>
                 </tr> 
                 <tr>
