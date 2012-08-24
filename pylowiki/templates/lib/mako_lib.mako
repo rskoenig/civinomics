@@ -315,7 +315,11 @@
 </%def>
 
 <%def name="nav_thing(page)">
+    % if 'user' in session:
 	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])  %>
+    % else:
+	<% pages = OrderedDict([("home",""), ("background", "background"), ("discussion", "discussion")])  %>
+    % endif
 
 	<ul class="unstyled nav-thing">
 	% for li in pages.keys():

@@ -3,19 +3,22 @@
 <%namespace name="helpers" file="/lib/leaderboard/helper.mako" />
 
 
-${lib.nav_thing("explanation")}
-</br></br>
-<div class="row">
-    <div class="span3">
-        </br></br>
-        <center>${helpers.UserPhoto()}</center>
-    </div>
-    <div class="span8 offset1">
-        </br></br>
-        ${helpers.Explanation()}
-        </br></br>
-    </div>
-</div>  
+<div class="container-fluid">
+   <div class="well">
+       ${lib.displayWorkshopHeader('leaderboard')}
+   </div><!-- well -->
+   </br></br>
+    <div class="row-fluid">
+        <div class="span2">
+            <center>${helpers.UserPhoto()}</center>
+            <br />
+            <center>${helpers.Menu()}</center>
+        </div><!-- span2 -->
+        <div class="span10">
+            ${helpers.Explanation()}
+        </div><!-- span10 -->
+    </div><!-- row-fluid -->
+</div><!-- contrainer-fluid -->
 
 <%def name = 'extraHTML()'>
 
