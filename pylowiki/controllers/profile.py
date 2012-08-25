@@ -90,6 +90,13 @@ class ProfileController(BaseController):
         c.discussions = []
         c.comments = []
         c.flags = 0
+        resUpVotes = 0
+        c.resVotes = 0
+        comUpVotes = 0
+        c.comVotes = 0
+        disUpVotes = 0
+        c.disVotes = 0
+
         c.posts = len(pList)
         for p in pList:
            if p['deleted'] == '0' and p['disabled'] == '0':
@@ -97,10 +104,16 @@ class ProfileController(BaseController):
                    c.suggestions.append(p)
                elif p.objType == 'resource':
                    c.resources.append(p)
+                   resUpVotes += int(p['ups'])
+                   c.resVotes = c.resVotes + int(p['ups']) + int(p['downs'])
                elif p.objType == 'discussion':
                    c.discussions.append(p)
+                   disUpVotes += int(p['ups'])
+                   c.disVotes = c.disVotes + int(p['ups']) + int(p['downs'])
                elif p.objType == 'comment':
                    c.comments.append(p)
+                   comUpVotes += int(p['ups'])
+                   c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
 
            fList = getFlags(p)
            if fList:
@@ -108,6 +121,41 @@ class ProfileController(BaseController):
            if 'ups' in p and 'downs' in p:
                t = int(p['ups']) - int(p['downs'])
                c.totalPoints += t 
+
+        if c.suggestions and len(c.suggestions) > 0:
+            totalRateAvg = 0
+            for s in c.suggestions:
+                totalRateAvg += float(s['ratingAvg_overall'])
+
+            totalRateAvg = totalRateAvg/len(c.suggestions)
+            c.sugRateAvg = int(totalRateAvg)
+            c.sugUpperRateAvg = totalRateAvg+(5-totalRateAvg%5)
+            c.sugLowerRateAvg = totalRateAvg-(totalRateAvg%5)
+            c.sugRateAvgfuzz = c.sugLowerRateAvg+2.5
+        else:
+            totalRateAvg = 0
+            c.sugRateAvg = totalRateAvg
+            c.sugUpperRateAvg = 0
+            c.sugLowerRateAvg = 0
+            c.sugRateAvgfuzz = 0
+
+        c.numRes = len(c.resources)
+        if c.resVotes > 0:
+            c.resUpsPercent = 100*float(resUpVotes)/float(c.resVotes)
+        else:
+            c.resUpsPercent = 0
+
+        c.numDis = len(c.discussions)
+        if c.disVotes > 0:
+            c.disUpsPercent = 100*float(disUpVotes)/float(c.disVotes)
+        else:
+            c.disUpsPercent = 0
+
+        c.numComs = len(c.comments)
+        if c.comVotes > 0:
+            c.comUpsPercent = 100*float(comUpVotes)/float(c.comVotes)
+        else:
+            c.comUpsPercent = 0
 
         return render("/derived/profile.bootstrap")
     

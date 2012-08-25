@@ -97,6 +97,7 @@
 </%def>
 
 <%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/profileBars.css" /> 
 </%def>
 
 <%def name = 'extraScripts()'>

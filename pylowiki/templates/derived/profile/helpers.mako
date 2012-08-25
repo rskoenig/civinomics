@@ -322,6 +322,13 @@
 		${total}<br>
 		<span>${title}</span>
 	</p>
+
+        % if c.comments:
+            <center><b><font size="2" color="DarkGrey"> Up Votes vs. Down Votes </font></b></center>
+            <div class="progress progress-success" id="ComBar">
+              <div class="bar" style="width: ${c.comUpsPercent}%;"></div>
+            </div>
+        % endif
 </%def>
 
 <%def name="latestComments(numDisplay)">
@@ -378,9 +385,9 @@
             % endif
 
             <li>
-            <span class="badge badge-info"><i class="icon-white icon-ok"></i>${cRating}</span> 
-            <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${numFlags}</span> 
-            <span class="recent"><i class="icon-time"></i> ${timeSince(comment.date)} ago</span><br />
+            <span class="badge badge-info" title="Rating for this comment (ups - downs)"><i class="icon-white icon-ok"></i>${cRating}</span> 
+            <span class="badge badge-inverse" title="Number of flags on this comment"><i class="icon-white icon-flag"></i>${numFlags}</span> 
+            <span class="recent" title="When this comment was written"><i class="icon-time"></i> ${timeSince(comment.date)} ago</span><br />
             <i class="icon-comment"></i> ${cString}<br />
             <i class="icon-${oIcon}"></i> <a href="${oURL}">${oTitle}</a><br />
             <i class="icon-cog"></i> <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a>
@@ -412,6 +419,13 @@
 		${total}<br>
 		<span>${title}</span>
 	</p>
+        % if c.suggestions:
+            <center><b><font size="2" color="DarkGrey"> Average Rating</font></b></center>
+            <div class="progress progress-success" id="SugBar">
+              <div class="bar" style="width: ${c.sugRateAvg}%;"></div>
+            </div>
+        % endif
+
 </%def>
 
 <%def name="latestSuggestions(numDisplay)">
@@ -438,10 +452,12 @@
             % else:
                 <% numFlags = 0 %>
             % endif
+            <% sAvg = int(float(s['ratingAvg_overall'])) %>
             
             <li>
-            <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${numFlags}</span>
-            <i class="icon-time"></i><span class="recent">${timeSince(s.date)} ago</span><br />
+            <span class="badge badge-info" title="0 - 100 Average rating for this suggestion (Sum of all ratings / number of ratings)"><i class="icon-white icon-ok-circle"></i>${sAvg}</span>
+            <span class="badge badge-inverse" title="Number of flags on this suggestion"><i class="icon-white icon-flag"></i>${numFlags}</span>
+            <i class="icon-time"></i><span class="recent" title="When this suggestion was added">${timeSince(s.date)} ago</span><br />
             <i class="icon-pencil"></i> <a href = "/workshop/${w['urlCode']}/${w['url']}/suggestion/${s['urlCode']}/${s['url']}"><strong>${s["title"]}</strong></a><br />
             <i class="icon-cog"></i> <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a>
             </li>
@@ -469,6 +485,13 @@
 		${total}<br>
 		<span>${title}</span>
 	</p>
+        % if c.resources:
+            <center><b><font size="2" color="DarkGrey"> Up Votes vs. Down Votes </font></b></center>
+            <div class="progress progress-success" id="ResBar">
+              <div class="bar" style="width: ${c.resUpsPercent}%;"></div>
+            </div>
+        % endif
+
 </%def>
 
 <%def name="latestResources(numDisplay)">
@@ -502,9 +525,9 @@
             % endif
             
             <li>
-            <span class="badge badge-info"><i class="icon-white icon-ok"></i>${rRating}</span>
-            <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${numFlags}</span>
-            <i class="icon-time"></i><span class="recent">${timeSince(r.date)} ago</span><br />
+            <span class="badge badge-info" title="Rating for this resource (ups - downs)"><i class="icon-white icon-ok"></i>${rRating}</span>
+            <span class="badge badge-inverse" title="Number of flags on this resource"><i class="icon-white icon-flag"></i>${numFlags}</span>
+            <i class="icon-time"></i><span class="recent" title="When this resource was added">${timeSince(r.date)} ago</span><br />
             <i class="icon-book"></i> <a href = "/workshop/${w['urlCode']}/${w['url']}/resource/${r['urlCode']}/${r['url']}"><strong>${r["title"]}</strong></a><br />
             % if r['parent_id'] != '0' and r['parent_type'] == 'suggestion':
                 <% s = getSuggestionByID(r['parent_id']) %>
@@ -536,6 +559,13 @@
 		${total}<br>
 		<span>${title}</span>
 	</p>
+        % if c.discussions:
+            <center><b><font size="2" color="DarkGrey"> Up Votes vs. Down Votes </font></b></center>
+            <div class="progress progress-success" id="DisBar">
+              <div class="bar" style="width: ${c.disUpsPercent}%;"></div>
+            </div>
+        % endif
+
 </%def>
 
 <%def name="latestDiscussions(numDisplay)">
@@ -569,9 +599,9 @@
             % endif
             
             <li>
-            <span class="badge badge-info"><i class="icon-white icon-ok"></i>${dRating}</span>
-            <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${numFlags}</span>
-            <i class="icon-time"></i><span class="recent">${timeSince(d.date)} ago</span><br />
+            <span class="badge badge-info" title="Rating for this discussion (ups - downs)"><i class="icon-white icon-ok"></i>${dRating}</span>
+            <span class="badge badge-inverse" title="Number of flags on this discussion"><i class="icon-white icon-flag"></i>${numFlags}</span>
+            <i class="icon-time"></i><span class="recent" title="When this discussion topic was added">${timeSince(d.date)} ago</span><br />
             <i class="icon-folder-open"></i> <a href = "/workshop/${w['urlCode']}/${w['url']}/discussion/${d['urlCode']}/${d['url']}"><strong>${d["title"]}</strong></a><br />
             <i class="icon-cog"></i> <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a>
             </li>
