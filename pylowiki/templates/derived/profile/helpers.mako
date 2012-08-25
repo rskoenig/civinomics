@@ -430,14 +430,21 @@
 
 <%def name="latestSuggestions(numDisplay)">
     % if c.suggestions:
-        % if numDisplay == '0':
-            <h4>All suggestions:</h4></br>
+        <% sList = c.suggestions %>
+        % if numDisplay == 0:
+            <% sList = c.paginator %>
+            <h4>All Suggestions:</h4>
+            <a href="/profile/${c.user['urlCode']}/${c.user['url']}"><strong>Back to Profile</strong></a>
         % else:
-            <h4>${numDisplay} most recent suggestions:</h4></br>
+            <h4>${numDisplay} most recent suggestions:</h4>
+            % if numDisplay < len(c.suggestions):
+                <a href="/profile/${c.user['urlCode']}/${c.user['url']}/suggestions"><strong>View All Suggestions</strong></a>
+            % endif
+            <br />
         % endif
         <% count = 1 %>
         <ul class="unstyled civ-col-list">
-        % for s in c.suggestions:
+        % for s in sList:
             % if numDisplay != 0:
                 % if count > numDisplay:
                     <% break %>
@@ -464,6 +471,13 @@
             <% count += 1 %>
         % endfor
         </ul> <!-- /.unstyled -->
+        % if c.paginator and (len(c.paginator) != len(c.suggestions)):
+            <% state = True %>
+            % for p in c.paginator:
+                <% state = not state %>
+            % endfor
+            Total Suggestions: ${c.count} | View ${ c.paginator.pager('~3~') }
+        % endif
     % else:
         <div class="alert alert-warning">No suggestions to show.</div>
     % endif

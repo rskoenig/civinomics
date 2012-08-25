@@ -159,6 +159,70 @@ class ProfileController(BaseController):
 
         return render("/derived/profile.bootstrap")
     
+    def showUserSuggestions(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/suggestions
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.suggestions = []
+        c.userFollowers = []
+        c.flags = 0
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.userFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.userFollowers.append(getUserByID(uID))
+
+
+        c.posts = len(pList)
+        for p in pList:
+           if p['deleted'] == '0' and p['disabled'] == '0':
+               if p.objType == 'suggestion':
+                   c.suggestions.append(p)
+
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+
+        if c.suggestions and len(c.suggestions) > 0:
+            totalRateAvg = 0
+            for s in c.suggestions:
+                totalRateAvg += float(s['ratingAvg_overall'])
+
+            totalRateAvg = totalRateAvg/len(c.suggestions)
+            c.sugRateAvg = int(totalRateAvg)
+            c.sugUpperRateAvg = totalRateAvg+(5-totalRateAvg%5)
+            c.sugLowerRateAvg = totalRateAvg-(totalRateAvg%5)
+            c.sugRateAvgfuzz = c.sugLowerRateAvg+2.5
+        else:
+            totalRateAvg = 0
+            c.sugRateAvg = totalRateAvg
+            c.sugUpperRateAvg = 0
+            c.sugLowerRateAvg = 0
+            c.sugRateAvgfuzz = 0
+
+        c.count = len(c.suggestions)
+        c.paginator = paginate.Page(
+            c.suggestions, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileSuggestions.bootstrap")
+
     @h.login_required
     def index( self ):
         c.list = get_all_users()
