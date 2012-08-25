@@ -5,6 +5,7 @@
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
     from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.db.discussion import getDiscussionByID
+    from pylowiki.lib.db.flag import getFlags
     from pylowiki.lib.fuzzyTime import timeSince
     import textwrap
 %>
@@ -133,8 +134,8 @@
 
 <%def name="displayFollowingUsers()">
     <% fNum = len(c.followingUsers) %>
-    <h2 class="civ-col">Following (${fNum})</h2>
-    <table class="table table-striped table-condensed">
+    <h2 class="civ-col"><i class="icon-user"></i> Following (${fNum})</h2>
+    <table class="table table-condensed">
     <tbody>
     % for user in c.followingUsers:
         ${listUser(user, 0)}
@@ -145,8 +146,8 @@
 
 <%def name="displayUserFollows()">
     <% fNum = len(c.userFollowers) %>
-    <h2 class="civ-col">Followers (${fNum})</h2>
-    <table class="table table-striped table-condensed">
+    <h2 class="civ-col"><i class="icon-user"></i> Followers (${fNum})</h2>
+    <table class="table table-condensed">
     <tbody>
     % for user in c.userFollowers:
         ${listUser(user, 0)}
@@ -289,13 +290,13 @@
 
 <%def name="workshops()">
 	% if c.facilitatorWorkshops:
-		<h2 class="civ-col">Workshops I am facilitating</h2>
+		<h2 class="civ-col"><i class="icon-list-alt"></i> Workshops I am facilitating</h2>
 		<div class="civ-col-inner">
 			${listWorkshops(c.facilitatorWorkshops)}
 		</div> <!-- /.civ-col-inner -->
 	% endif
 	% if c.followingWorkshops:
-		<h2 class="civ-col">Workshops I am following</h2>
+		<h2 class="civ-col"><i class="icon-cog"></i> Workshops I am following</h2>
 		<div class="civ-col-inner">
 			${listWorkshops(c.followingWorkshops)}
 		</div> <!-- /.civ-col-inner -->
@@ -306,117 +307,281 @@
 </%def>
 
 <%def name="totalComments()">
-	<%
-		if 'numComments' in c.user.keys():
-			total = int(c.user['numComments'])
-		else:
-			total = 0
-		s = ""
-		if total != 1:
-			s += "s"
-	%>
+        % if c.comments:
+           <% total = len(c.comments) %>
+           % if total > 1:
+               <% title = "comments" %>
+           % else:
+               <% title = "comment" %>
+           % endif
+        % else:
+           <% title = "comments" %>
+           <% total = 0 %>
+        % endif
 	<p class="total">
 		${total}<br>
-		<span>comment${s} made</span>
+		<span>${title}</span>
 	</p>
 </%def>
 
-<%def name="latestComments()">
-	% if 'numComments' in c.user.keys():
-		<% count = 1 %>
-		<ul class="unstyled civ-col-list">
-		% for comment in c.user['comments']:
-			% if count > 3:
-				<% break %>
-			% endif
-			% if not comment['disabled'] and not comment['pending']:
-				<li>
-					<h4>Here is a comment summary.</h4>
-					<span class="recent">one hour ago</span> in
-					<a href="#">workshop</a>
-				</li>
-				<% count += 1 %>
-			% endif
-		% endfor
-	</ul> <!-- /.civ-col-list -->
-	% else:
-		<div class="alert alert-warning">No comments to show.</div>
-	% endif
+<%def name="latestComments(numDisplay)">
+    <ul class="unstyled civ-col-list">
+        % if numDisplay == '0':
+            <h4>All comments:</h4></br>
+        % else:
+            <h4>${numDisplay} most recent comments:</h4></br>
+        % endif
+        <% comCount = 1 %>
+        % for comment in c.comments:
+            <%
+                d = getDiscussionByID(int(comment['discussion_id']))
+                w = getWorkshop(d['workshopCode'], d['workshopURL'])
+            %>
+            % if 'ups' in comment and 'downs' in comment:
+                <% cRating = int(comment['ups']) - int(comment['downs']) %>
+            % else:
+                <% cRating = 0 %>
+            % endif
+            % if len(comment['data']) <= 25:
+                <% cString = comment['data'] %>
+            % else:
+                <% cString = comment['data'][:25] %>
+            % endif
+            % if d['discType'] == 'suggestion':
+                <% dParent = getSuggestion(d['suggestionCode'], d['suggestionURL']) %>
+                <% oURL = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] %>
+                <% oIcon = "pencil" %>
+                <% oTitle = dParent['title'] %>
+            % elif d['discType'] == 'resource' or d['discType'] == 'sresource':
+                <% dParent = getResource(d['resourceCode'], d['resourceURL']) %>
+                <% oURL = "/workshop/w['urlCode']/w['url']/resource/d['resourceCode']/d['resourceURL']" %>
+                <% oIcon = "book" %>
+                <% oTitle = dParent['title'] %>
+            % elif d['discType'] == 'general':
+                <% oURL = "/workshop/w['urlCode']/w['url']/discussion/d['urlCode']/d['url']" %>
+                <% oIcon = "folder-open" %>
+                <% oTitle = d['title'] %>
+            % elif d['discType'] == 'background':
+                <% oURL = "/workshop/w['urlCode']/w['url']/background" %>
+                <% oIcon = "book" %>
+                <% oTitle = "Workshop Background" %>
+            % else:
+                <% oURL = "" %>
+                <% oTitle = "" %>
+                <% oIcon = "" %>
+            % endif
+            <% cFlags = getFlags(comment) %>
+            % if cFlags:
+                <% numFlags = len(cFlags) %>
+            % else:
+                <% numFlags = 0 %>
+            % endif
 
+            <li>
+            <span class="badge badge-info"><i class="icon-white icon-ok"></i>${cRating}</span> 
+            <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${numFlags}</span> 
+            <span class="recent"><i class="icon-time"></i> ${timeSince(comment.date)} ago</span><br />
+            <i class="icon-comment"></i> ${cString}<br />
+            <i class="icon-${oIcon}"></i> <a href="${oURL}">${oTitle}</a><br />
+            <i class="icon-cog"></i> <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a>
+            <br /><br />
+            </li>
+            % if numDisplay != 0:
+                % if comCount >= numDisplay:
+                    <% break %>
+                % endif 
+                <% comCount += 1 %>
+            % endif
+        %endfor              
+    </ul>
 </%def>
 
 <%def name="totalSuggestions()">
-	<%
-		total = c.user['numSuggestions']
-		s = ""
-		if int(total) != 1:
-			s += "s"
-	%>
+        % if c.suggestions:
+           <% total = len(c.suggestions) %>
+           % if total > 1:
+               <% title = "suggestions" %>
+           % else:
+               <% title = "suggestion" %>
+           % endif
+        % else:
+           <% title = "suggestions" %>
+           <% total = 0 %>
+        % endif
 	<p class="total">
-		${total}
-		<br>
-		<span>suggestion${s} made</span>
+		${total}<br>
+		<span>${title}</span>
 	</p>
 </%def>
 
-<%def name="latestSuggestions()">
-	% if int(c.user['numSuggestions']) > 0:
-		<% count = 1 %>
-		<ul class="unstyled civ-col-list">
-		% for item in c.user['suggestionList'].split(','):
-			% if count > 3:
-				<% break %>
-			% endif
-			<%
-				s = getSuggestionByID(int(item))
-				w = getWorkshop(s['workshopCode'], s['workshopURL'])
-			%>
-			<li>
-				<a href = "/workshop/${w['urlCode']}/${w['url']}/suggestion/${s['urlCode']}/${s['url']}"><h4>${s["title"]}</h4></a>
-				 in <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a>
-			</li>
-			<% count += 1 %>
-		% endfor
-	</ul> <!-- /.unstyled -->
-	% else:
-		<div class="alert alert-warning">No suggestions to show.</div>
-	% endif
+<%def name="latestSuggestions(numDisplay)">
+    % if c.suggestions:
+        % if numDisplay == '0':
+            <h4>All suggestions:</h4></br>
+        % else:
+            <h4>${numDisplay} most recent suggestions:</h4></br>
+        % endif
+        <% count = 1 %>
+        <ul class="unstyled civ-col-list">
+        % for s in c.suggestions:
+            % if numDisplay != 0:
+                % if count > numDisplay:
+                    <% break %>
+                % endif
+            % endif
+            <%
+                w = getWorkshop(s['workshopCode'], s['workshopURL'])
+            %>
+            <% sFlags = getFlags(s) %>
+            % if sFlags:
+                <% numFlags = len(sFlags) %>
+            % else:
+                <% numFlags = 0 %>
+            % endif
+            
+            <li>
+            <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${numFlags}</span>
+            <i class="icon-time"></i><span class="recent">${timeSince(s.date)} ago</span><br />
+            <i class="icon-pencil"></i> <a href = "/workshop/${w['urlCode']}/${w['url']}/suggestion/${s['urlCode']}/${s['url']}"><strong>${s["title"]}</strong></a><br />
+            <i class="icon-cog"></i> <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a>
+            </li>
+            <% count += 1 %>
+        % endfor
+        </ul> <!-- /.unstyled -->
+    % else:
+        <div class="alert alert-warning">No suggestions to show.</div>
+    % endif
 </%def>
 
 <%def name="totalResources()">
-	<%
-		total = int(c.user['numReadResources'])
-		s = ""
-		if total != 1:
-			s += "s"
-	%>
+        % if c.resources:
+           <% total = len(c.resources) %>
+           % if total > 1:
+               <% title = "resources" %>
+           % else:
+               <% title = "resource" %>
+           % endif
+        % else:
+           <% title = "resources" %>
+           <% total = 0 %>
+        % endif
 	<p class="total">
-		${total}
-		<br>
-		<span>resource${s} read</span>
+		${total}<br>
+		<span>${title}</span>
 	</p>
 </%def>
 
-<%def name="latestResources()">
-	<%
-		total = int(c.user['numReadResources'])
-	%>
-	% if total > 0:
-		<% count = 1 %>
-		% for item in reversed(c.user['articles']):
-			% if count > 3:
-				<% break %>
-			% endif
-			% if item["type"] == "background":
-				<li><h4>Background wiki</h4> in<a href = "/issue/${item['articleURL']}/background">${item["articleTitle"]}</li></a>
-			% else:
-				<li><a href = "${item['articleURL']}"><h4>${item["articleTitle"]}</h4></a> in <a href="/issue/${item['issueURL']}">${item["issueTitle"]}</a></li>
-			% endif
-			<% count += 1 %>
-		%endfor
-	% else:
-		<div class="alert alert-warning">No resources read.</div>
-	% endif
+<%def name="latestResources(numDisplay)">
+    % if c.resources:
+        % if numDisplay == '0':
+            <h4>All resources:</h4></br>
+        % else:
+            <h4>${numDisplay} most recent resources:</h4></br>
+        % endif
+        <% count = 1 %>
+        <ul class="unstyled civ-col-list">
+        % for r in c.resources:
+            % if numDisplay != 0:
+                % if count > numDisplay:
+                    <% break %>
+                % endif
+            % endif
+            <%
+                w = getWorkshopByID(r['workshop_id'])
+            %>
+            <% rFlags = getFlags(r) %>
+            % if rFlags:
+                <% numFlags = len(rFlags) %>
+            % else:
+                <% numFlags = 0 %>
+            % endif
+            % if 'ups' in r and 'downs' in r:
+                <% rRating = int(r['ups']) - int(r['downs']) %>
+            % else:
+                <% rRating = 0 %>
+            % endif
+            
+            <li>
+            <span class="badge badge-info"><i class="icon-white icon-ok"></i>${rRating}</span>
+            <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${numFlags}</span>
+            <i class="icon-time"></i><span class="recent">${timeSince(r.date)} ago</span><br />
+            <i class="icon-book"></i> <a href = "/workshop/${w['urlCode']}/${w['url']}/resource/${r['urlCode']}/${r['url']}"><strong>${r["title"]}</strong></a><br />
+            % if r['parent_id'] != '0' and r['parent_type'] == 'suggestion':
+                <% s = getSuggestionByID(r['parent_id']) %>
+                <i class="icon-pencil"></i> <a href = "/workshop/${w['urlCode']}/${w['url']}/suggestion/${s['urlCode']}/${s['url']}"><strong>${s["title"]}</strong></a><br />
+            % endif
+            <i class="icon-cog"></i> <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a>
+            </li>
+            <% count += 1 %>
+        % endfor
+        </ul> <!-- /.unstyled -->
+    % else:
+        <div class="alert alert-warning">No resources to show.</div>
+    % endif
+</%def>
+
+<%def name="totalDiscussions()">
+        % if c.discussions:
+           <% total = len(c.discussions) %>
+           % if total > 1:
+               <% title = "discussions" %>
+           % else:
+               <% title = "discussion" %>
+           % endif
+        % else:
+           <% title = "discussions" %>
+           <% total = 0 %>
+        % endif
+	<p class="total">
+		${total}<br>
+		<span>${title}</span>
+	</p>
+</%def>
+
+<%def name="latestDiscussions(numDisplay)">
+    % if c.discussions:
+        % if numDisplay == '0':
+            <h4>All discussions:</h4></br>
+        % else:
+            <h4>${numDisplay} most recent discussions:</h4></br>
+        % endif
+        <% count = 1 %>
+        <ul class="unstyled civ-col-list">
+        % for d in c.discussions:
+            % if numDisplay != 0:
+                % if count > numDisplay:
+                    <% break %>
+                % endif
+            % endif
+            <%
+                w = getWorkshop(d['workshopCode'], d['workshopURL'])
+            %>
+            <% dFlags = getFlags(d) %>
+            % if dFlags:
+                <% numFlags = len(dFlags) %>
+            % else:
+                <% numFlags = 0 %>
+            % endif
+            % if 'ups' in d and 'downs' in d:
+                <% dRating = int(d['ups']) - int(d['downs']) %>
+            % else:
+                <% dRating = 0 %>
+            % endif
+            
+            <li>
+            <span class="badge badge-info"><i class="icon-white icon-ok"></i>${dRating}</span>
+            <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${numFlags}</span>
+            <i class="icon-time"></i><span class="recent">${timeSince(d.date)} ago</span><br />
+            <i class="icon-folder-open"></i> <a href = "/workshop/${w['urlCode']}/${w['url']}/discussion/${d['urlCode']}/${d['url']}"><strong>${d["title"]}</strong></a><br />
+            <i class="icon-cog"></i> <a href="/workshop/${w['urlCode']}/${w['url']}">${w["title"]}</a>
+            </li>
+            <% count += 1 %>
+        % endfor
+        </ul> <!-- /.unstyled -->
+    % else:
+        <div class="alert alert-warning">No resources to show.</div>
+    % endif
+
 </%def>
 
 <%def name="memberAdminControls()">

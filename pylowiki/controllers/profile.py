@@ -85,9 +85,23 @@ class ProfileController(BaseController):
 
         pList = getUserPosts(c.user)
         c.totalPoints = 0
+        c.suggestions = []
+        c.resources = []
+        c.discussions = []
+        c.comments = []
         c.flags = 0
         c.posts = len(pList)
         for p in pList:
+           if p['deleted'] == '0' and p['disabled'] == '0':
+               if p.objType == 'suggestion':
+                   c.suggestions.append(p)
+               elif p.objType == 'resource':
+                   c.resources.append(p)
+               elif p.objType == 'discussion':
+                   c.discussions.append(p)
+               elif p.objType == 'comment':
+                   c.comments.append(p)
+
            fList = getFlags(p)
            if fList:
               c.flags += len(fList)
