@@ -354,6 +354,71 @@ class ProfileController(BaseController):
 
         return render("/derived/profileDiscussions.bootstrap")
     
+    def showUserComments(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/comments
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.followingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.followingUsers.append(getUserByID(uID))
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.userFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.userFollowers.append(getUserByID(uID))
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.comments = []
+        c.flags = 0
+        comUpVotes = 0
+        c.comVotes = 0
+
+        c.posts = len(pList)
+        for p in pList:
+           if p['deleted'] == '0' and p['disabled'] == '0':
+               if p.objType == 'comment':
+                   c.comments.append(p)
+                   comUpVotes += int(p['ups'])
+                   c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
+
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
+
+        c.numComs = len(c.comments)
+        if c.comVotes > 0:
+            c.comUpsPercent = 100*float(comUpVotes)/float(c.comVotes)
+        else:
+            c.comUpsPercent = 0
+
+        c.count = len(c.comments)
+        c.paginator = paginate.Page(
+            c.comments, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileComments.bootstrap")
+    
     @h.login_required
     def index( self ):
         c.list = get_all_users()

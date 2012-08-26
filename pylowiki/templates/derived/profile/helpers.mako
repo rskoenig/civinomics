@@ -333,13 +333,25 @@
 
 <%def name="latestComments(numDisplay)">
     <ul class="unstyled civ-col-list">
-        % if numDisplay == '0':
-            <h4>All comments:</h4></br>
+        <% cList = c.comments %>
+        % if numDisplay == 0:
+            <% cList = c.paginator %>
+            <h4>All comments:</h4>
+            <a href="/profile/${c.user['urlCode']}/${c.user['url']}"><strong>Back to Profile</strong></a>
+            <br />
         % else:
-            <h4>${numDisplay} most recent comments:</h4></br>
+            % if numDisplay > len(cList):
+                <% cTotal = len(cList) %>
+            % else:
+                <% cTotal = numDisplay %>
+            % endif
+            <h4>${cTotal} most recent comments:</h4>
+            % if numDisplay < len(cList):
+                <a href="/profile/${c.user['urlCode']}/${c.user['url']}/comments"><strong>View All Comments</strong></a>
+            % endif
         % endif
         <% comCount = 1 %>
-        % for comment in c.comments:
+        % for comment in cList:
             <%
                 d = getDiscussionByID(int(comment['discussion_id']))
                 w = getWorkshop(d['workshopCode'], d['workshopURL'])
@@ -361,15 +373,15 @@
                 <% oTitle = dParent['title'] %>
             % elif d['discType'] == 'resource' or d['discType'] == 'sresource':
                 <% dParent = getResource(d['resourceCode'], d['resourceURL']) %>
-                <% oURL = "/workshop/w['urlCode']/w['url']/resource/d['resourceCode']/d['resourceURL']" %>
+                <% oURL = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
                 <% oIcon = "book" %>
                 <% oTitle = dParent['title'] %>
             % elif d['discType'] == 'general':
-                <% oURL = "/workshop/w['urlCode']/w['url']/discussion/d['urlCode']/d['url']" %>
+                <% oURL = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/discussion/" + d['urlCode'] + "/" + d['url'] %>
                 <% oIcon = "folder-open" %>
                 <% oTitle = d['title'] %>
             % elif d['discType'] == 'background':
-                <% oURL = "/workshop/w['urlCode']/w['url']/background" %>
+                <% oURL = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/background" %>
                 <% oIcon = "book" %>
                 <% oTitle = "Workshop Background" %>
             % else:
@@ -400,7 +412,14 @@
                 <% comCount += 1 %>
             % endif
         %endfor              
-    </ul>
+        </ul>
+        % if c.paginator and (len(c.paginator) != len(c.comments)):
+            <% state = True %>
+            % for p in c.paginator:
+                <% state = not state %>
+            % endfor
+            Total Comments: ${c.count} | View ${ c.paginator.pager('~3~') }
+        % endif
 </%def>
 
 <%def name="totalSuggestions()">
