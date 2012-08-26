@@ -151,8 +151,17 @@
         % endif
     % else:
         <% fNum = len(c.followingUsers) %>
-        <h2 class="civ-col"><i class="icon-user"></i> Following (${fNum})</h2>
+        <h2 class="civ-col"><i class="icon-user"></i> Following ${fNum}</h2>
         <table class="table table-condensed">
+        % if numDisplay < fNum:
+            <thead>
+            <tr><td colspan=2>
+            <div class="pull-right">
+            <p><small>Showing ${numDisplay} of ${fNum} | <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/following">View All</a></strong></small></p>
+            </div>
+            </td></tr>
+            </thead>
+        % endif
         <tbody>
         <% fCount = 1 %>
         % for user in c.followingUsers:
@@ -164,9 +173,6 @@
         % endfor
         </tbody>
         </table>
-        % if numDisplay < len(c.followingUsers):
-            <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/following">View All</a></strong>
-        % endif
     % endif
 </%def>
 
@@ -190,8 +196,17 @@
     % else:
         % if c.userFollowers:
             <% fNum = len(c.userFollowers) %>
-            <h2 class="civ-col"><i class="icon-user"></i> Followers (${fNum})</h2>
+            <h2 class="civ-col"><i class="icon-user"></i> Followers ${fNum}</h2>
             <table class="table table-condensed">
+            % if numDisplay < fNum:
+                <thead>
+                <tr><td colspan=2>
+                <div class="pull-right">
+                <p><small>Showing ${numDisplay} of ${fNum} | <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/followers">View All</a></strong></small></p>
+                </div>
+                </td></tr>
+                </thead>
+            % endif
             <tbody>
             <% fCount = 1 %>
             % for user in c.userFollowers:
@@ -828,7 +843,8 @@
         % endif
 	<p class="total">
 		${total}<br>
-		<span>${title}</span>
+		<span>${title}</span><br />
+		<span><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></span>
 	</p>
 </%def>
 
@@ -840,7 +856,8 @@
         % endif
 	<p class="total">
 		${total}<br>
-		<span>following</span>
+		<span>following</span><br />
+		<span><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></span>
 	</p>
 </%def>
 
