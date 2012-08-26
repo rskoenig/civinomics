@@ -436,7 +436,12 @@
             <h4>All Suggestions:</h4>
             <a href="/profile/${c.user['urlCode']}/${c.user['url']}"><strong>Back to Profile</strong></a>
         % else:
-            <h4>${numDisplay} most recent suggestions:</h4>
+            % if numDisplay > len(sList):
+                <% sTotal = len(sList) %>
+            % else:
+                <% sTotal = numDisplay %>
+            % endif
+            <h4>${sTotal} most recent suggestions:</h4>
             % if numDisplay < len(c.suggestions):
                 <a href="/profile/${c.user['urlCode']}/${c.user['url']}/suggestions"><strong>View All Suggestions</strong></a>
             % endif
@@ -517,7 +522,12 @@
             <a href="/profile/${c.user['urlCode']}/${c.user['url']}"><strong>Back to Profile</strong></a>
             <br />
         % else:
-            <h4>${numDisplay} most recent resources:</h4>
+            % if numDisplay > len(rList):
+                <% rTotal = len(rList) %>
+            % else:
+                <% rTotal = numDisplay %>
+            % endif
+            <h4>${rTotal} most recent resources:</h4>
             % if numDisplay < len(c.resources):
                 <a href="/profile/${c.user['urlCode']}/${c.user['url']}/resources"><strong>View All Resources</strong></a>
             % endif
@@ -599,14 +609,27 @@
 
 <%def name="latestDiscussions(numDisplay)">
     % if c.discussions:
-        % if numDisplay == '0':
-            <h4>All discussions:</h4></br>
+        <% dList = c.discussions %>
+        % if numDisplay == 0:
+            <% dList = c.paginator %>
+            <h4>All discussions:</h4>
+            <a href="/profile/${c.user['urlCode']}/${c.user['url']}"><strong>Back to Profile</strong></a>
+            <br />
         % else:
-            <h4>${numDisplay} most recent discussions:</h4></br>
+            % if numDisplay > len(dList):
+                <% dTotal = len(dList) %>
+            % else:
+                <% dTotal = numDisplay %>
+            % endif
+            <h4>${dTotal} most recent discussions:</h4>
+            % if numDisplay < len(dList):
+                <a href="/profile/${c.user['urlCode']}/${c.user['url']}/discussions"><strong>View All Discussions</strong></a>
+            % endif
+            <br />
         % endif
         <% count = 1 %>
         <ul class="unstyled civ-col-list">
-        % for d in c.discussions:
+        % for d in dList:
             % if numDisplay != 0:
                 % if count > numDisplay:
                     <% break %>
@@ -636,6 +659,13 @@
             </li>
             <% count += 1 %>
         % endfor
+        % if c.paginator and (len(c.paginator) != len(c.discussions)):
+            <% state = True %>
+            % for p in c.paginator:
+                <% state = not state %>
+            % endfor
+            Total Discussions: ${c.count} | View ${ c.paginator.pager('~3~') }
+        % endif
         </ul> <!-- /.unstyled -->
     % else:
         <div class="alert alert-warning">No resources to show.</div>

@@ -71,6 +71,12 @@ class Discussion(object):
             if attachedThing.objType == 'workshop':
                 d['workshopCode'] = attachedThing['urlCode']
                 d['workshopURL'] = attachedThing['url']
+                if discType == 'general':
+                    d['text'] = kwargs['text']
+                    d['ups'] = 0
+                    d['downs'] = 0
+                    d['disabled'] = 0
+                    d['deleted'] = 0
             elif attachedThing.objType == 'suggestion':
                 d['workshopCode'] = kwargs['workshop']['urlCode']
                 d['workshopURL'] = kwargs['workshop']['url']
@@ -105,7 +111,8 @@ class Discussion(object):
         d['numComments'] = 0
         commit(d)
 
-        attachedThing['discussion_id'] = d.id
-        commit(attachedThing)
+        if attachedThing.objType != 'workshop':
+            attachedThing['discussion_id'] = d.id
+            commit(attachedThing)
         
         self.d = d

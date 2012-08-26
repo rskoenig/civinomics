@@ -76,8 +76,9 @@ class DiscussionController(BaseController):
         c.flags = getFlags(c.discussion)
         c.events = getParentEvents(c.discussion)
         c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
-        if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
-            c.otherDiscussions.remove(c.discussion)
+        if 'disabled' in c.discussion and 'deleted' in c.discussion:
+            if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
+                c.otherDiscussions.remove(c.discussion)
 
         c.title = c.w['title']
         return render('/derived/discussion_topic.bootstrap')
@@ -134,7 +135,6 @@ class DiscussionController(BaseController):
         code = id1
         url = id2
         w = getWorkshop(code, urlify(url))
-
         
         if 'title' in request.params:
             title = request.params['title']
@@ -154,7 +154,7 @@ class DiscussionController(BaseController):
             return redirect('/workshop/%s/%s/addDiscussion' % (code, url))
 
         else:
-            d = Discussion(owner = c.authuser, discType = 'general', workshop = w, title = title, text = text)
+            d = Discussion(owner = c.authuser, discType = 'general', attachedThing = w, title = title, text = text)
             commit(w)
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (code, url, d.d['urlCode'], d.d['url']))
