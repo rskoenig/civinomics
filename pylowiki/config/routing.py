@@ -390,6 +390,8 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/suggestions', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/suggestions/', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/resources', controller = 'profile', action = 'showUserResources', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/resources/', controller = 'profile', action = 'showUserResources', id1 = '{id1}', id2 = '{id2}')
 
     # User activation
     map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation

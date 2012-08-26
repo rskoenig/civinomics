@@ -510,14 +510,22 @@
 
 <%def name="latestResources(numDisplay)">
     % if c.resources:
-        % if numDisplay == '0':
-            <h4>All resources:</h4></br>
+        <% rList = c.resources %>
+        % if numDisplay == 0:
+            <% rList = c.paginator %>
+            <h4>All Resources:</h4>
+            <a href="/profile/${c.user['urlCode']}/${c.user['url']}"><strong>Back to Profile</strong></a>
+            <br />
         % else:
-            <h4>${numDisplay} most recent resources:</h4></br>
+            <h4>${numDisplay} most recent resources:</h4>
+            % if numDisplay < len(c.resources):
+                <a href="/profile/${c.user['urlCode']}/${c.user['url']}/resources"><strong>View All Resources</strong></a>
+            % endif
+            <br />
         % endif
         <% count = 1 %>
         <ul class="unstyled civ-col-list">
-        % for r in c.resources:
+        % for r in rList:
             % if numDisplay != 0:
                 % if count > numDisplay:
                     <% break %>
@@ -551,6 +559,13 @@
             </li>
             <% count += 1 %>
         % endfor
+        % if c.paginator and (len(c.paginator) != len(c.resources)):
+            <% state = True %>
+            % for p in c.paginator:
+                <% state = not state %>
+            % endfor
+            Total Resources: ${c.count} | View ${ c.paginator.pager('~3~') }
+        % endif
         </ul> <!-- /.unstyled -->
     % else:
         <div class="alert alert-warning">No resources to show.</div>
