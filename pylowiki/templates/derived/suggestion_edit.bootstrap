@@ -34,7 +34,7 @@
             ${c.w['goals']}
             <br /> <br />
             <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
-            ${lib.list_suggestions(c.suggestions, "No other suggestions for this workshop.")}
+            ${lib.list_suggestions(c.suggestions, "No other suggestions for this workshop.", 10)}
         </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->
 </div>

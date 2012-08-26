@@ -5,6 +5,7 @@ from formencode import validators, htmlfill
 from formencode.compound import All
 from formencode.foreach import ForEach
 from ordereddict import OrderedDict
+import webhelpers.paginate as paginate
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -952,6 +953,44 @@ class WorkshopController(BaseController):
 
 
         return render('/derived/workshop_home.bootstrap')
+
+    def displayAllSuggestions(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshop(code, url)
+        c.title = c.w['title']
+        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+
+        for item in c.suggestions:
+            """ Grab first 250 chars as a summary """
+            if len(item['data']) <= 250:
+                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
+            else:
+                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
+                ##item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
+        
+            if 'user' in session:    
+                """ Grab the associated rating, if it exists """
+                found = False
+                try:
+                    index = ratedSuggestionIDs.index(item.id)
+                    found = True
+                except:
+                    pass
+                if found:
+                    item.rating = getRatingByID(sugRateDict[item.id])
+                else:
+                    item.rating = False
+
+        c.count = len(c.suggestions)
+        c.paginator = paginate.Page(
+            c.suggestions, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        return render('/derived/workshop_suggestions.bootstrap')
 
     def inactiveSuggestions(self, id1, id2):
         code = id1

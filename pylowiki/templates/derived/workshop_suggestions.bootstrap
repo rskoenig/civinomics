@@ -1,0 +1,30 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib_helpers" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/derived/workshop_home/helpers.mako" />
+
+<div class="container-fluid"><!-- header -->
+    <div class="well">
+        ${lib_helpers.displayWorkshopHeader('')}
+    </div><!-- well -->
+    <h2 class="civ-col"><i class="icon-pencil"></i> Suggestions</h2>
+    <div class="row-fluid">
+        <div class="span3">
+            ${lib_helpers.totalSuggestions()}
+        </div><!-- span3 -->
+        <div class="span9">
+            ${lib_helpers.list_suggestions(c.paginator, "There are no suggestions yet for this workshop. Be the first to add one!", 0, 1)}
+        </div><!-- span9 -->
+    </div><!-- row-fluid -->
+</div><!-- container-fluid -->
+            
+<%def name = 'extraHTML()'>
+
+</%def>
+            
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>

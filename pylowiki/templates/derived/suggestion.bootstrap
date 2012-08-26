@@ -59,7 +59,7 @@ ${lib.return_to()}
                     ${lib.list_resources("There are no information resources for this suggestion. Be the first to add one!")}
                 <div class="civ-col-inner">
                     <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
-                    ${lib.list_suggestions(c.suggestions, "There are no other suggestions for this workshop.")}
+                    ${lib.list_suggestions(c.suggestions, "There are no other suggestions for this workshop.", 10)}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span4 -->

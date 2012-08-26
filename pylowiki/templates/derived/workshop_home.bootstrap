@@ -35,9 +35,12 @@
             <div class="civ-col">
                 <h2 class="civ-col">
                     <i class="icon-pencil"></i> Suggestions
+                    % if len(c.suggestions) > 10:
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">Showing 10 of ${len(c.suggestions)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestions">View All</a></span>
+                    % endif
                 </h2>
                 <div class="civ-col-inner">
-                    ${lib.list_suggestions(c.suggestions, "There are no suggestions yet for this workshop. Be the first to add one!", 1)}
+                    ${lib.list_suggestions(c.suggestions, "There are no suggestions yet for this workshop. Be the first to add one!", 10, 1)}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span5 -->
@@ -57,7 +60,7 @@
                         <i class="icon-heart"></i> Adopted Suggestions
                     </h2>
                     <div class="civ-col-inner">
-                        ${lib.list_suggestions(c.asuggestions, "There are no adopted suggestions yet for this workshop.", 0)}
+                        ${lib.list_suggestions(c.asuggestions, "There are no adopted suggestions yet for this workshop.", 10, 0)}
                     </div> <!-- /.civ-col-inner -->
                 % endif
             </div> <!-- /.civ-col -->

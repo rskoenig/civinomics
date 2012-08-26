@@ -180,7 +180,22 @@
 	% endif
 </%def>
 
-<%def name="list_suggestions(sList, errorMsg, doSlider = False)">
+<%def name="totalResources()">
+        % if c.resources:
+           <% total = len(c.resources) %>
+        % else:
+           <% total = 0 %>
+        % endif
+        <br />
+        <p class="total">
+                ${total}<br>
+                <span>Resources</span><br />
+                <span>Display Page ${ c.paginator.pager('~3~')}</span><br />
+                <span><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">Back to Workshop</a></span>
+        </p>
+</%def>
+
+<%def name="list_suggestions(sList, errorMsg, numDisplay, doSlider = False)">
 	% if len(sList) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
@@ -252,13 +267,38 @@
                 <td colspan=3><hr></td>
                 </tr>
                 <% counter += 1 %>
+                % if counter == numDisplay:
+                    <% break %>
+                % endif 
+            % endfor
+
+            </tbody>
+            </table>
+            % if c.paginator and (len(c.paginator) != len(c.suggestions)):
+                <% state = True %>
+                % for p in c.paginator:
+                    <% state = not state %>
                 % endfor
-                </tbody>
-                </table>
-                </div>
+                <p>Total Suggestions: ${c.count} | View ${ c.paginator.pager('~3~') }</p>
+            % endif
+            </div>
 % endif
 </%def>
 
+<%def name="totalSuggestions()">
+        % if c.suggestions:
+           <% total = len(c.suggestions) %>
+        % else:
+           <% total = 0 %>
+        % endif
+        <br />
+        <p class="total">
+                ${total}<br>
+                <span>Suggestions</span><br />
+                <span>Display Page ${ c.paginator.pager('~3~')}</span><br />
+                <span><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">Back to Workshop</a></span>
+        </p>
+</%def>
 
 <%def name="facilitator()">
 	% if len(c.facilitators) == 1:
