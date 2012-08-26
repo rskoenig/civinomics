@@ -419,6 +419,106 @@ class ProfileController(BaseController):
 
         return render("/derived/profileComments.bootstrap")
     
+    def showUserFollowers(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/followers
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.followingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.followingUsers.append(getUserByID(uID))
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.listUserFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.listUserFollowers.append(getUserByID(uID))
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.flags = 0
+
+        c.posts = len(pList)
+        for p in pList:
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
+
+        c.count = len(c.listUserFollowers)
+        c.paginator = paginate.Page(
+            c.listUserFollowers, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileFollowers.bootstrap")
+    
+    def showUserFollows(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/following
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.listFollowingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.listFollowingUsers.append(getUserByID(uID))
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.userFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.userFollowers.append(getUserByID(uID))
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.flags = 0
+
+        c.posts = len(pList)
+        for p in pList:
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
+
+        c.count = len(c.listFollowingUsers)
+        c.paginator = paginate.Page(
+            c.listFollowingUsers, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileFollowing.bootstrap")
+    
     @h.login_required
     def index( self ):
         c.list = get_all_users()

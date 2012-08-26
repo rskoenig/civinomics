@@ -132,28 +132,82 @@
         </tr>
 </%def>
 
-<%def name="displayFollowingUsers()">
-    <% fNum = len(c.followingUsers) %>
-    <h2 class="civ-col"><i class="icon-user"></i> Following (${fNum})</h2>
-    <table class="table table-condensed">
-    <tbody>
-    % for user in c.followingUsers:
-        ${listUser(user, 0)}
-    % endfor
-    </tbody>
-    </table>
+<%def name="displayFollowingUsers(numDisplay)">
+    % if numDisplay == 0:
+        <% fNum = len(c.paginator) %>
+        <table class="table table-condensed">
+        <tbody>
+        % for user in c.paginator:
+            ${listUser(user, 1)}
+        % endfor
+        </tbody>
+        </table>
+        % if c.paginator and (len(c.paginator) != len(c.listFollowingUsers)):
+            <% state = True %>
+            % for p in c.paginator:
+                <% state = not state %>
+            % endfor
+            Total Following: ${c.count} | View ${ c.paginator.pager('~3~') }
+        % endif
+    % else:
+        <% fNum = len(c.followingUsers) %>
+        <h2 class="civ-col"><i class="icon-user"></i> Following (${fNum})</h2>
+        <table class="table table-condensed">
+        <tbody>
+        <% fCount = 1 %>
+        % for user in c.followingUsers:
+            ${listUser(user, 0)}
+            % if fCount == numDisplay:
+                <% break %>
+            % endif
+            <% fCount += 1 %>
+        % endfor
+        </tbody>
+        </table>
+        % if numDisplay < len(c.followingUsers):
+            <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/following">View All</a></strong>
+        % endif
+    % endif
 </%def>
 
-<%def name="displayUserFollows()">
-    <% fNum = len(c.userFollowers) %>
-    <h2 class="civ-col"><i class="icon-user"></i> Followers (${fNum})</h2>
-    <table class="table table-condensed">
-    <tbody>
-    % for user in c.userFollowers:
-        ${listUser(user, 0)}
-    % endfor
-    </tbody>
-    </table>
+<%def name="displayUserFollows(numDisplay)">
+    % if numDisplay == 0:
+        <% fNum = len(c.paginator) %>
+        <table class="table table-condensed">
+        <tbody>
+        % for user in c.paginator:
+            ${listUser(user, 1)}
+        % endfor
+        </tbody>
+        </table>
+        % if c.paginator and (len(c.paginator) != len(c.listUserFollowers)):
+            <% state = True %>
+            % for p in c.paginator:
+                <% state = not state %>
+            % endfor
+            Total Followers: ${c.count} | View ${ c.paginator.pager('~3~') }
+        % endif
+    % else:
+        % if c.userFollowers:
+            <% fNum = len(c.userFollowers) %>
+            <h2 class="civ-col"><i class="icon-user"></i> Followers (${fNum})</h2>
+            <table class="table table-condensed">
+            <tbody>
+            <% fCount = 1 %>
+            % for user in c.userFollowers:
+                ${listUser(user, 0)}
+                % if fCount == numDisplay:
+                    <% break %>
+                % endif
+                <% fCount += 1 %>
+            % endfor
+            </tbody>
+            </table>
+            % if numDisplay < len(c.userFollowers):
+                <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/followers">View All Followers</a></strong>
+            % endif
+        % endif
+    % endif
 </%def>
 
 <%def name="displayConnections()">
@@ -183,10 +237,10 @@
 
 <%def name="sidebar()">
 	% if c.followingUsers:
-		${displayFollowingUsers()}
+		${displayFollowingUsers(5)}
 	% endif
 	% if c.userFollowers:
-		${displayUserFollows()}
+		${displayUserFollows(5)}
 	% endif
 	% if 'user' in session and c.authuser['email'] != c.user['email']:
 		<div class="civ-col">
@@ -759,3 +813,34 @@
     % endif
 %endif
 </%def>
+
+<%def name="totalFollowers()">
+        % if c.listUserFollowers:
+           <% total = len(c.listUserFollowers) %>
+           % if total > 1:
+               <% title = "followers" %>
+           % else:
+               <% title = "follower" %>
+           % endif
+        % else:
+           <% title = "followers" %>
+           <% total = 0 %>
+        % endif
+	<p class="total">
+		${total}<br>
+		<span>${title}</span>
+	</p>
+</%def>
+
+<%def name="totalFollowing()">
+        % if c.listFollowingUsers:
+           <% total = len(c.listFollowingUsers) %>
+        % else:
+           <% total = 0 %>
+        % endif
+	<p class="total">
+		${total}<br>
+		<span>following</span>
+	</p>
+</%def>
+
