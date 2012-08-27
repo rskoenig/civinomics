@@ -86,7 +86,7 @@
 %>
 
 <%def name="add_a(thing)">
-	% if c.isScoped:
+	% if c.isScoped or c.isFacilitator or c.isAdmin:
             %if thing == 'resource' and (c.w['allowResources'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'sresource' and (c.s['allowComments'] == '1' or c.isFacilitator or c.isAdmin):
