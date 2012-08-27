@@ -344,6 +344,13 @@
             <% counter = counter + 1 %>
             ${line}<br />
         % endfor
+        % if counter == 1:
+           <br /><br /><br />
+        % elif counter == 2:
+           <br /><br />
+        % elif counter == 3:
+           <br />
+        % endif
         </a>
 </%def>
 
@@ -351,7 +358,7 @@
     <ul class="unstyled civ-block-list">
     % for workshop in set:
         <li>
-        ${displayWorkshop(workshop)}
+        <p>${displayWorkshop(workshop)}</p>
         </li>
     % endfor
     </ul>
