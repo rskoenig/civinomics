@@ -2,6 +2,7 @@ import logging, pickle
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to, redirect
+import webhelpers.paginate as paginate
 
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents
@@ -52,6 +53,12 @@ class DiscussionController(BaseController):
         c.code = c.w['urlCode']
         c.url = c.w['url']
         c.discussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+
+        c.count = len(c.discussions)
+        c.paginator = paginate.Page(
+            c.discussions, page=int(request.params.get('page', 1)),
+            items_per_page = 5, item_count = c.count
+        )
 
         return render('/derived/discussion_landing.bootstrap')
 

@@ -76,8 +76,13 @@
 
 <%def name="listDiscussions()">
     % if c.discussions:
+        % if c.paginator:
+            <% dList = c.paginator %>
+        % else:
+            <% dList = c.discussions %>
+        % endif
         <ul class="unstyled civ-col-list">
-            % for discussion in c.discussions:
+            % for discussion in dList:
                 <li>
                     <div class="row-fluid">
                         <div class="span1 civ-votey">
