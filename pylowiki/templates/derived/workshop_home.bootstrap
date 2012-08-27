@@ -25,9 +25,12 @@
             <div class="civ-col">
                 <h2 class="civ-col">
                     <i class="icon-book"></i> Resources
+                    % if len(c.resources) > 10:
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">Showing 10 of ${len(c.resources)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resources">View All</a></span>
+                    % endif
                 </h2>
                 <div class="civ-col-inner">
-                    ${lib.list_resources("There are no information resources for this workshop. Be the first to add one!")}
+                    ${lib.list_resources("There are no information resources for this workshop. Be the first to add one!", 10)}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span4 -->

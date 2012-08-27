@@ -114,14 +114,20 @@
     % endif
 </%def>
 
-<%def name="list_resources(errorMsg)">
+<%def name="list_resources(errorMsg, numDisplay = 10)">
 	% if len(c.resources) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
+                % if numDisplay == 0:
+                    <% rList = c.paginator %>
+                % else:
+                    <% rList = c.resources %>
+                % endif
 		<div class="civ-col-list">
                 <table>
                 <tbody>
-		% for resource in c.resources:
+                <% counter = 0 %>
+		% for resource in rList:
 			<% author = getUserByID(resource.owner) %>
                         <% flags = getFlags(resource) %>
                         % if flags:
@@ -173,6 +179,10 @@
                              <td colspan=2><hr></td>
                              </tr>
 			% endif
+                    <% counter += 1 %>
+                    % if counter == numDisplay:
+                        <% break %>
+                    % endif
 		% endfor
                 </tbody>
                 </table>
@@ -190,7 +200,9 @@
         <p class="total">
                 ${total}<br>
                 <span>Resources</span><br />
-                <span>Display Page ${ c.paginator.pager('~3~')}</span><br />
+                % if len(c.resources) > 15:
+                    <span>Display Page ${ c.paginator.pager('~3~')}</span><br />
+                % endif
                 <span><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">Back to Workshop</a></span>
         </p>
 </%def>
@@ -295,7 +307,9 @@
         <p class="total">
                 ${total}<br>
                 <span>Suggestions</span><br />
-                <span>Display Page ${ c.paginator.pager('~3~')}</span><br />
+                % if len(c.suggestions) > 15:
+                    <span>Display Page ${ c.paginator.pager('~3~')}</span><br />
+                % endif
                 <span><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">Back to Workshop</a></span>
         </p>
 </%def>

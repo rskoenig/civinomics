@@ -42,7 +42,7 @@
         <div class="civ-col">
             <h2 class="civ-col"><i class="icon-book"></i> Other Resources</h2>
             <div class="civ-col-inner">
-                ${lib.list_resources("There are no other resources.")}
+                ${lib.list_resources("There are no other resources.", 10)}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->

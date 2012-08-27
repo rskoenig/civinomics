@@ -72,6 +72,9 @@ def make_map():
     # suggestions
     map.connect('/workshop/{id1}/{id2}/suggestions', controller = 'workshop', action = 'displayAllSuggestions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/suggestions/', controller = 'workshop', action = 'displayAllSuggestions', id1 = '{id1}', id2 = '{id2}')
+    # resources
+    map.connect('/workshop/{id1}/{id2}/resources', controller = 'workshop', action = 'displayAllResources', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/resources/', controller = 'workshop', action = 'displayAllResources', id1 = '{id1}', id2 = '{id2}')
 
     # Workshop follow/unfollow
     map.connect('/workshop/{id1}/{id2}/follow', controller = 'workshop', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')

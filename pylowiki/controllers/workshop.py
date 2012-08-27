@@ -992,6 +992,22 @@ class WorkshopController(BaseController):
 
         return render('/derived/workshop_suggestions.bootstrap')
 
+    def displayAllResources(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshop(code, url)
+        c.title = c.w['title']
+        c.resources = getActiveResourcesByWorkshopID(c.w.id)
+
+        c.count = len(c.resources)
+        c.paginator = paginate.Page(
+            c.resources, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        return render('/derived/workshop_resources.bootstrap')
+
     def inactiveSuggestions(self, id1, id2):
         code = id1
         url = id2
