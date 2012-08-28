@@ -4,6 +4,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
+from pylowiki.lib.utils import urlify
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.comments import addDiscussion, addComment, editComment
 from pylowiki.lib.db.user import getUserByID, isAdmin
@@ -15,7 +16,7 @@ from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
 from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.flag import Flag, isFlagged, getFlags
+from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 
 import simplejson as json
 
@@ -36,6 +37,25 @@ class CommentController(BaseController):
             return json.dumps({'id':commentID, 'result':"Successfully flagged!"})
         else:
             return json.dumps({'id':commentID, 'result':"Already flagged!"})
+
+    @h.login_required
+    def adminComment(self, id1):
+        code = id1
+        c.comment = getCommentByCode(urlify(code))
+        log.info('c.comment is %s'%c.comment)
+        c.discussion = getDiscussionByID(c.comment['discussion_id'])
+        c.w = getWorkshop(c.discussion['workshopCode'], c.discussion['workshopURL'])
+        c.commentType = c.discussion['discType']
+        c.flags = getFlags(c.comment)
+        log.info('len of c.flags is %s'%len(c.flags))
+        c.events = getParentEvents(c.comment)
+        c.user = getUserByID(c.comment.owner)
+
+        if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, c.w.id):
+            h.flash('You are not authorized', 'error')
+            return redirect('/')
+
+        return render('/derived/comment_admin.bootstrap')
 
     @h.login_required
     def modComment(self, id1, id2, id3, id4, id5, id6):
@@ -64,25 +84,68 @@ class CommentController(BaseController):
         return render('/derived/comment_admin.bootstrap')
 
     @h.login_required
-    def modCommentHandler(self):
+    def clearCommentFlagsHandler(self, id1):
+        code = id1
+
+        c.comment = getCommentByCode(code)
+        fList = getFlags(c.comment)
+
+        clearError = 0
+        clearMessage = ""
+        c.discussion = getDiscussionByID(c.comment['discussion_id'])
+
+        if 'clearCommentFlagsReason' in request.params:
+            clearReason = request.params['clearCommentFlagsReason']
+            if clearReason != '':
+                clearFlags(c.comment)
+                clearTitle = "Flags cleared"
+                e = Event(clearTitle, clearReason, c.comment, c.authuser)
+            else:
+                clearError = 1
+                clearMessage = "Please include a reason for your action"
+        else:
+            clearError = 1
+            clearMessage = "Please include a reason for your action"
+
+        if clearError:
+            alert = {'type':'error'}
+            alert['title'] = "Flags not cleared"
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+        else:
+            clearMessage = "Flags cleared from this comment"
+            alert = {'type':'success'}
+            alert['title'] = 'Flags cleared!'
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+
+        returnURL = "/adminComment/" + code
+        return redirect(returnURL)
+
+     
+
+    @h.login_required
+    def modCommentHandler(self, id1):
+        code = id1
         backlink = '/'
 
-        commentID = request.params['commentID']
-        comment = getComment(commentID)
+        comment = getCommentByCode(urlify(code))
+        discussion = getDiscussionByID(comment['discussion_id'])
 
-        commentType = request.params['commentType']
+        commentType = discussion['discType']
 
-        workshopCode = request.params['workshopCode']
-        workshopURL = request.params['workshopURL']
+        workshopCode = discussion['workshopCode']
+        workshopURL = discussion['workshopURL']
         w = getWorkshop(workshopCode, workshopURL)
 
-        otherCode = request.params['otherCode']
-        otherURL = request.params['otherURL']
-    
         if commentType == 'resource':
-           backlink = "/workshop/%s/%s/resource/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
+           backlink = "/workshop/%s/%s/resource/%s/%s"%(workshopCode, workshopURL, discussion['resourceCode'], discussion['resourceURL'])
         elif commentType == 'suggestion':
-           backlink = "/workshop/%s/%s/suggestion/%s/%s"%(workshopCode, workshopURL, otherCode, otherURL)
+           backlink = "/workshop/%s/%s/suggestion/%s/%s"%(workshopCode, workshopURL, discussion['suggestionCode'], discussion['suggestionURL'])
+        elif commentType == 'general':
+           backlink = "/workshop/%s/%s/discussion/%s/%s"%(workshopCode, workshopURL, discussion['urlCode'], discussion['url'])
         elif commentType == 'background':
            backlink = "/workshop/%s/%s/background"%(workshopCode, workshopURL)
         elif commentType == 'feedback':
@@ -203,6 +266,8 @@ class CommentController(BaseController):
            oLink = wLink + '/feedback'
         elif d['discType'] == 'suggestion':
            oLink = wLink + '/suggestion/' + d['suggestionCode'] + '/' + d['suggestionURL']
+        elif d['discType'] == 'general':
+           oLink = wLink + '/discussion/' + d['urlCode'] + '/' + d['url']
         elif d['discType'] == 'resource':
            oLink = wLink + '/resource/' + d['resourceCode'] + '/' + d['resourceURL']
         elif d['discType'] == 'sresource':

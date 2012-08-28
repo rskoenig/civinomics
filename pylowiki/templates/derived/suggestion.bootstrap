@@ -15,17 +15,18 @@ ${lib.return_to()}
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12 well">
-            ${helpers.workshopTitle()}
-            <br />
-            ${lib.nav_thing("")}
-            <br />
+            ${lib.displayWorkshopHeader('')}
         </div><!-- span12 -->
     </div><!-- row-fluid -->
 
     <div class="row-fluid">    
         <div class="span8">
             <div class="civ-col">
-                <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION</h2>
+                % if c.s['adopted'] == '1':
+                    <h2 class="civ-col"><i class="icon-heart"></i> Adopted Suggestion</h2>
+                % else:
+                    <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION</h2>
+                % endif
                 <div class="civ-col-inner">
                     <div class="row-fluid">
                         ${helpers.suggestionInfo()}
@@ -34,6 +35,7 @@ ${lib.return_to()}
                         ${helpers.spacer()}
                     </div> <!-- /.row-fluid -->
                 </div><!-- civ-col-inner -->
+                ${lib.displayEvents()}
             </div><!-- civ-col -->
             <div class="civ-col">
                 <h2 class="civ-col"><i class="icon-comment"></i> Comments</h2>
@@ -50,12 +52,14 @@ ${lib.return_to()}
             <div class="civ-col">
                     <h2 class="civ-col">
                         <i class="icon-book"></i> Suggestion Resources
+                        <span class="pull-right resource" style="font-size:xx-small; text-transform:lowercase; letter-spacing:normal;">
                         ${lib.add_a("sresource")}
+                        </span>
                         </h2>
                     ${lib.list_resources("There are no information resources for this suggestion. Be the first to add one!")}
                 <div class="civ-col-inner">
                     <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
-                    ${lib.list_suggestions("There are no other suggestions for this workshop.")}
+                    ${lib.list_suggestions(c.suggestions, "There are no other suggestions for this workshop.", 10)}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span4 -->

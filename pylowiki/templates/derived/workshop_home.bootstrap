@@ -25,9 +25,12 @@
             <div class="civ-col">
                 <h2 class="civ-col">
                     <i class="icon-book"></i> Resources
+                    % if len(c.resources) > 10:
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">Showing 10 of ${len(c.resources)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resources">View All</a></span>
+                    % endif
                 </h2>
                 <div class="civ-col-inner">
-                    ${lib.list_resources("There are no information resources for this workshop. Be the first to add one!")}
+                    ${lib.list_resources("There are no information resources for this workshop. Be the first to add one!", 10)}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span4 -->
@@ -35,16 +38,19 @@
             <div class="civ-col">
                 <h2 class="civ-col">
                     <i class="icon-pencil"></i> Suggestions
+                    % if len(c.suggestions) > 10:
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">Showing 10 of ${len(c.suggestions)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestions">View All</a></span>
+                    % endif
                 </h2>
                 <div class="civ-col-inner">
-                    ${lib.list_suggestions("There are no suggestions yet for this workshop. Be the first to add one!", 1)}
+                    ${lib.list_suggestions(c.suggestions, "There are no suggestions yet for this workshop. Be the first to add one!", 10, 1)}
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span5 -->
         <div class="span3">
             <div class="civ-col">
                 <h2 class="civ-col">
-                    <i class="icon-volume-up"></i> Feedback 
+                    <i class="icon-info-sign"></i> Help 
                 </h2>
                 <div class="civ-col-inner">
                     ${helpers.info_and_feedback()}
@@ -52,6 +58,14 @@
                 <div class="civ-col-inner">
                     ${helpers.motd()}
                 </div> <!-- /.civ-col-inner -->
+                % if c.asuggestions:
+                    <h2 class="civ-col">
+                        <i class="icon-heart"></i> Adopted Suggestions
+                    </h2>
+                    <div class="civ-col-inner">
+                        ${lib.list_suggestions(c.asuggestions, "There are no adopted suggestions yet for this workshop.", 10, 0)}
+                    </div> <!-- /.civ-col-inner -->
+                % endif
             </div> <!-- /.civ-col -->
         </div> <!-- /.span3 -->
     </div> <!-- /.row-fluid -->

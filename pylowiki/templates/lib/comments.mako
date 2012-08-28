@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
-    from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.user import getUserByID, isAdmin
+    from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment
     import logging
     from datetime import datetime
@@ -22,16 +23,22 @@
         c.author = author
     %>
     <p>
+    <div class="row-fluid">
+        <div class="span2"> 
         <button class="btn btn-mini" id="hide${comment.id}" title="Hide comment and any replies" alt="Hide comment and any replies"><i class="icon-minus"></i> hide</button>
-        
+        </div><!-- span2 -->
+        <div class="span1">
         % if author['pictureHash'] == 'flash':
-            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="avatar" width="20" /></a>
+            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="${c.author['name']}" title="${c.author['name']}" class="thumbnail" width="20" /></a>
         % else:
-            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" alt="avatar" /></a>
+            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" class="thumbnail" alt="${c.author['name']}" title="${c.author['name']}" class="thumbnail" /></a>
         % endif
-
+        </div><!-- span1 -->
+        <div class="span8 pull-left">
         <a href = "/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> &mdash;
         <span class="recent">${timeSince(datetime.strptime(comment['lastModified'], '%a %b %d %H:%M:%S %Y'))}</span> ago &mdash; ${numReplies} ${replies}
+        </div><!-- span8 -->
+    </div><!-- row-fluid -->
     </p>
 </%def>
 
@@ -55,7 +62,7 @@
 
                 <div class="controls">
                     <div class="input-append">
-                        <input type="text" id="remark${thisID}" name="remark${thisID}" placeholder="optional remark" class="span7"/><button type="submit" name="submit" value="submit" class="btn">Submit</button>
+                        <input type="text" id="remark${thisID}" name="remark${thisID}" placeholder="optional remark" class="span7"/><button type="submit" name="submit" value="submit" class="btn">Save changes</button>
                     </div>
                 </div>
             
@@ -72,11 +79,13 @@
 ## Displays the content of the comment
 <%def name="commentContent(comment, counter)">
     <div class="collapse in hide${comment.id}">
-        % if c.authuser['accessLevel'] >= 200:
-            ${editComment(comment, counter)}
-        % elif "user" in session:
-            ${h.literal(h.reST2HTML(comment['data']))}
-            ${displayButtons(comment, counter)}
+        % if "user" in session:
+            % if isAdmin(c.authuser.id):
+                ${editComment(comment, counter)}
+            % else:
+                ${h.literal(h.reST2HTML(comment['data']))}
+                ${displayButtons(comment, counter)}
+            % endif
         % else:
             ${h.literal(h.reST2HTML(comment['data']))}
         % endif
@@ -85,12 +94,16 @@
 
 ## Sets up the rating system
 <%def name="displayRating(comment, commentType)">
+    % if 'user' in session and c.isScoped:
     <a href="/rateComment/${comment.id}/1" class="upVote voted">
         <i class="icon-chevron-up"></i>
     </a>    <div>${int(comment['ups']) - int(comment['downs'])}</div>
     <a href="/rateComment/${comment.id}/-1" class="downVote voted">
         <i class="icon-chevron-down"></i>
     </a>
+    % else:
+        <div>${int(comment['ups']) - int(comment['downs'])}</div>
+    % endif
 </%def>
 
 <%def name="displayButtons(comment, counter)">
@@ -101,15 +114,18 @@
                 parent = getComment(comment['parent'])
                 parentOwner = getUserByID(parent.owner)
             %>
-            <a class="btn btn-mini thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-comment"></i> parent</a>
+            <a class="btn btn-mini btn-primary thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-white icon-comment"></i> parent</a>
         % endif
-        <a data-toggle="collapse" data-target=".reply${comment.id}" class="btn btn-mini" title="Reply to comment" alt="Reply to comment"><i class="icon-repeat"></i> reply</a>
-        <a data-toggle="collapse" data-target=".flag${comment.id}" class="btn btn-mini" title="Flag this comment" alt="Flag this comment"><i class="icon-flag"></i> flag</a>
-        % if c.authuser['accessLevel'] >= 200:
-            <a id="edit${counter + comment.id}" class="btn btn-mini pull-right" data-toggle="collapse" data-target="#textareadiv${counter + comment.id}">
-                <i class="icon-edit"></i> edit
+        <a data-toggle="collapse" data-target=".reply${comment.id}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
+        % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+            <a id="edit${counter + comment.id}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${counter + comment.id}">
+                <i class="icon-white icon-edit"></i> edit
+            </a>
+            <a href="/adminComment/${comment['urlCode']}" class="btn btn-mini btn-warning pull-right" title="Admin comment">
+                <i class="icon-white icon-list-alt"></i> admin
             </a>
         % endif
+        <a data-toggle="collapse" data-target=".flag${comment.id}" class="btn btn-mini btn-inverse" title="Flag this comment" alt="Flag this comment"><i class="icon-white icon-flag"></i> flag</a>
     </p> <!-- /.btn-group -->
 </%def>
 
@@ -209,9 +225,11 @@
                         <button type="submit" name = "submit" value = "submit" class="btn">Submit</button>
                     <br />
                     % else:
+                    <!--
                     <h3 class="utility">
                       Please <a href="/login">login</a> or <a href="/register">register</a> to leave a comment!
                     </h3>
+                    -->
                     %endif
                 </form>
             </div> <!-- /.span12 -->

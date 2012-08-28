@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Helper functions
 
+
 Consists of functions to typically be used within templates, but also
 available to Controllers. This module is available to templates as 'h'.
 """
 # Import helpers as desired, or define your own, ie:
 #from webhelpers.html.tags import checkbox, password
 
-from webhelpers.html.tags import *
 
 #from webhelpers.date import *
 #from webhelpers.text import *
@@ -15,8 +15,10 @@ from webhelpers.html.tags import *
 #from webhelpers.html.tools import *
 #from webhelpers.util import *
 
-from webhelpers.html import literal
-from webhelpers.html import lit_sub
+from webhelpers.html.tags import *
+from webhelpers.html.builder import literal, lit_sub
+##from webhelpers.html import literal
+##from webhelpers.html import lit_sub
 from webhelpers.html.tools import mail_to
 
 from pylons import url

@@ -8,8 +8,7 @@ ${lib.return_to()}
 <div class="container-fluid">
     <div class="row-fluid">
 	<div class="span12 well">
-                <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1><br />
-		${lib.nav_thing("")}
+            ${lib.displayWorkshopHeader('')}
                 ${helpers.nav_thing()}
                 <br />
 	</div> <!-- ./span12 -->
@@ -25,6 +24,7 @@ ${lib.return_to()}
 					${helpers.displayResource()}
 				</div> <!-- /.row-fluid -->
 			</div> <!-- /.civ-col-inner -->
+                        ${lib.displayEvents()}
 		</div> <!-- /.civ-col -->
 
 		<div class="civ-col">
@@ -39,7 +39,7 @@ ${lib.return_to()}
 		<div class="civ-col">
 			<h2 class="civ-col"><i class="icon-book"></i> Other Resources</h2>
 			<div class="civ-col-inner">
-				${lib.list_resources("There are no other resources.")}
+				${lib.list_resources("There are no other resources.", 10)}
 			</div> <!-- .civ-col-inner -->
 		</div> <!-- /.civ-col -->
 	</div> <!-- /.span8 -->

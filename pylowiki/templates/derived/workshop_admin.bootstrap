@@ -5,11 +5,9 @@
 
 <div class="container-fluid">
         <div class="well">
-  	${helpers.banner_name()}
-        <br />
-        ${lib_helpers.nav_thing("administrate")}
-        <br />
-        </div>
+            ${lib_helpers.displayWorkshopHeader('administrate')}
+        </div><!-- well -->
+
         <h2 class="civ-col">Administrate Workshop</h2>
         <br /><br />
         <div class="tabbable">

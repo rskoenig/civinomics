@@ -1,5 +1,5 @@
 <%!
-    from pylowiki.lib.db.flag import checkFlagged
+    from pylowiki.lib.db.flag import checkFlagged, getFlags
     from pylowiki.lib.db.event import getParentEvents
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.comment import getPureFlaggedDiscussionComments, getComment, getDisabledComments, getDeletedComments
@@ -223,9 +223,9 @@
 				      ${com['numFlags']} flags:
 				  % endif
 			      % if len(com['data']) > 20:
-					  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+					  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 				  % else:
-					  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data']}</a>
+					  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 			      % endif
 	             <br />
           	 % endfor
@@ -243,9 +243,9 @@
     <tbody>
     % for s in c.s:
        % if checkFlagged(s) and s['disabled'] == '0' and s['deleted'] == '0': 
-		  ${s['numFlags']}
+		 <tr><td>${s['numFlags']}
           % if int(s['numFlags']) > 1:
-          	 <tr><td>Flags:
+          	 Flags:
           % else:
              Flag:
           % endif
@@ -271,9 +271,56 @@
 			      ${com['numFlags']} Flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
+		      % endif
+             <br />
+          % endfor
+          </td></tr>
+       % endif
+    % endfor
+    </tbody>
+    </table>
+    <br /><br />
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-flag"></i>Flagged Discussions and Comments:</td><tr>
+    </thead>
+    <tbody>
+    % for d in c.d:
+       % if d and checkFlagged(d): 
+          <tr><td>${len(getFlags(d))}
+          % if int(len(getFlags(d))) > 1:
+          	 Flags:
+          % else:
+             Flag:
+          % endif
+          Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a>
+          <a class="btn btn-mini" href="/adminDiscussion/${d['urlCode']}/${d['url']}/">Admin Discussion </a><br />
+          </td></tr>
+       % endif
+       <% cList = getPureFlaggedDiscussionComments(d.id) %>
+       % if cList:
+          <% cFlagCount = len(cList) %>
+          % if cFlagCount > 1:
+             <% cString = 'Comments' %> 
+          % else:
+             <% cString = 'Comment' %> 
+          % endif
+          <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>
+		  % for comID in cList:
+		      <% com = getComment(comID) %>
+		      &nbsp&nbsp&nbsp&nbsp&nbsp
+		      % if int(com['numFlags']) is 1:
+			      ${com['numFlags']} Flag:
+			  % else:
+			      ${com['numFlags']} Flags:
+			  % endif
+		      % if len(com['data']) > 20:
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
+			  % else:
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
              <br />
           % endfor
@@ -329,9 +376,9 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor
@@ -384,9 +431,65 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
+		      % endif
+	          </br>
+			% endfor
+                  </td></tr>
+		% endif
+	% endfor
+        </tbody>
+        </table>
+    <br /><br />
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-ban-circle"></i>Disabled Discussions and Comments:</th></tr>
+    </thead>
+    <tbody>
+    % if c.disabledDisc:
+       % for d in c.disabledDisc:
+              <tr><td>
+	      % if checkFlagged(d): 
+			  ${len(getFlags(d))}
+	          % if len(getFlags(d)) > 1:
+	          	 Flags:
+	          % else:
+	             Flag:
+	          % endif
+          % endif
+         Discussion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a>
+         <a class="btn btn-mini" href="/adminDiscussion/${d['urlCode']}/${d['url']}/">Admin Discussion </a><br />
+         </td></tr>
+       % endfor
+    % endif
+    % for d in c.d:
+    	<% disabledComments = getDisabledComments(d.id) %>
+    	% if disabledComments:
+          <% cFlagCount = len(disabledComments) %>
+          % if cFlagCount > 1:
+             <% cString = 'Comments' %> 
+          % else:
+             <% cString = 'Comment' %> 
+          % endif
+          <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>    	    
+	    	% for comID in disabledComments:
+	    	  <% com = getComment(comID) %>
+		      &nbsp&nbsp&nbsp&nbsp&nbsp
+	    	  % if checkFlagged(com):
+			      % if int(com['numFlags']) is 1:
+				      ${com['numFlags']} flag:
+				  % else:
+				      ${com['numFlags']} flags:
+				  % endif
+			  % else:
+			  	  0 flags:
+			  % endif
+		      % if len(com['data']) > 20:
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
+			  % else:
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor
@@ -443,9 +546,9 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor
@@ -498,9 +601,65 @@
 			  	  0 flags:
 			  % endif
 		      % if len(com['data']) > 20:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data'][:20]}...</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
 			  % else:
-				  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}/modComment/${comID}">${com['data']}</a>
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
+		      % endif
+	          </br>
+			% endfor
+                        </td></tr>
+		% endif
+	% endfor
+        </tbody>
+        </table>
+    <br /><br />
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-trash"></i>Deleted Discussions and Comments</th></tr>
+    </thead>
+    <tbody>
+    % if c.deletedDisc:
+       % for d in c.deletedDisc:
+              <tr><td>
+	      % if checkFlagged(d): 
+			  ${len(getFlags(d))}
+	          % if len(getFlags(d)) > 1:
+	          	 Flags:
+	          % else:
+	             Flag:
+	          % endif
+          % endif
+         Discussion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a>
+         <a class="btn btn-mini" href="/adminDiscussion/${d['urlCode']}/${d['url']}/">Admin Discussion </a><br />
+         </td></tr>
+       % endfor
+    % endif
+    % for d in c.d:
+    	<% deletedComments = getDeletedComments(d.id) %>
+    	% if deletedComments:
+          <% cFlagCount = len(deletedComments) %>
+          % if cFlagCount > 1:
+             <% cString = 'Comments' %> 
+          % else:
+             <% cString = 'Comment' %> 
+          % endif
+          <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>    	    
+	    	% for comID in deletedComments:
+	    	  <% com = getComment(comID) %>
+		      &nbsp&nbsp&nbsp&nbsp&nbsp
+	    	  % if checkFlagged(com):
+			      % if int(com['numFlags']) is 1:
+				      ${com['numFlags']} flag:
+				  % else:
+				      ${com['numFlags']} flags:
+				  % endif
+			  % else:
+			  	  0 flags:
+			  % endif
+		      % if len(com['data']) > 20:
+				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
+			  % else:
+				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
 	          </br>
 			% endfor

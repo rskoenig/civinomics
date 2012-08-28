@@ -3,27 +3,28 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/discussion_helpers/Add_Edit.mako" />
 
-<div class="row-fluid">
-    <div class="span12">
-        ${lib.nav_thing("discussion")}
-    </div>
-</div>
-<div class="span3 offset8">
-    ${lib.fields_alert()}
-</div>
-<div class="row-fluid">    
-    ## Left column
-    <div class="span7">
-        <div class="civ-col">
-            % if c.discussion:
-                ${helpers.edit()}
-            % else:
-                ${helpers.add()}
-            % endif
-            </br>
-        </div> <!-- /.civ-col -->
-    </div>
-</div> <!-- /.row-fluid -->
+<div class="container-fluid">
+    <div class="well">
+        ${lib.displayWorkshopHeader('discussion')}
+    </div><!-- well -->
+    <div class="row-fluid">    
+        <div class="span8">
+            ${lib.fields_alert()}
+            <div class="civ-col">
+                % if c.discussion:
+                    ${helpers.edit()}
+                % else:
+                    ${helpers.add()}
+                % endif
+                </br>
+            </div> <!-- civ-col -->
+        </div><!-- span8 -->
+        <div class="span4">
+            <h2 class="civ-col">Other Discussion Topics</h2>
+        </div><!-- span4 -->
+
+    </div><!-- row-fluid -->
+</div> <!-- container-fluid -->
 
 <%def name = 'extraStyles()'>
 

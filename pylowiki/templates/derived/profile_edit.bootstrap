@@ -3,10 +3,14 @@
 <%namespace file="/lib/mako_lib.mako" name="lib" />
 <%namespace name="helpers" file="/derived/profile_edit/helpers.mako" />
 
+<div class="container-fluid">
+   <div class="well">
+       <h1><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a></h1>
+   </div><!-- well -->
+<h2 class="civ-col">Edit Profile Information</h2>
 <div class="row-fluid">
 	<div class="span3">
 		<div class="civ-col">
-			<h2 class="civ-col">Account Setup</h2>
 			<div class="civ-col-inner">
 				${lib.displayProfilePicture()}
 			</div> <!-- /.civ-col-inner -->
@@ -20,6 +24,7 @@
 		</div> <!-- /.civ-col -->
 	</div> <!-- /.span9 -->
 </div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
 
 <%def name="extraHTML()">
 

@@ -14,7 +14,7 @@ from pylowiki.lib.db.revision import get_revision, Revision
 from pylowiki.lib.db.page import Page, getPageByID, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
+from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags, clearFlags
 from pylowiki.lib.db.revision import Revision
 
 from pylowiki.lib.base import BaseController, render
@@ -65,6 +65,7 @@ class SuggestionController(BaseController):
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.isScoped = isScoped(c.authuser, c.w)
             
             c.rating = False
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
@@ -76,7 +77,11 @@ class SuggestionController(BaseController):
                 sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
                 if c.s.id in sugRateDict.keys():
                     c.rating = getRatingByID(sugRateDict[c.s.id])
-                    
+        else:
+            c.isAdmin = False
+            c.isFacilitator = False
+            c.isScoped = False
+            
         return render('/derived/suggestion.bootstrap')
 
     @h.login_required
@@ -249,6 +254,50 @@ class SuggestionController(BaseController):
         return render('/derived/suggestion_admin.bootstrap')
 
     """ Takes in edits to the suggestion, saves new revision to the database. """
+
+
+    @h.login_required
+    def clearSuggestionFlagsHandler(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.s = getSuggestion(code, urlify(url))
+        c.author = getUserByID(c.s.owner)
+        c.w = getWorkshop(c.s['workshopCode'], c.s['workshopURL'])
+        clearError = 0
+        clearMessage = ""
+
+        if 'clearSuggestionFlagsReason' in request.params:
+            clearReason = request.params['clearSuggestionFlagsReason']
+            if clearReason != '':
+                clearFlags(c.s)
+                clearTitle = "Flags cleared"
+                e = Event(clearTitle, clearReason, c.s, c.authuser)
+            else:
+                clearError = 1
+                clearMessage = "Please include a reason for your action"
+        else:
+            clearError = 1
+            clearMessage = "Please include a reason for your action"
+
+        if clearError:
+            alert = {'type':'error'}
+            alert['title'] = "Flags not cleared"
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+        else:
+            clearMessage = "Flags cleared from this suggestion"
+            alert = {'type':'success'}
+            alert['title'] = 'Flags cleared!'
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+
+        returnURL = "/modSuggestion/" + c.s['urlCode'] + "/" + c.s['url']
+        return redirect(returnURL)
+
+        
     @h.login_required
     def modSuggestionHandler(self):
 

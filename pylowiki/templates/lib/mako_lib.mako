@@ -4,7 +4,7 @@
     log = logging.getLogger(__name__)
     from pylowiki.lib.db.flag import getFlags
     from pylowiki.lib.db.discussion import getDiscussionByID
-    from pylowiki.lib.db.user import isAdmin
+    from pylowiki.lib.db.user import isAdmin, getUserByID
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.resource import getResourcesByParentID
 %>
@@ -86,15 +86,15 @@
 %>
 
 <%def name="add_a(thing)">
-	% if c.isScoped:
+	% if c.isScoped or c.isFacilitator or c.isAdmin:
             %if thing == 'resource' and (c.w['allowResources'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'sresource' and (c.s['allowComments'] == '1' or c.isFacilitator or c.isAdmin):
-	        <span class="pull-right resource" style="font-size:xx-small; text-transform:lowercase;"><a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">new<i class="icon-white icon-book"></i></a></span>
+	        <a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'suggestion' and (c.w['allowSuggestions'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-pencil"></i></a>
-            %elif thing == 'feedback':
-	        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/feedback" title="Click to add feedback about this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-volume-up"></i></a>
+            %elif thing == 'discussion':
+	        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-folder-open"></i></a>
             %endif
 	% endif
 </%def>
@@ -114,14 +114,20 @@
     % endif
 </%def>
 
-<%def name="list_resources(errorMsg)">
+<%def name="list_resources(errorMsg, numDisplay = 10)">
 	% if len(c.resources) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
+                % if numDisplay == 0:
+                    <% rList = c.paginator %>
+                % else:
+                    <% rList = c.resources %>
+                % endif
 		<div class="civ-col-list">
                 <table>
                 <tbody>
-		% for resource in c.resources:
+                <% counter = 0 %>
+		% for resource in rList:
 			<% author = getUserByID(resource.owner) %>
                         <% flags = getFlags(resource) %>
                         % if flags:
@@ -158,19 +164,25 @@
                             <td>
                                  <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                                  <span class="badge badge-info" title="Resource comments"><i class="icon-white icon-comment"></i>${numComments}</span>
-                                 <span class="badge badge-important"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
+                                 <span class="badge badge-inverse"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
                              </td>
                              </tr>
                              <tr>
                              <td colspan=2>
-                                 <i class="icon-time"></i> <span class="old">${timeSince(resource.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
-           
+                                 <i class="icon-time"></i> Added <span class="old">${timeSince(resource.date)}</span> ago 
+                            % if 'user' in session and c.isScoped:
+                                | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
+                            % endif
                              </td>
                              </tr>
                              <tr>
                              <td colspan=2><hr></td>
                              </tr>
 			% endif
+                    <% counter += 1 %>
+                    % if counter == numDisplay:
+                        <% break %>
+                    % endif
 		% endfor
                 </tbody>
                 </table>
@@ -178,15 +190,32 @@
 	% endif
 </%def>
 
-<%def name="list_suggestions(errorMsg, doSlider = False)">
-	% if len(c.suggestions) == 0:
+<%def name="totalResources()">
+        % if c.resources:
+           <% total = len(c.resources) %>
+        % else:
+           <% total = 0 %>
+        % endif
+        <br />
+        <p class="total">
+                ${total}<br>
+                <span>Resources</span><br />
+                % if len(c.resources) > 15:
+                    <span>Display Page ${ c.paginator.pager('~3~')}</span><br />
+                % endif
+                <span><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">Back to Workshop</a></span>
+        </p>
+</%def>
+
+<%def name="list_suggestions(sList, errorMsg, numDisplay, doSlider = False)">
+	% if len(sList) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
             <div class="civ-col-list">
             <% counter = 1 %>
             <table>
             <tbody>
-            % for suggestion in c.suggestions:
+            % for suggestion in sList:
                 <% author = getUserByID(suggestion.owner) %>
                 <% flags = getFlags(suggestion) %>
                 <% resources = getResourcesByParentID(suggestion.id) %>
@@ -220,7 +249,7 @@
                     <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                     <span class="badge badge-info" title="Suggestion information resources"><i class="icon-white icon-book"></i>${len(resources)}</span>
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
-                    <span class="badge badge-important" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
+                    <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
                 </td>
                 % if 'user' in session and doSlider:
                     <td>
@@ -240,26 +269,56 @@
                 </tr>
                 <tr>
                 <td colspan=3>
-                    <i class="icon-time"></i> <span class="old">${timeSince(suggestion.date)}</span> ago | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
+                    <i class="icon-time"></i> Added <span class="old">${timeSince(suggestion.date)}</span> ago 
+                    % if 'user' in session and c.isScoped:
+                        | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
+                    % endif
                 </td>
                 </tr> 
                 <tr>
                 <td colspan=3><hr></td>
                 </tr>
                 <% counter += 1 %>
+                % if counter == numDisplay:
+                    <% break %>
+                % endif 
+            % endfor
+
+            </tbody>
+            </table>
+            % if c.paginator and (len(c.paginator) != len(c.suggestions)):
+                <% state = True %>
+                % for p in c.paginator:
+                    <% state = not state %>
                 % endfor
-                </tbody>
-                </table>
-                </div>
+                <p>Total Suggestions: ${c.count} | View ${ c.paginator.pager('~3~') }</p>
+            % endif
+            </div>
 % endif
 </%def>
 
+<%def name="totalSuggestions()">
+        % if c.suggestions:
+           <% total = len(c.suggestions) %>
+        % else:
+           <% total = 0 %>
+        % endif
+        <br />
+        <p class="total">
+                ${total}<br>
+                <span>Suggestions</span><br />
+                % if len(c.suggestions) > 15:
+                    <span>Display Page ${ c.paginator.pager('~3~')}</span><br />
+                % endif
+                <span><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">Back to Workshop</a></span>
+        </p>
+</%def>
 
 <%def name="facilitator()">
 	% if len(c.facilitators) == 1:
-		Your facilitator
+		facilitator
 	% else:
-		Your facilitators
+		facilitators
 	% endif
 </%def>
 
@@ -310,7 +369,11 @@
 </%def>
 
 <%def name="nav_thing(page)">
-	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("feedback", "feedback"), ("stats", "stats"), ("discussion", "discussion")])  %>
+    % if 'user' in session:
+	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])  %>
+    % else:
+	<% pages = OrderedDict([("home",""), ("background", "background"), ("discussion", "discussion")])  %>
+    % endif
 
 	<ul class="unstyled nav-thing">
 	% for li in pages.keys():
@@ -319,7 +382,7 @@
                         <% lclass="current" %>
                 % endif
                 % if li == 'configure' or li == 'administrate':
-                    % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+                    % if 'user' in session and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
 			<li class="${lclass}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a></li>
                     % endif
                 % else:
@@ -434,4 +497,54 @@
 	% endif
         </li>
         </ul>
+</%def>
+
+<%def name="displayWorkshopHeader(page)">
+   <table cellpadding=6>
+   <thead>
+   <tr>
+   <td>
+    % if c.w['mainImage_hash'] == 'supDawg':
+        <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" class="thumbnail" alt="${c.w['title']}" title="${c.w['title']}" style="width: 120px; height: 80px;"/></a>
+    % else:
+        <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_directoryNum']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" alt="${c.w['title']}" title="${c.w['title']}" class="thumbnail left" style = "width: 120px; height: 80px;"/></a>
+    % endif
+ </td>
+   <td>
+   <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+   <br />
+   ${nav_thing(page)}
+   <br/>
+   </td>
+   </tr>
+   </thead>
+   </table>
+
+</%def>
+
+<%def name="displayFeedbackSlider()">
+    % if "user" in session:
+        <div id="ratings0" class="rating pull-left">
+            <div id="overall_slider" class="ui-slider-container clearfix">
+                % if c.rating:
+                    <div id="${c.w['urlCode']}_${c.w['url']}" class="small_slider" data1="0_${c.w['urlCode']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
+                % else:
+                    <div id="${c.w['urlCode']}_${c.w['url']}" class="small_slider" data1="0_${c.w['urlCode']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
+                % endif
+            </div>
+        </div>
+    % endif
+</%def>
+
+<%def name="displayEvents()">
+    % if c.events:
+        <h2 class="civ-col">Change Log</h2>
+
+        <ul class="unstyled">
+        % for e in c.events:
+            <% eOwner = getUserByID(e.owner) %>
+            <li>${e['title']} : by <a href="/profile/${eOwner['urlCode']}/${eOwner['url']}">${eOwner['name']}</a> ${e.date} : ${e['data']}</li>
+        % endfor
+        </ul>
+    % endif
 </%def>

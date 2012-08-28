@@ -32,57 +32,16 @@
         </div><!-- span3 -->
 	<div class="span9">
 		<div class="civ-col">
-			${helpers.inviteCoFacilitate()}
-			${helpers.workshops()}
-			<h2 class="civ-col"><i class="icon-pencil"></i> Suggestions</h2>
+			<h2 class="civ-col"><i class="icon-user"></i> Followers</h2>
 			<div class="row-fluid">
 				<div class="span3">
 					<div class="civ-col-inner">
-						${helpers.totalSuggestions()}
+						${helpers.totalFollowers()}
 					</div> <!-- /.civ-col-inner -->
 				</div> <!-- /.span3 -->
 				<div class="span9">
 					<div class="civ-col-inner">
-						${helpers.latestSuggestions(3)}
-					</div> <!-- /.civ-col-inner -->
-				</div> <!-- /.span9 -->
-			</div> <!-- /.row-fluid -->
-			<h2 class="civ-col"><i class="icon-book"></i> Resources</h2>
-			<div class="row-fluid">
-				<div class="span3">
-					<div class="civ-col-inner">
-						${helpers.totalResources()}
-					</div> <!-- /.civ-col-inner -->
-				</div> <!-- /.span3 -->
-				<div class="span9">
-					<div class="civ-col-inner">
-						${helpers.latestResources(3)}
-					</div> <!-- /.civ-col-inner -->
-				</div> <!-- /.span9 -->
-			</div> <!-- /.row-fluid -->
-			<h2 class="civ-col"><i class="icon-folder-open"></i> Discussions</h2>
-			<div class="row-fluid">
-				<div class="span3">
-					<div class="civ-col-inner">
-						${helpers.totalDiscussions()}
-					</div> <!-- /.civ-col-inner -->
-				</div> <!-- /.span3 -->
-				<div class="span9">
-					<div class="civ-col-inner">
-						${helpers.latestDiscussions(3)}
-					</div> <!-- /.civ-col-inner -->
-				</div> <!-- /.span9 -->
-			</div> <!-- /.row-fluid -->
-			<h2 class="civ-col"><i class="icon-comment"></i> Comments</h2>
-			<div class="row-fluid">
-				<div class="span3">
-					<div class="civ-col-inner">
-						${helpers.totalComments()}
-					</div> <!-- /.civ-col-inner -->
-				</div> <!-- /.span3 -->
-				<div class="span9">
-					<div class="civ-col-inner">
-						${helpers.latestComments(3)}
+						${helpers.displayUserFollows(0)}
 					</div> <!-- /.civ-col-inner -->
 				</div> <!-- /.span9 -->
 			</div> <!-- /.row-fluid -->

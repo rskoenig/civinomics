@@ -55,6 +55,15 @@ def getStateInfo( state, country ):
     db.close()
     return rlist
 
+def getCountryInfo( country ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT * from Countries WHERE Country_name = %s""",(country))
+    rlist = c.fetchone()
+    c.close()
+    db.close()
+    return rlist
+
 def getGeoScope( postalCode, country ):
     db = getDB()
     c = db.cursor()

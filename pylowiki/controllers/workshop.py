@@ -5,6 +5,7 @@ from formencode import validators, htmlfill
 from formencode.compound import All
 from formencode.foreach import ForEach
 from ordereddict import OrderedDict
+import webhelpers.paginate as paginate
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -14,7 +15,7 @@ from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, g
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
-from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.discussion import getDiscussionByID, getActiveDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop
 from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
@@ -916,7 +917,8 @@ class WorkshopController(BaseController):
             if len(item['data']) <= 250:
                 item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
             else:
-                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
+                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
+                ##item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
         
             if 'user' in session:    
                 """ Grab the associated rating, if it exists """
@@ -951,6 +953,60 @@ class WorkshopController(BaseController):
 
 
         return render('/derived/workshop_home.bootstrap')
+
+    def displayAllSuggestions(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshop(code, url)
+        c.title = c.w['title']
+        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+
+        for item in c.suggestions:
+            """ Grab first 250 chars as a summary """
+            if len(item['data']) <= 250:
+                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
+            else:
+                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
+                ##item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
+        
+            if 'user' in session:    
+                """ Grab the associated rating, if it exists """
+                found = False
+                try:
+                    index = ratedSuggestionIDs.index(item.id)
+                    found = True
+                except:
+                    pass
+                if found:
+                    item.rating = getRatingByID(sugRateDict[item.id])
+                else:
+                    item.rating = False
+
+        c.count = len(c.suggestions)
+        c.paginator = paginate.Page(
+            c.suggestions, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        return render('/derived/workshop_suggestions.bootstrap')
+
+    def displayAllResources(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshop(code, url)
+        c.title = c.w['title']
+        c.resources = getActiveResourcesByWorkshopID(c.w.id)
+
+        c.count = len(c.resources)
+        c.paginator = paginate.Page(
+            c.resources, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        return render('/derived/workshop_resources.bootstrap')
 
     def inactiveSuggestions(self, id1, id2):
         code = id1
@@ -1001,6 +1057,7 @@ class WorkshopController(BaseController):
             HTMLlist = self.get_HTMLlist(reST)
             
             c.wikilist = zip(HTMLlist, reSTlist)
+            c.content = h.literal(h.reST2HTML(r['data']))
         else:
             c.content = h.literal(h.reST2HTML(r['data']))
         
@@ -1102,6 +1159,9 @@ class WorkshopController(BaseController):
         c.r = getActiveResourcesByWorkshopID(c.w.id)
         c.disabledRes = getDisabledResourcesByWorkshopID(c.w.id)
         c.deletedRes = getDeletedResourcesByWorkshopID(c.w.id)
+        c.d = getActiveDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
+        c.disabledDisc = getDisabledDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
+        c.deletedDisc = getDeletedDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
         

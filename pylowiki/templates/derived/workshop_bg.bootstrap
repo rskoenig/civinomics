@@ -5,21 +5,16 @@
 <%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
 
 ${lib.return_to()}
-<div class="row-fluid">
-	<div class="span12">
-		<div class="civ-col-inner">
-			${lib.slideshow(1)}
-		</div>
-		<div class="civ-col-inner">
-			${lib.nav_thing("background")}
-		</div>
-	</div>
-</div>
+
+<div class="container-fluid">
+    <div class="well">
+        ${lib.displayWorkshopHeader('background')}
+    </div>  
 
 <div class="row-fluid">
 	<div class="span8">
 		<div class="civ-col">
-			<h2 class="civ-col">Summary</h2>
+			<h2 class="civ-col">Background Information</h2>
 			<div class="civ-col-inner">
 				${helpers.summary()}
 			</div>
@@ -49,6 +44,7 @@ ${lib.return_to()}
 		</div>
 	</div>
 </div>
+</div><!-- container-fluid -->
 
 <%def name="extraHTML()">
 

@@ -69,6 +69,12 @@ def make_map():
     map.connect('/workshops/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
+    # suggestions
+    map.connect('/workshop/{id1}/{id2}/suggestions', controller = 'workshop', action = 'displayAllSuggestions', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/suggestions/', controller = 'workshop', action = 'displayAllSuggestions', id1 = '{id1}', id2 = '{id2}')
+    # resources
+    map.connect('/workshop/{id1}/{id2}/resources', controller = 'workshop', action = 'displayAllResources', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/resources/', controller = 'workshop', action = 'displayAllResources', id1 = '{id1}', id2 = '{id2}')
 
     # Workshop follow/unfollow
     map.connect('/workshop/{id1}/{id2}/follow', controller = 'workshop', action = 'followHandler', id1 = '{id1}', id2 = '{id2}')
@@ -141,6 +147,10 @@ def make_map():
     # Admin discussion Handler
     map.connect('/adminDiscussionHandler/', controller = 'discussion', action = 'adminDiscussionHandler', id1 = '{id1}', id2 = '{id2}')    
     map.connect('/adminDiscussionHandler', controller = 'discussion', action = 'adminDiscussionHandler', id1 = '{id1}', id2 = '{id2}')    
+    # flag discussion
+    map.connect('/flagDiscussion/{id1}/{id2}', controller = 'discussion', action = 'flagDiscussion', id1 = '{id1}', id2 = '{id2}')
+    # clear discussion flags 
+    map.connect('/clearDiscussionFlagsHandler/{id1}/{id2}', controller = 'discussion', action = 'clearDiscussionFlagsHandler', id1 = '{id1}', id2 = '{id2}')
 
     
     # Workshop Discussion Admin/Edit:
@@ -213,6 +223,8 @@ def make_map():
     # Resource modding
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/clearResourceFlagsHandler/{id1}/{id2}', controller = 'resource', action = 'clearResourceFlagsHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/clearResourceFlagsHandler/{id1}/{id2}/', controller = 'resource', action = 'clearResourceFlagsHandler', id1 = '{id1}', id2 = '{id2}')
     
     map.connect('/modResourceHandler', controller = 'resource', action = 'modResourceHandler')
     map.connect('/modResourceHandler/', controller = 'resource', action = 'modResourceHandler')
@@ -241,6 +253,8 @@ def make_map():
     # Suggestion modding
     map.connect('/modSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/modSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'modSuggestion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/clearSuggestionFlagsHandler/{id1}/{id2}', controller = 'suggestion', action = 'clearSuggestionFlagsHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/clearSuggestionFlagsHandler/{id1}/{id2}/', controller = 'suggestion', action = 'clearSuggestionFlagsHandler', id1 = '{id1}', id2 = '{id2}')
     
     map.connect('/modSuggestionHandler', controller = 'suggestion', action = 'modSuggestionHandler')
     map.connect('/modSuggestionHandler/', controller = 'suggestion', action = 'modSuggestionHandler')
@@ -267,6 +281,7 @@ def make_map():
     map.connect('/flagComment/{id1}', controller = 'comment', action = 'flagComment', id1 = '{id1}')
 
     # Comment modding
+    map.connect('/adminComment/{id1}', controller = 'comment', action = 'adminComment', id1 = '{id1}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
 
@@ -279,8 +294,13 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/feedback/modComment/{id3}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
     map.connect('/workshop/{id1}/{id2}/feedback/modComment/{id3}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
 
-    map.connect('/modCommentHandler', controller = 'comment', action = 'modCommentHandler')
-    map.connect('/modCommentHandler/', controller = 'comment', action = 'modCommentHandler')
+    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'discussion')
+    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}/modComment/{id5}/', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'discussion')
+
+    map.connect('/modCommentHandler/{id1}', controller = 'comment', action = 'modCommentHandler', id1 = '{id1}')
+    map.connect('/modCommentHandler/{id1}/', controller = 'comment', action = 'modCommentHandler', id1 = '{id1}')
+    map.connect('/clearCommentFlagsHandler/{id1}', controller = 'comment', action = 'clearCommentFlagsHandler', id1 = '{id1}')
+    map.connect('/clearCommentFlagsHandler/{id1}/', controller = 'comment', action = 'clearCommentFlagsHandler', id1 = '{id1}')
 
     # Ratings
     map.connect('/rateSuggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
@@ -294,6 +314,7 @@ def make_map():
     map.connect('/geo/city/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCityInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/county/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCountyInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/state/{id1}/{id2}', controller = 'geo', action = 'showStateInfo', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/geo/country/{id1}', controller = 'geo', action = 'showCountryInfo', id1 = '{id1}')
 
     # Temporary
     map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
@@ -374,6 +395,18 @@ def make_map():
     # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/suggestions', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/suggestions/', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/resources', controller = 'profile', action = 'showUserResources', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/resources/', controller = 'profile', action = 'showUserResources', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/discussions', controller = 'profile', action = 'showUserDiscussions', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/discussions/', controller = 'profile', action = 'showUserDiscussions', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/comments', controller = 'profile', action = 'showUserComments', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/comments/', controller = 'profile', action = 'showUserComments', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/followers', controller = 'profile', action = 'showUserFollowers', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/followers/', controller = 'profile', action = 'showUserFollowers', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/following', controller = 'profile', action = 'showUserFollows', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/following/', controller = 'profile', action = 'showUserFollows', id1 = '{id1}', id2 = '{id2}')
 
     # User activation
     map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation
@@ -408,6 +441,8 @@ def make_map():
     # Action Lists #
     ################
     
+    map.connect('/help', controller = 'actionlist', action='help')
+    map.connect('/help/', controller = 'actionlist', action='help')
     map.connect('/surveys', controller = 'actionlist', action='index', id='surveys')
     map.connect('/surveys/', controller = 'actionlist', action='index', id='surveys')
 

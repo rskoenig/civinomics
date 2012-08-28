@@ -13,10 +13,8 @@
 <%def name='draw_avatar()'>
 	${lib.displayProfilePicture()}
 	<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
-		<strong>${c.authuser['name']}</strong>
 	</a>
 	<br>
-	<a href="/profile/edit">Edit my profile</a>
 </%def>
 
 <%def name='list_public_spheres()'>
@@ -24,16 +22,16 @@
         <table>
         <tbody>
         <tr>
-        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" alt="${c.geoInfo[0]['cityTitle']}" class="thumbnail" style="max-width: 70px;"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">${c.geoInfo[0]['cityTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['cityURL']}"><img src="${c.geoInfo[0]['cityFlagThumb']}" alt="${c.geoInfo[0]['cityTitle']}" class="thumbnail" style="max-width: 70px;"></a></td><td><a href="${c.geoInfo[0]['cityURL']}">City of ${c.geoInfo[0]['cityTitle']}</a></td>
         </tr>
         <tr>
-        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" alt="${c.geoInfo[0]['countyTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['countyURL']}">${c.geoInfo[0]['countyTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['countyURL']}"><img src="${c.geoInfo[0]['countyFlagThumb']}" alt="${c.geoInfo[0]['countyTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['countyURL']}">County of ${c.geoInfo[0]['countyTitle']}</a></td>
         </tr>
         <tr>
-        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" alt="${c.geoInfo[0]['stateTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['stateURL']}">${c.geoInfo[0]['stateTitle']}</a></td>
+        <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" alt="${c.geoInfo[0]['stateTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['stateURL']}">State of ${c.geoInfo[0]['stateTitle']}</a></td>
         </tr>
         <tr>
-        <td><img src="${c.geoInfo[0]['countryFlagThumb']}" alt="${c.geoInfo[0]['countryTitle']}" class="thumbnail" style="max-width: 70px"></td><td>${c.geoInfo[0]['countryTitle']}</td>
+        <td><img src="${c.geoInfo[0]['countryFlagThumb']}" alt="${c.geoInfo[0]['countryTitle']}" class="thumbnail" style="max-width: 70px"></td><td><a href="${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}</a></td>
         </tr>
         </tbody>
         </table>
@@ -81,6 +79,7 @@
             </select>
             <button class="btn" type="submit">Search</button>
         </form>
+        <!-- CCN
         <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
             Workshops in my <select name="scopeLevel">
             <option value="09">City</option>
@@ -90,6 +89,7 @@
             </select>
             <button class="btn" type="submit">Search</button>
         </form>
+        -->
     % endif            
 </%def>
 
@@ -146,6 +146,11 @@
                            % elif mObj.objType == 'suggestion':
                                <% iType = "pencil" %>
                                <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                               <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
+                               <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+                           % elif mObj.objType == 'discussion':
+                               <% iType = "folder-open" %>
+                               <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
                                <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
                                <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
                            %else:

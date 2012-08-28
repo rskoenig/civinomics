@@ -3,7 +3,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from string import capwords
 from pylowiki.lib.utils import urlify
-from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getGeoScope, getGeoTitles, getWorkshopScopes
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
 from pylowiki.lib.db.workshop import getWorkshopByID
 
 from pylowiki.lib.base import BaseController, render
@@ -34,6 +34,9 @@ class GeoController(BaseController):
         c.state = capwords(c.geoInfo['StateFullName'])
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
         c.stateLink = '/geo/state/' + c.country + '/' + urlify(c.geoInfo['StateFullName'])
+        c.countryLink = '/geo/country/' + urlify(c.country)
+        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
+        c.country = capwords(c.country)
         c.population = c.geoInfo['Population']
         c.medianAge = c.geoInfo['MedianAge']
         c.numberHouseholds = c.geoInfo['HouseholdsPerZipCode']
@@ -85,6 +88,9 @@ class GeoController(BaseController):
         c.state = capwords(c.geoInfo['StateFullName'])
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
         c.stateLink = '/geo/state/' + c.country + '/' + c.geoInfo['StateFullName']
+        c.countryLink = '/geo/country/' + urlify(c.country)
+        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
+        c.country = capwords(c.country)
         c.population = c.geoInfo['Population']
         c.medianAge = c.geoInfo['Population_Median']
         c.numberHouseholds = c.geoInfo['Total_Households']
@@ -132,6 +138,9 @@ class GeoController(BaseController):
         c.countyFlag = '/images/flags/country/united-states/county_thumb.png'
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
         c.stateLink = '/geo/state/' + c.country + '/' + c.geoInfo['StateFullName']
+        c.countryLink = '/geo/country/' + urlify(c.country)
+        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
+        c.country = capwords(c.country)
         c.state = capwords(c.geoInfo['StateFullName'])
         c.population = c.geoInfo['Population']
         c.medianAge = c.geoInfo['Population_Median']
@@ -177,6 +186,9 @@ class GeoController(BaseController):
 
         c.geoInfo = getStateInfo(c.state, c.country)
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
+        c.countryLink = '/geo/country/' + urlify(c.country)
+        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
+        c.country = capwords(c.country)
         c.state = capwords(c.geoInfo['StateFullName'])
         c.population = c.geoInfo['Population']
         c.medianAge = c.geoInfo['Population_Median']
@@ -184,6 +196,54 @@ class GeoController(BaseController):
         c.personsHousehold = c.geoInfo['Average_Household_Size']
         scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + 'LaLaLa||LaLaLa|00000'
         scopeLevel = "05"
+        wscopes = getWorkshopScopes(scope, scopeLevel)
+        c.list = []
+        for s in wscopes:
+           wID = s['workshopID']
+           w = getWorkshopByID(wID)
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
+               if w not in c.list:
+                      doit = 1
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
+                             doit = 0
+
+                      if doit:
+                          offset = 10 - int(scopeLevel)
+                          offset = offset * -1
+                          wTest = s['scope'].split('|')
+                          sTest = scope.split('|')
+                          ##log.info('offset is %s'%offset)
+                          if wTest[:offset] == sTest[:offset]:
+                              c.list.append(w)
+
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        return render('/derived/list_geo.bootstrap')
+
+    def showCountryInfo(self, id1):
+        c.country = id1
+        
+        c.geoType = 'country'
+        log.info('c.country is %s'%c.country)
+
+        c.geoInfo = getCountryInfo(c.country)
+        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
+        c.country = capwords(c.geoInfo['Country_title'])
+        c.heading = "List Workshops: Country of " + capwords(c.country)
+        c.population = c.geoInfo['Country_population']
+        c.medianAge = c.geoInfo['Country_median_age']
+        c.numberHouseholds = c.geoInfo['Country_number_households']
+        c.personsHousehold = c.geoInfo['Country_persons_per_household']
+        c.countryLink = '/geo/country/' + urlify(c.country)
+        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
+        c.country = capwords(c.country)
+        scope = '||' + urlify(c.country) + '||LaLa||LaLaLa||LaLaLa|00000'
+        scopeLevel = "03"
         wscopes = getWorkshopScopes(scope, scopeLevel)
         c.list = []
         for s in wscopes:
