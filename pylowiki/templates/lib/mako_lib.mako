@@ -138,9 +138,8 @@
                     <% rList = c.resources %>
                 % endif
 		<div class="civ-col-list">
-                <table>
-                <tbody>
                 <% counter = 0 %>
+                <ul class="unstyled civ-col-list">
 		% for resource in rList:
 			<% author = getUserByID(resource.owner) %>
                         <% flags = getFlags(resource) %>
@@ -155,51 +154,45 @@
                             <% numComments = disc['numComments'] %>
                         % endif
 			% if resource['type'] == "post":
-                            <tr>
-                            <td colspan=2>
-                               <h3>
-                               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
-                               </h3>
-                               % if len(resource['comment']) > 50:
-                                   ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
-                               % else:
-                                   ${resource['comment']}
-                               % endif
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>
+                        <li>
+                        <div class="row-fluid">
+                            <h3>
+                             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
+                             </h3>
+                             % if len(resource['comment']) > 50:
+                                 ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                              % else:
+                                 ${resource['comment']}
+                              % endif
+                        </div><!-- row-fluid -->
+                        <div class="row-fluid">
+                            <div class="span2">
                                 % if author['pictureHash'] == 'flash':
                                     <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
                                 % else:
                                     <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
                                 % endif
-                            </td>
-                            <td>
+                            </div><!-- span2 -->
+                            <div class="span10">
                                  <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                                  <span class="badge badge-info" title="Resource comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                                  <span class="badge badge-inverse"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
-                             </td>
-                             </tr>
-                             <tr>
-                             <td colspan=2>
+                                 % if 'user' in session and c.isScoped:
+                                     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
+                                 % endif
+                                 <br />
                                  <i class="icon-time"></i> Added <span class="old">${timeSince(resource.date)}</span> ago 
-                            % if 'user' in session and c.isScoped:
-                                | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
-                            % endif
-                             </td>
-                             </tr>
-                             <tr>
-                             <td colspan=2><hr></td>
-                             </tr>
+                                 <br /><br />
+                             </div><!-- span10 -->
+                        </div><!-- row-fluid -->
+                        </li>
 			% endif
                     <% counter += 1 %>
                     % if counter == numDisplay:
                         <% break %>
                     % endif
 		% endfor
-                </tbody>
-                </table>
+                </ul>
                 </div>
 	% endif
 </%def>
@@ -225,10 +218,16 @@
 	% if len(sList) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
+            % if doSlider == 0:
+                <% badgeSpan = "span9" %>
+                <% slideSpan = "span1" %>
+            % else:
+                <% badgeSpan = "span5" %>
+                <% slideSpan = "span5" %>
+            % endif
             <div class="civ-col-list">
             <% counter = 1 %>
-            <table>
-            <tbody>
+            <ul class="unstyled civ-col-list">
             % for suggestion in sList:
                 <% author = getUserByID(suggestion.owner) %>
                 <% flags = getFlags(suggestion) %>
@@ -243,30 +242,29 @@
                 % if disc:
                     <% numComments = disc['numComments'] %>
                 % endif
-                <tr>
-                <td colspan=3>
+                <li>
+                <div class="row-fluid">
                     <h3>
                     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
                     </h3>
                     ${suggestion['data'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">more</a>
-                </td>
-                </tr>
-                <tr>
-                <td>
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <div class="span2">
                     % if author['pictureHash'] == 'flash':
                         <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
                     % else:
                         <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
                     % endif
-                </td>
-                <td>
+                    </div><!-- span2 -->
+                    <div class="${badgeSpan}">
                     <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                     <span class="badge badge-info" title="Suggestion information resources"><i class="icon-white icon-book"></i>${len(resources)}</span>
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                     <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
-                </td>
+                    </div><!-- ${badgeSpan} -->
+                    <div class="${slideSpan}">
                 % if 'user' in session and doSlider:
-                    <td>
                         <div id="ratings${counter}" class="rating pull-left">
                             <div id="overall_slider" class="ui-slider-container clearfix">
                                 % if suggestion.rating:
@@ -276,30 +274,23 @@
                                 % endif
                              </div> <!-- /#overall_slider -->
                          </div> <!-- /#ratings${counter} -->
-                    </td>
-                % else:
-                    <td>&nbsp;</td>
                 % endif
-                </tr>
-                <tr>
-                <td colspan=3>
+                    </div><!-- ${slideSpan} -->
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
                     <i class="icon-time"></i> Added <span class="old">${timeSince(suggestion.date)}</span> ago 
                     % if 'user' in session and c.isScoped:
                         | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
                     % endif
-                </td>
-                </tr> 
-                <tr>
-                <td colspan=3><hr></td>
-                </tr>
+                    <br /><br />
+                </div><!-- row-fluid -->
+                </li>
                 <% counter += 1 %>
                 % if counter == numDisplay:
                     <% break %>
                 % endif 
             % endfor
-
-            </tbody>
-            </table>
+            </ul>
             % if c.paginator and (len(c.paginator) != len(c.suggestions)):
                 <% state = True %>
                 % for p in c.paginator:
