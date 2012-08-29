@@ -10,7 +10,7 @@
             <h2 class="civ-col">
             <i class="icon icon-user"></i> Member Profile
             </h2>
-            <div class="well">
+            <div class="well workshop_header">
                 <div class="row">
 	            <div class="span3">
                         ${helpers.displayProfilePicture()}

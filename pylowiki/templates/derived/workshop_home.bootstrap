@@ -12,7 +12,7 @@
                         ${lib.slideshow(1)}
                         ${lib.nav_thing("home")}
                     </div><!-- span7 -->
-                    <div class="span5">
+                    <div class="span5 well workshop_header">
                         ${helpers.at_a_glance()}
                     </div><!-- span5 -->
                 </div><!-- row -->

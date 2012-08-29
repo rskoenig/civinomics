@@ -5,7 +5,7 @@
 ${lib.return_to()}
 
 <div class="container-fluid">
-    <div class="well">
+    <div class="well workshop_header">
         ${lib.displayWorkshopHeader('discussion')}
     </div><!-- well -->
     ${lib.fields_alert()}
