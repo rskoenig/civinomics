@@ -48,9 +48,7 @@
 ## Passes info to the comment controller, edit function, with the comment id as the only argument
 <%def name="editComment(comment, counter)">
     <% thisID = counter + comment.id %>
-    ##${ h.form( url( controller = "comment", action ="edit", id = comment.id ), method="put" ) }
     <form action="/comment/edit/${comment.id}" method="post" class="form form-horizontal"><div style="display:none"><input name="_method" type="hidden" value="put" /></div>
-    ## style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"
         <table><tr><td>
         <div id = "section${thisID}" ondblclick="toggle('textareadiv${thisID}', 'edit${thisID}')">${comment['data']}</div>
         </td></tr></table>
@@ -73,8 +71,6 @@
                 <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
             </div>
         </div>
-        ${displayButtons(comment, counter)}
-    ##${h.end_form()}
     </form>
 </%def>
 
@@ -82,12 +78,12 @@
 <%def name="commentContent(comment, counter)">
     <div class="collapse in hide${comment.id}">
         % if "user" in session:
-            % if isAdmin(c.authuser.id):
+            % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
                 ${editComment(comment, counter)}
             % else:
                 ${h.literal(h.reST2HTML(comment['data']))}
-                ${displayButtons(comment, counter)}
             % endif
+            ${displayButtons(comment, counter)}
         % else:
             ${h.literal(h.reST2HTML(comment['data']))}
         % endif

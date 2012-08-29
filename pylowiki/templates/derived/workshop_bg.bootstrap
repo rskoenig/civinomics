@@ -29,8 +29,10 @@ ${lib.return_to()}
 	<div class="span4">
 		<div class="civ-col">
 			<h2 class="civ-col">
-				Resources
-				${lib.add_a('resource')}
+				<i class="icon-book"></i> Resources
+                                <span style="font-size:10px; letter-spacing:normal;" class="pull-right">
+				    ${lib.add_a_text('resource', '')}
+                                </span>
 			</h2>
 			<div class="civ-col-inner">
 				${lib.list_resources("There are no information resources for this workshop. Be the first to add one!")}

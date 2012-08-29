@@ -88,13 +88,27 @@
 <%def name="add_a(thing)">
 	% if c.isScoped or c.isFacilitator or c.isAdmin:
             %if thing == 'resource' and (c.w['allowResources'] == '1' or c.isFacilitator or c.isAdmin):
-	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
+	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" style="letter-spacing:normal;" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'sresource' and (c.s['allowComments'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'suggestion' and (c.w['allowSuggestions'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-pencil"></i></a>
             %elif thing == 'discussion':
 	        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-folder-open"></i></a>
+            %endif
+	% endif
+</%def>
+
+<%def name="add_a_text(thing, prefix)">
+	% if c.isScoped or c.isFacilitator or c.isAdmin:
+            %if thing == 'resource' and (c.w['allowResources'] == '1' or c.isFacilitator or c.isAdmin):
+	        ${prefix} <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop">Add Resource</a>
+            %elif thing == 'sresource' and (c.s['allowComments'] == '1' or c.isFacilitator or c.isAdmin):
+	        ${prefix} <a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion">Add Resource</a>
+            %elif thing == 'suggestion' and (c.w['allowSuggestions'] == '1' or c.isFacilitator or c.isAdmin):
+	        ${prefix} <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop">Add Suggestion</a>
+            %elif thing == 'discussion':
+	        ${prefix} <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop">Add Discussion Topic</a>
             %endif
 	% endif
 </%def>

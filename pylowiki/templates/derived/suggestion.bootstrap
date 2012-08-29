@@ -25,7 +25,11 @@ ${lib.return_to()}
                 % if c.s['adopted'] == '1':
                     <h2 class="civ-col"><i class="icon-heart"></i> Adopted Suggestion</h2>
                 % else:
-                    <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION</h2>
+                    <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION
+                        <span class="pull-right resource" style="font-size:10px; letter-spacing:normal;">
+                        ${lib.add_a_text("sresource", "")}
+                        </span>
+                    </h2>
                 % endif
                 <div class="civ-col-inner">
                     <div class="row-fluid">
@@ -52,9 +56,6 @@ ${lib.return_to()}
             <div class="civ-col">
                     <h2 class="civ-col">
                         <i class="icon-book"></i> Suggestion Resources
-                        <span class="pull-right resource" style="font-size:xx-small; text-transform:lowercase; letter-spacing:normal;">
-                        ${lib.add_a("sresource")}
-                        </span>
                         </h2>
                     ${lib.list_resources("There are no information resources for this suggestion. Be the first to add one!")}
                 <div class="civ-col-inner">
