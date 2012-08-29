@@ -1,15 +1,15 @@
 <%inherit file = "/base/template.bootstrap"/>
 
 <%namespace name="helpers" file="/lib/admin_helpers/resource.mako" />
+<%namespace name="resource_helpers" file="/derived/resource/helpers.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 
 <div class="containerfluid">
     <div class="row-fluid">
-        <div class="well">
-            <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/">${c.w['title']}</a></h1>
-            <br />
-            ${lib.nav_thing("")}
+        <div class="well workshop_header">
+            ${lib.displayWorkshopHeader('')}
+            ${resource_helpers.nav_thing()}
             <br />
         </div><!-- well -->
     </div><!-- row-fluid -->

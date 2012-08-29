@@ -491,17 +491,14 @@
 </%def>
 
 <%def name="displayProfilePicture()">
-        <ul class="thumbnails">
-        <li>
+        <br />
 	% if c.authuser['pictureHash'] == 'flash':
-		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}"></a>
+		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatars/flash.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}" style="display:block; margin-left:auto; margin-right:auto; vertical-align:middle;" class="thumbnail"></a>
 	% else:
-		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail">
-			<img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}">
+		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
+			<img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}" style="display:block; margin-left:auto; margin-right:auto; vertical-align:middle;" class="thumbnail">
 		</a>
 	% endif
-        </li>
-        </ul>
 </%def>
 
 <%def name="displayWorkshopHeader(page)">

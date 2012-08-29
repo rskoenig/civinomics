@@ -6,7 +6,7 @@
 <div class="row-fluid">
 	<div class="span3">
 		<div class="civ-col">
-			<div class="civ-col-inner">
+			<div class="civ-col-inner well profile_header">
 				${list_helpers.draw_avatar()}
 			</div> <!-- /.civ-col-inner -->
 		</div> <!-- /.civ-col -->
