@@ -8,6 +8,8 @@
     log = logging.getLogger(__name__)
 %>
 
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
     <%
@@ -190,11 +192,7 @@
      <% commentString = 'comments' %>
   % endif
 
-  ##% if type == 'resource':
-    ##${discussion['numComments']} ${commentString} | Last edited <span class="recent">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>
-  ##% else:
-    ##${discussion['numComments']} ${commentString} | Last edited <span class="recent">${timeSince(c.lastmoddate)}</span> ago by <a href = "/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>
-  ##% endif
+    ${lib.fields_alert()}
     <div class="civ-col-inner">
         <div class="row-fluid">
             <div class="span12">

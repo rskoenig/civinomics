@@ -213,18 +213,30 @@ class CommentController(BaseController):
     
     @h.login_required
     def addComment(self):
+        cError = 0
         try:
             request.params['submit']
             discussionID = request.params['discussionID']
             parentCommentID = request.params['parentID']
             comType = request.params['type']
             data = request.params['comment-textarea']
+            data = data.lstrip()
+            data = data.rstrip()
+            if data == '':
+                alert = {'type':'error'}
+                alert['title'] = 'Add Comment failed.'
+                alert['content'] = 'No comment text entered.'
+                session['alert'] = alert
+                session.save()
+                cError = 1
+            
             workshopCode = request.params['workshopCode']
             workshopURL = request.params['workshopURL']
             
             discussion = getDiscussionByID(discussionID)
             log.info('parent comment = %s' % parentCommentID)
-            comment = Comment(data, c.authuser, discussion, int(parentCommentID))
+            if cError == 0:
+                comment = Comment(data, c.authuser, discussion, int(parentCommentID))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             h.flash('Do not access a handler directly', 'error')

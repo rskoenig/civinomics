@@ -323,7 +323,7 @@
         <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" class="thumbnail" alt="Click to list workshops scoped within the State of ${c.geoInfo[0]['stateTitle']}" title="Click to list workshops scoped within the State of ${c.geoInfo[0]['stateTitle']}"/></a></td><td><a href="${c.geoInfo[0]['stateURL']}">State of ${c.geoInfo[0]['stateTitle']}</a></td>
         </tr>
         <tr>
-        <td><img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" class="thumbnail"/></td><td>United States</a></td>
+        <td><a href="${c.geoInfo[0]['countryURL']}"><img src="${c.geoInfo[0]['countryFlagThumb']}" width="60" class="thumbnail" alt="Click to list workshops scoped within the Country of ${c.geoInfo[0]['countryTitle']}" title="Click to list workshops scoped within the Country of ${c.geoInfo[0]['countryTitle']}"/></a></td><td><a href="${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}</a></td>
         </tr>
         <tr>
         <td><img src="/images/flags/earth_thumb.gif" width="60" class="thumbnail"/></td><td>Planet Earth</td>
@@ -377,7 +377,7 @@
 			${listWorkshops(c.followingWorkshops)}
 		</div> <!-- /.civ-col-inner -->
 	% endif
-        % if c.pendingFacilitators and c.authuser.id == c.user.id:
+        % if 'user' in session and c.pendingFacilitators and c.authuser.id == c.user.id:
             ${pendingFacilitateInvitations()}
         % endif
 </%def>
