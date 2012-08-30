@@ -59,34 +59,20 @@
         document.getElementById('searchGeoUsers').action = '/searchGeoUsers/' + scopeLevel;
     }
     </script>
-    <form action="/searchName/" method="post" id="searchWorkshops" onsubmit="setAction(); return true;">
-        <fieldset>
-        <div class="control-group">
-            <div class="controls">
-                <select class="span8" name="searchType" id="searchType"> named
-                    <option value="Workshops">Workshops named</option>
-                    <option value="Members">Members named</option>
-                </select>
-            </div>
-        </div>
-        <div class="control-group">
-            <div class="controls">
-                <div class="input-append">
-                    <input type="text" name="searchString" class="span8" id="searchString"><button class="btn" type="submit">Search</button>
-                </div>
-            </div>
-        </div>
-        </fieldset>
+    <form action="/searchName/" method="post" id="searchWorkshops" onsubmit="setAction(); return true;" class="form-search">
+        <select name="searchType" id="searchType" class="input-small" style="font-size:12px;">
+            <option value="Workshops">Workshops named</option>
+            <option value="Members">Members named</option>
+        </select> <input type="text" name="searchString" id="searchString" class="input-small search-query"> <button class="btn btn-primary btn-mini" type="submit">Search</button>
     </form>
     % if 'user' in session:
-        <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post" onsubmit="setScope(); return true;">
-            Members in my <select name="scopeLevel" id="scopeLevel">
+        <form id="searchGeoUsers" action="/searchGeoUsers/" method = "post" onsubmit="setScope(); return true;" class="form-search" style="font-size:12px;">
+            Members in my &nbsp;<select name="scopeLevel" id="scopeLevel" class="input-small" style="font-size:12px;">
             <option value="09">City</option>
             <option value="07">County</option>
             <option value="05">State</option>
             <option value="03">Country</option>
-            </select>
-            <button class="btn" type="submit">Search</button>
+            </select> &nbsp;<button class="btn btn-primary btn-mini" type="submit">Search</button>
         </form>
         <!-- CCN
         <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
