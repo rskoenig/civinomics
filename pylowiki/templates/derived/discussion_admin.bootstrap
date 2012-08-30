@@ -4,7 +4,7 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <div class="container-fluid">
-    <div class="well">
+    <div class="well workshop_header">
         <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>        
         <br />
         ${lib.nav_thing("discussion")}

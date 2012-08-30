@@ -5,10 +5,10 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="container-fluid">
+        <div class="container-fluid well workshop_header">
             <div class="span12">
-                <div class="row">
-                    <div class="span7 well" style="border:1px solid black;">
+                <div class="row-fluid">
+                    <div class="span7">
                         ${lib.slideshow(1)}
                         ${lib.nav_thing("home")}
                     </div><!-- span7 -->
@@ -26,7 +26,9 @@
                 <h2 class="civ-col">
                     <i class="icon-book"></i> Resources
                     % if len(c.resources) > 10:
-                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">Showing 10 of ${len(c.resources)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resources">View All</a></span>
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">10 of ${len(c.resources)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resources" title="Click to view all the resources for this workshop">View All</a> ${lib.add_a_text('resource', '|')}</span>
+                    % else:
+                    <span class="pull-right" style="font-size:10px; letter-spacing:normal;">${lib.add_a_text('resource', '')}</span>
                     % endif
                 </h2>
                 <div class="civ-col-inner">
@@ -39,7 +41,9 @@
                 <h2 class="civ-col">
                     <i class="icon-pencil"></i> Suggestions
                     % if len(c.suggestions) > 10:
-                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">Showing 10 of ${len(c.suggestions)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestions">View All</a></span>
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">10 of ${len(c.suggestions)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestions" title="Click to view all the suggestions for this workshop">View All</a> ${lib.add_a_text('suggestion', '|')}</span>
+                    % else:
+                    <span class="pull-right" style="font-size:10px; letter-spacing:normal;">${lib.add_a_text('suggestion', '')}</span>
                     % endif
                 </h2>
                 <div class="civ-col-inner">

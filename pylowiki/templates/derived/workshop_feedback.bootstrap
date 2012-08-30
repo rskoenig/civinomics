@@ -6,7 +6,7 @@
 
 ${lib.return_to()}
 <div class="container-fluid">
-<div class="well">
+<div class="well workshop_header">
    <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
    <br />
    ${lib.nav_thing('feedback')}

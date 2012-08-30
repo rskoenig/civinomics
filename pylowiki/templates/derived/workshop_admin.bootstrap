@@ -4,7 +4,7 @@
 <%namespace name="lib_helpers" file="/lib/mako_lib.mako" />
 
 <div class="container-fluid">
-        <div class="well">
+        <div class="well workshop_header">
             ${lib_helpers.displayWorkshopHeader('administrate')}
         </div><!-- well -->
 

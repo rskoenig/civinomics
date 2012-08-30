@@ -280,6 +280,9 @@ def make_map():
     # Comment flagging
     map.connect('/flagComment/{id1}', controller = 'comment', action = 'flagComment', id1 = '{id1}')
 
+    # Comment editing
+    map.connect('/comment/edit/{id1}', controller = 'comment', action = 'edit', id1 = '{id1}')
+
     # Comment modding
     map.connect('/adminComment/{id1}', controller = 'comment', action = 'adminComment', id1 = '{id1}')
     map.connect('/workshop/{id1}/{id2}/suggestion/{id3}/{id4}/modComment/{id5}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
@@ -457,8 +460,8 @@ def make_map():
     map.connect('/searchTags/{id1}/', controller='actionlist', action='searchTags', id='searchTags', id1 = '{id1}')
     map.connect('/searchName/{id1}/{id2}/', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchName/{id1}/{id2}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchGeoUsers', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
-    map.connect('/searchGeoUsers/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
+    map.connect('/searchGeoUsers/{id1}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
+    map.connect('/searchGeoUsers/{id1}/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
     map.connect('/searchGeoWorkshops', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
     map.connect('/searchGeoWorkshops/', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
     

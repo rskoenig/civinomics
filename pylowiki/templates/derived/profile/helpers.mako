@@ -26,34 +26,34 @@
 </%def>
 
 <%def name="listUser(user, wide)">
-        % if wide == 1:
-           <% pixels = 60 %>
-           <% maxlen = 40 %>
-        % else:
-           <% pixels = 30 %>
-           <% maxlen = 20 %>
-        % endif
-        <tr>
-        <td>
-           <ul class="thumbnails">
-           <li>
-	   % if user['pictureHash'] == 'flash':
-<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}"/></a>
-	   % else:
-<a href="/profile/${user['urlCode']}/${user['url']}" class="thumbnail"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}"/></a>
-	   % endif
+    % if wide == 1:
+        <% pixels = 60 %>
+        <% maxlen = 40 %>
+    % else:
+        <% pixels = 30 %>
+        <% maxlen = 20 %>
+    % endif
+    <li>
+    <div class="row-fluid">
+        <div class="span3">
+            <ul class="unstyled">
+            <li>
+                % if user['pictureHash'] == 'flash':
+                    <a href="/profile/${user['urlCode']}/${user['url']}"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}" class="thumbnail"/></a>
+	       % else:
+                <a href="/profile/${user['urlCode']}/${user['url']}"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}" class="thumbnail"/></a>
+	       % endif
            </li>
            </ul>
-        </td>
-        <td>
-           <% mList = getUserPosts(user) %>
-           % if mList:
+        </div><!-- span2 -->
+        <div class="span9">
+            <% mList = getUserPosts(user) %>
+            % if mList:
                <% mObj = mList[0] %>
            % else:
                <% mObj = False %>
            %endif 
-           <ul class="unstyled">
-           <li><a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a></li>
+           <a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a><br />
            % if mObj:
                % if mObj.objType == 'comment':
                    <% oLink = "/comment/" + mObj['urlCode'] %>
@@ -106,7 +106,7 @@
                %else:
                    <% wTitle = w['title'] %>
                %endif
-               <li><i class="icon-cog"></i><a href="${wLink}"> ${wTitle}</a></li>
+               <i class="icon-cog"></i><a href="${wLink}"> ${wTitle}</a><br />
                %if mObj.objType == 'comment':
                    %if len(ooTitle) > maxlen:
                        <% ooTitle = ooTitle[0:(maxlen - 4)] + '...' %>
@@ -116,7 +116,7 @@
                    %else:
                        <% oTitle = mObj['data'] %>
                    %endif
-                   <li><i class="icon-${ooiType}"></i><a href="${ooLink}"> ${ooTitle}</a></li>
+                   <i class="icon-${ooiType}"></i><a href="${ooLink}"> ${ooTitle}</a><br />
                % else:
                    %if len(mObj['title']) > maxlen:
                       <% oTitle = mObj['title'][0:(maxlen - 4)] + '...' %>
@@ -124,24 +124,22 @@
                       <% oTitle = mObj['title'] %>
                    %endif
                %endif
-               <li><i class="icon-${oiType}"></i><a href="${oLink}"> ${oTitle}</a></li>
-               <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
+               <i class="icon-${oiType}"></i><a href="${oLink}"> ${oTitle}</a><br />
+               <i class="icon-time"></i> <span class="recent">${timeSince(mObj.date)}</span> ago<br />
             % endif
-            </ul>
-        </td>
-        </tr>
+        </div><!-- span10 --> 
+    </div><!-- row-fluid -->
+    </li>
 </%def>
 
 <%def name="displayFollowingUsers(numDisplay)">
     % if numDisplay == 0:
         <% fNum = len(c.paginator) %>
-        <table class="table table-condensed">
-        <tbody>
+        <ul class="unstyled civ-col-list">
         % for user in c.paginator:
             ${listUser(user, 1)}
         % endfor
-        </tbody>
-        </table>
+        </ul>
         % if c.paginator and (len(c.paginator) != len(c.listFollowingUsers)):
             <% state = True %>
             % for p in c.paginator:
@@ -151,19 +149,15 @@
         % endif
     % else:
         <% fNum = len(c.followingUsers) %>
-        <h2 class="civ-col"><i class="icon-user"></i> Following ${fNum}</h2>
-        <table class="table table-condensed">
+        <h2 class="civ-col"><i class="icon-user"></i> Following ${fNum}
         % if numDisplay < fNum:
-            <thead>
-            <tr><td colspan=2>
-            <div class="pull-right">
-            <p><small>Showing ${numDisplay} of ${fNum} | <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/following">View All</a></strong></small></p>
+            <div class="pull-right section_header">
+            ${numDisplay} of ${fNum} | <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/following">View All</a></strong>
             </div>
-            </td></tr>
-            </thead>
         % endif
-        <tbody>
+        </h2>
         <% fCount = 1 %>
+        <ul class="unstyled civ-col-list">
         % for user in c.followingUsers:
             ${listUser(user, 0)}
             % if fCount == numDisplay:
@@ -171,21 +165,18 @@
             % endif
             <% fCount += 1 %>
         % endfor
-        </tbody>
-        </table>
+        </ul>
     % endif
 </%def>
 
 <%def name="displayUserFollows(numDisplay)">
     % if numDisplay == 0:
         <% fNum = len(c.paginator) %>
-        <table class="table table-condensed">
-        <tbody>
+        <ul class="unstyled civ-col-list">
         % for user in c.paginator:
             ${listUser(user, 1)}
         % endfor
-        </tbody>
-        </table>
+        </ul>
         % if c.paginator and (len(c.paginator) != len(c.listUserFollowers)):
             <% state = True %>
             % for p in c.paginator:
@@ -196,19 +187,15 @@
     % else:
         % if c.userFollowers:
             <% fNum = len(c.userFollowers) %>
-            <h2 class="civ-col"><i class="icon-user"></i> Followers ${fNum}</h2>
-            <table class="table table-condensed">
+            <h2 class="civ-col"><i class="icon-user"></i> Followers ${fNum}
             % if numDisplay < fNum:
-                <thead>
-                <tr><td colspan=2>
-                <div class="pull-right">
-                <p><small>Showing ${numDisplay} of ${fNum} | <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/followers">View All</a></strong></small></p>
+                <div class="pull-right section_header">
+                    ${numDisplay} of ${fNum} | <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/followers">View All</a></strong>
                 </div>
-                </td></tr>
-                </thead>
             % endif
-            <tbody>
+            </h2>
             <% fCount = 1 %>
+            <ul class="unstyled civ-col-list">
             % for user in c.userFollowers:
                 ${listUser(user, 0)}
                 % if fCount == numDisplay:
@@ -216,8 +203,7 @@
                 % endif
                 <% fCount += 1 %>
             % endfor
-            </tbody>
-            </table>
+            </ul>
             % if numDisplay < len(c.userFollowers):
                 <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/followers">View All Followers</a></strong>
             % endif
@@ -323,7 +309,7 @@
         <td><a href="${c.geoInfo[0]['stateURL']}"><img src="${c.geoInfo[0]['stateFlagThumb']}" width="60" class="thumbnail" alt="Click to list workshops scoped within the State of ${c.geoInfo[0]['stateTitle']}" title="Click to list workshops scoped within the State of ${c.geoInfo[0]['stateTitle']}"/></a></td><td><a href="${c.geoInfo[0]['stateURL']}">State of ${c.geoInfo[0]['stateTitle']}</a></td>
         </tr>
         <tr>
-        <td><img src="/images/flags/country/united-states/united-states_thumb.gif" width="60" class="thumbnail"/></td><td>United States</a></td>
+        <td><a href="${c.geoInfo[0]['countryURL']}"><img src="${c.geoInfo[0]['countryFlagThumb']}" width="60" class="thumbnail" alt="Click to list workshops scoped within the Country of ${c.geoInfo[0]['countryTitle']}" title="Click to list workshops scoped within the Country of ${c.geoInfo[0]['countryTitle']}"/></a></td><td><a href="${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}</a></td>
         </tr>
         <tr>
         <td><img src="/images/flags/earth_thumb.gif" width="60" class="thumbnail"/></td><td>Planet Earth</td>
@@ -377,7 +363,7 @@
 			${listWorkshops(c.followingWorkshops)}
 		</div> <!-- /.civ-col-inner -->
 	% endif
-        % if c.pendingFacilitators and c.authuser.id == c.user.id:
+        % if 'user' in session and c.pendingFacilitators and c.authuser.id == c.user.id:
             ${pendingFacilitateInvitations()}
         % endif
 </%def>

@@ -57,7 +57,7 @@ class DiscussionController(BaseController):
         c.count = len(c.discussions)
         c.paginator = paginate.Page(
             c.discussions, page=int(request.params.get('page', 1)),
-            items_per_page = 5, item_count = c.count
+            items_per_page = 15, item_count = c.count
         )
 
         return render('/derived/discussion_landing.bootstrap')

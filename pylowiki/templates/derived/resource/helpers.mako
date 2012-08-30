@@ -52,7 +52,11 @@
 
 <%def name="displayResourceComment()">
 	<div id="resource-comment">
-		<p>${c.resource['comment']}</p>
+                % if c.content:
+		    <p>${c.content}</p>
+                % else:
+		    <p>${c.resource['comment']}</p>
+                % endif
 	</div>
 </%def>
 

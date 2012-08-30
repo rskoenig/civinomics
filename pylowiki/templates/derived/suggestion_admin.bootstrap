@@ -5,11 +5,8 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="well">
-            <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/">${c.w['title']}</a></h1>
-            <br />
-            ${lib.nav_thing("")}
-            <br />
+        <div class="well workshop_header">
+             ${lib.displayWorkshopHeader('')}
         </div><!-- well -->
     </div><!-- row-fluid -->
     <div class="civ-col">

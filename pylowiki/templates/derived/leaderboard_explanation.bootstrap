@@ -4,7 +4,7 @@
 
 
 <div class="container-fluid">
-   <div class="well">
+   <div class="well workshop_header">
        ${lib.displayWorkshopHeader('leaderboard')}
    </div><!-- well -->
    </br></br>

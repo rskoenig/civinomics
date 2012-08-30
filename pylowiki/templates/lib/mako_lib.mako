@@ -88,13 +88,27 @@
 <%def name="add_a(thing)">
 	% if c.isScoped or c.isFacilitator or c.isAdmin:
             %if thing == 'resource' and (c.w['allowResources'] == '1' or c.isFacilitator or c.isAdmin):
-	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
+	        <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" style="letter-spacing:normal;" title="Click to add a new information resource to this workshop" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'sresource' and (c.s['allowComments'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-book"></i></a>
             %elif thing == 'suggestion' and (c.w['allowSuggestions'] == '1' or c.isFacilitator or c.isAdmin):
 	        <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-pencil"></i></a>
             %elif thing == 'discussion':
 	        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop" style="text-decoration:none" class="btn btn-success btn-mini">add<i class="icon-white icon-folder-open"></i></a>
+            %endif
+	% endif
+</%def>
+
+<%def name="add_a_text(thing, prefix)">
+	% if c.isScoped or c.isFacilitator or c.isAdmin:
+            %if thing == 'resource' and (c.w['allowResources'] == '1' or c.isFacilitator or c.isAdmin):
+	        ${prefix} <a href="/newResource/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new information resource to this workshop">Add Resource</a>
+            %elif thing == 'sresource' and (c.s['allowComments'] == '1' or c.isFacilitator or c.isAdmin):
+	        ${prefix} <a href="/newSResource/${c.s['urlCode']}/${c.s['url']}" title="Click to add a new information resource to this suggestion">Add Resource</a>
+            %elif thing == 'suggestion' and (c.w['allowSuggestions'] == '1' or c.isFacilitator or c.isAdmin):
+	        ${prefix} <a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" title="Click to add a new suggestion to this workshop">Add Suggestion</a>
+            %elif thing == 'discussion':
+	        ${prefix} <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop">Add Discussion Topic</a>
             %endif
 	% endif
 </%def>
@@ -124,9 +138,8 @@
                     <% rList = c.resources %>
                 % endif
 		<div class="civ-col-list">
-                <table>
-                <tbody>
                 <% counter = 0 %>
+                <ul class="unstyled civ-col-list">
 		% for resource in rList:
 			<% author = getUserByID(resource.owner) %>
                         <% flags = getFlags(resource) %>
@@ -141,51 +154,45 @@
                             <% numComments = disc['numComments'] %>
                         % endif
 			% if resource['type'] == "post":
-                            <tr>
-                            <td colspan=2>
-                               <h3>
-                               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
-                               </h3>
-                               % if len(resource['comment']) > 50:
-                                   ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
-                               % else:
-                                   ${resource['comment']}
-                               % endif
-                            </td>
-                            </tr>
-                            <tr>
-                            <td>
+                        <li>
+                        <div class="row-fluid">
+                            <h3>
+                             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
+                             </h3>
+                             % if len(resource['comment']) > 50:
+                                 ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                              % else:
+                                 ${resource['comment']}
+                              % endif
+                        </div><!-- row-fluid -->
+                        <div class="row-fluid">
+                            <div class="span2">
                                 % if author['pictureHash'] == 'flash':
                                     <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
                                 % else:
                                     <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
                                 % endif
-                            </td>
-                            <td>
+                            </div><!-- span2 -->
+                            <div class="span10">
                                  <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                                  <span class="badge badge-info" title="Resource comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                                  <span class="badge badge-inverse"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
-                             </td>
-                             </tr>
-                             <tr>
-                             <td colspan=2>
+                                 % if 'user' in session and c.isScoped:
+                                     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
+                                 % endif
+                                 <br />
                                  <i class="icon-time"></i> Added <span class="old">${timeSince(resource.date)}</span> ago 
-                            % if 'user' in session and c.isScoped:
-                                | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
-                            % endif
-                             </td>
-                             </tr>
-                             <tr>
-                             <td colspan=2><hr></td>
-                             </tr>
+                                 <br /><br />
+                             </div><!-- span10 -->
+                        </div><!-- row-fluid -->
+                        </li>
 			% endif
                     <% counter += 1 %>
                     % if counter == numDisplay:
                         <% break %>
                     % endif
 		% endfor
-                </tbody>
-                </table>
+                </ul>
                 </div>
 	% endif
 </%def>
@@ -211,10 +218,16 @@
 	% if len(sList) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
+            % if doSlider == 0:
+                <% badgeSpan = "span9" %>
+                <% slideSpan = "span1" %>
+            % else:
+                <% badgeSpan = "span5" %>
+                <% slideSpan = "span5" %>
+            % endif
             <div class="civ-col-list">
             <% counter = 1 %>
-            <table>
-            <tbody>
+            <ul class="unstyled civ-col-list">
             % for suggestion in sList:
                 <% author = getUserByID(suggestion.owner) %>
                 <% flags = getFlags(suggestion) %>
@@ -229,30 +242,29 @@
                 % if disc:
                     <% numComments = disc['numComments'] %>
                 % endif
-                <tr>
-                <td colspan=3>
+                <li>
+                <div class="row-fluid">
                     <h3>
                     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
                     </h3>
                     ${suggestion['data'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">more</a>
-                </td>
-                </tr>
-                <tr>
-                <td>
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <div class="span2">
                     % if author['pictureHash'] == 'flash':
                         <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
                     % else:
                         <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
                     % endif
-                </td>
-                <td>
+                    </div><!-- span2 -->
+                    <div class="${badgeSpan}">
                     <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
                     <span class="badge badge-info" title="Suggestion information resources"><i class="icon-white icon-book"></i>${len(resources)}</span>
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                     <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
-                </td>
+                    </div><!-- ${badgeSpan} -->
+                    <div class="${slideSpan}">
                 % if 'user' in session and doSlider:
-                    <td>
                         <div id="ratings${counter}" class="rating pull-left">
                             <div id="overall_slider" class="ui-slider-container clearfix">
                                 % if suggestion.rating:
@@ -262,30 +274,23 @@
                                 % endif
                              </div> <!-- /#overall_slider -->
                          </div> <!-- /#ratings${counter} -->
-                    </td>
-                % else:
-                    <td>&nbsp;</td>
                 % endif
-                </tr>
-                <tr>
-                <td colspan=3>
+                    </div><!-- ${slideSpan} -->
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
                     <i class="icon-time"></i> Added <span class="old">${timeSince(suggestion.date)}</span> ago 
                     % if 'user' in session and c.isScoped:
                         | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
                     % endif
-                </td>
-                </tr> 
-                <tr>
-                <td colspan=3><hr></td>
-                </tr>
+                    <br /><br />
+                </div><!-- row-fluid -->
+                </li>
                 <% counter += 1 %>
                 % if counter == numDisplay:
                     <% break %>
                 % endif 
             % endfor
-
-            </tbody>
-            </table>
+            </ul>
             % if c.paginator and (len(c.paginator) != len(c.suggestions)):
                 <% state = True %>
                 % for p in c.paginator:
@@ -393,7 +398,7 @@
 </%def>
 
 <%def name="slideshow(counter)">
-	<div id="slideshow${counter}" class="slideshow-container">
+	<div id="slideshow${counter}" class="slideshow-container" style="border:1px solid black; padding:4px;">
 		<div id="pager${counter}" class="pager">
 			<ul id="nav${counter}" class="unstyled">
 			</ul>
@@ -486,40 +491,32 @@
 </%def>
 
 <%def name="displayProfilePicture()">
-        <ul class="thumbnails">
-        <li>
+        <br />
 	% if c.authuser['pictureHash'] == 'flash':
-		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}"></a>
+		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatars/flash.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}" style="display:block; margin-left:auto; margin-right:auto; vertical-align:middle;" class="thumbnail"></a>
 	% else:
-		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" class="thumbnail">
-			<img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}">
+		<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
+			<img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" alt="${c.authuser['name']}" title="${c.authuser['name']}" style="display:block; margin-left:auto; margin-right:auto; vertical-align:middle;" class="thumbnail">
 		</a>
 	% endif
-        </li>
-        </ul>
 </%def>
 
 <%def name="displayWorkshopHeader(page)">
-   <table cellpadding=6>
-   <thead>
-   <tr>
-   <td>
-    % if c.w['mainImage_hash'] == 'supDawg':
-        <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" class="thumbnail" alt="${c.w['title']}" title="${c.w['title']}" style="width: 120px; height: 80px;"/></a>
-    % else:
-        <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_directoryNum']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" alt="${c.w['title']}" title="${c.w['title']}" class="thumbnail left" style = "width: 120px; height: 80px;"/></a>
-    % endif
- </td>
-   <td>
-   <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
-   <br />
-   ${nav_thing(page)}
-   <br/>
-   </td>
-   </tr>
-   </thead>
-   </table>
-
+   <div class="row-fluid">
+       <div class="span2">
+            % if c.w['mainImage_hash'] == 'supDawg':
+                <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" class="thumbnail" alt="${c.w['title']}" title="${c.w['title']}" style="width: 120px; height: 80px;"/></a>
+            % else:
+                <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/${c.w['mainImage_directoryNum']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" alt="${c.w['title']}" title="${c.w['title']}" class="thumbnail left" style = "width: 120px; height: 80px;"/></a>
+            % endif
+        </div><!-- span3 -->
+        <div class="span9">
+            <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+            <br />
+            ${nav_thing(page)}
+            <br/>
+        </div><!-- span9 -->
+   </div><!-- row-fluid -->
 </%def>
 
 <%def name="displayFeedbackSlider()">

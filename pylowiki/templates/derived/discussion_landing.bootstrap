@@ -5,7 +5,7 @@
 ${lib.return_to()}
 
 <div class="container-fluid">
-    <div class="well">
+    <div class="well workshop_header">
         ${lib.displayWorkshopHeader('discussion')}
     </div><!-- well -->
     ${lib.fields_alert()}
@@ -15,11 +15,12 @@ ${lib.return_to()}
                 <h2 class="civ-col"><i class="icon-folder-open"></i> Discussion Topics
                     <span class="pull-right">
                     % if c.discussions and (len(c.discussions) != len(c.paginator)):
-                        <span style="font-size:10px; letter-spacing:normal;">Showing ${len(c.paginator)} of ${len(c.discussions)} topics | Page ${ c.paginator.pager('~3~')}</span> &nbsp; &nbsp;
-                    % endif
-                    <span style="font-size:10px; letter-spacing:normal; text-transform:lowercase;">
-                    ${lib.add_a("discussion")}
+                        <span style="font-size:10px; letter-spacing:normal;">Showing ${len(c.paginator)} of ${len(c.discussions)} topics | Page ${ c.paginator.pager('~3~')} ${lib.add_a_text("discussion", "|")}</span>
+                    % else:
+                    <span class="pull-right" style="font-size:10px; letter-spacing:normal;">
+                    ${lib.add_a_text("discussion", "")}
                     </span></span>
+                    % endif
                 </h2>
                 <div class="civ-col-inner">
                     ${helpers.listDiscussions()}

@@ -3,7 +3,7 @@
 <%namespace name="helpers" file="/derived/workshop_home/helpers.mako" />
 
 <div class="container-fluid"><!-- header -->
-    <div class="well">
+    <div class="well workshop_header">
         ${lib_helpers.displayWorkshopHeader('')}
     </div><!-- well -->
     <h2 class="civ-col"><i class="icon-book"></i> Resources</h2>

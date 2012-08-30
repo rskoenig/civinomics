@@ -49,6 +49,16 @@
         }
         document.getElementById('searchWorkshops').action = '/searchName/' + searchType + '/' + searchString + '/';
     }
+    function setScope()
+    {
+        var scopeList = document.getElementById('scopeLevel');
+        var scopeLevel = scopeList.options[scopeList.selectedIndex].value;
+        if (scopeLevel == null || scopeLevel == '')
+        {
+            var scopeLevel = "03";
+        }
+        document.getElementById('searchGeoUsers').action = '/searchGeoUsers/' + scopeLevel;
+    }
     </script>
     <form action="/searchName/" method="post" id="searchWorkshops" onsubmit="setAction(); return true;">
         <fieldset>
@@ -70,8 +80,8 @@
         </fieldset>
     </form>
     % if 'user' in session:
-        <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post">
-            Members in my <select name="scopeLevel">
+        <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post" onsubmit="setScope(); return true;">
+            Members in my <select name="scopeLevel" id="scopeLevel">
             <option value="09">City</option>
             <option value="07">County</option>
             <option value="05">State</option>
@@ -120,9 +130,9 @@
 <%def name="recent_posts()">
 	<% mPosts = getRecentMemberPosts(20) %>
 	% if mPosts and len(mPosts) > 0:
-            <table class="table table-striped">
-            <tbody>
+            <ul class="unstyled civ-col-list">
 			% for mObj in mPosts:
+                           <li>
                            <% ooTitle = False %>
                            <% muser = getUserByID(mObj.owner) %>
                            <% mname = muser['name'] %>
@@ -167,28 +177,27 @@
                            %else:
                                <% oTitle = mObj['title'] %>
                            %endif
-                           <tr>
-                           <td>
+                           <div class="row-fluid">
+                               <div class="span3">
                            % if muser['pictureHash'] == 'flash':
                                <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" title="${mname}" style="width:40px;" alt="${mname}"/ class="thumbnail"></a> 
                            % else:
                                <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" title="${mname}" style="width:40px;"/ class="thumbnail"></a>
                            % endif
-                           </td>
-                           <td>
-                              <ul class="unstyled">
-                              <li><a href="${wLink}"><i class="icon-cog"></i> ${wTitle}</a></li>
+                               </div><!-- span3 -->
+                               <div class="span9">
+                              <a href="${wLink}"><i class="icon-cog"></i> ${wTitle}</a><br />
                               % if ooTitle:
-                                  <li><a href="${ooLink}"><i class="icon-${ooiType}"></i> ${ooTitle}</a></li>
+                                  <a href="${ooLink}"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />
                               % endif
-                              <li><a href="${oLink}"><i class="icon-${iType}"></i> ${oTitle}</a></li>
-                              <li><i class="icon-time"></i> ${timeSince(mObj.date)} ago</li>
+                              <a href="${oLink}"><i class="icon-${iType}"></i> ${oTitle}</a><br />
+                              <i class="icon-time"></i> <span class="recent">${timeSince(mObj.date)}</span> ago<br />
                               <ul>
-                           </td>
-                           </tr>
+                              </div><!-- cpan9 -->
+                           </div><!-- row-fluid -->
+                           </li>
 			% endfor
-            </tbody>
-            </table>
+                        </ul>
 	% else:
 		<p>No member posts.</p>
 	% endif

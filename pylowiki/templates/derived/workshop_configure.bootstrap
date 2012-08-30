@@ -4,7 +4,7 @@
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
 
 <div class="container-fluid"><!-- header -->
-    <div class="well">
+    <div class="well workshop_header">
         ${lib_helpers.displayWorkshopHeader('configure')}
     </div><!-- well -->
     <h2 class="civ-col">Configure Workshop</h2>

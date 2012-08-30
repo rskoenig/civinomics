@@ -12,7 +12,7 @@
 </%def>
 
 <%def name='show_geo()'>
-    <div class="well">
+    <div class="well profile_header">
     <table width="100%">
     <body>
     % if c.geoType == 'postal':
