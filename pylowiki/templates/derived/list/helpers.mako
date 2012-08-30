@@ -1,8 +1,7 @@
 <%! 
-   from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop
+   from pylowiki.lib.db.suggestion import getSuggestionByID, getSuggestionsForWorkshop
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
-   from pylowiki.lib.db.suggestion import getSuggestionByID
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
    from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
    from pylowiki.lib.db.user import getUserByID
@@ -158,6 +157,13 @@
                                <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
                                <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
                                <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+                           % elif mObj.objType == 'event':
+                               <% iType = "heart" %>
+                               <% s = getSuggestionByID(mObj['parent_id']) %>
+                               <% muser = getUserByID(s.owner) %>
+                               <% oLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL'] + "/suggestion/" + s['urlCode'] + "/" + s['url'] %>
+                               <% wLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL'] %>
+                               <% w = getWorkshop(s['workshopCode'], s['workshopURL']) %>
                            % elif mObj.objType == 'discussion':
                                <% iType = "folder-open" %>
                                <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
