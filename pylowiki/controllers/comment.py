@@ -6,7 +6,7 @@ from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.comments import addDiscussion, addComment, editComment
+from pylowiki.lib.comments import addDiscussion, addComment
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.workshop import getWorkshop
@@ -14,7 +14,7 @@ from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
 from pylowiki.lib.db.page import get_page
-from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode
+from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode, editComment
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 
@@ -308,7 +308,7 @@ class CommentController(BaseController):
         return redirect( session['return_to'] )  
     
     @h.login_required
-    def edit(self, id):
+    def edit(self, id1):
         """
             Edits a comment by replacing the current revision with a new revision.  Just grabs relevant info
             and then uses the editComment() function in the comments library.
@@ -316,16 +316,53 @@ class CommentController(BaseController):
             Inputs:
                         id    ->    The comment id
         """
-        commentID = id
+        commentID = id1
+        cError = 0
         start = 1000 # starting of counter in commentsCustom.mako
-        thisID = start + int(id)
+        thisID = start + int(id1)
         data = request.params['textarea' + str(thisID)]
-        discussionID = request.params['discussionID']
-        comment = editComment(commentID, discussionID, data)
-        
-        if not comment:
-            h.flash('Comment edit was NOT saved!', 'error')
-            return redirect('/issue/%s' % comment.page.url)
-        else:
-            h.flash('Comment edit saved!', 'success')
-            return redirect('/issue/%s' % comment.page.url)
+        remark = request.params['remark' + str(thisID)]
+        data = data.lstrip()
+        data = data.rstrip()
+        log.info('data is %s'%data)
+        if data == '':
+            alert = {'type':'error'}
+            alert['title'] = 'Edit Comment failed.'
+            alert['content'] = 'No comment text entered.'
+            session['alert'] = alert
+            session.save()
+            cError = 1
+
+        comment = getComment(commentID)
+        discussionID = comment['discussion_id']
+        d = getDiscussionByID(discussionID)
+        if d['discType'] == 'suggestion':
+            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL']
+        elif d['discType'] == 'resource':
+            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL']
+        elif d['discType'] == 'sresource':
+            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] + "/resource/" + "/resource/" + d['resourceCode'] + "/" + d['resourceURL']
+        elif d['discType'] == 'general':
+            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/discussion/" + d['urlCode'] + "/" + d['url']
+        elif d['discType'] == 'background':
+            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/bacground"
+
+
+        if cError == 0:
+           comment = editComment(commentID, discussionID, data)
+           if not comment:
+               alert = {'type':'error'}
+               alert['title'] = 'Edit Comment failed.'
+               alert['content'] = 'Unknown error in editComment.'
+               session['alert'] = alert
+               session.save()
+           else:
+               alert = {'type':'success'}
+               alert['title'] = 'Edit Comment.'
+               alert['content'] = 'Edit comment successful.'
+               session['alert'] = alert
+               session.save()
+               eMsg = "Comment data updated. " + remark
+               Event('Comment edited by %s'%c.authuser['name'], eMsg, comment, c.authuser)
+
+        return redirect(backlink)

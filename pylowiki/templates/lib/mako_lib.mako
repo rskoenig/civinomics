@@ -398,7 +398,7 @@
 </%def>
 
 <%def name="slideshow(counter)">
-	<div id="slideshow${counter}" class="slideshow-container">
+	<div id="slideshow${counter}" class="slideshow-container" style="border:1px solid black; padding:4px;">
 		<div id="pager${counter}" class="pager">
 			<ul id="nav${counter}" class="unstyled">
 			</ul>
@@ -503,7 +503,7 @@
 
 <%def name="displayWorkshopHeader(page)">
    <div class="row-fluid">
-       <div class="span3">
+       <div class="span2">
             % if c.w['mainImage_hash'] == 'supDawg':
                 <a href="/workshops/${c.w['urlCode']}/${c.w['url']}"><img src="/images/${c.w['mainImage_identifier']}/thumbnail/${c.w['mainImage_hash']}.thumbnail" class="thumbnail" alt="${c.w['title']}" title="${c.w['title']}" style="width: 120px; height: 80px;"/></a>
             % else:

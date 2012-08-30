@@ -3,6 +3,7 @@
     from pylowiki.lib.db.user import getUserByID, isAdmin
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment
+    from pylowiki.lib.db.event import getParentEvents
     import logging
     from datetime import datetime
     log = logging.getLogger(__name__)
@@ -293,8 +294,20 @@
             <div class="civ-comment ${moderator}">
                 ${userSays(comment, author)}
                 ${commentContent(comment, counter)}
-            </div> <!-- /.civ-comment -->
             ${commentFeedback(comment, commentType)}
+
+            <% events = getParentEvents(comment) %>
+            % if events:
+                <span style="color:black;">
+                <strong>Event log:</strong><br />
+                <ul class="unstyled">
+                % for e in events:
+                    <li><strong>${e['title']}</strong> ${e.date} - ${e['data']}</li>
+                % endfor
+                </ul>
+                </span>
+            % endif
+            </div> <!-- /.civ-comment -->
             <div class="collapse in hide${comment.id}">
                 ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}
             </div> <!-- /.collapse.in.hide${comment.id} -->

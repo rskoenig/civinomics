@@ -5,14 +5,14 @@
 
 <div class="container-fluid">
     <div class="row-fluid">
-        <div class="container-fluid">
+        <div class="container-fluid well workshop_header">
             <div class="span12">
-                <div class="row">
-                    <div class="span7 well" style="border:1px solid black;">
+                <div class="row-fluid">
+                    <div class="span7">
                         ${lib.slideshow(1)}
                         ${lib.nav_thing("home")}
                     </div><!-- span7 -->
-                    <div class="span5 well workshop_header">
+                    <div class="span5">
                         ${helpers.at_a_glance()}
                     </div><!-- span5 -->
                 </div><!-- row -->

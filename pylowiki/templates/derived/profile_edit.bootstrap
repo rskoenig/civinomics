@@ -4,7 +4,7 @@
 <%namespace name="helpers" file="/derived/profile_edit/helpers.mako" />
 
 <div class="container-fluid">
-   <div class="well">
+   <div class="well profile_header">
        <h1><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a></h1>
    </div><!-- well -->
 <h2 class="civ-col">Edit Profile Information</h2>
