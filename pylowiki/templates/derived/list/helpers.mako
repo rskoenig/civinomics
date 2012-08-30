@@ -49,6 +49,16 @@
         }
         document.getElementById('searchWorkshops').action = '/searchName/' + searchType + '/' + searchString + '/';
     }
+    function setScope()
+    {
+        var scopeList = document.getElementById('scopeLevel');
+        var scopeLevel = scopeList.options[scopeList.selectedIndex].value;
+        if (scopeLevel == null || scopeLevel == '')
+        {
+            var scopeLevel = "03";
+        }
+        document.getElementById('searchGeoUsers').action = '/searchGeoUsers/' + scopeLevel;
+    }
     </script>
     <form action="/searchName/" method="post" id="searchWorkshops" onsubmit="setAction(); return true;">
         <fieldset>
@@ -70,8 +80,8 @@
         </fieldset>
     </form>
     % if 'user' in session:
-        <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post">
-            Members in my <select name="scopeLevel">
+        <form class="left" id="searchGeoUsers" action="/searchGeoUsers/" method = "post" onsubmit="setScope(); return true;">
+            Members in my <select name="scopeLevel" id="scopeLevel">
             <option value="09">City</option>
             <option value="07">County</option>
             <option value="05">State</option>

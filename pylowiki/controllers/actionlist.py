@@ -138,30 +138,28 @@ class ActionlistController(BaseController):
 
               return render('/derived/list_users.bootstrap')
 
-    def searchGeoUsers( self ):
+    def searchGeoUsers( self, id1 ):
         log.info('searchGeoUsers')
+        scopeLevel = id1
         geoInfo = getGeoInfo(c.authuser.id)
         searchScope = geoInfo[0]['scope']
         ##log.info('geoInfo is %s'%geoInfo)
         c.list = []
-        if 'scopeLevel' in request.params:
-           scopeLevel = request.params['scopeLevel']
-           scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
-           c.title = c.heading = 'List Members: ' + scopeTitle
-           log.info('postalCode is %s scopeLevel is %s'%(geoInfo[0]['postalCode'], scopeLevel))
-           scopeList = getUserScopes(searchScope, scopeLevel)
-           for gInfo in scopeList:
-              c.list.append(getUserByID(gInfo.owner))
 
-           c.count = len( c.list )
-           c.paginator = paginate.Page(
-                     c.list, page=int(request.params.get('page', 1)),
-                     items_per_page = 15, item_count = c.count
-                 )
+        scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
+        c.title = c.heading = 'List Members: ' + scopeTitle
+        log.info('postalCode is %s scopeLevel is %s'%(geoInfo[0]['postalCode'], scopeLevel))
+        scopeList = getUserScopes(searchScope, scopeLevel)
+        for gInfo in scopeList:
+           c.list.append(getUserByID(gInfo.owner))
 
-           return render('/derived/list_users.bootstrap')
-        else:
-           return redirect('/')
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+                  c.list, page=int(request.params.get('page', 1)),
+                  items_per_page = 15, item_count = c.count
+              )
+
+        return render('/derived/list_users.bootstrap')
 
     def searchGeoWorkshops( self ):
         #log.info('searchGeoWorkshops')

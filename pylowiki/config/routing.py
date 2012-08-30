@@ -460,8 +460,8 @@ def make_map():
     map.connect('/searchTags/{id1}/', controller='actionlist', action='searchTags', id='searchTags', id1 = '{id1}')
     map.connect('/searchName/{id1}/{id2}/', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchName/{id1}/{id2}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchGeoUsers', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
-    map.connect('/searchGeoUsers/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers')
+    map.connect('/searchGeoUsers/{id1}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
+    map.connect('/searchGeoUsers/{id1}/', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
     map.connect('/searchGeoWorkshops', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
     map.connect('/searchGeoWorkshops/', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
     
