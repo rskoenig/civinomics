@@ -10,7 +10,6 @@ from pylowiki.lib.base import BaseController, render
 #Fox imported these modules
 import pylowiki.lib.helpers as h
 from pylowiki.lib.auth import login_required
-#from pylowiki.model import get_user, get_user_by_email, commit
 from pylowiki.lib.db.user import get_user, checkPassword
 from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
 from pylowiki.lib.db.dbHelpers import commit
@@ -45,6 +44,10 @@ class LoginController(BaseController):
                         c.splashMsg = splashMsg
                     elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
+                        if 'laston' in user:
+                            t = time.localtime(float(user['laston']))
+                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                             
                         user['laston'] = time.time()
                         commit(user)
                         session["user"] = user['name']

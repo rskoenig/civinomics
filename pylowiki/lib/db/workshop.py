@@ -87,13 +87,17 @@ def getParticipantsByID(id):
 def getRecentMemberPosts(number):
         counter = 0
         returnList = []
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion', 'event'])).order_by('-date').all()
         for item in postList:
            if item.objType == 'suggestion' or item.objType == 'resource':
                returnList.append(item)
                counter += 1
            elif item.objType == 'discussion':
                if item['discType'] == 'general':
+                   returnList.append(item)
+                   counter += 1
+           elif item.objType == 'event':
+               if item['title'] == 'Suggestion Adopted':
                    returnList.append(item)
                    counter += 1
  
