@@ -1,0 +1,118 @@
+* {margin: 0;padding: 0;}
+
+body {width: 1000px; margin: 0 auto; background-color:#E6E6E6;
+font-family: "HelveticaNeue", "Helvetica Neue", "HelveticaNeueRoman", "HelveticaNeue-Roman", "Helvetica Neue Roman", 'TeXGyreHerosRegular', "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif; font-weight:400; font-stretch:normal;
+}
+
+#main {font-size: .75em;}
+
+ul {list-style-type: none;}
+ul.simple {list-style-type: disc;}
+a, a:hover {color: #86945a;}
+a {text-decoration: none;}
+a:hover {text-decoration: underline;}
+a:focus {outline: none;}
+
+input[type="text"], input[type="password"], textarea {
+	border: 1px solid #b9b9b9;
+	padding: 2px 0 2px 5px;
+}
+input[type="text"].filled {background: #ddd;}
+input[type="checkbox"] {
+	background: #fff;
+	border: 1px solid #454545;
+}
+
+.left {float: left;}
+.right {float: right;}
+.clr {clear: both;}
+.clr-rt {clear: right;}
+.clr-lft {clear: left;}
+.wide {width: 100%;}
+.time {color: #ffa200;}
+.gray {color: #b9b9b9;}
+.dark-text {color: #454545;}
+.darkgray {color: #555;}
+.darkorange {color: #ff9900;}
+
+button, *[type="submit"] {
+	border-radius: 3px;
+	border: 1px solid #b9b9b9;
+	background: #ddd;
+	color: #454545;
+	
+	background-image: linear-gradient(bottom, #ddd 30%, #fff 70%);
+	background-image: -o-linear-gradient(bottom, #ddd 30%, #fff 70%);
+	background-image: -moz-linear-gradient(bottom, #ddd 30%, #fff 70%);
+	background-image: -webkit-linear-gradient(bottom, #ddd 30%, #fff 70%);
+	background-image: -ms-linear-gradient(bottom, #ddd 30%, #fff 70%);
+}
+button.gold {
+	color: white;
+	height: 25px;
+	background: #E0B91B;
+	
+	box-shadow: 0px 0px 3px #ccc;
+	background-image: linear-gradient(bottom, #CF9610 30%, #DBB969 70%);
+	background-image: -o-linear-gradient(bottom, #CF9610 30%, #DBB969 70%);
+	background-image: -moz-linear-gradient(bottom, #CF9610 30%, #DBB969 70%);
+	background-image: -webkit-linear-gradient(bottom, #CF9610 30%, #DBB969 70%);
+	background-image: -ms-linear-gradient(bottom, #CF9610 30%, #DBB969 70%);
+}
+button.green {
+    display: block;
+    color: #86945a;
+    min-height: 30px;
+}
+
+h2.banner {
+	border: 1px solid #b9b9b9;
+	border-right: none;
+	background: #fff;
+	letter-spacing: .3em;
+	font-weight: normal;
+	font-size: .9em;
+	text-transform: uppercase;
+	padding: 4px;
+	float: left;
+	position: relative;
+	z-index: inherit;
+}
+div.banner_div {
+	background-image: url('../images/slash.png');
+	background-repeat: no-repeat;
+	background-position: right top;
+	float: left;
+	position: relative;
+	z-index: 1;
+}
+
+/* search bars -- more styling at topbar.css */
+.search_form {
+	position: relative;
+}
+
+.search_form button[type="submit"] {
+	text-indent: -5000px;
+	border: none;
+	background: transparent url('../images/magnifying_glass_lt_grey.png');
+	background-repeat: no-repeat;
+	width: 13px;
+	position: absolute;
+	right: -8px;
+	top: 15px;
+}
+.search_form button[type="submit"]:hover {
+	cursor: pointer;
+}
+
+/* clearfix */
+.group:after {
+	visibility: hidden;
+	display: block;
+	content: "";
+	clear: both;
+	height: 0;
+	}
+* html .group             { zoom: 1; } /* IE6 */
+*:first-child+html .group { zoom: 1; } /* IE7 */
