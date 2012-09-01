@@ -1,7 +1,7 @@
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID, getSuggestion
     from pylowiki.lib.db.resource import getResource
-    from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID
+    from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
     from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.db.discussion import getDiscussionByID
@@ -319,23 +319,41 @@
 </%def>
 
 <%def name="displayWorkshop(workshop)">
+        % if 'user' in session and c.authuser and 'previous' in c.authuser:
+            <% aList = getWorkshopPostsSince(workshop['urlCode'], workshop['url'], c.authuser['previous']) %>
+            % if aList:
+                <% sinceNumber = len(aList) %>
+            % else:
+                <% sinceNumber = 0 %>
+            % endif
+        % else:
+            <% sinceNumber = 0 %>
+        % endif
+
 	% if workshop['mainImage_hash'] == 'supDawg':
 		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}" width="120" height="80" class="thumbnail"></a>
 	% else:
 		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" width="120" height="80" class="thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}"></a>
 	% endif
-        <% counter = 0 %>
+        <% wcounter = 0 %>
         <a href="/workshop/${workshop['urlCode']}/${workshop['url']}">
         % for line in textwrap.wrap(workshop['title'], 18):
-            <% counter = counter + 1 %>
+            <% wcounter = wcounter + 1 %>
             ${line}<br />
+            % if wcounter == 3:
+                <% break %>
+            % endif
+            
         % endfor
-        % if counter == 1:
+        % if wcounter == 1:
            <br /><br /><br />
-        % elif counter == 2:
+        % elif wcounter == 2:
            <br /><br />
-        % elif counter == 3:
+        % elif wcounter == 3:
            <br />
+        % endif
+        % if sinceNumber:
+           ${sinceNumber} new posts!<br>
         % endif
         </a>
 </%def>
