@@ -4,6 +4,8 @@ from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.geoInfo import getGeoScope
+from pylowiki.lib.db.comment import getDiscussionCommentsSince
+from pylowiki.lib.db.discussion import getAllActiveDiscussionsForWorkshop
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 from page import Page
 from event import Event
@@ -105,6 +107,21 @@ def getRecentMemberPosts(number):
                break
 
         return returnList
+
+def getWorkshopPostsSince(code, url, memberDatetime):
+        postList = meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).order_by('-date').all()
+        discussionList = getAllActiveDiscussionsForWorkshop(code, url)
+        commentList = []
+        for d in discussionList:
+            cList = getDiscussionCommentsSince(d.id, memberDatetime) 
+            ##log.info('d is %s and cList is %s memberDatetime is %s'%(d, cList, memberDatetime))
+            if cList:
+                commentList = commentList + cList
+
+        returnList = postList + commentList
+
+        return returnList
+
 
 
 def isScoped(user, workshop):

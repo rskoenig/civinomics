@@ -56,9 +56,11 @@
 	</div> <!-- /.span6 -->
 	<div class="span3">
 		<div class="civ-col">
-			<h2 class="civ-col">Surveys</h2>
-                            <a href="/surveys">View Surveys</a>
-                            <br /><br />
+                        % if 'user' in session:
+			    <h2 class="civ-col">Surveys</h2>
+                                <a href="/surveys">View Surveys</a>
+                                <br /><br />
+                        %endif
 			<h2 class="civ-col">News</h2>
 			<div class="civ-col-inner">
 				${list_helpers.recent_posts()}
