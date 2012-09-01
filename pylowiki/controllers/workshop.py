@@ -963,6 +963,18 @@ class WorkshopController(BaseController):
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
 
+        if 'user' in session:
+            ratedSuggestionIDs = []
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                """
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
+                """
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = sugRateDict.keys()
+        
+
         for item in c.suggestions:
             """ Grab first 250 chars as a summary """
             if len(item['data']) <= 250:
@@ -989,6 +1001,7 @@ class WorkshopController(BaseController):
             c.suggestions, page=int(request.params.get('page', 1)),
             items_per_page = 15, item_count = c.count
         )
+
 
         return render('/derived/workshop_suggestions.bootstrap')
 

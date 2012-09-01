@@ -146,7 +146,7 @@
 					$(this).children(".ui-slider-handle").css( "margin-right", "15px" );
 					$(this).children(".ui-slider-handle").css( "border", "none" );
 					$(this).children(".ui-slider-handle").css( "background-image", "url(/images/sliderHandle_small.png)" );
-					$(this).children(".ui-slider-handle").before( '<span class="sliderHelper">oppose' + smallSpacer + 'neutral' + smallSpacer + 'support</span>' );
+					$(this).children(".ui-slider-handle").before( '<span class="sliderHelper">oppose' + smallSpacer + 'support</span>' );
 				}
 				
 			});

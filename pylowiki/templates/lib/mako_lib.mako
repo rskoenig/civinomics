@@ -219,11 +219,18 @@
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
             % if doSlider == 0:
-                <% badgeSpan = "span9" %>
-                <% slideSpan = "span1" %>
+                <% badgeSpan = "span10" %>
+                <% slideSpan = "span0" %>
             % else:
-                <% badgeSpan = "span5" %>
-                <% slideSpan = "span5" %>
+                % if numDisplay == 0:
+                    <% badgeSpan = "span2" %>
+                    <% slideSpan = "span8" %>
+                    <% sliderSize="normal" %>
+                % else:
+                    <% badgeSpan = "span4" %>
+                    <% slideSpan = "span5" %>
+                    <% sliderSize="small" %>
+                % endif
             % endif
             <div class="civ-col-list">
             <% counter = 1 %>
@@ -248,6 +255,7 @@
                     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
                     </h3>
                     ${suggestion['data'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">more</a>
+                    <br /><br />
                 </div><!-- row-fluid -->
                 <div class="row-fluid">
                     <div class="span2">
@@ -258,35 +266,35 @@
                     % endif
                     </div><!-- span2 -->
                     <div class="${badgeSpan}">
-                    <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
+                    <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br />
                     <span class="badge badge-info" title="Suggestion information resources"><i class="icon-white icon-book"></i>${len(resources)}</span>
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                     <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
                     </div><!-- ${badgeSpan} -->
-                    <div class="${slideSpan}">
                 % if 'user' in session and doSlider:
-                        <div id="ratings${counter}" class="rating pull-left">
-                            <div id="overall_slider" class="ui-slider-container clearfix">
+                    <div class="${slideSpan}">
+                        <div id="ratings${counter}" class="rating wide pull-right">
+                            <div id="overall_slider" class="ui-slider-container">
                                 % if suggestion.rating:
-                                    <div id="${suggestion['urlCode']}_${suggestion['url']}" class="small_slider" data1="0_${suggestion['urlCode']}_${suggestion.rating['rating']}_overall_true_rateSuggestion" data2="${suggestion['url']}"></div>
+                                    <div id="${suggestion['urlCode']}_${suggestion['url']}" class="${sliderSize}_slider" data1="0_${suggestion['urlCode']}_${suggestion.rating['rating']}_overall_true_rateSuggestion" data2="${suggestion['url']}"></div>
                                 % else:
-                                    <div id="${suggestion['urlCode']}_${suggestion['url']}" class="small_slider" data1="0_${suggestion['urlCode']}_0_overall_false_rateSuggestion" data2="${suggestion['url']}"></div>
+                                    <div id="${suggestion['urlCode']}_${suggestion['url']}" class="${sliderSize}_slider" data1="0_${suggestion['urlCode']}_0_overall_false_rateSuggestion" data2="${suggestion['url']}"></div>
                                 % endif
                              </div> <!-- /#overall_slider -->
                          </div> <!-- /#ratings${counter} -->
-                % endif
                     </div><!-- ${slideSpan} -->
+                % endif
                 </div><!-- row-fluid -->
                 <div class="row-fluid">
                     <i class="icon-time"></i> Added <span class="old">${timeSince(suggestion.date)}</span> ago 
-                    % if 'user' in session and c.isScoped:
+                    % if 'user' in session and c.isScoped and doSlider == '1':
                         | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
                     % endif
                     <br /><br />
                 </div><!-- row-fluid -->
                 </li>
                 <% counter += 1 %>
-                % if counter == numDisplay:
+                % if counter == int(numDisplay):
                     <% break %>
                 % endif 
             % endfor
