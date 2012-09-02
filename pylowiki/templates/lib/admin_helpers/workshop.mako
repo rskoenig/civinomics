@@ -187,6 +187,41 @@
 
 <%def name="admin_flagged()">
 	<br />
+
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-flag"></i>Flagged Background Comments</th</tr>
+    </thead>
+    <tbody>
+    <% cList = getPureFlaggedDiscussionComments(c.w['backgroundDiscussion_id']) %>
+    % if cList:
+        <% cFlagCount = len(cList) %>
+        % if cFlagCount > 1:
+            <% cString = 'Comments' %> 
+        % else:
+            <% cString = 'Comment' %> 
+        % endif
+        <tr><td>${cString} In <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></br>
+        % for comID in cList:
+            <% com = getComment(comID) %>
+            &nbsp&nbsp&nbsp&nbsp&nbsp
+            % if int(com['numFlags']) is 1:
+                ${com['numFlags']} flag:
+            % else:
+                ${com['numFlags']} flags:
+            % endif
+            % if len(com['data']) > 20:
+                <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
+            % else:
+                <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
+            % endif
+            <br />
+        % endfor
+        </td></tr>
+    % endif
+    </tbody>
+    </table>
+    <br /><br />
     <table class="table table-bordered">
     <thead>
     <tr><th><i class="icon-flag"></i>Flagged Resources and Comments</th</tr>
@@ -332,6 +367,44 @@
 </%def>
 
 <%def name="admin_disabled()">
+    <br /><br />
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-ban-circle"></i>Disabled Background Comments</tr></th>
+    </thead>
+    <tbody>
+    <% disabledComments = getDisabledComments(c.w['backgroundDiscussion_id']) %>
+    % if disabledComments:
+        <% cFlagCount = len(disabledComments) %>
+        % if cFlagCount > 1:
+            <% cString = 'Comments' %> 
+        % else:
+            <% cString = 'Comment' %> 
+        % endif
+        <tr><td>${cString} In <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></br>    	    
+        % for comID in disabledComments:
+            <% com = getComment(comID) %>
+            &nbsp&nbsp&nbsp&nbsp&nbsp
+            % if checkFlagged(com):
+                % if int(com['numFlags']) is 1:
+                    ${com['numFlags']} flag:
+                % else:
+                    ${com['numFlags']} flags:
+                % endif
+            % else:
+                0 flags:
+            % endif
+            % if len(com['data']) > 20:
+                <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
+            % else:
+                <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
+            % endif
+            </br>
+        % endfor
+        </td></tr>
+    % endif
+    </tbody>
+    </table>
     <br /><br />
     <table class="table table-bordered">
     <thead>
@@ -501,6 +574,44 @@
 </%def>
 
 <%def name="admin_deleted()">
+    <br /><br />
+    <table class="table table-bordered">
+    <thead>
+    <tr><th><i class="icon-ban-circle"></i>Deleted Background Comments</tr></th>
+    </thead>
+    <tbody>
+    <% deletedComments = getDeletedComments(c.w['backgroundDiscussion_id']) %>
+    % if deletedComments:
+        <% cFlagCount = len(deletedComments) %>
+        % if cFlagCount > 1:
+            <% cString = 'Comments' %> 
+        % else:
+            <% cString = 'Comment' %> 
+        % endif
+        <tr><td>${cString} In <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></br>    	    
+        % for comID in deletedComments:
+            <% com = getComment(comID) %>
+            &nbsp&nbsp&nbsp&nbsp&nbsp
+            % if checkFlagged(com):
+                % if int(com['numFlags']) is 1:
+                    ${com['numFlags']} flag:
+                % else:
+                    ${com['numFlags']} flags:
+                % endif
+            % else:
+                0 flags:
+            % endif
+            % if len(com['data']) > 20:
+                <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
+            % else:
+                <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
+            % endif
+            </br>
+        % endfor
+        </td></tr>
+    % endif
+    </tbody>
+    </table>
     <br /><br />
     <table class="table table-bordered">
     <thead>

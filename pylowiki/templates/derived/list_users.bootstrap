@@ -59,7 +59,7 @@
                         % if 'user' in session:
                             ${workshop_helpers.surveys()}
                         % endif
-			<h2 class="civ-col">News</h2>
+			<h2 class="civ-col">New Contributions</h2>
 			<div class="civ-col-inner">
 				${list_helpers.recent_posts()}
 			</div> <!-- /.civ-col-inner -->

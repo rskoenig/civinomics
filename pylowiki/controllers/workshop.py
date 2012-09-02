@@ -1048,7 +1048,6 @@ class WorkshopController(BaseController):
         url = id2
         
         c.w = getWorkshop(code, url)
-        c.isScoped = isScoped(c.authuser, c.w)
         c.title = c.w['title']
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.commentsDisabled = 0
@@ -1063,6 +1062,7 @@ class WorkshopController(BaseController):
         
         r = get_revision(int(c.w['mainRevision_id']))
         if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
             c.facilitators = getFacilitatorsByWorkshop(c.w.id)
             

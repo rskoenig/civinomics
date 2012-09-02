@@ -154,6 +154,7 @@
                             <% numComments = disc['numComments'] %>
                         % endif
 			% if resource['type'] == "post":
+                        <% rating = int(resource['ups']) - int(resource['downs']) %>
                         <li>
                         <div class="row-fluid">
                             <h3>
@@ -175,13 +176,12 @@
                             </div><!-- span2 -->
                             <div class="span10">
                                  <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
+                                 <span class="badge badge-info" title="Resource rating"><i class="icon-white icon-ok-sign"></i> ${rating}</span>
                                  <span class="badge badge-info" title="Resource comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                                  <span class="badge badge-inverse"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
-                                 % if 'user' in session and c.isScoped:
-                                     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Leave comment</a>
-                                 % endif
                                  <br />
-                                 <i class="icon-time"></i> Added <span class="old">${timeSince(resource.date)}</span> ago 
+                                 <i class="icon-time"></i> Added <span class="old">${timeSince(resource.date)}</span> ago<br /> 
+                                 <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Rate and discuss this resource</a>
                                  <br /><br />
                              </div><!-- span10 -->
                         </div><!-- row-fluid -->
