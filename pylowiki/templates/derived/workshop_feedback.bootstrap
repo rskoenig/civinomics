@@ -1,0 +1,84 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/derived/workshop_feedback/helpers.mako" />
+<%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
+
+${lib.return_to()}
+<div class="container-fluid">
+<div class="well workshop_header">
+   <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
+   <br />
+   ${lib.nav_thing('feedback')}
+   <br/>
+</div>
+<div class="row-fluid">
+	<div class="span9">
+		<div class="civ-col">
+			<h2 class="civ-col">Workshop Feedback</h2>
+			<div class="civ-col-inner">
+				${helpers.workshopBlurb()}
+			</div>
+			${helpers.displaySlider()}
+		</div>
+		<div class="civ-col">
+			<h2 class="civ-col">Comments</h2>
+			<div class="civ-col-inner">
+				${comments("feedback")}
+			</div>
+		</div>
+	</div>
+	<div class="span3">
+		<div class="civ-col">
+			<h2 class="civ-col">About facilitation</h2>
+			<div class="civ-col-inner">
+   The <strong>Facilitator</strong> is the host of the workshop, working to
+facilitate a productive exploration of the topic and goals of this workshop.
+Facilitators have some administrative privileges in this workhop which 
+include the ability to moderate member contributions which are off 
+topic or violate the Terms of Use. 
+			</div>
+		</div>
+		<div class="civ-col">
+			<h2 class="civ-col">${lib.facilitator()}</h2>
+			<div class="civ-col-inner">
+				${lib.your_facilitator()}
+			</div>
+		</div>
+	</div>
+</div>
+</div><!-- container-fluid -->
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
+
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/css/pygments/pygments-tango.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+	<script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+	<script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
+	<script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
+	<script src = "/js/comment.js" type="text/javascript"></script>
+
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+	<script type="text/javascript">
+		$(document).ready(function()	{
+			$('.markitup').markItUp(mySettings);
+		});
+	</script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$(".normal_slider").jColorSlider();
+		});
+	</script>
+	${buttonHandler()}
+</%def>

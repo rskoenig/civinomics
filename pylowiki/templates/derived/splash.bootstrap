@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Civinomics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="/styles/splash/splash.css" rel="stylesheet">
+    <link href="/bootstrap-2.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Handlee' rel='stylesheet' type='text/css'>
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+    ${facebookID()}
+    <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#"> <img src="/images/splash/logo.png"> </a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li class="nav-item"><a href="/signup" class="nav-item">Sign Up</a></li>
+              <li class="nav-item"><a href="/login">Log In</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="imageChanger imageChanger2"></div>
+    <div class="imageChanger imageChanger1" style="display:none;"></div>
+    <div class="imageChanger imageChanger0" style="display:none;"></div>
+
+    <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span6 offset5" style="padding-top:50px;">
+                    <div class="hero-unit main-well">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <h1 style="color:#5f774b; margin-top:0px;"> Connect </h1>
+                                <p>Workshops and surveys, online and in-person</p>
+                            </div>
+                            <div class="span6">
+                                <div class="row">
+                                    <a class="btn btn-large pull-right" href="#">Sign up</a>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <a class="btn btn-info btn-large pull-right" href="#info">Learn more</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="info">
+        <a name="info" style="padding-top:60px;"></a>
+        <div class="container">
+            <div class="row">
+                <div class="span12" style="padding-top:20px;">
+
+                    ##################
+                    ## 
+                    ## Workshops
+                    ## 
+                    ##################
+
+                    <div class="span5 offset1" style="border-right: 1px solid #DDDDDD;">
+                        <h1> Workshops </h1>
+                        <p>
+                            Community interaction and real-time feedback
+                        </p>
+
+                        ## 
+                        ## Some screenshots
+                        ## 
+                        <ul class="thumbnails" style="padding-top:20px; padding-bottom:20px;">
+                            % for i in range(1, 5):
+                            <li class="span2">
+                                <a href="#online-workshop-${i}" class="thumbnail-custom" data-toggle="modal" style="height:80px;">
+                                    <img src="/images/splash/online_workshop_thumbnail_${i}.png" height="80" width="131">
+                                    <div class="magnify"></div>
+                                </a>
+                            </li>
+                            % endfor
+                        </ul>
+
+                        ## 
+                        ## A quotation
+                        ## 
+                        <blockquote style="padding-right:20px; text-align:center;">
+                            <p class="quote"> I really like this company. </p>
+                            <small class="pull-right">Mr. Moneybags</small>
+                        </blockquote>
+
+                        ## 
+                        ## A video
+                        ## 
+                        
+                        <div style="padding-top:40px;"></div>
+                        <%doc>
+                        <div class="span4 thumbnail-custom-video" style="height:207px;">
+                            <img src="/images/splash/video_1.JPG">
+                            <a href="#video" data-toggle="modal">
+                                <div class="play"></div>
+                            </a>
+                        </div>
+                        </%doc>
+                        <iframe src="http://player.vimeo.com/video/45529198?title=0&amp;byline=0&amp;portrait=0" width="350" height="197" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+                    </div>
+
+                    ##################
+                    ## 
+                    ## Surveys
+                    ## 
+                    ##################
+                    <div class="span5">
+                        <h1> Surveys </h1>
+                        <p>
+                            Some stuff about surveys
+                        </p>
+                    </div>
+                </div>
+            </div> <!-- row -->
+        </div> <!-- container -->
+        <div class="container">
+            <div class="row" style="border-top: 1px solid #DDDDDD; padding-top:20px;">
+                <div class="span6 offset3" style="text-align:center">
+                    Join your community!
+                    <button class="btn btn-large" type="button">Sign up for free!</button>
+                </div>
+            </div>
+        </div>
+    </div> <!-- info -->
+
+    <div class="footer-separator"></div>
+
+    <div class="footer-civ">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span10 offset1">
+                    <div class="span2">
+                        <ul class="unstyled footer-list">
+                            <li>
+                                <h4>
+                                    ORGANIZATION
+                                </h4>
+                            </li>
+                            <li><a href="/corp/about"> About Us </a></li>
+                            <li><a href="http://www.civinomics.wordpress.com" target="_blank">Development Blog</a></li>
+                            <li><a href="/corp/careers">Careers</a></li>
+                            <li><a href="/corp/terms">Terms of Use</a></li>
+                            <li><a href="/corp/privacy">Privacy Policy</a></li>
+                            <li><a href="/corp/contact">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="span3">
+                        <ul class="unstyled footer-list">
+                            <li>
+                                <h4>
+                                    SERVICES
+                                </h4>
+                            </li>
+                            <li><a href="/corp/outreach">Outreach</a></li>
+                            <li><a href="#">Create a workshop </a><span class="label label-warning">Coming Soon</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="span3" style="padding-top:20px;">
+                        <ul class="unstyled" style="color:#818180;">
+                        <li><div class="fb-like" data-href="http://www.facebook.com/civinomics" data-send="true" data-width="395" data-show-faces="true"></div> 
+                        </li>
+                        <li><a href="https://twitter.com/civinomics" class="twitter-follow-button" data-show-count="true" data-size="large">Follow @civinomics</a></li>
+                        <li><g:plusone annotation="inline"></g:plusone></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span10 offset1" style="color:#e4e4e4;">
+                    <p class="pull-right">
+                        © 2012 Civinomics Inc. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <% imageTitles = ['Workshop Landing', 'Workshop Listing', 'Workshop Resource', 'Profile'] %>
+    % for i in range(1, 5):
+        <div class="modal hide fade" id="online-workshop-${i}" style="width:70%; left:35%;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h3 id="myModalLabel-${i}" style="text-align:center;">${imageTitles[i-1]}</h3>
+            </div>
+            <div class="modal-body">
+                <img src="/images/splash/online_workshop_${i}.png">
+            </div>
+        </div>
+    % endfor
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="/bootstrap-2.1.0/js/bootstrap.min.js"></script>
+    <script src="/js/splash/imageFader.js"></script>
+
+    <!-- additional social media scripts -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    </script>
+
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+  </body>
+</html>
+
+<%def name="facebookID()">
+    <!-- Facebook Like Button -->
+        <div id="fb-root"></div>
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '421911304496726', // App ID
+              channelUrl : '//WWW.CIVINOMICS.COM/channel.html', // Channel File
+              status     : true, // check login status
+              cookie     : true, // enable cookies to allow the server to access the session
+              xfbml      : true  // parse XFBML
+            });
+
+            // Additional initialization code here
+          };
+
+          // Load the SDK Asynchronously
+          (function(d){
+             var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement('script'); js.id = id; js.async = true;
+             js.src = "//connect.facebook.net/en_US/all.js";
+             ref.parentNode.insertBefore(js, ref);
+           }(document));
+        </script>
+</%def>

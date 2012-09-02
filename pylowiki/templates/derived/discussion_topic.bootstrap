@@ -1,0 +1,72 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/discussion_helpers/topic.mako" />
+<%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
+
+${lib.return_to()}
+
+<div class="container-fluid">
+    <div class="well workshop_header">
+        ${lib.displayWorkshopHeader('discussion')}
+    </div><!-- well -->
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="civ-col">
+                <h2 class="civ-col"><i class="icon-folder-open"></i> Discussion Topic</h2>
+                <div class="civ-col-inner">
+                    <div class="row-fluid">
+                        ${helpers.displayTopicContent()}
+                        % if 'user' in session:
+                            ${helpers.Edit_Admin()}
+                        % endif
+                    </div>
+                </div>
+                ${lib.displayEvents()}
+            </div>
+            <div class="civ-col">
+                <h2 class="civ-col">Comments</h2>
+                <div class="civ-col-inner">
+                    ${comments("discussion")}
+                </div>
+            </div>
+        </div>
+        <div class="span4">
+            <div class="civ-col">
+                <h2 class="civ-col">
+                    <i class="icon-folder-open"></i> Other Topics
+                    % if 'user' in session:
+                        <span class="pull-right" style="text-transform:lowercase; font-size:xx-small; letter-spacing:normal">${lib.add_a("discussion")}</span>
+                    % endif
+                </h2>
+                <div class="civ-col-inner">
+                    ${helpers.displayTopics()}
+                </div>
+            </div>
+        </div>
+    </div>
+</div><!-- container-fluid -->
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name="extraStyles()">
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/css/pygments/pygments-tango.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src = "/js/javascript.js" type="text/javascript"></script>
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+    <script src = "/js/flag.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function()    {
+            $('.markitup').markItUp(mySettings);
+        });
+    </script>
+
+    ${buttonHandler()}
+</%def>
