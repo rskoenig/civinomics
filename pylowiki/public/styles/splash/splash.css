@@ -13,31 +13,45 @@ html, body {
     background-position: top left;
 }
 
-.imageChanger0{
-    background-image: url('/images/splash/back_1.JPG');
-    height: 700px;
+#bg {
+    position:fixed; 
+    top:-50%; 
+    left:-50%; 
+    width:200%; 
+    height:200%;
+}
+
+#bg img {
+    position:absolute; 
+    top:0; 
+    left:0; 
+    right:0; 
+    bottom:0; 
+    margin:auto; 
+    min-width:50%;
+    min-height:50%;
+}
+
+.imageChanger{
+    height: 500px;
     display:block;
     position: absolute;
     width: 100%;
+    min-width:50%;
+    min-height:50%;
     margin-top:5px;
+}
+
+.imageChanger0{
+    background-image: url('/images/splash/back_1.JPG');
 }
 
 .imageChanger1{
     background-image: url('/images/splash/back_2.JPG');
-    height: 700px;
-    display:block;
-    position: absolute;
-    width: 100%;
-    margin-top:5px;
 }
 
 .imageChanger2{
     background-image: url('/images/splash/back_3.JPG');
-    height: 700px;
-    display:block;
-    position: absolute;
-    width: 100%;
-    margin-top:5px;
 }
 
 .main-well{
@@ -52,7 +66,7 @@ html, body {
 
 .info{
     border-top:1px solid #DDDDDD;
-    margin-top:360px;
+    margin-top:190px;
 }
 
 .magnify{
@@ -63,7 +77,7 @@ html, body {
     box-shadow: 0 1px rgba(255, 255, 255, 0.3) inset;
     display: block;
     height: 26px;
-    bottom: 25px;
+    bottom: 27px;
     position: relative;
     width: 30px;
 }
@@ -140,4 +154,17 @@ html, body {
 
 .footer-list > li > a{
     color:#252f1e;
+}
+
+.login-top > h2{
+    text-align:center;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+.login-bottom{
+    margin-top:20px;
+}
+
+.login-body{
+    border-bottom: 1px solid #DDDDDD;
 }

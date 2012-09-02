@@ -30,22 +30,21 @@
           <a class="brand" href="#"> <img src="/images/splash/logo.png"> </a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
-              <li class="nav-item"><a href="#" class="nav-item">Home</a></li>
-              <li class="nav-item"><a href="#about">About</a></li>
-              <li class="nav-item"><a href="#login">Log In</a></li>
+              <li class="nav-item"><a href="/signup" class="nav-item">Sign Up</a></li>
+              <li class="nav-item"><a href="/login">Log In</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
-    <div class="imageChanger2"></div>
-    <div class="imageChanger1" style="display:none;"></div>
-    <div class="imageChanger0" style="display:none;"></div>
+    <div class="imageChanger imageChanger2"></div>
+    <div class="imageChanger imageChanger1" style="display:none;"></div>
+    <div class="imageChanger imageChanger0" style="display:none;"></div>
 
     <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span6 offset5" style="padding-top:100px;">
+                <div class="span6 offset5" style="padding-top:50px;">
                     <div class="hero-unit main-well">
                         <div class="row-fluid">
                             <div class="span6">
