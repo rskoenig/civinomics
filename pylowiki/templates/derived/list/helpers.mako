@@ -21,7 +21,7 @@
         <table>
         <thead>
         <tr><td colspan=2>
-        Click on a link below to view all workshops in the public sphere.
+        <p>Click on a link below to view all workshops in the public sphere.</p>
         </td></tr>
         </thead>
         <tbody>
@@ -64,21 +64,26 @@
         document.getElementById('searchGeoUsers').action = '/searchGeoUsers/' + scopeLevel;
     }
     </script>
+    <br />
+    <span class="pull-right">
     <form action="/searchName/" method="post" id="searchWorkshops" onsubmit="setAction(); return true;" class="form-search">
         <select name="searchType" id="searchType" class="input-small" style="font-size:12px;">
             <option value="Workshops">Workshops named</option>
             <option value="Members">Members named</option>
-        </select> <input type="text" name="searchString" id="searchString" class="input-small search-query"> <button class="btn btn-primary btn-mini" type="submit">Search</button>
-    </form>
+        </select> <input type="text" name="searchString" id="searchString" class="input-small search-query"> <button class="btn btn-primary btn-mini" type="submit" title="Click to search"><i class="icon-white icon-search"></i></button>
+    </form><br />
+    </span><!-- pull-right -->
     % if 'user' in session:
-        <form id="searchGeoUsers" action="/searchGeoUsers/" method = "post" onsubmit="setScope(); return true;" class="form-search" style="font-size:12px;">
+        <span class="pull-right">
+        <form id="searchGeoUsers" action="/searchGeoUsers/" method = "post" onsubmit="setScope(); return true;" class="form-search" >
             Members in my &nbsp;<select name="scopeLevel" id="scopeLevel" class="input-small" style="font-size:12px;">
             <option value="09">City</option>
             <option value="07">County</option>
             <option value="05">State</option>
             <option value="03">Country</option>
-            </select> &nbsp;<button class="btn btn-primary btn-mini" type="submit">Search</button>
-        </form>
+            </select> <button class="btn btn-primary btn-mini" type="submit" title="Click to search"><i class="icon-white icon-search"></i></button>
+        </form><br />
+        </span><!-- pull-right -->
         <!-- CCN
         <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
             Workshops in my <select name="scopeLevel">

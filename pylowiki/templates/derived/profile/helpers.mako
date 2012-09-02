@@ -53,7 +53,7 @@
            % else:
                <% mObj = False %>
            %endif 
-           <a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a><br />
+           <a href="/profile/${user['urlCode']}/${user['url']}" title="Click to view profile of member ${user['name']}">${user['name']}</a><br />
            % if mObj:
                % if mObj.objType == 'comment':
                    <% oLink = "/comment/" + mObj['urlCode'] %>
@@ -106,7 +106,7 @@
                %else:
                    <% wTitle = w['title'] %>
                %endif
-               <i class="icon-cog"></i><a href="${wLink}"> ${wTitle}</a><br />
+
                %if mObj.objType == 'comment':
                    %if len(ooTitle) > maxlen:
                        <% ooTitle = ooTitle[0:(maxlen - 4)] + '...' %>
@@ -116,15 +116,18 @@
                    %else:
                        <% oTitle = mObj['data'] %>
                    %endif
-                   <i class="icon-${ooiType}"></i><a href="${ooLink}"> ${ooTitle}</a><br />
+                   New <a href="${oLink}" title="Click to view new ${mObj.objType}"><i class="icon-${oiType}"></i> ${oTitle}</a><br />
+                   in <a href="${ooLink}" title="Click to view discussion"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />
+                   <% newTitle = "in" %>
                % else:
                    %if len(mObj['title']) > maxlen:
                       <% oTitle = mObj['title'][0:(maxlen - 4)] + '...' %>
                    %else:
                       <% oTitle = mObj['title'] %>
                    %endif
+                   New <a href="${oLink}" title="Click to view new ${mObj.objType}"><i class="icon-${oiType}"></i> ${oTitle}</a><br />
                %endif
-               <i class="icon-${oiType}"></i><a href="${oLink}"> ${oTitle}</a><br />
+               in <a href="${wLink}" title="Click to view workshop"><i class="icon-cog"></i> ${wTitle}</a><br />
                <i class="icon-time"></i> <span class="recent">${timeSince(mObj.date)}</span> ago<br />
             % endif
         </div><!-- span10 --> 
