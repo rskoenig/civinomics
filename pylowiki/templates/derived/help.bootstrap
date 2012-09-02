@@ -1,0 +1,56 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/derived/help/helpers.mako" />
+
+${lib.return_to()}
+
+<div class="container-fluid">
+    <div class="well">
+        <h1>Help</h1>
+    </div><!-- well -->
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="civ-col">
+                <h2 class="civ-col"><i class="icon-question-sign"></i> Welcome to Civinomics <i class="icon-exclamation-sign"></i>
+                </h2>
+            </div><!-- civ-col -->
+            <br /><br />
+            New in town? You've come to the right place. 
+            <br /><br />
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-user"></i> Civinomics Membership</a></li>
+                    <li><a href="#tab2" data-toggle="tab"><i class="icon-cog"></i> Intro to Workshops</a></li>
+                    <li><a href="#tab3" data-toggle="tab"><i class="icon-exclamation-sign"></i> Intro to Surveys</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab1">
+                        <h2>Civinomics Membership</h2>
+                        ${helpers.membership()}
+                    </div><!-- tab-pane tab1 -->
+                    <div class="tab-pane" id="tab2">
+                        <h2>Introduction to Workshops</h2>
+                        ${helpers.workshops()}
+                    </div><!-- tab-pane tab2 -->
+                    <div class="tab-pane" id="tab3">
+                        <h2>Introduction to Surveys</h2>
+                        ${helpers.surveys()}
+                    </div><!-- tab-pane tab3 -->
+                </div><!-- tab-content -->
+           </div><!-- tabbable -->
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>
+
