@@ -396,6 +396,14 @@ def make_map():
     # 
     ########################################################################################################
     
+    # Login and signup
+    map.connect('/login', controller = 'login', action = 'loginDisplay')
+    map.connect('/login/', controller = 'login', action = 'loginDisplay')
+    map.connect('/loginHandler', controller = 'login', action = 'loginHandler')
+    map.connect('/loginHandler/', controller = 'login', action = 'loginHandler')
+    map.connect('/signup', controller = 'register', action = 'signupDisplay')
+    map.connect('/signup/', controller = 'register', action = 'signupDisplay')
+
     # User profile
     map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
