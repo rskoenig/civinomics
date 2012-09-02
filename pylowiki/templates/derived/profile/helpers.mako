@@ -350,6 +350,7 @@
         % elif wcounter == 2:
            <br /><br />
         % elif wcounter == 3:
+           <br />
         % endif
         % if sinceNumber:
             % if sinceNumber > 1:

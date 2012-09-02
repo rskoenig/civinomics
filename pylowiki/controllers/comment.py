@@ -345,7 +345,7 @@ class CommentController(BaseController):
         elif d['discType'] == 'general':
             backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/discussion/" + d['urlCode'] + "/" + d['url']
         elif d['discType'] == 'background':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/bacground"
+            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/background"
 
 
         if cError == 0:

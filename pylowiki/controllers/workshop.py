@@ -1048,6 +1048,7 @@ class WorkshopController(BaseController):
         url = id2
         
         c.w = getWorkshop(code, url)
+        c.isScoped = isScoped(c.authuser, c.w)
         c.title = c.w['title']
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.commentsDisabled = 0

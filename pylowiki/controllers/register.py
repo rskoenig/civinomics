@@ -74,6 +74,7 @@ class RegisterController(BaseController):
             lastName = request.params['lastName']
         if  'chkTOS' not in request.params:
             log.info('chkTOS missing')
+            checkTOS = False
         else:
             checkTOS = request.params['chkTOS']
 
