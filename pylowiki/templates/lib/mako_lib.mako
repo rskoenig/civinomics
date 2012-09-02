@@ -336,38 +336,34 @@
 </%def>
 
 <%def name="your_facilitator()">
-	% if c.facilitators == False or len(c.facilitators) == 0:
-		<div class="alert alert-warning">No facilitators!</div>
-	% else:
-                <table class="table table-striped">
-                <tbody>
-		% for facilitator in c.facilitators:
-			<% fuser = getUserByID(facilitator.owner) %>
-                        <tr>
-                        <td>
-                            <ul class="unstyled thumbnails">
-                            <li>
-			    % if fuser['pictureHash'] == 'flash':
-				<a href="/profile/${fuser['urlCode']}/${fuser['url']}" class="thumbnail"><img src="/images/avatars/flash.profile" style="width:40px;" alt="${fuser['name']}" title="${fuser['name']}"></a>
-			% else:
-				<a href="/profile/${fuser['urlCode']}/${fuser['url']}" class="thumbnail"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:40px;" alt="${fuser['name']}" title="${fuser['name']}"></a>
-			    % endif
-                            </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <a href="/profile/${fuser['urlCode']}/${fuser['url']}">${fuser['name']}</a>
-                        </td>
-                        </tr>
-		% endfor
-                </tbody>
-                </table>
-		% if c.motd and int(c.motd['enabled']) == 1:
-			<p>Facilitator message:</p> ${c.motd['messageSummary']}
-		% else:
-			
-		% endif
-	% endif
+    % if c.facilitators == False or len(c.facilitators) == 0:
+        <div class="alert alert-warning">No facilitators!</div>
+    % else:
+        <ul class="unstyled civ-col-list">
+        % for facilitator in c.facilitators:
+            <li>
+            <% fuser = getUserByID(facilitator.owner) %>
+            <div class="row-fluid">
+                <div class="span2">
+                % if fuser['pictureHash'] == 'flash':
+                    <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatars/flash.profile" style="width:40px;" alt="${fuser['name']}" title="${fuser['name']}" class="thumbnail"></a>
+                % else:
+                    <a href="/profile/${fuser['urlCode']}/${fuser['url']}"><img src="/images/avatar/${fuser['directoryNumber']}/profile/${fuser['pictureHash']}.profile" style="width:40px;" alt="${fuser['name']}" title="${fuser['name']}" class="thumbnail"></a>
+                % endif
+                </div><!-- span2 -->
+                <div class="span8">
+                    <a href="/profile/${fuser['urlCode']}/${fuser['url']}">${fuser['name']}</a>
+                </div><!-- span8 -->
+            </div><!-- row-fluid --> 
+            </li>
+        % endfor
+        </ul>
+        % if c.motd and int(c.motd['enabled']) == 1:
+            <p>Facilitator message:</p> ${c.motd['messageSummary']}
+        % else:
+
+        % endif
+    % endif
 </%def>
 
 <%def name="civ_col_img()">
@@ -529,15 +525,26 @@
 
 <%def name="displayFeedbackSlider()">
     % if "user" in session:
-        <div id="ratings0" class="rating pull-left">
-            <div id="overall_slider" class="ui-slider-container clearfix">
-                % if c.rating:
-                    <div id="${c.w['urlCode']}_${c.w['url']}" class="small_slider" data1="0_${c.w['urlCode']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
-                % else:
-                    <div id="${c.w['urlCode']}_${c.w['url']}" class="small_slider" data1="0_${c.w['urlCode']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
-                % endif
-            </div>
-        </div>
+        <h2 class="civ-col"><i class="icon-volume-up"></i> Feedback</h2>
+        <div class="civ-col-inner">
+            <div class="well workshop_header">
+                Provide feedback for the workshop facilitators.
+                What do you think about the running of this workshop?
+                <br /> <br />
+
+                <div id="ratings0" class="rating pull-left">
+                    <div id="overall_slider" class="ui-slider-container clearfix">
+                        % if c.rating:
+                            <div id="${c.w['urlCode']}_${c.w['url']}" class="small_slider" data1="0_${c.w['urlCode']}_${c.rating['rating']}_overall_true_rateFacilitation" data2="${c.w['url']}"></div>
+                        % else:
+                            <div id="${c.w['urlCode']}_${c.w['url']}" class="small_slider" data1="0_${c.w['urlCode']}_0_overall_false_rateFacilitation" data2="${c.w['url']}"></div>
+                        % endif
+                    </div><!-- overall_slider -->
+                </div><!-- ratings0 -->
+                <br /> <br />
+                <br /> <br />
+            </div><!-- well -->
+        </div><!-- civ-col-inner -->
     % endif
 </%def>
 

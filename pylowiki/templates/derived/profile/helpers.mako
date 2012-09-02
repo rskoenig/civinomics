@@ -336,7 +336,7 @@
 		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" width="120" height="80" class="thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}"></a>
 	% endif
         <% wcounter = 0 %>
-        <a href="/workshop/${workshop['urlCode']}/${workshop['url']}">
+        <a href="/workshop/${workshop['urlCode']}/${workshop['url']}" title="Click to view workshop.">
         % for line in textwrap.wrap(workshop['title'], 18):
             <% wcounter = wcounter + 1 %>
             ${line}<br />
@@ -350,11 +350,15 @@
         % elif wcounter == 2:
            <br /><br />
         % elif wcounter == 3:
-           <br />
         % endif
         % if sinceNumber:
-           ${sinceNumber} new posts!<br>
+            % if sinceNumber > 1:
+                <span class="label-success" style="color:white;"><strong>&nbsp;${sinceNumber} new posts!&nbsp;</strong></span>
+            % else:
+                <span class="label-success" style="color:white;"><strong>&nbsp;${sinceNumber} new post!&nbsp;</strong></span>
+            % endif
         % endif
+           <br />
         </a>
 </%def>
 

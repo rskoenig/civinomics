@@ -60,9 +60,7 @@
 	<div class="span3">
 		<div class="civ-col">
                         % if 'user' in session:
-                            <h2 class="civ-col">Surveys</h2>
-                                <a href="/surveys">View Surveys</a>
-                                <br /><br />
+                            ${workshop_helpers.surveys()}
                         % endif
 			<h2 class="civ-col">News</h2>
 			<div class="civ-col-inner">

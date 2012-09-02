@@ -29,12 +29,7 @@ ${lib.return_to()}
         </div><!-- span8 -->
         <div class="span4">
             <div class="civ-col">
-                <h2 class="civ-col"><i class="icon-volume-up"></i> Feedback</h2>
-                <div class="civ-col-inner">
-                    How well is this workshop running?<br /> 
                     ${lib.displayFeedbackSlider()}
-                </div><!-- civ-col-inner -->
-                <br /><br />
                 <h2 class="civ-col"><i class="icon-list-alt"></i> ${lib.facilitator()}</h2>
                 <div class="civ-col-inner">
                     ${lib.your_facilitator()}

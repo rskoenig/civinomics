@@ -84,6 +84,16 @@
 	Total Workshops: ${c.count} | View ${ c.paginator.pager('~3~') }
 </%def>
 
+<%def name='surveys()'>
+    <h2 class="civ-col">Surveys</h2>
+    <div class="civ-col-inner">
+        <div class="well">
+            <a href="/surveys"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_029_notes_2.png"> View Surveys</a>
+        </div><!-- well -->
+    </div><!-- civ-col-inner -->
+</%def>
+
+
 <%def name='list_news()'>
 	##<ul class="unstyled civ-col-list">
 		##<li>
