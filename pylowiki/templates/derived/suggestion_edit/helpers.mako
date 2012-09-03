@@ -5,19 +5,34 @@
     log = logging.getLogger(__name__)
 %>
 
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
 <%def name="addSuggestionForm(c)">
+    ${lib.fields_alert()}
     % if c.s:
         <form id="edit_suggestion" action = "${c.site_secure_url}/saveSuggestion/${c.s['urlCode']}/${c.s['url']}" class="form-vertical" method = "post">
         <% dataValue = c.s['data'] %>
-            <% titleValue = c.s['title'] %>
-            <% allowComments = c.s['allowComments'] %>
-         % else:
-            <form id="add_suggestion" action = "${c.site_secure_url}/addSuggestion/${c.w['urlCode']}/${c.w['url']}" class="form-vertical" method = "post">
-            <% dataValue = '' %>
+        <% titleValue = c.s['title'] %>
+        <% allowComments = c.s['allowComments'] %>
+    % else:
+        <form id="add_suggestion" action = "${c.site_secure_url}/addSuggestion/${c.w['urlCode']}/${c.w['url']}" class="form-vertical" method = "post">
+        % if c.suggestionTitle:
+            <% titleValue = c.suggestionTitle %>
+        % else:
             <% titleValue = '' %>
-            <% allowComments = '' %>
         % endif
-        <fieldset>
+        % if c.suggestionData:
+            <% dataValue = c.suggestionData %>
+        % else:
+            <% dataValue = '' %>
+        % endif
+        % if c.suggestionAllowComments:
+            <% allowComments = c.allowComments %>
+        % else:
+            <% allowComments = c.suggestionAllowComments %>
+        % endif
+    % endif
+    <fieldset>
             <br />
             <div class="control-group">
                 <label class="control-label"><strong>Suggestion Title:</strong></label>

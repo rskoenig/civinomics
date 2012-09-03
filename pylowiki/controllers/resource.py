@@ -247,7 +247,13 @@ class ResourceController(BaseController):
         else:
             allowComments = -1
 
-        
+        if 'suggestionCode' in request.params and 'suggestionURL' in request.params:
+            suggestionCode = request.params['suggestionCode']
+            suggestionURL = request.params['suggestionCode']
+            s = getSuggestion(suggestionCode, suggestionURL)
+        else:
+            s = False
+
         rerror = 0
         rerrorMsg = ''
         if not link or not comment or not title:
@@ -260,15 +266,24 @@ class ResourceController(BaseController):
 
 
         if rerror:
-            h.flash(rerrorMsg, 'error')
-        else:
-            if 'suggestionCode' in request.params and 'suggestionURL' in request.params:
-                suggestionCode = request.params['suggestionCode']
-                suggestionURL = request.params['suggestionCode']
-                s = getSuggestion(suggestionCode, suggestionURL)
-            else:
-                s = False
+            alert = {'type':'error'}
+            alert['title'] = "Error."
+            alert['content'] = rerrorMsg
+            session['alert'] = alert
+            session.save()
+            c.s = s
+            c.resourceTitle = title
+            c.resourceComment = comment
+            c.resourceLink = link
+            c.resourceAllowComments = allowComments
+            c.w = getWorkshop(code, urlify(url))
+            c.r = False
+            c.heading = "OTHER RESOURCES"
+            c.resources = getResourcesByWorkshopID(c.w.id)
 
+            return render('/derived/resource_edit.bootstrap')
+
+        else:
             w = getWorkshop(code, urlify(url))
 
             # make sure link not already submitted
@@ -280,14 +295,35 @@ class ResourceController(BaseController):
             log.info('a is %s link is %s' % (a, link))
 
             if a:
-                h.flash('Link already submitted for this workshop', 'warning')
-                return redirect('/workshop/%s/%s'%(code, url))
+                alert = {'type':'error'}
+                alert['title'] = "Error."
+                if s:
+                    alert['content'] = 'Link already submitted for this suggestion.'
+                else:
+                    alert['content'] = 'Link already submitted for this workshop.'
+                session['alert'] = alert
+                session.save()
+                if s:
+                    return redirect('/workshop/%s/%s/suggestion/%s/%s'%(code, url, s['urlCode'], s['url']))
+                else:
+                    return redirect('/workshop/%s/%s'%(code, url))
 
             if s:
                 r = Resource(link, title, comment, c.authuser, allowComments, w, s)
+                alert = {'type':'success'}
+                alert['title'] = 'Resource added.'
+                alert['content'] = 'Thanks for the new information resource!'
+                session['alert'] = alert
+                session.save()
+
                 return redirect('/workshop/%s/%s/suggestion/%s/%s'%(code, url, suggestionCode, suggestionURL))
             else:
                 r = Resource(link, title, comment, c.authuser, allowComments, w)
+                alert = {'type':'success'}
+                alert['title'] = 'Resource added.'
+                alert['content'] = 'Thanks for the new information resource!'
+                session['alert'] = alert
+                session.save()
                 if 'resources' not in w.keys():
                     w['resources'] = r.a.id
                 else:

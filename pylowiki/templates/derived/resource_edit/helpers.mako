@@ -5,76 +5,91 @@
     log = logging.getLogger(__name__)
 %>
 
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
 <%def name="addResourceForm(c)">
-            % if c.r:
-                <form id="edit_resource" action = "${c.site_secure_url}/saveResource/${c.r['urlCode']}/${c.r['url']}" class="form-vertical" method = "post">
-                    <% linkValue = c.r['link'] %>
-                    <% titleValue = c.r['title'] %>
-                    <% commentValue = c.r['comment'] %>
-            % else:
-                <form id="add_resource" action = "${c.site_secure_url}/addResource/${c.w['urlCode']}/${c.w['url']}" class="form-vertical" method = "post">
-                    <% linkValue = '' %>
-                    <% titleValue = '' %>
-                    <% commentValue = '' %>
-            % endif
-            % if c.s:
-                    <input type="hidden" name="suggestionCode" value="${c.s['urlCode']}">
-                    <input type="hidden" name="suggestionURL" value="${c.s['url']}">
-            % endif
+    ${lib.fields_alert()}
+    % if c.r:
+        <form id="edit_resource" action = "${c.site_secure_url}/saveResource/${c.r['urlCode']}/${c.r['url']}" class="form-vertical" method = "post">
+        <% linkValue = c.r['link'] %>
+        <% titleValue = c.r['title'] %>
+        <% commentValue = c.r['comment'] %>
+    % else:
+        <form id="add_resource" action = "${c.site_secure_url}/addResource/${c.w['urlCode']}/${c.w['url']}" class="form-vertical" method = "post">
+        % if c.resourceTitle:
+            <% titleValue = c.resourceTitle %>
+        % else:
+            <% titleValue = '' %>
+        % endif
+        % if c.resourceComment:
+            <% commentValue = c.resourceComment %>
+        % else:
+            <% commentValue = '' %>
+        % endif
+        % if c.resourceLink:
+            <% linkValue = c.resourceLink %>
+        % else:
+            <% linkValue = '' %>
+        % endif
+    % endif
+    % if c.s:
+        <input type="hidden" name="suggestionCode" value="${c.s['urlCode']}">
+        <input type="hidden" name="suggestionURL" value="${c.s['url']}">
+    % endif
 
-            <fieldset>
-                <br />
-                <div class="control-group">
-                    <label class="control-label"><strong>Resource URL:</strong></label>
-                    <div class="controls docs-input-sizes">
-                        <input type="text" id="resourceurl" name = "link" value="${linkValue}"/>
-                    </div>
-                </div>
+    <fieldset>
+    <br />
+    <div class="control-group">
+        <label class="control-label"><strong>Resource URL:</strong></label>
+        <div class="controls docs-input-sizes">
+            <input type="text" id="resourceurl" name = "link" value="${linkValue}"/>
+        </div><!-- controls -->
+    </div><!-- control-group -->
                    
-                <div class="control-group">
-                    <label class="control-label"><strong>Resource Title:</strong></label>
-                    <label class="control-label">Keep the title short and informative as possible.</label>
-                    <div class="controls docs-input-sizes">
-                        <input type="text" id="resourcetitle" name = "title" value="${titleValue}"/>
-                    </div>
-                </div>
+    <div class="control-group">
+        <label class="control-label"><strong>Resource Title:</strong></label>
+        <label class="control-label">Keep the title short and informative as possible.</label>
+        <div class="controls docs-input-sizes">
+            <input type="text" id="resourcetitle" name = "title" value="${titleValue}"/>
+        </div><!-- controls -->
+    </div><!-- control-group -->
 
-                <div class="control-group">
-                    <label class="control-label"><strong>Description:</strong></label>
-                    <label class="control-label">Please provide a complete description of your information resource.</label>
-                    <div class="controls docs-input-sizes">
-                        <textarea id="resourcetext" name="comment" rows=8 cols=50 onkeyup="previewAjax( 'resourcetext', 'resource-preview-div' )" class="markitup">${commentValue}</textarea>
-                        <div id="resource-preview-div"></div>
-                    </div>
-                </div>
+    <div class="control-group">
+        <label class="control-label"><strong>Description:</strong></label>
+        <label class="control-label">Please provide a complete description of your information resource.</label>
+        <div class="controls docs-input-sizes">
+            <textarea id="resourcetext" name="comment" rows=8 cols=50 onkeyup="previewAjax( 'resourcetext', 'resource-preview-div' )" class="markitup">${commentValue}</textarea>
+            <div id="resource-preview-div"></div>
+        </div><!-- controls -->
+    </div><!-- control-group -->
 
-                <div class="control-group">
-                    % if c.r and 'allowComments' in c.r and c.r['allowComments'] == '0':
-                       <% noChecked = 'checked' %>
-                       <% yesChecked = '' %>
-                    % else:
-                       <% yesChecked = 'checked' %>
-                       <% noChecked = '' %>
-                    % endif
+    <div class="control-group">
+        % if c.r and 'allowComments' in c.r and c.r['allowComments'] == '0':
+            <% noChecked = 'checked' %>
+            <% yesChecked = '' %>
+        % else:
+            <% yesChecked = 'checked' %>
+            <% noChecked = '' %>
+        % endif
 
-                    <div class="controls">
-                        <label class="control-label">
-                            Allow member comments:
-                        </label>
-                        <label class="radio inline">
-                            <input type = "radio" name = "allowComments" value = "1" ${yesChecked}> Yes 
-                        </label>
-                        &nbsp;&nbsp;&nbsp;
-                        <label class="radio inline">
-                            <input type = "radio" name = "allowComments" value = "0" ${noChecked}> No 
-                        </label>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-success">Submit</button>
-                </div>
-            </fieldset>
-        </form>
+        <div class="controls">
+            <label class="control-label">
+            Allow member comments:
+            </label>
+            <label class="radio inline">
+                <input type = "radio" name = "allowComments" value = "1" ${yesChecked}> Yes 
+            </label>
+            &nbsp;&nbsp;&nbsp;
+            <label class="radio inline">
+                <input type = "radio" name = "allowComments" value = "0" ${noChecked}> No 
+            </label>
+        </div><!-- controls -->
+    </div><!-- controls -->
+    <div class="form-actions">
+        <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+    </fieldset>
+    </form>
 </%def>
 
 <%def name="listOtherResources(c, author)">

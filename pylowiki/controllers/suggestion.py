@@ -205,21 +205,42 @@ class SuggestionController(BaseController):
         if not data or not title:
             serror = 1
             serrorMsg = 'Enter suggestion title and text.'
+            log.info(serrorMsg)
         if data == '' or title == '':
             serror = 1
             serrorMsg = 'Enter suggestion title and text.'
+            log.info(serrorMsg)
+
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser, c.w)
         s = isScoped(c.authuser, c.w)
+
         if (not s or c.w['allowSuggestions'] == '0') and not a and not f:
            serror = 1
            serrorMsg = 'You are not authorized.'
+
         if serror:
-           h.flash(serrorMsg, 'error')
+            alert = {'type':'error'}
+            alert['title'] = "Error."
+            alert['content'] = serrorMsg
+            session['alert'] = alert
+            session.save()
+            c.s = False
+            c.suggestionTitle = title
+            c.suggestionData = data
+            c.suggestionAllowComments = allowComments
+            c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+            return render('/derived/suggestion_edit.bootstrap')
+
         else:
-           s = Suggestion(c.authuser, title, data, allowComments, c.w)
+            alert = {'type':'success'}
+            alert['title'] = 'Suggestion added.'
+            alert['content'] = 'Thanks for the suggestion!'
+            session['alert'] = alert
+            session.save()
+            s = Suggestion(c.authuser, title, data, allowComments, c.w)
+            return redirect('/workshop/%s/%s'%(code, url))
         
-        return redirect('/workshop/%s/%s'%(code, url))
 
     @h.login_required
     def modSuggestion(self, id1, id2):

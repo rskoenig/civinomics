@@ -103,7 +103,7 @@
 	<ul class="unstyled">
 		% for pT in pTags.keys():
 			<% fixedpT = pT.replace(" ", "_") %>
-			<li><a href="/searchTags/${fixedpT}/">${pT}</a>: ${pTags[pT]}</li>
+			<li><a href="/searchTags/${fixedpT}/" title="Click to view workshops with this tag">${pT}</a>: ${pTags[pT]}</li>
 		% endfor
 	</ul> <!-- /.unstyled -->
 </%def>
@@ -114,7 +114,7 @@
 		<ul class="unstyled">
 			% for mT in mTags.keys():
 				<% fixedmT = mT.replace(" ", "_") %>
-				<li><a href="/searchTags/${fixedmT}/">${mT}</a>: ${mTags[mT]}</li>
+				<li><a href="/searchTags/${fixedmT}/" title="Click to view workshops with this tag">${mT}</a>: ${mTags[mT]}</li>
 			% endfor
 		</ul>
 	% else:

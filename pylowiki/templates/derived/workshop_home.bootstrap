@@ -19,6 +19,7 @@
             </div><!-- span12 -->
         </div><!-- container-fluid -->
     </div> <!-- /.row-fluid -->
+    ${lib.fields_alert()}
 
     <div class="row-fluid">
         <div class="span4">

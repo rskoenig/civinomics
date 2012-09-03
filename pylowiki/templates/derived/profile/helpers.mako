@@ -246,14 +246,6 @@
 	% if c.userFollowers:
 		${displayUserFollows(5)}
 	% endif
-	% if 'user' in session and c.authuser['email'] != c.user['email']:
-		<div class="civ-col">
-			<h2 class="civ-col">Connections</h2>
-			<div class="civ-col-inner">
-				${displayConnections()}
-			</div> <!-- /.civ-col-inner -->
-		</div> <!-- /.civ-col -->
-	% endif
 </%def>
 
 <%def name="summary()">

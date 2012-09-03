@@ -11,32 +11,32 @@
 <%namespace file="/lib/mako_lib.mako" name="lib" />
 
 <%def name="featured_workshop()">
-	% if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode'] and c.action == 'sitemapIssues':
-		<div class="civ-img-cap" style="border:1px solid black;">
-		    <% mainWorkshop = c.paginator.pop(0) %>
-		    % if mainWorkshop['mainImage_hash'] == 'supDawg':
-		        <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'>
-				    <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" style="max-width: 100%" alt="${mainWorkshop['title']}" title="${mainWorkshop['title']}">
-				</a>
-			% else:
-				<a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'>
-					<img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_directoryNum']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" style="max-width: 100%" alt="${mainWorkshop['title']}" title="${mainWorkshop['title']}">
-				</a>
-			% endif
-			<div class="cap">
-				<h5>Latest Workshop: ${mainWorkshop['title']}</h5>
-				Public Sphere: ${mainWorkshop['publicScopeTitle']}<br>
-				Tags: ${mainWorkshop['publicTags']}, ${mainWorkshop['memberTags']}<br>
-				<a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}" title="Click to view workshop">View Workshop</a>
-			</div> <!-- /.cap -->
-		</div> <!-- /.civ-img-cap -->
-	% else:
-                <!--
-		<p>
-			No featured workshops.
-		</p>
-                -->
-	% endif
+    % if len(c.list) > 0 and c.list[0]['urlCode'] == c.paginator[0]['urlCode'] and c.action == 'sitemapIssues':
+        <div class="civ-img-cap" style="border:1px solid black;">
+        <% mainWorkshop = c.paginator.pop(0) %>
+        % if mainWorkshop['mainImage_hash'] == 'supDawg':
+            <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'>
+            <img src="/images/${mainWorkshop['mainImage_identifier']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" style="max-width: 100%" alt="${mainWorkshop['title']}" title="${mainWorkshop['title']}">
+            </a>
+        % else:
+            <a href = '/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}'>
+            <img src="/images/${mainWorkshop['mainImage_identifier']}/${mainWorkshop['mainImage_directoryNum']}/slideshow/${mainWorkshop['mainImage_hash']}.slideshow" style="max-width: 100%" alt="${mainWorkshop['title']}" title="${mainWorkshop['title']}">
+            </a>
+        % endif
+        <div class="cap">
+            <h5>Latest Workshop: ${mainWorkshop['title']}</h5>
+            Public Sphere: ${mainWorkshop['publicScopeTitle']}<br>
+            Tags: ${mainWorkshop['publicTags']}, ${mainWorkshop['memberTags']}<br>
+            <a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}" title="Click to view workshop" style="color:white"><strong>View Workshop</strong></a>
+            </div> <!-- /.cap -->
+        </div> <!-- /.civ-img-cap -->
+    % else:
+        <!--
+        <p>
+        No featured workshops.
+        </p>
+        -->
+    % endif
 </%def>
 
 <%def name="list_workshops()">
@@ -87,8 +87,8 @@
 <%def name='surveys()'>
     <h2 class="civ-col">Surveys</h2>
     <div class="civ-col-inner">
-        <div class="well">
-            <a href="/surveys"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_029_notes_2.png"> View Surveys</a>
+        <div class="well" style="background-color:#40A361;">
+            <a href="/surveys" style="color:white;" title="Click to view and participate in surveys"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_029_notes_2.png"> View Surveys</a>
         </div><!-- well -->
     </div><!-- civ-col-inner -->
 </%def>

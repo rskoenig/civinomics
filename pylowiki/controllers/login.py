@@ -50,12 +50,15 @@ class LoginController(BaseController):
                             user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
                              
                         user['laston'] = time.time()
+                        loginTime = time.localtime(float(user['laston']))
+                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
                         commit(user)
                         session["user"] = user['name']
                         session["userCode"] = user['urlCode']
                         session["userURL"] = user['url']
                         session.save()
                         log.info('session of user: %s' % session['user'])
+                        log.info('%s logged in %s' % (user['name'], loginTime))
                         c.authuser = user
                         
                         log.info( "Successful login attempt with credentials - " + email )

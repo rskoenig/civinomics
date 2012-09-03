@@ -57,6 +57,10 @@ from general public or member view.
 </%def>
 
 <%def name="surveys()">
-
+Civinomics surveys are designed to be educational experiences as well as oportunities for members to provide feedback.
+<br /><br />
+As you move through the survey informational and educational slides, please take the time to provide thoughtful answers to questions. Your input is taken seriously by the public agencies and other organizations which commission the surveys.
+<br /><br />
+We appreciate your use of the sliders to register more than just binary yes or no votes. It is important for policy makers to get a sense of the degree of support or opposition to a given project, option, or survey question.
 </%def>
 
