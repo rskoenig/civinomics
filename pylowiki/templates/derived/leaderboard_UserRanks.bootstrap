@@ -2,25 +2,23 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/leaderboard/helper.mako" />
 
-${lib.nav_thing("leaderboard")}
-</br></br>
-<div class="row">
-    <div class="span3">
-        </br></br>
-        <center>${helpers.UserPhoto()}</center>
-    </div>
-    <div class="span10">
-        ${helpers.Overall_Leaderboard()}
-    </div>
-</div>
-<div class="row">
-    <div class="span3">
-        <center>${helpers.Menu()}</center>
-    </div>
-    <div class="span10">
-        ${helpers.DisplayLeaderboards()}
-    </div>
-</div> <!-- /.row-fluid -->
+<div class="container-fluid">
+   <div class="well workshop_header">
+       ${lib.displayWorkshopHeader('leaderboard')}
+   </div><!-- well -->
+   </br></br>
+   <div class="row-fluid">
+       <div class="span2">
+           <center>${helpers.UserPhoto()}</center>
+           </br>
+           <center>${helpers.Menu()}</center>
+       </div><!-- span2 -->
+       <div class="span10">
+           ${helpers.Overall_Leaderboard()}
+           ${helpers.DisplayLeaderboards()}
+       </div><!-- span10 -->
+    </div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
 
 <%def name = 'extraHTML()'>
 

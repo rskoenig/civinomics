@@ -1,5 +1,6 @@
 <%!
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import getFlags
 %>
 
 <%def name="dis_admin_header()">
@@ -9,9 +10,7 @@
 </%def>
 
 <%def name="discussion_admin_options()">
-    <p>
-    <strong class="gray">Administrate Discussion</strong>
-    <br /><br /><br />
+    <br /><br />
 ##    <strong>Post Event Note on Discussion</strong>
 ##    <form name="note_discussion" id="note_discussion" class="left" action = "/adminDiscussionHandler" enctype="multipart/form-data" method="post" >
 ##    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
@@ -22,7 +21,21 @@
 ##    Note: &nbsp;
 ##    <input type=text name=noteDiscussionText><br /><br />
 ##    <button type="submit" class="btn btn-warning">Save Note</button>
-    </form>
+##    </form>
+        <% numFlags = len(getFlags(c.discussion)) %>
+        ${numFlags}
+        % if numFlags:
+            <strong>Clear Flags</strong>
+    		<form name="moderate_discussion" id="moderate_discussion" class="left" action = "/clearDiscussionFlagsHandler/${c.discussion['urlCode']}/${c.discussion['url']}" enctype="multipart/form-data" method="post" >
+
+    	        <br /><br />
+    	        Reason for action: &nbsp;
+    	        <input type=text name=clearDiscussionFlagsReason><br /><br />
+
+    	        <button type="submit" name=clearFlagsButton value="clearFlags" class="btn btn-warning">Clear Flags</button>
+    	        <br /><br />
+                </form>
+        % endif
         <strong>Moderate Discussion</strong>
     	% if c.discussion['deleted'] == '0':
     		<form name="moderate_discussion" id="moderate_discussion" class="left" action = "/adminDiscussionHandler" enctype="multipart/form-data" method="post" >

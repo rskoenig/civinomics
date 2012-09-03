@@ -61,10 +61,16 @@ def searchUsers( uKey, uValue):
         return False
 
 def getUserPosts(user):
-    try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(['resource', 'suggestion', 'comment'])).filter_by(owner = user.id).order_by('-date').all()
-    except:
-        return False
+    returnList = []
+    postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).order_by('-date').all()
+    for item in postList:
+       if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment':
+           returnList.append(item)
+       elif item.objType == 'discussion':
+           if item['discType'] == 'general':
+               returnList.append(item)
+
+    return returnList
 
 def checkPassword(user, password):
     if user['password'] == hashPassword(password):

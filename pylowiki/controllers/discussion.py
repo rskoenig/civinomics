@@ -1,7 +1,8 @@
-import logging
+import logging, pickle
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to, redirect
+import webhelpers.paginate as paginate
 
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents
@@ -10,30 +11,58 @@ from pylowiki.lib.db.workshop import getWorkshop, isScoped
 from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin
-from pylowiki.lib.db.facilitator import isFacilitator
+from pylowiki.lib.db.event import getParentEvents
+from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
+from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
+from pylowiki.lib.db.rating import getRatingByID
 
 from pylowiki.lib.db.discussion import Discussion
 
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
 class DiscussionController(BaseController):
 
-    @h.login_required
+    ##@h.login_required
     def index(self, id1, id2):
         workshopCode = id1
         workshopURL = id2
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
+        c.rating = False
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+            if 'ratedThings_workshop_overall' in c.authuser.keys():
+                workRateDict = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
+                if c.w.id in workRateDict.keys():
+                    c.rating = getRatingByID(workRateDict[c.w.id])
+        else:
+            c.isScoped = False
+
+        fList = []
+        for f in (getFacilitatorsByWorkshop(c.w.id)):
+           if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
+              fList.append(f)
+
+        c.facilitators = fList
+
+
         log.info(c.w)
         c.title = c.w['title']
         c.code = c.w['urlCode']
         c.url = c.w['url']
         c.discussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
 
+        c.count = len(c.discussions)
+        c.paginator = paginate.Page(
+            c.discussions, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
         return render('/derived/discussion_landing.bootstrap')
 
-    @h.login_required
+    ##@h.login_required
     def topic(self, id1, id2, id3, id4):
         workshopCode = id1
         workshopUrl = id2
@@ -41,10 +70,22 @@ class DiscussionController(BaseController):
         discussionUrl = id4
         
         c.w = getWorkshop(workshopCode, urlify(workshopUrl))
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        else:
+            c.isScoped = False
+            c.isAdmin = False
+            c.isFacilitator = False
+
         c.discussion = getDiscussion(discussionCode, urlify(discussionUrl))
+        c.flags = getFlags(c.discussion)
+        c.events = getParentEvents(c.discussion)
         c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
-        if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
-            c.otherDiscussions.remove(c.discussion)
+        if 'disabled' in c.discussion and 'deleted' in c.discussion:
+            if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
+                c.otherDiscussions.remove(c.discussion)
 
         c.title = c.w['title']
         return render('/derived/discussion_topic.bootstrap')
@@ -59,11 +100,48 @@ class DiscussionController(BaseController):
 
         return render('/derived/discussion_edit.bootstrap')
 
+    @h.login_required
+    def clearDiscussionFlagsHandler(self, id1, id2):
+        code = id1
+        url = id2
+        clearError = 0
+        clearMessage = ""
+        c.discussion = getDiscussion(code, urlify(url))
+        if 'clearDiscussionFlagsReason' in request.params:
+            clearReason = request.params['clearDiscussionFlagsReason']
+            if clearReason != '':
+                clearFlags(c.discussion)
+                clearTitle = "Flags cleared"
+                e = Event(clearTitle, clearReason, c.discussion, c.authuser)
+            else:
+                clearError = 1
+                clearMessage = "Please include a reason for your action"
+        else:
+            clearError = 1
+            clearMessage = "Please include a reason for your action"
+
+        if clearError:
+            alert = {'type':'error'}
+            alert['title'] = "Flags not cleared"
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+        else:
+            clearMessage = "Flags cleared from this discussion"
+            alert = {'type':'success'}
+            alert['title'] = 'Flags cleared!'
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+
+        returnURL = "/adminDiscussion/" + code + "/" + url
+        return redirect(returnURL)
+
+    @h.login_required
     def newDiscussionHandler(self, id1, id2):
         code = id1
         url = id2
         w = getWorkshop(code, urlify(url))
-
         
         if 'title' in request.params:
             title = request.params['title']
@@ -83,11 +161,12 @@ class DiscussionController(BaseController):
             return redirect('/workshop/%s/%s/addDiscussion' % (code, url))
 
         else:
-            d = Discussion(owner = c.authuser, discType = 'general', workshop = w, title = title, text = text)
+            d = Discussion(owner = c.authuser, discType = 'general', attachedThing = w, title = title, text = text)
             commit(w)
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (code, url, d.d['urlCode'], d.d['url']))
     
+    @h.login_required
     def editDiscussion(self, id1, id2):
         code = id1
         url = id2
@@ -96,6 +175,7 @@ class DiscussionController(BaseController):
         
         return render('/derived/discussion_edit.bootstrap')
         
+    @h.login_required
     def editDiscussionHandler(self, id1, id2):
         code = id1
         url = id2
@@ -121,21 +201,43 @@ class DiscussionController(BaseController):
             return redirect('/editDiscussion/%s/%s' % (code, url))
 
         else:
-            discussion['title'] = title
-            discussion['text'] = text
+            dMsg = ''
+            if discussion['title'] != title:
+                discussion['title'] = title
+                dMsg = dMsg + "Title updated. "
+
+            if discussion['text'] != text:
+                discussion['text'] = text
+                dMsg = dMsg + "Text updated. "
+
+            Event('Discussion Edited', dMsg, discussion, c.authuser)
+            commit(discussion)
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (w['urlCode'], w['url'], discussion['urlCode'], discussion['url']))
     
-        
+    @h.login_required
+    def flagDiscussion(self, id1, id2):
+        code = id1
+        url = id2
+        discussion = getDiscussion(code, urlify(url))
+        if not discussion:
+            return json.dumps({'id':discussion.id, 'result':'ERROR'})
+        if not isFlagged(discussion, c.authuser):
+            f = Flag(discussion, c.authuser)
+            return json.dumps({'id':discussion.id, 'result':"Successfully flagged!"})
+        else:
+            return json.dumps({'id':discussion.id, 'result':"Already flagged!"})
+
+    @h.login_required
     def adminDiscussion(self, id1, id2):
         code = id1
         url = id2
         c.discussion = getDiscussion(code, urlify(url))
         c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
         
-        
         return render('/derived/discussion_admin.bootstrap')
 
+    @h.login_required
     def adminDiscussionHandler(self):
         
         workshopCode = request.params['workshopCode']

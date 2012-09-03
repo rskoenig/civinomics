@@ -1,339 +1,226 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<style type="text/css" media="screen">
-  .slides_container {
-    width:550;
-    height:460px;
-    display:none;
-  }
-  .slides_container div {
-    width:550px;
-    height:460px;
-    display:block;
-  }
-  .pagination {
-    list-style:none;
-    margin:0;
-    padding:0;
-    align: left;
-  }
-  html {
-    height: 100%;
-  }
-  body {
-    text-align:center;
-    height: 100%;
-    overflow:auto;
-  }
-  #wrap{
-    min-height: 100%;
-  }
-  #container{ 
-    width:1000px; 
-    margin: 0 auto;
-    text-align: left;
-    padding-bottom: 240px;
-    padding-top: 60px;
-    overflow: auto;
-  }
-  #footer{
-    margin:0;  
-    text-align:left;
-    background-color:#d9dad9;
-    margin-top: -240px;
-    height: 200px;
-    position:relative;    
-  }
-  .btn {
-    vertical-align: top;
-  }
-  .form-subtext{
-    font-size: 11px;
-  }
-</style>
-    
-    <link rel="shortcut icon" href="/images/fluid1_images/logo_tab.ico">
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
     <title>Civinomics</title>
-    <link href="/styles/bootstrap/civinomics_corp.css" rel="stylesheet">
-    <link href="/styles/bootstrap/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-    
-</head>
-<body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-    ${self.facebookID()}    
-    
-    <div id="wrap">
-    ${self.navbar()}
-        <div id="container">
-            <div class="row" style="padding-bottom:25px;"><!--main content-->
-                
-                <div class="span6" style="width:600px;">
-                    
-                    <!-- <div id="main" class="clr"> 
-                        <div class="left"> -->
-                            <div id="splash_slide">
-                                <div id="slides">
-                                  <div class="slides_container">
-                                      
-                                    <div class="slide">
-                                       <ul class="thumbnails">
-                                            <li> 
-                                                <div class="thumbnail" style="height:450px">
-                                                   <img src="/images/fluid1_images/cemex.jpg" alt="">
-                                                        <div class="span5" style="width:400px; margin-left: 0px;">
-                                                            <h3>CEMEX Redwoods Conservation</h3>
-                                                            <p>Public Sphere: Santa Cruz County </br>
-                                                            Starts: 06-30-2012</p>
-                                                        </div>
-                                                        <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/sc_county.png"/>
-                                                        </div>
-                                                </div>
-                                             </li>
-                                         </ul>
-                                    </div>
-                                    
-                                     <div class="slide">
-                                       <ul class="thumbnails">
-                                            <li> 
-                                                <div class="thumbnail" style="height:450px">
-                                                   <img src="/images/fluid1_images/cap.jpg" alt="">
-                                                        <div class="span5" style="width:400px; margin-left: 0px;">
-                                                            <h3>Santa Cruz Climate Action Plan</h3>
-                                                            <p>Public Sphere: City of Santa Cruz</br>
-                                                            Starts: 06-30-2012</p>
-                                                        </div>
-                                                        <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/santacruz.png"/>
-                                                        </div>
-                                                </div>
-                                             </li>
-                                         </ul>
-                                    </div>  
-                                   
-                                    <div class="slide">
-                                       <ul class="thumbnails">
-                                            <li> 
-                                                <div class="thumbnail" style="height:450px">
-                                                   <img src="/images/fluid1_images/eastside.png" alt="">
-                                                        <div class="span5" style="width:400px; margin-left: 0px;">
-                                                            <h3>Eastside Recycled Water Project</h3>
-                                                            <p>Public Sphere: City of San Francisco</br>
-                                                            Starts: 07-18-2012</p>
-                                                        </div>
-                                                        <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/sf_flag.png"/>
-                                                        </div>
-                                                </div>
-                                             </li>
-                                         </ul>
-                                    </div>
-                                    
-                                    <div class="slide">
-                                       <ul class="thumbnails">
-                                            <li> 
-                                                <div class="thumbnail" style="height:450px">
-                                                   <img src="/images/fluid1_images/scwd3.png" alt="">
-                                                        <div class="span5" style="width:400px; margin-left: 0px;">
-                                                            <h3>Santa Cruz Water Planning</h3>
-                                                            <p>Public Sphere: City of Santa Cruz</br>
-                                                            Starts: 09-30-2012</p>
-                                                        </div>
-                                                        <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/santacruz.png"/>
-                                                        </div>
-                                                </div>
-                                             </li>
-                                         </ul>
-                                    </div>
-                                    
-                                    <div class="slide">
-                                       <ul class="thumbnails">
-                                            <li> 
-                                                <div class="thumbnail" style="height:450px">
-                                                   <img src="/images/fluid1_images/uwf.jpg" alt="">
-                                                        <div class="span5" style="width:400px; margin-left: 0px;">
-                                                            <h3>Urban Watershed Framework</h3>
-                                                            <p>Public Sphere: City of San Francisco</br>
-                                                            Starts: 07-18-2012</p>
-                                                        </div>
-                                                        <div style="padding-top: 5px;" align="right">
-                                                            <img src="/images/splash/sf_flag.png"/>
-                                                        </div>
-                                                </div>
-                                             </li>
-                                         </ul>
-                                    </div>
-                                    
-                                    
-                                     
-                                    
-                                    
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-            
-            <div class="span3" style="width:270px;">
-                        % if c.splashMsg:
-                            <% message = c.splashMsg %>
-                            <div class="alert alert-${message['type']}">
-                                <button data-dismiss="alert" class="close">x</button>
-                                <strong>${message['title']}</strong> ${message['content']}
-                            </div>
-                        % endif
+    <link href="/styles/splash/splash.css" rel="stylesheet">
+    <link href="/bootstrap-2.1.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Handlee' rel='stylesheet' type='text/css'>
 
-                    <div class="well" style="background-color:#bcbcbb;">
-                        <h3>Sign In</h3>
-                        <form id="sign_in" action = "${c.site_secure_url}/login" class="form">         
-                            <input type="text" placeholder="Email" name = "email"/>
-                            <input type="password" style="width:142px;" placeholder="Password" name = "password"/>
-                            <button class="btn btn-primary" style="vertical-align: top;" type="submit">Submit</button>
-                            <div>
-                                <label class="checkbox">                            
-                                <input type="checkbox" id="remember_me_checkbox" name = "remember_me_checkbox"/><text class="form-subtext"> Remember me | <a href="password.com"> Forgot password?</a></text>
-                                </label>
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+    ${facebookID()}
+    <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#"> <img src="/images/splash/logo.png"> </a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              <li class="nav-item"><a href="/signup" class="nav-item">Sign Up</a></li>
+              <li class="nav-item"><a href="/login">Log In</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="imageChanger imageChanger2"></div>
+    <div class="imageChanger imageChanger1" style="display:none;"></div>
+    <div class="imageChanger imageChanger0" style="display:none;"></div>
+
+    <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span6 offset5" style="padding-top:50px;">
+                    <div class="hero-unit main-well">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                <h1 style="color:#5f774b; margin-top:0px;"> Connect </h1>
+                                <p>Workshops and surveys, online and in-person</p>
                             </div>
-                        </form> 
-                        <h3>Sign Up</h3>
-                        <div id="sign_up"> 
-                            ${h.form(h.url(controller = 'register', action = 'register_handler'), method = 'post')}
-                                <input type="hidden" name = "country" value="United States"/>
-                                <input type="hidden" name = "memberType" value="individual"/>
-                                <input type="text" name = "firstName" placeholder="First name*"/>
-                                <input type="text" name = "lastName" placeholder="Last name*"/>
-                                <input type="text" name = "email" placeholder="Email*"/>
-                                <input type="password" name = "password" placeholder="Password*"/>
-                                <input type="password" name = "password2" placeholder="Re-enter password*"/>
-                                <input type="text" name = "postalCode" class="input-small" style="width:95px;" placeholder="Zip Code*"/>
-                                <button class="btn btn-success" style="vertical-align: top;" type="submit" id="sign_up_submit2" >Create Account</button>
-                                <label class="checkbox">
-                                    <input type="checkbox" name = "chkTOS"/> <a href="/corp/terms" class="form-subtext">I agree to the Terms of Use</a>          
-                                </label>
-                            ${h.end_form()}
+                            <div class="span6">
+                                <div class="row">
+                                    <a class="btn btn-large pull-right" href="#">Sign up</a>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <a class="btn btn-info btn-large pull-right" href="#info">Learn more</a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal hide fade" id="windowTitleDialog">
-                            <div class="modal-header">
-                                <a href="#" class="close" data-dismiss="modal">&times;</a>
-                                <h3>Account Created</h3>
-                            </div>
-                            <div class="modal-body">
-                                <div class="divDialogElements">
-                                    Your account has been successfully created. Please check your email to confirm your identity and log-in.
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <a href="#" class="btn btn-primary" onclick="okClicked ();">OK</a>
-                                </div>
-                            </div>
-                        </div><!-- Close modal -->  
-                    </div> <!-- Close well -->
-                </div> <!-- Close span -->
-            
-            </div><!-- Close row -->
-        </div><!-- Close container -->
-    </div><!-- Close Wrap -->
-    
-         <footer id="footer" class="wellfooter">
-            <div class="row" style="width: 1000px; margin: 0 auto;">
-                <div class="span2">
-                    <ul class="unstyled">
-                        <li><h4>ORGANIZATION</h4></li>
-                        <li><a href="/corp/about">About Us</a></li>
-                        <li><a href="http://www.civinomics.wordpress.com" target="_blank"> Development Blog</li>
-                        <li><a href="/corp/careers">Careers</a></li>
-                        <li><a href="/corp/terms">Terms of Use</a></li>
-                        <li><a href="/corp/privacy">Privacy Policy</a></li>
-                        <li><a href="/corp/contact">Contact Us</a></li>
-                    </ul>
+                    </div>
                 </div>
-                <div class="span3">
-                    <ul class="unstyled">
-                        <li><h4>SERVICES</h4></li>
-                        <li><a href="/corp/outreach">Outreach</a></li>
-                        <li><a href="#">Create a workshop </a><span class="label label-warning">Coming Soon</span></li>
-                    </ul>
-                </div>
-                <div class="span3">
-                    <ul class="unstyled" style="color:#818180;">
-                    <li><div class="fb-like" data-href="http://www.facebook.com/civinomics" data-send="true" data-width="395" data-show-faces="true"></div> 
-                    </li>
-                    <li><a href="https://twitter.com/civinomics" class="twitter-follow-button" data-show-count="true" data-size="large">Follow @civinomics</a></li>
-                    <li><g:plusone annotation="inline"></g:plusone></li>
-                    </ul>
-                </div>
-
             </div>
+        </div>
 
-            <div class="row" style="width: 1000px; margin: 0 auto;">
-                <div class="span10 offset1" style="color:#818180;" align="right">
-                    </br>
-                    <p>
+    <div class="info">
+        <a name="info" style="padding-top:60px;"></a>
+        <div class="container">
+            <div class="row">
+                <div class="span12" style="padding-top:20px;">
+
+                    ##################
+                    ## 
+                    ## Workshops
+                    ## 
+                    ##################
+
+                    <div class="span5 offset1" style="border-right: 1px solid #DDDDDD;">
+                        <h1> Workshops </h1>
+                        <p>
+                            Community interaction and real-time feedback
+                        </p>
+
+                        ## 
+                        ## Some screenshots
+                        ## 
+                        <ul class="thumbnails" style="padding-top:20px; padding-bottom:20px;">
+                            % for i in range(1, 5):
+                            <li class="span2">
+                                <a href="#online-workshop-${i}" class="thumbnail-custom" data-toggle="modal" style="height:80px;">
+                                    <img src="/images/splash/online_workshop_thumbnail_${i}.png" height="80" width="131">
+                                    <div class="magnify"></div>
+                                </a>
+                            </li>
+                            % endfor
+                        </ul>
+
+                        ## 
+                        ## A quotation
+                        ## 
+                        <blockquote style="padding-right:20px; text-align:center;">
+                            <p class="quote"> I really like this company. </p>
+                            <small class="pull-right">Mr. Moneybags</small>
+                        </blockquote>
+
+                        ## 
+                        ## A video
+                        ## 
+                        
+                        <div style="padding-top:40px;"></div>
+                        <%doc>
+                        <div class="span4 thumbnail-custom-video" style="height:207px;">
+                            <img src="/images/splash/video_1.JPG">
+                            <a href="#video" data-toggle="modal">
+                                <div class="play"></div>
+                            </a>
+                        </div>
+                        </%doc>
+                        <iframe src="http://player.vimeo.com/video/45529198?title=0&amp;byline=0&amp;portrait=0" width="350" height="197" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+                    </div>
+
+                    ##################
+                    ## 
+                    ## Surveys
+                    ## 
+                    ##################
+                    <div class="span5">
+                        <h1> Surveys </h1>
+                        <p>
+                            Some stuff about surveys
+                        </p>
+                    </div>
+                </div>
+            </div> <!-- row -->
+        </div> <!-- container -->
+        <div class="container">
+            <div class="row" style="border-top: 1px solid #DDDDDD; padding-top:20px;">
+                <div class="span6 offset3" style="text-align:center">
+                    Join your community!
+                    <button class="btn btn-large" type="button">Sign up for free!</button>
+                </div>
+            </div>
+        </div>
+    </div> <!-- info -->
+
+    <div class="footer-separator"></div>
+
+    <div class="footer-civ">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span10 offset1">
+                    <div class="span2">
+                        <ul class="unstyled footer-list">
+                            <li>
+                                <h4>
+                                    ORGANIZATION
+                                </h4>
+                            </li>
+                            <li><a href="/corp/about"> About Us </a></li>
+                            <li><a href="http://www.civinomics.wordpress.com" target="_blank">Development Blog</a></li>
+                            <li><a href="/corp/careers">Careers</a></li>
+                            <li><a href="/corp/terms">Terms of Use</a></li>
+                            <li><a href="/corp/privacy">Privacy Policy</a></li>
+                            <li><a href="/corp/contact">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="span3">
+                        <ul class="unstyled footer-list">
+                            <li>
+                                <h4>
+                                    SERVICES
+                                </h4>
+                            </li>
+                            <li><a href="/corp/outreach">Outreach</a></li>
+                            <li><a href="#">Create a workshop </a><span class="label label-warning">Coming Soon</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="span3" style="padding-top:20px;">
+                        <ul class="unstyled" style="color:#818180;">
+                        <li><div class="fb-like" data-href="http://www.facebook.com/civinomics" data-send="true" data-width="395" data-show-faces="true"></div> 
+                        </li>
+                        <li><a href="https://twitter.com/civinomics" class="twitter-follow-button" data-show-count="true" data-size="large">Follow @civinomics</a></li>
+                        <li><g:plusone annotation="inline"></g:plusone></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span10 offset1" style="color:#e4e4e4;">
+                    <p class="pull-right">
                         © 2012 Civinomics Inc. All rights reserved.
                     </p>
                 </div>
             </div>
-      </footer>
-      
-        <!-- Placed at the end of the document so the pages load faster -->
-     ## Popper    
-    ${self.popper()}    
-        
-    <script src="/js/bootstrap/jquery.js"></script>
-    <script src="/js/bootstrap/bootstrap-modal.js"></script>
-    <script src="/js/bootstrap/bootstrap-alert.js"></script>
-    
-    
-   
+        </div>
+    </div>
 
-    <script type="text/javascript">
-        function closeDialog () {
-            $('#windowTitleDialog').modal('hide'); 
-            };
-        function okClicked () {
-            closeDialog ();
-            };
-    </script>
-    
-    
-           <!-- slideshow related scripts -->
-    <script src="/js/slides.min.jquery.js" type="text/javascript"></script>
-<script>
-  $(function(){
-    $("#slides").slides({
-        container: 'slides_container',
-        preload: true,
-        play: 5000,
-        pause: 100,
-        effect: 'fade',
-        generateNextPrev: false,
-        generatePagination: false,
-        pagination: false,
-        hoverPause: true
-    });
-  });
-</script>
 
-    
-    <script type="text/javascript">
+    <% imageTitles = ['Workshop Landing', 'Workshop Listing', 'Workshop Resource', 'Profile'] %>
+    % for i in range(1, 5):
+        <div class="modal hide fade" id="online-workshop-${i}" style="width:70%; left:35%;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h3 id="myModalLabel-${i}" style="text-align:center;">${imageTitles[i-1]}</h3>
+            </div>
+            <div class="modal-body">
+                <img src="/images/splash/online_workshop_${i}.png">
+            </div>
+        </div>
+    % endfor
 
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-27633393-1']);
-      _gaq.push(['_trackPageview']);
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="/bootstrap-2.1.0/js/bootstrap.min.js"></script>
+    <script src="/js/splash/imageFader.js"></script>
 
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-
-    </script>
-    
-      
-      <!-- additional social media scripts -->
+    <!-- additional social media scripts -->
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
     </script>
 
@@ -344,33 +231,8 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
       })();
     </script>
-    
-
-
-</body>
-
+  </body>
 </html>
-
-<%def name="navbar()">
-<div class="navbar navbar-fixed-top">
-          <div class="navbar-inner">
-            <div class="container-fluid">
-              <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-
-                <div class="span2 offset">
-                    <a href="/"><img src="/images/fluid1_images/logo_header8.png"></a>
-                </div>
-
-              <div class="nav-collapse">
-              </div><!--/.nav-collapse -->
-            </div>
-          </div>
-        </div>
-</%def>
 
 <%def name="facebookID()">
     <!-- Facebook Like Button -->
@@ -398,69 +260,3 @@
            }(document));
         </script>
 </%def>
-
-<%def name="flasher()">
-    <% messages = h.flash.pop_messages() %>
-    % if messages:
-        % for m in messages:
-            <p id="flash" class="${m.category}" title="Dismiss this message.">
-                    ${m}
-            </p>
-            <script>
-                $("p#flash").fadeIn(800).delay(6000).fadeOut(800);
-                $("p#flash").click(function() {
-                    $(this).clearQueue();
-                    $(this).fadeOut(100);
-                });
-            </script>
-        % endfor
-    % endif
-</%def>
-
-<%def name="popper()">
-    % if c.popper:
-        <div id="pop">
-            <div id="registered">
-                <h2 class="clr left">
-                    <p class="right close"><a href="#" class="x">X</a>close</p>
-                    <p class="left">${c.popper["leftTitle"]}</p>
-                </h2>
-                <p id="thank_you">${c.popper["subject"]}</p>
-                <p id="check">
-                    <em>${c.popper["message"]}</em>
-                </p>
-                <p class="close">
-                    <button class="gold close">close</button>
-                </p>
-                <script>
-                        $("#pop").css({
-                            "display":"block",
-                            "height":$(document).height(),
-                            "width":$(document).width()
-                        });
-                        $("#registered").css({
-                            "display":"block",
-                        });
-                        event.preventDefault();
-                    </script>
-            </div><!-- suggestion -->
-        </div><!-- pop -->
-    % else:
-        <script>
-            $("button#sign_up_submit").click(function(event){
-                $("#pop").css({
-                    "display":"block",
-                    "height":$(document).height(),
-                    "width":$(document).width()
-                });
-                $("#registered").css({
-                    "display":"block",
-                });
-                event.preventDefault();
-            });
-        </script>
-    % endif
-</%def>
-
-
-

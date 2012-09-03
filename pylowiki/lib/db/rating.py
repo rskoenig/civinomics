@@ -63,7 +63,7 @@ class Rating(object):
             ratedThing[keyAvg] = amount
         else:
             ratedThing[keyList] = ratedThing[keyList] + ',' + str(amount)
-            ratings = [int(item) for item in ratedThing[keyList].split(',')]
+            ratings = [int(float(item)) for item in ratedThing[keyList].split(',')]
             ratedThing[keyAvg] = sum(ratings, 0.0)/len(ratings)
             
         commit(r)

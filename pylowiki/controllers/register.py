@@ -27,11 +27,14 @@ class RegisterController(BaseController):
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
 
-    def index( self ):
-        """ Display Registration Form """
-        c.title = c.heading = "Registration"
-        #return render( "/derived/register.mako" )
-        return render("/derived/signup.html")
+    
+    #def index( self ):
+    #    """ Display Registration Form """
+    #    return render("/derived/signup.bootstrap")
+    
+
+    def signupDisplay(self):
+        return render("/derived/signup.bootstrap")
 
     def register_handler( self ):
         """ Handler for registration, validates """
@@ -74,6 +77,7 @@ class RegisterController(BaseController):
             lastName = request.params['lastName']
         if  'chkTOS' not in request.params:
             log.info('chkTOS missing')
+            checkTOS = False
         else:
             checkTOS = request.params['chkTOS']
 
@@ -83,13 +87,13 @@ class RegisterController(BaseController):
         except formencode.Invalid, error:
             splashMsg['content'] = "Error: " + unicode(error)
             c.splashMsg = splashMsg 
-            return render('/derived/splash.bootstrap')
+            return render('/derived/signup.bootstrap')
         try:
             nameTst = schema.to_python(dict(username = lastName))
         except formencode.Invalid, error:
             splashMsg['content'] = "Error: " + unicode(error)
             c.splashMsg = splashMsg 
-            return render('/derived/splash.bootstrap')
+            return render('/derived/signup.bootstrap')
         username = "%s %s" %(firstName, lastName)
         maxChars = 50;
         errorFound = False;
@@ -122,7 +126,7 @@ class RegisterController(BaseController):
                 splashMsg['content'] = "Invalid postal code"
                 c.splashMsg = splashMsg 
             if errorFound:
-                return render('/derived/splash.bootstrap')
+                return render('/derived/signup.bootstrap')
             username = "%s %s" %(firstName, lastName)
             if getUserByEmail( email ) == False:
                 if password == password2:
@@ -135,7 +139,7 @@ class RegisterController(BaseController):
                     splashMsg['content'] = 'Check your email to finish setting up your account'
                     c.splashMsg = splashMsg
                       
-                    return render('/derived/splash.bootstrap')
+                    return render('/derived/signup.bootstrap')
                 else:
                     splashMsg['content'] = "The password and confirmation do not match"
                     c.splashMsg = splashMsg 
@@ -146,4 +150,4 @@ class RegisterController(BaseController):
             splashMsg['content'] = "Please fill all fields"
             c.splashMsg = splashMsg 
    
-        return render('/derived/splash.bootstrap')
+        return render('/derived/signup.bootstrap')

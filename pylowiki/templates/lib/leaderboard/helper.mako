@@ -10,22 +10,14 @@
 </%def>
 
 <%def name="Menu()">
-    <div class="well">
-        <div class="civ-col-inner">
-            <div class="row">
-                <a href="leaderboard" class="btn btn-warning btn-large" id='btn1'>Main LeaderBoard</a>
-            </div>
-            <div class="row">
-                <a href='leaderboard_UserRanks' class="btn btn-large btn-warning" id='btn2'>My Workshop Rankings</a>
-            </div>
-            <div class="row">
-                <a href="leaderboard_followedPersons" class="btn btn-large btn-warning" id='btn3'>Followed Persons</a>
-            </div>
-            <div class="row">
-                <a href="leaderboard_explanation" class="btn btn-large btn-warning" id='btn4'>Leaderboards Explained</a>
-            </div>
-        </div>
-   </div>
+    <ul class="unstyled"
+    <li><p><a href="leaderboard" class="btn btn-warning btn-mini" id='btn1'>Main LeaderBoard</a></p></li>
+    % if c.suggestions:
+        <li><p><a href='leaderboard_UserRanks' class="btn btn-mini btn-warning" id='btn2'>My Workshop Rankings</a></p></li>
+    % endif
+    <li><p><a href="leaderboard_followedPersons" class="btn btn-mini btn-warning" id='btn3'>Followed Persons</a></p></li>
+    <li><p><a href="leaderboard_explanation" class="btn btn-mini btn-warning" id='btn4'>Leaderboards Explained</a></p></li>
+    </ul>
 </%def>
 
 <%def name="Overall_Leaderboard()">
@@ -138,21 +130,13 @@
 </%def>
 
 <%def name="UserPhoto()">
-    <div class="well">
-        <div class="civ-col-inner">
-            % if c.authuser['pictureHash'] == 'flash':
-                <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatars/flash.profile" width="160" ></a>
-            % else:
-                <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
-                    <img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" width="160">
-                </a>
-            % endif
-        </div>
-        <div class="civ-col-inner">
+    % if 'user' in session:
+        % if c.authuser['pictureHash'] == 'flash':
+            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}"><img src="/images/avatars/flash.profile" class="thumbnail"></a>
+        % else:
             <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">
-                <center>${c.authuser['name']}</center>
-            </a>
-        </div>
-    </div>
+            <img src="/images/avatar/${c.authuser['directoryNumber']}/profile/${c.authuser['pictureHash']}.profile" class="thumbnail"></a>
+        % endif
+    %endif
 </%def>
 
