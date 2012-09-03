@@ -1,0 +1,128 @@
+<%inherit file = "/base/template.html"/>
+<meta charset="utf-8">
+    <script>
+    $(function() {
+        /*
+        $( ".column" ).sortable({
+            connectWith: ".column"
+        });
+        */
+       
+        $(".column").sortable(
+            { items: ".portlet" },
+            { connectWith: ".column" },
+            { update: function(event, ui) {
+                $.post("/slideshow/editPosition", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
+            }
+        });
+        
+       /*
+        $(".column").sortable(
+            { connectWith: '.column' }, { update: function(event, ui) {
+               alert($(this).sortable('serialize'));
+               alert($(this).id);
+            }
+        });
+        */
+
+        $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
+            .find( ".portlet-header" )
+                .addClass( "ui-widget-header ui-corner-all" )
+                .prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
+                .end()
+            .find( ".portlet-content" );
+
+        $( ".portlet-title .ui-icon" ).click(function() {
+            $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
+            $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
+        });
+
+        //$( ".column" ).disableSelection();
+    });
+    </script>
+<h1 style="text-align:center;">Slideshow editor</h1>
+<br />
+<p>Click and drag to re-arrange a slideshow's order.  </p>
+<br />
+<p>Click on a title or a caption to edit it.  Press enter to save your title or caption
+    edits, press escape to cancel an edit.</p>
+<br />
+<a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">Return to workshop</a>
+<div class="demo">
+
+<div class="column" id="published">
+        <h2 style="text-align:center;">Published slides</h2>
+    % for slide in c.slideshow:
+        % if int(slide['deleted']) == 0:
+            <div class="portlet" id = "portlet_${slide.id}">
+                <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
+                <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
+                <div class = "portlet-image">
+                    % if slide['pictureHash'] == 'supDawg':
+                        <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                    % else:
+                        <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.thumbnail">
+                    % endif
+                </div>
+            </div>
+        % endif
+    % endfor
+</div>
+
+<div class="column" id="unpublished">
+    <h2 style="text-align:center;" class="unsortable">Unpublished slides</h2>
+    ##<div class="portlet">
+    ##    <div class="portlet-header">Shopping</div>
+    ##    <div class="portlet-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit</div>
+    ##</div>
+    % for slide in c.slideshow:
+        % if int(slide['deleted']) == 1:
+            <div class="portlet" id = "portlet_${slide.id}">
+                <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
+                <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
+                <div class = "portlet-image">
+                    % if slide['pictureHash'] == 'supDawg':
+                        <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                    % else:
+                        <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.thumbnail">
+                    % endif
+                </div>
+            </div>
+        % endif
+    % endfor
+</div>
+
+</div><!-- End demo -->
+
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+   <link rel="stylesheet" href="/styles/editSlideshow.css">
+   <link rel="stylesheet" href="/styles/ui-lightness/jquery-ui-1.8.18.custom.css">
+</%def>
+
+<%def name = 'extraScripts()'>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+             $('.edit').editable('/slideshow/edit', {
+                 indicator : 'Saving...',
+                 tooltip   : 'Click to edit...'
+             });
+             $('.edit_area').editable('/slideshow/edit', { 
+                 type      : 'textarea',
+                 cancel    : 'Cancel',
+                 submit    : 'OK',
+                 indicator : '<img src="/images/indicator.gif">',
+                 tooltip   : 'Click to edit...'
+             });
+         });
+    </script>
+    
+    <script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+    <script src="/js/jquery.jeditable.mini.js" type="text/javascript"></script>
+</%def>
+

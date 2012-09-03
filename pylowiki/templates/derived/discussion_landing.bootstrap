@@ -1,0 +1,48 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/discussion_helpers/landing.mako" />
+
+${lib.return_to()}
+<div class="row-fluid">
+    <div class="span12">
+        ${lib.nav_thing("discussion")}
+    </div>
+</div>
+${lib.fields_alert()}
+<div class="row">
+    <div class="span8">
+        <div class="civ-col">
+            <h2 class="civ-col">
+                <a href="#">Discussions</a> 
+                in 
+                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}">
+                    ${c.w['title']}
+                </a>
+                ${helpers.addTopic()}
+            </h2>
+            <div class="civ-col-inner">
+                ${helpers.listDiscussions()}
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="civ-col">
+            <h2 class="civ-col">Message of the Day</h2>
+            <div class="civ-col-inner">
+                ${helpers.displayMOTD()}
+            </div>
+        </div>
+    </div>
+</div>
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>

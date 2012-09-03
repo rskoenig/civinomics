@@ -1,0 +1,32 @@
+<%! 
+   from pylowiki.lib.db.geoInfo import getGeoInfo
+   from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
+%>
+
+<%inherit file="/base/template.bootstrap"/>
+<%namespace name="helpers" file="/derived/workshop_create/helpers.mako" />
+
+<div class="container-fluid">
+    ${helpers.showTitle(c.title)}
+    <div class="row-fluid">
+        <div class="offset2 span10">
+            <div class="civ-col">
+                <h2 class="civ-col">${c.heading}</h2>
+                <div class="civ-col-inner">
+                    ${helpers.spacer()}
+                    ${helpers.addWorkshop()}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span6 -->
+    </div> <!-- /.row-fluid -->
+</div><!-- container -->
+
+<%def name = 'extraStyles()'>
+
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+
+</%def>

@@ -1,0 +1,30 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/leaderboard/helper.mako" />
+
+
+${lib.nav_thing("explanation")}
+</br></br>
+<div class="row">
+    <div class="span3">
+        </br></br>
+        <center>${helpers.UserPhoto()}</center>
+    </div>
+    <div class="span8 offset1">
+        </br></br>
+        ${helpers.Explanation()}
+        </br></br>
+    </div>
+</div>  
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>
