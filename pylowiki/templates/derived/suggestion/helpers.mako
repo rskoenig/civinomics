@@ -88,7 +88,7 @@
             <span class="badge badge-inverse" title="Flags on this suggestion"><i class="icon-white icon-flag"></i>${len(getFlags(cs))}</span>
             <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-warning" title="Administrate Suggestion"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
         % endif
-        % if cAuthuser and (cAuthuser.id == cs.owner or cIsAdmin):
+        % if cAuthuser and (cAuthuser.id == cs.owner or cIsAdmin) or isFacilitator(c.authuser.id, c.w.id):
             <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-primary" title="Edit Suggestion"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
         % endif
         % if 'user' in session:
