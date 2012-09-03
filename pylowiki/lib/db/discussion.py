@@ -113,8 +113,9 @@ class Discussion(object):
                 d['deleted'] = 0
         d['title'] = title
         d['url'] = urlify(title)
-        d['urlCode'] = toBase62('%s_%s'%(title, int(time())))
         d['numComments'] = 0
+        commit(d)
+        d['urlCode'] = toBase62(d)
         commit(d)
 
         if attachedThing.objType != 'workshop':

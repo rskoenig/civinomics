@@ -139,14 +139,14 @@ class User(object):
         u['password'] = self.hashPassword(password)
         u['totalPoints'] = 1
         u['url'] = urlify('%s %s' %(firstName, lastName))
-        u['urlCode'] = toBase62('%s_%s_%s' % (firstName, lastName, int(time())))
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         u['accessLevel'] = 0
         if email != config['app_conf']['admin.email']:
             self.generateActivationHash(u)
         commit(u)
-
+        u['urlCode'] = toBase62(u)
+        commit(u)
         self.u = u
         g = GeoInfo(postalCode, country, u.id)
 

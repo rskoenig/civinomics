@@ -70,13 +70,14 @@ def Survey(owner, title, description, publicOrPrivate, estimatedTime):
         s['url'] = urlify(title[:20])
     else:
         s['url'] = urlify(title)
-    s['urlCode'] = toBase62('%s_%s_%d'%(title, owner['name'], int(time.time())))
     s['origFileName'] = 'flash'# The file name
     s['surveyType'] = 'normal'
     s['directoryNum'] = 0
     s['hash'] = 'flash'
     s['uploadVersion'] = 0 # A versioning key, keeps track of the number of times a starter file has been uploaded
     
+    commit(s)
+    s['urlCode'] = toBase62(s)
     commit(s)
     return s
 

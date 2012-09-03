@@ -126,29 +126,13 @@ class Comment(object):
         else:
            cData = data
 
-        testCode = toBase62('%s_%s_%s'%(cData, owner['name'], int(time())))
-        testCount = 0
-        while testCount < 20:
-            testCode = toBase62('%s_%s_%s'%(cData, owner['name'], int(time())))
-            if getCommentByCode(testCode):
-                testCount = testCount + 1
-                if testCount == 20:
-                    toEmail = "chris@civinomics.com" 
-                    frEmail = "chris@civinomics.com"
-                    subject = 'Comment Hash Problem'
-                    message = '''Comment hash in lib/db/comment went 20 times without generating unique hash!\n\n'''
-
-                    send( toEmail, frEmail, subject, message )
-                    break
-
-            else:
-              testCount = 20
-        c['urlCode'] = testCode
         c['discussion_id'] = discussion.id
         c['pending'] = False
         c['ups'] = 0
         c['downs'] = 0
         c['lastModified'] = datetime.now().ctime()
+        commit(c)
+        c['urlCode'] = toBase62(c)
         commit(c)
         
         if parent == 0:

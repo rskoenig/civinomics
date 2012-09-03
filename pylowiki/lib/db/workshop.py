@@ -162,7 +162,6 @@ class Workshop(object):
         w = Thing('workshop', owner.id)
         w['title'] = title
         w['url'] = urlify(title)
-        w['urlCode'] = toBase62('%s_%s_%d'%(title, owner['name'], int(time.time())))
         w['startTime'] = '0000-00-00'
         w['endTime'] = '0000-00-00'
 
@@ -186,6 +185,7 @@ class Workshop(object):
         w['allowSuggestions'] = 1
         w['allowResources'] = 1
         commit(w)
+        w['urlCode'] = toBase62(w)
         self.w = w
         background = 'No wiki background set yet'
         

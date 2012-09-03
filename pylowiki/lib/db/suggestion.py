@@ -108,7 +108,6 @@ class Suggestion(object):
         s = Thing('suggestion', owner.id)
         s['title'] = title
         s['url'] = urlify(title[:30])
-        s['urlCode'] = toBase62('%s_%s_%s'%(title, owner['name'], int(time())))
         s['data'] = data
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']
@@ -119,6 +118,7 @@ class Suggestion(object):
         s['adopted'] = False
         ##log.info('data = %s' % data)
         commit(s)
+        s['urlCode'] = toBase62(s)
         self.s = s
         
         r = Revision(owner, data, s)
