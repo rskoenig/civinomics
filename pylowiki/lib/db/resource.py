@@ -143,7 +143,6 @@ class Resource(object):
         a['domain'] = tldResults.domain
         a['subdomain'] = tldResults.subdomain
         a['url'] = urlify(title[:30])
-        a['urlCode'] = toBase62('%s_%s_%s'%(title, owner['name'], int(time())))
         a['title'] = title
         a['comment'] = comment
         a['allowComments'] = allowComments
@@ -162,6 +161,7 @@ class Resource(object):
         a['ups'] = 0
         a['downs'] = 0
         commit(a)
+        a['urlCode'] = toBase62(a)
         if parent != None:
             if parent.objType == 'suggestion':
                 d = Discussion(owner = owner, discType = 'sresource', attachedThing = a, workshop = workshop, title = title, suggestion = parent)
@@ -169,4 +169,5 @@ class Resource(object):
             d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
         a['discussion_id'] = d.d.id
         self.a = a
+        commit(a)
 
