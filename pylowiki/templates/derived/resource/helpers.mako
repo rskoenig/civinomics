@@ -19,14 +19,18 @@
 </%def>
 
 <%def name="displayRating()">
-    <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote voted">
-        <i class="icon-chevron-up"></i>
-    </a>
     <% rating = int(c.resource['ups']) - int(c.resource['downs']) %>
-    <div>${rating}</div>
-    <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/-1" class="downVote voted">
-        <i class="icon-chevron-down"></i>
-    </a>
+    % if 'user' in session and c.isScoped: 
+        <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote voted">
+            <i class="icon-chevron-up"></i>
+        </a>
+        <div>${rating}</div>
+        <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/-1" class="downVote voted">
+            <i class="icon-chevron-down"></i>
+        </a>
+    % else:
+        <div>${rating}</div>
+    % endif
 </%def>
 
 
@@ -48,7 +52,11 @@
 
 <%def name="displayResourceComment()">
 	<div id="resource-comment">
-		<p>${c.resource['comment']}</p>
+                % if c.content:
+		    <p>${c.content}</p>
+                % else:
+		    <p>${c.resource['comment']}</p>
+                % endif
 	</div>
 </%def>
 
@@ -73,15 +81,17 @@
                            % if c.isFacilitator or c.isAdmin:
                                <% rFlags = getFlags(c.resource) %>
                                % if rFlags and len(rFlags) > 0:
-                                   <span class="badge badge-important"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
+                                   <span class="badge badge-inverse" title="Flags on this resource"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
                                % endif
-                               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini" title="Administrate Resource"><i class="icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
+                               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini btn-warning" title="Administrate Resource"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
                            % endif
                            % if (c.authuser and c.authuser.id == c.poster.id) or c.isAdmin or c.isFacilitator:
-                               <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini" title="Edit Resource"><i class="icon-edit"></i> Edit</a>&nbsp;&nbsp;
+                               <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-primary" title="Edit Resource"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
                            % endif
-                           <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini flagButton" title="Flag Resource"><i class="icon-flag"></i> Flag</a> &nbsp; 
-                        <span id="flag_0"></span>
+                           % if 'user' in session:
+                               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Resource"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; 
+                               <span id="flag_0"></span>
+                           % endif
 			</div> <!-- .span12 -->
 		</div> <!-- .row-fluid -->
 

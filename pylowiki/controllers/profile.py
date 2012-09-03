@@ -5,6 +5,7 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
+from pylowiki.lib.utils import urlify
 
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
@@ -37,9 +38,11 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = False
-        if c.authuser:
+        if 'user' in session and c.authuser:
            c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
-        
+        else:
+           c.isFollowing = False
+
         c.account = getUserAccount(c.user.id)
 
         fList = getFacilitatorsByUser(c.user.id)
@@ -53,8 +56,9 @@ class ProfileController(BaseController):
               myW = getWorkshopByID(wID)
               if myW['startTime'] == '0000-00-00':
                  # show to the workshop owner, show to the facilitator owner
-                 if c.authuser.id == f.owner or c.authuser.id == myW.owner:
-                    c.facilitatorWorkshops.append(myW)
+                 if 'user' in session: 
+                     if c.authuser.id == f.owner or c.authuser.id == myW.owner:
+                         c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
 
@@ -80,14 +84,440 @@ class ProfileController(BaseController):
            c.userFollowers.append(getUserByID(uID))
 
         pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.suggestions = []
+        c.resources = []
+        c.discussions = []
+        c.comments = []
         c.flags = 0
+        resUpVotes = 0
+        c.resVotes = 0
+        comUpVotes = 0
+        c.comVotes = 0
+        disUpVotes = 0
+        c.disVotes = 0
+
+        c.posts = len(pList)
+        for p in pList:
+           if p['deleted'] == '0' and p['disabled'] == '0':
+               if p.objType == 'suggestion':
+                   c.suggestions.append(p)
+               elif p.objType == 'resource':
+                   c.resources.append(p)
+                   resUpVotes += int(p['ups'])
+                   c.resVotes = c.resVotes + int(p['ups']) + int(p['downs'])
+               elif p.objType == 'discussion':
+                   c.discussions.append(p)
+                   disUpVotes += int(p['ups'])
+                   c.disVotes = c.disVotes + int(p['ups']) + int(p['downs'])
+               elif p.objType == 'comment':
+                   c.comments.append(p)
+                   comUpVotes += int(p['ups'])
+                   c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
+
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
+
+        if c.suggestions and len(c.suggestions) > 0:
+            totalRateAvg = 0
+            for s in c.suggestions:
+                totalRateAvg += float(s['ratingAvg_overall'])
+
+            totalRateAvg = totalRateAvg/len(c.suggestions)
+            c.sugRateAvg = int(totalRateAvg)
+            c.sugUpperRateAvg = totalRateAvg+(5-totalRateAvg%5)
+            c.sugLowerRateAvg = totalRateAvg-(totalRateAvg%5)
+            c.sugRateAvgfuzz = c.sugLowerRateAvg+2.5
+        else:
+            totalRateAvg = 0
+            c.sugRateAvg = totalRateAvg
+            c.sugUpperRateAvg = 0
+            c.sugLowerRateAvg = 0
+            c.sugRateAvgfuzz = 0
+
+        c.numRes = len(c.resources)
+        if c.resVotes > 0:
+            c.resUpsPercent = 100*float(resUpVotes)/float(c.resVotes)
+        else:
+            c.resUpsPercent = 0
+
+        c.numDis = len(c.discussions)
+        if c.disVotes > 0:
+            c.disUpsPercent = 100*float(disUpVotes)/float(c.disVotes)
+        else:
+            c.disUpsPercent = 0
+
+        c.numComs = len(c.comments)
+        if c.comVotes > 0:
+            c.comUpsPercent = 100*float(comUpVotes)/float(c.comVotes)
+        else:
+            c.comUpsPercent = 0
+
+        return render("/derived/profile.bootstrap")
+    
+    def showUserSuggestions(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/suggestions
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.suggestions = []
+        c.userFollowers = []
+        c.flags = 0
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.userFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.userFollowers.append(getUserByID(uID))
+
+
+        c.posts = len(pList)
+        for p in pList:
+           if p['deleted'] == '0' and p['disabled'] == '0':
+               if p.objType == 'suggestion':
+                   c.suggestions.append(p)
+
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+
+        if c.suggestions and len(c.suggestions) > 0:
+            totalRateAvg = 0
+            for s in c.suggestions:
+                totalRateAvg += float(s['ratingAvg_overall'])
+
+            totalRateAvg = totalRateAvg/len(c.suggestions)
+            c.sugRateAvg = int(totalRateAvg)
+            c.sugUpperRateAvg = totalRateAvg+(5-totalRateAvg%5)
+            c.sugLowerRateAvg = totalRateAvg-(totalRateAvg%5)
+            c.sugRateAvgfuzz = c.sugLowerRateAvg+2.5
+        else:
+            totalRateAvg = 0
+            c.sugRateAvg = totalRateAvg
+            c.sugUpperRateAvg = 0
+            c.sugLowerRateAvg = 0
+            c.sugRateAvgfuzz = 0
+
+        c.count = len(c.suggestions)
+        c.paginator = paginate.Page(
+            c.suggestions, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileSuggestions.bootstrap")
+
+    def showUserResources(self, id1, id2):
+        # Called when visiting /profile/urlCode/url
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.followingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.followingUsers.append(getUserByID(uID))
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.userFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.userFollowers.append(getUserByID(uID))
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.resources = []
+        c.flags = 0
+        resUpVotes = 0
+        c.resVotes = 0
+
+        c.posts = len(pList)
+        for p in pList:
+           if p['deleted'] == '0' and p['disabled'] == '0':
+               if p.objType == 'resource':
+                   c.resources.append(p)
+                   resUpVotes += int(p['ups'])
+                   c.resVotes = c.resVotes + int(p['ups']) + int(p['downs'])
+
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
+
+        c.numRes = len(c.resources)
+        if c.resVotes > 0:
+            c.resUpsPercent = 100*float(resUpVotes)/float(c.resVotes)
+        else:
+            c.resUpsPercent = 0
+
+        c.count = len(c.resources)
+        c.paginator = paginate.Page(
+            c.resources, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileResources.bootstrap")
+    
+    def showUserDiscussions(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/discussions
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.followingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.followingUsers.append(getUserByID(uID))
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.userFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.userFollowers.append(getUserByID(uID))
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.discussions = []
+        c.flags = 0
+        disUpVotes = 0
+        c.disVotes = 0
+
+        c.posts = len(pList)
+        for p in pList:
+           if p['deleted'] == '0' and p['disabled'] == '0':
+               if p.objType == 'discussion':
+                   c.discussions.append(p)
+                   disUpVotes += int(p['ups'])
+                   c.disVotes = c.disVotes + int(p['ups']) + int(p['downs'])
+
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
+
+        c.numDis = len(c.discussions)
+        if c.disVotes > 0:
+            c.disUpsPercent = 100*float(disUpVotes)/float(c.disVotes)
+        else:
+            c.disUpsPercent = 0
+
+        c.count = len(c.discussions)
+        c.paginator = paginate.Page(
+            c.discussions, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+
+        return render("/derived/profileDiscussions.bootstrap")
+    
+    def showUserComments(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/comments
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.followingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.followingUsers.append(getUserByID(uID))
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.userFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.userFollowers.append(getUserByID(uID))
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.comments = []
+        c.flags = 0
+        comUpVotes = 0
+        c.comVotes = 0
+
+        c.posts = len(pList)
+        for p in pList:
+           if p['deleted'] == '0' and p['disabled'] == '0':
+               if p.objType == 'comment':
+                   c.comments.append(p)
+                   comUpVotes += int(p['ups'])
+                   c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
+
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
+
+        c.numComs = len(c.comments)
+        if c.comVotes > 0:
+            c.comUpsPercent = 100*float(comUpVotes)/float(c.comVotes)
+        else:
+            c.comUpsPercent = 0
+
+        c.count = len(c.comments)
+        c.paginator = paginate.Page(
+            c.comments, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileComments.bootstrap")
+    
+    def showUserFollowers(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/followers
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.followingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.followingUsers.append(getUserByID(uID))
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.listUserFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.listUserFollowers.append(getUserByID(uID))
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.flags = 0
+
         c.posts = len(pList)
         for p in pList:
            fList = getFlags(p)
            if fList:
               c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
 
-        return render("/derived/profile.bootstrap")
+        c.count = len(c.listUserFollowers)
+        c.paginator = paginate.Page(
+            c.listUserFollowers, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileFollowers.bootstrap")
+    
+    def showUserFollows(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/following
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = c.user['name']
+        c.geoInfo = getGeoInfo(c.user.id)
+        c.isFollowing = False
+        if 'user' in session and c.authuser:
+           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+        else:
+           c.isFollowing = False
+
+        c.account = getUserAccount(c.user.id)
+
+        uList = getUserFollows(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.listFollowingUsers = []
+        for u in uList:
+           uID = u['thingID']
+           c.listFollowingUsers.append(getUserByID(uID))
+
+        uList = getUserFollowers(c.user.id)
+        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
+        c.userFollowers = []
+        for u in uList:
+           uID = u.owner
+           c.userFollowers.append(getUserByID(uID))
+
+        pList = getUserPosts(c.user)
+        c.totalPoints = 0
+        c.flags = 0
+
+        c.posts = len(pList)
+        for p in pList:
+           fList = getFlags(p)
+           if fList:
+              c.flags += len(fList)
+           if 'ups' in p and 'downs' in p:
+               t = int(p['ups']) - int(p['downs'])
+               c.totalPoints += t 
+
+        c.count = len(c.listFollowingUsers)
+        c.paginator = paginate.Page(
+            c.listFollowingUsers, page=int(request.params.get('page', 1)),
+            items_per_page = 25, item_count = c.count
+        )
+
+        return render("/derived/profileFollowing.bootstrap")
     
     @h.login_required
     def index( self ):
@@ -132,13 +562,29 @@ class ProfileController(BaseController):
     def editSubmit(self):
         perror = 0
         perrorMsg = ""
+        changeMsg = ""
+
+        # see if an admin is doing this
+        if 'memberCode' in request.params and 'memberURL' in request.params and isAdmin(c.authuser.id):
+            code = request.params['memberCode']
+            url = request.params['memberURL']
+            u = get_user(code, urlify(url))
+            returnURL = "/profile/" + code + "/" + url + "/admin"
+        else:
+            u = c.authuser
+            returnURL = "/profile/edit"
+
+        # make sure they are authorized to do this
+        if u.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
+            return redirect('/')
+
         if 'pictureFile' in request.POST:
             picture = request.POST['pictureFile']
             if picture == "":
                 picture = False
         else:
             picture = False
-        log.info('picture is %s'%picture)
+        #log.info('picture is %s'%picture)
         u = c.authuser
 
         if 'password' in request.params:
@@ -154,7 +600,8 @@ class ProfileController(BaseController):
 
         if password and verify_password and password == verify_password:
             changePassword(u, password)
-            log.info('changed password for  %s'%c.authuser['name'])
+            changeMsg = changeMsg + "Password updated. "
+            ##log.info('changed password for  %s'%u['name'])
 
 
         if password and verify_password and password != verify_password:
@@ -251,16 +698,20 @@ class ProfileController(BaseController):
             u['firstName'] = firstName
             nameChange = True
             anyChange = True
+            changeMsg = changeMsg + "First name updated. "
         if lastName and lastName != '' and lastName != c.authuser['lastName']:
             u['lastName'] = lastName
             nameChange = True
             anyChange = True
+            changeMsg = changeMsg + "Last name updated. "
         if tagline and tagline != '' and tagline != c.authuser['tagline']:
             if len(tagline)>140:
                 u['tagline'] = tagline[:140]
             else:
                 u['tagline'] = tagline
                 anyChange = True
+
+            changeMsg = changeMsg + "Tagline updated. "
 
         log.info('before doing new picture for %s'%c.authuser['name'])
         if picture != False:
@@ -274,19 +725,21 @@ class ProfileController(BaseController):
            resizeImage(identifier, hash, 25, 25, 'thumbnail')
            log.info('Saving picture change for %s'%c.authuser['name'])
            anyChange = True
+           changeMsg = changeMsg + "Picture updated. "
 
         if nameChange:
             u['name'] = '%s %s' %(u['firstName'], u['lastName'])
             log.info('Changed name')
         if anyChange and perror == 0:
             commit(u)
+            Event('Profile updated.', changeMsg, u, c.authuser)
             h.flash('Changes saved.', 'success')
         elif anyChange and perror == 1:
             h.flash(perrorMsg, 'error')
         else:
             h.flash('No changes submitted.', 'success')
 
-        return redirect('/profile/edit')
+        return redirect(returnURL)
     
     def hashPicture(self, username, title):
         return md5(username + title).hexdigest()
@@ -342,7 +795,7 @@ class ProfileController(BaseController):
         c.workshops = getWorkshopsByOwner(c.user.id)
         log.info('userAdmin %s %s' % (code, url))
 
-        return render("/derived/user_admin.bootstrap")
+        return render("/derived/member_admin.bootstrap")
 
 
     @h.login_required

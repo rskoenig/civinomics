@@ -10,7 +10,6 @@ from pylowiki.lib.base import BaseController, render
 #Fox imported these modules
 import pylowiki.lib.helpers as h
 from pylowiki.lib.auth import login_required
-#from pylowiki.model import get_user, get_user_by_email, commit
 from pylowiki.lib.db.user import get_user, checkPassword
 from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
 from pylowiki.lib.db.dbHelpers import commit
@@ -22,7 +21,8 @@ log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
 
-    def index(self):
+    #def index(self):
+    def loginHandler(self):
         """ Display and Handle Login """
         c.title = c.heading = "Login"  
         c.splashMsg = False
@@ -45,6 +45,10 @@ class LoginController(BaseController):
                         c.splashMsg = splashMsg
                     elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
+                        if 'laston' in user:
+                            t = time.localtime(float(user['laston']))
+                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                             
                         user['laston'] = time.time()
                         commit(user)
                         session["user"] = user['name']
@@ -56,7 +60,7 @@ class LoginController(BaseController):
                         
                         log.info( "Successful login attempt with credentials - " + email )
                         try:
-                            return redirect("/derived/issuehome.html")
+                            return redirect("/")
                         except:
                             return redirect(config['app_conf']['site_base_url'])
                     else:
@@ -71,7 +75,7 @@ class LoginController(BaseController):
                 splashMsg['content'] = 'missing username or password'
                 c.splashMsg = splashMsg
             
-            return render("/derived/splash.bootstrap")
+            return render("/derived/login.bootstrap")
 
         except KeyError:
             if "user" in session:
@@ -175,3 +179,6 @@ class LoginController(BaseController):
             h.flash( "Please fill all fields", "warning" )
             
         return render("/derived/changepass.mako" )
+
+    def loginDisplay(self):
+        return render("/derived/login.bootstrap")

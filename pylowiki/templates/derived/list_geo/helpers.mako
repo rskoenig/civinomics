@@ -12,22 +12,28 @@
 </%def>
 
 <%def name='show_geo()'>
-    <div class="well">
+    <div class="well profile_header">
     <table width="100%">
     <body>
     % if c.geoType == 'postal':
         <tr><td><img src="${c.cityFlag}" class="thumbnail"></td><td>City is <a href="${c.cityLink}">${c.city}</a></td><td rowspan=4>${show_geo_info()}</td><tr>
         <tr><td><img src="${c.countyFlag}" class="thumbnail"></td><td>County is <a href="${c.countyLink}">${c.county}</a></td></tr>
         <tr><td><img src="${c.stateFlag}" class="thumbnail"></td><td>State is <a href="${c.stateLink}">${c.state}</a></td></tr>
+        <tr><td><img src="${c.countryFlag}" class="thumbnail"></td><td>Country is <a href="${c.countryLink}">${c.country}</a></td></tr>
     % elif c.geoType == 'city':
         <tr><td><img src="${c.cityFlag}" class="thumbnail"></td><td>City of ${c.city}</td><td rowspan=3>${show_geo_info()}</td><tr>
         <tr><td><img src="${c.countyFlag}" class="thumbnail"></td><td>County is <a href="${c.countyLink}">${c.county}</a></td></tr>
         <tr><td><img src="${c.stateFlag}" class="thumbnail"></td><td>State is <a href="${c.stateLink}">${c.state}</a></td></tr>
+        <tr><td><img src="${c.countryFlag}" class="thumbnail"></td><td>Country is <a href="${c.countryLink}">${c.country}</a></td></tr>
     % elif c.geoType == 'county':
         <tr><td><img src="${c.countyFlag}" class="thumbnail"></td><td>County of ${c.county}</td><td rowspan=2>${show_geo_info()}</td></tr>
         <tr><td><img src="${c.stateFlag}" class="thumbnail"></td><td>State is <a href="${c.stateLink}">${c.state}</a></td></tr>
+        <tr><td><img src="${c.countryFlag}" class="thumbnail"></td><td>Country is <a href="${c.countryLink}">${c.country}</a></td></tr>
     % elif c.geoType == 'state':
         <tr><td><img src="${c.stateFlag}" class="thumbnail"></td><td>State of ${c.state}</td><td>${show_geo_info()}</td><tr>
+        <tr><td><img src="${c.countryFlag}" class="thumbnail"></td><td>Country is <a href="${c.countryLink}">${c.country}</a></td></tr>
+    % elif c.geoType == 'country':
+        <tr><td><img src="${c.countryFlag}" class="thumbnail"></td><td>Country of ${c.country}</td><td>${show_geo_info()}</td></tr>
     %endif
     </tbody>
     </table> 

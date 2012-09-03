@@ -24,7 +24,7 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 </head>
-<body>
+<body background="/images/textures/blizzard.png">
 	<div class="navbar navbar-fixed-top"> <!-- begin navbar -->
 		<div class="navbar-inner">
 			<div class="container">
@@ -33,24 +33,13 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</a>
-				<a href="/" class="brand"><img src="/images/fluid1_images/civheaderlogo_alphagreen.png"></a>
+				<a href="/" class="brand" title="Click to go to Civinomics home"><img src="/images/fluid1_images/civheaderlogo_alphagreen.png"></a>
 				<div class="nav-collapse"> <!-- hides when display is too small -->
 					<ul class="nav pull-right nav-pills">
-						<li><a href="/"><i class="icon-home"></i> Home</a></li>
+						<li><a href="/" title="Click to go to Civinomics home"><i class="icon-home"></i> Home</a></li>
 						% if 'user' in session:
-						        <li><a href="/surveys"><i class="icon-exclamation-sign"></i> Surveys</a></li>
-						        <li><a href="/workshops"><i class="icon-cog"></i> Workshops</a></li>
-                                                        <li class="dropdown">
-                                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user"></i>
-                                                                Profile
-                                                                <b class="caret"></b>
-                                                            </a>
-                                                            <ul class="dropdown-menu">
-							<li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">View Profile</a></li>
-							<li><a href="/profile/edit">Edit Profile</a></li>
-							<li><a href="/login/logout">Logout</a></li>
-                                                            </ul>
-                                                        </li>
+                                                        <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}" title="Click to go to your Member profile"><i class="icon-user"></i> Profile</a></li>
+							<li><a href="/login/logout" title="Click to logout"><i class="icon-off"></i> Logout</a></li>
                                                         % if int(c.authuser['accessLevel']) >= 100:
     							<li class="dropdown">
     							    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-star"></i>
@@ -75,7 +64,10 @@
     							    </ul>
     							</li>
 							% endif
+                                                % else:
+						    <li><a href="/workshops" title="Click to list workshops"><i class="icon-cog"></i> Workshops</a></li>
 						% endif
+						<li><a href="/help" title="Click for information"><i class="icon-info-sign"></i> Help</a></li>
 					</ul> <!-- /.nav -->
 				</div> <!-- /.nav-collapse -->
 			</div> <!-- /.container -->

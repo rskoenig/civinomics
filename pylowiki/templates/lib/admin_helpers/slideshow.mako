@@ -17,6 +17,8 @@
    <!-- The file upload form used as target for the file upload widget -->
    <form id="fileupload" class="well" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
         <p><strong>Add slides to slideshow</strong></p>
+        <p>You may only upload images you own or have permission to upload to this site.<p>
+        <p>Make sure to upload images larger than 640 pixels wide by 480 pixels high! Small images or thumbnails will look terrible in the slide show! Images oriented in "landscape" mode (wider than higher) are best.</p>
         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
         <div class="row fileupload-buttonbar">
             <div class="span7">

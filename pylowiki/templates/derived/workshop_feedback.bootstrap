@@ -6,7 +6,7 @@
 
 ${lib.return_to()}
 <div class="container-fluid">
-<div class="well">
+<div class="well workshop_header">
    <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
    <br />
    ${lib.nav_thing('feedback')}
@@ -19,9 +19,7 @@ ${lib.return_to()}
 			<div class="civ-col-inner">
 				${helpers.workshopBlurb()}
 			</div>
-			<div class="civ-col-inner">
-				${helpers.displaySlider()}
-			</div>
+			${helpers.displaySlider()}
 		</div>
 		<div class="civ-col">
 			<h2 class="civ-col">Comments</h2>

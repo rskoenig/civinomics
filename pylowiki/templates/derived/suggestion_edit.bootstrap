@@ -6,11 +6,8 @@
 
 <div class="container-fluid">
 <div class="row-fluid">
-    <div class="span12 well">
-        ${suggestion_helpers.workshopTitle()}
-        <br />
-        ${lib.nav_thing("")}
-        <br />
+    <div class="span12 well workshop_header">
+        ${lib.displayWorkshopHeader('')}
     </div>
 </div>
 
@@ -37,7 +34,7 @@
             ${c.w['goals']}
             <br /> <br />
             <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
-            ${lib.list_suggestions("No other suggestions for this workshop.")}
+            ${lib.list_suggestions(c.suggestions, "No other suggestions for this workshop.", 10)}
         </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->
 </div>

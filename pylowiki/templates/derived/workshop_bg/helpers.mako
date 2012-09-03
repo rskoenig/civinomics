@@ -45,13 +45,5 @@
 	% else:
 		${c.content}
 	% endif
-	${i_read_this()}
-</%def>
-
-<%def name="i_read_this()">
-	<div id="summary_info">
-	${h.form(h.url(controller = "issue", action = "readThis"), method = "post")}
-		<button type="submit" class="btn btn-success" id="readbutton" name="readThis" value="readThis"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_071_book.png"> I Read This</button>
-	${h.end_form()}
-	</div> <!-- #summary_info -->
+        Last updated ${c.lastmoddate} by <a href="/profile/${c.lastmoduser['urlCode']}/${c.lastmoduser['url']}">${c.lastmoduser['name']}</a>
 </%def>

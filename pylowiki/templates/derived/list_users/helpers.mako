@@ -8,13 +8,11 @@
 <%namespace name="profile_helpers" file="/derived/profile/helpers.mako" />
 
 <%def name="list_users()">
-    <table class="table table-striped table-condensed">
-    <tbody>
+    <ul class="unstyled civ-col-list">
     % for item in c.paginator:
         ${profile_helpers.listUser(item, 1)}
     % endfor
-    </tbody>
-    </table>
+    </ul>
 </%def>
 
 <%def name="list_total_users()">

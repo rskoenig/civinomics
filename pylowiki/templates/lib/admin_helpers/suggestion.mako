@@ -1,6 +1,7 @@
 <%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import getFlags
 %>
 
 <%def name="sug_admin_banner()">
@@ -52,9 +53,20 @@
 
 <%def name="suggestion_admin()">  
     <p>
+
     <strong class="gray">Administrate Suggestion</strong>
+    % if len(getFlags(c.s)) > 0:
+        <br /><br /><br />
+        <strong>Clear Suggestion Flags</strong>
+        <form name="note_suggestion" id="note_suggestion" class="left" action = "/clearSuggestionFlagsHandler/${c.s['urlCode']}/${c.s['url']}" enctype="multipart/form-data" method="post" >
+        Reason for clearing flags: &nbsp;
+        <input type=text name="clearSuggestionFlagsReason"><br /><br />
+        <button type="submit" class="btn btn-warning">Clear Flags</button>
+
+        </form>
+    % endif
     <br /><br /><br />
-    <strong>Leave Note on Suggetion</strong>
+    <strong>Leave Note on Suggestion</strong>
     <form name="note_suggestion" id="note_suggestion" class="left" action = "/noteSuggestionHandler" enctype="multipart/form-data" method="post" >
     <input type=hidden name=workshopCode value="${c.w['urlCode']}">
     <input type=hidden name=workshopURL value="${c.w['url']}">

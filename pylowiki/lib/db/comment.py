@@ -27,6 +27,12 @@ def getUserComments(user, disabled = False):
     except:
        return False
 
+def getDiscussionCommentsSince(discussionID, memberDatetime):
+    try:
+       return meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
+    except:
+       return False  
+
 def getCommentByCode( code ):
     try:
         return meta.Session.query( Thing ).filter_by(objType = 'comment').filter(Thing.data.any(wc('urlCode', code))).one()
