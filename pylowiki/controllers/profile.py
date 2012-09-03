@@ -13,7 +13,7 @@ from pylons import config
 
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
-from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, getUserPosts
+from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, checkPassword, getUserPosts
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
@@ -584,13 +584,17 @@ class ProfileController(BaseController):
                 picture = False
         else:
             picture = False
-        ##log.info('picture is %s'%picture)
+        #log.info('picture is %s'%picture)
+        u = c.authuser
+
         if 'password' in request.params:
             password = request.params['password']
+
         else:
             password = False 
         if 'verify_password' in request.params:
             verify_password = request.params['verify_password']
+
         else:
             verify_password = False 
 
@@ -599,12 +603,77 @@ class ProfileController(BaseController):
             changeMsg = changeMsg + "Password updated. "
             ##log.info('changed password for  %s'%u['name'])
 
+
         if password and verify_password and password != verify_password:
             perror = 1
             perrorMsg = 'Password and Verify Password must match'
         if password or verify_password and password != verify_password:
             perror = 1
             perrorMsg = 'Password and Verify Password must match'
+
+        " FOR CHANGING USE PASSWORD"
+        pass_error = 4
+        if 'oldPassword' in request.params:
+            old_password = checkPassword(c.authuser, request.params['oldPassword'])
+            log.info('OLD is %s'%request.params['oldPassword'])
+            log.info('Pass is %s'%old_password)
+            pass_error = 0
+            
+            if not old_password:
+                pass_error = 2
+            if request.params['oldPassword'] == '':
+                pass_error = 4
+                
+        if 'newPassword' in request.params:
+            newPassword = request.params['newPassword']
+        else:
+            pass_error = 1
+        if 'reNewPassword' in request.params:
+            reNewPassword = request.params['reNewPassword']
+        else:
+            pass_error = 1
+            
+        if newPassword == '' or reNewPassword == '' or request.params['oldPassword'] == '':
+            pass_error = 1
+        elif newPassword != reNewPassword:
+            pass_error = 3
+                        
+        if 'oldPassword' not in request.params and 'newPassword' not in request.params and 'reNewPassword' not in request.params:
+            pass_error = 4
+        else:
+            if request.params['oldPassword'] == '' and request.params['newPassword'] == '' and request.params['reNewPassword'] == '':
+                pass_error = 4
+            
+        if pass_error == 0:
+            changePassword(u, newPassword)
+            log.info('changed password for  %s'%c.authuser['name'])
+            alert = {'type':'success'}
+            alert['title'] = 'Password Change Successful'
+            alert['content'] = ''
+            "alert['content'] = 'Please check all Required Fields'"
+            session['alert'] = alert
+            session.save()
+        elif pass_error == 1:
+            alert = {'type':'error'}
+            alert['title'] = 'Password Change: All Fields Required'
+            alert['content'] = ''
+            "alert['content'] = 'Please check all Required Fields'"
+            session['alert'] = alert
+            session.save()
+        elif pass_error == 2:
+            alert = {'type':'error'}
+            alert['title'] = 'Password Change: Old Password Incorrect'
+            alert['content'] = ''
+            "alert['content'] = 'Please check all Required Fields'"
+            session['alert'] = alert
+            session.save()
+        elif pass_error == 3:
+            alert = {'type':'error'}
+            alert['title'] = 'Password Change: New Passwords Do Not Match'
+            alert['content'] = ''
+            "alert['content'] = 'Please check all Required Fields'"
+            session['alert'] = alert
+            session.save()
 
         if 'first_name' in request.params:
             firstName = request.params['first_name']
@@ -622,7 +691,7 @@ class ProfileController(BaseController):
             tagline = request.params['tagline']
         else:
             tagline = False
-            
+
         nameChange = False
         anyChange = False
         if firstName and firstName != '' and firstName != c.authuser['firstName']:

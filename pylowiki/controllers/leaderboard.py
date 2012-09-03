@@ -7,6 +7,7 @@ from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.comment import getComment
 from pylowiki.lib.db.resource import getActiveResourcesByWorkshopID
+from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop
 from pylowiki.lib.db.follow import getUserFollows, isFollowing
 from pylowiki.lib.db.user import getActiveUsers, getUserByID
 from pylowiki.lib.db.rating import getRatingByID
@@ -69,8 +70,8 @@ def SugActivityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
-            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
-            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
+            fuzzUpperAvgRating = int((float(s['ratingAvg_overall'])) + (5-(float(s['ratingAvg_overall']))%5))
+            fuzzLowerAvgRating = int((float(s['ratingAvg_overall'])) - ((float(s['ratingAvg_overall']))%5))
                                     
             row.append(count) 
             row.append(name) 
@@ -94,8 +95,8 @@ def SugActivityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
-            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
-            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
+            fuzzUpperAvgRating = int((float(s['ratingAvg_overall'])) + (5-(float(s['ratingAvg_overall']))%5))
+            fuzzLowerAvgRating = int((float(s['ratingAvg_overall'])) - ((float(s['ratingAvg_overall']))%5))
                                     
             row.append(str(index+1) + ' / ' + str(len(sugActiveList))) 
             row.append(name) 
@@ -133,7 +134,7 @@ def ResActivityBoard(page, resources):
         resCreated = time.mktime(res.date.timetuple())
         curTime = time.time()
         elapsedTime = -(resCreated - curTime)
-        value = str(getResourcePopularity(getDiscussionByID(res['discussion_id']))) + ' Comments/Ratings Over ' + str(str(timeSince(res.date)))
+        value = str(getResourcePopularity(getDiscussionByID(res['discussion_id'])) + int(res['ups']) + int(res['downs'])) + ' Comments/Ratings Over ' + str(str(timeSince(res.date)))
         title = [res['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + res['urlCode'] + '/' + res['url'])]
     addRanks('Resource Activity', 'resActivity', userResActiveRank, len(resActiveList), title, value) 
  
@@ -148,13 +149,14 @@ def ResActivityBoard(page, resources):
             name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
             numRatings = int(r['ups']) + int(r['downs'])
             userVote = '--' 
-            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
-            if r.id in resRateDict.keys():
-                userVote = getRatingByID(resRateDict[r.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_resource_overall' in c.authuser.keys():
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+                if r.id in resRateDict.keys():
+                    userVote = getRatingByID(resRateDict[r.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(r['ups']) > 0 or int(r['downs']) > 0:    
@@ -182,13 +184,14 @@ def ResActivityBoard(page, resources):
             name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
             numRatings = int(r['ups']) + int(r['downs'])
             userVote = '--' 
-            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
-            if r.id in resRateDict.keys():
-                userVote = getRatingByID(resRateDict[r.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_resource_overall' in c.authuser.keys():
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+                if r.id in resRateDict.keys():
+                    userVote = getRatingByID(resRateDict[r.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(r['ups']) > 0 or int(r['downs']) > 0:    
@@ -237,8 +240,8 @@ def SugPopularityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
-            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
-            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
+            fuzzUpperAvgRating = int((float(s['ratingAvg_overall'])) + (5-(float(s['ratingAvg_overall']))%5))
+            fuzzLowerAvgRating = int((float(s['ratingAvg_overall'])) - ((float(s['ratingAvg_overall']))%5))
             
             row.append(count) 
             row.append(name) 
@@ -262,8 +265,8 @@ def SugPopularityBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             totalComs = getDiscussionByID(int(s['discussion_id']))['numComments']
             numRatings = len(s['ratingIDs_overall'].split(',')) 
-            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
-            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
+            fuzzUpperAvgRating = int((float(s['ratingAvg_overall'])) + (5-(float(s['ratingAvg_overall']))%5))
+            fuzzLowerAvgRating = int((float(s['ratingAvg_overall'])) - ((float(s['ratingAvg_overall']))%5))
             
             row.append(str(index+1) + ' / ' + str(len(sugPopularList))) 
             row.append(name) 
@@ -286,7 +289,7 @@ def SugRatingBoard(page, suggestions):
     title = '--'
     if userSugRatingRank != []:
         s = sugRatingList[userSugRatingRank[0]]
-        value = str(s['ratingAvg_%s' % 'overall']) + ' Average Rating' 
+        value = str(int(s['ratingAvg_%s' % 'overall'])) + ' Average Rating' 
         title = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
     addRanks('Suggestion Rating', 'sugRating', userSugRatingRank, len(sugRatingList), title, value) 
     
@@ -301,15 +304,13 @@ def SugRatingBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             numRatings = len(s['ratingIDs_overall'].split(',')) 
             userRate = '-' 
-            sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall'])) 
-            if s.id in sugRateDict.keys():
-                userRate = getRatingByID(sugRateDict[s.id])['rating']
-                ##log.info('ratingAvg_overall is %s'%int(float(s['ratingAvg_overall'])))
-            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
-            ##log.info('fuzzUpperAvgRating is %s'%fuzzUpperAvgRating)
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall'])) 
+                if s.id in sugRateDict.keys():
+                    userRate = getRatingByID(sugRateDict[s.id])['rating']
 
-            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
-            ##log.info('fuzzLowerAvgRating is %s'%fuzzLowerAvgRating)
+            fuzzUpperAvgRating = int((float(s['ratingAvg_overall'])) + (5-(float(s['ratingAvg_overall']))%5))
+            fuzzLowerAvgRating = int((float(s['ratingAvg_overall'])) - ((float(s['ratingAvg_overall']))%5))
     
             row.append(count) 
             row.append(name) 
@@ -333,12 +334,13 @@ def SugRatingBoard(page, suggestions):
             name = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
             numRatings = len(s['ratingIDs_overall'].split(',')) 
             userRate = '-' 
-            sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall'])) 
-            if s.id in sugRateDict.keys():
-                userRate = getRatingByID(sugRateDict[s.id])['rating']
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall'])) 
+                if s.id in sugRateDict.keys():
+                    userRate = getRatingByID(sugRateDict[s.id])['rating']
 
-            fuzzUpperAvgRating = (int(float(s['ratingAvg_overall']))) + (5-(int(float(s['ratingAvg_overall'])))%5)
-            fuzzLowerAvgRating = (int(float(s['ratingAvg_overall']))) - ((int(float(s['ratingAvg_overall'])))%5)
+            fuzzUpperAvgRating = int((float(s['ratingAvg_overall'])) + (5-(float(s['ratingAvg_overall']))%5))
+            fuzzLowerAvgRating = int((float(s['ratingAvg_overall'])) - ((float(s['ratingAvg_overall']))%5))
     
             row.append(str(index+1) + ' / ' + str(len(sugRatingList))) 
             row.append(name) 
@@ -381,13 +383,14 @@ def ResRatingBoard(page, resources):
             name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
             numRatings = int(r['ups']) + int(r['downs'])
             userVote = '--' 
-            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
-            if r.id in resRateDict.keys():
-                userVote = getRatingByID(resRateDict[r.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_resource_overall' in c.authuser.keys():
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+                if r.id in resRateDict.keys():
+                    userVote = getRatingByID(resRateDict[r.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(r['ups']) > 0 or int(r['downs']) > 0:    
@@ -416,13 +419,14 @@ def ResRatingBoard(page, resources):
             name = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
             numRatings = int(r['ups']) + int(r['downs'])
             userVote = '--' 
-            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
-            if r.id in resRateDict.keys():
-                userVote = getRatingByID(resRateDict[r.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_resource_overall' in c.authuser.keys():
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+                if r.id in resRateDict.keys():
+                    userVote = getRatingByID(resRateDict[r.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(r['ups']) > 0 or int(r['downs']) > 0:    
@@ -460,7 +464,7 @@ def ResPopularityBoard(page, resources):
     title = '--'
     if userResPopularRank != []:
         r = resPopularList[userResPopularRank[0]]
-        value = str(getResourcePopularity(getDiscussionByID(r['discussion_id']))) + ' Comments/Ratings' 
+        value = str(getResourcePopularity(getDiscussionByID(r['discussion_id'])) + int(r['ups']) + int(r['downs'])) + ' Comments/Ratings' 
         title = [r['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + r['urlCode'] + '/' + r['url'])] 
     addRanks('Resource Popularity', 'resPopular', userResPopularRank, len(resPopularList), title, value) 
 
@@ -477,13 +481,14 @@ def ResPopularityBoard(page, resources):
             numRatings = int(r['ups']) + int(r['downs'])
             totalComs = getDiscussionByID(int(r['discussion_id']))['numComments']
             userVote = '--' 
-            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
-            if r.id in resRateDict.keys():
-                userVote = getRatingByID(resRateDict[r.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_resource_overall' in c.authuser.keys():
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+                if r.id in resRateDict.keys():
+                    userVote = getRatingByID(resRateDict[r.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(r['ups']) > 0 or int(r['downs']) > 0:    
@@ -513,13 +518,14 @@ def ResPopularityBoard(page, resources):
             numRatings = int(r['ups']) + int(r['downs'])
             totalComs = getDiscussionByID(int(r['discussion_id']))['numComments']
             userVote = '--' 
-            resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
-            if r.id in resRateDict.keys():
-                userVote = getRatingByID(resRateDict[r.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_resource_overall' in c.authuser.keys():
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+                if r.id in resRateDict.keys():
+                    userVote = getRatingByID(resRateDict[r.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(r['ups']) > 0 or int(r['downs']) > 0:    
@@ -535,6 +541,196 @@ def ResPopularityBoard(page, resources):
             rows.append(row) 
             
         addBoardDict('Resource Popularity', 'resPopular', headers, rows) 
+    
+def DiscRatingBoard(page, discussions):
+
+    "Sorted by Ratings : ups/(ups + downs)"
+    discRatingList = sorted(discussions, key=lambda x: 0 if (int(x['ups'])+int(x['downs']) ==0) else (float(x['ups'])/(float(x['ups'])+float(x['downs']))), reverse = True)
+
+    userDiscRatingRank = [i for i,x in enumerate(discRatingList) if x.owner == c.authuser.id]
+    value = '--'
+    title = '--'
+    if userDiscRatingRank != []:
+        d = discRatingList[userDiscRatingRank[0]]
+        PercentRating = '--'
+        if int(d['ups']) > 0 or int(d['downs']) > 0:    
+            PercentRating = int(5*round(((int(d['ups'])/(int(d['ups'])+int(d['downs'])))*100)/5))
+        value = str(PercentRating) + ' Average Rating' 
+        title = [d['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + d['urlCode'] + '/' + d['url'])] 
+    addRanks('Discussion Rating', 'discRating', userDiscRatingRank, len(discRatingList), title, value) 
+ 
+
+    if page == 'index':
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Votes', 'You Rated', 'Overall Rating'] 
+        rows = [] 
+        count = 1     
+
+        for d in discRatingList:
+            row = [] 
+            count = 1 
+            name = [d['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/discussion/' + d['urlCode'] + '/' + d['url'])] 
+            numRatings = int(d['ups']) + int(d['downs'])
+            userVote = '--' 
+            if 'ratedThings_discussion_overall' in c.authuser.keys():
+                discRateDict = pickle.loads(str(c.authuser['ratedThings_discussion_overall'])) 
+                if d.id in discRateDict.keys():
+                    userVote = getRatingByID(discRateDict[d.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(d['ups']) > 0 or int(d['downs']) > 0:    
+                PercentRating = int(5*round(((int(d['ups'])/(int(d['ups'])+int(d['downs'])))*100)/5))
+            
+            row.append(count) 
+            row.append(name) 
+            row.append(numRatings) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            count += 1 
+            
+        addBoardDict('Discussion Rating', 'discRating', headers, rows) 
+
+    if page == 'userRanks' and userDiscRatingRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Votes', 'You Rated', 'Overall Rating'] 
+        rows = [] 
+
+        for index in userDiscRatingRank:
+            d = discRatingList[index]
+            row = [] 
+            count = 1 
+            name = [d['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/discussion/' + d['urlCode'] + '/' + d['url'])] 
+            numRatings = int(d['ups']) + int(d['downs'])
+            userVote = '--' 
+            if 'ratedThings_discussion_overall' in c.authuser.keys():
+                discRateDict = pickle.loads(str(c.authuser['ratedThings_discussion_overall'])) 
+                if d.id in discRateDict.keys():
+                    userVote = getRatingByID(discRateDict[d.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(d['ups']) > 0 or int(d['downs']) > 0:    
+                PercentRating = int(5*round(((int(d['ups'])/(int(d['ups'])+int(d['downs'])))*100)/5))
+            
+            row.append(str(index+1) + ' / ' + str(len(discRatingList))) 
+            row.append(name) 
+            row.append(numRatings) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            count += 1 
+            
+        addBoardDict('Discussion Rating', 'discRating', headers, rows) 
+
+
+" Get Resource Popularity through number of comments and votes for each comment "
+def getDiscussionPopularity(disc):
+    popularity = 0
+    if 'children' in disc.keys():
+        for comID in disc['children'].split(','):
+            nextCom = getComment(int(comID))
+            if nextCom:
+                popularity += 1 + int(nextCom['ups']) + int(nextCom['downs']) + getDiscussionPopularity(nextCom)
+    return popularity
+
+def DiscPopularityBoard(page, discussions):
+
+    "Sorted by comments + rating votes"
+    discPopularList = sorted(discussions, key=lambda x: (getDiscussionPopularity(x) + int(x['ups']) + int(x['downs'])), reverse = True)
+
+    userDiscPopularRank = [i for i,x in enumerate(discPopularList) if x.owner == c.authuser.id]
+    value = '--'
+    title = '--'
+    if userDiscPopularRank != []:
+        d = discPopularList[userDiscPopularRank[0]]
+        value = str(getDiscussionPopularity(d) + int(d['ups']) + int(d['downs'])) + ' Comments/Ratings' 
+        title = [d['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/discussion/' + d['urlCode'] + '/' + d['url'])] 
+    addRanks('Discussion Popularity', 'discPopular', userDiscPopularRank, len(discPopularList), title, value) 
+
+    
+    if page == 'index':
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Comments', 'Total Votes', 'Your Vote', 'Overall Rating'] 
+        rows = [] 
+        count = 1 
+                
+        for d in discPopularList:
+            row = [] 
+            name = [d['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/discussion/' + d['urlCode'] + '/' + d['url'])] 
+            numRatings = int(d['ups']) + int(d['downs'])
+            totalComs = d['numComments']
+            userVote = '--' 
+            if 'ratedThings_discussion_overall' in c.authuser.keys():
+                discRateDict = pickle.loads(str(c.authuser['ratedThings_discussion_overall'])) 
+                if d.id in discRateDict.keys():
+                    userVote = getRatingByID(discRateDict[d.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(d['ups']) > 0 or int(d['downs']) > 0:    
+                PercentRating = int(5*round(((int(d['ups'])/(int(d['ups'])+int(d['downs'])))*100)/5))
+            
+            row.append(count) 
+            row.append(name) 
+            row.append(totalComs)
+            row.append(numRatings) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            count += 1 
+            
+        addBoardDict('Discussion Popularity', 'discPopular', headers, rows) 
+
+    if page == 'userRanks' and userDiscPopularRank != []:
+        "Setting up LeaderBoard Dictionary Addition"
+        headers = ['Rank', 'Title', 'Total Comments', 'Total Votes', 'Your Vote', 'Overall Rating'] 
+        rows = [] 
+                
+        for index in userDiscPopularRank:
+            d = discPopularList[index]
+            row = [] 
+            name = [d['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/discussion/' + d['urlCode'] + '/' + d['url'])] 
+            numRatings = int(d['ups']) + int(d['downs'])
+            totalComs = d['numComments']
+            userVote = '--' 
+            if 'ratedThings_discussion_overall' in c.authuser.keys():
+                discRateDict = pickle.loads(str(c.authuser['ratedThings_discussion_overall'])) 
+                if d.id in discRateDict.keys():
+                    userVote = getRatingByID(discRateDict[d.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+
+            PercentRating = '--'
+            if int(d['ups']) > 0 or int(d['downs']) > 0:    
+                PercentRating = int(5*round(((int(d['ups'])/(int(d['ups'])+int(d['downs'])))*100)/5))
+            
+            row.append(str(index+1) + ' / ' + str(len(discPopularList))) 
+            row.append(name) 
+            row.append(totalComs)
+            row.append(numRatings) 
+            row.append(userVote) 
+            row.append(PercentRating)
+            
+            rows.append(row) 
+            
+        addBoardDict('Discussion Popularity', 'discPopular', headers, rows) 
+        
     
 def CommentRatingBoard(page, comList):
 
@@ -585,13 +781,14 @@ def CommentRatingBoard(page, comList):
             
             numVotes = int(com['ups']) + int(com['downs'])
             userVote = '--' 
-            comRateDict = pickle.loads(str(c.authuser['ratedThings_comment_overall'])) 
-            if com.id in comRateDict.keys():
-                userVote = getRatingByID(comRateDict[com.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_comment_overall' in c.authuser.keys():
+                comRateDict = pickle.loads(str(c.authuser['ratedThings_comment_overall'])) 
+                if com.id in comRateDict.keys():
+                    userVote = getRatingByID(comRateDict[com.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(com['ups']) > 0 or int(com['downs']) > 0:    
@@ -631,13 +828,14 @@ def CommentRatingBoard(page, comList):
             
             numVotes = int(com['ups']) + int(com['downs'])
             userVote = '--' 
-            comRateDict = pickle.loads(str(c.authuser['ratedThings_comment_overall'])) 
-            if com.id in comRateDict.keys():
-                userVote = getRatingByID(comRateDict[com.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_comment_overall' in c.authuser.keys():
+                comRateDict = pickle.loads(str(c.authuser['ratedThings_comment_overall'])) 
+                if com.id in comRateDict.keys():
+                    userVote = getRatingByID(comRateDict[com.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(com['ups']) > 0 or int(com['downs']) > 0:    
@@ -721,13 +919,14 @@ def CommentPopularityBoard(page, comList):
             numVotes = int(com['ups']) + int(com['downs'])
             totalComs = getSubComments(com)
             userVote = '--' 
-            comRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
-            if com.id in comRateDict.keys():
-                userVote = getRatingByID(comRateDict[com.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_comment_overall' in c.authuser.keys():
+                comRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+                if com.id in comRateDict.keys():
+                    userVote = getRatingByID(comRateDict[com.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(com['ups']) > 0 or int(com['downs']) > 0:    
@@ -769,13 +968,14 @@ def CommentPopularityBoard(page, comList):
             numVotes = int(com['ups']) + int(com['downs'])
             totalComs = getSubComments(com)
             userVote = '--' 
-            comRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
-            if com.id in comRateDict.keys():
-                userVote = getRatingByID(comRateDict[com.id])['rating']
-            if userVote == '1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
-            elif userVote == '-1':
-                userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
+            if 'ratedThings_comment_overall' in c.authuser.keys():
+                comRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
+                if com.id in comRateDict.keys():
+                    userVote = getRatingByID(comRateDict[com.id])['rating']
+                if userVote == '1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png'}
+                elif userVote == '-1':
+                    userVote = {'img': '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png'}
 
             PercentRating = '--'
             if int(com['ups']) > 0 or int(com['downs']) > 0:    
@@ -810,17 +1010,17 @@ def peoplefollowsBoard(page, userList):
     
     if page == 'index':
         "Setting up LeaderBoard Dictionary Addition"
-        headers = ['Rank', ['icon-user', 'Name'], 'Total Followers', 'Followed'] 
+        headers = ['Rank', ['icon-user', 'Name'], 'Total Followers', 'Following'] 
         rows = [] 
         count = 1 
         
         for user in followList:
             row = [] 
-    	    picture = ''
+            picture = ''
             if user['pictureHash'] == 'flash':
-        	    picture = "/images/avatars/flash.profile"
-    	    else:
-    	        picture = '/images/avatar/' + user['directoryNumber'] + '/profile/' + user['pictureHash'] + '.profile'
+                picture = "/images/avatars/flash.profile"
+            else:
+                picture = '/images/avatar/' + user['directoryNumber'] + '/profile/' + user['pictureHash'] + '.profile'
 
 
             name = [[picture, user['name']], ('/profile/' + user['urlCode'] + '/' + user['url'])] 
@@ -959,7 +1159,8 @@ def GenerateRanks(code, url, page):
     c.resList = getActiveResourcesByWorkshopID(c.w.id)
     # Grabbing the Suggestions of the Workshop
     c.suggestions = getActiveSuggestionsForWorkshop(code, url) 
-
+    # Grabbing the Discussions of the Workshop
+    c.discList = getActiveDiscussionsForWorkshop(code, url) 
     
     peoplefollowsBoard(page, userList) 
     
@@ -970,6 +1171,9 @@ def GenerateRanks(code, url, page):
     ResRatingBoard(page, c.resList)
     ResPopularityBoard(page, c.resList)
     ResActivityBoard(page, c.resList)
+
+    DiscRatingBoard(page, c.discList)
+    DiscPopularityBoard(page, c.discList)
     
     c.comList = []
     " Grabbing the Comments of the Workshop "
@@ -1028,7 +1232,11 @@ class LeaderboardController(BaseController):
         addexplanation('Resource Popularity', explanation)
         explanation = "Ranked by number of comments and rating over the duration of time the resource has existed"
         addexplanation('Resource Activity', explanation)
-        explanation = "Ranked by number of up votes versus number of up plus down votes"
+        explanation = "Ranked by number of up votes versus number of up plus down votes on the discussion"
+        addexplanation('Discussion Rating', explanation)
+        explanation = "Ranked by Comments plus Votes on the discussion"
+        addexplanation('Discussion Popularity', explanation)
+        explanation = "Ranked by number of up votes versus number of up plus down votes for the comment"
         addexplanation('Comment Rating', explanation)
         explanation = "Ranked by number of SubComments to a comment as well as votes on the comment"
         addexplanation('Comment Popularity', explanation)

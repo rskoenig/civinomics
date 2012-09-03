@@ -47,7 +47,7 @@
                             ${item[3]}
                         % endif
                         </td>
-                        % if itemCount == len(c.userRankings):
+                        % if itemCount == len(c.userRankings) and len(c.leaderboardList) > 0:
                             <td id=${c.leaderboardList[0]['hrefKey']}>${item[4]}</td>
                         % else:
                             <td>${item[4]}</td>
