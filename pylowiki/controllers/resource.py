@@ -180,13 +180,17 @@ class ResourceController(BaseController):
         
         rerror = 0
         rerrorMsg = ''
-        if not comment or not title:
+        if not title or title == '':
             rerror = 1
-            rerrorMsg = 'Enter resource title and description.'
+            rerrorMsg = rerrorMsg + 'Resource title required.'
 
-        if comment == '' or title == '':
+        if not comment or comment == '':
             rerror = 1
-            rerrorMsg = 'Enter resource title and text.'
+            rerrorMsg = rerrorMsg + 'Resource description required.'
+
+        if not link or link == '':
+            rerror = 1
+            rerrorMsg = rerrorMsg + 'Resource link required.'
 
         if allowComments != '1' and allowComments != '0':
             rerror = 1
@@ -201,7 +205,12 @@ class ResourceController(BaseController):
            rerror = 1
            rerrorMsg = 'You are not authorized'
         if rerror:
-           h.flash(rerrorMsg, 'error')
+            alert = {'type':'error'}
+            alert['title'] = "Error."
+            alert['content'] = rerrorMsg
+            session['alert'] = alert
+            session.save()
+            return redirect('/editResource/%s/%s'%(code, url))
         else:
            cMsg = 'Edits: '
            if resource['title'] != title:
@@ -221,7 +230,12 @@ class ResourceController(BaseController):
            p = Page(title, c.authuser, resource, comment)
            commit(resource)
            Event('Resource Edited', cMsg, resource, c.authuser)
-           h.flash('Changes saved', 'success')
+           alert = {'type':'success'}
+           alert['title'] = "Resource edited."
+           alert['content'] = "Resource updated, thanks!"
+           session['alert'] = alert
+           session.save()
+
         
         return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], urlify(w['url']), code, url))
 
@@ -256,14 +270,17 @@ class ResourceController(BaseController):
 
         rerror = 0
         rerrorMsg = ''
-        if not link or not comment or not title:
+        if not title or title == '':
             rerror = 1
-            rerrorMsg = 'Enter resource title, URL and description.'
+            rerrorMsg = rerrorMsg + 'Resource title required.'
 
-        if comment == '' or title == '' or link == '':
+        if not link or link == '':
             rerror = 1
-            rerrorMsg = 'Enter resource title, URL and description.'
+            rerrorMsg = rerrorMsg + ' Resource link required.'
 
+        if not comment or comment == '':
+            rerror = 1
+            rerrorMsg = rerrorMsg + ' Resource comment required.'
 
         if rerror:
             alert = {'type':'error'}

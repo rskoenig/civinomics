@@ -13,6 +13,8 @@ ${lib.return_to()}
                 <br />
 	</div> <!-- ./span12 -->
 </div> <!-- ./row-fluid -->
+${lib.fields_alert()}
+
 
 
 <div class="row-fluid">

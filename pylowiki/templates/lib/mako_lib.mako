@@ -117,7 +117,7 @@
     % if 'alert' in session:
         <% alert = session['alert'] %> 
         <div class="alert alert-${alert['type']}">
-            <button data-dismiss="alert" class="close">Ã—</button>
+            <button data-dismiss="alert" class="close">X</button>
             <strong>${alert['title']}</strong>
             ${alert['content']}
         </div>

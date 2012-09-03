@@ -137,13 +137,13 @@ class SuggestionController(BaseController):
         
         serror = 0
         serrorMsg = ''
-        if not data or not title:
+        if not title or title == '':
             serror = 1
-            serrorMsg = 'Enter suggestion title and text.'
+            serrorMsg = serrorMsg + 'Sugestion title required.'
 
-        if data == '' or title == '':
+        if not data or data == '':
             serror = 1
-            serrorMsg = 'Enter suggestion title and text.'
+            serrorMsg = serrorMsg + 'Sugestion description required.'
 
         if allowComments != '1' and allowComments != '0':
             serror = 1
@@ -158,7 +158,12 @@ class SuggestionController(BaseController):
            serror = 1
            serrorMsg = 'You are not authorized'
         if serror:
-           h.flash(serrorMsg, 'error')
+            alert = {'type':'error'}
+            alert['title'] = "Error."
+            alert['content'] = serrorMsg
+            session['alert'] = alert
+            session.save()
+            return redirect('/editSuggestion/%s/%s'%(code, url))
         else:
            cMsg = 'Edited: '
            if s['title'] != title:
@@ -178,6 +183,12 @@ class SuggestionController(BaseController):
            p = Page(title, c.authuser, s, data)
            commit(s)
            Event('Suggestion Edited', cMsg, s, c.authuser)
+           alert = {'type':'success'}
+           alert['title'] = 'Suggestion edited.'
+           alert['content'] = 'Suggestion updated, thanks!'
+           session['alert'] = alert
+           session.save()
+
         
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(s['workshopCode'], urlify(s['workshopURL']), code, url))
 
