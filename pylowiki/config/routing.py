@@ -277,6 +277,10 @@ def make_map():
     # Comments
     map.connect('/addComment', controller = 'comment', action = 'addComment')
     map.connect('/addComment/', controller = 'comment', action = 'addComment')
+
+    # Comment perma-links
+    map.connect('/workshop/{id1}/{id2}/comment/{id3}', controller = 'comment', action = 'permalink')
+    map.connect('/workshop/{id1}/{id2}/comment/{id3}/', controller = 'comment', action = 'permalink')
     
     # Comment flagging
     map.connect('/flagComment/{id1}', controller = 'comment', action = 'flagComment', id1 = '{id1}')

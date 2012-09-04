@@ -17,6 +17,7 @@ from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode, editComment
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
+from pylowiki.lib.db.revision import getRevisionByCode
 
 import simplejson as json
 
@@ -274,8 +275,8 @@ class CommentController(BaseController):
         c.comment = getCommentByCode(id)
         d = getDiscussionByID(c.comment['discussion_id'])
         wLink = '/workshop/' + d['workshopCode'] + '/' + d['workshopURL']
-        if d['discType'] == 'background':
-           oLink = wLink + '/background'
+        if d['discType'] == 'feedback':
+           oLink = wLink + '/feedback'
         elif d['discType'] == 'suggestion':
            oLink = wLink + '/suggestion/' + d['suggestionCode'] + '/' + d['suggestionURL']
         elif d['discType'] == 'general':
@@ -314,17 +315,13 @@ class CommentController(BaseController):
             and then uses the editComment() function in the comments library.
             
             Inputs:
-                        id    ->    The comment id
+                        id1    ->    The comment hash
         """
-        commentID = id1
+        commentCode = id1
         cError = 0
-        start = 1000 # starting of counter in commentsCustom.mako
-        thisID = start + int(id1)
-        data = request.params['textarea' + str(thisID)]
-        remark = request.params['remark' + str(thisID)]
+        data = request.params['textarea' + commentCode]
         data = data.lstrip()
         data = data.rstrip()
-        log.info('data is %s'%data)
         if data == '':
             alert = {'type':'error'}
             alert['title'] = 'Edit Comment failed.'
@@ -333,7 +330,7 @@ class CommentController(BaseController):
             session.save()
             cError = 1
 
-        comment = getComment(commentID)
+        comment = getCommentByCode(commentCode)
         discussionID = comment['discussion_id']
         d = getDiscussionByID(discussionID)
         if d['discType'] == 'suggestion':
@@ -349,7 +346,7 @@ class CommentController(BaseController):
 
 
         if cError == 0:
-           comment = editComment(commentID, discussionID, data)
+           comment = editComment(commentCode, discussionID, data)
            if not comment:
                alert = {'type':'error'}
                alert['title'] = 'Edit Comment failed.'
@@ -362,7 +359,20 @@ class CommentController(BaseController):
                alert['content'] = 'Edit comment successful.'
                session['alert'] = alert
                session.save()
-               eMsg = "Comment data updated. " + remark
-               Event('Comment edited by %s'%c.authuser['name'], eMsg, comment, c.authuser)
+               #eMsg = "Comment data updated. " + remark
+               #Event('Comment edited by %s'%c.authuser['name'], eMsg, comment, c.authuser)
+               Event('Comment edited by %s'%c.authuser['name'], comment, c.authuser)
 
         return redirect(backlink)
+
+
+    def permalink(self, id1, id2, id3):
+      workshopCode = id1
+      workshopURL = id2
+      revisionCode = id3
+
+      c.w = getWorkshop(workshopCode, workshopURL)
+      c.r = getRevisionByCode(revisionCode)
+      c.u = getUserByID(c.r.owner)
+
+      return render('/derived/permaComment.bootstrap')
