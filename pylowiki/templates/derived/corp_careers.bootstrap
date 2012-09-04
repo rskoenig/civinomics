@@ -1,0 +1,49 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%def name="page_specific_css()">
+    <!-- None -->
+</%def>
+<%def name="display_body_right_content()">
+<div class="span8"><!--span body-->
+                        <div class="row-fluid">
+                            </br>
+                            <h1>Careers</h1>
+                            </br>
+                            <p class="lead">We are a rapidly growing start-up based in Santa Cruz, CA. We're looking for motivated, quick-learners to join our team. Don't see your job posting below? Tell us why you're the perfect fit: 
+                            </br><a href="#">careers AT civinomics DOT com</a>.</p>
+                        </div>
+                        <div>
+
+                        </div>
+                        <div class="row-fluid">
+                            <table class="table table-bordered">
+                              <thead>
+                                <tr>
+                                  <th>Department</th>
+                                  <th>Position</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                    <td rowspan="2">Engineering</td>
+                                    <td><a href="/corp/engfrontend">Software Engineer - Front End</a></td>
+                                </tr>
+                                <tr>
+                                    <td><a href="/corp/engbackend">Software Engineer - Back End</a></td>
+                                </tr>
+                                <tr>
+                                  <td>Outreach</td>
+                                  <td><a href="/corp/communityrep">Community Representative</a></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            </br>
+                            </br>
+                            </br>
+                            </br>
+                        </div>      
+                    </div><!--/.span8-->
+
+
+</%def>
+
+<%def name="display_body_bottom_content()"></%def>

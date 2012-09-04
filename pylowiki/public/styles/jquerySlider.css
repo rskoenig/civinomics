@@ -1,0 +1,195 @@
+.ui-slider-container { 
+	/*background: url('/images/slider_initial_lightgrey.png') no-repeat scroll 0 0;*/ 
+	padding: 0 0.6em;
+}
+
+.normal_slider {
+	float: right;
+	width: 384px;
+	margin: 20px;
+}
+.small_slider {
+	float: right;
+	width: 124px;
+	margin-left: 10px;
+	margin-top: 25px;
+	margin-bottom: 16px;
+}
+.survey_slider {
+	width: 100%;
+	margin: 5px;
+}
+.survey_multiSlider {
+	width: 95%;
+	margin: 2px;
+}
+
+
+.normal_slider.ui-slider-horizontal { 
+	height: 43px; 
+	border: 0;
+	padding-right: 20px;
+	/*background: none;
+	background: #A0F8A5;*/
+	background: #D9D7D7;
+	-moz-box-shadow: inset 0 0 1px 1px lightgrey;
+	-webkit-box-shadow: inset 0 0 1px 1px lightgrey;
+	box-shadow: inset 0 0 1px 1px lightgrey;
+}
+.small_slider.ui-slider-horizontal { 
+	height: 28px; 
+	border: 0;
+	padding-right: 11px;
+	/*background: none;
+	background: #A0F8A5;*/
+	background: #D9D7D7;
+	-moz-box-shadow: inset 0 0 1px 1px lightgrey;
+	-webkit-box-shadow: inset 0 0 1px 1px lightgrey;
+	box-shadow: inset 0 0 1px 1px lightgrey;
+}
+.survey_slider.ui-slider-horizontal { 
+	height: 42px; 
+	border: 0;
+	padding-right: 25px;
+	/*background: none;
+	background: #A0F8A5;*/
+	background: #D9D7D7;
+	-moz-box-shadow: inset 0 0 1px 1px lightgrey;
+	-webkit-box-shadow: inset 0 0 1px 1px lightgrey;
+	box-shadow: inset 0 0 1px 1px lightgrey;
+}
+.survey_multiSlider.ui-slider-horizontal { 
+	height: 32px; 
+	border: 0;
+	padding-right: 18px;
+	/*background: none;
+	background: #A0F8A5;*/
+	background: #D9D7D7;
+	-moz-box-shadow: inset 0 0 1px 1px lightgrey;
+	-webkit-box-shadow: inset 0 0 1px 1px lightgrey;
+	box-shadow: inset 0 0 1px 1px lightgrey;
+}
+
+.normal_slider .ui-widget-header { 
+	/*background: none;
+	background: #F4ACA4;*/
+	background: #D9D7D7;
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	-moz-box-shadow: inset 0 0 1px 1px lightgrey;
+	-webkit-box-shadow: inset 0 0 1px 1px lightgrey;
+	box-shadow: inset 0 0 1px 1px lightgrey;
+	
+}
+.small_slider .ui-widget-header { 
+	/*background: none;
+	background: #F4ACA4;*/
+	background: #D9D7D7;
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	-moz-box-shadow: inset 0 0 1px 1px lightgrey;
+	-webkit-box-shadow: inset 0 0 1px 1px lightgrey;
+	box-shadow: inset 0 0 1px 1px lightgrey;
+}
+.survey_slider .ui-widget-header { 
+	/*background: none;
+	background: #F4ACA4;*/
+	background: #D9D7D7;
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	-moz-box-shadow: inset 0 0 1px 1px lightgrey;
+	-webkit-box-shadow: inset 0 0 1px 1px lightgrey;
+	box-shadow: inset 0 0 1px 1px lightgrey;
+	
+}
+.survey_multiSlider .ui-widget-header { 
+	/*background: none;
+	background: #F4ACA4;*/
+	background: #D9D7D7;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	-moz-box-shadow: inset 0 0 1px 1px lightgrey;
+	-webkit-box-shadow: inset 0 0 1px 1px lightgrey;
+	box-shadow: inset 0 0 1px 1px lightgrey;
+	
+}
+
+.normal_slider .ui-slider-handle { 
+	text-decoration: none; 
+}
+.small_slider .ui-slider-handle { 
+	text-decoration: none; 
+}
+.survey_slider .ui-slider-handle { 
+	text-decoration: none; 
+}
+.survey_multiSlider .ui-slider-handle { 
+	text-decoration: none; 
+}
+
+.normal_slider .ui-slider-handle .handleVal {
+	padding-left: 12px;
+    padding-top: 44px;
+    position: absolute;
+    font-size: 1em;
+    color: #454545;
+}
+.small_slider .ui-slider-handle .handleVal {
+	padding-left: 4px;
+    padding-top: 26px;
+    position: absolute;
+    font-size: 0.8em;
+    color: #454545;
+}
+.survey_slider .ui-slider-handle .handleVal {
+	padding-left: 8px;
+    padding-top: 45px;
+    position: absolute;
+    font-size: 1.5em;
+    color: #454545;
+}
+.survey_multiSlider .ui-slider-handle .handleVal {
+	padding-left: 4px;
+    padding-top: 35px;
+    position: absolute;
+    font-size: 1em;
+    color: #454545;
+}
+
+.normal_slider .sliderPrompt {
+    margin-top: -32px;
+    width: 100%;
+    position: absolute;
+    font-size: 0.9em;
+    font-weight: bold;
+    font-style: italic;
+    color: #000000;	
+    text-align: center;
+}
+.small_slider .sliderPrompt {
+    margin-top: -32px;
+    width: 100%;
+    position: absolute;
+    font-size: 0.9em;
+    font-weight: bold;
+    font-style: italic;
+    color: #000000;	
+    text-align: center;
+}
+
+.normal_slider .sliderHelper {
+    margin-top: -18px;
+    width: 100%;
+    position: absolute;
+    font-size: 0.8em;
+    color: #000000;	
+    text-align: center;
+}
+.small_slider .sliderHelper {
+    margin-top: -18px;
+    width: 100%;
+    position: absolute;
+    font-size: 0.8em;
+    color: #000000;	
+    text-align: center;
+}

@@ -1,0 +1,106 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/suggestion/helpers.mako" />
+<%namespace file="/lib/comments.mako" import="comments, buttonHandler" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+
+% if 'directoryNumber' in c.author:
+    <% directoryNumber = c.author['directoryNumber'] %>
+% else:
+    <% directoryNumber = 0 %>
+% endif
+
+${lib.return_to()}
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12 well workshop_header">
+            ${lib.displayWorkshopHeader('')}
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
+    ${lib.fields_alert()}
+
+    <div class="row-fluid">    
+        <div class="span8">
+            <div class="civ-col">
+                % if c.s['adopted'] == '1':
+                    <h2 class="civ-col"><i class="icon-heart"></i> Adopted Suggestion</h2>
+                % else:
+                    <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION
+                        <span class="pull-right resource" style="font-size:10px; letter-spacing:normal;">
+                        ${lib.add_a_text("sresource", "")}
+                        </span>
+                    </h2>
+                % endif
+                <div class="civ-col-inner">
+                    <div class="row-fluid">
+                        ${helpers.suggestionInfo()}
+                        ${helpers.suggestionContent(c.content)}
+                        ${helpers.suggestionEditAdminRating(c.authuser, c.w.owner, c.s, c.isAdmin, session, c.rating)}
+                        ${helpers.spacer()}
+                    </div> <!-- /.row-fluid -->
+                </div><!-- civ-col-inner -->
+                ${lib.displayEvents()}
+            </div><!-- civ-col -->
+            <div class="civ-col">
+                <h2 class="civ-col"><i class="icon-comment"></i> Comments</h2>
+                <div class="civ-col-inner">
+                    ${comments("suggestionMain")}
+                </div> <!-- /.civ-col-innner -->
+            </div> <!-- .civ-col -->
+        </div><!-- span8 -->
+        ## Right column
+        <div class="span4">
+            % if c.message:
+                ${helpers.showMessage()}
+            % endif
+            <div class="civ-col">
+                    <h2 class="civ-col">
+                        <i class="icon-book"></i> Suggestion Resources
+                        </h2>
+                    ${lib.list_resources("There are no information resources for this suggestion. Be the first to add one!")}
+                <div class="civ-col-inner">
+                    <h2 class="civ-col"><i class="icon-pencil"></i> Other Suggestions</h2>
+                    ${lib.list_suggestions(c.suggestions, "There are no other suggestions for this workshop.", 10)}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span4 -->
+    </div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/suggestion.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/comments.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+    <script src = "/js/slides.js" type="text/javascript"></script>
+    <script src = "/js/flag.js" type="text/javascript"></script>
+    <script src = "/js/h2banner.js" type="text/javascript"></script>
+    <script src = "/js/javascript.js" type="text/javascript"></script>
+    <script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type = "text/javascript"></script>
+    <script src = "/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+    <script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".normal_slider").jColorSlider();
+        });
+    </script>
+
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+
+    <script language="javascript">
+        $(document).ready(function()    {
+            $(".markitup").markItUp(mySettings);
+        });
+    </script>
+    
+    <script src = "/js/upDown.js" type="text/javascript"></script>
+</%def>

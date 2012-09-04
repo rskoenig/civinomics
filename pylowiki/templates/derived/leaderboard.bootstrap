@@ -1,0 +1,34 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/leaderboard/helper.mako" />
+
+<div class="container-fluid">
+   <div class="well workshop_header">
+       ${lib.displayWorkshopHeader('leaderboard')}
+   </div><!-- well -->
+   </br></br>
+<div class="row-fluid">
+    <div class="span2">
+        <center>${helpers.UserPhoto()}</center>
+        <br />
+        <center>${helpers.Menu()}</center>
+    </div>
+    <div class="span10">
+        <ul class="unstyled">
+        <li>${helpers.Overall_Leaderboard()}</li>
+        <li>${helpers.DisplayLeaderboards()}</li>
+    </div><!_- span10 -->
+</div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+    <link type="text/css/" rel="stylesheet" href="/styles/css/leaderboard.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>

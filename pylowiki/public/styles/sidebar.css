@@ -1,0 +1,7 @@
+div#sidebar {
+	width: 200px;
+}
+
+div#sidebar>div>ul>li {
+	padding: 0 10px 10px 0;
+}

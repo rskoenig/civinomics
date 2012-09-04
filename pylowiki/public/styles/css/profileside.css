@@ -1,0 +1,206 @@
+/** profile sidebar **/
+
+#profileside {
+	width: 200px;
+	font-size: .8em;
+}
+
+#profileside h4, #profile h4 {
+	padding-top: 10px;
+}
+
+#profileside ul {
+	margin: 10px 0;
+	font-size: .8em;
+}
+
+#profileside ul li {
+	float: left;
+	margin: 2px;
+}
+
+#profileside ul span {
+	padding-right: 10px;
+}
+
+#profileside h3, #profile h3 {
+	text-transform: uppercase;
+	padding: 5px 0;
+	text-indent: 5px;
+	width: 100%;
+	font-weight: bold;
+	letter-spacing: .4em;
+	border-bottom: 1px solid #b9b9b9;
+	border-top: 1px solid #b9b9b9;
+	color: #b9b9b9;
+	font-size: .9em;
+	float: left;
+	clear: both;
+	margin-bottom: 10px;
+}
+
+#profileside button {
+	width: 90%;
+	margin: 0 auto;
+}
+
+/* connections */
+
+#connections2 {
+	width: 100%;
+	border-top: 1px solid #eee;
+	padding-top: 10px;
+}
+
+#connections2 li {
+	width: 100%;
+	padding: 3px 0;
+}
+
+#connections2 img {
+	float: left;
+	padding-right: 10px;
+}
+
+/* groups */
+
+#groups {
+	width: 100%;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #b9b9b9;
+}
+
+#groups img {
+	height: 20px;
+	width: 20px;
+	float: left;
+	padding-right: 10px;
+}
+
+#groups li {
+	font-size: 1.1em;
+	width: 100%
+}
+
+#groups li span {
+	display: block;
+	padding-top: 4px;
+}
+
+/* search */
+
+#profileside input[type="text"] {
+	border: 1px solid #b9b9b9;
+	color: #b9b9b9;
+}
+
+/*** profile ***/
+
+#profile {
+	border-left: 1px solid #b9b9b9;
+}
+
+#profile h4 {
+	padding-bottom: 10px;
+}
+
+/** profile top **/
+
+#profile {
+	font-size: .8em;
+}
+
+#profile>div {
+	padding: 0 10px 10px 30px;
+	width: 100%;
+}
+
+#profile>div p.right.clr {
+	margin-right: 30px;
+}
+
+#title {
+	font-size: 1.25em;
+}
+
+/* top issues */
+
+#topissues li {
+	width: 120px;
+	float: left;
+	margin: 0 5px;
+}
+
+#topissues img {
+	width: 120px;
+}
+
+/* profile top nav */
+
+#profiletop ul.left.gray.clr {
+	padding-top: 20px;
+}
+
+#profiletop ul.left.gray.clr li {
+	float: left;
+	width: 120px;
+	height: 40px;
+	text-align: center;
+}
+
+#profiletop ul.left.gray.clr li a {
+	color: #b9b9b9;
+}
+
+/* profile stats */
+
+#profile h3 {/*
+	margin-left: -30px;
+	width: 689px;*/
+}
+
+#profile>div+div {
+	width: 100%;
+	padding: 20px;
+}
+
+#profile .large {
+	font-size: 4em;
+	font-weight: bold;
+}
+
+#profile div p {
+	text-align: center;
+}
+
+ul.profdiv {
+	padding-left: 20px;
+	font-size: .9em;
+}
+
+#points ul span.gray {
+	display:block;
+	margin-bottom: -7px;
+}
+
+/* badges */
+
+#badges {
+	width: 100%;
+	height: 120px;
+}
+
+#badges ul {
+	float: left;
+}
+
+#badges ul li {
+	text-align: center;
+	width: 110px;
+	height: 20px;
+	border: 1px solid #eee;
+	margin: 5px;
+	background: #e4e4e4;
+	color: #fff;
+	font-weight: bold;
+}
