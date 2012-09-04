@@ -19,28 +19,21 @@ ${lib.return_to()}
             <br /><br />
             <div class="tabbable">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tabFAQ" data-toggle="tab"><i class="icon-question-sign"></i> FAQ</a></li>
-                    <li><a href="#tab1" data-toggle="tab"><i class="icon-user"></i> Civinomics Membership</a></li>
-                    <li><a href="#tab2" data-toggle="tab"><i class="icon-cog"></i> Intro to Workshops</a></li>
-                    <li><a href="#tab3" data-toggle="tab"><i class="icon-exclamation-sign"></i> Intro to Surveys</a></li>
+                    <li class="active"><a href="#tabIntro" data-toggle="tab"><i class="icon-film"></i> Introduction to Civinomics</a></li>
+                    <li><a href="#tabFAQ" data-toggle="tab"><i class="icon-question-sign"></i> FAQ</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="tabFAQ">
+                    <div class="tab-pane active" id="tabIntro">
+                        <h2>Introduction to Civinomics Workshops</h2>
+                        ${helpers.introVideo()}
+                        <br />
+                        <br />
+                        ${helpers.workshops()}
+                    </div><!-- tab-pane tabFAQ -->
+                    <div class="tab-pane" id="tabFAQ">
                         <h2>Frequently Asked Questions</h2>
                         ${helpers.faq()}
                     </div><!-- tab-pane tabFAQ -->
-                    <div class="tab-pane" id="tab1">
-                        <h2>Civinomics Membership</h2>
-                        ${helpers.membership()}
-                    </div><!-- tab-pane tab1 -->
-                    <div class="tab-pane" id="tab2">
-                        <h2>Introduction to Workshops</h2>
-                        ${helpers.workshops()}
-                    </div><!-- tab-pane tab2 -->
-                    <div class="tab-pane" id="tab3">
-                        <h2>Introduction to Surveys</h2>
-                        ${helpers.surveys()}
-                    </div><!-- tab-pane tab3 -->
                 </div><!-- tab-content -->
            </div><!-- tabbable -->
         </div><!-- span12 -->

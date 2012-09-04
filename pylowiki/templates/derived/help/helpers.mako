@@ -19,6 +19,7 @@
 </%def>
 
 <%def name="workshops()">
+
 Workshops <i class="icon-cog"></i> are an online space where Civinomics members residing in the participating Public Sphere make contributions to accomplish the workshop goals. 
 <br /><br />
 There are many ways members can contribute to workshops:
@@ -411,4 +412,9 @@ to help guide how and what members should contribute.</p>
 <p> </p>
 <a name="0.1__GoBack"></a>
 </div>
+</%def>
+
+<%def name="introVideo()">
+<br />
+<iframe src="http://player.vimeo.com/video/48837312" width="500" height="313" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
 </%def>
