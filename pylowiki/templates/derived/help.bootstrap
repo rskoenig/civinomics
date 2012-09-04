@@ -15,16 +15,21 @@ ${lib.return_to()}
                 </h2>
             </div><!-- civ-col -->
             <br /><br />
-            New in town? You've come to the right place. 
+            Just starting out or have questions? You've come to the right place. 
             <br /><br />
             <div class="tabbable">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-user"></i> Civinomics Membership</a></li>
+                    <li class="active"><a href="#tabFAQ" data-toggle="tab"><i class="icon-question-sign"></i> FAQ</a></li>
+                    <li><a href="#tab1" data-toggle="tab"><i class="icon-user"></i> Civinomics Membership</a></li>
                     <li><a href="#tab2" data-toggle="tab"><i class="icon-cog"></i> Intro to Workshops</a></li>
                     <li><a href="#tab3" data-toggle="tab"><i class="icon-exclamation-sign"></i> Intro to Surveys</a></li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="tab1">
+                    <div class="tab-pane active" id="tabFAQ">
+                        <h2>Frequently Asked Questions</h2>
+                        ${helpers.faq()}
+                    </div><!-- tab-pane tabFAQ -->
+                    <div class="tab-pane" id="tab1">
                         <h2>Civinomics Membership</h2>
                         ${helpers.membership()}
                     </div><!-- tab-pane tab1 -->

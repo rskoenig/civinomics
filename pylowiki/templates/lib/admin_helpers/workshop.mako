@@ -24,7 +24,7 @@
        <% pChecked = '' %>
        <% uChecked = 'checked' %>
     % endif
-    <input type=radio name="enableMOTD" value="1" ${pChecked}> Publish&nbsp;&nbsp;&nbsp;<input type=radio name="enableMOTD" value="0" ${uChecked}> Unpublish
+    <input type=radio name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type=radio name="enableMOTD" value="0" ${uChecked}> Unpublish Message
     <br /><br />
     <br /><br />
     % if c.w['deleted'] == '1':
