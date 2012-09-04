@@ -111,9 +111,8 @@ class SuggestionController(BaseController):
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser, c.w)
         if (c.authuser.id == c.s.owner) or a or f:
-            return render('/derived/suggestion_edit.bootstrap')
+           return render('/derived/suggestion_edit.bootstrap')
         else:
-           h.flash('You are not authorized', 'error')
            return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.s['urlCode'], urlify(c.s['url'])))
 
     @h.login_required
@@ -154,15 +153,14 @@ class SuggestionController(BaseController):
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, w.id)
         if c.authuser.id != s.owner and (a == False and f == False):
-           serror = 1
-           serrorMsg = 'You are not authorized'
+           return redirect('/workshop/%s/%s'%(w['urlCode'], w['url']))
         if serror:
-            alert = {'type':'error'}
-            alert['title'] = "Error."
-            alert['content'] = serrorMsg
-            session['alert'] = alert
-            session.save()
-            return redirect('/editSuggestion/%s/%s'%(code, url))
+           alert = {'type':'error'}
+           alert['title'] = "Error."
+           alert['content'] = serrorMsg
+           session['alert'] = alert
+           session.save()
+           return redirect('/editSuggestion/%s/%s'%(code, url))
         else:
            cMsg = 'Edited: '
            if s['title'] != title:
@@ -226,8 +224,7 @@ class SuggestionController(BaseController):
         s = isScoped(c.authuser, c.w)
 
         if (not s or c.w['allowSuggestions'] == '0') and not a and not f:
-           serror = 1
-           serrorMsg = 'You are not authorized.'
+           return redirect('/workshop/%s/%s'%(c.w['urlCode'], w['url']))
 
         if serror:
             alert = {'type':'error'}
@@ -260,7 +257,6 @@ class SuggestionController(BaseController):
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
         if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, c.w.id):
-              h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], c.w['url'], c.s['urlCode'], c.s['url']))
 
         c.isAdmin = isAdmin(c.authuser.id)
@@ -295,6 +291,9 @@ class SuggestionController(BaseController):
         c.s = getSuggestion(code, urlify(url))
         c.author = getUserByID(c.s.owner)
         c.w = getWorkshop(c.s['workshopCode'], c.s['workshopURL'])
+        if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, c.w.id):
+              return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], c.w['url'], c.s['urlCode'], c.s['url']))
+
         clearError = 0
         clearMessage = ""
 
@@ -343,7 +342,6 @@ class SuggestionController(BaseController):
         try:
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
-              h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
            modType = request.params['modType']
@@ -400,7 +398,6 @@ class SuggestionController(BaseController):
            s = getSuggestion(suggestionCode, suggestionURL) 
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
-              h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
 
@@ -436,7 +433,6 @@ class SuggestionController(BaseController):
            s = getSuggestion(suggestionCode, suggestionURL) 
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
-              h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
 
@@ -448,29 +444,6 @@ class SuggestionController(BaseController):
         e = Event('Note Added', noteSuggestionText, s, c.authuser)
 
         h.flash('Note Saved', 'success')
-        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
-
-    @h.login_required
-    def handler(self, id1, id2):
-        suggestionCode = id1
-        suggestionURL = id2
-        
-        s = getSuggestion(suggestionCode, urlify(suggestionURL))
-        p = getPageByID(s['page_id'])
-        
-        # Does the user have an access level of at least 200?
-        # Alternately, is the user marked as an owner of the suggestion and/or issue?
-        if (int(c.authuser['accessLevel']) < 200) or (int(c.authuser.id) != int(s.owner)):
-            h.flash('You are not authorized to view this page', 'error')
-            return redirect('/')
-        
-        data = request.params['textarea0']
-        
-        r = Revision(c.authuser, data, p)
-        s['mainRevision_id'] = r.r.id
-        s['data'] = data
-        commit(s)
-        
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
     @h.login_required
