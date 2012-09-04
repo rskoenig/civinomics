@@ -96,17 +96,43 @@ class DiscussionController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
-        c.title = c.w['title']
-
-        return render('/derived/discussion_edit.bootstrap')
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        else:
+            c.isScoped = False
+            c.isAdmin = False
+            c.isFacilitator = False
+        
+        if c.isScoped or c.isAdmin or c.isFacilitator:
+            c.title = c.w['title']
+            return render('/derived/discussion_edit.bootstrap')
+        else:
+            return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
 
     @h.login_required
     def clearDiscussionFlagsHandler(self, id1, id2):
         code = id1
         url = id2
+
+
         clearError = 0
         clearMessage = ""
         c.discussion = getDiscussion(code, urlify(url))
+        c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        else:
+            c.isScoped = False
+            c.isAdmin = False
+            c.isFacilitator = False
+
+        if not c.isScoped and not c.isAdmin and not c.isFacilitator:
+            return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
+
         if 'clearDiscussionFlagsReason' in request.params:
             clearReason = request.params['clearDiscussionFlagsReason']
             if clearReason != '':
@@ -142,6 +168,18 @@ class DiscussionController(BaseController):
         code = id1
         url = id2
         w = getWorkshop(code, urlify(url))
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, w)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, w.id)
+        else:
+            c.isScoped = False
+            c.isAdmin = False
+            c.isFacilitator = False
+
+        if not c.isScoped and not c.isAdmin and not c.isFacilitator:
+            return redirect('/workshop/%s/%s' % (w['urlCode'], w['url']))
+
         
         if 'title' in request.params:
             title = request.params['title']
@@ -172,7 +210,16 @@ class DiscussionController(BaseController):
         url = id2
         c.discussion = getDiscussion(code, urlify(url))
         c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
-        
+        if 'user' in session:
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        else:
+            c.isAdmin = False
+            c.isFacilitator = False
+
+        if (c.discussion.owner != c.authuser.id)  and not c.isAdmin and not c.isFacilitator:
+            return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
+
         return render('/derived/discussion_edit.bootstrap')
         
     @h.login_required
@@ -181,7 +228,15 @@ class DiscussionController(BaseController):
         url = id2
         discussion = getDiscussion(code, urlify(url))
         w = getWorkshop(discussion['workshopCode'], discussion['workshopURL'])
+        if 'user' in session:
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, w.id)
+        else:
+            c.isAdmin = False
+            c.isFacilitator = False
 
+        if (discussion.owner != c.authuser.id)  and not c.isAdmin and not c.isFacilitator:
+            return redirect('/workshop/%s/%s' % (w['urlCode'], w['url']))
         
         if 'title' in request.params:
             title = request.params['title']
@@ -220,6 +275,19 @@ class DiscussionController(BaseController):
         code = id1
         url = id2
         discussion = getDiscussion(code, urlify(url))
+        c.w = getWorkshop(discussion['workshopCode'], urlify(discussion['workshopURL']))
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        else:
+            c.isScoped = False
+            c.isAdmin = False
+            c.isFacilitator = False
+
+        if not c.isScoped and not c.isAdmin and not c.isFacilitator:
+            return redirect('/workshop/%s/%s/discussion/%s/%s' % (c.w['urlCode'], c.w['url'], discussion['urlCode'], discussion['url']))
+
         if not discussion:
             return json.dumps({'id':discussion.id, 'result':'ERROR'})
         if not isFlagged(discussion, c.authuser):
@@ -234,6 +302,16 @@ class DiscussionController(BaseController):
         url = id2
         c.discussion = getDiscussion(code, urlify(url))
         c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
+        if 'user' in session:
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        else:
+            c.isAdmin = False
+            c.isFacilitator = False
+
+        if not c.isAdmin and not c.isFacilitator:
+            return redirect('/workshop/%s/%s/discussion/%s/%s' % (c.w['urlCode'], c.w['url'], c.discussion['urlCode'], c.discussion['url']))
+
         
         return render('/derived/discussion_admin.bootstrap')
 
@@ -252,8 +330,7 @@ class DiscussionController(BaseController):
         try:
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
-              h.flash('You are not authorized', 'error')
-              return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], d['urlCode'], d['url']))
+              return redirect('/workshop/%s/%s/discussion/%s/%s'%(w['urlCode'], w['url'], d['urlCode'], d['url']))
            log.info("HMMMM")
            modType = request.params['modType']
            log.info("1")
