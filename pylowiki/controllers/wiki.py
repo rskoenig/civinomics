@@ -113,7 +113,7 @@ class WikiController(BaseController):
         try:
             preview = h.literal(h.reST2HTML(request.params['data']))
         except:
-            preview = "there was a problem with ajax..."
+            preview = "There is a problem with your syntax, please fix to save your comment/edits."
         return preview
 
 
