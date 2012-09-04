@@ -102,8 +102,8 @@ def enableComment( comment ):
     comment['disabled'] = False
     commit(comment)
 
-def editComment(commentID, discussionID, data):
-    comment = getComment(commentID)
+def editComment(commentCode, discussionID, data):
+    comment = getCommentByCode(commentCode)
     comment['data'] = data
     r = Revision(c.authuser, data, comment)
     

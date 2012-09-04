@@ -4,6 +4,7 @@
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment
     from pylowiki.lib.db.event import getParentEvents
+    from pylowiki.lib.db.revision import get_revision
     import logging
     from datetime import datetime
     log = logging.getLogger(__name__)
@@ -302,17 +303,54 @@
                 ${commentContent(comment, counter)}
             ${commentFeedback(comment, commentType)}
 
+            ##############################
+            ## 
+            ## Showing non-edit events
+            ## 
+            ##############################
             <% events = getParentEvents(comment) %>
-            % if events:
+            <% eventsList = [] %>
+            % for e in events:
+                % if not e['title'].startswith('Comment edited'):
+                    <% eventsList.append(e) %>
+                % endif
+            % endfor
+            % if len(eventsList) != 0:
                 <span style="color:black;">
                 <strong>Event log:</strong><br />
                 <ul class="unstyled">
-                % for e in events:
+                % for e in eventsList:
                     <li><strong>${e['title']}</strong> ${e.date} - ${e['data']}</li>
                 % endfor
                 </ul>
                 </span>
+                <br />
             % endif
+
+            ##############################
+            ## 
+            ## Showing edits
+            ## 
+            ##############################
+            ## Get the revisions
+            <% revisions = map(int, comment['revisionList'].split(','))%>
+            % if len(revisions) > 1:
+                <span style="color:black;">
+                    <strong>Edit log:</strong><br />
+                    <ul class="unstyled">
+                        % for revision in revisions:
+                            <% 
+                                r = get_revision(revision) 
+                                commenter = getUserByID(r.owner)
+                            %>
+                            <li>
+                                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/comment/${r['urlCode']}">${r.date} (PST)</a>
+                            </li>
+                        % endfor
+                    </ul>
+                </span>
+            % endif
+
             </div> <!-- /.civ-comment -->
             <div class="collapse in hide${comment.id}">
                 ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}

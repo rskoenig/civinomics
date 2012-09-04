@@ -17,6 +17,7 @@ from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode, editComment
 from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
+from pylowiki.lib.db.revision import getRevisionByCode
 
 import simplejson as json
 
@@ -318,13 +319,9 @@ class CommentController(BaseController):
         """
         commentCode = id1
         cError = 0
-        #thisID = start + int(id1)
-        #log.info('id: %s\n' % id1)
         data = request.params['textarea' + commentCode]
-        #remark = request.params['remark' + str(thisID)]
         data = data.lstrip()
         data = data.rstrip()
-        #log.info('data is %s'%data)
         if data == '':
             alert = {'type':'error'}
             alert['title'] = 'Edit Comment failed.'
@@ -367,3 +364,15 @@ class CommentController(BaseController):
                Event('Comment edited by %s'%c.authuser['name'], comment, c.authuser)
 
         return redirect(backlink)
+
+
+    def permalink(self, id1, id2, id3):
+      workshopCode = id1
+      workshopURL = id2
+      revisionCode = id3
+
+      c.w = getWorkshop(workshopCode, workshopURL)
+      c.r = getRevisionByCode(revisionCode)
+      c.u = getUserByID(c.r.owner)
+
+      return render('/derived/permaComment.bootstrap')
