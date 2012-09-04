@@ -46,7 +46,7 @@
 		elif 'workshop' in request.path_info:
 			session['product'] = 'workshops'
 		session.save()
-		log.info(session)
+		##log.info(session)
 	%>
 </%def>
 

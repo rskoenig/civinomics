@@ -4,6 +4,7 @@
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment
     from pylowiki.lib.db.event import getParentEvents
+    from pylowiki.lib.db.revision import get_revision
     import logging
     from datetime import datetime
     log = logging.getLogger(__name__)
@@ -48,36 +49,41 @@
 ## Assumes the user is already authenticated for comment editing
 ## Passes info to the comment controller, edit function, with the comment id as the only argument
 <%def name="editComment(comment, counter)">
-    <% thisID = counter + comment.id %>
-    <form action="/comment/edit/${comment.id}" method="post" class="form form-horizontal"><div style="display:none"><input name="_method" type="hidden" value="put" /></div>
+    ##<% thisID = counter + comment.id %>
+    <% thisID = comment['urlCode'] %>
+    <form action="/comment/edit/${comment['urlCode']}" method="post" class="form form-horizontal"><div style="display:none"><input name="_method" type="hidden" value="put" /></div>
         <table><tr><td>
-        <div id = "section${thisID}" ondblclick="toggle('textareadiv${thisID}', 'edit${thisID}')">${comment['data']}</div>
+        <div id = "section${thisID}" ondblclick="toggle('textareadiv${thisID}', 'edit${thisID}')" style="color:black;">${h.literal(h.reST2HTML(comment['data']))}</div>
         </td></tr></table>
         <div class="collapse" id="textareadiv${thisID}">
             <br />
             <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment['data']}</textarea>
             <div class="control-group">
+                <%doc>
                 <label class="control-label" for="remark${thisID}">
                     Optional remark
                 </label>
-
+                
                 <div class="controls">
                     <div class="input-append">
-                        <input type="text" id="remark${thisID}" name="remark${thisID}" placeholder="optional remark" class="span7"/><button type="submit" name="submit" value="submit" class="btn">Save changes</button>
+                        ##<input type="text" id="remark${thisID}" name="remark${thisID}" placeholder="optional remark" class="span7"/>
+                            <button type="submit" name="submit" value="submit" class="btn">Save changes</button>
                     </div>
                 </div>
+                </%doc>
             
-                ##${h.submit('submit', 'Save')}
+                ##<button type="submit" name="submit" value="submit" class="btn">Save changes</button>
                 <input type="hidden" id="sremark"  name="sremark" class="text" />
                 <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
             </div>
+            <button type="submit" name="submit" value="submit" class="btn" id="remark${thisID}" name="remark${thisID}">Save changes</button>
         </div>
     </form>
 </%def>
 
 ## Displays the content of the comment
 <%def name="commentContent(comment, counter)">
-    <div class="collapse in hide${comment.id}">
+    <div class="collapse in hide${comment.id}" style="color:black;">
         % if "user" in session:
             % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
                 ${editComment(comment, counter)}
@@ -88,7 +94,7 @@
         % else:
             ${h.literal(h.reST2HTML(comment['data']))}
         % endif
-    </div> <!-- /.collapse.in.hide${comment.id} -->
+    </div>
 </%def>
 
 ## Sets up the rating system
@@ -117,7 +123,8 @@
         % endif
         <a data-toggle="collapse" data-target=".reply${comment.id}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
         % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
-            <a id="edit${counter + comment.id}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${counter + comment.id}">
+            ##<a id="edit${counter + comment.id}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${counter + comment.id}">
+            <a id="edit${comment['urlCode']}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${comment['urlCode']}">
                 <i class="icon-white icon-edit"></i> edit
             </a>
             <a href="/adminComment/${comment['urlCode']}" class="btn btn-mini btn-warning pull-right" title="Admin comment">
@@ -147,7 +154,7 @@
 		</div> <!-- /.collapse.flag${comment.id} -->
 		<div class="reply textarea collapse reply${comment.id}">
 			<form action="/addComment">
-				<textarea name="comment-textarea" style="width: 85%" rows="1"></textarea>
+				<textarea name="comment-textarea" style="width: 85%" rows="4"></textarea>
 				
 				<input type="hidden" id="type" name="type" value="${commentType}" />
 				<input type="hidden" name="discussionID" value="${c.discussion.id}" />
@@ -215,7 +222,7 @@
                         <input type="hidden" id="url" name="workshopURL" value="${c.w['url']}" />
                     % endif
                     % if "user" in session:
-                    <textarea rows="1" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span6"></textarea>
+                    <textarea rows="4" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span6"></textarea>
                     <div id="comment-preview-div"></div>
                         <button type="submit" name = "submit" value = "submit" class="btn">Submit</button>
                     <br />
@@ -248,18 +255,18 @@
 
 <%def name="recurseCommentTree(node, commentType, maxDepth, curDepth, counter)">
     <%
-        log.info("Node is %s" % node.id)
+        ##log.info("Node is %s" % node.id)
         if not node: # if node == 0
             return
         if type(node) == int:
-            log.info('Comment %s being processed now' % node)
+            ##log.info('Comment %s being processed now' % node)
             node = getComment(node)
         if curDepth >= maxDepth or node['children'] == 0:
             return
         # children = map(int, node['children'].split(','))
         # for child in children:
         for child in [int(item) for item in node['children'].split(',')]:
-            log.info('children: %s' % node['children'])
+            ##log.info('children: %s' % node['children'])
             # Hack to resolve slight difference between discussion objects and comment objects
             if type(child) == type(1L):
                 child = node.children[child]
@@ -296,21 +303,58 @@
                 ${commentContent(comment, counter)}
             ${commentFeedback(comment, commentType)}
 
+            ##############################
+            ## 
+            ## Showing non-edit events
+            ## 
+            ##############################
             <% events = getParentEvents(comment) %>
-            % if events:
+            <% eventsList = [] %>
+            % for e in events:
+                % if not e['title'].startswith('Comment edited'):
+                    <% eventsList.append(e) %>
+                % endif
+            % endfor
+            % if len(eventsList) != 0:
                 <span style="color:black;">
                 <strong>Event log:</strong><br />
                 <ul class="unstyled">
-                % for e in events:
+                % for e in eventsList:
                     <li><strong>${e['title']}</strong> ${e.date} - ${e['data']}</li>
                 % endfor
                 </ul>
                 </span>
+                <br />
             % endif
+
+            ##############################
+            ## 
+            ## Showing edits
+            ## 
+            ##############################
+            ## Get the revisions
+            <% revisions = map(int, comment['revisionList'].split(','))%>
+            % if len(revisions) > 1:
+                <span style="color:black;">
+                    <strong>Edit log:</strong><br />
+                    <ul class="unstyled">
+                        % for revision in revisions:
+                            <% 
+                                r = get_revision(revision) 
+                                commenter = getUserByID(r.owner)
+                            %>
+                            <li>
+                                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/comment/${r['urlCode']}">${r.date} (PST)</a>
+                            </li>
+                        % endfor
+                    </ul>
+                </span>
+            % endif
+
             </div> <!-- /.civ-comment -->
             <div class="collapse in hide${comment.id}">
                 ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}
-            </div> <!-- /.collapse.in.hide${comment.id} -->
+            </div>
         </div> <!-- /.span11 -->
     </div> <!-- /.row-fluid -->
 </%def>

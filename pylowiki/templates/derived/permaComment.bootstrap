@@ -1,0 +1,29 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+${lib.return_to()}
+
+<div class="container-fluid">
+    <div class="well workshop_header">
+        ${lib.displayWorkshopHeader('Comment')}
+    </div><!-- well -->
+    <div class="row-fluid">
+        <div class="span12">
+            <h2>On ${c.r.date} (PST) <a href="/profile/${c.u['urlCode']}/${c.u['url']}">${c.u['name']}</a> said:</h2>
+            ${h.literal(h.reST2HTML(c.r['data']))}
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>
+
