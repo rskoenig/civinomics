@@ -1,0 +1,47 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/add_survey/helpers.mako" />
+
+% if c.message:
+    <div class="row">
+        <div class="span8 offset2">
+            <div class="alert alert-${c.message['type']}">
+                <button data-dismiss="alert" class="close">×</button>
+                <strong>${c.message['title']}</strong> ${c.message['content']}
+            </div>
+        </div>
+    </div>
+% endif
+
+<div class="row-fluid">
+    <form id="fileupload" action="/addSurvey/handler" method="POST" enctype="multipart/form-data" class="form-horizontal">
+        <fieldset>
+            <legend>Add a survey</legend>
+            <div class="offset1">
+                <div class="control-group">
+                    ${helpers.surveyName()}
+                </div>
+                <div class="control-group">
+                    ${helpers.description()}
+                </div>
+                <div class="control-group">
+                    ${helpers.geoScope()}
+                </div>
+                <div class="control-group">
+                    ${helpers.estimatedTime()}
+                </div>
+                ${helpers.submitButton()}
+            </div>
+        </fieldset>
+    </form>
+</div>
+
+<%def name = 'extraStyles()'>
+    
+</%def>
+<%def name = 'extraHTML()'>
+    
+</%def>
+<%def name = 'extraScripts()'>
+    
+</%def>

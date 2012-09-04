@@ -1,0 +1,104 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/derived/workshop_home/helpers.mako" />
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="container-fluid well workshop_header">
+            <div class="span12">
+                <div class="row-fluid">
+                    <div class="span7">
+                        ${lib.slideshow(1)}
+                        ${lib.nav_thing("home")}
+                    </div><!-- span7 -->
+                    <div class="span5">
+                        ${helpers.at_a_glance()}
+                    </div><!-- span5 -->
+                </div><!-- row -->
+            </div><!-- span12 -->
+        </div><!-- container-fluid -->
+    </div> <!-- /.row-fluid -->
+    ${lib.fields_alert()}
+
+    <div class="row-fluid">
+        <div class="span4">
+            <div class="civ-col">
+                <h2 class="civ-col">
+                    <i class="icon-book"></i> Resources
+                    % if len(c.resources) > 10:
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">10 of ${len(c.resources)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resources" title="Click to view all the resources for this workshop">View All</a> ${lib.add_a_text('resource', '|')}</span>
+                    % else:
+                    <span class="pull-right" style="font-size:10px; letter-spacing:normal;">${lib.add_a_text('resource', '')}</span>
+                    % endif
+                </h2>
+                <div class="civ-col-inner">
+                    ${lib.list_resources("There are no information resources for this workshop. Be the first to add one!", 10)}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span4 -->
+        <div class="span5">
+            <div class="civ-col">
+                <h2 class="civ-col">
+                    <i class="icon-pencil"></i> Suggestions
+                    % if len(c.suggestions) > 10:
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">10 of ${len(c.suggestions)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestions" title="Click to view all the suggestions for this workshop">View All</a> ${lib.add_a_text('suggestion', '|')}</span>
+                    % else:
+                    <span class="pull-right" style="font-size:10px; letter-spacing:normal;">${lib.add_a_text('suggestion', '')}</span>
+                    % endif
+                </h2>
+                <div class="civ-col-inner">
+                    ${lib.list_suggestions(c.suggestions, "There are no suggestions yet for this workshop. Be the first to add one!", 10, 1)}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span5 -->
+        <div class="span3">
+            <div class="civ-col">
+                <h2 class="civ-col">
+                    <i class="icon-info-sign"></i> Help 
+                </h2>
+                <div class="civ-col-inner">
+                    ${helpers.info_and_feedback()}
+                </div> <!-- /.civ-col-inner -->
+                <div class="civ-col-inner">
+                    ${helpers.motd()}
+                </div> <!-- /.civ-col-inner -->
+                % if c.asuggestions:
+                    <h2 class="civ-col">
+                        <i class="icon-heart"></i> Adopted Suggestions
+                    </h2>
+                    <div class="civ-col-inner">
+                        ${lib.list_suggestions(c.asuggestions, "There are no adopted suggestions yet for this workshop.", 10, 0)}
+                    </div> <!-- /.civ-col-inner -->
+                % endif
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span3 -->
+    </div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
+            
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom.css" />
+	<link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+	<script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+    <script src="/js/follow.js" type="text/javascript"></script>
+	<script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
+    <script src = "/js/jquery.easing.1.3.js" type="text/javascript"></script>
+    <script src = "/js/jquery.cycle.all.js" type="text/javascript"></script>
+    <script src = "/js/jquery.touchwipe.min.js" type="text/javascript"></script>
+    ${lib.slideshowHandler(1)}
+
+    % if 'user' in session:
+        <script type="text/javascript">
+          $(document).ready(function(){
+              $(".small_slider").jColorSlider();
+          });
+        </script>
+    % endif
+</%def>

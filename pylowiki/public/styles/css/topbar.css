@@ -1,0 +1,89 @@
+/*** Top Bar ***/
+
+#topbar, #fldtabs {
+    float: left;
+    width: 100%;
+}
+#topbar {
+    height: 37px;
+    overflow: hidden;
+}
+
+/** Navigation bar - search and nav tabs **/
+
+#nav {
+    background: rgba(170,170,100,.4);
+}
+
+#nav input {
+    width: 250px;
+}
+
+#nav form {
+    padding: 12px 0 5px 10px;
+}
+
+/* Home, Profile, Settings tabs */
+#navtab {
+    margin-left: 145px;
+    height: 37px;
+    font-weight: bold;
+    font-size: .75em;
+    text-align: center;
+}
+#navtab a {
+    display: block;
+    float: left;
+    width: 40px;
+    height: 25px;
+    margin-top: 6px;
+    padding: 6px 15px 0 15px;
+    color: #fff;
+}
+#navtab a:hover {
+    background: #8b9460;
+    text-decoration: none;
+}
+
+/* Renown */
+#renown {
+	position: fixed;
+	right: 0;
+	top: 20px;
+	z-index: 3;
+}
+
+#renown p {
+	font-size: 1.8em;
+	padding: 7px;
+	background: #fff;
+	font-weight: bold;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+}
+
+#renown ul {
+	background: #fff;
+	width: 0;
+	display: none;
+	border-bottom-left-radius: 5px;
+	padding: 10px;
+}
+
+#renown ul li {
+	width: 100%
+}
+
+#renown ul li:hover {
+	background: #86945A;
+	color: #fff;
+}
+
+#renown ul li span {
+	font-size: .8em;
+}
+
+#renown p.point.gray.left {
+	margin-right: 20px;
+	background: none;
+}
