@@ -13,7 +13,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def getDB():
-    return MySQLdb.connect(user="civinomics",passwd="Sisyphus3",db="geo", cursorclass=MySQLdb.cursors.DictCursor)
+    return MySQLdb.connect(user="civinomics",passwd="Sisyphus3",db="geo",host="civinomics.net", cursorclass=MySQLdb.cursors.DictCursor)
 
 def geoDeurlify( something ):
     deurl = something.replace('-', ' ')
