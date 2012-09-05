@@ -48,16 +48,14 @@
                     <div class="hero-unit main-well">
                         <div class="row-fluid">
                             <div class="span6">
-                                <h1 style="color:#5f774b; margin-top:0px;"> Connect </h1>
-                                <p>Workshops and surveys, online and in-person</p>
+                                <h1 style="color:#5f774b; margin-top:0px;"> Build </h1>
+                                <p>Your community, online and in-person</p>
                             </div>
                             <div class="span6">
-                                <div class="row">
-                                    <a class="btn btn-large pull-right" href="#">Sign up</a>
-                                </div>
-                                <br>
-                                <div class="row">
+                                <div class="btn-group btn-group-vertical" style="padding-left:40px;">
+                                    <a class="btn btn-large pull-right" href="/signup">Sign up</a>
                                     <a class="btn btn-info btn-large pull-right" href="#info">Learn more</a>
+                                    <a class="btn btn-success btn-large pull-right" href="/workshops">Browse</a>
                                 </div>
                             </div>
                         </div>
@@ -74,14 +72,14 @@
 
                     ##################
                     ## 
-                    ## Workshops
+                    ## Online
                     ## 
                     ##################
 
                     <div class="span5 offset1" style="border-right: 1px solid #DDDDDD;">
-                        <h1> Workshops </h1>
+                        <h1> Online </h1>
                         <p>
-                            Community interaction and real-time feedback
+                            Talk to your community
                         </p>
 
                         ## 
@@ -90,21 +88,13 @@
                         <ul class="thumbnails" style="padding-top:20px; padding-bottom:20px;">
                             % for i in range(1, 5):
                             <li class="span2">
-                                <a href="#online-workshop-${i}" class="thumbnail-custom" data-toggle="modal" style="height:80px;">
-                                    <img src="/images/splash/online_workshop_thumbnail_${i}.png" height="80" width="131">
+                                <a href="#online-workshop-${i}" class="thumbnail-custom" data-toggle="modal" style="height:64px;">
+                                    <img src="/images/splash/online_workshop_thumbnail_${i}.png" height="64" width="105">
                                     <div class="magnify"></div>
                                 </a>
                             </li>
                             % endfor
                         </ul>
-
-                        ## 
-                        ## A quotation
-                        ## 
-                        <blockquote style="padding-right:20px; text-align:center;">
-                            <p class="quote"> I really like this company. </p>
-                            <small class="pull-right">Mr. Moneybags</small>
-                        </blockquote>
 
                         ## 
                         ## A video
@@ -125,14 +115,49 @@
 
                     ##################
                     ## 
-                    ## Surveys
+                    ## In-Person
                     ## 
                     ##################
                     <div class="span5">
-                        <h1> Surveys </h1>
-                        <p>
-                            Some stuff about surveys
-                        </p>
+                        <h1> In-Person </h1>
+                        ## 
+                        ## A quotation
+                        ## 
+                        <blockquote style="padding-right:20px; text-align:center;">
+                            <p class="quote"> Everyone wants to have a voice. </p>
+                            <small class="pull-right">Survey Respondent (anonymous)</small>
+                        </blockquote>
+                        <br />
+
+                        ## 
+                        ## Some photos
+                        ## 
+                        <ul class="thumbnails" style="padding-top:20px; padding-bottom:20px;">
+                            <% sizes = (71, 115) %>
+                            % for i in range(1, 3):
+                            <li class="span2">
+                                <a href="#inPerson-${i}" class="thumbnail-custom" data-toggle="modal" style="height:${sizes[0]}px;">
+                                    <img src="/images/splash/inPerson_${i}_thumb.jpg" height="${sizes[0]}" width="${sizes[1]}">
+                                    <div class="magnify"></div>
+                                </a>
+                            </li>
+                            % endfor
+                        </ul>
+
+                        ## 
+                        ## A quotation
+                        ##
+                        <blockquote style="padding-right:20px; text-align:center;">
+                            <p class="quote">I felt like I learned something about my community.</p>
+                            <small class="pull-left">Participant (anonymous)</small>
+                        </blockquote>
+
+                        ## 
+                        ## A video
+                        ## 
+                        <div style="padding-top:35px;"></div>
+                        <iframe src="http://player.vimeo.com/video/42731448" width="350" height="197" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
                     </div>
                 </div>
             </div> <!-- row -->
@@ -140,8 +165,9 @@
         <div class="container">
             <div class="row" style="border-top: 1px solid #DDDDDD; padding-top:20px;">
                 <div class="span6 offset3" style="text-align:center">
-                    Join your community!
-                    <button class="btn btn-large" type="button">Sign up for free!</button>
+                    Join your community!<br />
+                    ##<button class="btn btn-large" type="button">Sign up for free!</button>
+                    <a href="/signup" class="btn btn-large">Sign up for free!</a>
                 </div>
             </div>
         </div>
@@ -212,6 +238,19 @@
             </div>
             <div class="modal-body">
                 <img src="/images/splash/online_workshop_${i}.png">
+            </div>
+        </div>
+    % endfor
+
+    <% imageTitles = ['Make your voice heard', 'Technology for the real world'] %>
+    % for i in range(1, 3):
+        <div class="modal hide fade" id="inPerson-${i}" style="width:70%; left:35%;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h3 id="myModalLabel-inPerson-${i}" style="text-align:center;">${imageTitles[i-1]}</h3>
+            </div>
+            <div class="modal-body">
+                <img src="/images/splash/inPerson_${i}.jpg">
             </div>
         </div>
     % endfor
