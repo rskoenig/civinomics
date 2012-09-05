@@ -8,8 +8,8 @@ from pylowiki.lib.utils import urlify
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.comments import addDiscussion, addComment
 from pylowiki.lib.db.user import getUserByID, isAdmin
-from pylowiki.lib.db.facilitator import isFacilitator
-from pylowiki.lib.db.workshop import getWorkshop
+from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
+from pylowiki.lib.db.workshop import getWorkshop, isScoped
 #from pylowiki.model import commit, Event, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
@@ -261,6 +261,8 @@ class CommentController(BaseController):
             discussionCode = discussion['urlCode']
             discussionURL = discussion['url']
             return redirect('/workshop/%s/%s/discussion/%s/%s'%(workshopCode, workshopURL, discussionCode, discussionURL))
+        elif comType == 'thread':
+            return redirect(session['return_to'])
         else:
             return redirect('/')
             
@@ -344,6 +346,9 @@ class CommentController(BaseController):
         elif d['discType'] == 'background':
             backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/background"
 
+        if 'discType' in request.params:
+          if request.params['discType'] == 'thread':
+            backlink = session['return_to']
 
         if cError == 0:
            comment = editComment(commentCode, discussionID, data)
@@ -376,3 +381,18 @@ class CommentController(BaseController):
       c.u = getUserByID(c.r.owner)
 
       return render('/derived/permaComment.bootstrap')
+
+    def showThread(self, id1, id2, id3):
+      workshopCode = id1
+      workshopURL = id2
+      commentCode = id3
+
+      c.w = getWorkshop(workshopCode, workshopURL)
+      c.rootComment = getCommentByCode(commentCode)
+      c.discussion = getDiscussionByID(int(c.rootComment['discussion_id']))
+      if 'user' in session:
+        c.isScoped = isScoped(c.authuser, c.w)
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+      c.facilitators = getFacilitatorsByWorkshop(c.w.id)
+
+      return render('/derived/commentThread.bootstrap')

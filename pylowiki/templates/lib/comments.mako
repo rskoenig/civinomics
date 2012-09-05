@@ -75,6 +75,9 @@
                 ##<button type="submit" name="submit" value="submit" class="btn">Save changes</button>
                 <input type="hidden" id="sremark"  name="sremark" class="text" />
                 <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
+                % if '/thread/' in session['return_to']:
+                    <input type="hidden" name="discType" value="thread" />
+                % endif
             </div>
             <button type="submit" name="submit" value="submit" class="btn" id="remark${thisID}" name="remark${thisID}">Save changes</button>
         </div>
@@ -82,7 +85,7 @@
 </%def>
 
 ## Displays the content of the comment
-<%def name="commentContent(comment, counter)">
+<%def name="commentContent(comment, counter, **kwargs)">
     <div class="collapse in hide${comment.id}" style="color:black;">
         % if "user" in session:
             % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
@@ -90,7 +93,16 @@
             % else:
                 ${h.literal(h.reST2HTML(comment['data']))}
             % endif
-            ${displayButtons(comment, counter)}
+            % if 'comType' in kwargs:
+                % if kwargs['comType'] == 'thread':
+                    ${displayButtons(comment, counter, comType = 'thread')}
+                % else:
+                    ${displayButtons(comment, counter)}
+                % endif
+            % else:
+                ${displayButtons(comment, counter)}
+            % endif
+            
         % else:
             ${h.literal(h.reST2HTML(comment['data']))}
         % endif
@@ -111,7 +123,7 @@
     % endif
 </%def>
 
-<%def name="displayButtons(comment, counter)">
+<%def name="displayButtons(comment, counter, **kwargs)">
     <br>
     <p class="btn-group pull-right">
         % if int(comment['parent']) != 0:
@@ -119,7 +131,15 @@
                 parent = getComment(comment['parent'])
                 parentOwner = getUserByID(parent.owner)
             %>
-            <a class="btn btn-mini btn-primary thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-white icon-comment"></i> parent</a>
+            % if 'comType' in kwargs:
+                % if kwargs['comType'] == 'thread':
+                    <a class="btn btn-mini btn-primary thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}" data-placement="left"><i class="icon-white icon-comment"></i> parent</a>
+                % else:
+                    <a class="btn btn-mini btn-primary thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-white icon-comment"></i> parent</a>
+                % endif
+            % else:
+                <a class="btn btn-mini btn-primary thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-white icon-comment"></i> parent</a>
+            % endif
         % endif
         <a data-toggle="collapse" data-target=".reply${comment.id}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
         % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
@@ -168,6 +188,7 @@
 					<input type="hidden" name = "resourceCode" value = "${c.resource['urlCode']}" />
 					<input type="hidden" name = "resourceURL" value = "${c.resource['url']}" />
 				% endif
+                <br />
 				<button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
 			</form>
 		</div> <!-- /.reply.textarea -->
@@ -177,7 +198,7 @@
 </%def>
 
 ## Main function that gets called by the template
-<%def name="comments( type )">
+<%def name="comments( type, **kwargs )">
  % if type == "background" or type == "feedback" or type == "discussion":
     <% 
         discussion = c.discussion
@@ -187,13 +208,20 @@
         discussion = c.discussion
         workshop = c.w
     %>
+ % elif type == "thread":
+    <%
+        maxDepth = kwargs['maxDepth']
+        rootComment = kwargs['rootComment']
+        c.discussion = discussion = kwargs['discussion']
+    %>
  % endif
  %if c.conf['allow.comments'] == 'true':
-
-  % if discussion['numComments'] == '1':
-     <% commentString = 'comment' %>
-  % else:
-     <% commentString = 'comments' %>
+  % if type != "thread":
+      % if discussion['numComments'] == '1':
+         <% commentString = 'comment' %>
+      % else:
+         <% commentString = 'comments' %>
+      % endif
   % endif
 
     ${lib.fields_alert()}
@@ -222,10 +250,12 @@
                         <input type="hidden" id="url" name="workshopURL" value="${c.w['url']}" />
                     % endif
                     % if "user" in session:
-                    <textarea rows="4" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span6"></textarea>
-                    <div id="comment-preview-div"></div>
-                        <button type="submit" name = "submit" value = "submit" class="btn">Submit</button>
-                    <br />
+                        % if type != 'thread':
+                            <textarea rows="4" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span6"></textarea>
+                            <div id="comment-preview-div"></div>
+                                <button type="submit" name = "submit" value = "submit" class="btn">Submit</button>
+                            <br />
+                        % endif
                     % else:
                     <!--
                     <h3 class="utility">
@@ -240,11 +270,16 @@
         ##<h4>Comments</h4>
         <div id="featured_comments">
             <% 
+                if type != 'thread':
+                    maxDepth = 4
                 counter = 1000
-                maxDepth = 4
                 curDepth = 0
+
                 if 'children' in discussion.keys():
-                    recurseCommentTree(discussion, type, maxDepth, curDepth, counter)
+                    if type == 'thread':
+                        recurseCommentTree(rootComment, type, maxDepth, curDepth, counter)
+                    else:
+                        recurseCommentTree(discussion, type, maxDepth, curDepth, counter)
             %>
         </div> <!-- /#featured_comments -->
     </div> <!-- /.civ-col-inner -->
@@ -265,7 +300,17 @@
             return
         # children = map(int, node['children'].split(','))
         # for child in children:
-        for child in [int(item) for item in node['children'].split(',')]:
+
+        if commentType == 'thread':
+            if curDepth == 0:
+                childList = [int(node.id)]
+            else:
+                childList = map(int, node['children'].split(','))
+        else:
+            childList = map(int, node['children'].split(','))
+
+        #for child in [int(item) for item in node['children'].split(',')]:
+        for child in childList:
             ##log.info('children: %s' % node['children'])
             # Hack to resolve slight difference between discussion objects and comment objects
             if type(child) == type(1L):
@@ -300,7 +345,11 @@
         <div class="span11">
             <div class="civ-comment ${moderator}">
                 ${userSays(comment, author)}
-                ${commentContent(comment, counter)}
+                % if commentType == 'thread':
+                    ${commentContent(comment, counter, comType = commentType)}
+                % else:
+                    ${commentContent(comment, counter)}
+                % endif
             ${commentFeedback(comment, commentType)}
 
             ##############################
@@ -320,7 +369,12 @@
                 <strong>Event log:</strong><br />
                 <ul class="unstyled">
                 % for e in eventsList:
-                    <li><strong>${e['title']}</strong> ${e.date} - ${e['data']}</li>
+                    % if 'Comment Disabled' in e['title']:
+                        <% disabler = getUserByID(e.owner) %>
+                        <li><strong>${e['title']} by <a href="/profile/${disabler['urlCode']}/${disabler['url']}">${disabler['name']}</a></strong> ${e.date} - ${e['data']}</li>
+                    % else:
+                        <li><strong>${e['title']}</strong> ${e.date} - ${e['data']}</li>
+                    % endif
                 % endfor
                 </ul>
                 </span>
@@ -351,6 +405,21 @@
                 </span>
             % endif
 
+
+            ##############################
+            ## 
+            ## Depth-based pagination
+            ## 
+            ##############################
+            ## curDepth starts counting at 0, so subtract 1 from maxDepth
+            % if curDepth == maxDepth - 1:
+                <% children = map(int, comment['children'].split(',')) %>
+                % if children[0] != 0:
+                        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/thread/${comment['urlCode']}" style="float:right;">Continue this thread --></a>
+                    <br />
+                % endif
+            % endif
+
             </div> <!-- /.civ-comment -->
             <div class="collapse in hide${comment.id}">
                 ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}
@@ -359,7 +428,7 @@
     </div> <!-- /.row-fluid -->
 </%def>
 
-<%def name="buttonHandler()">
+<%def name="buttonHandler(**kwargs)">
     <script type="text/javascript">
         (function() {
           var handleCollapse, strip,
@@ -401,6 +470,7 @@
             flagClasses = strip($('html').html().match(/flag\d+/g));
             hideClasses = strip($('html').html().match(/hide\d+/g));
             $('.thepopover').popover();
+            
             handleCollapse(flagClasses, "No", "No");
             return handleCollapse(hideClasses, "<i class='icon-minus'></i> hide", "<i class='icon-plus'></i> show");
           });

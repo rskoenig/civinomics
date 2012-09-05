@@ -278,9 +278,13 @@ def make_map():
     map.connect('/addComment', controller = 'comment', action = 'addComment')
     map.connect('/addComment/', controller = 'comment', action = 'addComment')
 
-    # Comment perma-links
+    # Comment perma-links (for revision history)
     map.connect('/workshop/{id1}/{id2}/comment/{id3}', controller = 'comment', action = 'permalink')
     map.connect('/workshop/{id1}/{id2}/comment/{id3}/', controller = 'comment', action = 'permalink')
+
+    # Comment thread perma-links (for depth-based pagination)
+    map.connect('/workshop/{id1}/{id2}/thread/{id3}', controller = 'comment', action = 'showThread')
+    map.connect('/workshop/{id1}/{id2}/thread/{id3}/', controller = 'comment', action = 'showThread')
     
     # Comment flagging
     map.connect('/flagComment/{id1}', controller = 'comment', action = 'flagComment', id1 = '{id1}')
