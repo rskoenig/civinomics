@@ -101,7 +101,7 @@
 <%def name="public_tags()">
 	<% pTags = getPublicTagCount() %>
 	<ul class="unstyled">
-		% for pT in pTags.keys():
+		% for pT in sorted(pTags.keys()):
 			<% fixedpT = pT.replace(" ", "_") %>
 			<li><a href="/searchTags/${fixedpT}/" title="Click to view workshops with this tag">${pT}</a>: ${pTags[pT]}</li>
 		% endfor
@@ -112,7 +112,7 @@
 	<% mTags = getMemberTagCount() %>
 	% if len(mTags.keys()) > 0:
 		<ul class="unstyled">
-			% for mT in mTags.keys():
+			% for mT in sorted(mTags.keys()):
 				<% fixedmT = mT.replace(" ", "_") %>
 				<li><a href="/searchTags/${fixedmT}/" title="Click to view workshops with this tag">${mT}</a>: ${mTags[mT]}</li>
 			% endfor
