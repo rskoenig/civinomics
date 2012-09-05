@@ -216,6 +216,9 @@ class ResourceController(BaseController):
            if resource['title'] != title:
               cMsg = 'Title updated. '
            resource['title'] = title
+           if resource['link'] != link:
+              cMsg = cMsg + 'Link updated. '
+           resource['link'] = link
            if resource['comment'] != comment:
               cMsg = cMsg + 'Description updated. '
            resource['comment'] = comment

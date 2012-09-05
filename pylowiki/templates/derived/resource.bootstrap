@@ -26,7 +26,6 @@ ${lib.fields_alert()}
 					${helpers.displayResource()}
 				</div> <!-- /.row-fluid -->
 			</div> <!-- /.civ-col-inner -->
-                        ${lib.displayEvents()}
 		</div> <!-- /.civ-col -->
 
 		<div class="civ-col">
