@@ -150,7 +150,7 @@ t_data = Table('data', meta.metadata,
               Column('thing_id', Integer, ForeignKey('thing.id'),
                      primary_key=True),
               Column('key', Unicode(100), primary_key=True),
-              Column('value', UnicodeText, default=None),)
+              Column('value', BLOB, default=None),)
 
 t_blob = Table('blobbicus', meta.metadata,
                Column('thing_id', Integer, ForeignKey('thing.id'), primary_key = True),
