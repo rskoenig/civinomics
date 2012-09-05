@@ -158,6 +158,10 @@ html, body {
 
 .login-top > h2{
     text-align:center;
+}
+
+.login-top > p{
+    text-align:center;
     border-bottom: 1px solid #DDDDDD;
 }
 

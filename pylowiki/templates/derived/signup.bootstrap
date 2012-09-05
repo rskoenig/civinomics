@@ -43,7 +43,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="span6 offset3" style="padding-top:100px;">
+            <div class="span6 offset3" style="padding-top:50px;">
                 <div class="well main-well">
                     % if c.splashMsg:
                         <% message = c.splashMsg %>
@@ -54,6 +54,7 @@
                     % endif
                     <div class="login-top">
                         <h2> Sign Up </h2>
+                        <p> ${c.numAccounts - c.numUsers}/${c.numAccounts} accounts left </p>
                     </div>
                     <div class="login-body" style="border-bottom:none;">
                         <form id="sign_in" action="/register/register_handler" class="form form-horizontal" method="post">

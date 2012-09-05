@@ -10,7 +10,7 @@ import pylowiki.lib.helpers as h
 #from pylowiki.lib.activate import activateCreate
 
 #from pylowiki.model import User, commit, Event, get_user, get_user_by_email, Points
-from pylowiki.lib.db.user import User, getUserByEmail
+from pylowiki.lib.db.user import User, getUserByEmail, getActiveUsers
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 
@@ -34,9 +34,21 @@ class RegisterController(BaseController):
     
 
     def signupDisplay(self):
+        c.numAccounts = 1000
+        c.numUsers = len(getActiveUsers())
         return render("/derived/signup.bootstrap")
 
     def register_handler( self ):
+        c.numAccounts = 1000
+        c.numUsers = len(getActiveUsers())
+
+        if c.numUsers >= c.numAccounts:
+            c.splashMsg = {}
+            c.splashMsg['type'] = 'error'
+            c.splashMsg['title'] = 'Error:'
+            c.splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
+            return render('/derived/signup.bootstrap')
+
         """ Handler for registration, validates """
         c.title = c.heading = "Registration"
         c.splashMsg = False
