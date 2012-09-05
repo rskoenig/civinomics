@@ -91,15 +91,22 @@ def getRecentMemberPosts(number):
         returnList = []
         postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion', 'event'])).order_by('-date').all()
         for item in postList:
-           if item.objType == 'suggestion' or item.objType == 'resource':
-               returnList.append(item)
-               counter += 1
+           w = False
+           if item.objType == 'suggestion':
+               w = getWorkshop(item['workshopCode'], item['workshopURL'])
+           elif item.objType == 'resource':
+               w = getWorkshopByID(item['workshop_id'])
            elif item.objType == 'discussion':
-               if item['discType'] == 'general':
-                   returnList.append(item)
-                   counter += 1
+               w = getWorkshop(item['workshopCode'], item['workshopURL'])
+               if item['discType'] != 'general':
+                  continue
            elif item.objType == 'event':
                if item['title'] == 'Suggestion Adopted':
+                   returnList.append(item)
+                   counter += 1
+
+           if w and w['startTime'] != '0000-00-00' and w['deleted'] != '1':
+               if item['deleted'] != '1' and item['disabled'] != '1':
                    returnList.append(item)
                    counter += 1
  
