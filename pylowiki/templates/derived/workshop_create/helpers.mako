@@ -21,9 +21,9 @@
             <input type="hidden" name="publicPrivate" value="public">
                 <fieldset>
                     <div class="control-group">
-                        <label class="control-label">Workshop Name:</label>
+                        <label class="control-label">Workshop Name (70 char. max.):</label>
                         <div class="controls docs-input-sizes">
-                            <input type="text" name = "workshopName"/>
+                            <input type="text" name = "workshopName" maxlength="70"/>
                         </div>
                     </div>
                     <div class="form-actions">

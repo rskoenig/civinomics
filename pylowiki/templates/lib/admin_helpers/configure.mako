@@ -68,7 +68,7 @@
     <td>
     Workshop Name: <span class="darkorange">*</span>
     <br />
-    <input type="text" name="title" size="50" maxlength="50" value = "${c.w['title']}"/>
+    <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>
     <br />
     <br />
     Workshop Goals: <span class="darkorange">*</span>
