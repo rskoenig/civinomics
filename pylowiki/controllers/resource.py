@@ -467,7 +467,7 @@ class ResourceController(BaseController):
                r['disabled'] = '1'
                modTitle = "Resource Disabled"
             else:
-               r['disabled'] = False
+               r['disabled'] = '0'
                modTitle = "Resource Enabled"
         elif modType == 'delete':
             if r['deleted'] == '0':
