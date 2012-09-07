@@ -62,7 +62,7 @@ def unfollow( userID, thingID ):
 
 # Object
 class Follow(object):
-    def __init__(self, userID, thingID, thingType, disabled = False):
+    def __init__(self, userID, thingID, thingType, disabled = '0'):
         f = Thing('follow', userID)
         f['thingID'] = thingID
         f['thingType'] = thingType
