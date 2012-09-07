@@ -15,7 +15,7 @@
         <%
             ignoreImage = False
             if 'ignore' in slide.keys():
-                if int(slide['ignore']) == 1:
+                if int(slide['ignore']) == '1':
                     ignoreImage = True
             if slide['image'] == '':
                 ignoreImage = True
@@ -104,16 +104,12 @@
     %>
     <form class="form-horizontal" id="radioForm">
         <fieldset>
-            ##<div class="control-group" style="position:absolute;display:block;top:31%;left:24%;">
             <div class="control-group">
                 <div class="controls" style="float:left;">
                     % for button in buttons:
                         <label class="radio">
                             % if button['checked']:
                                 <input type = "radio" value = "${button['label']}" name="radioButton" id="option_${button['label']}" class="radioButton" checked = "">
-                                <%
-                                    log.info(button)
-                                %>
                             % else:
                                 <input type = "radio" value = "${button['label']}" name="radioButton" id="option_${button['label']}" class="radioButton">
                             % endif
@@ -122,7 +118,6 @@
                     % endfor
                 </div>
             </div>
-            ##<a style="position:absolute;display:block;top:66%;left:45%;" class="btn btn-primary radioSubmit" type="submit" href="/survey/submit/radio/${survey['urlCode']}/${survey['url']}/page/${slide['hash']}">Save</a>
             <a class="btn btn-primary radioSubmit" type="submit" href="/survey/submit/radio/${survey['urlCode']}/${survey['url']}/page/${slide['hash']}">Save</a>
         </fieldset>
     </form>
@@ -154,9 +149,6 @@
                         <label class="checkbox">
                             % if button['checked']:
                                 <input type = "checkbox" value = "${button['label']}" name="checkboxButton" id="option_${button['label']}" class="checkboxButton" checked = "">
-                                <%
-                                    log.info(button)
-                                %>
                             % else:
                                 <input type = "checkbox" value = "${button['label']}" name="checkboxButton" id="option_${button['label']}" class="checkboxButton">
                             % endif
@@ -234,9 +226,6 @@
 			            <label class="radio">
 			                % if button['checked']:
 			                    <input type = "radio" value = "${button['label']}" name="radioButton" id="option_${button['label']}" class="radioButton" checked = "" style="position:absolute;display:block;top:${button['percentX']};left:${button['percentY']};">
-			                    <%
-			                        log.info(button)
-			                    %>
 			                % else:
 			                    <input type = "radio" value = "${button['label']}" name="radioButton" id="option_${button['label']}" class="radioButton" style="position:absolute;display:block;top:${button['percentX']};left:${button['percentY']};">
 			                % endif
@@ -283,9 +272,6 @@
 			            <label class="checkbox">
 			                % if button['checked']:
 			                    <input type = "checkbox" value = "${button['label']}" name="checkboxButton" id="option_${button['label']}" class="checkboxButton" checked = "" style="position:absolute;display:block;top:${button['percentX']};left:${button['percentY']};">
-			                    <%
-			                        log.info(button)
-			                    %>
 			                % else:
 			                    <input type = "checkbox" value = "${button['label']}" name="checkboxButton" id="option_${button['label']}" class="checkboxButton" style="position:absolute;display:block;top:${button['percentX']};left:${button['percentY']};">
 			                % endif
@@ -313,8 +299,6 @@
             image = slide['hLink_image_%s' % (i + 1)]
             link = slide['hLink_link_%s' % (i + 1)]
             linkedSlide = getSurveySlideByName(link, survey)
-            log.info(linkedSlide)
-            ##linkedSlide = getSurveySlideByID(link)
             hash = linkedSlide['hash']
             buttons.append({'image':image, 'hash':hash, 'percentX':percentX, 'percentY':percentY, 'percentW':percentW, 'percentH':percentH})
     %>
@@ -349,7 +333,6 @@
         <div class="span6">
             <form>
         		<fieldset>
-        			##<table class="table-bordered" style="position:absolute;display:block;top:15%;left:25%;">
                     <table class="table-bordered center">
         				<thead>
         					<tr style="background-color:#ccc;">
@@ -376,7 +359,6 @@
         		</fieldset>
                 ${spacer()}
                 <a class="btn btn-primary itemRankingSubmit" href="/survey/submit/itemRank/${survey['urlCode']}/${survey['url']}/page/${slide['hash']}">Save</a>
-                ##<a style="position:absolute;display:block;top:70%;left:46%;" class="btn btn-primary itemRankingSubmit" href="/survey/submit/itemRank/${survey['urlCode']}/${survey['url']}/page/${slide['hash']}">Save</a>
             </form>
         </div>
         <div class="span3">&nbsp;</div>
@@ -462,62 +444,6 @@
             % endfor
         </tbody>
     </table>
-
-    <%doc>
-    ${spacer()}
-    ##<div style="position:absolute;display:block;top:25%;left:1%;">
-    <div>
-    <div class="row-fluid">
-        % if slide['sliderTitleText'] == '':
-        	<div class="span4" style="text-align:center;">&nbsp;</div>
-        % else:
-        	<div class="span4" style="text-align:center;font-weight:bold;">${sliderHeader['title']}</div>
-        % endif
-        % if slide['leftSliderText'] == '':
-        	<div class="span2" style="text-align:center;">&nbsp;</div>
-        % else:
-        	<div class="span2" style="text-align:center;font-weight:bold;">${sliderHeader['left']}</div>
-        % endif
-        % if not slide['middleSliderText']:
-        	<div class="span2" style="text-align:left;">&nbsp;</div>
-        % else:
-        	<div class="span2" style="text-align:left;font-weight:bold;">&nbsp;&nbsp;&nbsp;${sliderHeader['middle']}</div>
-        % endif
-        % if slide['rightSliderText'] == '':
-        	<div class="span2" style="text-align:left;">&nbsp;</div>
-        % else:
-        	<div class="span2" style="text-align:left;font-weight:bold;">${sliderHeader['right']}</div>
-        % endif
-    </div>
-    ${spacer()}
-    ${spacer()}
-    ${spacer()}
-    % for slider in sliders:
-        <div class="row-fluid">
-            <div class="span4">${slider['title']}</div>
-            <div class="span6">
-                <div id="overall_slider" class="span9 ui-slider-container" style="padding-left:25px">
-                    % if not answer:
-                        <div id="${survey['urlCode']}_${survey['url']}" class="survey_multiSlider" 
-                        surveyCode = "${survey['urlCode']}" surveyURL = "${survey['url']}"
-                        slideCode = "${slide['hash']}" sliderLabel = "${slider['label']}" rating = "50" isRated = "False"
-                        href = "survey/submit/multiSlider"
-                        ></div>
-                    % else:
-                        <div id="urlCode_url" class="survey_multiSlider" 
-                        surveyCode = "${survey['urlCode']}" surveyURL = "${survey['url']}"
-                        slideCode = "${slide['hash']}" sliderLabel = "${slider['label']}" rating = "${answer['answer_%s'%slider['label']]}" 
-                        isRated = "true" href = "survey/submit/multiSlider"
-                        ></div>
-                    % endif
-                </div>
-            </div>
-        </div>
-        ${spacer()}
-        ${spacer()}
-    % endfor
-	</div>
-    </%doc>
 </%def>
 
 <%def name="slider(survey, slide, answer)">
@@ -703,7 +629,6 @@
                             thumbnailFile = '.'.join(thumbnailFile)
                         %>
                         <img src = "/surveys/${survey['surveyType']}/${survey['directoryNum']}/${survey['hash']}/${survey['imgDir']}/${thumbnailFile}.thumbnail">
-                        ##<h5 style = "text-align:center;">Slide ${slide['slideNum']}</h5>
                     </a>
                 </li>
             </div>
@@ -726,11 +651,11 @@
 </%def>
 
 <%def name="showHeader(survey, slide)">
-    % if 'noHeaderLogo' in slide.keys():
-        % if int(slide['noHeaderLogo']) == 1:
-            <% return %>
-        % endif
-    % endif
+    <%
+        if 'noHeaderLogo' in slide.keys():
+            if int(slide['noHeaderLogo']) == '1':
+                return
+    %>
     % if 'header' in slide.keys():
         <div class="row-fluid">
             <div class="span8">

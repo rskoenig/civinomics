@@ -11,60 +11,58 @@
 <%namespace file="/lib/mako_lib.mako" name="lib" />
 
 <%def name="at_a_glance()">
-    <% numComments = 0 %>
-    <% numResources = len(c.resources) %>
-    <% numFlags = 0 %>
-    <% t = getActiveDiscussionsForWorkshop(c.w['urlCode'], c.w['url']) %>
-    % for d in t:
-        <% cF = getFlaggedDiscussionComments(d.id) %>
-        % if cF:
-            <% numFlags = numFlags + len(cF) %>
-        % endif
-        <% numComments = numComments + int(d['numComments']) %>
-    % endfor
-    % for item in c.resources:
-        <% d = getDiscussionByID(item['discussion_id']) %>
-        <% cF = getFlaggedDiscussionComments(d.id) %>
-        % if cF:
-            <% numFlags = numFlags + len(cF) %>
-        % endif
-        <% numComments = numComments + int(d['numComments']) %>
-        <% nF = getFlags(item.id) %>
-        % if nF:
-            <% numFlags = numFlags + len(nF) %>
-        % endif
-    % endfor
-    % for item in c.suggestions:
-        <% d = getDiscussionByID(item['discussion_id']) %>
-        <% cF = getFlaggedDiscussionComments(d.id) %>
-        % if cF:
-            <% numFlags = numFlags + len(cF) %>
-        % endif
-        <% numComments = numComments + int(d['numComments']) %>
-        <% sResources = getResourcesByParentID(item.id) %>
-        <% numResources = numResources + len(sResources) %>
-        <% nF = getFlags(item.id) %>
-        % if nF:
-            <% numFlags = numFlags + len(nF) %>
-        % endif
-        % for sR in sResources:
-           <% d = getDiscussionByID(sR['discussion_id']) %>
-           <% cF = getFlaggedDiscussionComments(d.id) %>
-           % if cF:
-               <% numFlags = numFlags + len(cF) %>
-           % endif
-           <% numComments = numComments + int(d['numComments']) %>
-           <% nF = getFlags(sR.id) %>
-           % if nF:
-               <% numFlags = numFlags + len(nF) %>
-           % endif
-        % endfor
-    % endfor
-    <% numComments = numComments + int(c.discussion['numComments']) %>
-    <% cF = getFlaggedDiscussionComments(c.discussion.id) %>
-    % if cF:
-        <% numFlags = numFlags + len(cF) %>
-    % endif
+    <%
+        numComments = 0
+        numResources = len(c.resources)
+        numFlags = 0
+        t = getActiveDiscussionsForWorkshop(c.w['urlCode'], c.w['url'])
+        for d in t:
+            cF = getFlaggedDiscussionComments(d.id)
+            if cF:
+                numFlags = numFlags + len(cF)
+            
+            numComments = numComments + int(d['numComments'])
+        
+        for item in c.resources:
+            d = getDiscussionByID(item['discussion_id'])
+            cF = getFlaggedDiscussionComments(d.id)
+            if cF:
+                numFlags = numFlags + len(cF)
+            
+            numComments = numComments + int(d['numComments'])
+            nF = getFlags(item.id)
+            if nF:
+                numFlags = numFlags + len(nF)
+        
+        for item in c.suggestions:
+            d = getDiscussionByID(item['discussion_id'])
+            cF = getFlaggedDiscussionComments(d.id)
+            if cF:
+                numFlags = numFlags + len(cF)
+            
+            numComments = numComments + int(d['numComments'])
+            sResources = getResourcesByParentID(item.id)
+            numResources = numResources + len(sResources)
+            nF = getFlags(item.id)
+            if nF:
+                numFlags = numFlags + len(nF)
+            
+            for sR in sResources:
+               d = getDiscussionByID(sR['discussion_id'])
+               cF = getFlaggedDiscussionComments(d.id)
+               if cF:
+                   numFlags = numFlags + len(cF)
+               
+               numComments = numComments + int(d['numComments'])
+               nF = getFlags(sR.id)
+               if nF:
+                   numFlags = numFlags + len(nF)
+        
+        numComments = numComments + int(c.discussion['numComments'])
+        cF = getFlaggedDiscussionComments(c.discussion.id)
+        if cF:
+            numFlags = numFlags + len(cF)
+    %>
 
     <dl class="dl-horizontal" style="font-size:large;">
     <dt>Name:</dt><dd><strong>${c.w['title']}</strong><br /><br /></dd>

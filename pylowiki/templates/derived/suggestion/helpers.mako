@@ -92,10 +92,10 @@
             % if cAuthuser and (cAuthuser.id == cs.owner or cIsAdmin) or isFacilitator(c.authuser.id, c.w.id):
                 <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-primary" title="Edit Suggestion"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
             % endif
-            % if 'user' in session:
-                <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Suggestion"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; &nbsp;
-                <span id="flag_0"></span>
-            % endif
+        % endif
+        % if 'user' in session:
+            <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Suggestion"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; &nbsp;
+            <span id="flag_0"></span>
         % endif
         </td>
         </tr>
@@ -129,7 +129,7 @@
             % endfor
         % endif
         </ul> <!-- show_suggestion -->
-    % endif <!-- resources less than 3 -->
+    % endif
 </%def>
 
 <%def name="showResources()">

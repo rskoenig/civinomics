@@ -31,26 +31,22 @@
             </div> <!-- /.cap -->
         </div> <!-- /.civ-img-cap -->
     % else:
-        <!--
-        <p>
-        No featured workshops.
-        </p>
-        -->
+        <!--Nothing here-->
     % endif
 </%def>
 
 <%def name="list_workshops()">
     <ul class="unstyled civ-col-list">
     % for item in c.paginator:
-        % if 'user' in session:
-            % if isScoped(c.authuser, item):
-                <% participate = 1 %>
-            % else:
-                <% participate = 0 %>
-            % endif
-        % else:
-            <% participate = 0 %>
-        % endif
+        <%
+            if 'user' in session:
+                if isScoped(c.authuser, item):
+                    participate = 1
+                else:
+                    participate = 0
+            else:
+                participate = 0
+        %>
         <li>
         <div class="row-fluid">
             <div class="span3">
@@ -63,7 +59,7 @@
             <div class="span9">
             <h4><a href="/workshops/${item['urlCode']}/${item['url']}" title="Click to view ${item['title']}">${item['title']}</a></h4>
             Public Sphere: ${item['publicScopeTitle']}
-            % if participate and participate == 1:
+            % if participate and participate == '1':
                 <span class="pull-right label label-success"><a href="/workshops/${item['urlCode']}/${item['url']}" style="color:white;text-decoration:none;" title="This workshop is within your Public Sphere. Click to participate!">Participate!</a></span>
             % endif
             <br />
@@ -77,10 +73,11 @@
 </%def>
 
 <%def name="list_total_workshops()">
-	<% state = True %>
-	% for p in c.paginator:
-	    <% state = not state %>
-	% endfor
+    <%
+        state = True
+        for p in c.paginator:
+            state = not state
+    %>
 	Total Workshops: ${c.count} | View ${ c.paginator.pager('~3~') }
 </%def>
 
@@ -95,10 +92,5 @@
 
 
 <%def name='list_news()'>
-	##<ul class="unstyled civ-col-list">
-		##<li>
-			##<img src="/home/evante/civinomics/civinomics-bootstrap/bootstrapped/bootstrap with docs/docs/assets/img/bird.png" width="30">
-			##<a href="#">Bird</a> did something with another animal.
-		##</li>
-	##</ul>
+	## This seems to be deprecated
 </%def>

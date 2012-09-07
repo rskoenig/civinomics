@@ -26,13 +26,14 @@
 </%def>
 
 <%def name="listUser(user, wide)">
-    % if wide == 1:
-        <% pixels = 60 %>
-        <% maxlen = 40 %>
-    % else:
-        <% pixels = 30 %>
-        <% maxlen = 20 %>
-    % endif
+    <%
+      if wide == 1:
+          pixels = 60
+          maxlen = 40
+      else:
+          pixels = 30
+          maxlen = 20
+    %>
     <li>
     <div class="row-fluid">
         <div class="span3">
@@ -161,13 +162,13 @@
         </h2>
         <% fCount = 1 %>
         <ul class="unstyled civ-col-list">
-        % for user in c.followingUsers:
-            ${listUser(user, 0)}
-            % if fCount == numDisplay:
-                <% break %>
-            % endif
-            <% fCount += 1 %>
-        % endfor
+        <%
+          for user in c.followingUsers:
+            listUser(user, 0)
+            if fCount == numDisplay:
+              break
+            fCount += 1
+        %>
         </ul>
     % endif
 </%def>
@@ -199,13 +200,13 @@
             </h2>
             <% fCount = 1 %>
             <ul class="unstyled civ-col-list">
-            % for user in c.userFollowers:
-                ${listUser(user, 0)}
-                % if fCount == numDisplay:
-                    <% break %>
-                % endif
-                <% fCount += 1 %>
-            % endfor
+            <%
+              for user in c.userFollowers:
+                listUser(user, 0)
+                if fCount == numDisplay:
+                  break
+                fCount += 1
+            %>
             </ul>
             % if numDisplay < len(c.userFollowers):
                 <strong><a href="/profile/${c.user['urlCode']}/${c.user['url']}/followers">View All Followers</a></strong>
@@ -240,12 +241,12 @@
 </%def>
 
 <%def name="sidebar()">
-	% if c.followingUsers:
-		${displayFollowingUsers(5)}
-	% endif
-	% if c.userFollowers:
-		${displayUserFollows(5)}
-	% endif
+  <%
+    if c.followingUsers:
+      displayFollowingUsers(5)
+    if c.userFollowers:
+      displayUserFollows(5)
+  %>
 </%def>
 
 <%def name="summary()">
@@ -314,16 +315,16 @@
 </%def>
 
 <%def name="displayWorkshop(workshop)">
-        % if 'user' in session and c.authuser and 'previous' in c.authuser:
-            <% aList = getWorkshopPostsSince(workshop['urlCode'], workshop['url'], c.authuser['previous']) %>
-            % if aList:
-                <% sinceNumber = len(aList) %>
-            % else:
-                <% sinceNumber = 0 %>
-            % endif
-        % else:
-            <% sinceNumber = 0 %>
-        % endif
+    <%
+      if 'user' in session and c.authuser and 'previous' in c.authuser:
+          aList = getWorkshopPostsSince(workshop['urlCode'], workshop['url'], c.authuser['previous'])
+          if aList:
+              sinceNumber = len(aList)
+          else:
+              sinceNumber = 0
+      else:
+          sinceNumber = 0
+    %>
 
 	% if workshop['mainImage_hash'] == 'supDawg':
 		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}" width="120" height="80" class="thumbnail"></a>
@@ -337,9 +338,9 @@
             ${line}<br />
             % if wcounter == 3:
                 <% break %>
-            % endif
-            
+            % endif            
         % endfor
+
         % if wcounter == 1:
            <br /><br /><br />
         % elif wcounter == 2:
@@ -387,28 +388,27 @@
 </%def>
 
 <%def name="totalComments()">
-        % if c.comments:
-           <% total = len(c.comments) %>
-           % if total > 1:
-               <% title = "comments" %>
-           % else:
-               <% title = "comment" %>
-           % endif
-        % else:
-           <% title = "comments" %>
-           <% total = 0 %>
-        % endif
+    <%
+      if c.comments:
+         total = len(c.comments)
+         if total > 1:
+             title = "comments"
+         else:
+             title = "comment"
+      else:
+         title = "comments"
+         total = 0
+    %>
 	<p class="total">
 		${total}<br>
 		<span>${title}</span>
 	</p>
-
-        % if c.comments:
-            <center><b><font size="2" color="DarkGrey"> Up Votes vs. Down Votes </font></b></center>
-            <div class="progress progress-success" id="ComBar">
-              <div class="bar" style="width: ${c.comUpsPercent}%;"></div>
-            </div>
-        % endif
+    % if c.comments:
+        <center><b><font size="2" color="DarkGrey"> Up Votes vs. Down Votes </font></b></center>
+        <div class="progress progress-success" id="ComBar">
+          <div class="bar" style="width: ${c.comUpsPercent}%;"></div>
+        </div>
+    % endif
 </%def>
 
 <%def name="latestComments(numDisplay)">
@@ -503,17 +503,17 @@
 </%def>
 
 <%def name="totalSuggestions()">
-        % if c.suggestions:
-           <% total = len(c.suggestions) %>
-           % if total > 1:
-               <% title = "suggestions" %>
-           % else:
-               <% title = "suggestion" %>
-           % endif
-        % else:
-           <% title = "suggestions" %>
-           <% total = 0 %>
-        % endif
+        <%
+          if c.suggestions:
+            total = len(c.suggestions)
+            if total > 1:
+                title = "suggestions"
+            else:
+                title = "suggestion"
+          else:
+            title = "suggestions"
+            total = 0
+        %>
 	<p class="total">
 		${total}<br>
 		<span>${title}</span>
@@ -556,14 +556,13 @@
             % endif
             <%
                 w = getWorkshop(s['workshopCode'], s['workshopURL'])
+                sFlags = getFlags(s)
+                if sFlags:
+                    numFlags = len(sFlags)
+                else:
+                    numFlags = 0
+                sAvg = int(float(s['ratingAvg_overall'])) 
             %>
-            <% sFlags = getFlags(s) %>
-            % if sFlags:
-                <% numFlags = len(sFlags) %>
-            % else:
-                <% numFlags = 0 %>
-            % endif
-            <% sAvg = int(float(s['ratingAvg_overall'])) %>
             
             <li>
             <span class="badge badge-info" title="0 - 100 Average rating for this suggestion (Sum of all ratings / number of ratings)"><i class="icon-white icon-ok-circle"></i>${sAvg}</span>
@@ -609,7 +608,6 @@
               <div class="bar" style="width: ${c.resUpsPercent}%;"></div>
             </div>
         % endif
-
 </%def>
 
 <%def name="latestResources(numDisplay)">
@@ -642,18 +640,16 @@
             % endif
             <%
                 w = getWorkshopByID(r['workshop_id'])
+                rFlags = getFlags(r)
+                if rFlags:
+                    numFlags = len(rFlags)
+                else:
+                    numFlags = 0
+                if 'ups' in r and 'downs' in r:
+                    rRating = int(r['ups']) - int(r['downs'])
+                else:
+                    rRating = 0
             %>
-            <% rFlags = getFlags(r) %>
-            % if rFlags:
-                <% numFlags = len(rFlags) %>
-            % else:
-                <% numFlags = 0 %>
-            % endif
-            % if 'ups' in r and 'downs' in r:
-                <% rRating = int(r['ups']) - int(r['downs']) %>
-            % else:
-                <% rRating = 0 %>
-            % endif
             
             <li>
             <span class="badge badge-info" title="Rating for this resource (ups - downs)"><i class="icon-white icon-ok"></i>${rRating}</span>
@@ -682,17 +678,17 @@
 </%def>
 
 <%def name="totalDiscussions()">
-        % if c.discussions:
-           <% total = len(c.discussions) %>
-           % if total > 1:
-               <% title = "discussions" %>
-           % else:
-               <% title = "discussion" %>
-           % endif
-        % else:
-           <% title = "discussions" %>
-           <% total = 0 %>
-        % endif
+    <%
+      if c.discussions:
+         total = len(c.discussions)
+         if total > 1:
+             title = "discussions"
+         else:
+             title = "discussion"
+      else:
+         title = "discussions"
+         total = 0
+    %>
 	<p class="total">
 		${total}<br>
 		<span>${title}</span>
@@ -703,7 +699,6 @@
               <div class="bar" style="width: ${c.disUpsPercent}%;"></div>
             </div>
         % endif
-
 </%def>
 
 <%def name="latestDiscussions(numDisplay)">
@@ -715,11 +710,12 @@
             <a href="/profile/${c.user['urlCode']}/${c.user['url']}"><strong>Back to Profile</strong></a>
             <br />
         % else:
-            % if numDisplay > len(dList):
-                <% dTotal = len(dList) %>
-            % else:
-                <% dTotal = numDisplay %>
-            % endif
+            <%
+              if numDisplay > len(dList):
+                  dTotal = len(dList)
+              else:
+                  dTotal = numDisplay
+            %>
             <h4>${dTotal} most recent discussions:</h4>
             % if numDisplay < len(dList):
                 <a href="/profile/${c.user['urlCode']}/${c.user['url']}/discussions"><strong>View All Discussions</strong></a>
@@ -736,18 +732,16 @@
             % endif
             <%
                 w = getWorkshop(d['workshopCode'], d['workshopURL'])
+                dFlags = getFlags(d)
+                if dFlags:
+                    numFlags = len(dFlags)
+                else:
+                    numFlags = 0
+                if 'ups' in d and 'downs' in d:
+                    dRating = int(d['ups']) - int(d['downs'])
+                else:
+                    dRating = 0
             %>
-            <% dFlags = getFlags(d) %>
-            % if dFlags:
-                <% numFlags = len(dFlags) %>
-            % else:
-                <% numFlags = 0 %>
-            % endif
-            % if 'ups' in d and 'downs' in d:
-                <% dRating = int(d['ups']) - int(d['downs']) %>
-            % else:
-                <% dRating = 0 %>
-            % endif
             
             <li>
             <span class="badge badge-info" title="Rating for this discussion (ups - downs)"><i class="icon-white icon-ok"></i>${dRating}</span>
@@ -804,54 +798,55 @@
         <button type="submit" name=declineInvite class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
         </form>
         <li>
-        <% wNum = wNum + 1 %>
-        %if wNum == 6:
-            <% wNum = 0 %>
-        %endif
+        <% 
+          wNum = wNum + 1
+          if wNum == 6:
+              wNum = 0
+        %>
     % endfor
     </ul>
 % endif
 </%def>
 
 <%def name="inviteCoFacilitate()">
-%if 'user' in session and c.authuser:
-    <% checkW = getWorkshopsByOwner(c.authuser.id) %>
-    <% wList = [] %>
-    % for w in checkW:
-        % if w['deleted'] == '0':
-            % if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
-                <% wList.append(w) %>
-            % endif 
-        % endif
-    % endfor
-    % if c.authuser.id != c.user.id and wList:
-        <h2 class="civ-col">Invite This Member to Facilitate</h2>
-        <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
-        <br />
-        <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
-        % for myW in wList:
-            <br />
-            <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
-            <br /><br />
-        % endfor                       
-        </select>
-        </form>
-    % endif
-%endif
+  %if 'user' in session and c.authuser:
+      <% checkW = getWorkshopsByOwner(c.authuser.id) %>
+      <% wList = [] %>
+      % for w in checkW:
+          % if w['deleted'] == '0':
+              % if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
+                  <% wList.append(w) %>
+              % endif 
+          % endif
+      % endfor
+      % if c.authuser.id != c.user.id and wList:
+          <h2 class="civ-col">Invite This Member to Facilitate</h2>
+          <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
+          <br />
+          <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
+          % for myW in wList:
+              <br />
+              <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
+              <br /><br />
+          % endfor                       
+          </select>
+          </form>
+      % endif
+  %endif
 </%def>
 
 <%def name="totalFollowers()">
-        % if c.listUserFollowers:
-           <% total = len(c.listUserFollowers) %>
-           % if total > 1:
-               <% title = "followers" %>
-           % else:
-               <% title = "follower" %>
-           % endif
-        % else:
-           <% title = "followers" %>
-           <% total = 0 %>
-        % endif
+    <%
+      if c.listUserFollowers:
+         total = len(c.listUserFollowers)
+         if total > 1:
+             title = "followers"
+         else:
+             title = "follower"
+      else:
+         title = "followers"
+         total = 0
+    %>
 	<p class="total">
 		${total}<br>
 		<span>${title}</span><br />
@@ -860,11 +855,12 @@
 </%def>
 
 <%def name="totalFollowing()">
-        % if c.listFollowingUsers:
-           <% total = len(c.listFollowingUsers) %>
-        % else:
-           <% total = 0 %>
-        % endif
+        <%
+          if c.listFollowingUsers:
+             total = len(c.listFollowingUsers)
+          else:
+             total = 0
+        %>
 	<p class="total">
 		${total}<br>
 		<span>following</span><br />

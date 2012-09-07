@@ -10,7 +10,7 @@
 <%def name="showSurvey(survey, surveyNumber)">
     <div class="accordion-heading">
         <a href="#collapse${surveyNumber}" data-parent="#accordion" data-toggle="collapse" class="accordion-toggle">
-            % if int(survey['active']) == 0:
+            % if int(survey['active']) == '0':
                 <span class="label label-info">Inactive</span>
             % else:
                 <span class="label label-success">Active</span>
@@ -21,9 +21,7 @@
     <div class="accordion-body collapse" id="collapse${surveyNumber}">
         <div class="accordion-inner">
             <div class="btn-group">
-                <a href = "/survey/${survey['urlCode']}/${survey['url']}/edit" class="btn">Edit
-                    ##<button class="btn" href="/survey/${survey['urlCode']}/${survey['url']}/edit">Edit</button>
-                </a>
+                <a href = "/survey/${survey['urlCode']}/${survey['url']}/edit" class="btn">Edit</a>
                 % if survey['hash'] == 'flash':
                     <a href = "/survey/${survey['urlCode']}/${survey['url']}/upload" class="btn btn-warning">
                         Upload

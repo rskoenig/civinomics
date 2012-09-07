@@ -391,7 +391,7 @@
     <%
         if 'user' in session:
 	       pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])
-       else:
+        else:
 	       pages = OrderedDict([("home",""), ("background", "background"), ("discussion", "discussion")])
     %>
 

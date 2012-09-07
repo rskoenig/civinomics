@@ -11,26 +11,29 @@
     ${lib.fields_alert()}
     % if c.s:
         <form id="edit_suggestion" action = "${c.site_secure_url}/saveSuggestion/${c.s['urlCode']}/${c.s['url']}" class="form-vertical" method = "post">
-        <% dataValue = c.s['data'] %>
-        <% titleValue = c.s['title'] %>
-        <% allowComments = c.s['allowComments'] %>
+        <% 
+            dataValue = c.s['data']
+            titleValue = c.s['title']
+            allowComments = c.s['allowComments']
+        %>
     % else:
         <form id="add_suggestion" action = "${c.site_secure_url}/addSuggestion/${c.w['urlCode']}/${c.w['url']}" class="form-vertical" method = "post">
-        % if c.suggestionTitle:
-            <% titleValue = c.suggestionTitle %>
-        % else:
-            <% titleValue = '' %>
-        % endif
-        % if c.suggestionData:
-            <% dataValue = c.suggestionData %>
-        % else:
-            <% dataValue = '' %>
-        % endif
-        % if c.suggestionAllowComments:
-            <% allowComments = c.allowComments %>
-        % else:
-            <% allowComments = c.suggestionAllowComments %>
-        % endif
+        <%
+            if c.suggestionTitle:
+                titleValue = c.suggestionTitle
+            else:
+                titleValue = ''
+            
+            if c.suggestionData:
+                dataValue = c.suggestionData
+            else:
+                dataValue = ''
+            
+            if c.suggestionAllowComments:
+                allowComments = c.allowComments
+            else:
+                allowComments = c.suggestionAllowComments
+        %>
     % endif
     <fieldset>
             <br />
@@ -52,13 +55,14 @@
             </div>
 
             <div class="control-group">
-                % if c.s and 'allowComments' in c.s and c.s['allowComments'] == '0':
-                   <% noChecked = 'checked' %>
-                   <% yesChecked = '' %>
-                % else:
-                   <% yesChecked = 'checked' %>
-                   <% noChecked = '' %>
-                % endif
+                <%
+                    if c.s and 'allowComments' in c.s and c.s['allowComments'] == '0':
+                       noChecked = 'checked'
+                       yesChecked = ''
+                    else:
+                       yesChecked = 'checked'
+                       noChecked = ''
+                %>
 
                 <div class="controls">
                     <label class="control-label">

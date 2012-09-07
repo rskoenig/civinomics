@@ -77,13 +77,14 @@ each workshop listed. You may view all workshops. However, you may only
 participate in those scoped for your region. For instance, if you lived 
 in Oregon then you would only be able to participate in Oregon workshops, 
 but you would still be able to view other workshops.</p>
-<p><span style="font-weight:bold">What do the icons mean?</span></p>
-<p>On the home page and throughout the Civinomics site, you will see various 
-icons, sometimes by themselves or with numbers: A pencil <i class="icon icon-pencil"></i>, signifying the number of suggestions submitted; 
-a book <i class="icon icon-book"></i>, signifying the number of information resources contributed, a folder <i class="icon icon-folder-open"></i>, signifying 
-the number of discussions topics; a person <i class="icon icon-user"></i>, signifying the number of 
-participants; a heart <i class="icon icon-heart"></i>, signifying the number of suggestions that 
-have been adopted, a check mark <i class="icon icon-ok-circle"></i>, indicating the member rating of a particular item, and a gear <i class="icon icon-cog"></i>, signifying a workshop.</p>
+<p><span style="font-weight:bold">What does it mean to be a “featured workshop”?</span></p>
+<p><span style="font-weight:bold">What do the icons on the workshop home page mean?</span></p>
+<p>For each workshop listed, you should see the following 
+numbered icons: A pencil, signifying the number of suggestions submitted; 
+a book, signifying the number of resources contributed, a folder, signifying 
+the number of discussions topics; a person signifying the number of 
+participants; and a heart signifying the number of suggestions that 
+have been adopted (from left to right).</p>
 <p><span style="font-weight:bold">How can I change my profile picture?</span></p>
 <p>While on the workshop homepage, you can click on your 
 picture in the top left hand corner of the screen to access your profile. 

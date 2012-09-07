@@ -16,18 +16,14 @@
 </%def>
 
 <%def name="list_total_users()">
-	<% state = True %>
-	% for p in c.paginator:
-	    <% state = not state %>
-	% endfor
+    <% 
+        state = True
+        for p in c.paginator:
+            state = not state
+    %>
 	Total Users: ${c.count} | View ${ c.paginator.pager('~3~') }
 </%def>
 
 <%def name='list_news()'>
-	##<ul class="unstyled civ-col-list">
-		##<li>
-			##<img src="/home/evante/civinomics/civinomics-bootstrap/bootstrapped/bootstrap with docs/docs/assets/img/bird.png" width="30">
-			##<a href="#">Bird</a> did something with another animal.
-		##</li>
-	##</ul>
+    ## Seems deprecated
 </%def>

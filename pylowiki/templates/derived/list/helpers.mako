@@ -84,17 +84,6 @@
             </select> <button class="btn btn-primary btn-mini" type="submit" title="Click to search"><i class="icon-white icon-search"></i></button>
         </form><br />
         </span><!-- pull-right -->
-        <!-- CCN
-        <form class="left" id="searchGeoWorkshops" action="/searchGeoWorkshops/" method = "post">
-            Workshops in my <select name="scopeLevel">
-            <option value="09">City</option>
-            <option value="07">County</option>
-            <option value="05">State</option>
-            <option value="03">Country</option>
-            </select>
-            <button class="btn" type="submit">Search</button>
-        </form>
-        -->
     % endif            
 </%def>
 
@@ -127,84 +116,84 @@
 	% if mPosts and len(mPosts) > 0:
             <ul class="unstyled civ-col-list">
 			% for mObj in mPosts:
-                           <li>
-                           <% ooTitle = False %>
-                           <% muser = getUserByID(mObj.owner) %>
-                           <% mname = muser['name'] %>
-                           % if mObj.objType == 'resource':
-                               <% linkTitle = "Click to view new resource" %>
-                               <% w = getWorkshopByID(mObj['workshop_id']) %>
-                               <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
-                               <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
-                               <% iType = "book" %>
-                               % if mObj['parent_id'] != '0':
-                                   <% s = getSuggestionByID(mObj['parent_id']) %>
-                                   <% ooTitle = mObj['parent_id'] %>
-                                   <% oolinkTitle = "Click to view suggestion" %>
-                                   %if len(s['title']) > 20:
-                                       <% ooTitle = s['title'][0:16] + '...' %>
-                                   %else:
-                                       <% ooTitle = s['title'] %>
-                                   %endif
-                                   <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + s['urlCode'] + "/" + s['url'] %>
-                                   <% ooiType = "pencil" %>
-                               % endif
-                               <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url'] %>
-                           % elif mObj.objType == 'suggestion':
-                               <% linkTitle = "Click to view new suggestion" %>
-                               <% iType = "pencil" %>
-                               <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
-                               <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
-                               <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
-                           % elif mObj.objType == 'event':
-                               <% iType = "heart" %>
-                               <% linkTitle = "Click to view adopted suggestion" %>
-                               <% s = getSuggestionByID(mObj['parent_id']) %>
-                               <% muser = getUserByID(s.owner) %>
-                               <% oLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL'] + "/suggestion/" + s['urlCode'] + "/" + s['url'] %>
-                               <% wLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL'] %>
-                               <% w = getWorkshop(s['workshopCode'], s['workshopURL']) %>
-                           % elif mObj.objType == 'discussion':
-                               <% linkTitle = "Click to view new discussion" %>
-                               <% iType = "folder-open" %>
-                               <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
-                               <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
-                               <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
-                           %else:
-                               <% iType = "comment" %>
-                               <% oLink = "" %>
-                           %endif
-                           %if len(w['title']) > 20:
-                               <% wTitle = w['title'][0:16] + '...' %>
-                           %else:
-                               <% wTitle = w['title'] %>
-                           %endif
-                           %if len(mObj['title']) > 20:
-                               <% oTitle = mObj['title'][0:16] + '...' %>
-                           %else:
-                               <% oTitle = mObj['title'] %>
-                           %endif
-                           <div class="row-fluid">
-                               <div class="span3">
-                           % if muser['pictureHash'] == 'flash':
-                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" title="Click to view profile of ${mname}" style="width:40px;" alt="${mname}"/ class="thumbnail"></a> 
-                           % else:
-                               <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" title="Click to view profile of ${mname}" style="width:40px;"/ class="thumbnail"></a>
-                           % endif
-                               </div><!-- span3 -->
-                               <div class="span9">
-                              New <a href="${oLink}" title="${linkTitle}"><i class="icon-${iType}"></i> ${oTitle}</a><br />
-                              % if ooTitle:
-                                  in <a href="${ooLink}" title="${oolinkTitle}"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />
-                              % endif
-                              in <a href="${wLink}" title="Click to view workshop"><i class="icon-cog"></i> ${wTitle}</a><br />
-                              <i class="icon-time"></i> <span class="recent">${timeSince(mObj.date)}</span> ago<br />
-                              <ul>
-                              </div><!-- cpan9 -->
-                           </div><!-- row-fluid -->
-                           </li>
+        <li>
+        <% 
+          ooTitle = False
+          muser = getUserByID(mObj.owner)
+          mname = muser['name']
+          if mObj.objType == 'resource':
+              linkTitle = "Click to view new resource"
+              w = getWorkshopByID(mObj['workshop_id'])
+              oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url']
+              wLink = "/workshop/" + w['urlCode'] + "/" + w['url']
+              iType = "book"
+              if mObj['parent_id'] != '0':
+                  s = getSuggestionByID(mObj['parent_id'])
+                  ooTitle = mObj['parent_id']
+                  oolinkTitle = "Click to view suggestion"
+                  if len(s['title']) > 20:
+                      ooTitle = s['title'][0:16] + '...'
+                  else:
+                      ooTitle = s['title']
+                  ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + s['urlCode'] + "/" + s['url']
+                  ooiType = "pencil"
+              oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url']
+          elif mObj.objType == 'suggestion':
+              linkTitle = "Click to view new suggestion"
+              iType = "pencil"
+              oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url']
+              wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL']
+              w = getWorkshop(mObj['workshopCode'], mObj['workshopURL'])
+          elif mObj.objType == 'event':
+              iType = "heart"
+              linkTitle = "Click to view adopted suggestion"
+              s = getSuggestionByID(mObj['parent_id'])
+              muser = getUserByID(s.owner)
+              oLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL'] + "/suggestion/" + s['urlCode'] + "/" + s['url']
+              wLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL']
+              w = getWorkshop(s['workshopCode'], s['workshopURL'])
+          elif mObj.objType == 'discussion':
+              linkTitle = "Click to view new discussion"
+              iType = "folder-open"
+              oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url']
+              wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL']
+              w = getWorkshop(mObj['workshopCode'], mObj['workshopURL'])
+          else:
+              iType = "comment"
+              oLink = ""
+          endif
+          if len(w['title']) > 20:
+              wTitle = w['title'][0:16] + '...'
+          else:
+              wTitle = w['title']
+          endif
+          if len(mObj['title']) > 20:
+              oTitle = mObj['title'][0:16] + '...'
+          else:
+              oTitle = mObj['title']
+        %>
+
+         <div class="row-fluid">
+             <div class="span3">
+         % if muser['pictureHash'] == 'flash':
+             <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatars/flash.profile" alt="${mname}" title="Click to view profile of ${mname}" style="width:40px;" alt="${mname}"/ class="thumbnail"></a> 
+         % else:
+             <a href="/profile/${muser['urlCode']}/${muser['url']}"><img src="/images/avatar/${muser['directoryNumber']}/profile/${muser['pictureHash']}.profile" alt="${mname}" title="Click to view profile of ${mname}" style="width:40px;"/ class="thumbnail"></a>
+         % endif
+             </div><!-- span3 -->
+             <div class="span9">
+            New <a href="${oLink}" title="${linkTitle}"><i class="icon-${iType}"></i> ${oTitle}</a><br />
+            % if ooTitle:
+                in <a href="${ooLink}" title="${oolinkTitle}"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />
+            % endif
+            in <a href="${wLink}" title="Click to view workshop"><i class="icon-cog"></i> ${wTitle}</a><br />
+            <i class="icon-time"></i> <span class="recent">${timeSince(mObj.date)}</span> ago<br />
+            <ul>
+            </div><!-- cpan9 -->
+         </div><!-- row-fluid -->
+         </li>
 			% endfor
-                        </ul>
+      </ul>
 	% else:
 		<p>No member posts.</p>
 	% endif

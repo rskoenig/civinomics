@@ -6,11 +6,12 @@
 
 <%def name="nav_thing()">
     % if c.suggestion or c.s:
-        % if c.s:
-            <% s = c.s %>
-        % else:
-            <% s = c.suggestion %>
-        % endif
+        <%
+          if c.s:
+            s = c.s
+          else:
+            s = c.suggestion
+        %>
         <br />
         <p>
         <strong><i class="icon-pencil"></i> <a href="/workshop/${s['workshopCode']}/${s['workshopURL']}/suggestion/${s['urlCode']}/${s['url']}">${s['title']}</a></strong>
@@ -51,49 +52,48 @@
 </%def>
 
 <%def name="displayResourceComment()">
-	<div id="resource-comment">
-                % if c.content:
-		    <p>${c.content}</p>
-                % else:
-		    <p>${c.resource['comment']}</p>
-                % endif
-	</div>
+  <div id="resource-comment">
+      % if c.content:
+        <p>${c.content}</p>
+      % else:
+        <p>${c.resource['comment']}</p>
+      % endif
+  </div>
 </%def>
 
 <%def name="displayResource()">
-	<div class="span1 civ-votey">
-		${displayRating()}
-	</div> <!-- .span1.civ-votey -->
+  <div class="span1 civ-votey">
+    ${displayRating()}
+  </div> <!-- .span1.civ-votey -->
 
-	<div class="span11">
-		<div class="row-fluid">
-			<div class="span12">
-				${displayMetaData()}
-			</div>
-		</div>
-		<div class="row-fluid resource-comment">
-			<div class="span12">
-				${displayResourceComment()}
-			</div> <!-- .span12 -->
-		</div> <!-- .row-fluid -->
-		<div class="row-fluid">
-			<div class="span12">
-                           % if c.isFacilitator or c.isAdmin:
-                               <% rFlags = getFlags(c.resource) %>
-                               % if rFlags and len(rFlags) > 0:
-                                   <span class="badge badge-inverse" title="Flags on this resource"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
-                               % endif
-                               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini btn-warning" title="Administrate Resource"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
-                           % endif
-                           % if (c.authuser and c.authuser.id == c.poster.id) or c.isAdmin or c.isFacilitator:
-                               <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-primary" title="Edit Resource"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
-                           % endif
-                           % if 'user' in session:
-                               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Resource"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; 
-                               <span id="flag_0"></span>
-                           % endif
-			</div> <!-- .span12 -->
-		</div> <!-- .row-fluid -->
-
-	</div> <!-- /.span11 -->
+  <div class="span11">
+    <div class="row-fluid">
+      <div class="span12">
+        ${displayMetaData()}
+      </div>
+    </div>
+    <div class="row-fluid resource-comment">
+      <div class="span12">
+        ${displayResourceComment()}
+      </div> <!-- .span12 -->
+    </div> <!-- .row-fluid -->
+    <div class="row-fluid">
+      <div class="span12">
+        % if c.isFacilitator or c.isAdmin:
+            <% rFlags = getFlags(c.resource) %>
+            % if rFlags and len(rFlags) > 0:
+                <span class="badge badge-inverse" title="Flags on this resource"><i class="icon-white icon-flag"></i> ${len(rFlags)}</span>&nbsp;&nbsp;
+            % endif
+            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini btn-warning" title="Administrate Resource"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
+        % endif
+        % if (c.authuser and c.authuser.id == c.poster.id) or c.isAdmin or c.isFacilitator:
+            <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-primary" title="Edit Resource"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
+        % endif
+        % if 'user' in session:
+            <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Resource"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; 
+            <span id="flag_0"></span>
+        % endif
+      </div> <!-- .span12 -->
+    </div> <!-- .row-fluid -->
+  </div> <!-- /.span11 -->
 </%def>
