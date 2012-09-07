@@ -136,7 +136,7 @@ class WorkshopController(BaseController):
         f = getFollow(c.authuser.id, w.id)
         if f:
            ##log.info('f is %s' % f)
-           f['disabled'] = False
+           f['disabled'] = '0'
            commit(f)
         elif not isFollowing(c.authuser.id, w.id): 
            ##log.info('not isFollowing')
@@ -156,7 +156,7 @@ class WorkshopController(BaseController):
         f = getFollow(c.authuser.id, w.id)
         if f:
            ##log.info('f is %s' % f)
-           f['disabled'] = True
+           f['disabled'] = '1'
            commit(f)
            
         return "ok"
@@ -253,10 +253,7 @@ class WorkshopController(BaseController):
               if wMemberTags and c.w['memberTags'] != wMemberTags:
                   wchanges = 1
                   weventMsg = weventMsg + "Updated facilitator contributed tags."
-                  c.w['memberTags'] = wMemberTags
-              else:
-                werror = 1
-                werrMsg += 'Member Tags '
+              c.w['memberTags'] = wMemberTags
             else:
               werror = 1
               werrMsg += 'Member Tags '
@@ -540,241 +537,6 @@ class WorkshopController(BaseController):
                 session.save()
 
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
-    @h.login_required
-    def configureWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.title = "Configure Workshop"
-        c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
-        else:
-            return(redirect("/"))
-
-        werror = 0
-        werrMsg = 'Missing Info: '
-        wstarted = 0
-        if c.w['startTime'] != '0000-00-00':
-           wstarted = 1
-
-        ##log.info('wstarted is %s' % wstarted)
-
-        # Is there anything more painful than form validation?
-        # I don't think so...
-
-        if 'title' in request.params:
-            wTitle = request.params['title']
-            wTitle = wTitle.lstrip()
-            wTitle = wTitle.rstrip()
-            if wTitle:
-                c.w['title'] = wTitle
-            else:
-                werrMsg += 'Name '
-                werror = 1
-        else:
-            werrMsg += 'Name '
-            werror = 1
-
-        if 'goals' in request.params:
-           wGoals = str(request.params['goals'])
-           wGoals = wGoals.lstrip()
-           wGoals = wGoals.rstrip()
-           ##c.w['goals'] = request.params['goals']
-           if wGoals:
-               c.w['goals'] = wGoals
-           else:
-               werror = 1
-               werrMsg += 'Goals '
-        else:
-           werror = 1
-           werrMsg += 'Goals '
-
-        log.info('Got wGoals %s' % wGoals)
-        if 'allowSuggestions' in request.params:
-           allowSuggestions = request.params['allowSuggestions']
-           if allowSuggestions == '1' or allowSuggestions == '0':
-              c.w['allowSuggestions'] = allowSuggestions
-        else:
-           werror = 1
-           werrMsg += 'Allow Suggestions '
-
-        if 'allowResources' in request.params:
-           allowResources = request.params['allowResources']
-           if allowResources == '1' or allowResources == '0':
-              c.w['allowResources'] = allowResources
-        else:
-           werror = 1
-           werrMsg += 'Allow Resources '
-
-        # Hmm... Take this out so they can't change it?
-        if 'publicPostal' in request.params:
-           pTest = request.params['publicPostal']
-           sTest = getGeoScope(pTest, 'united-states')
-           if sTest:
-               c.w['publicPostal'] = request.params['publicPostal']
-           else:
-              werror = 1
-              werrMsg = 'Postal Code of ' + pTest + ' does not exist.'
-        else:
-           werror = 1
-           werrMsg = 'No Workshop Postal'
-
-        if not wstarted:
-            werrCheckParticipants = False
-            if 'publicScope' in request.params:
-              c.w['publicScope'] = request.params['publicScope']
-              c.w['scopeMethod'] = 'publicScope'
-            else:
-              # NOTE setting publicScope to '' instead of 00, since 00 is a valid state to have if publicPostalList has a value (line 237)
-              c.w['publicScope'] = ''
-              # NOTE set these only if the other input field does not have content, use werrCheckParticipants to watch for this 
-              # werror = 1
-              # werrMsg += 'Participants'
-              werrCheckParticipants = True
-
-            if 'publicPostalList' in request.params:
-              pString = request.params['publicPostalList']
-              pString = pString.lstrip()
-              pString = pString.rstrip()
-              pString = pString.replace(' ', ',')
-              pString = pString.replace(',,', ',')
-              pString = pString.replace('    ', ',')
-              pList = pString.split(',')
-              pBad = []
-              pGood = []
-              for pCode in pList:
-                  pTest = getGeoTitles(pCode, 'united-states')
-                  log.info('pCode is %s pString is %s pTest is %s'%(pCode,pString, pTest))
-                  if pTest != '0':
-                      log.info('adding pGood %s'%pCode)
-                      pGood.append(pCode)
-                  else:
-                      log.info('adding pBad %s'%pCode)
-                      pBad.append(pCode)
-              if pBad:
-                  werrMsg = ','.join(pBad)
-                  ##werror = 1
-
-              if pGood:
-                  c.w['publicPostalList'] = ','.join(pGood)
-                  log.info('publicPostalList is %s'%c.w['publicPostalList'])
-
-              if pList != '' and pGood:
-                 c.w['scopeMethod'] = 'publicPostalList'
-                 c.w['publicScope'] = '00'
-
-            else:
-              werror = 1
-              werrMsg += 'Public Postal List '
-           
-            if c.w['scopeMethod'] == 'publicScope':
-              c.w['publicScopeTitle'] = getScopeTitle(c.w['publicPostal'], 'United States', c.w['publicScope'])
-              c.w['publicPostalList'] = ''
-            elif c.w['scopeMethod'] == 'publicPostalList':
-              c.w['publicScopeTitle'] = 'postal codes of ' + c.w['publicPostalList']
-
-            if 'publicTags' in request.params:
-              publicTags = request.params.getall('publicTags')
-              c.w['publicTags'] = ','.join(publicTags)
-            else:
-              werror = 1
-              werrMsg += 'System Tags '
-   
-            if 'memberTags' in request.params:
-              wMemberTags = request.params['memberTags']
-              wMemberTags = wMemberTags.lstrip()
-              wMemberTags = wMemberTags.rstrip()
-              if wMemberTags:
-                  c.w['memberTags'] = wMemberTags
-              else:
-                werror = 1
-                werrMsg += 'Member Tags '
-            else:
-              werror = 1
-              werrMsg += 'Member Tags '
-
-            if 'startWorkshop' in request.params:
-              startButtons = request.params.getall('startWorkshop')
-              ##log.info('Got startWorkshop %s' % ','.join(startButtons))
-              if 'Start' in startButtons and 'VerifyStart' in startButtons and werror == 0:
-                 startTime = datetime.datetime.now()
-                 #c.w['startTime'] = startTime.ctime()
-                 c.w['startTime'] = startTime
-                 endTime = datetime.datetime.now()
-                 endTime = endTime.replace(year = endTime.year + 1)
-                 #c.w['endTime'] = endTime.ctime()
-                 c.w['endTime'] = endTime
-                 for wTag in request.params.getall('publicTags'):
-                    wTag = wTag.lstrip()
-                    wTag = wTag.rstrip()
-                    Tag('system', wTag, c.w.id, c.w.owner)
-                 for mTag in wMemberTags.split(','):
-                    mTag = mTag.lstrip()
-                    mTag = mTag.rstrip()
-                    Tag('member', mTag, c.w.id, c.w.owner)
-                 if c.w['scopeMethod'] == 'publicPostalList':
-                    pString = c.w['publicPostalList']
-                    pList = pString.split(',')
-                    for p in pList:
-                       if p != '':
-                          WorkshopScope(p, 'United States', c.w.id, c.w.owner)
-                 elif c.w['scopeMethod'] == 'publicScope':
-                    p = c.w['publicPostal']
-                    WorkshopScope(p, 'United States', c.w.id, c.w.owner)
-
-            formSchema = editWorkshopForm()
-            try:
-                c.form_result = formSchema.to_python(request.params)
-            except formencode.Invalid, error:
-                alert = {'type':'error'}
-                alert['title'] = 'All * Fields Required'
-                alert['content'] = ''
-                "alert['content'] = 'Please check all Required Fields'"
-                session['alert'] = alert
-                session.save()
-                c.form_result = error.value
-                c.form_errors = error.error_dict or {}
-                log.info("form_result "+ str(c.form_result))
-                log.info("form_errors "+ str(c.form_errors))
-                c.form_result['memberTags'] = wMemberTags
-                c.form_result['publicPostalList'] = plist
-                html = render('/derived/workshop_configure.bootstrap')
-                return htmlfill.render(
-                    html,
-                    defaults=c.form_result,
-                    errors=c.form_errors
-                )
-            else:
-                if werror == 1:
-                    alert = {'type':'error'}
-                    alert['title'] = werrMsg
-                    alert['content'] = ''
-                    "alert['content'] = 'Please check all Required Fields'"
-                    session['alert'] = alert
-                    session.save()
-                    "h.flash( werrMsg, 'error')"
-                    return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
-                else:
-                    if isFacilitator(c.authuser.id, c.w.id):
-                        commit(c.w)
-                    h.flash('Workshop configuration complete!', 'success')
-            return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
-        else:
-           if werror == 1:
-                alert = {'type':'error'}
-                alert['title'] = 'Missing Info: Workshop Tags'
-                alert['content'] = ''
-                "alert['content'] = 'Please check all Required Fields'"
-                session['alert'] = alert
-                session.save()
-                "h.flash( werrMsg, 'error')"
-                return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
-           else:
-              if isFacilitator(c.authuser.id, c.w.id):
-                 commit(c.w)
-                 h.flash('Workshop configuration complete!', 'success')
-        return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
-
 
     @h.login_required
     def addWorkshopHandler(self):
@@ -1117,42 +879,6 @@ class WorkshopController(BaseController):
         
         return render('/derived/workshop_bg.bootstrap')
 
-    def feedback(self, id1, id2):
-        code = id1
-        url = id2
-
-        c.w = getWorkshop(code, urlify(url))
-        r = get_revision(int(c.w['mainRevision_id']))
-        c.lastmoddate = r.date
-        c.lastmoduser = getUserByID(r.owner)
-        c.commentsDisabled = 0
-
-        c.title = c.w['title']
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-        c.facilitators = getFacilitatorsByWorkshop(c.w.id)
-        c.isScoped = isScoped(c.authuser, c.w)
-
-        if 'feedbackDiscussion_id' in c.w:
-           c.discussion = getDiscussionByID(c.w['feedbackDiscussion_id'])
-        else:
-           c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
-
-        c.rating = False
-        if 'ratedThings_workshop_overall' in c.authuser.keys():
-            """
-                Here we get a Dictionary with the commentID as the key and the ratingID as the value
-                Check to see if the commentID as a string is in the Dictionary keys
-                meaning it was already rated by this user
-            """
-            workRateDict = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
-            if c.w.id in workRateDict.keys():
-                c.rating = getRatingByID(workRateDict[c.w.id])
-
-        c.motd = getMessage(c.w.id)
-        c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
-
-        return render("/derived/workshop_feedback.bootstrap")
-    
     @h.login_required
     def configure(self, id1, id2):
         code = id1

@@ -325,20 +325,20 @@ class DiscussionController(BaseController):
         discussionCode = request.params['discussionCode']
         discussionURL = request.params['discussionURL']
         d = getDiscussion(discussionCode, discussionURL)
-        log.info("BEFORE")
+        ##log.info("BEFORE")
                 
         try:
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
               return redirect('/workshop/%s/%s/discussion/%s/%s'%(w['urlCode'], w['url'], d['urlCode'], d['url']))
-           log.info("HMMMM")
+           ##log.info("HMMMM")
            modType = request.params['modType']
-           log.info("1")
+           ##log.info("1")
            verifyModDiscussion = request.params['verifyModDiscussion']
-           log.info("2")
+           ##log.info("2")
            modDiscussionReason = request.params['modDiscussionReason']
-           log.info("3")
-           log.info("HERE")
+           ##log.info("3")
+           ##log.info("HERE")
         except:
            alert = {'type':'error'}
            alert['title'] = 'All Fields Required BLAH'
@@ -350,15 +350,15 @@ class DiscussionController(BaseController):
         # disable or enable the resource, log the event
         if modType == 'disable':
             if d['disabled'] == '0':
-               d['disabled'] = True
+               d['disabled'] = '1'
                modTitle = "Discussion Disabled"
             else:
-               d['disabled'] = False
+               d['disabled'] = '0'
                modTitle = "Discussion Enabled"
         elif modType == 'delete':
             if d['deleted'] == '0':
-                d['disabled'] = False
-                d['deleted'] = True
+                d['disabled'] = '0'
+                d['deleted'] = '1'
                 modTitle = "Discussion Deleted"
 
 

@@ -172,8 +172,8 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/configure/', controller = 'workshop', action = 'configure', id1 = '{id1}', id2 = '{id2}')
 
     # Workshop configuration submit handler
-    map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler/', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler/', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configureBasicWorkshopHandler', controller = 'workshop', action = 'configureBasicWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configureBasicWorkshopHandler/', controller = 'workshop', action = 'configureBasicWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configureSingleWorkshopHandler', controller = 'workshop', action = 'configureSingleWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
@@ -491,8 +491,8 @@ def make_map():
     map.connect('/search', controller = 'search', action = 'index' ) # search root route
     map.connect('/search/handler', controller = 'search', action = 'handler' ) # search handler route
 
-    map.connect('/contact', controller = 'contact', action = 'index' ) # contact route
-    map.connect('/contact/handler', controller = 'contact', action = 'handler' ) # contact handler route
+    ##map.connect('/contact', controller = 'contact', action = 'index' ) # contact route
+    ##map.connect('/contact/handler', controller = 'contact', action = 'handler' ) # contact handler route
 
     map.connect('/comment/index/*id', controller='comment', action='index') # comment handler route
     map.connect('/comment/disable/{id}', controller='comment', action='disable') # set comment to disabled

@@ -128,7 +128,7 @@ class RegisterController(BaseController):
             if postalCode:
                 pInfo = getPostalInfo(postalCode, 'United States')
                 if pInfo == None:
-                    log.info("Error: Bad Postal Code password")
+                    log.info("Error: Bad Postal Code")
                     errorFound = True
                     splashMsg['content'] = "Invalid postal code"
                     c.splashMsg = splashMsg 

@@ -131,7 +131,7 @@ class CommentController(BaseController):
         code = id1
         backlink = '/'
 
-        comment = getCommentByCode(urlify(code))
+        comment = getCommentByCode(code)
         discussion = getDiscussionByID(comment['discussion_id'])
 
         commentType = discussion['discType']
@@ -179,10 +179,10 @@ class CommentController(BaseController):
         modTitle = "" 
         if modType == 'disable':
             if comment['disabled'] == '0':
-               comment['disabled'] = True
+               comment['disabled'] = '1'
                modTitle = "Comment Disabled"
             else:
-               comment['disabled'] = False
+               comment['disabled'] = '0'
                modTitle = "Comment Enabled"
             e = Event(modTitle, modCommentReason, comment, c.authuser)
            # events = getCommentEvent(comment.id)
@@ -196,8 +196,8 @@ class CommentController(BaseController):
         elif modType == 'delete':
             dis = getDiscussionByID(int(comment['discussion_id']))
             if comment['deleted'] == '0':
-               comment['deleted'] = True
-               comment['disabled'] = False
+               comment['deleted'] = '1'
+               comment['disabled'] = '0'
                "dis['numComments'] = int(dis['numComments']) - 1"
                modTitle = "Comment Deleted"
                e = Event(modTitle, modCommentReason, comment, c.authuser)

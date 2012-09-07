@@ -38,7 +38,7 @@ class LoginController(BaseController):
                 user = get_user_by_email( email )
          
                 if user: # not none or false
-                    if user['disabled'] == True or user['activated'] == False:
+                    if user['disabled'] == '1' or user['activated'] == '0':
                         log.warning("disabled account attempting to login - " + email )
                         h.flash( "This account has been disabled.", "warning" )
                         splashMsg['content'] = 'This account has been disabled.'

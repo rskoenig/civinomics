@@ -464,15 +464,15 @@ class ResourceController(BaseController):
         # disable or enable the resource, log the event
         if modType == 'disable':
             if r['disabled'] == '0':
-               r['disabled'] = True
+               r['disabled'] = '1'
                modTitle = "Resource Disabled"
             else:
                r['disabled'] = False
                modTitle = "Resource Enabled"
         elif modType == 'delete':
             if r['deleted'] == '0':
-                r['disabled'] = False
-                r['deleted'] = True
+                r['disabled'] = '0'
+                r['deleted'] = '1'
                 modTitle = "Resource Deleted"
 
 
@@ -542,17 +542,6 @@ class ResourceController(BaseController):
         w['numResources'] = int(w['numResources']) + 1
         commit(w)
         return redirect('/workshop/%s/%s'%(code, url))
-
-    @h.login_required
-    ## Deprecated CCN
-    def readThis(self):
-        if readThisPage(c.authuser.id, request.params['articleID'], 'article'):
-            h.flash("You have read this article!", "success")
-        else:
-            h.flash("You have already read this article!", "warning")
-        a = getResource(request.params['articleID'])
-        i = getIssueByID(request.params['issueID'])
-        return redirect('/issue/%s/resource/%s'%(i.page.url, a.title))
 
     @h.login_required
     def flagResource(self, id1, id2):

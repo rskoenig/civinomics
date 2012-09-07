@@ -38,7 +38,7 @@ class SuggestionController(BaseController):
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         # for comment disable
         if 'allowComments' not in c.s:
-           c.s['allowComments'] = 1
+           c.s['allowComments'] = '1'
         if c.s['disabled'] == '1' or c.s['allowComments'] == '0':
             c.commentsDisabled = 1
         else:
@@ -361,14 +361,14 @@ class SuggestionController(BaseController):
         # disable or enable the suggestion, log the event
         if modType == 'disable':
             if s['disabled'] == '0':
-               s['disabled'] = True
+               s['disabled'] = '1'
                modTitle = "Suggestion Disabled"
             else:
-               s['disabled'] = False
+               s['disabled'] = '0'
                modTitle = "Suggestion Enabled"
         elif modType == 'delete':
-            s['disabled'] = False
-            s['deleted'] = True
+            s['disabled'] = '0'
+            s['deleted'] = '1'
             modTitle = "Suggestion Deleted"
 
         commit(s)
@@ -407,10 +407,10 @@ class SuggestionController(BaseController):
            return redirect('/workshop/%s/%s/suggestion/%s/%s/modSuggestion'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
         if not 'adopted' in s or s['adopted'] == '0':
-           s['adopted'] = True
+           s['adopted'] = '1'
            adoptTitle = "Suggestion Adopted"
         else:
-           s['adopted'] = False
+           s['adopted'] = '0'
            adoptTitle = "Suggestion Unadopted"
 
         commit(s)

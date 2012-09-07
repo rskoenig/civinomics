@@ -34,7 +34,6 @@ class SlideshowController(BaseController):
             h.flash('Could not find workshop!', 'error')
             return redirect('/')
         return render('/derived/uploadImages.html')
-        #return render('/derived/test4.html')
     
     @h.login_required
     def addImageHandler(self, id1, id2):
@@ -56,7 +55,7 @@ class SlideshowController(BaseController):
             filename = file.filename
             identifier = 'slide'
             
-            slide = Slide(c.authuser, s, 'Sample title', 'Sample caption', filename, imageFile, True)
+            slide = Slide(c.authuser, s, 'Sample title', 'Sample caption', filename, imageFile, '1')
             
             #hash = saveImage(imageFile, filename, c.authuser, identifier, s)
             #resizeImage(identifier, hash, 120, 65, 'thumbnail')
@@ -153,30 +152,6 @@ class SlideshowController(BaseController):
         commit(slideshow)
         commit(w)
         return redirect('/')
-        """
-            s = saveImage(c.authuser, thisImage.file, thisImage.filename, s.s, identifier)
-            resizeImage(c.authuser, s, identifier, '.slideshow', 835, 550)
-            resizeImage(c.authuser, s, identifier, '.thumbnail', 120, 65)
-            
-            thisSlide = Slide(c.authuser, s, )
-            
-            if i == 1:
-                w['mainImage_caption'] = thisCaption
-                w['mainImage_title'] = thisTitle
-                w['mainImage_hash'] = s['image_hash_%s' % identifier] 
-                w['mainImage_postFix'] = s['image_postfix_%s' % identifier]
-                w['mainImage_identifier'] = identifier
-                w['mainImage_id'] = s.id
-                
-            l.append(s.id)
-        
-        slideshow_order = ','.join([str(id) for id in l])
-        w['slideshow_order'] = slideshow_order
-        s['slideshow_order'] = slideshow_order
-        commit(w)
-        commit(s)
-        return redirect('/')
-        """
         
     """
         Gets called whenever an edit to the title or caption of a slide is made
@@ -232,7 +207,7 @@ class SlideshowController(BaseController):
             for item in order:
                 slide = forceGetSlide(int(item))
                 if int(slide['deleted']) == 0:
-                    slide['deleted'] = 1
+                    slide['deleted'] = '1'
                     commit(slide)
         elif state == 'published':
             firstSlide = forceGetSlide(int(order[0]))
@@ -251,7 +226,7 @@ class SlideshowController(BaseController):
             for item in order:
                 slide = forceGetSlide(item)
                 if int(slide['deleted']) == 1:
-                    slide['deleted'] = 0
+                    slide['deleted'] = '0'
                     commit(slide)
             
             slideshow['slideshow_order'] = ','.join(map(str, order))

@@ -532,28 +532,6 @@ class ProfileController(BaseController):
         return render( "/derived/AccountList.mako" )
 
     @h.login_required
-    def user( self, id ):
-        c.user = get_user( id )
-
-        c.list = c.user.events
-
-        types = ['edit', 'create', 'delete', 'revert', 'restore']
-        stats = []
-        
-        for t in types:
-            stats.append(meta.Session.query( Event ).filter_by( type = t ).join( User ).filter_by( name = c.user.name ).count())
-
-        c.statzip = zip ( types, stats )
-        
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-        c.title = c.heading = c.user.name
-        return render( "/derived/account.mako" )
-
-    @h.login_required
     def edit(self):
         c.title = 'Edit Your Civinomics Profile'
         return render('/derived/profile_edit.bootstrap')
@@ -713,17 +691,17 @@ class ProfileController(BaseController):
 
             changeMsg = changeMsg + "Tagline updated. "
 
-        log.info('before doing new picture for %s'%c.authuser['name'])
+        ##log.info('before doing new picture for %s'%c.authuser['name'])
         if picture != False:
            identifier = 'avatar'
-           log.info('doing new picture for %s'%c.authuser['name'])
+           ##log.info('doing new picture for %s'%c.authuser['name'])
            imageFile = picture.file
            filename = picture.filename
            hash = saveImage(imageFile, filename, u, 'avatar', u)
            u['pictureHash'] = hash
            resizeImage(identifier, hash, 200, 200, 'profile')
            resizeImage(identifier, hash, 25, 25, 'thumbnail')
-           log.info('Saving picture change for %s'%c.authuser['name'])
+           ##log.info('Saving picture change for %s'%c.authuser['name'])
            anyChange = True
            changeMsg = changeMsg + "Picture updated. "
 
@@ -749,19 +727,19 @@ class ProfileController(BaseController):
         code = id1
         url = id2
         c.user = get_user(code, url)
-        log.info('followHandler %s %s' % (code, url))
+        ##log.info('followHandler %s %s' % (code, url))
         # this gets a follow which has been unfollowed
         f = getFollow(c.authuser.id, c.user.id)
         if f:
            log.info('f is %s' % f)
-           f['disabled'] = False
+           f['disabled'] = '0'
            commit(f)
         # this only gets follows which are not disabled
         elif not isFollowing(c.authuser.id, c.user.id):
-           log.info('not isFollowing')
+           ##log.info('not isFollowing')
            f = Follow(c.authuser.id, c.user.id, 'user')
         else:
-           log.info('else')
+           ##log.info('else')
            f = Follow(c.authuser.id, c.user.id, 'user')
 
         return "ok"
@@ -775,7 +753,7 @@ class ProfileController(BaseController):
         f = getFollow(c.authuser.id, c.user.id)
         if f:
            log.info('f is %s' % f)
-           f['disabled'] = True
+           f['disabled'] = '1'
            commit(f)
 
         return "ok"
@@ -810,13 +788,13 @@ class ProfileController(BaseController):
            enableUserReason = request.params['enableUserReason']
 
            if c.user['disabled'] == '1':
-              c.user['disabled'] = 0
+              c.user['disabled'] = '0'
               eAction = 'User Enabled'
               alert = {'type':'success'}
               alert['title'] = 'Enabled:'
               alert['content'] = 'Account Enabled'
            else:
-              c.user['disabled'] = 1
+              c.user['disabled'] = '1'
               eAction = 'User Disabled'
               alert = {'type':'warning'}
               alert['title'] = 'Disabled:'
@@ -845,13 +823,13 @@ class ProfileController(BaseController):
         if ('changeAccessReason' in request.params) and (request.params['changeAccessReason'] != '') and ('setPrivsUser' in request.params or 'setPrivsFacil' in request.params or 'setPrivsAdmin' in request.params):
            eAction = 'Access Level Changed from ' + c.user['accessLevel'] + ' to '
            if 'setPrivsUser' in request.params:
-               c.user['accessLevel'] = 0
+               c.user['accessLevel'] = '0'
                eAction += '0'
            elif 'setPrivsFacil' in request.params:
-               c.user['accessLevel'] = 100
+               c.user['accessLevel'] = '100'
                eAction += '0'
            else:
-               c.user['accessLevel'] = 200
+               c.user['accessLevel'] = '200'
                eAction += '0'
            changeAccessReason = request.params['changeAccessReason']
            e = Event(eAction, changeAccessReason, c.user, c.authuser)
