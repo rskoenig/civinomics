@@ -29,7 +29,7 @@
     <p>
     <div class="row-fluid">
         <div class="span2"> 
-        <button class="btn btn-mini" id="hide${comment.id}" title="Hide comment and any replies" alt="Hide comment and any replies"><i class="icon-minus"></i> hide</button>
+        <button class="btn btn-mini" id="hide${comment['urlCode']}" title="Hide comment and any replies" alt="Hide comment and any replies"><i class="icon-minus"></i> hide</button>
         </div><!-- span2 -->
         <div class="span1">
         % if author['pictureHash'] == 'flash':
@@ -49,7 +49,6 @@
 ## Assumes the user is already authenticated for comment editing
 ## Passes info to the comment controller, edit function, with the comment id as the only argument
 <%def name="editComment(comment, counter)">
-    ##<% thisID = counter + comment.id %>
     <% thisID = comment['urlCode'] %>
     <form action="/comment/edit/${comment['urlCode']}" method="post" class="form form-horizontal"><div style="display:none"><input name="_method" type="hidden" value="put" /></div>
         <table><tr><td>
@@ -59,20 +58,6 @@
             <br />
             <textarea rows="4" id="textarea${thisID}" name="textarea${thisID}" onkeyup="previewAjax( 'textarea${thisID}', 'section${thisID}' )" class="markitup">${comment['data']}</textarea>
             <div class="control-group">
-                <%doc>
-                <label class="control-label" for="remark${thisID}">
-                    Optional remark
-                </label>
-                
-                <div class="controls">
-                    <div class="input-append">
-                        ##<input type="text" id="remark${thisID}" name="remark${thisID}" placeholder="optional remark" class="span7"/>
-                            <button type="submit" name="submit" value="submit" class="btn">Save changes</button>
-                    </div>
-                </div>
-                </%doc>
-            
-                ##<button type="submit" name="submit" value="submit" class="btn">Save changes</button>
                 <input type="hidden" id="sremark"  name="sremark" class="text" />
                 <input type="hidden" name = "discussionID" value = "${c.discussion.id}" />
                 % if '/thread/' in session['return_to']:
@@ -86,7 +71,7 @@
 
 ## Displays the content of the comment
 <%def name="commentContent(comment, counter, **kwargs)">
-    <div class="collapse in hide${comment.id}" style="color:black;">
+    <div class="collapse in hide${comment['urlCode']}" style="color:black;">
         % if "user" in session:
             % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
                 ${editComment(comment, counter)}
@@ -141,9 +126,8 @@
                 <a class="btn btn-mini btn-primary thepopover" rel="popover" data-title="${parentOwner['name']} said:" data-content="${h.literal(h.reST2HTML(parent['data']))}"><i class="icon-white icon-comment"></i> parent</a>
             % endif
         % endif
-        <a data-toggle="collapse" data-target=".reply${comment.id}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
+        <a data-toggle="collapse" data-target=".reply${comment['urlCode']}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
         % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
-            ##<a id="edit${counter + comment.id}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${counter + comment.id}">
             <a id="edit${comment['urlCode']}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${comment['urlCode']}">
                 <i class="icon-white icon-edit"></i> edit
             </a>
@@ -151,34 +135,32 @@
                 <i class="icon-white icon-list-alt"></i> admin
             </a>
         % endif
-        <a data-toggle="collapse" data-target=".flag${comment.id}" class="btn btn-mini btn-inverse" title="Flag this comment" alt="Flag this comment"><i class="icon-white icon-flag"></i> flag</a>
+        <a data-toggle="collapse" data-target=".flag${comment['urlCode']}" class="btn btn-mini btn-inverse" title="Flag this comment" alt="Flag this comment"><i class="icon-white icon-flag"></i> flag</a>
     </p> <!-- /.btn-group -->
 </%def>
 
 ## Displays the footer of the comment (post date, flag, reply, rate)
 <%def name="commentFeedback(comment, commentType)">
-	<div class="buttons collapse in hide${comment.id}">
+	<div class="buttons collapse in hide${comment['urlCode']}">
 		% if "user" in session:
 		</div><!-- /.buttons -->
 		## Must be wrapped or a tiny bit will show
-		<div class="collapse flag${comment.id}">
+		<div class="collapse flag${comment['urlCode']}">
 			<div class="alert">
-				##<form action="/flagComment/${comment.id}" class="left wide">
 					<strong>Are you sure you want to flag this comment?</strong>
 					<br>
 					<a href="/flagComment/${comment.id}"class="btn btn-danger flagCommentButton">Yes</a>
-					<a class="btn" id="flag${comment.id}">No</a>
-					<span id = 'flagged_${comment.id}'></span>
-				##</form>
+					<a class="btn" id="flag${comment['urlCode']}">No</a>
+					<span id = 'flagged_${comment['urlCode']}'></span>
 			</div> <!-- /.alert -->
-		</div> <!-- /.collapse.flag${comment.id} -->
-		<div class="reply textarea collapse reply${comment.id}">
+		</div> <!-- /.collapse.flag -->
+		<div class="reply textarea collapse reply${comment['urlCode']}">
 			<form action="/addComment">
 				<textarea name="comment-textarea" style="width: 85%" rows="4"></textarea>
 				
 				<input type="hidden" id="type" name="type" value="${commentType}" />
 				<input type="hidden" name="discussionID" value="${c.discussion.id}" />
-				<input type="hidden" name="parentID" value="${comment.id}" />
+				<input type="hidden" name="parentID" value="${comment['urlCode']}" />
 				<input type="hidden" name="workshopCode" value="${c.w['urlCode']}" />
 				<input type="hidden" name="workshopURL" value="${c.w['url']}" />
 				% if commentType == 'suggestionMain':
@@ -199,30 +181,37 @@
 
 ## Main function that gets called by the template
 <%def name="comments( type, **kwargs )">
- % if type == "background" or type == "feedback" or type == "discussion":
-    <% 
-        discussion = c.discussion
-    %>
- % elif type == "suggestionMain" or type == "resource":
-    <%  
-        discussion = c.discussion
-        workshop = c.w
-    %>
- % elif type == "thread":
-    <%
-        maxDepth = kwargs['maxDepth']
-        rootComment = kwargs['rootComment']
-        c.discussion = discussion = kwargs['discussion']
-    %>
- % endif
- %if c.conf['allow.comments'] == 'true':
-  % if type != "thread":
-      % if discussion['numComments'] == '1':
-         <% commentString = 'comment' %>
-      % else:
-         <% commentString = 'comments' %>
-      % endif
-  % endif
+    % if type == "background" or type == "feedback" or type == "discussion":
+        <% 
+            discussion = c.discussion
+        %>
+    % elif type == "suggestionMain" or type == "resource":
+        <%  
+            discussion = c.discussion
+            workshop = c.w
+        %>
+    % elif type == "thread":
+        <%
+            maxDepth = kwargs['maxDepth']
+            rootComment = kwargs['rootComment']
+            c.discussion = discussion = kwargs['discussion']
+        %>
+    % endif
+
+    % if c.conf['read_only.value'] == 'false':
+        <% return %>
+    % endif
+    % if c.conf['allow.comments'] == 'false':
+        <% return %>
+    % endif
+
+    % if type != "thread":
+        % if discussion['numComments'] == '1':
+            <% commentString = 'comment' %>
+        % else:
+            <% commentString = 'comments' %>
+        % endif
+    % endif
 
     ${lib.fields_alert()}
     <div class="civ-col-inner">
@@ -257,17 +246,12 @@
                             <br />
                         % endif
                     % else:
-                    <!--
-                    <h3 class="utility">
-                      Please <a href="/login">login</a> or <a href="/register">register</a> to leave a comment!
-                    </h3>
-                    -->
+                        <!--Register to leave a comment-->
                     %endif
                 </form>
             </div> <!-- /.span12 -->
         </div> <!-- /.row-fluid -->
         
-        ##<h4>Comments</h4>
         <div id="featured_comments">
             <% 
                 if type != 'thread':
@@ -283,23 +267,16 @@
             %>
         </div> <!-- /#featured_comments -->
     </div> <!-- /.civ-col-inner -->
- 
- %endif
-
 </%def>
 
 <%def name="recurseCommentTree(node, commentType, maxDepth, curDepth, counter)">
     <%
-        ##log.info("Node is %s" % node.id)
         if not node: # if node == 0
             return
         if type(node) == int:
-            ##log.info('Comment %s being processed now' % node)
             node = getComment(node)
         if curDepth >= maxDepth or node['children'] == 0:
             return
-        # children = map(int, node['children'].split(','))
-        # for child in children:
 
         if commentType == 'thread':
             if curDepth == 0:
@@ -309,9 +286,7 @@
         else:
             childList = map(int, node['children'].split(','))
 
-        #for child in [int(item) for item in node['children'].split(',')]:
         for child in childList:
-            ##log.info('children: %s' % node['children'])
             # Hack to resolve slight difference between discussion objects and comment objects
             if type(child) == type(1L):
                 child = node.children[child]
@@ -321,7 +296,6 @@
                 displayComment(child, commentType, maxDepth, curDepth, counter)
             except:
                 raise
-                #log.info('Error with comment %s, it has children %s'%(tree.id, tree.children[0].id))
     %>
 </%def>
 
@@ -366,17 +340,17 @@
             % endfor
             % if len(eventsList) != 0:
                 <span style="color:black;">
-                <strong>Event log:</strong><br />
-                <ul class="unstyled">
-                % for e in eventsList:
-                    % if 'Comment Disabled' in e['title']:
-                        <% disabler = getUserByID(e.owner) %>
-                        <li><strong>${e['title']} by <a href="/profile/${disabler['urlCode']}/${disabler['url']}">${disabler['name']}</a></strong> ${e.date} - ${e['data']}</li>
-                    % else:
-                        <li><strong>${e['title']}</strong> ${e.date} - ${e['data']}</li>
-                    % endif
-                % endfor
-                </ul>
+                    <strong>Event log:</strong><br />
+                    <ul class="unstyled">
+                        % for e in eventsList:
+                            % if 'Comment Disabled' in e['title']:
+                                <% disabler = getUserByID(e.owner) %>
+                                <li><strong>${e['title']} by <a href="/profile/${disabler['urlCode']}/${disabler['url']}">${disabler['name']}</a></strong> ${e.date} - ${e['data']}</li>
+                            % else:
+                                <li><strong>${e['title']}</strong> ${e.date} - ${e['data']}</li>
+                            % endif
+                        % endfor
+                    </ul>
                 </span>
                 <br />
             % endif
@@ -421,7 +395,7 @@
             % endif
 
             </div> <!-- /.civ-comment -->
-            <div class="collapse in hide${comment.id}">
+            <div class="collapse in hide${comment['urlCode']}">
                 ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}
             </div>
         </div> <!-- /.span11 -->

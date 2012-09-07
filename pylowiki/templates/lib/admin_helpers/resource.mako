@@ -26,7 +26,7 @@
     <br /><br />
     % for flag in c.flags:
        <% user = getUserByID(flag.owner) %>
-       Flagged ${flag.date} by ${user['name']}<br />
+       Flagged ${flag.date}(PST) by ${user['name']}<br />
     %endfor
 
     <br /><br />
@@ -40,7 +40,7 @@
        <br /><br />
        % for event in c.events:
           <% user = getUserByID(event.owner) %>
-          ${event['title']} ${event.date} by ${user['name']}<br />
+          ${event['title']} ${event.date}(PST) by ${user['name']}<br />
           Reason: ${event['data']}
           <br /><br />
        %endfor

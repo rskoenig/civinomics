@@ -21,7 +21,7 @@
     ${c.comment['data']}
     <br /><br />
     <% fString = "Flags" %>
-    % if len(c.flags) == '1':
+    % if len(c.flags) == 1:
        <% fString = "Flag" %>
     % endif
     <strong>${len(c.flags)} ${fString}:</strong>

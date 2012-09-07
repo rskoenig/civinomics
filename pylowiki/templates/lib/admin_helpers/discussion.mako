@@ -11,17 +11,6 @@
 
 <%def name="discussion_admin_options()">
     <br /><br />
-##    <strong>Post Event Note on Discussion</strong>
-##    <form name="note_discussion" id="note_discussion" class="left" action = "/adminDiscussionHandler" enctype="multipart/form-data" method="post" >
-##    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-##    <input type=hidden name=workshopURL value="${c.w['url']}">
-##    <input type=hidden name=discussionCode value="${c.discussion['urlCode']}">
-##    <input type=hidden name=discussionURL value="${c.discussion['url']}">
-##    <br />
-##    Note: &nbsp;
-##    <input type=text name=noteDiscussionText><br /><br />
-##    <button type="submit" class="btn btn-warning">Save Note</button>
-##    </form>
         <% numFlags = len(getFlags(c.discussion)) %>
         ${numFlags}
         % if numFlags:

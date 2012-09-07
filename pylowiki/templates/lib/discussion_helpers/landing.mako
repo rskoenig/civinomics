@@ -50,16 +50,16 @@
 </%def>
 
 <%def name="discussionMetaData(discussion)">
-    <% owner = getUserByID(discussion.owner) %>
-    <% fComments = getFlaggedDiscussionComments(discussion.id) %>
-    <% numFlags = 0 %>
-    % for commentID in fComments:
-        <% comment = getComment(commentID) %>
-        <% flags = getFlags(comment) %>
-        % if flags:
-            <% numFlags += len(flags) %>
-        % endif
-    % endfor
+    <% 
+        owner = getUserByID(discussion.owner)
+        fComments = getFlaggedDiscussionComments(discussion.id)
+        numFlags = 0
+        for commentID in fComments:
+            comment = getComment(commentID)
+            flags = getFlags(comment)
+            if flags:
+                numFlags += len(flags)
+    %>
     <a href="/profile/${owner['urlCode']}/${owner['url']}">${owner['name']}</a><br>
     <span class="badge badge-info" title="Comments in discussion"><i class="icon-white icon-comment"></i> ${discussion['numComments']}</span>
     <span class="badge badge-inverse" title="Flagged comments in discussion"><i class="icon-white icon-flag"></i> ${numFlags}</span>

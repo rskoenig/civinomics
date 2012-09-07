@@ -156,16 +156,9 @@
        <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
        Change number of objects which may be hosted: 
        <select name="numHost">
-       <option>1</option>
-       <option>2</option>
-       <option>3</option>
-       <option>4</option>
-       <option>5</option>
-       <option>6</option>
-       <option>7</option>
-       <option>8</option>
-       <option>9</option>
-       <option>10</option>
+       % for i in range(1, 11):
+        <option>${i}</option>
+       % endfor
        </select>
        <br /><br />
        <button type="submit" class="btn btn-warning">Update Account</button>
@@ -175,16 +168,9 @@
        <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
        Number of objects which may be hosted: 
        <select name="numHost">
-       <option>1</option>
-       <option>2</option>
-       <option>3</option>
-       <option>4</option>
-       <option>5</option>
-       <option>6</option>
-       <option>7</option>
-       <option>8</option>
-       <option>9</option>
-       <option>10</option>
+       % for i in range(1, 11):
+        <option>${i}</option>
+       % endfor
        </select>
        <br /><br />
        <button type="submit" class="btn btn-warning">Add Account</button>

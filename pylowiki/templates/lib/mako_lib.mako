@@ -46,7 +46,6 @@
 		elif 'workshop' in request.path_info:
 			session['product'] = 'workshops'
 		session.save()
-		##log.info(session)
 	%>
 </%def>
 
@@ -132,77 +131,83 @@
 	% if len(c.resources) == 0:
             <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
-                % if numDisplay == 0:
-                    <% rList = c.paginator %>
-                % else:
-                    <% rList = c.resources %>
-                % endif
+        <%
+            if numDisplay == 0:
+                rList = c.paginator
+            else:
+                rList = c.resources
+        %>
 		<div class="civ-col-list">
-                <% counter = 0 %>
-                <ul class="unstyled civ-col-list">
+            <% counter = 0 %>
+            <ul class="unstyled civ-col-list">
 		% for resource in rList:
-			<% author = getUserByID(resource.owner) %>
-                        <% flags = getFlags(resource) %>
-                        % if flags:
-                            <% numFlags = len(flags) %>
-                        % else:
-                            <% numFlags = 0 %>
-                        % endif
-                        <% disc = getDiscussionByID(resource['discussion_id']) %>
-                        <% numComments = 0 %>
-                        % if disc:
-                            <% numComments = disc['numComments'] %>
-                        % endif
+			<% 
+                author = getUserByID(resource.owner)
+                flags = getFlags(resource) 
+                
+                if flags:
+                    numFlags = len(flags)
+                else:
+                    numFlags = 0
+             
+                disc = getDiscussionByID(resource['discussion_id'])
+                numComments = 0 
+            
+                if disc:
+                    numComments = disc['numComments']
+            %>
+
 			% if resource['type'] == "post":
-                        <% rating = int(resource['ups']) - int(resource['downs']) %>
-                        <li>
-                        <div class="row-fluid">
-                            <h3>
-                             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
-                             </h3>
-                             % if len(resource['comment']) > 50:
-                                 ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
-                              % else:
-                                 ${resource['comment']}
-                              % endif
-                        </div><!-- row-fluid -->
-                        <div class="row-fluid">
-                            <div class="span2">
-                                % if author['pictureHash'] == 'flash':
-                                    <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
-                                % else:
-                                    <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
-                                % endif
-                            </div><!-- span2 -->
-                            <div class="span10">
-                                 <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
-                                 <span class="badge badge-info" title="Resource rating"><i class="icon-white icon-ok-sign"></i> ${rating}</span>
-                                 <span class="badge badge-info" title="Resource comments"><i class="icon-white icon-comment"></i>${numComments}</span>
-                                 <span class="badge badge-inverse"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
-                                 <br />
-                                 <i class="icon-time"></i> Added <span class="old">${timeSince(resource.date)}</span> ago<br /> 
-                                 <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Rate and discuss this resource</a>
-                                 <br /><br />
-                             </div><!-- span10 -->
-                        </div><!-- row-fluid -->
-                        </li>
+                <% rating = int(resource['ups']) - int(resource['downs']) %>
+                <li>
+                    <div class="row-fluid">
+                        <h3>
+                            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
+                        </h3>
+                        % if len(resource['comment']) > 50:
+                            ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                        % else:
+                            ${resource['comment']}
+                        % endif
+                    </div><!-- row-fluid -->
+                    <div class="row-fluid">
+                        <div class="span2">
+                            % if author['pictureHash'] == 'flash':
+                                <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatars/flash.profile" style="width:30px;" class="thumbnail" alt="${author['name']}" title="${author['name']}"></a>
+                            % else:
+                                <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/profile/${author['pictureHash']}.profile" class="thumbnail" style="width:30px;" alt="${author['name']}" title="${author['name']}"></a>
+                            % endif
+                        </div><!-- span2 -->
+                        <div class="span10">
+                             <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a><br>
+                             <span class="badge badge-info" title="Resource rating"><i class="icon-white icon-ok-sign"></i> ${rating}</span>
+                             <span class="badge badge-info" title="Resource comments"><i class="icon-white icon-comment"></i>${numComments}</span>
+                             <span class="badge badge-inverse"><i class="icon-white icon-flag" title="Resource flags"></i>${numFlags}</span>
+                             <br />
+                             <i class="icon-time"></i> Added <span class="old">${timeSince(resource.date)}</span> ago<br /> 
+                             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">Rate and discuss this resource</a>
+                             <br /><br />
+                         </div><!-- span10 -->
+                    </div><!-- row-fluid -->
+                </li>
 			% endif
-                    <% counter += 1 %>
-                    % if counter == numDisplay:
-                        <% break %>
-                    % endif
+            <% counter += 1 %>
+            % if counter == numDisplay:
+                <% break %>
+            % endif
 		% endfor
-                </ul>
-                </div>
+            </ul>
+        </div>
 	% endif
 </%def>
 
 <%def name="totalResources()">
-        % if c.resources:
-           <% total = len(c.resources) %>
-        % else:
-           <% total = 0 %>
-        % endif
+        <% 
+            if c.resources:
+                total = len(c.resources)
+            else:
+                total = 0 
+        %>
         <br />
         <p class="total">
                 ${total}<br>
@@ -215,40 +220,42 @@
 </%def>
 
 <%def name="list_suggestions(sList, errorMsg, numDisplay, doSlider = False)">
+    <% doSlider = 0 %>
 	% if len(sList) == 0:
-            <p><div class="alert alert-warning">${errorMsg}</div></p>
+        <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
-            % if doSlider == 0:
-                <% badgeSpan = "span10" %>
-                <% slideSpan = "span0" %>
-            % else:
-                % if numDisplay == 0:
-                    <% badgeSpan = "span2" %>
-                    <% slideSpan = "span8" %>
-                    <% sliderSize="normal" %>
-                % else:
-                    <% badgeSpan = "span4" %>
-                    <% slideSpan = "span5" %>
-                    <% sliderSize="small" %>
-                % endif
-            % endif
+            <%
+                if doSlider == 0:
+                    badgeSpan = "span10"
+                    slideSpan = "span0" 
+                else:
+                    if numDisplay == 0:
+                        badgeSpan = "span2"
+                        slideSpan = "span8"
+                        sliderSize="normal"
+                    else:
+                        badgeSpan = "span4"
+                        slideSpan = "span5"
+                        sliderSize="small"
+            %>
+
             <div class="civ-col-list">
             <% counter = 1 %>
             <ul class="unstyled civ-col-list">
             % for suggestion in sList:
-                <% author = getUserByID(suggestion.owner) %>
-                <% flags = getFlags(suggestion) %>
-                <% resources = getResourcesByParentID(suggestion.id) %>
-                % if flags:
-                    <% numFlags = len(flags) %>
-                % else:
-                    <% numFlags = 0 %>
-                % endif
-                <% disc = getDiscussionByID(suggestion['discussion_id']) %>
-                <% numComments = 0 %>
-                % if disc:
-                    <% numComments = disc['numComments'] %>
-                % endif
+                <% 
+                    author = getUserByID(suggestion.owner)
+                    flags = getFlags(suggestion)
+                    resources = getResourcesByParentID(suggestion.id)
+                    if flags:
+                        numFlags = len(flags)
+                    else:
+                        numFlags = 0
+                    disc = getDiscussionByID(suggestion['discussion_id'])
+                    numComments = 0
+                    if disc:
+                        numComments = disc['numComments']
+                %>
                 <li>
                 <div class="row-fluid">
                     <h3>
@@ -271,7 +278,7 @@
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                     <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
                     </div><!-- ${badgeSpan} -->
-                % if 'user' in session and doSlider:
+                % if 'user' in session and doSlider == '1':
                     <div class="${slideSpan}">
                         <div id="ratings${counter}" class="rating wide pull-right">
                             <div id="overall_slider" class="ui-slider-container">
@@ -293,10 +300,12 @@
                     <br /><br />
                 </div><!-- row-fluid -->
                 </li>
-                <% counter += 1 %>
-                % if counter == int(numDisplay):
-                    <% break %>
-                % endif 
+                <% 
+                    counter += 1
+                    if counter == int(numDisplay):
+                        break
+                    endif
+                %>
             % endfor
             </ul>
             % if c.paginator and (len(c.paginator) != len(c.suggestions)):
@@ -307,15 +316,16 @@
                 <p>Total Suggestions: ${c.count} | View ${ c.paginator.pager('~3~') }</p>
             % endif
             </div>
-% endif
+    % endif
 </%def>
 
 <%def name="totalSuggestions()">
-        % if c.suggestions:
-           <% total = len(c.suggestions) %>
-        % else:
-           <% total = 0 %>
-        % endif
+    <%
+        if c.suggestions:
+            total = len(c.suggestions)
+        else:
+            total = 0
+    %>
         <br />
         <p class="total">
                 ${total}<br>
@@ -336,7 +346,7 @@
 </%def>
 
 <%def name="your_facilitator()">
-    % if c.facilitators == False or len(c.facilitators) == 0:
+    % if c.facilitators == '0' or len(c.facilitators) == 0:
         <div class="alert alert-warning">No facilitators!</div>
     % else:
         <ul class="unstyled civ-col-list">
@@ -358,7 +368,7 @@
             </li>
         % endfor
         </ul>
-        % if c.motd and int(c.motd['enabled']) == 1:
+        % if c.motd and int(c.motd['enabled']) == '1':
             <p>Facilitator message:</p> ${c.motd['messageSummary']}
         % else:
 
@@ -378,24 +388,25 @@
 </%def>
 
 <%def name="nav_thing(page)">
-    % if 'user' in session:
-	<% pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])  %>
-    % else:
-	<% pages = OrderedDict([("home",""), ("background", "background"), ("discussion", "discussion")])  %>
-    % endif
+    <%
+        if 'user' in session:
+	       pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])
+       else:
+	       pages = OrderedDict([("home",""), ("background", "background"), ("discussion", "discussion")])
+    %>
 
 	<ul class="unstyled nav-thing">
 	% for li in pages.keys():
-                <% lclass="nothingspecial" %>
+        <% lclass="nothingspecial" %>
 		% if page == li:
-                        <% lclass="current" %>
-                % endif
-                % if li == 'configure' or li == 'administrate':
-                    % if 'user' in session and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-			<li class="${lclass}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a></li>
-                    % endif
-                % else:
-                    <li class="${lclass}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a></li>
+            <% lclass="current" %>
+        % endif
+        % if li == 'configure' or li == 'administrate':
+            % if 'user' in session and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
+			    <li class="${lclass}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a></li>
+            % endif
+        % else:
+            <li class="${lclass}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a></li>
 		% endif
 	% endfor
 	</ul> <!-- /.nav-thing -->
@@ -410,15 +421,15 @@
 		<div id="prevNext${counter}" class="prevNext">
 			<a id="prev${counter}" href="#"><i class='icon-backward icon-white'></i></a>
 			<a id="next${counter}" href="#"><i class='icon-forward icon-white'></i></a>
-			<!-- <span class="currSlide${counter}"></span> -->
 		</div>
 		<div class="slideshow${counter}">
-                % if c.slides:
-                     <% slideList = c.slides %>
-                % else:
-                     <% slideshowID = c.w['mainSlideshow_id'] %>
-                     <% slideList = getAllSlides(slideshowID) %>
-                % endif
+                <% 
+                    if c.slides:
+                        slideList = c.slides
+                    else:
+                        slideshowID = c.w['mainSlideshow_id']
+                        slideList = getAllSlides(slideshowID)
+                %>
                 %for slide in slideList:
                     %if slide['deleted'] != '1':
                         % if slide['pictureHash'] == 'supDawg':
@@ -438,14 +449,12 @@
                 %endfor
 		</div> <!-- /.slideshow -->
 		<div class="caption${counter} caption"></div>
-	</div> <!-- /#slideshow${counter} -->
+	</div> <!-- slideshow -->
 </%def>
 
 <%def name="slideshowHandler(counter)">
 	<script type="text/javascript">
     	var onAfter = function(curr, next, opts) {
-    		// var index = opts.currSlide + 1;
-    		// $('.currSlide${counter}').html(index + "/" + opts.slideCount);
 			$('.caption${counter}').html(next.firstElementChild.title);
     	}
     	var pagerBuilder = function(index, slide) {

@@ -150,11 +150,6 @@
     <div class="container-fluid">
     <script language="javascript">
     $(function() {
-        /*
-        $( ".column" ).sortable({
-            connectWith: ".column"
-        });
-        */
        
         $(".column").sortable(
             { items: ".portlet" },
@@ -163,15 +158,6 @@
                 $.post("/slideshow/editPosition", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
             }
         });
-        
-       /*
-        $(".column").sortable(
-            { connectWith: '.column' }, { update: function(event, ui) {
-               alert($(this).sortable('serialize'));
-               alert($(this).id);
-            }
-        });
-        */
 
         $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
             .find( ".portlet-header" )
@@ -185,7 +171,6 @@
             $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
         });
 
-        //$( ".column" ).disableSelection();
     });
     </script>
    <p><strong>Edit Slideshow</strong></p>
@@ -197,7 +182,6 @@
 
 <div class="column" id="published">
         <h2 style="text-align:center;">Published slides</h2>
-    ##<h2 style="text-align:center;">Published slides</h2>
     % for slide in c.published_slides:
         % if int(slide['deleted']) == 0:
             <div class="portlet" id = "portlet_${slide.id}">
@@ -217,12 +201,8 @@
 
 <div class="column" id="unpublished">
     <h2 style="text-align:center;" class="unsortable">Unpublished slides</h2>
-    ##<div class="portlet">
-    ##    <div class="portlet-header">Shopping</div>
-    ##    <div class="portlet-content">Lorem ipsum dolor sit amet, consectetuer adipiscing elit</div>
-    ##</div>
     % for slide in c.slideshow:
-        % if int(slide['deleted']) == 1:
+        % if int(slide['deleted']) == '1':
             <div class="portlet" id = "portlet_${slide.id}">
                 <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
                 <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>

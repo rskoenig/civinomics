@@ -17,13 +17,14 @@
     <br />
     <textarea name="motd" rows="5" cols="50">${c.motd['data']}</textarea>
     <br />
-    % if c.motd['enabled'] == '1':
-       <% pChecked = 'checked' %>
-       <% uChecked = '' %>
-    % else:
-       <% pChecked = '' %>
-       <% uChecked = 'checked' %>
-    % endif
+    <% 
+      if c.motd['enabled'] == '1':
+        pChecked = 'checked'
+        uChecked = ''
+      else:
+        pChecked = ''
+        uChecked = 'checked'
+    %>
     <input type=radio name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type=radio name="enableMOTD" value="0" ${uChecked}> Unpublish Message
     <br /><br />
     <br /><br />
@@ -195,12 +196,13 @@
     <tbody>
     <% cList = getPureFlaggedDiscussionComments(c.w['backgroundDiscussion_id']) %>
     % if cList:
-        <% cFlagCount = len(cList) %>
-        % if cFlagCount > 1:
-            <% cString = 'Comments' %> 
-        % else:
-            <% cString = 'Comment' %> 
-        % endif
+        <% 
+          cFlagCount = len(cList)
+          if cFlagCount > 1:
+              cString = 'Comments'
+          else:
+              cString = 'Comment'
+        %>
         <tr><td>${cString} In <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></br>
         % for comID in cList:
             <% com = getComment(comID) %>
@@ -347,7 +349,7 @@
 		  % for comID in cList:
 		      <% com = getComment(comID) %>
 		      &nbsp&nbsp&nbsp&nbsp&nbsp
-		      % if int(com['numFlags']) is 1:
+		      % if int(com['numFlags']) == 1:
 			      ${com['numFlags']} Flag:
 			  % else:
 			      ${com['numFlags']} Flags:
@@ -386,7 +388,7 @@
             <% com = getComment(comID) %>
             &nbsp&nbsp&nbsp&nbsp&nbsp
             % if checkFlagged(com):
-                % if int(com['numFlags']) is 1:
+                % if int(com['numFlags']) == 1:
                     ${com['numFlags']} flag:
                 % else:
                     ${com['numFlags']} flags:
@@ -648,7 +650,7 @@
 	    	  <% com = getComment(comID) %>
 		      &nbsp&nbsp&nbsp&nbsp&nbsp
 	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) is 1:
+			      % if int(com['numFlags']) == 1:
 				      ${com['numFlags']} flag:
 				  % else:
 				      ${com['numFlags']} flags:
@@ -703,7 +705,7 @@
 	    	  <% com = getComment(comID) %>
 		      &nbsp&nbsp&nbsp&nbsp&nbsp
 	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) is 1:
+			      % if int(com['numFlags']) == 1:
 				      ${com['numFlags']} flag:
 				  % else:
 				      ${com['numFlags']} flags:
@@ -759,7 +761,7 @@
 	    	  <% com = getComment(comID) %>
 		      &nbsp&nbsp&nbsp&nbsp&nbsp
 	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) is 1:
+			      % if int(com['numFlags']) == 1:
 				      ${com['numFlags']} flag:
 				  % else:
 				      ${com['numFlags']} flags:

@@ -3,9 +3,11 @@
     <h2 class="civ-col"><i class="icon-folder-open"></i> Add Discussion Topic</h2>
     <br />
     <form id="add_discussion" action = "${c.site_secure_url}/newDiscussion/${c.w['urlCode']}/${c.w['url']}" class="form-vertical" method = "post">
-    <% linkValue = '' %>
-    <% titleValue = '' %>
-    <% commentValue = '' %>
+    <%
+        linkValue = ''
+        titleValue = ''
+        commentValue = '' 
+    %>
                     
     <div class="control-group">
         <label class="control-label"><strong>Discussion Title:</strong></label>
