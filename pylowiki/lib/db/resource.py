@@ -14,12 +14,6 @@ from tldextract import extract
 
 log = logging.getLogger(__name__)
 
-def getResourceOld1(urlCode, url):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).one()
-    except:
-        return False
-    
 def getResourceByID(id):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'resource').filter_by(id = id).one()
@@ -29,12 +23,6 @@ def getResourceByID(id):
 def getResource(urlCode, url):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).one()
-    except:
-        return False
-
-def getResourceOld3(urlCode, url, workshop):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('workshop_id', workshop.id))).one()
     except:
         return False
 
@@ -154,12 +142,12 @@ class Resource(object):
              a['parent_id'] = 0
              a['parent_type'] = None
         a['type'] = 'post'
-        a['pending'] = False
-        a['disabled'] = False
-        a['deleted'] = False
-        a['allowComments'] = True
-        a['ups'] = 0
-        a['downs'] = 0
+        a['pending'] = '0'
+        a['disabled'] = '0'
+        a['deleted'] = '0'
+        a['allowComments'] = '1'
+        a['ups'] = '0'
+        a['downs'] = '0'
         commit(a)
         a['urlCode'] = toBase62(a)
         if parent != None:

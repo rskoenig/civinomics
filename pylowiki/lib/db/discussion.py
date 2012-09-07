@@ -79,10 +79,10 @@ class Discussion(object):
                 d['workshopURL'] = attachedThing['url']
                 if discType == 'general':
                     d['text'] = kwargs['text']
-                    d['ups'] = 0
-                    d['downs'] = 0
-                    d['disabled'] = 0
-                    d['deleted'] = 0
+                    d['ups'] = '0'
+                    d['downs'] = '0'
+                    d['disabled'] = '0'
+                    d['deleted'] = '0'
             elif attachedThing.objType == 'suggestion':
                 d['workshopCode'] = kwargs['workshop']['urlCode']
                 d['workshopURL'] = kwargs['workshop']['url']
@@ -107,13 +107,13 @@ class Discussion(object):
             d['workshopURL'] = kwargs['workshop']['url']
             if discType == 'general':
                 d['text'] = kwargs['text']
-                d['ups'] = 0
-                d['downs'] = 0
-                d['disabled'] = 0
-                d['deleted'] = 0
+                d['ups'] = '0'
+                d['downs'] = '0'
+                d['disabled'] = '0'
+                d['deleted'] = '0'
         d['title'] = title
         d['url'] = urlify(title)
-        d['numComments'] = 0
+        d['numComments'] = '0'
         commit(d)
         d['urlCode'] = toBase62(d)
         commit(d)

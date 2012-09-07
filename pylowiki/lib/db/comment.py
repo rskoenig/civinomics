@@ -21,7 +21,7 @@ def getComment( id ):
     except sa.orm.exc.NoResultFound:
         return False
 
-def getUserComments(user, disabled = False):
+def getUserComments(user, disabled = 0):
     try:
        return meta.Session.query(Thing).filter_by(objType = 'comment').filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
@@ -89,17 +89,17 @@ def getPureFlaggedDiscussionComments( id ):
 # Setters
 def disableComment( comment ):
     """disable this comment"""
-    comment['disabled'] = True
+    comment['disabled'] = '1'
     commit(comment)
 
 def deleteComment( comment ):
     """disable this comment"""
-    comment['delete'] = True
+    comment['delete'] = '1'
     commit(comment)
 
 def enableComment( comment ):
     """enable the comment"""
-    comment['disabled'] = False
+    comment['disabled'] = '0'
     commit(comment)
 
 def editComment(commentCode, discussionID, data):
@@ -115,11 +115,11 @@ class Comment(object):
     # parent is a Thing id
     def __init__(self, data, owner, discussion, parent = 0):
         c = Thing('comment', owner.id)
-        c['disabled'] = False
-        c['deleted'] = False
-        c['pending'] = False
+        c['disabled'] = '0'
+        c['deleted'] = '0'
+        c['pending'] = '0'
         c['parent'] = parent
-        c['children'] = 0
+        c['children'] = '0'
         c['data'] = data
         if len(data) > 10:
            cData = data[:10]
@@ -127,18 +127,18 @@ class Comment(object):
            cData = data
 
         c['discussion_id'] = discussion.id
-        c['pending'] = False
-        c['ups'] = 0
-        c['downs'] = 0
+        c['pending'] = '0'
+        c['ups'] = '0'
+        c['downs'] = '0'
         c['lastModified'] = datetime.now().ctime()
         commit(c)
         c['urlCode'] = toBase62(c)
         commit(c)
         
         if parent == 0:
-            c['isRoot'] = True
+            c['isRoot'] = '1'
         else:
-            c['isRoot'] = False
+            c['isRoot'] = '0'
             parentComment = getComment(parent)
             children = [int(item) for item in parentComment['children'].split(',')]
             if children[0] == 0:

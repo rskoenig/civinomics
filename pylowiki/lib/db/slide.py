@@ -11,7 +11,7 @@ from pylowiki.lib.images import saveImage, resizeImage
 log = logging.getLogger(__name__)
 
 # Getters
-def getSlide(slideID, deleted = False):
+def getSlide(slideID, deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(id = slideID).filter_by(objType = 'slide').filter(Thing.data.any(with_characteristic('deleted', deleted))).one()
     except:
@@ -26,25 +26,25 @@ def forceGetSlide(slideID):
 # Setters
 def deleteSlide( slide ):
     """delete this slide"""
-    slide['deleted'] = True
+    slide['deleted'] = '1'
     commit(slide)
 
 def undeleteSlide( slide ):
     """undelete this slide"""
-    slide['deleted'] = False
+    slide['deleted'] = '0'
     commit(slide)
 
 # Object
 # If newSlide is False, then we are dealing with the initialization of a workshop, in which case we do not need to save the image.
 class Slide(object):
-    def __init__( self, owner, slideshow, title, caption, filename, image, newSlide = False):
-        if newSlide:
+    def __init__( self, owner, slideshow, title, caption, filename, image, newSlide = '0'):
+        if newSlide != '0':
             s = Thing('slide', owner.id)
             s['slideshow_id'] = slideshow.id
             s['caption'] = caption
             s['title'] = title
             s['filename'] = filename
-            s['deleted'] = 0
+            s['deleted'] = '0'
             commit(s)
             self.s = s        
             
@@ -63,6 +63,6 @@ class Slide(object):
             s['caption'] = caption
             s['title'] = title
             s['filename'] = filename
-            s['deleted'] = 0
+            s['deleted'] = '0'
             commit(s)
             self.s = s

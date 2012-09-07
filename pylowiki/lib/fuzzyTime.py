@@ -1,4 +1,6 @@
 import datetime
+import logging
+log = logging.getLogger(__name__)
 
 def ungettext(a,b,count):
     if count:
@@ -9,6 +11,11 @@ def ugettext(a):
     return a
 
 def timeSince(d, now=None):
+    d = unicode(d)
+    dList = d.split('.')
+    d = dList[0]
+    if now:
+        now = unicode(now)
     
     """
     Takes two datetime objects and returns the time between d and now
@@ -48,7 +55,7 @@ def timeSince(d, now=None):
         if d.tzinfo:
             now = datetime.datetime.now(LocalTimezone(d))
         else:
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(None)
 
     # ignore microsecond part of 'd' since we removed it from 'now'
     delta = now - (d - datetime.timedelta(0, 0, d.microsecond))

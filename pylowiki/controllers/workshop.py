@@ -500,9 +500,9 @@ class WorkshopController(BaseController):
                     return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
 
                 # Set workshop start and end time
-                startTime = datetime.datetime.now()
+                startTime = datetime.datetime.now(None)
                 c.w['startTime'] = startTime
-                endTime = datetime.datetime.now()
+                endTime = datetime.datetime.now(None)
                 endTime = endTime.replace(year = endTime.year + 1)
                 c.w['endTime'] = endTime
                 Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)

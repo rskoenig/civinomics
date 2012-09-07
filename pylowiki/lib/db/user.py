@@ -26,7 +26,7 @@ def get_user(hash, url):
     except sa.orm.exc.NoResultFound:
         return False
     
-def getActiveUsers(disabled = False):
+def getActiveUsers(disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
@@ -130,8 +130,8 @@ class User(object):
         u['tagline'] = ''
         u['email'] = email
         u['name'] = '%s %s'%(firstName, lastName)
-        u['activated'] = 0
-        u['disabled'] = False
+        u['activated'] = '0'
+        u['disabled'] = '0'
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
         u['country'] =  country

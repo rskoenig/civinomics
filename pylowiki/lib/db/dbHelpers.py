@@ -26,8 +26,8 @@ def with_characteristic(key, value):
 def without_characteristic(key, value):
     return and_(Data.key == key, Data.value != value)
 
-def with_characteristic_like(key, value, raw = False):
-    if raw == False:
+def with_characteristic_like(key, value, raw = 0):
+    if raw == 0:
        value = '%' + value + '%'
 
     return and_(Data.key == key, Data.value.like(value))

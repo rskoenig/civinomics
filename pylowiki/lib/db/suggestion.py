@@ -17,7 +17,7 @@ def getSuggestionByID(id):
     except:
         return False
 
-def getAllSuggestions(deleted = False):
+def getAllSuggestions(deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter_by(objType = 'suggestion').all()
     except:
@@ -113,9 +113,9 @@ class Suggestion(object):
         s['workshopURL'] = workshop['url']
         s['allowComments'] = allowComments
         s['numComments'] = 0
-        s['disabled'] = False
-        s['deleted'] = False
-        s['adopted'] = False
+        s['disabled'] = '0'
+        s['deleted'] = '0'
+        s['adopted'] = '0'
         ##log.info('data = %s' % data)
         commit(s)
         s['urlCode'] = toBase62(s)

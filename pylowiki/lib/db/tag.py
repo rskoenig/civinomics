@@ -86,7 +86,7 @@ class Tag(object):
         tagName = tagName.lstrip()
         tagName = tagName.rstrip()
         t['tagName'] = tagName
-        t['disabled'] = False
+        t['disabled'] = '0'
         # the id of the object described by the tag
         t['thingID'] = thingID
         commit(t)

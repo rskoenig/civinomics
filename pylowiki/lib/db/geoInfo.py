@@ -196,6 +196,7 @@ class GeoInfo(object):
     def __init__(self, postalCode, country, ownerID ):
         g = Thing('geo', ownerID)
         
+        g['disabled'] = '0'
         g['postalCode'] = postalCode
         g['deactivated'] = '0000-00-00'
 

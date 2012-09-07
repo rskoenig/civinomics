@@ -10,19 +10,19 @@ from revision import Revision
 
 log = logging.getLogger(__name__)
 
-def get_page(url, deleted = False):
+def get_page(url, deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'page').filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('deleted', deleted))).one()
     except:
         return False
 
-def getPageByID(id, deleted = False):
+def getPageByID(id, deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'page').filter_by(id = id).filter(Thing.data.any(wc('deleted', deleted))).one()
     except:
         return False
 
-def get_all_pages(deleted = False):
+def get_all_pages(deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'page').filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
@@ -36,7 +36,7 @@ class Page(object):
         p['title'] = title
         p['url'] = urlify(title)
         p['type'] = thing.objType
-        p['deleted'] = False
+        p['deleted'] = '0'
         commit(p)
         self.p = p
         

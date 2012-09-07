@@ -25,7 +25,7 @@ def changeFacilitator(workshop, facilitator):
     commit(workshop)
     return True
 
-def getWorkshops( deleted = False):
+def getWorkshops( deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
@@ -37,7 +37,7 @@ def searchWorkshops( wKey, wValue):
     except:
         return False
 
-def getActiveWorkshops( deleted = False):
+def getActiveWorkshops( deleted = '0'):
      try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).order_by('-date').all()
      except:
@@ -176,7 +176,7 @@ class Workshop(object):
         #endTime = datetime.datetime.now()
         #endTime = endTime.replace(year = endTime.year + 1)
         #w['endTime'] = endTime.ctime()
-        w['deleted'] = False
+        w['deleted'] = '0'
         w['facilitators'] = owner.id
         w['goals'] = 'No goals set'
         w['numResources'] = 1
@@ -207,7 +207,7 @@ class Workshop(object):
         identifier = 'slide'
         title = 'Sample Title'
         caption = 'Sample Caption'
-        s = Slide(c.authuser, slideshow, title, caption, 'supDawg.png', 'no file here', False)
+        s = Slide(c.authuser, slideshow, title, caption, 'supDawg.png', 'no file here', '0')
         w['mainImage_caption'] = caption
         w['mainImage_title'] = title
         w['mainImage_hash'] = s.s['pictureHash']

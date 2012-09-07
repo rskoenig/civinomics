@@ -31,8 +31,6 @@ class BaseController(WSGIController):
         if "user" in session:
             c.authuser = get_user( session['userCode'], session['userURL'] )
             
-            # Deprecated.  Given a user Thing, call properties instead, like user['totalPoints']
-            #c.authuser.pointsObj = getPoints(c.authuser.id)
         
         try:
             spamremark = request.params['sremark']

@@ -19,7 +19,7 @@ def Flag(thing, flagger, flagType = "overall"):
     f['flaggedThing_owner'] = thing.owner
     f['flaggedThing_objType'] = thing.objType
     f['category'] = flagType
-    f['deleted'] = 0
+    f['deleted'] = '0'
     commit(f)
     
     # thing commits
@@ -79,7 +79,6 @@ def clearFlags(thing):
             commit(thing)
 
 def checkFlagged(thing):
-    ##if 'numFlags' in thing.keys() and int(thing['numFlags']) != 0:
     if len(getFlags(thing)) > 0:
        return True
     else:
