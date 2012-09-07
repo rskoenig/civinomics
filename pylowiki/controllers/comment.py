@@ -42,8 +42,7 @@ class CommentController(BaseController):
     @h.login_required
     def adminComment(self, id1):
         code = id1
-        c.comment = getCommentByCode(urlify(code))
-        log.info('c.comment is %s'%c.comment)
+        c.comment = getCommentByCode(code)
         c.discussion = getDiscussionByID(c.comment['discussion_id'])
         c.w = getWorkshop(c.discussion['workshopCode'], c.discussion['workshopURL'])
         c.commentType = c.discussion['discType']

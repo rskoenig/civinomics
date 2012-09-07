@@ -16,6 +16,8 @@ def timeSince(d, now=None):
     d = dList[0]
     if now:
         now = unicode(now)
+        nowList = now.split('.')
+        now = nowList[0]
     
     """
     Takes two datetime objects and returns the time between d and now
