@@ -4,13 +4,13 @@
 <%namespace name="lib_helpers" file="/lib/mako_lib.mako" />
 
 <div class="container-fluid">
-        <div class="well workshop_header">
-            ${lib_helpers.displayWorkshopHeader('administrate')}
-        </div><!-- well -->
+    <div class="well workshop_header">
+        ${lib_helpers.displayWorkshopHeader('administrate')}
+    </div><!-- well -->
 
-        <h2 class="civ-col">Administrate Workshop</h2>
-        <br /><br />
-        <div class="tabbable">
+    <h2 class="civ-col">Administrate Workshop</h2>
+    <br /><br />
+    <div class="tabbable">
         <ul class="nav nav-tabs">
             <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-user"></i> Facilitators</a></li>
             <li><a href="#tab2" data-toggle="tab"><i class="icon-flag"></i> Flagged</a></li>
@@ -19,34 +19,38 @@
             <li><a href="#tab5" data-toggle="tab"><i class="icon-bookmark"></i> Event Log</a></li>
         </ul>
 
-	<div class="tab-content">
-		<div class="tab-pane active" id="tab1">
-                        <div class="comtainer-fluid">
+        % if c.conf['read_only.value'] == 'true':
+            <!-- read only -->
+        % else:
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+                    <div class="comtainer-fluid">
                         <div class="row-fluid">
-                        <div class="span4">
-			${helpers.admin_show()}
-                        </div><!-- span4 -->
-                        <div class="span8">
-			${helpers.admin_facilitators()}
-                        </div><!-- span8 -->
+                            <div class="span4">
+                                ${helpers.admin_show()}
+                            </div><!-- span4 -->
+                            <div class="span8">
+                                ${helpers.admin_facilitators()}
+                            </div><!-- span8 -->
                         </div><!-- row-fluid -->
-                        </div><!-- container-fluid -->
-		</div>
-	        <div class="tab-pane" id="tab2">	
-			${helpers.admin_flagged()}
+                    </div><!-- container-fluid -->
                 </div>
-	        <div class="tab-pane" id="tab3">	
-			${helpers.admin_disabled()}
+                <div class="tab-pane" id="tab2">
+                    ${helpers.admin_flagged()}
                 </div>
-	        <div class="tab-pane" id="tab4">	
-			${helpers.admin_deleted()}
-		</div>
-	        <div class="tab-pane" id="tab5">	
-			${helpers.admin_event_log()}
-		</div>
-	</div><!-- tab-content -->
-        </div><!-- nav-tabs -->
-</div><!-- tabbable -->	
+                <div class="tab-pane" id="tab3">    
+                    ${helpers.admin_disabled()}
+                </div>
+                <div class="tab-pane" id="tab4">    
+                    ${helpers.admin_deleted()}
+                </div>
+                <div class="tab-pane" id="tab5">    
+                    ${helpers.admin_event_log()}
+                </div>
+            </div><!-- tab-content -->
+        % endif
+    </div><!-- nav-tabs -->
+</div><!-- tabbable --> 
 </br>
 </br>
 </br>
@@ -71,7 +75,7 @@
     <script src = "${h.url_for('/js/javascript.js')}" type="text/javascript"></script>
     
     <script language="javascript">
-        $(document).ready(function()	{
+        $(document).ready(function()    {
             $(".markitup").markItUp(mySettings);
         });
     </script>

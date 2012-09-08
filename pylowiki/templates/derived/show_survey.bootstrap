@@ -44,13 +44,8 @@ ${lib.setCurrentSurveyPage(c.survey, c.slide)}
 
     ## Right column
     <div class="span9" style="text-align:center;">
-        ##<div class="row">
-        ##    ${helpers.showTitle(c.survey)}
-        ##</div>
         
         ${helpers.spacer()}
-        
-        ##${helpers.spacer()}
         
         <div class="row">
             <div class="row-fluid">
@@ -58,7 +53,11 @@ ${lib.setCurrentSurveyPage(c.survey, c.slide)}
                     <div class="row-fluid">
                         ${helpers.inlineSpacer(1)}
                         <div class="span10">
-                            ${helpers.showSlide(c.survey, c.slide)}
+                            % if c.conf['read_only.value'] == 'true':
+                                <h1> Sorry, Civinomics is in read only mode right now </h1>
+                            % else:
+                                ${helpers.showSlide(c.survey, c.slide)}
+                            % endif
                         </div>
                     </div>
                     ${helpers.inlineSpacer(1)}

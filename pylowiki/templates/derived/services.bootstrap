@@ -21,7 +21,6 @@
 <div class="row">
     <div class="container">
     ${helpers.inlineSpacer(3)}
-    ##<div class="span7 offset3">
         <ul class="thumbnails span7">
             <li class="span3">
                 ${helpers.workshopItem()}
@@ -30,9 +29,7 @@
                 ${helpers.surveyItem()}
             </li>
         </ul>
-    ##</div>
     </div>
-    ##${helpers.inlineSpacer(2)}
 </div>
 
 <%def name = 'extraStyles()'>

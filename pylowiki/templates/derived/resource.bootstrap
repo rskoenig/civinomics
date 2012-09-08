@@ -7,43 +7,41 @@
 ${lib.return_to()}
 <div class="container-fluid">
     <div class="row-fluid">
-	<div class="span12 well workshop_header">
+    <div class="span12 well workshop_header">
             ${lib.displayWorkshopHeader('')}
                 ${helpers.nav_thing()}
                 <br />
-	</div> <!-- ./span12 -->
+    </div> <!-- ./span12 -->
 </div> <!-- ./row-fluid -->
 ${lib.fields_alert()}
 
-
-
 <div class="row-fluid">
-	<div class="span8">
-		<div class="civ-col">
-			<h2 class="civ-col"><i class="icon-book"></i> Resource</h2>
-			<div class="civ-col-inner">
-				<div class="row-fluid">
-					${helpers.displayResource()}
-				</div> <!-- /.row-fluid -->
-			</div> <!-- /.civ-col-inner -->
-		</div> <!-- /.civ-col -->
+    <div class="span8">
+        <div class="civ-col">
+            <h2 class="civ-col"><i class="icon-book"></i> Resource</h2>
+            <div class="civ-col-inner">
+                <div class="row-fluid">
+                    ${helpers.displayResource()}
+                </div> <!-- /.row-fluid -->
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
 
-		<div class="civ-col">
-			<h2 class="civ-col"><i class="icon-comment"></i> Comments</h2>
-			<div class="civ-col-inner">
-				${comments("resource")}
-			</div> <!-- /.civ-col-innner -->
-		</div> <!-- .civ-col -->
-	</div> <!-- /.span8 -->
+        <div class="civ-col">
+            <h2 class="civ-col"><i class="icon-comment"></i> Comments</h2>
+            <div class="civ-col-inner">
+                ${comments("resource")}
+            </div> <!-- /.civ-col-innner -->
+        </div> <!-- .civ-col -->
+    </div> <!-- /.span8 -->
 
-	<div class="span4">
-		<div class="civ-col">
-			<h2 class="civ-col"><i class="icon-book"></i> Other Resources</h2>
-			<div class="civ-col-inner">
-				${lib.list_resources("There are no other resources.", 10)}
-			</div> <!-- .civ-col-inner -->
-		</div> <!-- /.civ-col -->
-	</div> <!-- /.span8 -->
+    <div class="span4">
+        <div class="civ-col">
+            <h2 class="civ-col"><i class="icon-book"></i> Other Resources</h2>
+            <div class="civ-col-inner">
+                ${lib.list_resources("There are no other resources.", 10)}
+            </div> <!-- .civ-col-inner -->
+        </div> <!-- /.civ-col -->
+    </div> <!-- /.span8 -->
     </div> <!-- /.row -->
 </div><!-- coontainer-fluid -->
 
@@ -59,16 +57,16 @@ ${lib.fields_alert()}
 
 <%def name="extraScripts()">
 <script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
-	<script src = "/js/javascript.js" type="text/javascript"></script>
+    <script src = "/js/javascript.js" type="text/javascript"></script>
     <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
     <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
 <script src = "/js/flag.js" type="text/javascript"></script>
 
-	<script type="text/javascript">
-		$(document).ready(function()	{
-			$('.markitup').markItUp(mySettings);
-		});
-	</script>
+    <script type="text/javascript">
+        $(document).ready(function()    {
+            $('.markitup').markItUp(mySettings);
+        });
+    </script>
 
-	${buttonHandler()}
+    ${buttonHandler()}
 </%def>

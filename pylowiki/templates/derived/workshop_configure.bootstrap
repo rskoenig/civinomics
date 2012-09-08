@@ -23,18 +23,22 @@
             <li><a href="#tab2" data-toggle="tab"><i class="icon-picture"></i> Slideshow</a></li>
             <li><a href="#tab3" data-toggle="tab"><i class="icon-book"></i> Background</a></li>
         </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="tab1">
-                ${helpers.configure()}
-            </div><!-- tab-pane template tab1 -->
-            <div class="tab-pane" id="tab2">
-                 ${slide_helpers.add_slides()}
-                 ${slide_helpers.edit_slideshow()}
-            </div><!-- tab-pane template tab2 -->
-            <div class="tab-pane" id="tab3">
-            ${helpers.edit_background()}
-            </div><!-- tab-pane template tab3 -->
-        </div><!-- tab-content template -->
+        % if c.conf['read_only.value'] == 'true':
+            <!-- read only -->
+        % else:
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+                    ${helpers.configure()}
+                </div><!-- tab-pane template tab1 -->
+                <div class="tab-pane" id="tab2">
+                     ${slide_helpers.add_slides()}
+                     ${slide_helpers.edit_slideshow()}
+                </div><!-- tab-pane template tab2 -->
+                <div class="tab-pane" id="tab3">
+                ${helpers.edit_background()}
+                </div><!-- tab-pane template tab3 -->
+            </div><!-- tab-content template -->
+        % endif
     </div><!-- tabbable template -->	
 </div><!-- container-fluid -->
             

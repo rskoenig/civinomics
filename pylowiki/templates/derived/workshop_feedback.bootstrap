@@ -19,7 +19,11 @@ ${lib.return_to()}
 			<div class="civ-col-inner">
 				${helpers.workshopBlurb()}
 			</div>
-			${helpers.displaySlider()}
+			% if c.conf['read_only.value'] == 'true':
+                <!-- read only -->
+            % else:
+				${helpers.displaySlider()}
+			% endif
 		</div>
 		<div class="civ-col">
 			<h2 class="civ-col">Comments</h2>

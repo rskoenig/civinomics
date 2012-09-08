@@ -23,15 +23,8 @@
 					<ul class="nav pull-right nav-pills">
 						<li><a href="/">Home</a></li>
 						% if 'user' in session:
-							##<li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a></li>
 							<li><a href="/login/logout">Logout</a></li>
 							<li class="dropdown">
-							    <%doc>
-								<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-									Account
-									<b class="caret"></b>
-								</a> <!-- /.dropdown-toggle -->
-								</%doc>
 								<ul class="dropdown-menu">
 									% if int(c.authuser['accessLevel']) >= 100:
 										<li><a href="/addWorkshop">Add Workshop</a></li>
@@ -39,7 +32,6 @@
 									% if int(c.authuser['accessLevel']) >= 200:
 										<li><a href="/systemAdmin">Sys Admin</a></li>
 									% endif
-									##<li><a href="/account/edit">Edit</a></li>
 									<li><a href="/login/logout">Logout</a></li>
 								</ul> <!-- /.dropdown-menu -->
 							</li> <!-- /.dropdown -->
@@ -65,7 +57,6 @@
 		</div> <!-- /.navbar-inner -->
 	</div> <!-- /.navbar -->
 	<div class="container-fluid"> <!-- responsive container for everything -->
-		##<code>
 			<div class="row">
 				<center>
 					<table>
@@ -77,7 +68,6 @@
 			</div>
 
 			<div class="row">
-				##<div class="span6 offset4">
 					<div class="unfound-message">
 					<center>
 						<table>
@@ -107,18 +97,11 @@
 					You have attempted to access a non-existent page.
 					Oops!
 					</div>
-				##</div>
 			</div>
-		##</code>
 		<div class="row-fluid">
 			<footer class="span12">
 				<div class="row">
 					<a href="/surveys">Surveys</a>
-					<%doc>
-					% if 'user' in session:
-						| <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">Profile</a>
-					% endif
-					</%doc>
 				</div> <!-- /.row -->
 				<div class="row">
 					<a href="/corp/about">About Us</a> |
@@ -135,38 +118,3 @@
 	<script type="text/javascript" src="/js/bootstrap/bootstrap.min.js"></script>
 </body>
 
-
-<%doc>
-<HTML>
-<HEAD><TITLE>404 Not Found</TITLE></HEAD>
-<BODY TEXT="#ffffff" BGCOLOR="#0000cc">
-
-<CENTER><DIV ALIGN="center">
-<PRE><CODE>
-
-
-
-
-<TABLE BORDER=0 BGCOLOR="#C0C0C0"><TR><TD><CODE><FONT COLOR="#330033">ERR 404</FONT></CODE></TD></TR></TABLE>
-
-
-FFFFFF0 FFFFFFF FF00000 FF00000 0FFFFF0 FF000FF FF000FF
-FF000FF 000F000 FF00000 FF00000 FF000FF FF000FF 0FF0FF0
-FFFFFF0 000F000 FF00000 FF00000 0FFF000 FF000FF 00FFF00
-FFFFFF0 000F000 FF00000 FF00000 000FFF0 FF000FF 00FFF00
-FF000FF 000F000 FF00000 FF00000 FF000FF FF000FF 0FF0FF0
-FFFFFF0 FFFFFFF FFFFFFF FFFFFFF 0FFFFF0 0FFFFF0 FF000FF
-
-
-You have attempted to access a non-existent page.
-The current HTTP session will be terminated.
-
-
-Press any key to continue<BLINK>_</BLINK>
-</CODE></PRE>
-</DIV></CENTER>
-<HR>
-
-</BODY>
-</HTML>
-</%doc>

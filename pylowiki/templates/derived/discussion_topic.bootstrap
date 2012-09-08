@@ -17,7 +17,11 @@ ${lib.return_to()}
                     <div class="row-fluid">
                         ${helpers.displayTopicContent()}
                         % if 'user' in session:
-                            ${helpers.Edit_Admin()}
+                            % if c.conf['read_only.value'] == 'true':
+                                <!-- read only -->
+                            % else:
+                                ${helpers.Edit_Admin()}
+                            % endif
                         % endif
                     </div>
                 </div>
@@ -35,7 +39,11 @@ ${lib.return_to()}
                 <h2 class="civ-col">
                     <i class="icon-folder-open"></i> Other Topics
                     % if 'user' in session:
-                        <span class="pull-right" style="text-transform:lowercase; font-size:xx-small; letter-spacing:normal">${lib.add_a("discussion")}</span>
+                        % if c.conf['read_only.value'] == 'true':
+                            <!-- read only -->
+                        % else:
+                            <span class="pull-right" style="text-transform:lowercase; font-size:xx-small; letter-spacing:normal">${lib.add_a("discussion")}</span>
+                        % endif
                     % endif
                 </h2>
                 <div class="civ-col-inner">

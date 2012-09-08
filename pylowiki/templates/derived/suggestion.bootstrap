@@ -28,7 +28,11 @@ ${lib.return_to()}
                 % else:
                     <h2 class="civ-col"><i class="icon-pencil"></i> SUGGESTION
                         <span class="pull-right resource" style="font-size:10px; letter-spacing:normal;">
-                        ${lib.add_a_text("sresource", "")}
+                            % if c.conf['read_only.value'] == 'true':
+                                <!-- read only -->
+                            % else:
+                                ${lib.add_a_text("sresource", "")}
+                            % endif
                         </span>
                     </h2>
                 % endif
@@ -36,7 +40,11 @@ ${lib.return_to()}
                     <div class="row-fluid">
                         ${helpers.suggestionInfo()}
                         ${helpers.suggestionContent(c.content)}
-                        ${helpers.suggestionEditAdminRating(c.authuser, c.w.owner, c.s, c.isAdmin, session, c.rating)}
+                        % if c.conf['read_only.value'] == 'true':
+                            <!-- read only -->
+                        % else:
+                            ${helpers.suggestionEditAdminRating(c.authuser, c.w.owner, c.s, c.isAdmin, session, c.rating)}
+                        % endif
                         ${helpers.spacer()}
                     </div> <!-- /.row-fluid -->
                 </div><!-- civ-col-inner -->

@@ -11,10 +11,14 @@
         <div class="span8">
             ${lib.fields_alert()}
             <div class="civ-col">
-                % if c.discussion:
-                    ${helpers.edit()}
+                % if c.conf['read_only.value'] == 'true':
+                    <h1> Sorry, site is in read-only mode right now. </h1>
                 % else:
-                    ${helpers.add()}
+                    % if c.discussion:
+                        ${helpers.edit()}
+                    % else:
+                        ${helpers.add()}
+                    % endif
                 % endif
                 </br>
             </div> <!-- civ-col -->

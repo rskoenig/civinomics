@@ -13,17 +13,20 @@
             </div>
         </div>
     % endif
-    <form id="fileupload" action="/survey/${c.survey['urlCode']}/${c.survey['url']}/upload/handler" method="POST" enctype="multipart/form-data" class="form-horizontal">
-        <fieldset>
-            <legend>Upload a file to ${c.survey['title']}</legend>
-            <div class="offset1">
-                <div class="control-group">
-                    ${helpers.fileUpload()}
+    % if c.conf['read_only.value'] == 'true':
+        <h1> Sorry, site is in read-only mode right now. </h1>
+    % else:
+        <form id="fileupload" action="/survey/${c.survey['urlCode']}/${c.survey['url']}/upload/handler" method="POST" enctype="multipart/form-data" class="form-horizontal">
+            <fieldset>
+                <legend>Upload a file to ${c.survey['title']}</legend>
+                <div class="offset1">
+                    <div class="control-group">
+                        ${helpers.fileUpload()}
+                    </div>
                 </div>
-                ##${helpers.submitButton()}
-            </div>
-        </fieldset>
-    </form>
+            </fieldset>
+        </form>
+    % endif
 </div>
 
 <%def name = 'extraStyles()'>

@@ -14,7 +14,11 @@
                 <h2 class="civ-col">${c.heading}</h2>
                 <div class="civ-col-inner">
                     ${helpers.spacer()}
-                    ${helpers.addWorkshop()}
+                    % if c.conf['read_only.value'] == 'true':
+                        <!-- read only -->
+                    % else:
+                        ${helpers.addWorkshop()}
+                    % endif
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span6 -->

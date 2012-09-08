@@ -4,32 +4,30 @@
 </%def>
 <%def name="display_body_right_content()">
     <div class="span8"><!--span body-->
-            <div class="row-fluid">
+        <div class="row-fluid">
+            </br>
+            <h1>Software Engineer - Front End</h1>
+            <p class="lead">Fulltime - Santa Cruz</p>
+            </br>
+            <p>We're looking for a capable, quick learner to join our elite enginnering squad and build products for our members and clients. Our culture emphasizes creative problem solving, fast iteration and execution. Join us in our mission to empower communities.</p>
+            <p><strong>Required:</strong></p>
+                <ul>
+                    <li>CSS</li>
+                    <li>Javascript and jQuery</li>
+                    <li>HTML</li>
+                    <li>Able to work with a small team and quickly adapt</li>
+                    <li>An eye for UI design</li>
+                </ul>
                 </br>
-                <h1>Software Engineer - Front End</h1>
-                <p class="lead">Fulltime - Santa Cruz</p>
+                <p>To apply for this position send a resume and cover letter to <a href="#">careers AT civinomics DOT com</a> with the subject line <em>Application for Software Engineer - Front End</em>.
                 </br>
-                <p>We're looking for a capable, quick learner to join our elite enginnering squad and build products for our members and clients. Our culture emphasizes creative problem solving, fast iteration and execution. Join us in our mission to empower communities.</p>
-                <p><strong>Required:</strong></p>
-                    <ul>
-                        <li>CSS</li>
-                        <li>Javascript and jQuery</li>
-                        <li>HTML</li>
-                        <li>Able to work with a small team and quickly adapt</li>
-                        <li>An eye for UI design</li>
-                    </ul>
-                    </br>
-                    <p>To apply for this position send a resume and cover letter to <a href="#">careers AT civinomics DOT com</a> with the subject line <em>Application for Software Engineer - Front End</em>.
-                    </br>
-                    </br>
-                    </br>
-                    </br>
-                    </br>
+                </br>
+                </br>
+                </br>
+                </br>
 
-            </div>
-        </div><!--/.span8-->
-
-
+        </div>
+    </div><!--/.span8-->
 </%def>
 
 <%def name="display_body_bottom_content()"></%def>

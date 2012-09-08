@@ -3,32 +3,30 @@
     <!-- None -->
 </%def>
 <%def name="display_body_right_content()">
-        <div class="span8"><!--span body-->
-            <div class="row-fluid">
-                </br>
-                <h1>Community Representative</h1>
-                <p class="lead">Part-time - Santa Cruz, San Francisco</p>
-                </br>
-                <p>Person-to-person interaction is still the best means of public engagement, that's why we decided to re-invent the practice. We conduct face-to-face interviews for public agencies and non-profits via iPad. We are looking to hire new field organizers for the purposes of conducting surveys both at community events and through door-to-door outreach. We do not fundraise - our campaigns are educational and research oriented.</p>
-                <p><strong>Skills required:</strong></p>
-                <ul>
-                    <li>Effective Communication</li>
-                    <li>Cultural Competency</li>
-                    <li>The ability to be polite and respectful</li>
-                </ul>
-                </br>
-                <p>Previous experience is recommended, but not required. Community Representatives are paid $3.00 per interview, most complete between 5-8 interviews per hour. We are looking to fill these positions ASAP.</p>
-                <p>To apply for this position send a resume and cover letter to <a href="#">careers AT civinomics DOT com</a> with the subject line <em>Application for Community Representative</em>.
-                </br>
-                </br>
-                </br>
-                </br>
-                </br>
+    <div class="span8"><!--span body-->
+        <div class="row-fluid">
+            </br>
+            <h1>Community Representative</h1>
+            <p class="lead">Part-time - Santa Cruz, San Francisco</p>
+            </br>
+            <p>Person-to-person interaction is still the best means of public engagement, that's why we decided to re-invent the practice. We conduct face-to-face interviews for public agencies and non-profits via iPad. We are looking to hire new field organizers for the purposes of conducting surveys both at community events and through door-to-door outreach. We do not fundraise - our campaigns are educational and research oriented.</p>
+            <p><strong>Skills required:</strong></p>
+            <ul>
+                <li>Effective Communication</li>
+                <li>Cultural Competency</li>
+                <li>The ability to be polite and respectful</li>
+            </ul>
+            </br>
+            <p>Previous experience is recommended, but not required. Community Representatives are paid $3.00 per interview, most complete between 5-8 interviews per hour. We are looking to fill these positions ASAP.</p>
+            <p>To apply for this position send a resume and cover letter to <a href="#">careers AT civinomics DOT com</a> with the subject line <em>Application for Community Representative</em>.
+            </br>
+            </br>
+            </br>
+            </br>
+            </br>
 
-            </div>
-        </div><!--/.span8-->
-
-
+        </div>
+    </div><!--/.span8-->
 </%def>
 
 <%def name="display_body_bottom_content()"></%def>

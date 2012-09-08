@@ -19,8 +19,12 @@
         <div class="span6">
             <br /><br />
             <strong><span class="pull-left">Moderate Comment</strong></span>
-            ${helpers.moderateComments()}
-            ${helpers.clearCommentFlags()}
+            % if c.conf['read_only.value'] == 'true':
+                <h1> Sorry, site is in read-only mode right now. </h1>
+            % else:
+                ${helpers.moderateComments()}
+                ${helpers.clearCommentFlags()}
+            % endif
         </div><!-- span6 -->	
     </div><!-- row-fluid -->
 </div><!-- container -->

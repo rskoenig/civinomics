@@ -26,7 +26,11 @@
             ${helpers.resource_events()}
         </div><!-- span6 -->
         <div class="span6">
-            ${helpers.resource_admin_options()}
+            % if c.conf['read_only.value'] == 'true':
+                <h1> Sorry, Civinomics is in read only mode right now </h1>
+            % else:
+                ${helpers.resource_admin_options()}
+            % endif
         </div><!-- span6 -->
     </div><!-- row-fluid -->
 </div><!-- container -->	

@@ -17,20 +17,23 @@
     ## Left column
     <div class="span8">
         <div class="civ-col">
-            % if c.r:
-                <h2 class="civ-col"><i class="icon-book"></i> EDIT RESOURCE</h2>
+            % if c.conf['read_only.value'] == 'true':
+                <!-- read only -->
             % else:
-                <h2 class="civ-col"><i class="icon-book"></i> ADD RESOURCE</h2>
+                % if c.r:
+                    <h2 class="civ-col"><i class="icon-book"></i> EDIT RESOURCE</h2>
+                % else:
+                    <h2 class="civ-col"><i class="icon-book"></i> ADD RESOURCE</h2>
+                % endif
+                <div class="row-fluid">
+                    <div class="span9">
+                        ${helpers.addResourceForm(c)}
+                    </div> <!-- /.span10 -->
+            
+                    <div class="span3">
+                    </div> <!-- /.span2 -->
+                </div> <!-- /.row-fluid -->
             % endif
-            <div class="row-fluid">
-                <div class="span9">
-                    ${helpers.addResourceForm(c)}
-                </div> <!-- /.span10 -->
-        
-                <div class="span3">
-                </div> <!-- /.span2 -->
-            </div> <!-- /.row-fluid -->
-
         </div> <!-- /.civ-col -->
     </div>
     

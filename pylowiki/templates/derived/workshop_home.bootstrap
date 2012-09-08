@@ -27,9 +27,21 @@
                 <h2 class="civ-col">
                     <i class="icon-book"></i> Resources
                     % if len(c.resources) > 10:
-                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">10 of ${len(c.resources)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resources" title="Click to view all the resources for this workshop">View All</a> ${lib.add_a_text('resource', '|')}</span>
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">10 of ${len(c.resources)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resources" title="Click to view all the resources for this workshop">View All</a>
+                            % if c.conf['read_only.value'] == 'true':
+                                <!-- read only -->
+                            % else:
+                                ${lib.add_a_text('resource', '|')}
+                            % endif
+                        </span>
                     % else:
-                    <span class="pull-right" style="font-size:10px; letter-spacing:normal;">${lib.add_a_text('resource', '')}</span>
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">
+                            % if c.conf['read_only.value'] == 'true':
+                                <!-- read only -->
+                            % else:
+                                ${lib.add_a_text('resource', '')}
+                            % endif
+                        </span>
                     % endif
                 </h2>
                 <div class="civ-col-inner">
@@ -42,9 +54,21 @@
                 <h2 class="civ-col">
                     <i class="icon-pencil"></i> Suggestions
                     % if len(c.suggestions) > 10:
-                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">10 of ${len(c.suggestions)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestions" title="Click to view all the suggestions for this workshop">View All</a> ${lib.add_a_text('suggestion', '|')}</span>
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">10 of ${len(c.suggestions)} | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestions" title="Click to view all the suggestions for this workshop">View All</a> 
+                            % if c.conf['read_only.value'] == 'true':
+                                <!-- read only -->
+                            % else:
+                                ${lib.add_a_text('suggestion', '|')}
+                            % endif
+                        </span>
                     % else:
-                    <span class="pull-right" style="font-size:10px; letter-spacing:normal;">${lib.add_a_text('suggestion', '')}</span>
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">
+                            % if c.conf['read_only.value'] == 'true':
+                                <!-- read only -->
+                            % else:
+                                ${lib.add_a_text('suggestion', '')}
+                            % endif
+                        </span>
                     % endif
                 </h2>
                 <div class="civ-col-inner">

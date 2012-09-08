@@ -15,12 +15,16 @@
     ## Left column
     <div class="span8">
         <div class="civ-col">
-            % if c.s:
-                <h2 class="civ-col"><i class="icon-pencil"></i> Edit Suggestion</h2>
+            % if c.conf['read_only.value'] == 'true':
+                <!-- read only -->
             % else:
-                <h2 class="civ-col"><i class="icon-pencil"></i> Add Suggestion</h2>
+                % if c.s:
+                    <h2 class="civ-col"><i class="icon-pencil"></i> Edit Suggestion</h2>
+                % else:
+                    <h2 class="civ-col"><i class="icon-pencil"></i> Add Suggestion</h2>
+                % endif
+                ${helpers.addSuggestionForm(c)}
             % endif
-            ${helpers.addSuggestionForm(c)}
         </div> <!-- /.civ-col -->
     </div>
     

@@ -22,8 +22,12 @@
         <div class="span6">
             ${helpers.suggestion_events_flags()}
         </div><!-- span6 -->
-        <div class="span6">		
-            ${helpers.suggestion_admin()}
+        <div class="span6">
+            % if c.conf['read_only.value'] == 'true':
+                <!-- read only -->
+            % else:
+                ${helpers.suggestion_admin()}
+            % endif
         </div><!-- span6 -->
     </div><!-- row-fluid  -->
 </div><!-- container-fluid -->

@@ -8,15 +8,6 @@ ${lib.return_to()}
     <div class="well workshop_header">
         ${lib.displayWorkshopHeader('Comment')}
     </div><!-- well -->
-    <%doc>
-    <div class="row-fluid">
-        <div class="span6 offset3">
-            <h2>
-                <a href="#">Original discussion</a>
-            </h2>
-        </div>
-    </div>
-    </%doc>
     <div class="row-fluid">
         <div class="span12">
             ${comments("thread", maxDepth = 8, rootComment = c.rootComment, discussion = c.discussion)}

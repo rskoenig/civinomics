@@ -82,20 +82,6 @@
                 <div class="span">
                     <ul class="thumbnails">
                       <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/evante_garzalicudine.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3> Evante Garza-Licudine - Front End Engineer </h3>
-                    <p>Evante recently graduated from UC Berkeley with a BA in math, though he spent much of his undergrad time in the newsroom. He has been a blogger, layout designer and web designer since 2009.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
                         <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/manu_koenig.jpg" alt="">
                       </li>
                     </ul>
@@ -159,20 +145,6 @@
                 <div class="span6">
                     <h3>Robert Singleton - CMO </h3>
                     <p>Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/nicolett_smith.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Nicolett Smith - Business Develpment Intern </h3>
-                    <p>Nicolett is a senior at UC Santa Cruz, majoring in both Legal Studies and Politics. She has vast experience in customer relations. Although Nicolett spends a significant portion of her time reading and writing about legal and political theory, she primarily enjoys traveling, exercising and socializing. </p>
                 </div>
         </div><!--/.row-fluid-->
 

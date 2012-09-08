@@ -101,14 +101,6 @@
                         ## 
                         
                         <div style="padding-top:40px;"></div>
-                        <%doc>
-                        <div class="span4 thumbnail-custom-video" style="height:207px;">
-                            <img src="/images/splash/video_1.JPG">
-                            <a href="#video" data-toggle="modal">
-                                <div class="play"></div>
-                            </a>
-                        </div>
-                        </%doc>
                         <iframe src="http://player.vimeo.com/video/45529198?title=0&amp;byline=0&amp;portrait=0" width="350" height="197" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
 
                     </div>
@@ -166,7 +158,6 @@
             <div class="row" style="border-top: 1px solid #DDDDDD; padding-top:20px;">
                 <div class="span6 offset3" style="text-align:center">
                     Join your community!<br />
-                    ##<button class="btn btn-large" type="button">Sign up for free!</button>
                     <a href="/signup" class="btn btn-large">Sign up for free!</a>
                 </div>
             </div>

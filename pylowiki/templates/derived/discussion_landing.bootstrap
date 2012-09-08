@@ -17,9 +17,14 @@ ${lib.return_to()}
                     % if c.discussions and (len(c.discussions) != len(c.paginator)):
                         <span style="font-size:10px; letter-spacing:normal;">Showing ${len(c.paginator)} of ${len(c.discussions)} topics | Page ${ c.paginator.pager('~3~')} ${lib.add_a_text("discussion", "|")}</span>
                     % else:
-                    <span class="pull-right" style="font-size:10px; letter-spacing:normal;">
-                    ${lib.add_a_text("discussion", "")}
-                    </span></span>
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">
+                        % if c.conf['read_only.value'] == 'true':
+                            <!-- read only -->
+                        % else:
+                            ${lib.add_a_text("discussion", "")}
+                        % endif
+                        </span>
+                    </span>
                     % endif
                 </h2>
                 <div class="civ-col-inner">
@@ -29,7 +34,11 @@ ${lib.return_to()}
         </div><!-- span8 -->
         <div class="span4">
             <div class="civ-col">
-                    ${lib.displayFeedbackSlider()}
+                    % if c.conf['read_only.value'] == 'true':
+                        <!-- read only -->
+                    % else:
+                        ${lib.displayFeedbackSlider()}
+                    % endif
                 <h2 class="civ-col"><i class="icon-list-alt"></i> ${lib.facilitator()}</h2>
                 <div class="civ-col-inner">
                     ${lib.your_facilitator()}

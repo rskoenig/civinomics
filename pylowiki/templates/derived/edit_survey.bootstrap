@@ -22,47 +22,55 @@ ${lib.return_to()}
 % endif
 
 <div class="row-fluid">
-    <form id="editSurvey" action="/survey/${c.survey['urlCode']}/${c.survey['url']}/edit/handler" method="POST" enctype="multipart/form-data" class="form-horizontal">
-        <fieldset>
-            <legend style="text-align:center;">Edit</legend>
-            <div class="offset1">
-                <div class="control-group">
-                    ${helpers.surveyName(c.survey)}
+    % if c.conf['read_only.value'] == 'true':
+        <h1> Sorry, Civinomics is in read only mode right now </h1>
+    % else:
+        <form id="editSurvey" action="/survey/${c.survey['urlCode']}/${c.survey['url']}/edit/handler" method="POST" enctype="multipart/form-data" class="form-horizontal">
+            <fieldset>
+                <legend style="text-align:center;">Edit</legend>
+                <div class="offset1">
+                    <div class="control-group">
+                        ${helpers.surveyName(c.survey)}
+                    </div>
+                    <div class="control-group">
+                        ${helpers.description(c.survey)}
+                    </div>
+                    <div class="control-group">
+                        ${helpers.geoScope(c.survey)}
+                    </div>
+                    <div class="control-group">
+                        ${helpers.estimatedTime(c.survey)}
+                    </div>
+                    ${helpers.submitButton()}
                 </div>
-                <div class="control-group">
-                    ${helpers.description(c.survey)}
-                </div>
-                <div class="control-group">
-                    ${helpers.geoScope(c.survey)}
-                </div>
-                <div class="control-group">
-                    ${helpers.estimatedTime(c.survey)}
-                </div>
-                ${helpers.submitButton()}
-            </div>
-        </fieldset>
-    </form>
+            </fieldset>
+        </form>
+    % endif
 </div>
 
 <div class="row-fluid">
     <div class="span6">
-        <form id="activateSurvey" action="/survey/${c.survey['urlCode']}/${c.survey['url']}/activate" method="POST" enctype="multipart/form-data" class="form-horizontal">
-            <fieldset>
-                <legend style="text-align:center;">
-                    % if int(c.survey['active']) == 0:
-                        Activate
-                    % else:
-                        Deactivate
-                    % endif
-                </legend>
-                <div class="offset1">
-                    <div class="control-group">
-                        ${helpers.publishMessage(c.survey)}
+        % if c.conf['read_only.value'] == 'true':
+            <h1> Sorry, Civinomics is in read only mode right now </h1>
+        % else:
+            <form id="activateSurvey" action="/survey/${c.survey['urlCode']}/${c.survey['url']}/activate" method="POST" enctype="multipart/form-data" class="form-horizontal">
+                <fieldset>
+                    <legend style="text-align:center;">
+                        % if int(c.survey['active']) == 0:
+                            Activate
+                        % else:
+                            Deactivate
+                        % endif
+                    </legend>
+                    <div class="offset1">
+                        <div class="control-group">
+                            ${helpers.publishMessage(c.survey)}
+                        </div>
+                        ${helpers.publishButton(c.survey, int(c.survey['active']))}
                     </div>
-                    ${helpers.publishButton(c.survey, int(c.survey['active']))}
-                </div>
-            </fieldset>
-        </form>
+                </fieldset>
+            </form>
+        % endif
     </div>
     <div class="span6">
         ${helpers.addFacilitator(c.survey)}

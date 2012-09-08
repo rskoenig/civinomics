@@ -13,7 +13,7 @@
                     ${list_helpers.draw_avatar()}
                 </div> <!-- civ-col-inner -->
             </div> <!-- civ-col--inner -->
-		
+        
             <h2 class="civ-col">My Public Spheres</h2>
             <div class="civ-col-inner">
                 <div class="civ-col-inner well profile_header">
@@ -43,32 +43,32 @@
                 </div> <!-- /.civ-col-inner -->
         </div> <!-- civ-col--inner -->
         </div><!-- span3 -->
-	<div class="span6">
-		<div class="civ-col">
-			<h2 class="civ-col">${c.heading}</h2>
-			<div class="civ-col-inner">
-				${helpers.show_geo()}
-	                </div> <!-- /.civ-col-inner -->
-			<div class="civ-col-inner">
-				${workshop_helpers.list_workshops()}
-			</div> <!-- /.civ-col-inner -->
-			<div class="civ-col-inner">
-				${workshop_helpers.list_total_workshops()}
-			</div> <!-- /.civ-col-inner -->
-		</div> <!-- /.civ-col -->
-	</div> <!-- /.span6 -->
-	<div class="span3">
-		<div class="civ-col">
+    <div class="span6">
+        <div class="civ-col">
+            <h2 class="civ-col">${c.heading}</h2>
+            <div class="civ-col-inner">
+                ${helpers.show_geo()}
+                    </div> <!-- /.civ-col-inner -->
+            <div class="civ-col-inner">
+                ${workshop_helpers.list_workshops()}
+            </div> <!-- /.civ-col-inner -->
+            <div class="civ-col-inner">
+                ${workshop_helpers.list_total_workshops()}
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
+    </div> <!-- /.span6 -->
+    <div class="span3">
+        <div class="civ-col">
                         % if 'user' in session:
                             ${workshop_helpers.surveys()}
                         % endif
-			<h2 class="civ-col">New Contributions</h2>
-			<div class="civ-col-inner">
-				${workshop_helpers.list_news()}
-				${list_helpers.recent_posts()}
-			</div> <!-- /.civ-col-inner -->
-		</div> <!-- /.civ-col -->
-	</div> <!-- /.span3 -->
+            <h2 class="civ-col">New Contributions</h2>
+            <div class="civ-col-inner">
+                ${workshop_helpers.list_news()}
+                ${list_helpers.recent_posts()}
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
+    </div> <!-- /.span3 -->
 </div> <!-- /.row-fluid -->
 
 <%def name = 'extraStyles()'>
@@ -78,5 +78,5 @@
 
 </%def>
 <%def name = 'extraScripts()'>
-	${civ_col_img()}
+    ${civ_col_img()}
 </%def>
