@@ -234,7 +234,12 @@ class CommentController(BaseController):
             workshopURL = request.params['workshopURL']
             
             discussion = getDiscussionByID(discussionID)
+
             log.info('parent comment = %s' % parentCommentID)
+            if parentCommentID and parentCommentID != '0' and parentCommentID != '':
+                parentComment = getCommentByCode(parentCommentID)
+                parentCommentID = parentComment.id
+
             if cError == 0:
                 comment = Comment(data, c.authuser, discussion, int(parentCommentID))
         except KeyError:

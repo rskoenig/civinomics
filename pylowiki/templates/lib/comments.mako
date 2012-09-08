@@ -155,7 +155,7 @@
 			</div> <!-- /.alert -->
 		</div> <!-- /.collapse.flag -->
 		<div class="reply textarea collapse reply${comment['urlCode']}">
-			<form action="/addComment">
+			<form action="/addComment" method="post">
 				<textarea name="comment-textarea" style="width: 85%" rows="4"></textarea>
 				
 				<input type="hidden" id="type" name="type" value="${commentType}" />
