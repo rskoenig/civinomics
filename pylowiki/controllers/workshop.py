@@ -253,6 +253,10 @@ class WorkshopController(BaseController):
               if wMemberTags and c.w['memberTags'] != wMemberTags:
                   wchanges = 1
                   weventMsg = weventMsg + "Updated facilitator contributed tags."
+              if wMemberTags == 'none':
+                  werror = 1
+                  werrMsg += 'Member Tags '
+
               c.w['memberTags'] = wMemberTags
             else:
               werror = 1
