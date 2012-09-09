@@ -72,9 +72,14 @@ class SlideshowController(BaseController):
             d = {}
             d['name'] = savename
             d['size'] = st.st_size
-            d['url'] = 'http://www.civinomics.org:6626/images/%s/%s/orig/%s.orig' % (identifier, directoryNumber, hash)
-            d['thumbnail_url'] = 'http://www.civinomics.org:6626/images/%s/%s/thumbnail/%s.thumbnail' % (identifier, directoryNumber, hash)
-            d['delete_url'] = 'http://www.civinomics.org:6626/workshop/%s/%s/slideshow/delete/%s' %(w['urlCode'], w['url'], hash)
+            if 'site_base_url' in config:
+                siteURL = config['site_base_url']
+            else:
+                siteURL = 'http://www.civinomics.com'
+            
+            d['url'] = '%s/images/%s/%s/orig/%s.orig' % (siteURL, identifier, directoryNumber, hash)
+            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.thumbnail' % (siteURL, identifier, directoryNumber, hash)
+            d['delete_url'] = '%s/workshop/%s/%s/slideshow/delete/%s' %(siteURL, w['urlCode'], w['url'], hash)
             d['delete_type'] = "DELETE"
             d['-'] = hash
             d['type'] = 'image/png'
