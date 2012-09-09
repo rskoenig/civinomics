@@ -202,7 +202,7 @@
 <div class="column" id="unpublished">
     <h2 style="text-align:center;" class="unsortable">Unpublished slides</h2>
     % for slide in c.slideshow:
-        % if int(slide['deleted']) == '1':
+        % if int(slide['deleted']) == 1:
             <div class="portlet" id = "portlet_${slide.id}">
                 <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
                 <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
