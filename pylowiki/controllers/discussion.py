@@ -33,12 +33,16 @@ class DiscussionController(BaseController):
         c.rating = False
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.isAdmin = isAdmin(c.authuser.id)
             if 'ratedThings_workshop_overall' in c.authuser.keys():
                 workRateDict = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
                 if c.w.id in workRateDict.keys():
                     c.rating = getRatingByID(workRateDict[c.w.id])
         else:
             c.isScoped = False
+            c.isFacilitator = False
+            c.isAdmin = False
 
         fList = []
         for f in (getFacilitatorsByWorkshop(c.w.id)):
@@ -46,8 +50,6 @@ class DiscussionController(BaseController):
               fList.append(f)
 
         c.facilitators = fList
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-        c.isAdmin = isAdmin(c.authuser.id)
 
 
         log.info(c.w)
