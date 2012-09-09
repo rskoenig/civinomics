@@ -59,7 +59,7 @@
             <div class="span9">
             <h4><a href="/workshops/${item['urlCode']}/${item['url']}" title="Click to view ${item['title']}">${item['title']}</a></h4>
             Public Sphere: ${item['publicScopeTitle']}
-            % if participate and participate == '1':
+            % if participate and participate == 1:
                 <span class="pull-right label label-success"><a href="/workshops/${item['urlCode']}/${item['url']}" style="color:white;text-decoration:none;" title="This workshop is within your Public Sphere. Click to participate!">Participate!</a></span>
             % endif
             <br />
