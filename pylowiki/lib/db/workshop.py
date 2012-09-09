@@ -143,20 +143,29 @@ def isScoped(user, workshop):
          return False
    elif workshop['scopeMethod'] == 'publicScope':
       wScope = int(workshop['publicScope'])
+      ##log.info('wScope is %s'%wScope)
       offset = 10 - wScope
       offset = offset * -1
       # for indexing offset
       wScope =- 1
       wPostal = workshop['publicPostal']
       wScopeString = getGeoScope(wPostal, 'United States')
+      ##log.info('wScopeString is %s'%wScopeString)
       wScopeList = wScopeString.split('|')
       uScopeString = getGeoScope(upostal, 'United States')
+      ##log.info('uScopeString is %s'%uScopeString)
       uScopeList = uScopeString.split('|')
-      if wScopeList[:offset] == uScopeList[:offset]:
-         return True
+      ##log.info('offset is %s wScopeList is %s and uScopeList is %s'%(offset, wScopeList[:offset], uScopeList[:offset]))
+      if offset == 0:
+          if wScopeList[wScope] == uScopeList[wScope]:
+              return True
+          else:
+              return False
       else:
-         return False
-      return True
+          if wScopeList[:offset] == uScopeList[:offset]:
+              return True
+          else:
+              return False
    else:
       return False
 

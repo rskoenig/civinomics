@@ -91,7 +91,7 @@ class SuggestionController(BaseController):
 
         c.w = getWorkshop(code, urlify(url))
         a = isAdmin(c.authuser.id)
-        f =  isFacilitator(c.authuser, c.w)
+        f =  isFacilitator(c.authuser.id, c.w.id)
         s = isScoped(c.authuser, c.w)
         if (s and c.w['allowSuggestions'] == '1') or a or f:
             c.s = False
@@ -220,11 +220,11 @@ class SuggestionController(BaseController):
             log.info(serrorMsg)
 
         a = isAdmin(c.authuser.id)
-        f =  isFacilitator(c.authuser, c.w)
+        f =  isFacilitator(c.authuser.id, c.w.id)
         s = isScoped(c.authuser, c.w)
 
         if (not s or c.w['allowSuggestions'] == '0') and not a and not f:
-           return redirect('/workshop/%s/%s'%(c.w['urlCode'], w['url']))
+           return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
 
         if serror:
             alert = {'type':'error'}

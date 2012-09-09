@@ -46,6 +46,8 @@ class DiscussionController(BaseController):
               fList.append(f)
 
         c.facilitators = fList
+        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        c.isAdmin = isAdmin(c.authuser.id)
 
 
         log.info(c.w)
