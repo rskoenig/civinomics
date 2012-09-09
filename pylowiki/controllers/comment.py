@@ -281,8 +281,8 @@ class CommentController(BaseController):
         c.comment = getCommentByCode(id)
         d = getDiscussionByID(c.comment['discussion_id'])
         wLink = '/workshop/' + d['workshopCode'] + '/' + d['workshopURL']
-        if d['discType'] == 'feedback':
-           oLink = wLink + '/feedback'
+        if d['discType'] == 'background':
+           oLink = wLink + '/background'
         elif d['discType'] == 'suggestion':
            oLink = wLink + '/suggestion/' + d['suggestionCode'] + '/' + d['suggestionURL']
         elif d['discType'] == 'general':
