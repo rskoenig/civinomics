@@ -219,8 +219,7 @@
         </p>
 </%def>
 
-<%def name="list_suggestions(sList, errorMsg, numDisplay, doSlider = False)">
-    <% doSlider = 0 %>
+<%def name="list_suggestions(sList, errorMsg, numDisplay, doSlider = 0)">
 	% if len(sList) == 0:
         <p><div class="alert alert-warning">${errorMsg}</div></p>
 	% else:
@@ -278,7 +277,7 @@
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                     <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
                     </div><!-- ${badgeSpan} -->
-                % if 'user' in session and doSlider == '1':
+                % if 'user' in session and doSlider == 1:
                     <div class="${slideSpan}">
                         <div id="ratings${counter}" class="rating wide pull-right">
                             <div id="overall_slider" class="ui-slider-container">
