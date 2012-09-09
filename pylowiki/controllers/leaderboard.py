@@ -289,7 +289,7 @@ def SugRatingBoard(page, suggestions):
     title = '--'
     if userSugRatingRank != []:
         s = sugRatingList[userSugRatingRank[0]]
-        value = str(int(s['ratingAvg_%s' % 'overall'])) + ' Average Rating' 
+        value = str(int(float(s['ratingAvg_%s' % 'overall']))) + ' Average Rating' 
         title = [s['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/suggestion/' + s['urlCode'] + '/' + s['url'])] 
     addRanks('Suggestion Rating', 'sugRating', userSugRatingRank, len(sugRatingList), title, value) 
     
