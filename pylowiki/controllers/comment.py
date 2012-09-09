@@ -31,13 +31,14 @@ class CommentController(BaseController):
     def flagComment(self, id1):
         commentID = id1
         comment = getComment(commentID)
+        commentCode = comment['urlCode']
         if not comment:
-            return json.dumps({'id':commentID, 'result':'ERROR'})
+            return json.dumps({'id':commentCode, 'result':'ERROR'})
         if not isFlagged(comment, c.authuser):
             f = Flag(comment, c.authuser)
-            return json.dumps({'id':commentID, 'result':"Successfully flagged!"})
+            return json.dumps({'id':commentCode, 'result':"Successfully flagged!"})
         else:
-            return json.dumps({'id':commentID, 'result':"Already flagged!"})
+            return json.dumps({'id':commentCode, 'result':"Already flagged!"})
 
     @h.login_required
     def adminComment(self, id1):

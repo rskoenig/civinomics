@@ -149,7 +149,7 @@
 			<div class="alert">
 					<strong>Are you sure you want to flag this comment?</strong>
 					<br>
-					<a href="/flagComment/${comment.id}"class="btn btn-danger flagCommentButton">Yes</a>
+					<a href="/flagComment/${comment.id}" class="btn btn-danger flagCommentButton">Yes</a>
 					<a class="btn" id="flag${comment['urlCode']}">No</a>
 					<span id = 'flagged_${comment['urlCode']}'></span>
 			</div> <!-- /.alert -->
