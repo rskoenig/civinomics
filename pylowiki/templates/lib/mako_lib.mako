@@ -277,7 +277,7 @@
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                     <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
                     </div><!-- ${badgeSpan} -->
-                % if 'user' in session and doSlider == 1:
+                % if 'user' in session and c.isScoped and doSlider == 1:
                     <div class="${slideSpan}">
                         <div id="ratings${counter}" class="rating wide pull-right">
                             <div id="overall_slider" class="ui-slider-container">

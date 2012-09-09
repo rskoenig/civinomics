@@ -65,7 +65,7 @@
         <tbody>
         <tr>
         <td colspan="2">
-        % if "user" in session:
+        % if "user" in session and c.isScoped:
             % if cRating:
                 <div class = "gray rating wide">
                     <div id="overall_slider" class="ui-slider-container">

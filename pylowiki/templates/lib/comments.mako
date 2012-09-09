@@ -238,7 +238,7 @@
                         <input type="hidden" id="url" name="workshopCode" value="${c.w['urlCode']}" />
                         <input type="hidden" id="url" name="workshopURL" value="${c.w['url']}" />
                     % endif
-                    % if "user" in session:
+                    % if "user" in session and c.isScoped or (c.isAdmin or c.isFacilitator):
                         % if type != 'thread':
                             <textarea rows="4" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span6"></textarea>
                             <div id="comment-preview-div"></div>
