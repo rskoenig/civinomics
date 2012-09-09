@@ -532,7 +532,7 @@
 </%def>
 
 <%def name="displayFeedbackSlider()">
-    % if "user" in session:
+    % if "user" in session and c.isScoped:
         <h2 class="civ-col"><i class="icon-volume-up"></i> Feedback</h2>
         <div class="civ-col-inner">
             <div class="well workshop_header">
