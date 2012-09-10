@@ -556,7 +556,7 @@ def DiscRatingBoard(page, discussions):
         if int(d['ups']) > 0 or int(d['downs']) > 0:    
             PercentRating = int(5*round(((int(d['ups'])/(int(d['ups'])+int(d['downs'])))*100)/5))
         value = str(PercentRating) + ' Average Rating' 
-        title = [d['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/resource/' + d['urlCode'] + '/' + d['url'])] 
+        title = [d['title'], ('/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/discussion/' + d['urlCode'] + '/' + d['url'])] 
     addRanks('Discussion Rating', 'discRating', userDiscRatingRank, len(discRatingList), title, value) 
  
 
