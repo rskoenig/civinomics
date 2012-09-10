@@ -62,7 +62,7 @@
                    <% d = getDiscussionByID(mObj['discussion_id']) %>
                    <% w = getWorkshop(d['workshopCode'], d['workshopURL']) %>
                    <% wLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] %>
-                   <% ooTitle = d['discType'] %>
+                   <% parentTitle = d['discType'] %>
                    <% ooLink = "foo" %>
                    <% ooiType = "comment" %>
 
@@ -118,7 +118,7 @@
                        <% oTitle = mObj['data'] %>
                    %endif
                    New <a href="${oLink}" title="Click to view new ${mObj.objType}"><i class="icon-${oiType}"></i> ${oTitle}</a><br />
-                   in <a href="${ooLink}" title="Click to view discussion"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />
+                   in <a href="${ooLink}" title="Click to view ${parentTitle} discussion"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />
                    <% newTitle = "in" %>
                % else:
                    %if len(mObj['title']) > maxlen:

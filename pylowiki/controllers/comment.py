@@ -273,7 +273,7 @@ class CommentController(BaseController):
             
     """ id1: the issue's URL.
     """
-    @h.login_required
+    ##@h.login_required
     def index(self, id):
         
         #for key in request.params:
@@ -293,7 +293,6 @@ class CommentController(BaseController):
         elif d['discType'] == 'sresource':
            oLink = wLink + '/suggestion/' + d['suggestionCode'] + '/' + d['suggestionURL']
     
-        
         return redirect( oLink )
 
     @h.login_required   
