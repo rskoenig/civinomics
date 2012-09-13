@@ -66,6 +66,7 @@ class SuggestionController(BaseController):
             c.isAdmin = isAdmin(c.authuser.id)
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
             c.isScoped = isScoped(c.authuser, c.w)
+            c.allowComments = c.s['allowComments']
             
             c.rating = False
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
@@ -81,6 +82,7 @@ class SuggestionController(BaseController):
             c.isAdmin = False
             c.isFacilitator = False
             c.isScoped = False
+            c.allowComments = False
             
         return render('/derived/suggestion.bootstrap')
 

@@ -59,6 +59,7 @@ class ResourceController(BaseController):
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
             c.isAdmin = isAdmin(c.authuser.id)
             c.isScoped = isScoped(c.authuser, c.w)
+            c.allowComments = c.resource['allowComments']
 
             if 'ratedThings_resource_overall' in c.authuser.keys():
                 """
@@ -73,6 +74,7 @@ class ResourceController(BaseController):
             c.isFacilitator = False
             c.isAdmin = False
             c.isScoped = False
+            c.allowComments = False
 
         c.poster = getUserByID(c.resource.owner)
         

@@ -206,24 +206,27 @@
     % if type == "background" or type == "feedback" or type == "discussion":
         <% 
             discussion = c.discussion
+            allowComments = '1'
         %>
     % elif type == "suggestionMain" or type == "resource":
         <%  
             discussion = c.discussion
             workshop = c.w
+            allowComments = c.allowComments
         %>
     % elif type == "thread":
         <%
             maxDepth = kwargs['maxDepth']
             rootComment = kwargs['rootComment']
             c.discussion = discussion = kwargs['discussion']
+            allowComments = '1'
         %>
     % endif
 
     % if c.conf['read_only.value'] == 'true':
         <% return %>
     % endif
-    % if c.conf['allow.comments'] == 'false':
+    % if c.conf['allow.comments'] == 'false' or allowComments == '0':
         <% return %>
     % endif
     % if type != "thread":
