@@ -80,6 +80,9 @@
     <dd><span class="badge badge-info" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i>${len(c.suggestions)}</span> <span class="badge badge-info" title="Information resources in workshop"><i class="icon-white icon-book"></i>${numResources}</span> <span class="badge badge-info" title="Discussion topics in workshop"><i class="icon-white icon-folder-open"></i> ${len(t)}</span> <span class="badge badge-info" title="Comments in workshop"><i class="icon-white icon-comment"></i>${numComments}</span> <span class="badge badge-success" title="Workshop followers"><i class="icon-white icon-user"></i>${len(c.followers)}</span> <span class="badge badge-success" title="Adopted suggestions in workshop"><i class="icon-white icon-heart"></i>${len(c.asuggestions)}</span> <span class="badge badge-inverse" title="Flags in workshop"><i class="icon-white icon-flag"></i>${numFlags}</span><br /><br /></dd>
 
     % if 'user' in session:
+        % if c.conf['read_only.value'] == 'true':
+            <% pass %>
+        % else:
 	    <dt>Participate:</dt><dd>
             ${lib.add_a("resource")}
             ${lib.add_a("suggestion")}
@@ -94,6 +97,7 @@
             % endif 
             <br /><br />
             </dd>
+        % endif
     % endif
     % if len(c.facilitators) == 1:
         <% fTitle = "Facilitator" %>

@@ -6,7 +6,11 @@
    from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.fuzzyTime import timeSince, timeUntil
+
+   import logging
+   log = logging.getLogger(__name__)
 %>
+## -*- coding: utf-8 -*-
 <%namespace file="/lib/mako_lib.mako" name="lib" />
 
 <%def name='draw_avatar()'>
@@ -182,6 +186,7 @@
          % endif
              </div><!-- span3 -->
              <div class="span9">
+             ${log.info(oTitle)}
             New <a href="${oLink}" title="${linkTitle}"><i class="icon-${iType}"></i> ${oTitle}</a><br />
             % if ooTitle:
                 in <a href="${ooLink}" title="${oolinkTitle}"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />

@@ -69,28 +69,45 @@
     </form>
 </%def>
 
+## Displayed 'deleted' to the user
+<%def name="showDeleted()">
+    <em> This comment has been deleted </em>
+</%def>
+
 ## Displays the content of the comment
 <%def name="commentContent(comment, counter, **kwargs)">
     <div class="collapse in hide${comment['urlCode']}" style="color:black;">
-        % if "user" in session:
-            % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
-                ${editComment(comment, counter)}
-            % else:
-                ${h.literal(h.reST2HTML(comment['data']))}
-            % endif
-            % if 'comType' in kwargs:
-                % if kwargs['comType'] == 'thread':
-                    ${displayButtons(comment, counter, comType = 'thread')}
-                % else:
-                    ${displayButtons(comment, counter)}
-                % endif
-            % else:
-                ${displayButtons(comment, counter)}
-            % endif
-            
-        % else:
-            ${h.literal(h.reST2HTML(comment['data']))}
-        % endif
+        <%
+            if "user" in session:
+                if 'deleted' in comment.keys():
+                    if comment['deleted'] == '1':
+                        showDeleted()
+                    else:
+                        if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+                            editComment(comment, counter)
+                        else:
+                            h.literal(h.reST2HTML(comment['data']))
+                else:
+                    if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+                            editComment(comment, counter)
+                    else:
+                        h.literal(h.reST2HTML(comment['data']))
+                if 'comType' in kwargs:
+                    if kwargs['comType'] == 'thread':
+                        displayButtons(comment, counter, comType = 'thread')
+                    else:
+                        displayButtons(comment, counter)
+                else:
+                    displayButtons(comment, counter)
+            else:
+                if 'deleted' in comment.keys():
+                    if comment['deleted'] == '1':
+                        showDeleted()
+                    else:
+                        h.literal(h.reST2HTML(comment['data']))
+                else:
+                    h.literal(h.reST2HTML(comment['data']))
+        %>
     </div>
 </%def>
 
@@ -110,6 +127,11 @@
 
 <%def name="displayButtons(comment, counter, **kwargs)">
     <br>
+    <% 
+        if 'deleted' in comment.keys():
+            if comment['deleted'] == '1':
+                return
+    %>
     <p class="btn-group pull-right">
         % if int(comment['parent']) != 0:
             <% 
@@ -141,42 +163,42 @@
 
 ## Displays the footer of the comment (post date, flag, reply, rate)
 <%def name="commentFeedback(comment, commentType)">
-	<div class="buttons collapse in hide${comment['urlCode']}">
-		% if "user" in session:
-		</div><!-- /.buttons -->
-		## Must be wrapped or a tiny bit will show
-		<div class="collapse flag${comment['urlCode']}">
-			<div class="alert">
-					<strong>Are you sure you want to flag this comment?</strong>
-					<br>
-					<a href="/flagComment/${comment.id}" class="btn btn-danger flagCommentButton">Yes</a>
-					<a class="btn" id="flag${comment['urlCode']}">No</a>
-					<span id = 'flagged_${comment['urlCode']}'></span>
-			</div> <!-- /.alert -->
-		</div> <!-- /.collapse.flag -->
-		<div class="reply textarea collapse reply${comment['urlCode']}">
-			<form action="/addComment" method="post">
-				<textarea name="comment-textarea" style="width: 85%" rows="4"></textarea>
-				
-				<input type="hidden" id="type" name="type" value="${commentType}" />
-				<input type="hidden" name="discussionID" value="${c.discussion.id}" />
-				<input type="hidden" name="parentID" value="${comment['urlCode']}" />
-				<input type="hidden" name="workshopCode" value="${c.w['urlCode']}" />
-				<input type="hidden" name="workshopURL" value="${c.w['url']}" />
-				% if commentType == 'suggestionMain':
-					<input type="hidden" name = "suggestionCode" value = "${c.s['urlCode']}" />
-					<input type="hidden" name = "suggestionURL" value = "${c.s['url']}" />
-				% elif commentType == 'resource':
-					<input type="hidden" name = "resourceCode" value = "${c.resource['urlCode']}" />
-					<input type="hidden" name = "resourceURL" value = "${c.resource['url']}" />
-				% endif
+    <div class="buttons collapse in hide${comment['urlCode']}">
+        % if "user" in session:
+        </div><!-- /.buttons -->
+        ## Must be wrapped or a tiny bit will show
+        <div class="collapse flag${comment['urlCode']}">
+            <div class="alert">
+                    <strong>Are you sure you want to flag this comment?</strong>
+                    <br>
+                    <a href="/flagComment/${comment.id}" class="btn btn-danger flagCommentButton">Yes</a>
+                    <a class="btn" id="flag${comment['urlCode']}">No</a>
+                    <span id = 'flagged_${comment['urlCode']}'></span>
+            </div> <!-- /.alert -->
+        </div> <!-- /.collapse.flag -->
+        <div class="reply textarea collapse reply${comment['urlCode']}">
+            <form action="/addComment" method="post">
+                <textarea name="comment-textarea" style="width: 85%" rows="4"></textarea>
+                
+                <input type="hidden" id="type" name="type" value="${commentType}" />
+                <input type="hidden" name="discussionID" value="${c.discussion.id}" />
+                <input type="hidden" name="parentID" value="${comment['urlCode']}" />
+                <input type="hidden" name="workshopCode" value="${c.w['urlCode']}" />
+                <input type="hidden" name="workshopURL" value="${c.w['url']}" />
+                % if commentType == 'suggestionMain':
+                    <input type="hidden" name = "suggestionCode" value = "${c.s['urlCode']}" />
+                    <input type="hidden" name = "suggestionURL" value = "${c.s['url']}" />
+                % elif commentType == 'resource':
+                    <input type="hidden" name = "resourceCode" value = "${c.resource['urlCode']}" />
+                    <input type="hidden" name = "resourceURL" value = "${c.resource['url']}" />
+                % endif
                 <br />
-				<button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
-			</form>
-		</div> <!-- /.reply.textarea -->
-	% else:
-		</div> <!-- /.buttons -->
-	% endif
+                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
+            </form>
+        </div> <!-- /.reply.textarea -->
+    % else:
+        </div> <!-- /.buttons -->
+    % endif
 </%def>
 
 ## Main function that gets called by the template
@@ -198,13 +220,12 @@
         %>
     % endif
 
-    % if c.conf['read_only.value'] == 'false':
+    % if c.conf['read_only.value'] == 'true':
         <% return %>
     % endif
     % if c.conf['allow.comments'] == 'false':
         <% return %>
     % endif
-
     % if type != "thread":
         % if discussion['numComments'] == '1':
             <% commentString = 'comment' %>
@@ -212,7 +233,6 @@
             <% commentString = 'comments' %>
         % endif
     % endif
-
     ${lib.fields_alert()}
     <div class="civ-col-inner">
         <div class="row-fluid">
@@ -318,12 +338,13 @@
         </div> <!-- /.civ-votey -->
         <div class="span11">
             <div class="civ-comment ${moderator}">
-                ${userSays(comment, author)}
-                % if commentType == 'thread':
-                    ${commentContent(comment, counter, comType = commentType)}
-                % else:
-                    ${commentContent(comment, counter)}
-                % endif
+                <%
+                    userSays(comment, author)
+                    if commentType == 'thread':
+                        commentContent(comment, counter, comType = commentType)
+                    else:
+                        commentContent(comment, counter)
+                %>
             ${commentFeedback(comment, commentType)}
 
             ##############################

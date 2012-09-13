@@ -401,6 +401,9 @@
             <% lclass="current" %>
         % endif
         % if li == 'configure' or li == 'administrate':
+            % if c.conf['read_only.value'] == 'true':
+                <% continue %>
+            % endif
             % if 'user' in session and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
 			    <li class="${lclass}"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${pages[li]}">${li.capitalize()}</a></li>
             % endif

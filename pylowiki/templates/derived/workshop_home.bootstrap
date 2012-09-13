@@ -72,7 +72,12 @@
                     % endif
                 </h2>
                 <div class="civ-col-inner">
-                    ${lib.list_suggestions(c.suggestions, "There are no suggestions yet for this workshop. Be the first to add one!", 10, 1)}
+                    <%
+                        if c.conf['read_only.value'] == 'true':
+                            lib.list_suggestions(c.suggestions, "There are no suggestions yet for this workshop. Be the first to add one!", 10, 0)
+                        else:
+                            lib.list_suggestions(c.suggestions, "There are no suggestions yet for this workshop. Be the first to add one!", 10, 1)
+                    %>
                 </div> <!-- /.civ-col-inner -->
             </div> <!-- /.civ-col -->
         </div> <!-- /.span5 -->

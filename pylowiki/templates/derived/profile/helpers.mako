@@ -12,7 +12,7 @@
 
 
 <%def name="iconPath()">
-	/images/glyphicons_pro/glyphicons/png/
+  /images/glyphicons_pro/glyphicons/png/
 </%def>
 
 <%def name="displayProfilePicture()">
@@ -41,9 +41,9 @@
             <li>
                 % if user['pictureHash'] == 'flash':
                     <a href="/profile/${user['urlCode']}/${user['url']}"><img src="/images/avatars/flash.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}" class="thumbnail"/></a>
-	       % else:
+         % else:
                 <a href="/profile/${user['urlCode']}/${user['url']}"><img src="/images/avatar/${user['directoryNumber']}/profile/${user['pictureHash']}.profile" style="width:${pixels}px;" alt="Click to view profile of member ${user['name']}" title="Click to view profile of member ${user['name']}" class="thumbnail"/></a>
-	       % endif
+         % endif
            </li>
            </ul>
         </div><!-- span2 -->
@@ -216,28 +216,28 @@
 </%def>
 
 <%def name="displayConnections()">
-	<h6>Mutual connections:</h6>
-	% if 'connectionList' not in c.user.keys():
-		<div class="alert alert-warning">
-			No connections!
-		</div> <!-- /.alert-warning -->
-	% else:
-		<% counter = 1 %>
-		% for item in c.user['connectionList']:
-			% if counter < 6:
-				<% comma = "," %>
-			% elif counter == 6:
-				<% comma = "" %>
-			% else:
-				<% break %>
-			% endif
-			<a href="${item['profileURL']}" alt="${item['name']}">${item['name']}</a>${comma} 
-			<% counter += 1 %>
-		% endfor
-		% if len(c.user['connectionList']) > 6:
-			and ${len(c.user['connectionList']) - 6} others.
-		% endif
-	% endif
+  <h6>Mutual connections:</h6>
+  % if 'connectionList' not in c.user.keys():
+    <div class="alert alert-warning">
+      No connections!
+    </div> <!-- /.alert-warning -->
+  % else:
+    <% counter = 1 %>
+    % for item in c.user['connectionList']:
+      % if counter < 6:
+        <% comma = "," %>
+      % elif counter == 6:
+        <% comma = "" %>
+      % else:
+        <% break %>
+      % endif
+      <a href="${item['profileURL']}" alt="${item['name']}">${item['name']}</a>${comma} 
+      <% counter += 1 %>
+    % endfor
+    % if len(c.user['connectionList']) > 6:
+      and ${len(c.user['connectionList']) - 6} others.
+    % endif
+  % endif
 </%def>
 
 <%def name="sidebar()">
@@ -250,25 +250,25 @@
 </%def>
 
 <%def name="summary()">
-	<div class="civ-col-inner">
-		<h1>${c.user['name']}</h1>
-		<p>
-			% if 'tagline' in c.user.keys():
-				${c.user['tagline']}
-			% else:
-				No tagline.
-			% endif
-			<% mStart = c.user.date.strftime('%B %d, %Y') %>
-			<br /> <br />
-			Member since <span class="recent">${mStart}</span>
-		</p>
-	</div> <!-- /.civ-col-inner -->
+  <div class="civ-col-inner">
+    <h1>${c.user['name']}</h1>
+    <p>
+      % if 'tagline' in c.user.keys():
+        ${c.user['tagline']}
+      % else:
+        No tagline.
+      % endif
+      <% mStart = c.user.date.strftime('%B %d, %Y') %>
+      <br /> <br />
+      Member since <span class="recent">${mStart}</span>
+    </p>
+  </div> <!-- /.civ-col-inner -->
 </%def>
 
 <%def name="badgesButtons()">
-	<div class="civ-col-inner">
+  <div class="civ-col-inner">
         <p>
-	<span class="badge badge-success" title="Followers"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info" title="Total ups - downs of contributed resources, comments and discussions"><i class="icon-white icon-ok"></i> ${c.totalPoints}</span> <span class="badge badge-info" title="Resource and suggestion contributions"><i class="icon-white icon-file"></i> ${c.posts}</span> <span class="badge badge-inverse" title="Flags on contributions"><i class="icon-white icon-flag"></i> ${c.flags}</span>
+  <span class="badge badge-success" title="Followers"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info" title="Total ups - downs of contributed resources, comments and discussions"><i class="icon-white icon-ok"></i> ${c.totalPoints}</span> <span class="badge badge-info" title="Resource and suggestion contributions"><i class="icon-white icon-file"></i> ${c.posts}</span> <span class="badge badge-inverse" title="Flags on contributions"><i class="icon-white icon-flag"></i> ${c.flags}</span>
                 </p>
                 <br />
                 % if 'user' in session and c.authuser.id == c.user.id:
@@ -280,16 +280,20 @@
                 % if 'user' in session and isAdmin(c.authuser.id):
                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning" title="Click to administrate this member"><i class="icon-list-alt icon-white"></i> Admin</button></a>
                 % endif
-		% if 'user' in session and c.authuser['email'] != c.user['email']:
-                        <span class="button_container">
-			% if c.isFollowing:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-primary followButton following" title="Click to follow/unfollow this member">+Following</button>
-			% else:
-				<button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-info followButton unfollow" title="Click to follow/unfollow this member">+Follow</button>
-			% endif
-                        </span>
-		% endif
-	</div> <!-- /.civ-col-inner -->
+    % if 'user' in session and c.authuser['email'] != c.user['email']:
+      <span class="button_container">
+        % if c.conf['read_only.value'] == 'true':
+          <% pass %>
+        % else:
+          % if c.isFollowing:
+            <button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-primary followButton following" title="Click to follow/unfollow this member">+Following</button>
+          % else:
+            <button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn btn-mini btn-info followButton unfollow" title="Click to follow/unfollow this member">+Follow</button>
+          % endif
+        % endif
+      </span>
+    % endif
+  </div> <!-- /.civ-col-inner -->
 </%def>
 
 <%def name="geoInfo()">
@@ -326,11 +330,11 @@
           sinceNumber = 0
     %>
 
-	% if workshop['mainImage_hash'] == 'supDawg':
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}" width="120" height="80" class="thumbnail"></a>
-	% else:
-		<a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" width="120" height="80" class="thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}"></a>
-	% endif
+  % if workshop['mainImage_hash'] == 'supDawg':
+    <a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}" width="120" height="80" class="thumbnail"></a>
+  % else:
+    <a href="/workshop/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" width="120" height="80" class="thumbnail" alt="Click to view ${workshop['title']}" title="Click to view ${workshop['title']}"></a>
+  % endif
         <% wcounter = 0 %>
         <a href="/workshop/${workshop['urlCode']}/${workshop['url']}" title="Click to view workshop.">
         % for line in textwrap.wrap(workshop['title'], 18):
@@ -370,18 +374,18 @@
 </%def>
 
 <%def name="workshops()">
-	% if c.facilitatorWorkshops:
-		<h2 class="civ-col"><i class="icon-list-alt"></i> Workshops I am facilitating</h2>
-		<div class="civ-col-inner">
-			${listWorkshops(c.facilitatorWorkshops)}
-		</div> <!-- /.civ-col-inner -->
-	% endif
-	% if c.followingWorkshops:
-		<h2 class="civ-col"><i class="icon-cog"></i> Workshops I am following</h2>
-		<div class="civ-col-inner">
-			${listWorkshops(c.followingWorkshops)}
-		</div> <!-- /.civ-col-inner -->
-	% endif
+  % if c.facilitatorWorkshops:
+    <h2 class="civ-col"><i class="icon-list-alt"></i> Workshops I am facilitating</h2>
+    <div class="civ-col-inner">
+      ${listWorkshops(c.facilitatorWorkshops)}
+    </div> <!-- /.civ-col-inner -->
+  % endif
+  % if c.followingWorkshops:
+    <h2 class="civ-col"><i class="icon-cog"></i> Workshops I am following</h2>
+    <div class="civ-col-inner">
+      ${listWorkshops(c.followingWorkshops)}
+    </div> <!-- /.civ-col-inner -->
+  % endif
         % if 'user' in session and c.pendingFacilitators and c.authuser.id == c.user.id:
             ${pendingFacilitateInvitations()}
         % endif
@@ -399,10 +403,10 @@
          title = "comments"
          total = 0
     %>
-	<p class="total">
-		${total}<br>
-		<span>${title}</span>
-	</p>
+  <p class="total">
+    ${total}<br>
+    <span>${title}</span>
+  </p>
     % if c.comments:
         <center><b><font size="2" color="DarkGrey"> Up Votes vs. Down Votes </font></b></center>
         <div class="progress progress-success" id="ComBar">
@@ -514,10 +518,10 @@
             title = "suggestions"
             total = 0
         %>
-	<p class="total">
-		${total}<br>
-		<span>${title}</span>
-	</p>
+  <p class="total">
+    ${total}<br>
+    <span>${title}</span>
+  </p>
         % if c.suggestions:
             <center><b><font size="2" color="DarkGrey"> Average Rating</font></b></center>
             <div class="progress progress-success" id="SugBar">
@@ -598,10 +602,10 @@
            <% title = "resources" %>
            <% total = 0 %>
         % endif
-	<p class="total">
-		${total}<br>
-		<span>${title}</span>
-	</p>
+  <p class="total">
+    ${total}<br>
+    <span>${title}</span>
+  </p>
         % if c.resources:
             <center><b><font size="2" color="DarkGrey"> Up Votes vs. Down Votes </font></b></center>
             <div class="progress progress-success" id="ResBar">
@@ -689,10 +693,10 @@
          title = "discussions"
          total = 0
     %>
-	<p class="total">
-		${total}<br>
-		<span>${title}</span>
-	</p>
+  <p class="total">
+    ${total}<br>
+    <span>${title}</span>
+  </p>
         % if c.discussions:
             <center><b><font size="2" color="DarkGrey"> Up Votes vs. Down Votes </font></b></center>
             <div class="progress progress-success" id="DisBar">
@@ -847,11 +851,11 @@
          title = "followers"
          total = 0
     %>
-	<p class="total">
-		${total}<br>
-		<span>${title}</span><br />
-		<span><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></span>
-	</p>
+  <p class="total">
+    ${total}<br>
+    <span>${title}</span><br />
+    <span><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></span>
+  </p>
 </%def>
 
 <%def name="totalFollowing()">
@@ -861,10 +865,10 @@
           else:
              total = 0
         %>
-	<p class="total">
-		${total}<br>
-		<span>following</span><br />
-		<span><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></span>
-	</p>
+  <p class="total">
+    ${total}<br>
+    <span>following</span><br />
+    <span><a href="/profile/${c.user['urlCode']}/${c.user['url']}">Back to Profile</a></span>
+  </p>
 </%def>
 
