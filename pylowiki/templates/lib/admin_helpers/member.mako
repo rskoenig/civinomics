@@ -95,7 +95,11 @@
        <br /><br />
        % for event in c.events:
           <% user = getUserByID(event.owner) %>
-          ${event['title']} ${event.date} by ${user['name']}<br />
+          ${event['title']} ${event.date}
+          % if user:
+              by ${user['name']}
+          % endif
+          <br />
           Reason: ${event['data']}
           <br /><br />
        %endfor
