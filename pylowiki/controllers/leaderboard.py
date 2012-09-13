@@ -919,7 +919,7 @@ def CommentPopularityBoard(page, comList):
             numVotes = int(com['ups']) + int(com['downs'])
             totalComs = getSubComments(com)
             userVote = '--' 
-            if 'ratedThings_comment_overall' in c.authuser.keys():
+            if 'ratedThings_resource_overall' in c.authuser.keys():
                 comRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall'])) 
                 if com.id in comRateDict.keys():
                     userVote = getRatingByID(comRateDict[com.id])['rating']
