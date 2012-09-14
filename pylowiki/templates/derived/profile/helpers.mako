@@ -57,6 +57,7 @@
            <a href="/profile/${user['urlCode']}/${user['url']}" title="Click to view profile of member ${user['name']}">${user['name']}</a><br />
            % if mObj:
                % if mObj.objType == 'comment':
+                   <% ooTitle = "New Comment" %>
                    <% oLink = "/comment/" + mObj['urlCode'] %>
                    <% oiType = "comment" %>
                    <% d = getDiscussionByID(mObj['discussion_id']) %>
@@ -85,6 +86,10 @@
                        <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
                        <% ooiType = "book" %>
                    % elif d['discType'] == 'sresource':
+                       <% r = getResource(d['resourceCode'], d['resourceURL']) %>
+                       <% ooTitle = r['title'] %>
+                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
+
                    % endif
                % elif mObj.objType == 'resource':
                    <% w = getWorkshopByID(mObj['workshop_id']) %>
@@ -109,7 +114,7 @@
                %endif
 
                %if mObj.objType == 'comment':
-                   %if len(ooTitle) > maxlen:
+                   %if ooTitle and len(ooTitle) > maxlen:
                        <% ooTitle = ooTitle[0:(maxlen - 4)] + '...' %>
                    %endif:
                    %if len(mObj['data']) > maxlen:

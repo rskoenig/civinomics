@@ -291,7 +291,7 @@ class CommentController(BaseController):
         elif d['discType'] == 'resource':
            oLink = wLink + '/resource/' + d['resourceCode'] + '/' + d['resourceURL']
         elif d['discType'] == 'sresource':
-           oLink = wLink + '/suggestion/' + d['suggestionCode'] + '/' + d['suggestionURL']
+           oLink = wLink + '/resource/' + d['resourceCode'] + '/' + d['resourceURL']
     
         return redirect( oLink )
 
