@@ -74,6 +74,11 @@
     <em> This comment has been deleted </em>
 </%def>
 
+## Shows the comment.  Used when called from within a python block.
+<%def name="showComment(comment)">
+    ${h.literal(h.reST2HTML(comment['data']))}
+</%def>
+
 ## Displays the content of the comment
 <%def name="commentContent(comment, counter, **kwargs)">
     <div class="collapse in hide${comment['urlCode']}" style="color:black;">
@@ -86,12 +91,12 @@
                         if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
                             editComment(comment, counter)
                         else:
-                            h.literal(h.reST2HTML(comment['data']))
+                            showComment(comment)
                 else:
                     if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
                             editComment(comment, counter)
                     else:
-                        h.literal(h.reST2HTML(comment['data']))
+                        showComment(comment)
                 if 'comType' in kwargs:
                     if kwargs['comType'] == 'thread':
                         displayButtons(comment, counter, comType = 'thread')
@@ -104,9 +109,9 @@
                     if comment['deleted'] == '1':
                         showDeleted()
                     else:
-                        h.literal(h.reST2HTML(comment['data']))
+                        showComment(comment)
                 else:
-                    h.literal(h.reST2HTML(comment['data']))
+                    showComment(comment)
         %>
     </div>
 </%def>
