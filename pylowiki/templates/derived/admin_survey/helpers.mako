@@ -26,11 +26,11 @@
                 </tr>
                 <tr>
                     <td>Access Level: </td>
-                    % if ${facilitator['accesslevel']} == '100':
+                    % if facilitator['accessLevel'] == '100':
                         <td>facilitator</td>
-                    % elif ${facilitator['accesslevel']} == '200':
+                    % elif facilitator['accessLevel'] == '200':
                         <td>administrator</td>
-                    % elif ${facilitator['accesslevel']} == '300':
+                    % elif facilitator['accessLevel'] == '300':
                         <td>superuser</td>
                     % else:
                         <td>${facilitator['accessLevel']}</td>
