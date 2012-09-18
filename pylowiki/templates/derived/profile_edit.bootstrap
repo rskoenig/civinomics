@@ -1,0 +1,47 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace file="/lib/mako_lib.mako" name="lib" />
+<%namespace name="helpers" file="/derived/profile_edit/helpers.mako" />
+
+<div class="container-fluid">
+   <div class="well profile_header">
+       <h1><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a></h1>
+   </div><!-- well -->
+<h2 class="civ-col">Edit Profile Information</h2>
+
+<div class="span3 offset9">
+    ${lib.fields_alert()}
+</div>
+<div class="row-fluid">
+    % if c.conf['read_only.value'] == 'true':
+        <h1> Sorry, Civinomics is in read only mode right now </h1>
+    % else:
+        <div class="span3">
+            <div class="civ-col">
+                <div class="civ-col-inner">
+                    ${lib.displayProfilePicture()}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span3 -->
+        <div class="span9">
+            <div class="civ-col">
+                <div class="civ-col-inner">
+                    ${helpers.profileInfo()}
+                </div> <!-- /.civ-col-inner -->
+            </div> <!-- /.civ-col -->
+        </div> <!-- /.span9 -->
+    % endif
+</div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name="extraHTML()">
+
+</%def>
+
+<%def name="extraStyles()">
+
+</%def>
+
+<%def name="extraScripts()">
+
+</%def>

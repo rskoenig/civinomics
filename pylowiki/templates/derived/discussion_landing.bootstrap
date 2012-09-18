@@ -1,0 +1,70 @@
+<%inherit file = "/base/template.bootstrap"/>
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/discussion_helpers/landing.mako" />
+
+${lib.return_to()}
+
+<div class="container-fluid">
+    <div class="well workshop_header">
+        ${lib.displayWorkshopHeader('discussion')}
+    </div><!-- well -->
+    ${lib.fields_alert()}
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="civ-col">
+                <h2 class="civ-col"><i class="icon-folder-open"></i> Discussion Topics
+                    <span class="pull-right">
+                    % if c.discussions and (len(c.discussions) != len(c.paginator)):
+                        <span style="font-size:10px; letter-spacing:normal;">Showing ${len(c.paginator)} of ${len(c.discussions)} topics | Page ${ c.paginator.pager('~3~')} ${lib.add_a_text("discussion", "|")}</span>
+                    % else:
+                        <span class="pull-right" style="font-size:10px; letter-spacing:normal;">
+                        % if c.conf['read_only.value'] == 'true':
+                            <!-- read only -->
+                        % else:
+                            ${lib.add_a_text("discussion", "")}
+                        % endif
+                        </span>
+                    </span>
+                    % endif
+                </h2>
+                <div class="civ-col-inner">
+                    ${helpers.listDiscussions()}
+                </div><!-- civ-col-inner -->
+            </div><!-- civ-col -->
+        </div><!-- span8 -->
+        <div class="span4">
+            <div class="civ-col">
+                    % if c.conf['read_only.value'] == 'true':
+                        <!-- read only -->
+                    % else:
+                        ${lib.displayFeedbackSlider()}
+                    % endif
+                <h2 class="civ-col"><i class="icon-list-alt"></i> ${lib.facilitator()}</h2>
+                <div class="civ-col-inner">
+                    ${lib.your_facilitator()}
+                </div><!-- civ-col-inner -->
+            </div><!-- civ-col -->
+        </div><!-- span4 -->
+    </div><!-- row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.18.custom
+.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+        <script src="/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+        <script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
+        <script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
+        <script type="text/javascript">
+                $(document).ready(function(){
+                        $(".small_slider").jColorSlider();
+                });
+        </script>
+</%def>
