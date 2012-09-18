@@ -4,6 +4,7 @@
     from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
     from pylowiki.lib.db.user import isAdmin, getUserPosts
+    from pylowiki.lib.db.activity import getMemberPosts
     from pylowiki.lib.db.discussion import getDiscussionByID
     from pylowiki.lib.db.flag import getFlags
     from pylowiki.lib.fuzzyTime import timeSince
@@ -48,7 +49,7 @@
            </ul>
         </div><!-- span2 -->
         <div class="span9">
-            <% mList = getUserPosts(user) %>
+            <% mList = getMemberPosts(user, 1) %>
             % if mList:
                <% mObj = mList[0] %>
            % else:

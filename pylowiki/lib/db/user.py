@@ -60,9 +60,13 @@ def searchUsers( uKey, uValue):
     except:
         return False
 
-def getUserPosts(user):
+def getUserPosts(user, active = 1):
     returnList = []
-    postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).order_by('-date').all()
+    if active == 1:
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
+    else:
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).order_by('-date').all()
+
     for item in postList:
        if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment':
            returnList.append(item)
