@@ -54,7 +54,7 @@ class ProfileController(BaseController):
            elif f['disabled'] == '0':
               wID = f['workshopID']
               myW = getWorkshopByID(wID)
-              if myW['startTime'] == '0000-00-00':
+              if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1':
                  # show to the workshop owner, show to the facilitator owner
                  if 'user' in session: 
                      if c.authuser.id == f.owner or c.authuser.id == myW.owner:
