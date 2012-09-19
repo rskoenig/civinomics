@@ -34,11 +34,6 @@ class CorpController(BaseController):
             render_var['display_navigbar'] = True
             render_var['highlight_name'] = 'contact'
 
-        elif (page.lower() == 'features') :
-            render_var['body_header'] = 'FEATURES'
-            render_var['display_navigbar'] = True 
-            render_var['highlight_name'] = "features"
-
         elif (page.lower() == 'privacy') :
             render_var['body_header'] = 'PRIVACY POLICY'
             render_var['display_navigbar'] = True
@@ -58,11 +53,6 @@ class CorpController(BaseController):
             render_var['body_header'] = 'TERMS OF USE'
             render_var['display_navigbar'] = True
             render_var['highlight_name'] = 'terms'
-
-        elif (page.lower() == 'services') :
-            render_var['body_header'] = 'SERVICES'
-            render_var['display_navigbar'] = True
-            render_var['highlight_name'] = 'services'
 
         elif (page.lower() == 'engfrontend') :
             render_var['body_header'] = 'Engineer'
