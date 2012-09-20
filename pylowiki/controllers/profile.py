@@ -14,6 +14,7 @@ from pylons import config
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, checkPassword, getUserPosts
+from pylowiki.lib.db.activity import getMemberPosts
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
@@ -83,7 +84,10 @@ class ProfileController(BaseController):
            uID = u.owner
            c.userFollowers.append(getUserByID(uID))
 
-        pList = getUserPosts(c.user)
+        if 'user' in session and (c.user.id == c.authuser.id or isAdmin(c.authuser.id)):
+            pList = getMemberPosts(c.user, 0)
+        else:
+            pList = getMemberPosts(c.user, 1)
         c.totalPoints = 0
         c.suggestions = []
         c.resources = []

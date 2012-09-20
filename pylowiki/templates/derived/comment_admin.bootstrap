@@ -2,7 +2,7 @@
 <%namespace name="helpers" file="/lib/admin_helpers/comment.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
-    
+${lib.return_to()}
 <div class="container">
     <br /><br />
     <div class="row-fluid">	

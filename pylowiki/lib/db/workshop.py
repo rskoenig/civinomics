@@ -5,7 +5,7 @@ from pylowiki.lib.db.facilitator import Facilitator
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.geoInfo import getGeoScope
 from pylowiki.lib.db.comment import getDiscussionCommentsSince
-from pylowiki.lib.db.discussion import getAllActiveDiscussionsForWorkshop
+from pylowiki.lib.db.discussion import getAllActiveDiscussionsForWorkshop, getDiscussionByID
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 from page import Page
 from event import Event
