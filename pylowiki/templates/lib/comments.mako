@@ -71,7 +71,7 @@
 
 ## Displayed 'deleted' to the user
 <%def name="showDeleted()">
-    <em> This comment has been deleted </em>
+    ##<em> This comment has been deleted </em>
 </%def>
 
 ## Shows the comment.  Used when called from within a python block.
@@ -369,15 +369,14 @@
             % endfor
             % if len(eventsList) != 0:
                 <span style="color:black;">
-                    <strong>Event log:</strong><br />
+                    ##<strong>Event log:</strong><br />
                     <ul class="unstyled">
                         % for e in eventsList:
-                            % if 'Comment Disabled' in e['title']:
-                                <% disabler = getUserByID(e.owner) %>
-                                <li><strong>${e['title']} by <a href="/profile/${disabler['urlCode']}/${disabler['url']}">${disabler['name']}</a></strong> ${e.date} - ${e['data']}</li>
-                            % else:
-                                <li><strong>${e['title']}</strong> ${e.date} - ${e['data']}</li>
-                            % endif
+                            <% 
+                                eventOwner = getUserByID(e.owner)
+                                ownerLinkback = '<a href="/profile/%s/%s">%s</a> ' % (eventOwner['urlCode'], eventOwner['url'], eventOwner['name'])
+                            %>
+                            <li><strong>${e['title']}</strong> by ${ownerLinkback | n} on ${e.date} (PST): ${e['data']}</li>
                         % endfor
                     </ul>
                 </span>
@@ -390,24 +389,25 @@
             ## 
             ##############################
             ## Get the revisions
-            <% revisions = map(int, comment['revisionList'].split(','))%>
-            % if len(revisions) > 1:
-                <span style="color:black;">
-                    <strong>Edit log:</strong><br />
-                    <ul class="unstyled">
-                        % for revision in revisions:
-                            <% 
-                                r = get_revision(revision) 
-                                commenter = getUserByID(r.owner)
-                            %>
-                            <li>
-                                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/comment/${r['urlCode']}">${r.date} (PST)</a>
-                            </li>
-                        % endfor
-                    </ul>
-                </span>
+            % if comment['deleted'] == '0':
+                <% revisions = map(int, comment['revisionList'].split(','))%>
+                % if len(revisions) > 1:
+                    <span style="color:black;">
+                        <strong>Edit log:</strong><br />
+                        <ul class="unstyled">
+                            % for revision in revisions:
+                                <% 
+                                    r = get_revision(revision) 
+                                    commenter = getUserByID(r.owner)
+                                %>
+                                <li>
+                                    <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/comment/${r['urlCode']}">${r.date} (PST)</a>
+                                </li>
+                            % endfor
+                        </ul>
+                    </span>
+                % endif
             % endif
-
 
             ##############################
             ## 

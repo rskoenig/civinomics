@@ -163,15 +163,13 @@ class CommentController(BaseController):
               return redirect(backlink)    
 
         except:
-           backlink += "/modComment/%s"%(commentID)
-           "h.flash('All fields required', 'error')"
            alert = {'type':'error'}
            alert['title'] = 'All Fields Required'
            alert['content'] = ''
            "alert['content'] = 'Please check all Required Fields'"
            session['alert'] = alert
            session.save()
-           return redirect(backlink)    
+           return redirect(session['return_to'])
 
         if modCommentReason == "":
             modCommentReason = "No Reason Given"
