@@ -14,7 +14,7 @@ from pylowiki.lib.db.discussion import getDiscussionByID
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags, clearFlags
 from pylowiki.lib.db.page import Page, getPageByID, get_page
-from pylowiki.lib.db.revision import Revision, get_revision
+from pylowiki.lib.db.revision import Revision, get_revision, getRevisionByCode, getParentRevisions
 
 from pylowiki.lib.utils import urlify
 
@@ -30,11 +30,13 @@ log = logging.getLogger(__name__)
 
 class ResourceController(BaseController):
 
-    def index(self, id1, id2, id3, id4):
+    def index(self, id1, id2, id3, id4, id5 = ''):
         workshopCode = id1
         workshopURL = id2
         resourceCode = id3
         resourceURL = id4
+        revisionURL = id5
+    
         
         c.w = getWorkshop(workshopCode, workshopURL)
         c.title = c.w['title']
@@ -49,7 +51,20 @@ class ResourceController(BaseController):
         else:
             c.commentsDisabled = 0
 
-        c.content = h.literal(h.reST2HTML(c.resource['comment']))
+        if revisionURL != '':
+            rev = getRevisionByCode(revisionURL)
+            c.content = h.literal(h.reST2HTML(rev['data']))
+            c.lastmoduser = getUserByID(rev.owner)
+        else:
+            c.content = h.literal(h.reST2HTML(c.resource['comment']))
+            c.lastmoduser = getUserByID(c.resource.owner)
+            if 'mainRevision_id' in c.resource:
+                r = get_revision(int(c.resource['mainRevision_id']))
+                c.lastmoddate = r.date
+            else:
+                c.lastmoddate = c.resource.date
+
+        c.revisions = getParentRevisions(c.resource.id)
 
         c.flagged = False
         if checkFlagged(c.resource):
@@ -88,12 +103,6 @@ class ResourceController(BaseController):
                 c.resources.pop(i)
                 break
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
-        if 'mainRevision_id' in c.resource:
-            r = get_revision(int(c.resource['mainRevision_id']))
-            c.lastmoddate = r.date
-        else:
-            c.lastmoddate = c.resource.date
-        c.lastmoduser = getUserByID(c.resource.owner)
         
         return render('/derived/resource.bootstrap')
 

@@ -26,6 +26,13 @@ def get_all_revisions(pageID):
     except:
         return False
 
+
+def getParentRevisions(parent_id):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'revision').filter(Thing.data.any(with_characteristic('parent_id', parent_id))).order_by('-date').all()
+    except:
+        return False
+
 # Every time a revision is made, we make a new revision Thing, and update the list of revisions with the Thing id
 class Revision(Thing):
     def __init__(self, owner, data, thing):

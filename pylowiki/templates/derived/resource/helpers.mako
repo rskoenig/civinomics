@@ -97,6 +97,14 @@
               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Resource"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; 
               <span id="flag_0"></span>
           % endif
+          % if c.revisions:
+              <br />
+              <strong>Edit log:</strong><br />
+              % for rev in c.revisions:
+                  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/${rev['urlCode']}/">${rev.date}</a><br />
+
+              % endfor
+          % endif
         </div> <!-- .span12 -->
       </div> <!-- .row-fluid -->
     % endif
