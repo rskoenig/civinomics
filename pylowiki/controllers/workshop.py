@@ -770,7 +770,9 @@ class WorkshopController(BaseController):
         # append disabled and deleted at the end
         c.suggestions += getInactiveSuggestionsForWorkshop(code, urlify(url))
 
+        c.isScoped = False
         if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
             ratedSuggestionIDs = []
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
                 """
@@ -819,6 +821,9 @@ class WorkshopController(BaseController):
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        c.resources = sortBinaryByTopPop(c.resources)
+        # append the disabled and deleted resources
+        c.resources += getInactiveResourcesByWorkshopID(c.w.id)
 
         c.count = len(c.resources)
         c.paginator = paginate.Page(
@@ -857,6 +862,10 @@ class WorkshopController(BaseController):
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        c.resources = sortBinaryByTopPop(c.resources)
+        # append the disabled and deleted resources
+        c.resources += getInactiveResourcesByWorkshopID(c.w.id)
+
         c.commentsDisabled = 0
         
         c.slides = []
