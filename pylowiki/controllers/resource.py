@@ -52,9 +52,10 @@ class ResourceController(BaseController):
             c.commentsDisabled = 0
 
         if revisionURL != '':
-            rev = getRevisionByCode(revisionURL)
-            c.content = h.literal(h.reST2HTML(rev['data']))
-            c.lastmoduser = getUserByID(rev.owner)
+            r = getRevisionByCode(revisionURL)
+            c.content = h.literal(h.reST2HTML(r['data']))
+            c.lastmoduser = getUserByID(r.owner)
+            c.lastmoddate = r.date
         else:
             c.content = h.literal(h.reST2HTML(c.resource['comment']))
             c.lastmoduser = getUserByID(c.resource.owner)

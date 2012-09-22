@@ -48,7 +48,6 @@ ${lib.return_to()}
                         ${helpers.spacer()}
                     </div> <!-- /.row-fluid -->
                 </div><!-- civ-col-inner -->
-                ${lib.displayEvents()}
             </div><!-- civ-col -->
             <div class="civ-col">
                 <h2 class="civ-col"><i class="icon-comment"></i> Comments</h2>

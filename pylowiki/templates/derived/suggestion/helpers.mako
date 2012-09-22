@@ -97,11 +97,12 @@
             <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Suggestion"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; &nbsp;
             <span id="flag_0"></span>
         % endif
-        % if c.revisions:
+        % if c.revisions and len(c.revisions) > 1:
             <br />
             <strong>Edit log:</strong><br />
             % for rev in c.revisions:
-                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${cs['urlCode']}/${cs['url']}/${rev['urlCode']}/">${rev.date}</a><br />
+                <% ruser = getUserByID(rev.owner) %>
+                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${cs['urlCode']}/${cs['url']}/${rev['urlCode']}/">${rev.date}</a> by <a href="/profile/${ruser['urlCode']}/${ruser['url']}">${ruser['name']}</a><br />
 
             % endfor
         % endif

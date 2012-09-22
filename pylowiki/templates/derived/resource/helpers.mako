@@ -47,7 +47,7 @@
         % else:
             <a href="/profile/${author['urlCode']}/${author['url']}"><img src="/images/avatar/${author['directoryNumber']}/thumbnail/${author['pictureHash']}.thumbnail" lt="${author['name']}" title="${author['name']}" class="thumbnail"/></a>
         % endif
-        &nbsp;By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> <span class="recent">${timeSince(c.resource.date)}</span> ago
+        &nbsp;By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> <span class="recent">${timeSince(c.lastmoddate)}</span> ago
         </li>
 </%def>
 
@@ -97,11 +97,12 @@
               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Resource"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; 
               <span id="flag_0"></span>
           % endif
-          % if c.revisions:
+          % if c.revisions and len(c.revisions) > 1:
               <br />
               <strong>Edit log:</strong><br />
               % for rev in c.revisions:
-                  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/${rev['urlCode']}/">${rev.date}</a><br />
+                  <% ruser = getUserByID(rev.owner) %>
+                  <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/${rev['urlCode']}/">${rev.date}</a> by <a href="/profile/${ruser['urlCode']}/${ruser['url']}">${ruser['name']}</a><br />
 
               % endfor
           % endif
