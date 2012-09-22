@@ -695,11 +695,15 @@ class WorkshopController(BaseController):
                 c.slides.append(s)
             
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
-        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
+        # put disabled and deleted at the end
+        c.resources += getInactiveResourcesByWorkshopID(c.w.id)
+
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
-        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        # put disabled and deleted at the end
+        c.suggestions += getInactiveSuggestionsForWorkshop(code, urlify(url))
+
         c.asuggestions = getAdoptedSuggestionsForWorkshop(code, urlify(url))
         
         if 'user' in session:
@@ -762,7 +766,9 @@ class WorkshopController(BaseController):
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
-        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
+        # append disabled and deleted at the end
+        c.suggestions += getInactiveSuggestionsForWorkshop(code, urlify(url))
 
         if 'user' in session:
             ratedSuggestionIDs = []

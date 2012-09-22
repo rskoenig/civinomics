@@ -15,7 +15,7 @@ def getEvent(id):
 
 def getParentEvents(parent):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'event').filter(Thing.data.any(wc('parent_id', parent.id))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'event').filter(Thing.data.any(wc('parent_id', parent.id))).order_by('-date').all()
     except:
         return False
 

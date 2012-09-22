@@ -208,6 +208,18 @@ def make_map():
     map.connect('/saveResource/{id1}/{id2}', controller = 'resource', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
     map.connect('/saveResource/{id1}/{id2}/', controller = 'resource', action = 'saveResource', id1 = '{id1}', id2 = '{id2}')
 
+    # Resource modding
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/clearResourceFlagsHandler/{id1}/{id2}', controller = 'resource', action = 'clearResourceFlagsHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/clearResourceFlagsHandler/{id1}/{id2}/', controller = 'resource', action = 'clearResourceFlagsHandler', id1 = '{id1}', id2 = '{id2}')
+    
+    map.connect('/modResourceHandler', controller = 'resource', action = 'modResourceHandler')
+    map.connect('/modResourceHandler/', controller = 'resource', action = 'modResourceHandler')
+    map.connect('/noteResourceHandler', controller = 'resource', action = 'noteResourceHandler')
+    map.connect('/noteResourceHandler/', controller = 'resource', action = 'noteResourceHandler')
+    
+
     map.connect('/resource/handler/{id1}/{id2}', controller = 'resource', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/resource/handler/{id1}/{id2}/', controller = 'resource', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '')
@@ -220,17 +232,6 @@ def make_map():
     # Resource flagging
     map.connect('/flagResource/{id1}/{id2}', controller = 'resource', action = 'flagResource', id1 = '{id1}', id2 = '{id2}')
 
-    # Resource modding
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/modResource/', controller = 'resource', action = 'modResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/clearResourceFlagsHandler/{id1}/{id2}', controller = 'resource', action = 'clearResourceFlagsHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/clearResourceFlagsHandler/{id1}/{id2}/', controller = 'resource', action = 'clearResourceFlagsHandler', id1 = '{id1}', id2 = '{id2}')
-    
-    map.connect('/modResourceHandler', controller = 'resource', action = 'modResourceHandler')
-    map.connect('/modResourceHandler/', controller = 'resource', action = 'modResourceHandler')
-    map.connect('/noteResourceHandler', controller = 'resource', action = 'noteResourceHandler')
-    map.connect('/noteResourceHandler/', controller = 'resource', action = 'noteResourceHandler')
-    
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/addSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
