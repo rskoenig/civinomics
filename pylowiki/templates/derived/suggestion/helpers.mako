@@ -97,6 +97,14 @@
             <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Suggestion"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; &nbsp;
             <span id="flag_0"></span>
         % endif
+        % if c.revisions:
+            <br />
+            <strong>Edit log:</strong><br />
+            % for rev in c.revisions:
+                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${cs['urlCode']}/${cs['url']}/${rev['urlCode']}/">${rev.date}</a><br />
+
+            % endfor
+        % endif
         </td>
         </tr>
         </tbody>

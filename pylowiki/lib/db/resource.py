@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import logging
 
+from pylons import tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
@@ -10,6 +11,7 @@ from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.flag import checkFlagged
 from pylons import config
 from time import time
+from revision import Revision
 from tldextract import extract
 
 log = logging.getLogger(__name__)
@@ -158,4 +160,6 @@ class Resource(object):
         a['discussion_id'] = d.d.id
         self.a = a
         commit(a)
+        data = a['comment']
+        r = Revision(c.authuser, data, a)
 

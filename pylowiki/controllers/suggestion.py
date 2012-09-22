@@ -10,7 +10,7 @@ from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.resource import getActiveResourcesByParentID
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.revision import get_revision, Revision
+from pylowiki.lib.db.revision import get_revision, Revision, getParentRevisions, getRevisionByCode
 from pylowiki.lib.db.page import Page, getPageByID, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.rating import getRatingByID
@@ -28,11 +28,12 @@ log = logging.getLogger(__name__)
 
 class SuggestionController(BaseController):
 
-    def index(self, id1, id2, id3, id4):
+    def index(self, id1, id2, id3, id4, id5 = ''):
         workshopCode = id1
         workshopURL = id2
         suggestionCode = id3
         suggestionURL = id4
+        revisionURL = id5
         
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
@@ -51,15 +52,30 @@ class SuggestionController(BaseController):
             if suggestion.id == c.s.id:
                 c.suggestions.pop(i)
                 break
-        r = get_revision(int(c.s['mainRevision_id']))
-        
+
         c.title = c.s['title']
-        c.content = h.literal(h.reST2HTML(c.s['data']))
-        ##c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
+
+        if revisionURL != '':
+            r = getRevisionByCode(revisionURL)
+            c.content = h.literal(h.reST2HTML(r['data']))
+            c.lastmoduser = getUserByID(r.owner)
+            c.lastmoddate = r.date
+        else:
+            c.content = h.literal(h.reST2HTML(c.s['data']))
+            c.lastmoduser = getUserByID(c.s.owner)
+            if 'mainRevision_id' in c.s:
+                r = get_revision(int(c.s['mainRevision_id']))
+                c.lastmoddate = r.date
+            else:
+                c.lastmoddate = c.s.date
+
+        c.revisions = getParentRevisions(c.s.id)
+        #r = get_revision(int(c.s['mainRevision_id']))
+        #c.lastmoddate = r.date
+        #c.content = h.literal(h.reST2HTML(c.s['data']))
         
         # Note we can get original author and last revision author
         c.author = c.lastmoduser = getUserByID(r.owner)
-        c.lastmoddate = r.date
         c.discussion = getDiscussionByID(c.s['discussion_id'])
 
         if 'user' in session:
