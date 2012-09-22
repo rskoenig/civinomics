@@ -10,11 +10,12 @@ from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.workshop import getWorkshop, isScoped
 from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
 from pylowiki.lib.utils import urlify
-from pylowiki.lib.db.user import isAdmin
+from pylowiki.lib.db.user import isAdmin, getUserByID
 from pylowiki.lib.db.event import getParentEvents
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 from pylowiki.lib.db.rating import getRatingByID
+from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
 
 from pylowiki.lib.db.discussion import Discussion
 
@@ -67,11 +68,12 @@ class DiscussionController(BaseController):
         return render('/derived/discussion_landing.bootstrap')
 
     ##@h.login_required
-    def topic(self, id1, id2, id3, id4):
+    def topic(self, id1, id2, id3, id4, id5 = ''):
         workshopCode = id1
         workshopUrl = id2
         discussionCode = id3
         discussionUrl = id4
+        revisionURL = id5
         
         c.w = getWorkshop(workshopCode, urlify(workshopUrl))
         if 'user' in session:
@@ -92,6 +94,23 @@ class DiscussionController(BaseController):
                 c.otherDiscussions.remove(c.discussion)
 
         c.title = c.w['title']
+
+        if revisionURL != '':
+            r = getRevisionByCode(revisionURL)
+            c.content = h.literal(h.reST2HTML(r['data']))
+            c.lastmoduser = getUserByID(r.owner)
+            c.lastmoddate = r.date
+        else:
+            c.content = h.literal(h.reST2HTML(c.discussion['text']))
+            c.lastmoduser = getUserByID(c.discussion.owner)
+            if 'mainRevision_id' in c.discussion:
+                r = get_revision(int(c.discussion['mainRevision_id']))
+                c.lastmoddate = r.date
+            else:
+                c.lastmoddate = c.discussion.date
+
+        c.revisions = getParentRevisions(c.discussion.id)
+
         return render('/derived/discussion_topic.bootstrap')
 
     @h.login_required
@@ -204,6 +223,7 @@ class DiscussionController(BaseController):
 
         else:
             d = Discussion(owner = c.authuser, discType = 'general', attachedThing = w, title = title, text = text)
+            r = Revision(c.authuser, text, d.d)
             commit(w)
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (code, url, d.d['urlCode'], d.d['url']))
@@ -268,6 +288,7 @@ class DiscussionController(BaseController):
             if discussion['text'] != text:
                 discussion['text'] = text
                 dMsg = dMsg + "Text updated. "
+                r = Revision(c.authuser, text, discussion)
 
             Event('Discussion Edited', dMsg, discussion, c.authuser)
             commit(discussion)

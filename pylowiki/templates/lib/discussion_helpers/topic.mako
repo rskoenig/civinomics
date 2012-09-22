@@ -45,15 +45,15 @@
             <tr>
             <td>${userphoto(c.discussion)}</td>
             <td><a href="/profile/${owner['urlCode']}/${owner['url']}">${getUserByID(c.discussion.owner)['name']}</a><br />
-            <i class="icon-time"></i> Started <span class="recent">${timeSince(c.discussion.date)}</span> ago 
+            <i class="icon-time"></i> Edited <span class="recent">${timeSince(c.lastmoddate)}</span> ago 
             </td>
             </tr>
             </thead>
             </table>
             <div id="topic-comment" class="span10">
-                % if c.discussion['text'] != '':
+                % if c.content != '':
                     <div class="well">
-                        ${c.discussion['text']}
+                        ${c.content}
                     </div>
                 % endif 
             </div>
@@ -91,6 +91,15 @@
     % endif
     <a href="/flagDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-inverse btn-mini flagButton"><i class="icon-white icon-flag"></i> Flag</a>
     <span id="flag_0"></span>
+    % if c.revisions and len(c.revisions) > 1:
+       <br />
+       <strong>Edit log:</strong><br />
+       % for rev in c.revisions:
+           <% ruser = getUserByID(rev.owner) %>
+           <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${c.discussion['urlCode']}/${c.discussion['url']}/${rev['urlCode']}/">${rev.date}</a> by <a href="/profile/${ruser['urlCode']}/${ruser['url']}">${ruser['name']}</a><br />
+
+       % endfor
+    % endif
 </%def>
 
 <%def name="addTopic()">

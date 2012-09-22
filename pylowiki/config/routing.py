@@ -161,10 +161,10 @@ def make_map():
     map.connect('/adminDiscussion/{id1}/{id2}/', controller = 'discussion', action = 'adminDiscussion', id1 = '{id1}', id2 = '{id2}')    
 
     # Workshop individual discussion page
-    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}/', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshops/{id1}/{id2}/discussion/{id3}/{id4}', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
-    map.connect('/workshops/{id1}/{id2}/discussion/{id3}/{id4}/', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '')
+    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}/', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '')
+    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}/{id5}', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}')
+    map.connect('/workshop/{id1}/{id2}/discussion/{id3}/{id4}/{id5}/', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}')
 
 
     # Workshop configuration
