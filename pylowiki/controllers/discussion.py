@@ -8,7 +8,7 @@ from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.workshop import getWorkshop, isScoped
-from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
+from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin, getUserByID
 from pylowiki.lib.db.event import getParentEvents
@@ -16,6 +16,7 @@ from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
+from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
 from pylowiki.lib.db.discussion import Discussion
 
@@ -58,6 +59,10 @@ class DiscussionController(BaseController):
         c.code = c.w['urlCode']
         c.url = c.w['url']
         c.discussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        c.discussions = sortBinaryByTopPop(c.discussions)
+        c.discussions += getDisabledDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        c.discussions += getDeletedDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        
 
         c.count = len(c.discussions)
         c.paginator = paginate.Page(

@@ -21,7 +21,7 @@
 
 <%def name="displayRating()">
     <% rating = int(c.resource['ups']) - int(c.resource['downs']) %>
-    % if 'user' in session and c.isScoped and c.conf['read_only.value'] != 'true': 
+    % if 'user' in session and c.isScoped and c.conf['read_only.value'] != 'true' and c.resource['disabled'] == '0' and c.resource['deleted'] == '0': 
         <a href="/rateResource/${c.resource['urlCode']}/${c.resource['url']}/1" class="upVote voted">
             <i class="icon-chevron-up"></i>
         </a>

@@ -12,7 +12,7 @@
 
 <%def name="displayDiscussionRating(discussion)">
     <% rating = int(discussion['ups']) - int(discussion['downs']) %>
-    % if 'user' in session and c.isScoped and c.conf['read_only.value'] != 'true':
+    % if 'user' in session and c.isScoped and c.conf['read_only.value'] != 'true' and discussion['disabled'] == '0' and discussion['deleted'] == '0':
         <a href="/rateDiscussion/${discussion['urlCode']}/${discussion['url']}/1" class="upVote voted">
         <i class="icon-chevron-up"></i>
         </a>

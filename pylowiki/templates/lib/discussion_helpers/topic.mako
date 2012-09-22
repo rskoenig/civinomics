@@ -25,7 +25,7 @@
     <div class="row-fluid">
         <div class="span1 civ-votey">
             <% rating = int(c.discussion['ups']) - int(c.discussion['downs']) %>
-            % if 'user' in session and c.isScoped and c.conf['read_only.value'] != 'true':
+            % if 'user' in session and c.isScoped and c.conf['read_only.value'] != 'true' and c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
                 <a href="/rateDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}/1" class="upVote voted">
                 <i class="icon-chevron-up"></i>
                 </a>
