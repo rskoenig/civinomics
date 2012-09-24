@@ -381,6 +381,7 @@ class CommentController(BaseController):
       c.w = getWorkshop(workshopCode, workshopURL)
       c.r = getRevisionByCode(revisionCode)
       c.u = getUserByID(c.r.owner)
+      c.comment = getComment(c.r['parent_id'])
 
       return render('/derived/permaComment.bootstrap')
 

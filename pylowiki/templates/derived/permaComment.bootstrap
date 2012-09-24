@@ -1,3 +1,7 @@
+<%!
+    from pylowiki.lib.db.event import getParentEvents
+    from pylowiki.lib.db.user import getUserByID
+%>
 <%inherit file = "/base/template.bootstrap"/>
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
@@ -9,8 +13,25 @@ ${lib.return_to()}
     </div><!-- well -->
     <div class="row-fluid">
         <div class="span12">
-            <h2>On ${c.r.date} (PST) <a href="/profile/${c.u['urlCode']}/${c.u['url']}">${c.u['name']}</a> said:</h2>
-            ${h.literal(h.reST2HTML(c.r['data']))}
+            % if c.comment and c.comment['deleted'] == '0':
+                <h2>On ${c.r.date} (PST) <a href="/profile/${c.u['urlCode']}/${c.u['url']}">${c.u['name']}</a> said:</h2>
+                ${h.literal(h.reST2HTML(c.r['data']))}
+            % else:
+                <% events = getParentEvents(c.comment) %>
+                <% eventsList = [] %>
+                <span style="color:black;">
+                <ul class="unstyled">
+                % for e in events:
+                    % if not e['title'].startswith('Comment edited'):
+                        <%
+                            eventOwner = getUserByID(e.owner)
+                            ownerLinkback = '<a href="/profile/%s/%s">%s</a> ' % (eventOwner['urlCode'], eventOwner['url'], eventOwner['name'])
+                         %>
+                        <li><strong>${e['title']}</strong> by ${ownerLinkback | n} on ${e.date} (PST): ${e['data']}</li>
+                    % endif
+                % endfor
+                </ul>
+            % endif
         </div><!-- span12 -->
     </div><!-- row-fluid -->
 </div><!-- container-fluid -->
