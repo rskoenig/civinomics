@@ -7,18 +7,18 @@
     <div class="row-fluid">
         <div class="hero-unit">
             <h2>About Us</h2>
-            </br>
             <p>
             <h3><em>Mission</em></h3>
             <p>We improve social decision making through better information, increased public engagement, and the collective creativity of communities.</p>
             </br>
+        </div>
             <h3><em>How it Works</em></h3>
             <p>Our web platform and iPad survey application enable an iterative process of citizen collaboration to fix their problems.
                 </p>
                 </br>
                     <ul class="thumbnails">
                           <li>
-                              <img class="thumbnail" width="600px" src="/images/corp/howitworks.png" alt="">
+                              <img class="thumbnail" src="/images/corp/howitworks.png" alt="">
                           </li>
                     </ul>
                 </br>
