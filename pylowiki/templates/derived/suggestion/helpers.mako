@@ -2,6 +2,7 @@
     from pylowiki.lib.db.user import getUserByID, isAdmin
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.flag import getFlags
+    from pylowiki.lib.db.event import getParentEvents
     from pylowiki.lib.fuzzyTime import timeSince
 
     import logging
@@ -52,14 +53,28 @@
 </%def>
 
 <%def name="suggestionContent(content)">
-    <p>
-        ${content}
-    </p>
+    % if c.s['deleted'] == '0': 
+        <p>
+            ${content}
+        </p>
+    % else:
+        <% events = getParentEvents(c.s) %>
+        <ul class="unstyled">
+        % for e in events:
+            % if not e['title'].startswith('Suggestion Edited'):
+                <%
+                    eventOwner = getUserByID(e.owner)
+                    ownerLinkback = '<a href="/profile/%s/%s">%s</a> ' % (eventOwner['urlCode'], eventOwner['url'], eventOwner['name'])
+                %>
+                <li><strong>${e['title']}</strong> by ${ownerLinkback | n} on ${e.date} (PST): ${e['data']}</li>
+            % endif
+        % endfor
+        </ul>
+    % endif
 </%def>
 
 <%def name="suggestionEditAdminRating(cAuthuser, cwOwner, cs, cIsAdmin, session, cRating)">
-    <div class="row">
-        <div class="span4 offset4">
+    <div class="row-fluid">
         <br />
         <table>
         <tbody>
@@ -79,6 +94,8 @@
                     </div>
                 </div>
             % endif
+        % else:
+            &nbsp;
         % endif
         </td>
         </tr>
@@ -89,15 +106,15 @@
                 <span class="badge badge-inverse" title="Flags on this suggestion"><i class="icon-white icon-flag"></i>${len(getFlags(cs))}</span>
                 <a href="/modSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-warning" title="Administrate Suggestion"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
             % endif
-            % if cAuthuser and (cAuthuser.id == cs.owner or cIsAdmin) or isFacilitator(c.authuser.id, c.w.id):
+            % if (cAuthuser or isFacilitator(c.authuser.id, c.w.id)) and (cAuthuser.id == cs.owner or cIsAdmin) and cs['deleted'] == '0':
                 <a href="/editSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-primary" title="Edit Suggestion"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
             % endif
         % endif
-        % if 'user' in session:
+        % if 'user' in session and cs['deleted'] == '0':
             <a href="/flagSuggestion/${cs['urlCode']}/${cs['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Suggestion"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; &nbsp;
             <span id="flag_0"></span>
         % endif
-        % if c.revisions and len(c.revisions) > 1:
+        % if c.revisions and len(c.revisions) > 1 and cs['deleted'] == '0':
             <br />
             <strong>Edit log:</strong><br />
             % for rev in c.revisions:
@@ -111,7 +128,6 @@
         </tbody>
         </table>
     </div>
-</div>
 </%def>
 
 <%def name="showSuggestions()">

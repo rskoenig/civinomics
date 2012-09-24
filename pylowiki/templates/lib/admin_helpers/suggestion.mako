@@ -78,55 +78,54 @@
     <button type="submit" class="btn btn-warning">Save Note</button>
     </form>
     <br /><br />
-    % if 'adopted' not in c.s or c.s['adopted'] == '0':
-       <% adoptTitle = "Adopt Suggestion" %>
+    % if c.s['deleted'] == '0':
+        % if 'adopted' not in c.s or c.s['adopted'] == '0':
+           <% adoptTitle = "Adopt Suggestion" %>
+        % else:
+           <% adoptTitle = "Unadopt Suggestion" %>
+        % endif
+        <form name="adopt_suggestion" id="adopt_suggestion" class="left" action = "/adoptSuggestionHandler" enctype="multipart/form-data" method="post" >
+        <strong>${adoptTitle}</strong>
+        <input type=hidden name=workshopCode value="${c.w['urlCode']}">
+        <input type=hidden name=workshopURL value="${c.w['url']}">
+        <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
+        <input type=hidden name=suggestionURL value="${c.s['url']}">
+        <br /><br />
+        Reason for action: &nbsp;
+        <input type=text name=adoptSuggestionReason><br /><br />
+        <button type="submit" class="btn btn-warning">${adoptTitle}</button>
+        </form>
+	<br /><br />
+	<p>
+	<strong>Moderate Suggestion</strong>
+	<form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
+	<input type=hidden name=workshopCode value="${c.w['urlCode']}">
+	<input type=hidden name=workshopURL value="${c.w['url']}">
+	<input type=hidden name=suggestionCode value="${c.s['urlCode']}">
+	<input type=hidden name=suggestionURL value="${c.s['url']}">
+	<br />
+	Reason for action: &nbsp;
+	<input type=text name=modSuggestionReason><br /><br />
+	Click to verify&nbsp;<input type=radio name=verifyModSuggestion> &nbsp; &nbsp;
+	% if c.s['disabled'] == '0':
+	    <button type="submit" name=modType value="disable" class="btn btn-warning">
+            <i class="icon-ban-circle icon-white"></i> Disable Suggestion
+	    </button>
+	    <button type="submit" name=modType value="delete" class="btn btn-danger">
+            <i class="icon-trash icon-white"></i> Delete Suggestion
+	    </button>
+        % else:
+            <button type="submit" name=modType value="disable" class="btn btn-warning">
+            <i class="icon-ok icon-white"></i> Enable Suggestion
+            </button>
+            <button type="submit" name=modType value="delete" class="btn btn-danger">
+            <i class="icon-trash icon-white"></i> Delete Suggestion
+            </button>
+        % endif
+        </form>
     % else:
-       <% adoptTitle = "Unadopt Suggestion" %>
-    % endif
-    <form name="adopt_suggestion" id="adopt_suggestion" class="left" action = "/adoptSuggestionHandler" enctype="multipart/form-data" method="post" >
-    <strong>${adoptTitle}</strong>
-    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-    <input type=hidden name=workshopURL value="${c.w['url']}">
-    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-    <input type=hidden name=suggestionURL value="${c.s['url']}">
-    <br /><br />
-    Reason for action: &nbsp;
-    <input type=text name=adoptSuggestionReason><br /><br />
-    <button type="submit" class="btn btn-warning">${adoptTitle}</button>
-    </form>
-	% if c.s['deleted'] == '0':
-	    <br /><br />
-	    <p>
-	    <strong>Moderate Suggestion</strong>
-	    <form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
-	    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-	    <input type=hidden name=workshopURL value="${c.w['url']}">
-	    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-	    <input type=hidden name=suggestionURL value="${c.s['url']}">
-	    <br />
-	    Reason for action: &nbsp;
-	    <input type=text name=modSuggestionReason><br /><br />
-	    Click to verify&nbsp;<input type=radio name=verifyModSuggestion> &nbsp; &nbsp;
-	    % if c.s['disabled'] == '0':
-	       <button type="submit" name=modType value="disable" class="btn btn-warning">
-	       		<i class="icon-ban-circle icon-white"></i> Disable Suggestion
-	       </button>
-	       <button type="submit" name=modType value="delete" class="btn btn-danger">
-	       	   <i class="icon-trash icon-white"></i> Delete Suggestion
-	       </button>
-	    % else:
-	       <button type="submit" name=modType value="disable" class="btn btn-warning">
-	           <i class="icon-ok icon-white"></i> Enable Suggestion
-	       </button>
-	       <button type="submit" name=modType value="delete" class="btn btn-danger">
-	       	   <i class="icon-trash icon-white"></i> Delete Suggestion
-	       </button>
-	    % endif
-	    </form>
-	% else:
-		<br /><br />
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<code><strong>Suggestion Deleted</strong></code>
-	% endif	    
-            
+        <br /><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <code><strong>Suggestion Deleted</strong></code>
+    % endif	    
 </%def>
