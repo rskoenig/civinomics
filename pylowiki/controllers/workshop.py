@@ -696,13 +696,25 @@ class WorkshopController(BaseController):
             
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
+        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
         # put disabled and deleted at the end
-        c.resources += getInactiveResourcesByWorkshopID(c.w.id)
+        if c.resources:
+            if c.dresources:
+                c.resources += c.dresources 
+        else:
+            if c.dresources:
+                c.resources = c.dresources 
 
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
         # put disabled and deleted at the end
-        c.suggestions += getInactiveSuggestionsForWorkshop(code, urlify(url))
+        if c.suggestions:
+            if c.dsuggestions:
+                c.suggestions += c.dsuggestions
+        else:
+            if c.dsuggestions:
+                c.suggestions = c.dsuggestions
 
         c.asuggestions = getAdoptedSuggestionsForWorkshop(code, urlify(url))
         
