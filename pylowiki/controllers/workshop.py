@@ -876,7 +876,9 @@ class WorkshopController(BaseController):
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
         # append the disabled and deleted resources
-        c.resources += getInactiveResourcesByWorkshopID(c.w.id)
+        resources = getInactiveResourcesByWorkshopID(c.w.id)
+        if resources:
+          c.resources += resources
 
         c.commentsDisabled = 0
         
