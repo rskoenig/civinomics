@@ -2,6 +2,7 @@
 	from pylowiki.lib.fuzzyTime import timeSince
 	from pylowiki.lib.db.user import getUserByID
 	from pylowiki.lib.db.flag import getFlags
+	from pylowiki.lib.db.event import getParentEvents
 %>
 
 <%def name="nav_thing()">
@@ -52,13 +53,37 @@
 </%def>
 
 <%def name="displayResourceComment()">
-  <div id="resource-comment">
-      % if c.content:
-        <p>${c.content}</p>
-      % else:
-        <p>${c.resource['comment']}</p>
-      % endif
-  </div>
+    <div id="resource-comment">
+        <% eventsList = [] %>
+        % if c.resource['deleted'] == '1':
+            <% events = getParentEvents(c.resource) %>
+            % for e in events:
+                % if not e['title'].startswith('Resource Edited'):
+                    <% eventsList.append(e) %>
+                % endif
+            % endfor
+        %else:
+            % if c.content:
+                <p>${c.content}</p>
+            % else:
+                <p>${c.resource['comment']}</p>
+            % endif
+        % endif
+        % if len(eventsList) != 0:
+            <span style="color:black;">
+                <ul class="unstyled">
+                % for e in eventsList:
+                    <%
+                        eventOwner = getUserByID(e.owner)
+                        ownerLinkback = '<a href="/profile/%s/%s">%s</a> ' % (eventOwner['urlCode'], eventOwner['url'], eventOwner['name'])
+                     %>
+                     <li><strong>${e['title']}</strong> by ${ownerLinkback | n} on ${e.date} (PST): ${e['data']}</li>
+                 % endfor
+                </ul>
+            </span>
+            <br />
+        % endif
+    </div>
 </%def>
 
 <%def name="displayResource()">
@@ -90,14 +115,14 @@
               % endif
               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini btn-warning" title="Administrate Resource"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
           % endif
-          % if (c.authuser and c.authuser.id == c.poster.id) or c.isAdmin or c.isFacilitator:
+          % if (c.authuser and c.authuser.id == c.poster.id) or (c.isAdmin or c.isFacilitator) and c.resource['deleted'] == '0':
               <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-primary" title="Edit Resource"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
           % endif
-          % if 'user' in session:
+          % if 'user' in session and c.resource['deleted'] == '0':
               <a href="/flagResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-inverse flagButton" title="Flag Resource"><i class="icon-white icon-flag"></i> Flag</a> &nbsp; 
               <span id="flag_0"></span>
           % endif
-          % if c.revisions and len(c.revisions) > 1:
+          % if c.revisions and len(c.revisions) > 1 and c.resource['deleted'] == '0':
               <br />
               <strong>Edit log:</strong><br />
               % for rev in c.revisions:
