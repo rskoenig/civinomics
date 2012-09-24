@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.fuzzyTime import timeSince
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.event import getParentEvents
 %>
 
 <%def name="userphoto(discussion)">
@@ -51,11 +52,27 @@
             </thead>
             </table>
             <div id="topic-comment" class="span10">
-                % if c.content != '':
-                    <div class="well">
-                        ${c.content}
-                    </div>
-                % endif 
+                % if c.discussion['deleted'] == '0':
+                    % if c.content != '':
+                        <div class="well">
+                            ${c.content}
+                        </div>
+                    % endif 
+                % else:
+                    <% events = getParentEvents(c.discussion) %>
+                    <span style="color:black;">
+                    <ul class="unstyled">
+                    % for e in events:
+                        % if not e['title'].startswith('Discussion Edited'):
+                            <%
+                                eventOwner = getUserByID(e.owner)
+                                ownerLinkback = '<a href="/profile/%s/%s">%s</a> ' % (eventOwner['urlCode'], eventOwner['url'], eventOwner['name'])
+                             %>
+                             <li><strong>${e['title']}</strong> by ${ownerLinkback | n} on ${e.date} (PST): ${e['data']}</li>
+                        % endif
+                    % endfor
+                    </ul>
+                % endif
             </div>
         </div>
     </div>
@@ -83,22 +100,24 @@
 
 <%def name="Edit_Admin()">
     <span class="badge badge-inverse"><i class="icon-white icon-flag"></i>${len(c.flags)}</span>
-    % if c.authuser.id == c.discussion.owner or c.isAdmin or c.isFacilitator:
+    % if (c.authuser.id == c.discussion.owner or c.isAdmin or c.isFacilitator) and c.discussion['deleted'] == '0' :
         <a href="/editDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-primary btn-mini"><i class="icon-white icon-edit"></i> edit</a>
     % endif
     % if c.isAdmin or c.isFacilitator:
         <a href="/adminDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-warning btn-mini"><i class="icon-white icon-list-alt"></i> admin</a>
     % endif
-    <a href="/flagDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-inverse btn-mini flagButton"><i class="icon-white icon-flag"></i> Flag</a>
-    <span id="flag_0"></span>
-    % if c.revisions and len(c.revisions) > 1:
-       <br />
-       <strong>Edit log:</strong><br />
-       % for rev in c.revisions:
-           <% ruser = getUserByID(rev.owner) %>
-           <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${c.discussion['urlCode']}/${c.discussion['url']}/${rev['urlCode']}/">${rev.date}</a> by <a href="/profile/${ruser['urlCode']}/${ruser['url']}">${ruser['name']}</a><br />
+    % if c.discussion['deleted'] == '0':
+        <a href="/flagDiscussion/${c.discussion['urlCode']}/${c.discussion['url']}" class="btn btn-inverse btn-mini flagButton"><i class="icon-white icon-flag"></i> Flag</a>
+        <span id="flag_0"></span>
+        % if c.revisions and len(c.revisions) > 1:
+           <br />
+           <strong>Edit log:</strong><br />
+           % for rev in c.revisions:
+               <% ruser = getUserByID(rev.owner) %>
+               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${c.discussion['urlCode']}/${c.discussion['url']}/${rev['urlCode']}/">${rev.date}</a> by <a href="/profile/${ruser['urlCode']}/${ruser['url']}">${ruser['name']}</a><br />
 
-       % endfor
+           % endfor
+        % endif
     % endif
 </%def>
 
