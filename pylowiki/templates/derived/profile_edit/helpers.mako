@@ -29,19 +29,19 @@
             <div class="control-group">
                 <label for="oldPassword" class="control-label">Old Password:</label>
                 <div class="controls">
-                    <input type="text" id="oldPassword" name="oldPassword">
+                    <input type="password" id="oldPassword" name="oldPassword">
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
             <div class="control-group">
                 <label for="newPassword" class="control-label">New Password:</label>
                 <div class="controls">
-                    <input type="text" id="newPassword" name="newPassword">
+                    <input type="password" id="newPassword" name="newPassword">
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
             <div class="control-group">
                 <label for="reNewPassword" class="control-label">Repeat New Password:</label>
                 <div class="controls">
-                    <input type="text" id="reNewPassword" name="reNewPassword">
+                    <input type="password" id="reNewPassword" name="reNewPassword">
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
         </fieldset>
