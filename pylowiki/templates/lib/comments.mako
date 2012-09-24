@@ -118,7 +118,7 @@
 
 ## Sets up the rating system
 <%def name="displayRating(comment, commentType)">
-    % if 'user' in session and c.isScoped:
+    % if 'user' in session and c.isScoped and comment['deleted'] == '0' and comment['disabled'] == '0':
     <a href="/rateComment/${comment.id}/1" class="upVote voted">
         <i class="icon-chevron-up"></i>
     </a>    <div>${int(comment['ups']) - int(comment['downs'])}</div>
