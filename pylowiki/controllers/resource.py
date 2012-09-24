@@ -495,7 +495,7 @@ class ResourceController(BaseController):
 
         h.flash(modTitle, 'success')
         if modType == 'delete':
-            return redirect('/workshop/%s/%s/resource/'%(w['urlCode'], w['url']))
+            return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
         else:
             return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], w['url'], r['urlCode'], r['url']))
 
