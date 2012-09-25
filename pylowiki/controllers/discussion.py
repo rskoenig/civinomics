@@ -60,8 +60,14 @@ class DiscussionController(BaseController):
         c.url = c.w['url']
         c.discussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
         c.discussions = sortBinaryByTopPop(c.discussions)
-        c.discussions += getDisabledDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
-        c.discussions += getDeletedDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        if not c.discussions:
+            c.discussions = []
+        disabledDiscussions = getDisabledDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        if disabledDiscussions:
+            c.discussions += disabledDiscussions
+        deletedDiscussions = getDeletedDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        if deletedDiscussions:
+            c.discussions += deletedDiscussions
         
 
         c.count = len(c.discussions)

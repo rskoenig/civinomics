@@ -779,8 +779,14 @@ class WorkshopController(BaseController):
         c.title = c.w['title']
         c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
-        # append disabled and deleted at the end
-        c.suggestions += getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        # put disabled and deleted at the end
+        if c.suggestions:
+            if c.dsuggestions:
+                c.suggestions += c.dsuggestions
+        else:
+            if c.dsuggestions:
+                c.suggestions = c.dsuggestions
 
         c.isScoped = False
         if 'user' in session:
@@ -834,8 +840,14 @@ class WorkshopController(BaseController):
         c.title = c.w['title']
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
-        # append the disabled and deleted resources
-        c.resources += getInactiveResourcesByWorkshopID(c.w.id)
+        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
+        # put disabled and deleted at the end
+        if c.resources:
+            if c.dresources:
+                c.resources += c.dresources
+        else:
+            if c.dresources:
+                c.resources = c.dresources
 
         c.count = len(c.resources)
         c.paginator = paginate.Page(
