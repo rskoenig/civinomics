@@ -12,7 +12,7 @@ from pylowiki.lib.db.slide import Slide, getSlide, forceGetSlide
 from pylowiki.lib.db.slideshow import Slideshow, getSlideshow, getAllSlides
 from pylowiki.lib.db.imageIdentifier import getImageIdentifier
 
-from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory
+from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory, isImage
 
 #from pylowiki.lib.images import saveImage, resizeImage
 
@@ -55,6 +55,12 @@ class SlideshowController(BaseController):
             filename = file.filename
             identifier = 'slide'
             
+            isAnImage = isImage(imageFile)
+            if isAnImage == False:
+                return
+            else:
+                imageFile.seek(0)
+
             slide = Slide(c.authuser, s, 'Sample title', 'Sample caption', filename, imageFile, '1')
             
             #hash = saveImage(imageFile, filename, c.authuser, identifier, s)

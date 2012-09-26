@@ -11,6 +11,13 @@ from pylowiki.lib.db.imageIdentifier import ImageIdentifier, getImageIdentifier
 log = logging.getLogger(__name__)
 numImagesInDirectory = 30000
    
+def isImage(imgFile):
+    try:
+        im = Image.open(imgFile)
+        return True
+    except:
+        return False
+
 # Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
 # Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.thumbnail
 def resizeImage(identifier, hash, x, y, postfix):
