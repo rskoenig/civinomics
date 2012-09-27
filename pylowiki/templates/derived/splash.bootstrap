@@ -44,6 +44,7 @@
 
     <div class="container-fluid">
             <div class="row-fluid">
+                <div class="span5"></div>
                 <div class="span6 offset5" style="padding-top:50px;">
                     <div class="hero-unit main-well">
                         <div class="row-fluid">
@@ -51,11 +52,13 @@
                                 <h1 style="color:#5f774b; margin-top:0px;"> Build </h1>
                                 <p>Your community, online and in-person</p>
                             </div>
-                            <div class="span6">
-                                <div class="btn-group btn-group-vertical" style="padding-left:40px;">
-                                    <a class="btn btn-large pull-right" href="/signup">Sign up</a>
-                                    <a class="btn btn-info btn-large pull-right" href="#info">Learn more</a>
-                                    <a class="btn btn-success btn-large pull-right" href="/workshops">Browse</a>
+                            <div class="span1">
+                            </div>
+                            <div class="span4">
+                                <div class="btn-group btn-group-vertical">
+                                    <a href="/signup"><button class="btn btn-default btn-large" style="width: 120px;">Sign up</button></a>
+                                    <a href="#info"><button class="btn btn-info btn-large"  style="width: 120px;">Learn more</button></a>
+                                    <a href="/workshops"><button class="btn btn-success btn-large" style="width: 120px;">Browse</button></a>
                                 </div>
                             </div>
                         </div>
