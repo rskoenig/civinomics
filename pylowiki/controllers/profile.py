@@ -22,6 +22,7 @@ from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUser
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.account import Account, getUserAccount
 from pylowiki.lib.db.flag import getFlags
+from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
 
 
 from hashlib import md5
@@ -31,11 +32,18 @@ log = logging.getLogger(__name__)
 class ProfileController(BaseController):
     
     ##@h.login_required
-    def showUserPage(self, id1, id2):
+    def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
         code = id1
         url = id2
+        rev = id3
         c.user = get_user(code, url)
+        if id3 != '':
+            c.revision = getRevisionByCode(id3)
+        else:
+            c.revision = False
+
+        c.revisions = getParentRevisions(c.user.id)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = False
@@ -715,6 +723,7 @@ class ProfileController(BaseController):
         if anyChange and perror == 0:
             commit(u)
             Event('Profile updated.', changeMsg, u, c.authuser)
+            Revision(u, u['name'], u)
             h.flash('Changes saved.', 'success')
         elif anyChange and perror == 1:
             h.flash(perrorMsg, 'error')

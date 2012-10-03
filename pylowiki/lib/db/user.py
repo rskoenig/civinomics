@@ -13,6 +13,7 @@ from pylons import config
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.geoInfo import GeoInfo
 from pylowiki.lib.mail import send
+from revision import Revision
 
 from time import time
 
@@ -183,6 +184,7 @@ class User(object):
         
         u['activationHash'] = hash
         commit(u)
+        Revision(u, u['name'], u)
         
         log.info("Successful account creation (deactivated) for %s" %toEmail)
 

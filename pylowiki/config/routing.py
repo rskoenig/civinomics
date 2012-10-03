@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Routes configuration
 
+
 The more specific and detailed routes should be defined first so they
 may take precedent over the more generic routes. For more information
 refer to the routes manual at http://routes.groovie.org/docs/
@@ -419,8 +420,10 @@ def make_map():
     map.connect('/forgotPasswordHandler/', controller = 'login', action = 'forgot_handler')
 
     # User profile
-    map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '')
+    map.connect('/profile/{id1}/{id2}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '')
+    map.connect('/profile/{id1}/{id2}/revision/{id3}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/profile/{id1}/{id2}/revision/{id3}/', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/suggestions', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/suggestions/', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/resources', controller = 'profile', action = 'showUserResources', id1 = '{id1}', id2 = '{id2}')

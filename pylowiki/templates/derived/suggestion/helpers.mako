@@ -39,7 +39,13 @@
     % else:
        <% uTitle = '' %>
     % endif
-    <h3><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a></h3>
+    <%
+        title = c.s['title']
+        if c.revision:
+            if 'title' in c.revision:
+                title = c.revision['title']
+    %>
+    <h3><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${title}</a></h3>
     <ul class="unstyled civ-col-list">
     <li class="post">
     % if author['pictureHash'] == 'flash':

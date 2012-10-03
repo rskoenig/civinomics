@@ -53,9 +53,10 @@
         var searchString = document.getElementById('searchString').value;
         if (searchString == null || searchString == '')
         {
-            var searchString = "%";
+            document.getElementById('searchWorkshops').action = '/workshops';
+        } else {
+            document.getElementById('searchWorkshops').action = '/searchName/' + searchType + '/' + searchString + '/';
         }
-        document.getElementById('searchWorkshops').action = '/searchName/' + searchType + '/' + searchString + '/';
     }
     function setScope()
     {

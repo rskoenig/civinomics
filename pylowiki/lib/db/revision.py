@@ -38,6 +38,36 @@ class Revision(Thing):
     def __init__(self, owner, data, thing):
         r = Thing('revision', owner.id)
         r['data'] = data
+        if thing.objType == 'user':
+            r['firstName'] = thing['firstName']
+            r['lastName'] = thing['lastName']
+            r['email'] = thing['email']
+            r['postalCode'] = thing['postalCode']
+            r['pictureHash'] = thing['pictureHash']
+            if 'directoryNumber' in thing:
+                r['directoryNumber'] = thing['directoryNumber']
+            else:
+                r['directoryNumber'] = ''
+
+            if 'tagline' in thing:
+                r['tagline'] = thing['tagline']
+            else:
+                r['tagline'] = ''
+
+        if thing.objType == 'resource':
+            r['title'] = thing['title']
+            r['link'] = thing['link']
+            r['tld'] = thing['tld']
+            r['domain'] = thing['domain']
+            r['subdomain'] = thing['subdomain']
+
+        if thing.objType == 'suggestion':
+            r['title'] = thing['title']
+
+        if thing.objType == 'discussion':
+            if thing['discType'] == 'general':
+                r['title'] = thing['title']
+
         commit(r)
         r['urlCode'] = toBase62(r)
         r['parent_id'] = thing.id

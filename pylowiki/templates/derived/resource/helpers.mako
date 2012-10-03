@@ -37,8 +37,20 @@
 
 
 <%def name="displayMetaData()">
-	<h3><a href="${c.resource['link']}" target="_blank" alt="${c.resource['title']}">${c.resource['title']}</a></h3>
-	(${c.resource['domain']}.${c.resource['tld']})
+        <%
+            link = c.resource['link']
+            title = c.resource['title']
+            domain = c.resource['domain']
+            tld = c.resource['tld']
+            if c.revision:
+               if 'link' in c.revision:
+                   link = c.revision['link']
+                   title = c.revision['title']
+                   domain = c.revision['domain']
+                   tld = c.revision['tld']
+        %>
+	<h3><a href="${link}" target="_blank" alt="${title}">${title}</a></h3>
+	(${domain}.${tld})
 	<br>
         <% author = c.poster %>
         <ul class="unstyled civ-col-list">
