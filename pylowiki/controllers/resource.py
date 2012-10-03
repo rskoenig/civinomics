@@ -17,6 +17,7 @@ from pylowiki.lib.db.page import Page, getPageByID, get_page
 from pylowiki.lib.db.revision import Revision, get_revision, getRevisionByCode, getParentRevisions
 
 from pylowiki.lib.utils import urlify
+from tldextract import extract
 
 from pylowiki.lib.base import BaseController, render
 import pickle
@@ -52,12 +53,13 @@ class ResourceController(BaseController):
             c.commentsDisabled = 0
 
         if revisionURL != '':
-            r = getRevisionByCode(revisionURL)
-            c.content = h.literal(h.reST2HTML(r['data']))
-            c.lastmoduser = getUserByID(r.owner)
-            c.lastmoddate = r.date
+            c.revision = getRevisionByCode(revisionURL)
+            c.content = h.literal(h.reST2HTML(c.revision['data']))
+            c.lastmoduser = getUserByID(c.revision.owner)
+            c.lastmoddate = c.revision.date
         else:
             c.content = h.literal(h.reST2HTML(c.resource['comment']))
+            c.revision = False
             c.lastmoduser = getUserByID(c.resource.owner)
             if 'mainRevision_id' in c.resource:
                 r = get_revision(int(c.resource['mainRevision_id']))
@@ -230,6 +232,10 @@ class ResourceController(BaseController):
            resource['title'] = title
            if resource['link'] != link:
               cMsg = cMsg + 'Link updated. '
+              tldResults = extract(link)
+              resource['tld'] = tldResults.tld
+              resource['domain'] = tldResults.domain
+              resource['subdomain'] = tldResults.subdomain
            resource['link'] = link
            if resource['comment'] != comment:
               cMsg = cMsg + 'Description updated. '

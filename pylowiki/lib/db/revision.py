@@ -57,6 +57,9 @@ class Revision(Thing):
         if thing.objType == 'resource':
             r['title'] = thing['title']
             r['link'] = thing['link']
+            r['tld'] = thing['tld']
+            r['domain'] = thing['domain']
+            r['subdomain'] = thing['subdomain']
 
         if thing.objType == 'suggestion':
             r['title'] = thing['title']
