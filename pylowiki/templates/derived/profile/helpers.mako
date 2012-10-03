@@ -25,8 +25,8 @@
             else:
                 pictureHash = c.user['pictureHash']
                 name = c.user['name']
-                directoryNumber = c.user['directoryNumber']
-            endif
+                if pictureHash != 'flash':
+                  directoryNumber = c.user['directoryNumber']
          %>
 
         % if pictureHash == 'flash':
