@@ -56,10 +56,11 @@ class SuggestionController(BaseController):
         c.title = c.s['title']
 
         if revisionURL != '':
-            r = getRevisionByCode(revisionURL)
-            c.content = h.literal(h.reST2HTML(r['data']))
-            c.lastmoduser = getUserByID(r.owner)
-            c.lastmoddate = r.date
+            c.revision = getRevisionByCode(revisionURL)
+            c.content = h.literal(h.reST2HTML(c.revision['data']))
+            c.lastmoduser = getUserByID(c.revision.owner)
+            c.lastmoddate = c.revision.date
+            r = c.revision
         else:
             c.content = h.literal(h.reST2HTML(c.s['data']))
             c.lastmoduser = getUserByID(c.s.owner)
@@ -70,9 +71,6 @@ class SuggestionController(BaseController):
                 c.lastmoddate = c.s.date
 
         c.revisions = getParentRevisions(c.s.id)
-        #r = get_revision(int(c.s['mainRevision_id']))
-        #c.lastmoddate = r.date
-        #c.content = h.literal(h.reST2HTML(c.s['data']))
         
         # Note we can get original author and last revision author
         c.author = c.lastmoduser = getUserByID(r.owner)
