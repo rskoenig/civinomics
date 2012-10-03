@@ -17,10 +17,22 @@
 </%def>
 
 <%def name="displayProfilePicture()">
-        % if c.user['pictureHash'] == 'flash':
-                <img src="/images/avatars/flash.profile" alt="${c.user['name']}" title="${c.user['name']}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
+        <% 
+            if c.revision:
+                pictureHash = c.revision['pictureHash']
+                name = c.revision['data']
+                directoryNumber = c.revision['directoryNumber']
+            else:
+                pictureHash = c.user['pictureHash']
+                name = c.user['name']
+                directoryNumber = c.user['directoryNumber']
+            endif
+         %>
+
+        % if pictureHash == 'flash':
+            <img src="/images/avatars/flash.profile" alt="${name}" title="${name}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
         % else:
-            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
+            <img src="/images/avatar/${directoryNumber}/profile/${pictureHash}.profile" alt="${name}" title="${name}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
         % endif
         </li>
         </ul>
@@ -256,14 +268,22 @@
 </%def>
 
 <%def name="summary()">
-  <div class="civ-col-inner">
-    <h1>${c.user['name']}</h1>
+    <% 
+        if c.revision:
+            name = c.revision['data']
+            tagline = c.revision['tagline']
+        else:
+            name = c.user['name']
+            if 'tagline' in c.user.keys():
+                tagline = c.user['tagline']
+            else:
+                tagline = 'No tagline.'
+        endif
+    %>
+    <div class="civ-col-inner">
+    <h1>${name}</h1>
     <p>
-      % if 'tagline' in c.user.keys():
-        ${c.user['tagline']}
-      % else:
-        No tagline.
-      % endif
+      ${tagline}
       <% mStart = c.user.date.strftime('%B %d, %Y') %>
       <br /> <br />
       Member since <span class="recent">${mStart}</span>

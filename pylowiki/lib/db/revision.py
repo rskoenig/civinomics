@@ -44,6 +44,15 @@ class Revision(Thing):
             r['email'] = thing['email']
             r['postalCode'] = thing['postalCode']
             r['pictureHash'] = thing['pictureHash']
+            if 'directoryNumber' in thing:
+                r['directoryNumber'] = thing['directoryNumber']
+            else:
+                r['directoryNumber'] = ''
+
+            if 'tagline' in thing:
+                r['tagline'] = thing['tagline']
+            else:
+                r['tagline'] = ''
 
         if thing.objType == 'resource':
             r['title'] = thing['title']
