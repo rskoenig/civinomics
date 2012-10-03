@@ -22,7 +22,7 @@ from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUser
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.account import Account, getUserAccount
 from pylowiki.lib.db.flag import getFlags
-from pylowiki.lib.db.revision import Revision, getRevisionByCode
+from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
 
 
 from hashlib import md5
@@ -43,6 +43,7 @@ class ProfileController(BaseController):
         else:
             c.revision = False
 
+        c.revisions = getParentRevisions(c.user.id)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = False

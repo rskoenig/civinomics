@@ -288,6 +288,12 @@
       <br /> <br />
       Member since <span class="recent">${mStart}</span>
     </p>
+    % if c.revisions:
+         <strong>Edit log:</strong><br />
+         % for rev in c.revisions:
+              <a href="/profile/${c.user['urlCode']}/${c.user['url']}/revision/${rev['urlCode']}">${rev.date}</a><br />  
+         % endfor
+    % endif
   </div> <!-- /.civ-col-inner -->
 </%def>
 
