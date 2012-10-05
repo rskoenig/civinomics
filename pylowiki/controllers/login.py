@@ -39,9 +39,8 @@ class LoginController(BaseController):
          
                 if user: # not none or false
                     if user['disabled'] == '1' or user['activated'] == '0':
-                        log.warning("disabled account attempting to login - " + email )
-                        h.flash( "This account has been disabled.", "warning" )
-                        splashMsg['content'] = 'This account has been disabled.'
+                        log.warning("disabled/inactive account attempting to login - " + email )
+                        splashMsg['content'] = 'This account has been disabled and/or has not been activated.'
                         c.splashMsg = splashMsg
                     elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
