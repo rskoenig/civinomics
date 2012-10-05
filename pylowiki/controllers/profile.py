@@ -719,6 +719,7 @@ class ProfileController(BaseController):
 
         if nameChange:
             u['name'] = '%s %s' %(u['firstName'], u['lastName'])
+            u['url'] = urlify(u['name'])
             log.info('Changed name')
         if anyChange and perror == 0:
             commit(u)
