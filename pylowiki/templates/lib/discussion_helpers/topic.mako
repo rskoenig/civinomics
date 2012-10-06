@@ -40,7 +40,13 @@
         </div>
         <% owner = getUserByID(c.discussion.owner) %>
         <div class="span11">
-            <a href="#"><h3>${c.discussion['title']}</h3></a>
+            <% 
+                title = c.discussion['title']
+                if c.revision:
+                    if 'title' in c.revision:
+                        title = c.revision['title']
+            %> 
+            <a href="#"><h3>${title}</h3></a>
             <table>
             <thead>
             <tr>

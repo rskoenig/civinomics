@@ -78,7 +78,6 @@ class DiscussionController(BaseController):
 
         return render('/derived/discussion_landing.bootstrap')
 
-    ##@h.login_required
     def topic(self, id1, id2, id3, id4, id5 = ''):
         workshopCode = id1
         workshopUrl = id2
@@ -111,8 +110,10 @@ class DiscussionController(BaseController):
             c.content = h.literal(h.reST2HTML(r['data']))
             c.lastmoduser = getUserByID(r.owner)
             c.lastmoddate = r.date
+            c.revision = r
         else:
             c.content = h.literal(h.reST2HTML(c.discussion['text']))
+            c.revision = False
             c.lastmoduser = getUserByID(c.discussion.owner)
             if 'mainRevision_id' in c.discussion:
                 r = get_revision(int(c.discussion['mainRevision_id']))
