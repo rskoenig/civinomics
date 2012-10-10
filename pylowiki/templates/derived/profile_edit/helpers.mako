@@ -5,21 +5,21 @@
 			<div class="control-group">
 				<label for="first-name" class="control-label">First name:</label>
 				<div class="controls">
-					<input type="text" id="first-name" name="first_name" placeholder="${c.authuser['firstName']}">
+					<input type="text" id="first-name" name="first_name" value="${c.authuser['firstName']}">
 					<span class="help-inline"><span class="label label-important">Required</span></span>
 				</div> <!-- /.controls -->
 			</div> <!-- /.control-group -->
 			<div class="control-group">
 				<label for="last-name" class="control-label">Last name:</label>
 				<div class="controls">
-					<input type="text" id="last-name" name="last_name" placeholder="${c.authuser['lastName']}">
+					<input type="text" id="last-name" name="last_name" value="${c.authuser['lastName']}">
 					<span class="help-inline"><span class="label label-important">Required</span></span>
 				</div> <!-- /.controls -->
 			</div> <!-- /.control-group -->
 			<div class="control-group">
 				<label for="email" class="control-label">Email:</label>
 				<div class="controls">
-					<input type="text" id="email" name="email" placeholder="${c.authuser['email']}">
+					<input type="text" id="email" name="email" value="${c.authuser['email']}">
 					<span class="help-inline"><span class="label label-important">Required</span></span>
 				</div> <!-- /.controls -->
 			</div> <!-- /.control-group -->
@@ -59,7 +59,7 @@
 				<label for="tagline" class="control-label">Tagline:</label>
 				<div class="controls">
 					% if 'tagline' in c.authuser.keys():
-						<input type="text" id="tagline" name="tagline" placeholder="${c.authuser['tagline']}">
+						<input type="text" id="tagline" name="tagline" value="${c.authuser['tagline']}">
 					% else:
 						<input type="text" id="tagline" name="tagline" placeholder="In 140 characters or fewer ... ">
 					% endif
