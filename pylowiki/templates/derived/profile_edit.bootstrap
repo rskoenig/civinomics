@@ -9,9 +9,7 @@
    </div><!-- well -->
 <h2 class="civ-col">Edit Profile Information</h2>
 
-<div class="span3 offset9">
-    ${lib.fields_alert()}
-</div>
+${lib.fields_alert()}
 <div class="row-fluid">
     % if c.conf['read_only.value'] == 'true':
         <h1> Sorry, Civinomics is in read only mode right now </h1>

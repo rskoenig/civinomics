@@ -640,43 +640,55 @@ class ProfileController(BaseController):
             alert = {'type':'success'}
             alert['title'] = 'Password Change Successful'
             alert['content'] = ''
-            "alert['content'] = 'Please check all Required Fields'"
             session['alert'] = alert
             session.save()
         elif pass_error == 1:
             alert = {'type':'error'}
             alert['title'] = 'Password Change: All Fields Required'
             alert['content'] = ''
-            "alert['content'] = 'Please check all Required Fields'"
             session['alert'] = alert
             session.save()
         elif pass_error == 2:
             alert = {'type':'error'}
             alert['title'] = 'Password Change: Old Password Incorrect'
             alert['content'] = ''
-            "alert['content'] = 'Please check all Required Fields'"
             session['alert'] = alert
             session.save()
         elif pass_error == 3:
             alert = {'type':'error'}
             alert['title'] = 'Password Change: New Passwords Do Not Match'
             alert['content'] = ''
-            "alert['content'] = 'Please check all Required Fields'"
             session['alert'] = alert
             session.save()
 
+        firstName = False
         if 'first_name' in request.params:
             firstName = request.params['first_name']
-        else:
-            firstName = False
+            if firstName == '':
+               firstName = False
+        if not firstName:
+            perror = 1
+            perrorMsg = perrorMsg + ' First name required.'
+
+
+        lastName = False
         if 'last_name' in request.params:
             lastName = request.params['last_name']
-        else:
-            lastName = False
+            if lastName == '':
+                lastName = False
+        if not lastName:
+            perror = 1
+            perrorMsg = perrorMsg + ' Last name required.'
+
+        email = False
         if 'email' in request.params:
             email = request.params['email']
-        else:
-            email = False
+            if email == '':
+                email = False
+        if not email:
+            perror = 1
+            perrorMsg = perrorMsg + ' Email required.'
+
         if 'tagline' in request.params:
             tagline = request.params['tagline']
         else:
@@ -725,11 +737,27 @@ class ProfileController(BaseController):
             commit(u)
             Event('Profile updated.', changeMsg, u, c.authuser)
             Revision(u, u['name'], u)
-            h.flash('Changes saved.', 'success')
-        elif anyChange and perror == 1:
-            h.flash(perrorMsg, 'error')
+            alert = {'type':'success'}
+            alert['title'] = changeMsg
+            alert['content'] = ''
+            session['alert'] = alert
+            session.save()
+
+        elif perror == 1:
+            alert = {'type':'error'}
+            alert['title'] = perrorMsg 
+            alert['content'] = ''
+            session['alert'] = alert
+            session.save()
+
         else:
-            h.flash('No changes submitted.', 'success')
+            if 'alert' not in session:
+                alert = {'type':'error'}
+                alert['title'] = 'No changes submitted.'
+                alert['content'] = ''
+                session['alert'] = alert
+                session.save()
+
 
         return redirect(returnURL)
     
