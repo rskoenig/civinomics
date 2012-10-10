@@ -404,7 +404,12 @@ class DiscussionController(BaseController):
             modDiscussionReason = "No Reason Given"
         e = Event(modTitle, modDiscussionReason, d, c.authuser)
 
-        h.flash(modTitle, 'success')
+        alert = {'type':'success'}
+        alert['title'] = modTitle
+        alert['content'] = ''
+        session['alert'] = alert
+        session.save()
+
         if modType == 'deleted':
             return redirect('/workshop/%s/%s/discussion/'%(w['urlCode'], w['url']))
         else:
