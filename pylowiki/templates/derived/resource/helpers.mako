@@ -38,18 +38,32 @@
 
 <%def name="displayMetaData()">
         <%
-            link = c.resource['link']
-            title = c.resource['title']
-            domain = c.resource['domain']
-            tld = c.resource['tld']
-            if c.revision:
-               if 'link' in c.revision:
-                   link = c.revision['link']
-                   title = c.revision['title']
-                   domain = c.revision['domain']
-                   tld = c.revision['tld']
+            if c.resource['deleted'] == '1':
+                link = ''
+                domain = 'deleted'
+                tld = 'deleted'
+                if c.revision:
+                    title = c.revision['title']
+                else:
+                    title = c.resource['title']
+
+            else:
+                link = c.resource['link']
+                title = c.resource['title']
+                domain = c.resource['domain']
+                tld = c.resource['tld']
+                if c.revision:
+                   if 'link' in c.revision:
+                       link = c.revision['link']
+                       title = c.revision['title']
+                       domain = c.revision['domain']
+                       tld = c.revision['tld']
         %>
-	<h3><a href="${link}" target="_blank" alt="${title}">${title}</a></h3>
+        % if c.resource['deleted'] == '0':
+	    <h3><a href="${link}" target="_blank" alt="${title}">${title}</a></h3>
+        % else:
+	    <h3>${title}</h3>
+        % endif
 	(${domain}.${tld})
 	<br>
         <% author = c.poster %>
@@ -127,7 +141,7 @@
               % endif
               <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}/modResource" class="btn btn-mini btn-warning" title="Administrate Resource"><i class="icon-white icon-list-alt"></i> Admin</a>&nbsp;&nbsp;
           % endif
-          % if (c.authuser and c.authuser.id == c.poster.id) or (c.isAdmin or c.isFacilitator) and c.resource['deleted'] == '0':
+          % if ((c.authuser and c.authuser.id == c.poster.id) or (c.isAdmin or c.isFacilitator)) and c.resource['deleted'] == '0':
               <a href="/editResource/${c.resource['urlCode']}/${c.resource['url']}" class="btn btn-mini btn-primary" title="Edit Resource"><i class="icon-white icon-edit"></i> Edit</a>&nbsp;&nbsp;
           % endif
           % if 'user' in session and c.resource['deleted'] == '0':

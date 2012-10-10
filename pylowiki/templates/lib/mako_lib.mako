@@ -176,10 +176,14 @@
                         <h3>
                             <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">${resource['title']}</a>
                         </h3>
-                        % if len(resource['comment']) > 50:
-                            ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                        % if resource['deleted'] == '0':
+                            % if len(resource['comment']) > 50:
+                                ${resource['comment'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${resource['urlCode']}/${resource['url']}">more</a>
+                            % else:
+                                ${resource['comment']}
+                            % endif
                         % else:
-                            ${resource['comment']}
+                            Deleted
                         % endif
                     </div><!-- row-fluid -->
                     <div class="row-fluid">
@@ -272,7 +276,11 @@
                     <h3>
                     <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
                     </h3>
-                    ${suggestion['data'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">more</a>
+                    % if suggestion['deleted'] == '0':
+                        ${suggestion['data'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">more</a>
+                    % else:
+                        Deleted
+                    % endif
                     <br /><br />
                 </div><!-- row-fluid -->
                 <div class="row-fluid">

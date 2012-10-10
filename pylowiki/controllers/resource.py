@@ -126,7 +126,6 @@ class ResourceController(BaseController):
 
             return render('/derived/resource_edit.bootstrap')
         else:
-            h.flash('You are not authorized', 'error')
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
 
     @h.login_required
@@ -146,7 +145,6 @@ class ResourceController(BaseController):
 
             return render('/derived/resource_edit.bootstrap')
         else:
-            h.flash('You are not authorized', 'error')
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
 
     @h.login_required
@@ -158,7 +156,7 @@ class ResourceController(BaseController):
         c.w = getWorkshopByID(c.r['workshop_id'])
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, c.w.id)
-        if c.authuser.id == c.r.owner or (a or f):
+        if (c.authuser.id == c.r.owner or (a or f) and c.r['deleted'] == '0') and c.r['deleted'] == '0':
             for i in range(len(c.otherResources)):
                 resource = c.otherResources[i]
                 if resource.id == c.r.id:
@@ -167,7 +165,6 @@ class ResourceController(BaseController):
 
             return render('/derived/resource_edit.bootstrap')
         else:
-            h.flash('You are not authorized a is %s and f is %s'%(a, f), 'error')
             return redirect('/workshop/%s/%s/resource/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.r['urlCode'], urlify(c.r['url'])))
 
     @h.login_required
