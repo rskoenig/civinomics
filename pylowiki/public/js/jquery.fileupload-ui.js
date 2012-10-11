@@ -136,7 +136,7 @@
                 if (data.context) {
                     data.context.each(function (index) {
                         var file = ($.isArray(data.result) &&
-                                data.result[index]) || {error: 'emptyResult'};
+                                data.result[index]) || {error: 'acceptFileTypes'};
                         if (file.error) {
                             that._adjustMaxNumberOfFiles(1);
                         }
