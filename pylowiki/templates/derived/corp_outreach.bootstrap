@@ -1,0 +1,102 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%def name="page_specific_css()">
+    <style type="text/css">
+        .solidimage {
+            background-color: #FFFFFF;
+            background-image: url("/images/fluid1_images/outreach_header3.png");
+            height: 405px;
+            width: 980px;
+        }
+    </style>
+</%def>
+<%def name="display_body_right_content()">
+    <div class="span10"><!--span body-->
+            <div>
+                <div class="solidimage">
+                    <div class="span4" style="padding-left:50px; padding-top:70px; width:400px;">
+                        <h1>PUBLIC ENGAGEMENT </br> LIKE NEVER BEFORE.</h1> 
+                        </br>
+                        <h4>POLLING, SURVEYS, AND OUTREACH</br>CAMPAIGNS FOR AS LOW AS $7/SURVEY.</h4>
+                        </br>                           
+                        <div class="row" style="padding-left:30px;">
+                            <a class="btn btn-primary btn-medium" href="mailto:info@civinomics.com" target="_blank">Request a Quote</a>
+                            <a class="btn btn-primary btn-medium" data-toggle="modal" href="#myModal" >Watch the Video</a>
+
+                            <div class="modal hide fade" id="myModal">
+                              <div class="modal-header">
+                                <button class="close" data-dismiss="modal">×</button>
+                                <h3>Civinomics Video</h3>
+                              </div>
+                              <div class="modal-body" align="center">
+                                <iframe src="http://player.vimeo.com/video/38757744" width="600" height="400" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                              </div>
+                            </div>                              
+                        </div>                          
+                    </div>
+                </div>
+            </div>
+            <hr/>
+
+            <div class="row">
+                <h2 style="padding-left:45px">Client Testimonials</h2>
+                <div class="span4" style="width:400px;">
+                    <img src="/images/fluid1_images/clients_3.png">
+                </div>
+                <div class="span5" style="padding-left:60px;">
+                    <blockquote class="pull-right">
+                        </br>
+                        <p> I was blown away by the response to our campaign.</p>  
+                        <small>Melanie Schumacher, Soquel Creek Water District</small>
+                    </blockquote>
+
+                    <blockquote class="pull-left">
+                        <p> Civinomics assists in better understanding community stakeholder concerns with the most challenging and often controversial public projects. Their custom iPad tool and data reporting is first rate and incredibly helpful in planning next step outreach strategies.</p>  
+                        <small>Mark Milan, Data Instincts</small>
+                    </blockquote>
+                </div>
+            </div>
+            <hr/>
+
+            <div class="row">
+                <h2 style="padding-left:45px">Better Data, Faster</h2>
+                <div class="span4" style="width:420px;">
+                    <img src="/images/fluid1_images/ipad_demos3.png">
+                </div>
+                <div class="span5">
+                    <div style="padding-left:60px;">
+                        </br>
+                        <p class="lead">Lose the clip-board, with the Civinomics iPad app your data is now just a click away. You'll get stats on the most effective outreach locations, times of day and more.  As a result, your campaign will be more flexible and responsive.</p>
+                        </br>
+                        <img src="/images/fluid1_images/pdf_icon.png">
+                        <a href="/downloads/EastsideReport_2.22.12.pdf" target="_blank" style="padding-left:10px">Download sample data</a>
+                    </div>
+                </div>
+            </div>
+
+            <hr/>
+
+            <div class="row">
+                <h2 style="padding-left:45px">Contact Us</h2>
+                </br>
+                <div class="span8 offset1">
+                        
+                        </br>
+                        <div class="pull-right" style="padding-right: 30px;">
+                            <div class="divButton">
+                                <a class="btn btn-primary btn-large" href="mailto:info@civinomics.com" target="_blank">Request a Quote</a>
+                            </div>  
+                        </div>
+                        <div class="span5" style="text-align: left;">
+                            <p>Civinomics reserves the right to decline any campaign that does not increase public awareness with factual information and lead to greater transparency in the civic decision making process.</p>
+                            </br>
+                            </br>
+                            </br>
+                            </br>
+                        </div>      
+                </div><!--/.span8-->
+            </div><!--/ row-->      
+    </div><!--/ span 9-->    
+    
+        
+</%def>
+
