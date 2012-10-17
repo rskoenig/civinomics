@@ -35,7 +35,9 @@ class AccountController(BaseController):
         if not c.account and 'numHost' in request.params:
            log.info('accountAdminHandler %s %s' % (code, url))
            numHost = request.params['numHost']
-           a = Account(c.user, numHost)
+           numParticipants = '10'
+           monthlyRate = '0'
+           a = Account(c.user, numHost, numParticipants, monthlyRate, 'trial')
            h.flash('Account Admin Created', 'success')
         elif c.account and 'numHost' in request.params:
            numHost = request.params['numHost']

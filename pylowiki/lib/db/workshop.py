@@ -178,12 +178,13 @@ class Workshop(object):
     # owner -> A user object in Thing form
     #
     # Note this will generate the page and event for you.
-    def __init__(self, title, owner, publicPrivate):
+    def __init__(self, title, owner, publicPrivate, account = 0):
         w = Thing('workshop', owner.id)
         w['title'] = title
         w['url'] = urlify(title)
         w['startTime'] = '0000-00-00'
         w['endTime'] = '0000-00-00'
+        w['account'] = account
 
         # do this in the publish part
         #endTime = datetime.datetime.now()

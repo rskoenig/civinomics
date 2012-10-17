@@ -3,6 +3,8 @@ import logging
 
 from pylowiki.model import Thing, meta
 from dbHelpers import commit, with_characteristic as wc
+from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.db.event import Event
 
 log = logging.getLogger(__name__)
 
@@ -29,11 +31,22 @@ def subtractHostFromAccount(account, numHost):
 
 # Object
 class Account(object):
-    def __init__(self, user, numHost = 1):
+    def __init__(self, user, numHost, numParticipants, monthlyRate, type):
         a = Thing('account', user.id)
         """number of workshop or survey objects the account can host"""
         a['numHost'] = numHost
         a['numRemaining'] = numHost
+        a['numParticipants'] = numParticipants
+        a['monthyRate'] = monthlyRate
+        a['type'] = type
         a['disabled'] = '0'
+        a['orgName'] = user['name']
+        a['orgEmail'] = user['email']
+        a['orgMessage'] = user['tagline']
+        a['orgLink'] = 'none'
+        a['admins'] = user.id
+        commit(a)
+
+        a['urlCode'] = toBase62(a)
         commit(a)
 

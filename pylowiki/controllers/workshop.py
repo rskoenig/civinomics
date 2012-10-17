@@ -572,7 +572,7 @@ class WorkshopController(BaseController):
                 errors=c.form_errors
             )
 
-        w = Workshop(workshopName, c.authuser, publicPrivate)
+        w = Workshop(workshopName, c.authuser, publicPrivate, c.account.id)
         c.workshop_id = w.w.id # TEST
         c.title = 'Add slideshow'
         c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
