@@ -17,12 +17,20 @@ def getUserAccount(userID):
 def getUserAccounts(userID):
         uID = '|' + str(int(userID)) + '|'
         uKey = 'admins'
-        log.info('userID is %s, uID is %s and uKey is %s'%(userID, uID, uKey))
+        ##log.info('userID is %s, uID is %s and uKey is %s'%(userID, uID, uKey))
         accounts = meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wcl(uKey, uID))).all()
         if accounts:
             return accounts
         else:
             return False
+
+def getAccountByCode(hash):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wc('urlCode', hash))).one()
+    except sa.orm.exc.NoResultFound:
+        return False
+
+
 
 # Setters
 def addHostToAccount(account, numHost):
