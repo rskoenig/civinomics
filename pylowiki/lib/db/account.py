@@ -2,10 +2,9 @@
 import logging
 
 from pylowiki.model import Thing, meta
-from dbHelpers import commit, with_characteristic as wc
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.event import Event
-
 log = logging.getLogger(__name__)
 
 # Getters
@@ -14,6 +13,16 @@ def getUserAccount(userID):
         return meta.Session.query(Thing).filter_by(objType = 'account').filter_by(owner = userID).one()
     except:
         return False
+
+def getUserAccounts(userID):
+        uID = '|' + str(int(userID)) + '|'
+        uKey = 'admins'
+        log.info('userID is %s, uID is %s and uKey is %s'%(userID, uID, uKey))
+        accounts = meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wcl(uKey, uID))).all()
+        if accounts:
+            return accounts
+        else:
+            return False
 
 # Setters
 def addHostToAccount(account, numHost):
@@ -44,7 +53,7 @@ class Account(object):
         a['orgEmail'] = user['email']
         a['orgMessage'] = user['tagline']
         a['orgLink'] = 'none'
-        a['admins'] = user.id
+        a['admins'] = '|' + user.id + '|'
         commit(a)
 
         a['urlCode'] = toBase62(a)

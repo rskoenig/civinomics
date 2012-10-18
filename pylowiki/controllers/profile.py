@@ -20,7 +20,7 @@ from pylowiki.lib.db.facilitator import getFacilitatorsByUser
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.account import Account, getUserAccount
+from pylowiki.lib.db.account import Account, getUserAccount, getUserAccounts
 from pylowiki.lib.db.flag import getFlags
 from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
 
@@ -52,7 +52,7 @@ class ProfileController(BaseController):
         else:
            c.isFollowing = False
 
-        c.account = getUserAccount(c.user.id)
+        c.account = getUserAccounts(c.user.id)
 
         fList = getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
@@ -815,9 +815,17 @@ class ProfileController(BaseController):
         c.user = get_user(code, url)
         c.title = c.user['name'] 
         c.events = getParentEvents(c.user)
-        c.account = getUserAccount(c.user.id)
-        c.workshops = getWorkshopsByOwner(c.user.id)
-        log.info('userAdmin %s %s' % (code, url))
+        c.accounts = getUserAccounts(c.user.id)
+        for account in c.accounts:
+            if 'type' not in account:
+                account['type'] = 'basic'
+                account['numParticipants'] = '100'
+
+            if 'orgName' not in account:
+                account['orgName'] = c.user['name']
+                account['orgEmail'] = c.user['email']
+            commit(account)
+        log.info('c.accounts is %s' %c.accounts)
 
         return render("/derived/member_admin.bootstrap")
 
