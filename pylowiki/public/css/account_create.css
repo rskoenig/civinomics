@@ -1,0 +1,89 @@
+hr {
+	border: none;
+	border-bottom: 1px solid #b9b9b9;
+}
+
+/* account photo */
+#account_photo {
+	width: 200px;
+}
+
+#account_photo h2 {
+	left: -5px;
+	top: 10px;
+}
+
+#account_photo img {
+	border-bottom: 1px solid #b9b9b9;
+}
+
+/* account creation form */
+#account_create {
+	width: 699px;
+	border-left: 1px solid #b9b9b9;
+}
+
+#account_create>div {
+	padding: 0 40px;
+}
+
+#basic_info div+div, #voter_info div+div {
+	padding-left: 20px;
+}
+
+/** inputs **/
+#email {
+	width: 250px;
+}
+
+#zip_code {
+	width: 90px;
+}
+
+select {
+	color: #b9b9b9;
+}
+
+select#cultural_background {
+	width: 190px;
+}
+
+input[type="text"] {
+	color: #b9b9b9;
+}
+
+#birthday input[type="text"] {
+	width: 100px;
+}
+
+#tagline {
+	width: 80%;
+}
+
+#bio {
+	width: 300px;
+	height: 100px;
+}
+
+input.middle {
+	width: 90px;
+}
+
+input.years {
+	width: 50px;
+}
+
+td+td {
+	padding-left: 10px;
+}
+
+#education button {
+	width: 80px;
+}
+
+button.gold.right {
+	font-size: 1.5em;
+	width: 160px;
+	height: 40px;
+	margin: 50px 100px 0 0;
+}

@@ -1,0 +1,52 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/lib/admin_helpers/resource.mako" />
+<%namespace name="resource_helpers" file="/derived/resource/helpers.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+
+
+<div class="containerfluid">
+    <div class="row-fluid">
+        <div class="well workshop_header">
+            ${lib.displayWorkshopHeader('')}
+            ${resource_helpers.nav_thing()}
+            <br />
+        </div><!-- well -->
+    </div><!-- row-fluid -->
+    <div class="civ-col">
+        <h2 class="civ-col"><i class="icon-book"></i> Resource Administration</h2>
+    </div><!-- civ-col -->
+    <div class="row-fluid">
+	<div class="span12">
+		${lib.fields_alert()}		
+	</div>
+    </div><!-- row-fluid -->
+    <div class="row-fluid">
+        <div class="span6">
+            ${helpers.resource_events()}
+        </div><!-- span6 -->
+        <div class="span6">
+            % if c.conf['read_only.value'] == 'true':
+                <h1> Sorry, Civinomics is in read only mode right now </h1>
+            % else:
+                ${helpers.resource_admin_options()}
+            % endif
+        </div><!-- span6 -->
+    </div><!-- row-fluid -->
+</div><!-- container -->	
+
+<br /><br />
+<br /><br /> 
+            
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
+
+</%def>
