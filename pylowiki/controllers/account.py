@@ -13,7 +13,7 @@ from pylons import config
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.account import Account, getUserAccount
+from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode
 
 
 from hashlib import md5
@@ -23,7 +23,27 @@ log = logging.getLogger(__name__)
 class AccountController(BaseController):
 
     @h.login_required
-    def accountAdminHandler(self, id1, id2):
+    def accountAdmin(self, id1):
+        code = id1
+        authorized = 0
+        c.account = getAccountByCode(code)
+        adminList = c.account['admins'].split('|')
+        c.admins = []
+        for admin in adminList:
+            if admin and admin != '':
+                user = getUserByID(admin)
+                if user:
+                    c.admins.append(user)
+                    if user.id == c.authuser.id:
+                        authorized = 1
+
+        if authorized or isAdmin(c.authuser.id):
+            return render("/derived/account_admin.bootstrap")
+        else:
+            return redirect("/")
+
+    @h.login_required
+    def accountAdminHandler(self, id1, id2 = ""):
         code = id1
         url = id2
         if not isAdmin(c.authuser.id):
@@ -35,7 +55,9 @@ class AccountController(BaseController):
         if not c.account and 'numHost' in request.params:
            log.info('accountAdminHandler %s %s' % (code, url))
            numHost = request.params['numHost']
-           a = Account(c.user, numHost)
+           numParticipants = '10'
+           monthlyRate = '0'
+           a = Account(c.user, numHost, numParticipants, monthlyRate, 'trial')
            h.flash('Account Admin Created', 'success')
         elif c.account and 'numHost' in request.params:
            numHost = request.params['numHost']

@@ -2,8 +2,9 @@
 import logging
 
 from pylowiki.model import Thing, meta
-from dbHelpers import commit, with_characteristic as wc
-
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.db.event import Event
 log = logging.getLogger(__name__)
 
 # Getters
@@ -12,6 +13,24 @@ def getUserAccount(userID):
         return meta.Session.query(Thing).filter_by(objType = 'account').filter_by(owner = userID).one()
     except:
         return False
+
+def getUserAccounts(userID):
+        uID = '|' + str(int(userID)) + '|'
+        uKey = 'admins'
+        ##log.info('userID is %s, uID is %s and uKey is %s'%(userID, uID, uKey))
+        accounts = meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wcl(uKey, uID))).all()
+        if accounts:
+            return accounts
+        else:
+            return False
+
+def getAccountByCode(hash):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wc('urlCode', hash))).one()
+    except sa.orm.exc.NoResultFound:
+        return False
+
+
 
 # Setters
 def addHostToAccount(account, numHost):
@@ -29,11 +48,22 @@ def subtractHostFromAccount(account, numHost):
 
 # Object
 class Account(object):
-    def __init__(self, user, numHost = 1):
+    def __init__(self, user, numHost, numParticipants, monthlyRate, type):
         a = Thing('account', user.id)
         """number of workshop or survey objects the account can host"""
         a['numHost'] = numHost
         a['numRemaining'] = numHost
+        a['numParticipants'] = numParticipants
+        a['monthyRate'] = monthlyRate
+        a['type'] = type
         a['disabled'] = '0'
+        a['orgName'] = user['name']
+        a['orgEmail'] = user['email']
+        a['orgMessage'] = user['tagline']
+        a['orgLink'] = 'none'
+        a['admins'] = '|' + user.id + '|'
+        commit(a)
+
+        a['urlCode'] = toBase62(a)
         commit(a)
 
