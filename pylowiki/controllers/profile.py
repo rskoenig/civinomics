@@ -5,7 +5,7 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.utils import urlify, toBase62
+from pylowiki.lib.utils import urlify
 
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
@@ -820,7 +820,6 @@ class ProfileController(BaseController):
             if 'type' not in account:
                 account['type'] = 'basic'
                 account['numParticipants'] = '100'
-                account['urlCode'] = toBase62(account)
 
             if 'orgName' not in account:
                 account['orgName'] = c.user['name']
