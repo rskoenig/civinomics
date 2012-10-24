@@ -26,13 +26,6 @@ class AccountController(BaseController):
     def accountAdmin(self, id1):
         code = id1
         c.account = getAccountByCode(code)
-        adminList = c.account['admins'].split('|')
-        c.admins = []
-        for admin in adminList:
-            if admin and admin != '':
-                user = getUserByID(admin)
-                if user:
-                    c.admins.append(user)
 
         return render("/derived/account_admin.bootstrap")
 

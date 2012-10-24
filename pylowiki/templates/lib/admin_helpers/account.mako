@@ -26,15 +26,5 @@
                <span class="help-inline"><span class="label label-important">Required</span></span>
             </div> <!-- /.controls -->
         </div> <!-- /.control-group --> 
-        % if c.admins:
-            <br />
-            <strong>Account Admins</strong><br />
-            <ul class="unstyled">
-            % for admin in c.admins:
-                <li><a href="/profile/${admin['urlCode']}/${admin['url']}">${admin['name']}</a></li>
-            % endfor
-            </ul>
-        % endif
-       
     </form>
 </%def>
