@@ -147,7 +147,7 @@
 <%def name="memberAccount()">
     % if c.accounts:
         % for account in c.accounts:
-           <strong><a href="/account/${account['urlCode']}">${account['orgName']}</a></strong><br /><br />
+           <strong>${account['orgName']}</strong><br /><br />
            Account Type: ${account['type']}<br />
            Total hosting for account: ${account['numHost']}<br /> 
            Total participants for account: ${account['numParticipants']}<br /> 

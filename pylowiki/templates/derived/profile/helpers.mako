@@ -304,6 +304,9 @@
                 </p>
                 <br />
                 % if 'user' in session and c.authuser.id == c.user.id:
+                   % if c.account and c.account['numRemaining'] != '0':
+                      <a href="/addWorkshop"><button class="btn btn-mini btn-primary" title="Click to create a new workshop"><i class="icon-cog icon-white"></i> New Workshop</button></a>
+                    % endif
                     <a href="/profile/edit"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
                 % endif
                 % if 'user' in session and isAdmin(c.authuser.id):

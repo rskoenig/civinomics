@@ -13,7 +13,7 @@ from pylons import config
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode
+from pylowiki.lib.db.account import Account, getUserAccount
 
 
 from hashlib import md5
@@ -21,13 +21,6 @@ from hashlib import md5
 log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
-
-    @h.login_required
-    def accountAdmin(self, id1):
-        code = id1
-        c.account = getAccountByCode(code)
-
-        return render("/derived/account_admin.bootstrap")
 
     @h.login_required
     def accountAdminHandler(self, id1, id2):
