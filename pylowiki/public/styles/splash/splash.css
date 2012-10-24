@@ -43,15 +43,15 @@ html, body {
 }
 
 .imageChanger0{
-    background-image: url('/images/splash/back_1.JPG');
+    background-image: url('/images/splash/city_hall.jpg');
 }
 
 .imageChanger1{
-    background-image: url('/images/splash/back_2.JPG');
+    background-image: url('/images/splash/barclays_subway.jpg');
 }
 
 .imageChanger2{
-    background-image: url('/images/splash/back_3.JPG');
+    background-image: url('/images/splash/town_hall.jpg');
 }
 
 .main-well{
@@ -64,9 +64,24 @@ html, body {
     filter:alpha(opacity=90); /* For IE8 and earlier */
 }
 
+.photoCredits{
+    margin-top: 475px;
+    text-align: left;
+    color: #ffffff;
+    font-style: italic;
+    font-size: 16px;
+}
+
 .info{
     border-top:1px solid #DDDDDD;
-    margin-top:190px;
+    margin-top:185px;
+}
+
+.infoSection{
+    border-top:1px solid #DDDDDD;
+    margin-top: 40px;
+    padding-top:20px; 
+    text-align:center;"
 }
 
 .magnify{
@@ -172,3 +187,33 @@ html, body {
 .login-body{
     border-bottom: 1px solid #DDDDDD;
 }
+
+.howitworks-number{
+	background-image: url('/images/splash/bg_dot.png');
+    border-radius: 15px 15px 15px 15px;
+    color: #FFFFFF;
+    display: inline-block;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 600;
+    height: 26px;
+    line-height: 24px;
+    position: relative;
+    width: 26px;
+    z-index: 1;
+    
+}
+
+.howitworks-text{
+    font-size:16px;
+}
+
+.casestudy{
+    height: 80px;
+    padding-left: 10px;
+    padding-right: 15px;
+}
+
+
+
+

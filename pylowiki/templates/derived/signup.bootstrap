@@ -38,7 +38,11 @@
     </div>
 
     <div id="bg">
-        <img src='/images/splash/back_4.JPG' alt="">
+        <img src='/images/splash/CA_leg.jpg' alt="">
+        <div class="span8">
+            <p class="photoCredits">iStockphoto</p>
+        </div>
+    </div>
     </div>
 
     <div class="container">
