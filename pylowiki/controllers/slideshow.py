@@ -12,7 +12,7 @@ from pylowiki.lib.db.slide import Slide, getSlide, forceGetSlide
 from pylowiki.lib.db.slideshow import Slideshow, getSlideshow, getAllSlides
 from pylowiki.lib.db.imageIdentifier import getImageIdentifier
 
-from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory
+from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory, isImage
 
 #from pylowiki.lib.images import saveImage, resizeImage
 
@@ -34,7 +34,6 @@ class SlideshowController(BaseController):
             h.flash('Could not find workshop!', 'error')
             return redirect('/')
         return render('/derived/uploadImages.html')
-        #return render('/derived/test4.html')
     
     @h.login_required
     def addImageHandler(self, id1, id2):
@@ -56,7 +55,13 @@ class SlideshowController(BaseController):
             filename = file.filename
             identifier = 'slide'
             
-            slide = Slide(c.authuser, s, 'Sample title', 'Sample caption', filename, imageFile, True)
+            isAnImage = isImage(imageFile)
+            if isAnImage == False:
+                return
+            else:
+                imageFile.seek(0)
+
+            slide = Slide(c.authuser, s, 'Sample title', 'Sample caption', filename, imageFile, '1')
             
             #hash = saveImage(imageFile, filename, c.authuser, identifier, s)
             #resizeImage(identifier, hash, 120, 65, 'thumbnail')
@@ -73,9 +78,14 @@ class SlideshowController(BaseController):
             d = {}
             d['name'] = savename
             d['size'] = st.st_size
-            d['url'] = 'http://www.civinomics.org:6626/images/%s/%s/orig/%s.orig' % (identifier, directoryNumber, hash)
-            d['thumbnail_url'] = 'http://www.civinomics.org:6626/images/%s/%s/thumbnail/%s.thumbnail' % (identifier, directoryNumber, hash)
-            d['delete_url'] = 'http://www.civinomics.org:6626/workshop/%s/%s/slideshow/delete/%s' %(w['urlCode'], w['url'], hash)
+            if 'site_base_url' in config:
+                siteURL = config['site_base_url']
+            else:
+                siteURL = 'http://www.civinomics.com'
+            
+            d['url'] = '%s/images/%s/%s/orig/%s.orig' % (siteURL, identifier, directoryNumber, hash)
+            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.thumbnail' % (siteURL, identifier, directoryNumber, hash)
+            d['delete_url'] = '%s/workshop/%s/%s/slideshow/delete/%s' %(siteURL, w['urlCode'], w['url'], hash)
             d['delete_type'] = "DELETE"
             d['-'] = hash
             d['type'] = 'image/png'
@@ -153,30 +163,6 @@ class SlideshowController(BaseController):
         commit(slideshow)
         commit(w)
         return redirect('/')
-        """
-            s = saveImage(c.authuser, thisImage.file, thisImage.filename, s.s, identifier)
-            resizeImage(c.authuser, s, identifier, '.slideshow', 835, 550)
-            resizeImage(c.authuser, s, identifier, '.thumbnail', 120, 65)
-            
-            thisSlide = Slide(c.authuser, s, )
-            
-            if i == 1:
-                w['mainImage_caption'] = thisCaption
-                w['mainImage_title'] = thisTitle
-                w['mainImage_hash'] = s['image_hash_%s' % identifier] 
-                w['mainImage_postFix'] = s['image_postfix_%s' % identifier]
-                w['mainImage_identifier'] = identifier
-                w['mainImage_id'] = s.id
-                
-            l.append(s.id)
-        
-        slideshow_order = ','.join([str(id) for id in l])
-        w['slideshow_order'] = slideshow_order
-        s['slideshow_order'] = slideshow_order
-        commit(w)
-        commit(s)
-        return redirect('/')
-        """
         
     """
         Gets called whenever an edit to the title or caption of a slide is made
@@ -232,7 +218,7 @@ class SlideshowController(BaseController):
             for item in order:
                 slide = forceGetSlide(int(item))
                 if int(slide['deleted']) == 0:
-                    slide['deleted'] = 1
+                    slide['deleted'] = '1'
                     commit(slide)
         elif state == 'published':
             firstSlide = forceGetSlide(int(order[0]))
@@ -251,7 +237,7 @@ class SlideshowController(BaseController):
             for item in order:
                 slide = forceGetSlide(item)
                 if int(slide['deleted']) == 1:
-                    slide['deleted'] = 0
+                    slide['deleted'] = '0'
                     commit(slide)
             
             slideshow['slideshow_order'] = ','.join(map(str, order))

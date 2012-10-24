@@ -1,4 +1,6 @@
 import datetime
+import logging
+log = logging.getLogger(__name__)
 
 def ungettext(a,b,count):
     if count:
@@ -9,6 +11,13 @@ def ugettext(a):
     return a
 
 def timeSince(d, now=None):
+    d = unicode(d)
+    dList = d.split('.')
+    d = dList[0]
+    if now:
+        now = unicode(now)
+        nowList = now.split('.')
+        now = nowList[0]
     
     """
     Takes two datetime objects and returns the time between d and now
@@ -31,6 +40,13 @@ def timeSince(d, now=None):
       (60 * 60, lambda n: ungettext('hour', 'hours', n)),
       (60, lambda n: ungettext('minute', 'minutes', n)),
     )
+
+    # Check for unicodeness
+    if isinstance(d, unicode):
+        d = datetime.datetime.strptime(d, "%Y-%m-%d %H:%M:%S")
+    if isinstance(now, unicode):
+        now = datetime.datetime.strptime(now, "%Y-%m-%d %H:%M:%S")
+
     # Convert datetime.date to datetime.datetime for comparison.
     if not isinstance(d, datetime.datetime):
         d = datetime.datetime(d.year, d.month, d.day)
@@ -41,7 +57,7 @@ def timeSince(d, now=None):
         if d.tzinfo:
             now = datetime.datetime.now(LocalTimezone(d))
         else:
-            now = datetime.datetime.now()
+            now = datetime.datetime.now(None)
 
     # ignore microsecond part of 'd' since we removed it from 'now'
     delta = now - (d - datetime.timedelta(0, 0, d.microsecond))
@@ -72,3 +88,8 @@ def timeuntil(d, now=None):
     if not now:
         now = datetime.datetime.now(utc if is_aware(d) else None)
     return timesince(now, d)
+
+def timeUntil(d, now=None):
+    if not now:
+        now = datetime.datetime.now(None)
+    return timeSince(now, d)

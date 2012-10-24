@@ -5,6 +5,7 @@ from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
+from pylowiki.lib.utils import urlify
 
 #fox added following imports
 #from pylowiki.model import commit_edit, get_page, get_all_pages
@@ -12,6 +13,8 @@ from pylowiki.lib.db.page import get_page, get_all_pages, getPageByID
 from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.revision import Revision
 from pylowiki.lib.db.dbHelpers import commit
+from pylowiki.lib.db.user import isAdmin
+from pylowiki.lib.db.facilitator import isFacilitator
 
 import pylowiki.lib.helpers as h
 import re
@@ -71,38 +74,39 @@ class WikiController(BaseController):
         """ Handles wiki Submit """
         code = id1
         url = id2
-        
-        try:
 
-            request.params['submit'] #Try submit, if false redirect back.
-            data = remark = ""
-            for i in range( 0, int(request.params['count'])): # Get all the textarea content, append to data
-                data = data + request.params['textarea'+str(i)]
-                if request.params.get('remark'+str(i)) is None:
-                    pass # Do nothing
-                else:
-                    remark = remark + request.params.get('remark'+str(i))
+        w = getWorkshop(code, urlify(url))
+        if not w:
+            h.flash('Workshop not found', 'error')
+            return redirect('/')
+
+        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, w.id)): 
             
-            w = getWorkshop(code, url)
-            if not w:
-                h.flash('Workshop not found', 'error')
-                return redirect('/')
+            try:
+
+                request.params['submit'] #Try submit, if false redirect back.
+                data = remark = ""
+                for i in range( 0, int(request.params['count'])): # Get all the textarea content, append to data
+                    data = data + request.params['textarea'+str(i)]
+                    if request.params.get('remark'+str(i)) is None:
+                        pass # Do nothing
+                    else:
+                        remark = remark + request.params.get('remark'+str(i))
+                
+                page = getPageByID(w['page_id'])
+                r = Revision(c.authuser, data, page)
+                w['mainRevision_id'] = r.r.id
+                commit(w)
             
-            page = getPageByID(w['page_id'])
-            r = Revision(c.authuser, data, page)
-            w['mainRevision_id'] = r.r.id
-            commit(w)
+            except KeyError: 
+                h.flash( "Do not access a handler directly", "error" )
             
-            """
-            if commit_edit( id, session['user'], data, "edit", remark ):
-                h.flash( "The page was saved!", "success" )
+            if 'configure' in request.params:
+                return redirect( "/workshop/%s/%s/configure" %(code, url) )
             else:
-                h.flash( "The page was NOT saved.", "warning" )
-            """
-        except KeyError: 
-            h.flash( "Do not access a handler directly", "error" )
-            
-        return redirect( "/workshops/%s/%s/background" %(code, url) )
+                return redirect( "/workshop/%s/%s/background" %(code, url) )
+        else:
+            return redirect( "/workshop/%s/%s" %(code, url) )
     
     @h.login_required
     def previewer( self, id ):
@@ -110,7 +114,7 @@ class WikiController(BaseController):
         try:
             preview = h.literal(h.reST2HTML(request.params['data']))
         except:
-            preview = "there was a problem with ajax..."
+            preview = "There is a problem with your syntax, please fix to save your comment/edits."
         return preview
 
 

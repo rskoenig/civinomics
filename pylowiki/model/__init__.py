@@ -1,6 +1,7 @@
 #from sqlalchemy import (MetaData, Table, Column, Integer, Unicode, DateTime,
 from sqlalchemy import (Table, Column, Integer, Unicode, DateTime, BLOB, 
         ForeignKey, UnicodeText, and_, not_)
+from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.orm import mapper, relationship, Session
 from sqlalchemy.orm.collections import attribute_mapped_collection
 
@@ -150,7 +151,7 @@ t_data = Table('data', meta.metadata,
               Column('thing_id', Integer, ForeignKey('thing.id'),
                      primary_key=True),
               Column('key', Unicode(100), primary_key=True),
-              Column('value', UnicodeText, default=None),)
+              Column('value', LONGTEXT(convert_unicode=True, collation='utf8_bin'), default=None))
 
 t_blob = Table('blobbicus', meta.metadata,
                Column('thing_id', Integer, ForeignKey('thing.id'), primary_key = True),

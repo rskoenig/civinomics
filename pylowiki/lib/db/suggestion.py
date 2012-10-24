@@ -17,7 +17,7 @@ def getSuggestionByID(id):
     except:
         return False
 
-def getAllSuggestions(deleted = False):
+def getAllSuggestions(deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter_by(objType = 'suggestion').all()
     except:
@@ -38,7 +38,13 @@ def getSuggestionsForWorkshop(code, url):
 
 def getActiveSuggestionsForWorkshop(code, url):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('adopted', '0'))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+    except:
+        return False
+
+def getAdoptedSuggestionsForWorkshop(code, url):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('adopted', '1'))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
     except:
         return False
 
@@ -102,17 +108,17 @@ class Suggestion(object):
         s = Thing('suggestion', owner.id)
         s['title'] = title
         s['url'] = urlify(title[:30])
-        s['urlCode'] = toBase62('%s_%s_%s'%(title, owner['name'], int(time())))
         s['data'] = data
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']
         s['allowComments'] = allowComments
         s['numComments'] = 0
-        s['disabled'] = False
-        s['deleted'] = False
-        s['adopted'] = False
+        s['disabled'] = '0'
+        s['deleted'] = '0'
+        s['adopted'] = '0'
         ##log.info('data = %s' % data)
         commit(s)
+        s['urlCode'] = toBase62(s)
         self.s = s
         
         r = Revision(owner, data, s)

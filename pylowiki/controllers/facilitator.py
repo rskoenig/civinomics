@@ -64,12 +64,12 @@ class FacilitatorController(BaseController):
                   ##log.info('coFacilitateHandler got doF')
 
             if doF and 'acceptInvite' in request.params:
-                  doF['pending'] = 0
+                  doF['pending'] = '0'
                   eAction = "Accepted"
                   
             if doF and 'declineInvite' in request.params:
-                  doF['pending'] = 0
-                  doF['disabled'] = 1
+                  doF['pending'] = '0'
+                  doF['disabled'] = '1'
                   eAction = "Declined"
 
             if doF:
@@ -108,7 +108,7 @@ class FacilitatorController(BaseController):
 
 
         if doF and c.authuser.id == doF.owner:
-           doF['disabled'] = 1
+           doF['disabled'] = '1'
            commit(doF)
            Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], w['title'], resignReason), doF, c.authuser)
            h.flash('CoFacilitation Resignation Accepted', 'success')

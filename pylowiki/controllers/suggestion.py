@@ -7,13 +7,14 @@ from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
 from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
+from pylowiki.lib.db.resource import getActiveResourcesByParentID
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.revision import get_revision, Revision
+from pylowiki.lib.db.revision import get_revision, Revision, getParentRevisions, getRevisionByCode
 from pylowiki.lib.db.page import Page, getPageByID, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
+from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags, clearFlags
 from pylowiki.lib.db.revision import Revision
 
 from pylowiki.lib.base import BaseController, render
@@ -27,42 +28,59 @@ log = logging.getLogger(__name__)
 
 class SuggestionController(BaseController):
 
-    def index(self, id1, id2, id3, id4):
+    def index(self, id1, id2, id3, id4, id5 = ''):
         workshopCode = id1
         workshopURL = id2
         suggestionCode = id3
         suggestionURL = id4
+        revisionURL = id5
         
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         # for comment disable
         if 'allowComments' not in c.s:
-           c.s['allowComments'] = 1
+           c.s['allowComments'] = '1'
         if c.s['disabled'] == '1' or c.s['allowComments'] == '0':
             c.commentsDisabled = 1
         else:
             c.commentsDisabled = 0
         c.events = getParentEvents(c.s)
-        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, urlify(workshopURL))
+        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, workshopURL)
+        c.resources = getActiveResourcesByParentID(c.s.id)
         for i in range(len(c.suggestions)):
             suggestion = c.suggestions[i]
             if suggestion.id == c.s.id:
                 c.suggestions.pop(i)
                 break
-        r = get_revision(int(c.s['mainRevision_id']))
-        
+
         c.title = c.s['title']
-        c.content = h.literal(h.reST2HTML(c.s['data']))
-        ##c.content = h.lit_sub('<p>', h.literal('<p class = "clr suggestion_summary">'), c.content)
+
+        if revisionURL != '':
+            c.revision = getRevisionByCode(revisionURL)
+            c.content = h.literal(h.reST2HTML(c.revision['data']))
+            c.lastmoduser = getUserByID(c.revision.owner)
+            c.lastmoddate = c.revision.date
+            r = c.revision
+        else:
+            c.content = h.literal(h.reST2HTML(c.s['data']))
+            c.lastmoduser = getUserByID(c.s.owner)
+            if 'mainRevision_id' in c.s:
+                r = get_revision(int(c.s['mainRevision_id']))
+                c.lastmoddate = r.date
+            else:
+                c.lastmoddate = c.s.date
+
+        c.revisions = getParentRevisions(c.s.id)
         
         # Note we can get original author and last revision author
         c.author = c.lastmoduser = getUserByID(r.owner)
-        c.lastmoddate = r.date
         c.discussion = getDiscussionByID(c.s['discussion_id'])
 
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.allowComments = c.s['allowComments']
             
             c.rating = False
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
@@ -74,8 +92,13 @@ class SuggestionController(BaseController):
                 sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
                 if c.s.id in sugRateDict.keys():
                     c.rating = getRatingByID(sugRateDict[c.s.id])
-                    
-        return render('/derived/suggestion.html')
+        else:
+            c.isAdmin = False
+            c.isFacilitator = False
+            c.isScoped = False
+            c.allowComments = False
+            
+        return render('/derived/suggestion.bootstrap')
 
     @h.login_required
     def newSuggestion(self, id1, id2):
@@ -84,15 +107,14 @@ class SuggestionController(BaseController):
 
         c.w = getWorkshop(code, urlify(url))
         a = isAdmin(c.authuser.id)
-        f =  isFacilitator(c.authuser, c.w)
+        f =  isFacilitator(c.authuser.id, c.w.id)
         s = isScoped(c.authuser, c.w)
         if (s and c.w['allowSuggestions'] == '1') or a or f:
             c.s = False
             c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
 
-            return render('/derived/suggestion_edit.html')
+            return render('/derived/suggestion_edit.bootstrap')
         else:
-           h.flash('You are not authorized', 'error')
            return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
 
     @h.login_required
@@ -105,9 +127,8 @@ class SuggestionController(BaseController):
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser, c.w)
         if (c.authuser.id == c.s.owner) or a or f:
-            return render('/derived/suggestion_edit.html')
+           return render('/derived/suggestion_edit.bootstrap')
         else:
-           h.flash('You are not authorized', 'error')
            return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], urlify(c.w['url']), c.s['urlCode'], urlify(c.s['url'])))
 
     @h.login_required
@@ -130,13 +151,13 @@ class SuggestionController(BaseController):
         
         serror = 0
         serrorMsg = ''
-        if not data or not title:
+        if not title or title == '':
             serror = 1
-            serrorMsg = 'Enter suggestion title and text.'
+            serrorMsg = serrorMsg + 'Sugestion title required.'
 
-        if data == '' or title == '':
+        if not data or data == '':
             serror = 1
-            serrorMsg = 'Enter suggestion title and text.'
+            serrorMsg = serrorMsg + 'Sugestion description required.'
 
         if allowComments != '1' and allowComments != '0':
             serror = 1
@@ -148,10 +169,14 @@ class SuggestionController(BaseController):
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, w.id)
         if c.authuser.id != s.owner and (a == False and f == False):
-           serror = 1
-           serrorMsg = 'You are not authorized'
+           return redirect('/workshop/%s/%s'%(w['urlCode'], w['url']))
         if serror:
-           h.flash(serrorMsg, 'error')
+           alert = {'type':'error'}
+           alert['title'] = "Error."
+           alert['content'] = serrorMsg
+           session['alert'] = alert
+           session.save()
+           return redirect('/editSuggestion/%s/%s'%(code, url))
         else:
            cMsg = 'Edited: '
            if s['title'] != title:
@@ -171,6 +196,12 @@ class SuggestionController(BaseController):
            p = Page(title, c.authuser, s, data)
            commit(s)
            Event('Suggestion Edited', cMsg, s, c.authuser)
+           alert = {'type':'success'}
+           alert['title'] = 'Suggestion edited.'
+           alert['content'] = 'Suggestion updated, thanks!'
+           session['alert'] = alert
+           session.save()
+
         
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(s['workshopCode'], urlify(s['workshopURL']), code, url))
 
@@ -198,21 +229,41 @@ class SuggestionController(BaseController):
         if not data or not title:
             serror = 1
             serrorMsg = 'Enter suggestion title and text.'
+            log.info(serrorMsg)
         if data == '' or title == '':
             serror = 1
             serrorMsg = 'Enter suggestion title and text.'
+            log.info(serrorMsg)
+
         a = isAdmin(c.authuser.id)
-        f =  isFacilitator(c.authuser, c.w)
+        f =  isFacilitator(c.authuser.id, c.w.id)
         s = isScoped(c.authuser, c.w)
+
         if (not s or c.w['allowSuggestions'] == '0') and not a and not f:
-           serror = 1
-           serrorMsg = 'You are not authorized.'
+           return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
+
         if serror:
-           h.flash(serrorMsg, 'error')
+            alert = {'type':'error'}
+            alert['title'] = "Error."
+            alert['content'] = serrorMsg
+            session['alert'] = alert
+            session.save()
+            c.s = False
+            c.suggestionTitle = title
+            c.suggestionData = data
+            c.suggestionAllowComments = allowComments
+            c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+            return render('/derived/suggestion_edit.bootstrap')
+
         else:
-           s = Suggestion(c.authuser, title, data, allowComments, c.w)
+            alert = {'type':'success'}
+            alert['title'] = 'Suggestion added.'
+            alert['content'] = 'Thanks for the suggestion!'
+            session['alert'] = alert
+            session.save()
+            s = Suggestion(c.authuser, title, data, allowComments, c.w)
+            return redirect('/workshop/%s/%s'%(code, url))
         
-        return redirect('/workshop/%s/%s'%(code, url))
 
     @h.login_required
     def modSuggestion(self, id1, id2):
@@ -222,7 +273,6 @@ class SuggestionController(BaseController):
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
         if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, c.w.id):
-              h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], c.w['url'], c.s['urlCode'], c.s['url']))
 
         c.isAdmin = isAdmin(c.authuser.id)
@@ -247,6 +297,53 @@ class SuggestionController(BaseController):
         return render('/derived/suggestion_admin.bootstrap')
 
     """ Takes in edits to the suggestion, saves new revision to the database. """
+
+
+    @h.login_required
+    def clearSuggestionFlagsHandler(self, id1, id2):
+        code = id1
+        url = id2
+
+        c.s = getSuggestion(code, urlify(url))
+        c.author = getUserByID(c.s.owner)
+        c.w = getWorkshop(c.s['workshopCode'], c.s['workshopURL'])
+        if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, c.w.id):
+              return redirect('/workshop/%s/%s/suggestion/%s/%s'%(c.w['urlCode'], c.w['url'], c.s['urlCode'], c.s['url']))
+
+        clearError = 0
+        clearMessage = ""
+
+        if 'clearSuggestionFlagsReason' in request.params:
+            clearReason = request.params['clearSuggestionFlagsReason']
+            if clearReason != '':
+                clearFlags(c.s)
+                clearTitle = "Flags cleared"
+                e = Event(clearTitle, clearReason, c.s, c.authuser)
+            else:
+                clearError = 1
+                clearMessage = "Please include a reason for your action"
+        else:
+            clearError = 1
+            clearMessage = "Please include a reason for your action"
+
+        if clearError:
+            alert = {'type':'error'}
+            alert['title'] = "Flags not cleared"
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+        else:
+            clearMessage = "Flags cleared from this suggestion"
+            alert = {'type':'success'}
+            alert['title'] = 'Flags cleared!'
+            alert['content'] = clearMessage
+            session['alert'] = alert
+            session.save()
+
+        returnURL = "/modSuggestion/" + c.s['urlCode'] + "/" + c.s['url']
+        return redirect(returnURL)
+
+        
     @h.login_required
     def modSuggestionHandler(self):
 
@@ -261,7 +358,6 @@ class SuggestionController(BaseController):
         try:
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
-              h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
            modType = request.params['modType']
@@ -281,14 +377,14 @@ class SuggestionController(BaseController):
         # disable or enable the suggestion, log the event
         if modType == 'disable':
             if s['disabled'] == '0':
-               s['disabled'] = True
+               s['disabled'] = '1'
                modTitle = "Suggestion Disabled"
             else:
-               s['disabled'] = False
+               s['disabled'] = '0'
                modTitle = "Suggestion Enabled"
         elif modType == 'delete':
-            s['disabled'] = False
-            s['deleted'] = True
+            s['disabled'] = '0'
+            s['deleted'] = '1'
             modTitle = "Suggestion Deleted"
 
         commit(s)
@@ -297,7 +393,12 @@ class SuggestionController(BaseController):
         e = Event(modTitle, modSuggestionReason, s, c.authuser)
 
         h.flash(modTitle, 'success')
-        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
+        if modType == 'delete':
+            return redirect('/workshop/%s/%s/' %(w['urlCode'], w['url']))
+        else:
+            return redirect('/workshop/%s/%s/suggestion/%s/%s' %(w['urlCode'], w['url'], s['urlCode'], s['url']))
+
 
     @h.login_required
     def adoptSuggestionHandler(self):
@@ -313,7 +414,6 @@ class SuggestionController(BaseController):
            s = getSuggestion(suggestionCode, suggestionURL) 
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
-              h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
 
@@ -323,10 +423,10 @@ class SuggestionController(BaseController):
            return redirect('/workshop/%s/%s/suggestion/%s/%s/modSuggestion'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
         if not 'adopted' in s or s['adopted'] == '0':
-           s['adopted'] = True
+           s['adopted'] = '1'
            adoptTitle = "Suggestion Adopted"
         else:
-           s['adopted'] = False
+           s['adopted'] = '0'
            adoptTitle = "Suggestion Unadopted"
 
         commit(s)
@@ -349,7 +449,6 @@ class SuggestionController(BaseController):
            s = getSuggestion(suggestionCode, suggestionURL) 
 
            if not isAdmin(c.authuser.id) and not isFacilitator(c.authuser.id, w.id):
-              h.flash('You are not authorized', 'error')
               return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
 
@@ -364,39 +463,16 @@ class SuggestionController(BaseController):
         return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
 
     @h.login_required
-    def handler(self, id):
-        l = id.split('_')
-        workshop_id = l[0]
-        suggestion_id = l[1]
-        s = getSuggestionByID(suggestion_id)
-        w = getWorkshopByID(workshop_id)
-        p = getPageByID(s['page_id'])
-        
-        # Does the user have an access level of at least 200?
-        # Alternately, is the user marked as an owner of the suggestion and/or issue?
-        if (int(c.authuser['accessLevel']) < 200) or (int(c.authuser.id) != int(s.owner)):
-            h.flash('You are not authorized to view this page', 'error')
-            return redirect('/')
-        
-        data = request.params['textarea0']
-        
-        r = Revision(c.authuser, data, p)
-        s['mainRevision_id'] = r.r.id
-        s['data'] = data
-        commit(s)
-        
-        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], w['url'], s['urlCode'], s['url']))
-
-    @h.login_required
-    def flagSuggestion(self, id1):
-        suggestionID = id1
-        suggestion = getSuggestionByID(suggestionID)
+    def flagSuggestion(self, id1, id2):
+        code = id1
+        url = id2
+        suggestion = getSuggestion(code, urlify(url))
         if not suggestion:
-            return json.dumps({'id':suggestionID, 'result':'ERROR'})
+            return json.dumps({'id':suggestion.id, 'result':'ERROR'})
         if not isFlagged(suggestion, c.authuser):
             f = Flag(suggestion, c.authuser)
-            return json.dumps({'id':suggestionID, 'result':"Successfully flagged!"})
+            return json.dumps({'id':suggestion.id, 'result':"Successfully flagged!"})
         else:
-            return json.dumps({'id':suggestionID, 'result':"Already flagged!"})
+            return json.dumps({'id':suggestion.id, 'result':"Already flagged!"})
 
 

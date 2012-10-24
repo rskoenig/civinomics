@@ -1,33 +1,33 @@
 <%inherit file = "/base/template.bootstrap"/>
 <%namespace name="helpers" file="/lib/admin_helpers/comment.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 
-    
+${lib.return_to()}
 <div class="container">
-	<div class="span12">
-		<div class="row">	
-		    <br /><br />
-		    <br /><br />
-			<div class="span3 offset9">
-				${helpers.fields_alert()}		
-			</div>
-		    <div class="banner_div">
-		       <h2 class="banner">Moderate Comment</h2>
-		    </div> 
-		    <br />
-		</div>
-		<div class="row">
-			<div class="span6">
-			${helpers.comment_admin()}
-			</div>
-			<div class="span6">
-    			<strong>Moderate Comment</strong>
-				<div class="row">
-				${helpers.moderateComments()}
-				</div>	
-			</div>
-		</div>
-	</div>
-</div>
+    <br /><br />
+    <div class="row-fluid">	
+        <div class="span12">
+            <h2 class="civ-col">Administrate Comment</h2>
+            ${lib.fields_alert()}		
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
+    <div class="row-fluid">	
+        <div class="span6">
+            <br /><br />
+            ${helpers.comment_admin()}
+        </div><!-- span6 -->
+        <div class="span6">
+            <br /><br />
+            <strong><span class="pull-left">Moderate Comment</strong></span>
+            % if c.conf['read_only.value'] == 'true':
+                <h1> Sorry, site is in read-only mode right now. </h1>
+            % else:
+                ${helpers.moderateComments()}
+                ${helpers.clearCommentFlags()}
+            % endif
+        </div><!-- span6 -->	
+    </div><!-- row-fluid -->
+</div><!-- container -->
 
 <%def name = 'extraHTML()'>
 

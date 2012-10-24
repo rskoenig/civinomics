@@ -1,32 +1,18 @@
 <%inherit file = "/base/template.html"/>
 <%!
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import getFlags
 %>
 
-<%def name="fields_alert()">
-	% if 'alert' in session:
-		<% alert = session['alert'] %> 
-        <div class="alert alert-${alert['type']}">
-            <button data-dismiss="alert" class="close">×</button>
-            <strong>${alert['title']}</strong>
-            ##${alert['content']}
-        </div>
-        <% 
-           session.pop('alert')
-           session.save()
-        %>
-	% endif
-</%def>
-
 <%def name="sug_admin_banner()">
-    <div class="page-header">
-    	<h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.title}</a></h1>
-    </div>   
-
+    <div class="well">
+    <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/">${c.w['title']}</a></h1>
+    </div>
 </%def>
 
 <%def name="suggestion_events_flags()">
 
+    <p><h3><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a></h3></p>
     Added by member <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a> 
     <br /><br />
     Last modified date: ${c.lastmoddate}
@@ -67,9 +53,20 @@
 
 <%def name="suggestion_admin()">  
     <p>
+
     <strong class="gray">Administrate Suggestion</strong>
+    % if len(getFlags(c.s)) > 0:
+        <br /><br /><br />
+        <strong>Clear Suggestion Flags</strong>
+        <form name="note_suggestion" id="note_suggestion" class="left" action = "/clearSuggestionFlagsHandler/${c.s['urlCode']}/${c.s['url']}" enctype="multipart/form-data" method="post" >
+        Reason for clearing flags: &nbsp;
+        <input type=text name="clearSuggestionFlagsReason"><br /><br />
+        <button type="submit" class="btn btn-warning">Clear Flags</button>
+
+        </form>
+    % endif
     <br /><br /><br />
-    <strong>Leave Note on Suggetion</strong>
+    <strong>Leave Note on Suggestion</strong>
     <form name="note_suggestion" id="note_suggestion" class="left" action = "/noteSuggestionHandler" enctype="multipart/form-data" method="post" >
     <input type=hidden name=workshopCode value="${c.w['urlCode']}">
     <input type=hidden name=workshopURL value="${c.w['url']}">
@@ -81,55 +78,54 @@
     <button type="submit" class="btn btn-warning">Save Note</button>
     </form>
     <br /><br />
-    % if 'adopted' not in c.s or c.s['adopted'] == '0':
-       <% adoptTitle = "Adopt Suggestion" %>
+    % if c.s['deleted'] == '0':
+        % if 'adopted' not in c.s or c.s['adopted'] == '0':
+           <% adoptTitle = "Adopt Suggestion" %>
+        % else:
+           <% adoptTitle = "Unadopt Suggestion" %>
+        % endif
+        <form name="adopt_suggestion" id="adopt_suggestion" class="left" action = "/adoptSuggestionHandler" enctype="multipart/form-data" method="post" >
+        <strong>${adoptTitle}</strong>
+        <input type=hidden name=workshopCode value="${c.w['urlCode']}">
+        <input type=hidden name=workshopURL value="${c.w['url']}">
+        <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
+        <input type=hidden name=suggestionURL value="${c.s['url']}">
+        <br /><br />
+        Reason for action: &nbsp;
+        <input type=text name=adoptSuggestionReason><br /><br />
+        <button type="submit" class="btn btn-warning">${adoptTitle}</button>
+        </form>
+	<br /><br />
+	<p>
+	<strong>Moderate Suggestion</strong>
+	<form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
+	<input type=hidden name=workshopCode value="${c.w['urlCode']}">
+	<input type=hidden name=workshopURL value="${c.w['url']}">
+	<input type=hidden name=suggestionCode value="${c.s['urlCode']}">
+	<input type=hidden name=suggestionURL value="${c.s['url']}">
+	<br />
+	Reason for action: &nbsp;
+	<input type=text name=modSuggestionReason><br /><br />
+	Click to verify&nbsp;<input type=radio name=verifyModSuggestion> &nbsp; &nbsp;
+	% if c.s['disabled'] == '0':
+	    <button type="submit" name=modType value="disable" class="btn btn-warning">
+            <i class="icon-ban-circle icon-white"></i> Disable Suggestion
+	    </button>
+	    <button type="submit" name=modType value="delete" class="btn btn-danger">
+            <i class="icon-trash icon-white"></i> Delete Suggestion
+	    </button>
+        % else:
+            <button type="submit" name=modType value="disable" class="btn btn-warning">
+            <i class="icon-ok icon-white"></i> Enable Suggestion
+            </button>
+            <button type="submit" name=modType value="delete" class="btn btn-danger">
+            <i class="icon-trash icon-white"></i> Delete Suggestion
+            </button>
+        % endif
+        </form>
     % else:
-       <% adoptTitle = "Unadopt Suggestion" %>
-    % endif
-    <form name="adopt_suggestion" id="adopt_suggestion" class="left" action = "/adoptSuggestionHandler" enctype="multipart/form-data" method="post" >
-    <strong>${adoptTitle}</strong>
-    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-    <input type=hidden name=workshopURL value="${c.w['url']}">
-    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-    <input type=hidden name=suggestionURL value="${c.s['url']}">
-    <br /><br />
-    Reason for action: &nbsp;
-    <input type=text name=adoptSuggestionReason><br /><br />
-    <button type="submit" class="btn btn-warning">${adoptTitle}</button>
-    </form>
-	% if c.s['deleted'] == '0':
-	    <br /><br />
-	    <p>
-	    <strong>Moderate Suggestion</strong>
-	    <form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
-	    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-	    <input type=hidden name=workshopURL value="${c.w['url']}">
-	    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-	    <input type=hidden name=suggestionURL value="${c.s['url']}">
-	    <br />
-	    Reason for action: &nbsp;
-	    <input type=text name=modSuggestionReason><br /><br />
-	    Click to verify&nbsp;<input type=radio name=verifyModSuggestion> &nbsp; &nbsp;
-	    % if c.s['disabled'] == '0':
-	       <button type="submit" name=modType value="disable" class="btn btn-warning">
-	       		<i class="icon-ban-circle icon-white"></i> Disable Suggestion
-	       </button>
-	       <button type="submit" name=modType value="delete" class="btn btn-danger">
-	       	   <i class="icon-trash icon-white"></i> Delete Suggestion
-	       </button>
-	    % else:
-	       <button type="submit" name=modType value="disable" class="btn btn-warning">
-	           <i class="icon-ok icon-white"></i> Enable Suggestion
-	       </button>
-	       <button type="submit" name=modType value="delete" class="btn btn-danger">
-	       	   <i class="icon-trash icon-white"></i> Delete Suggestion
-	       </button>
-	    % endif
-	    </form>
-	% else:
-		<br /><br />
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		<code><strong>Suggestion Deleted</strong></code>
-	% endif	    
-            
+        <br /><br />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <code><strong>Suggestion Deleted</strong></code>
+    % endif	    
 </%def>

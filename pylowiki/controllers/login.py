@@ -10,8 +10,7 @@ from pylowiki.lib.base import BaseController, render
 #Fox imported these modules
 import pylowiki.lib.helpers as h
 from pylowiki.lib.auth import login_required
-#from pylowiki.model import get_user, get_user_by_email, commit
-from pylowiki.lib.db.user import get_user, checkPassword
+from pylowiki.lib.db.user import get_user, changePassword, checkPassword, generatePassword
 from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
 from pylowiki.lib.db.dbHelpers import commit
 
@@ -22,7 +21,8 @@ log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
 
-    def index(self):
+    #def index(self):
+    def loginHandler(self):
         """ Display and Handle Login """
         c.title = c.heading = "Login"  
         c.splashMsg = False
@@ -38,25 +38,31 @@ class LoginController(BaseController):
                 user = get_user_by_email( email )
          
                 if user: # not none or false
-                    if user['disabled'] == True or user['activated'] == False:
-                        log.warning("disabled account attempting to login - " + email )
-                        h.flash( "This account has been disabled.", "warning" )
-                        splashMsg['content'] = 'This account has been disabled.'
+                    if user['disabled'] == '1' or user['activated'] == '0':
+                        log.warning("disabled/inactive account attempting to login - " + email )
+                        splashMsg['content'] = 'This account has been disabled and/or has not been activated.'
                         c.splashMsg = splashMsg
                     elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
+                        if 'laston' in user:
+                            t = time.localtime(float(user['laston']))
+                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                             
                         user['laston'] = time.time()
+                        loginTime = time.localtime(float(user['laston']))
+                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
                         commit(user)
                         session["user"] = user['name']
                         session["userCode"] = user['urlCode']
                         session["userURL"] = user['url']
                         session.save()
                         log.info('session of user: %s' % session['user'])
+                        log.info('%s logged in %s' % (user['name'], loginTime))
                         c.authuser = user
                         
                         log.info( "Successful login attempt with credentials - " + email )
                         try:
-                            return redirect("/derived/issuehome.html")
+                            return redirect("/")
                         except:
                             return redirect(config['app_conf']['site_base_url'])
                     else:
@@ -71,7 +77,7 @@ class LoginController(BaseController):
                 splashMsg['content'] = 'missing username or password'
                 c.splashMsg = splashMsg
             
-            return render("/derived/splash.bootstrap")
+            return render("/derived/login.bootstrap")
 
         except KeyError:
             if "user" in session:
@@ -100,31 +106,46 @@ class LoginController(BaseController):
         return render( "/derived/forgot.mako" )
 
     def forgot_handler(self):
+        c.title = c.heading = "Forgot Password"
+        c.splashMsg = False
+        splashMsg = {}
+        splashMsg['type'] = 'error'
+        splashMsg['title'] = 'Error'
         email = request.params["email"].lower()
-
         user = get_user_by_email( email ) 
         if user:
-            password = user.generate_password() 
-            user.change_password( password )
-            commit( user ) # commit database change
+            if email != config['app_conf']['admin.email']:
+                password = generatePassword() 
+                changePassword( user, password )
+                commit( user ) # commit database change
 
-            toEmail = user.email
-            frEmail = c.conf['contact.email'] 
-            subject = 'Password Recovery'
-            message = '''Password Recovery was successful! \n\n 
-            Please login and change this system generated password.\n\n
-            We have reset your password to: ''' + password
+                toEmail = user['email']
+                frEmail = c.conf['contact.email'] 
+                subject = 'Password Recovery'
+                message = '''We have created a new password for you.\n\n 
+                Please use this password to login.\n\n
+                You can change your password to something you prefer on your profile page.\n\n
+                We have reset your password to: ''' + password
 
-            send( toEmail, frEmail, subject, message )
+                send( toEmail, frEmail, subject, message )
 
-            log.info( "Successful forgot password for " + email )
-            h.flash( "A new password was emailed! ", "success" )
-            return redirect( '/login' )
-
+                log.info( "Successful forgot password for " + email )
+                splashMsg['type'] = 'success'
+                splashMsg['title'] = 'Success'
+                splashMsg['content'] = '''A new password was emailed to you.'''
+                c.splashMsg = splashMsg
+                return render('/derived/forgotPassword.bootstrap')
+            else:
+                log.info( "Failed forgot password for " + email )
+                splashMsg['content'] = "Sorry email not found!"
+                c.splashMsg = splashMsg 
+                return render('/derived/forgotPassword.bootstrap')
         else:
             log.info( "Failed forgot password for " + email )
-            h.flash( "Sorry email not found!", "warning" )
-            return redirect( '/login' )
+            splashMsg['content'] = "Sorry email not found!"
+            c.splashMsg = splashMsg 
+            return render('/derived/forgotPassword.bootstrap')
+
     """ This code moved to controllers/activate.py/activate()
     def activateHandler(self):
         email = request.params["email"].lower()
@@ -175,3 +196,9 @@ class LoginController(BaseController):
             h.flash( "Please fill all fields", "warning" )
             
         return render("/derived/changepass.mako" )
+
+    def loginDisplay(self):
+        return render("/derived/login.bootstrap")
+
+    def forgotPassword(self):
+        return render("/derived/forgotPassword.bootstrap")

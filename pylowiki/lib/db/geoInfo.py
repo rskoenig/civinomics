@@ -13,7 +13,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def getDB():
-    return MySQLdb.connect(user="civinomics",passwd="Sisyphus3",db="geo", cursorclass=MySQLdb.cursors.DictCursor)
+    return MySQLdb.connect(user="civinomics",passwd="Sisyphus3",db="geo",host="civinomics.net", cursorclass=MySQLdb.cursors.DictCursor)
 
 def geoDeurlify( something ):
     deurl = something.replace('-', ' ')
@@ -55,6 +55,15 @@ def getStateInfo( state, country ):
     db.close()
     return rlist
 
+def getCountryInfo( country ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT * from Countries WHERE Country_name = %s""",(country))
+    rlist = c.fetchone()
+    c.close()
+    db.close()
+    return rlist
+
 def getGeoScope( postalCode, country ):
     db = getDB()
     c = db.cursor()
@@ -62,11 +71,36 @@ def getGeoScope( postalCode, country ):
     rlist = c.fetchone()
     c.close()
     db.close()
-    city = rlist['CityMixedCase']
-    county = rlist['County']
-    state = rlist['StateFullName']
-    geoScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
-    return geoScope
+    if rlist != None:
+       city = rlist['CityMixedCase']
+       county = rlist['County']
+       state = rlist['StateFullName']
+       geoScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
+       return geoScope
+    else:
+       return False
+
+def getGeoTitles( postalCode, country ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT ZipCode, CityMixedCase, County, StateFullName from US_Postal WHERE ZipCode = %s""",(postalCode,))
+    rlist = c.fetchone()
+    log.info("rlist is %s",rlist)
+    c.close()
+    db.close()
+    if rlist != None:
+        #postalCode = rlist['ZipCode']
+        city = rlist['CityMixedCase']
+        county = rlist['County']
+        state = rlist['StateFullName']
+        country = geoDeurlify(country)
+        if county and state:
+            geoScope = '||' + country.title() + '||' + state.title() + '||' + county.title() + '||' + city.title() + '|' +  postalCode
+            return geoScope
+        else:
+            return "0"
+    else:
+        return "0"
 
 def getUserScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
@@ -88,11 +122,12 @@ def getUserScopes(searchScope, scopeLevel):
 
 def getWorkshopScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
-    ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
+    ## scopeLevel: country = 3, state = 5, county = 7, city = 9, zip = 10
     ## format of scope attribute ||country||state||county||city|zip
     ##log.info('geoInfo is %s' % geoInfo)
+    ##log.info('searchScope is %s scopeLevel is %s' %(searchScope, scopeLevel))
     #searchScope = geoInfo[0]['scope']
-    scopeLevel = int(scopeLevel) + 1
+    scopeLevel = int(scopeLevel) + 0
     try:
         sList = searchScope.split('|')
         ##log.info('sList is %s' % len(sList))
@@ -161,6 +196,7 @@ class GeoInfo(object):
     def __init__(self, postalCode, country, ownerID ):
         g = Thing('geo', ownerID)
         
+        g['disabled'] = '0'
         g['postalCode'] = postalCode
         g['deactivated'] = '0000-00-00'
 

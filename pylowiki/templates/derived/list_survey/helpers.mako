@@ -56,21 +56,6 @@
             </div>
         </li>
     </ul>
-    <%doc>
-    ## Non standard color
-    <div class="well" style="background-color:#D1CCC3;">
-        <img src="/images/teaser/muni.jpg">
-    </div>
-    
-    ## Non standard color
-    <div class="well" style="background-color:#C4D198;">
-        <img src="/images/teaser/zynga_tech.jpg">
-    </div>
-    
-    <div class="well" style="background-color:#D1CCC3;">
-        <img src="/images/teaser/bevgs.jpg">
-    </div>
-    </%doc>
 </%def>
 
 <%def name='featured_survey(survey)'>

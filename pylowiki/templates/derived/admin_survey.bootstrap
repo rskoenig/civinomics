@@ -24,11 +24,19 @@
     <div class="span6">
         ${helpers.showTitle('Add facilitator')}
         ${helpers.spacer()}
-        ${helpers.addFacilitatorForm()}
+        % if c.conf['read_only.value'] == 'true':
+            <h1> Sorry, site is in read-only mode right now. </h1>
+        % else:
+            ${helpers.addFacilitatorForm()}
+        % endif
         ${helpers.spacer()}
         ${helpers.showTitle('Add admin')}
         ${helpers.spacer()}
-        ${helpers.addAdminForm()}
+        % if c.conf['read_only.value'] == 'true':
+            <h1> Sorry, site is in read-only mode right now. </h1>
+        % else:
+            ${helpers.addAdminForm()}
+        % endif
     </div>
 </div>
 
@@ -36,7 +44,11 @@
     <div class="span12">
         ${helpers.showTitle('Set Featured Survey')}
         ${helpers.spacer()}
-        ${helpers.setFeaturedSurvey(c.surveys)}
+        % if c.conf['read_only.value'] == 'true':
+            <h1> Sorry, site is in read-only mode right now. </h1>
+        % else:
+            ${helpers.setFeaturedSurvey(c.surveys)}
+        % endif
     </div>
 </div>
 

@@ -10,11 +10,12 @@ BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
 def urlify(url):
+    import re
+    pattern = re.compile('[^-\w]+')
     url = url.strip()
     url = url.lower()
     url = url.replace(' ', '-')
-    url = url.replace('/', '-')
-    url = url.replace('\\', '-')
+    url = pattern.sub('', url)
     url = url.encode('utf8')
     url = quote(url)
     return url
@@ -25,8 +26,10 @@ def urlify(url):
     match will need to be used.  For example, matching a workshop's code and title if the
     workshop's code results in a collision.
 """
-def toBase62(s):
-    num = adler32(s)
+def toBase62(thing):
+    s = str(thing.id + 1124816) # Offset by 1-1-2-4-8-16; first 5 numbers in Fibbonacci sequence
+    #num = adler32(s)
+    num = int(s)
     if num < 0: num = -num
     return base_encode(num)
 

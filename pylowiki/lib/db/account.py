@@ -24,7 +24,7 @@ def subtractHostFromAccount(account, numHost):
     if int(account['numHost']) > 0:
        account['numHost'] -= numHost
     else:
-       account['numHost'] = 0
+       account['numHost'] = '0'
     commit(account)
 
 # Object
@@ -34,6 +34,6 @@ class Account(object):
         """number of workshop or survey objects the account can host"""
         a['numHost'] = numHost
         a['numRemaining'] = numHost
-        a['disabled'] = False
+        a['disabled'] = '0'
         commit(a)
 

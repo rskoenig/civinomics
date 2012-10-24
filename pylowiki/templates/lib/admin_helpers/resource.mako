@@ -1,21 +1,7 @@
 <%!
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import getFlags
 %>
-
-<%def name="fields_alert()">
-	% if 'alert' in session:
-		<% alert = session['alert'] %> 
-        <div class="alert alert-${alert['type']}">
-            <button data-dismiss="alert" class="close">×</button>
-            <strong>${alert['title']}</strong>
-            ##${alert['content']}
-        </div>
-        <% 
-           session.pop('alert')
-           session.save()
-        %>
-	% endif
-</%def>
 
 <%def name="res_admin_header()">
     <div class="page-header">
@@ -24,6 +10,7 @@
 </%def>
 
 <%def name="resource_events()">   
+    <p><h3><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${c.resource['urlCode']}/${c.resource['url']}">${c.resource['title']}</a></h3></p>
     Added by member <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a> 
     <br /><br />
     Link: ${c.resource['link']}
@@ -39,7 +26,7 @@
     <br /><br />
     % for flag in c.flags:
        <% user = getUserByID(flag.owner) %>
-       Flagged ${flag.date} by ${user['name']}<br />
+       Flagged ${flag.date}(PST) by ${user['name']}<br />
     %endfor
 
     <br /><br />
@@ -53,7 +40,7 @@
        <br /><br />
        % for event in c.events:
           <% user = getUserByID(event.owner) %>
-          ${event['title']} ${event.date} by ${user['name']}<br />
+          ${event['title']} ${event.date}(PST) by ${user['name']}<br />
           Reason: ${event['data']}
           <br /><br />
        %endfor
@@ -63,6 +50,18 @@
 <%def name="resource_admin_options()">
     <p>
     <strong class="gray">Administrate Resource</strong>
+    % if len(getFlags(c.resource)) > 0:
+        <br /><br /><br />
+        <strong>Clear Resource Flags</strong>
+        <form name="note_resource" id="note_resource" class="left" action = "/clearResourceFlagsHandler/${c.resource['urlCode']}/${c.resource['url']}" enctype="multipart/form-data" method="post" >
+            Reason for clearing flags: &nbsp;
+            <input type=text name=clearResourceFlagsReason>
+            <br /><br />
+            <button type="submit" class="btn btn-warning">Clear Flags</button>
+            <br /><br />
+        </form>
+    % endif
+
     <br /><br /><br />
     <strong>Post Event Note on Resource</strong>
     <form name="note_resource" id="note_resource" class="left" action = "/noteResourceHandler" enctype="multipart/form-data" method="post" >
@@ -75,9 +74,9 @@
     <input type=text name=noteResourceText><br /><br />
     <button type="submit" class="btn btn-warning">Save Note</button>
 </form>
+    <br /><br /><br />
     <strong>Moderate Resource</strong>
 	% if c.resource['deleted'] == '0':
-	    <strong>Moderate Resource</strong>
 		<form name="moderate_resource" id="moderate_resource" class="left" action = "/modResourceHandler" enctype="multipart/form-data" method="post" >
 	    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
 	    <input type=hidden name=workshopURL value="${c.w['url']}">

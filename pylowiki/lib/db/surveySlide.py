@@ -101,7 +101,6 @@ def basicSetup(slide, owner, survey, slideNum, foundThankYou):
         s['noHeaderLogo'] = 1
         
     s['name'] = slide.find('name').text
-    s['hash'] = toBase62(md5('%s_%s_%s'%(s['image'], int(time.time()), s['name'])).hexdigest())
     s['parent'] = survey.id
     vocal = slide.find('vocal')
     if vocal is not None:
@@ -112,6 +111,8 @@ def basicSetup(slide, owner, survey, slideNum, foundThankYou):
         s['surveySection'] = 'after'
     else:
         s['surveySection'] = 'before'
+    commit(s)
+    s['hash'] = toBase62(s)
     return s
     
 def setupSplash(slide, owner, survey, slideNum, foundThankYou):
@@ -172,7 +173,7 @@ def setupInfo(slide, owner, survey, slideNum, foundThankYou):
             hLinkImage = link.find('image')
             if hLinkImage is not None:
                 s['hLink_image_%s'%hLinkNum] = hLinkImage.text
-                s['hLink_hash_%s'%hLinkNum] = toBase62(md5('%s_%s_%s'%(s['image'], int(time.time()), s['name'])).hexdigest())
+                s['hLink_hash_%s'%hLinkNum] = s['hash'] # Should not work
             else:
                 s['hLink_image_%s'%hLinkNum] = ''
             hLinkNum += 1

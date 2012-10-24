@@ -24,8 +24,6 @@
             </p>
         </div>      
     </div><!--/.span8-->
-
-
 </%def>
 
 <%def name="display_body_bottom_content()"></%def>

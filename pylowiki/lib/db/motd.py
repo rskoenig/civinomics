@@ -19,12 +19,12 @@ def getMessage( parentID ):
 # Setters
 def disableMessage( motd ):
     """disable this motd"""
-    motd['disabled'] = True
+    motd['disabled'] = '1'
     commit(motd)
 
 def enableMessage( motd ):
     """enable the motd"""
-    motd['disabled'] = False
+    motd['disabled'] = '0'
     commit(motd)
 
 # Object
@@ -32,10 +32,8 @@ class MOTD(object):
     def __init__(self, data, ownerID, parentID):
         m = Thing('motd', ownerID)
         m['parentID'] = parentID
-        m['enabled'] = True
+        m['enabled'] = '1'
         m['data'] = data
         mCreated = datetime.datetime.now()
         m['lastModified'] = mCreated.ctime()
         commit(m)
-        #parent['motd_id'] = m.id
-        #commit(parent)

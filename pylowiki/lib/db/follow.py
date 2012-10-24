@@ -8,21 +8,21 @@ log = logging.getLogger(__name__)
 
 # Getters
 # Who is following the workshop
-def getWorkshopFollowers( workshopID, disabled = False):
+def getWorkshopFollowers( workshopID, disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'follow').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('thingID', workshopID))).filter(Thing.data.any(wc('thingType', 'workshop'))).all()
     except:
         return False
 
 # Who is following the user
-def getUserFollowers( userID, disabled = False):
+def getUserFollowers( userID, disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'follow').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('thingID', userID))).filter(Thing.data.any(wc('thingType', 'user'))).all()
     except:
         return False
 
 # Which workshops is the user following
-def getWorkshopFollows( userID, disabled = False):
+def getWorkshopFollows( userID, disabled = '0'):
     ##log.info('getWorkshopFollows %s' % userID)
     try:
         return meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('thingType', 'workshop'))).all()
@@ -30,7 +30,7 @@ def getWorkshopFollows( userID, disabled = False):
         return False
 
 # Which users is the user following
-def getUserFollows( userID, disabled = False):
+def getUserFollows( userID, disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('thingType', 'user'))).all()
     except:
@@ -57,12 +57,12 @@ def isFollowing(userID, thingID):
 # Setters
 def unfollow( userID, thingID ):
     f =  meta.Session.query(Thing).filter_by(objType = 'follow').filter_by(owner = userID).filter(Thing.data.any(wc('thingID', thingID))).one()
-    f['disabled'] = True
+    f['disabled'] = '1'
     commit(f)
 
 # Object
 class Follow(object):
-    def __init__(self, userID, thingID, thingType, disabled = False):
+    def __init__(self, userID, thingID, thingType, disabled = '0'):
         f = Thing('follow', userID)
         f['thingID'] = thingID
         f['thingType'] = thingType

@@ -19,6 +19,7 @@ def Flag(thing, flagger, flagType = "overall"):
     f['flaggedThing_owner'] = thing.owner
     f['flaggedThing_objType'] = thing.objType
     f['category'] = flagType
+    f['deleted'] = '0'
     commit(f)
     
     # thing commits
@@ -63,12 +64,22 @@ def Flag(thing, flagger, flagType = "overall"):
     
 def getFlags(thing):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'flag').filter(Thing.data.any(wc('flaggedThing_id', thing.id))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'flag').filter(Thing.data.any(wc('flaggedThing_id', thing.id))).filter(Thing.data.any(wc('deleted', '0'))).all()
     except:
         return False
 
+def clearFlags(thing):
+        fList =  meta.Session.query(Thing).filter_by(objType = 'flag').filter(Thing.data.any(wc('flaggedThing_id', thing.id))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        for f in fList:
+            f['deleted'] = 1
+            commit(f)
+
+        if 'numFlags' in thing.keys() and int(thing['numFlags']) != 0:
+            thing['numFlags'] = 0
+            commit(thing)
+
 def checkFlagged(thing):
-    if 'numFlags' in thing.keys() and int(thing['numFlags']) != 0:
+    if len(getFlags(thing)) > 0:
        return True
     else:
        return False

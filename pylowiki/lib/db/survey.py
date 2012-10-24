@@ -15,19 +15,19 @@ import time, datetime, os, logging
 
 log = logging.getLogger(__name__)
 
-def getActiveSurveys( deleted = False):
+def getActiveSurveys( deleted = '0'):
      try:
-        return meta.Session.query(Thing).filter_by(objType = 'survey').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wc('active', 1))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'survey').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wc('active', '1'))).all()
      except:
         return False
     
-def getAllSurveys( deleted = False ):
+def getAllSurveys( deleted = '0' ):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'survey').filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
         return False
     
-def getSurveysByMember(owner, deleted = False):
+def getSurveysByMember(owner, deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'survey').filter_by(owner = owner.id).filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
@@ -62,21 +62,22 @@ def Survey(owner, title, description, publicOrPrivate, estimatedTime):
     s['publicOrPrivate'] = publicOrPrivate
     s['title'] = title
     s['description'] = description
-    s['deleted'] = 0
-    s['active'] = 0
-    s['facilitators'] = 0
+    s['deleted'] = '0'
+    s['active'] = '0'
+    s['facilitators'] = '0'
     s['estimatedTime'] = estimatedTime
     if len(title) > 20:
         s['url'] = urlify(title[:20])
     else:
         s['url'] = urlify(title)
-    s['urlCode'] = toBase62('%s_%s_%d'%(title, owner['name'], int(time.time())))
     s['origFileName'] = 'flash'# The file name
     s['surveyType'] = 'normal'
-    s['directoryNum'] = 0
+    s['directoryNum'] = '0'
     s['hash'] = 'flash'
     s['uploadVersion'] = 0 # A versioning key, keeps track of the number of times a starter file has been uploaded
     
+    commit(s)
+    s['urlCode'] = toBase62(s)
     commit(s)
     return s
 

@@ -10,7 +10,7 @@
   
     <!-- styles -->
     <link rel="stylesheet" href="/styles/bootstrap/civinomics_corp.css">
-    <link href="/styles/bootstrap/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/styles/bootstrap-responsive.css" rel="stylesheet">
 
     <link type="text/css" rel="stylesheet" href = "/styles/flash.css" />
     ${self.page_specific_css()}
@@ -242,7 +242,7 @@
               </a>
 
                 <div class="span2 offset">
-                    <a href="/"><img src="/images/fluid1_images/logo_header8.png"></a>
+                    <a href="/"><img src="/images/fluid1_images/civheaderlogo_alphawhite.png"></a>
                 </div>
 
               <div class="nav-collapse">

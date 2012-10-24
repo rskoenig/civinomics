@@ -2,7 +2,6 @@ import logging
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
-from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 
@@ -20,16 +19,14 @@ class ActivateController(BaseController):
     def index(self, id):
         hash, sep, email = id.partition('__')
         user = get_user_by_email(email)
-        c.site_base_url = config['app_conf']['site_base_url']
-        c.site_secure_url = config['app_conf']['site_secure_url']
         message = {}
         if user:
             log.info('user exists')
-            if int(user['activated']) == 0:
+            if user['activated'] == '0':
                 log.info('user inactive')
                 if user['activationHash'] == hash:
                     log.info('hashes match')
-                    user['activated'] = 1
+                    user['activated'] = '1'
                     user['laston'] = time.time()
                     if commit(user):
                         message['type'] = 'success'
@@ -53,4 +50,4 @@ class ActivateController(BaseController):
             message['title'] = 'Error: '
             message['content'] = 'Specified user not found!'
         c.splashMsg = message
-        return render('/derived/splash.bootstrap')
+        return render('/derived/login.bootstrap')

@@ -17,23 +17,8 @@ def login_required(func):
 
 def check_if_login_required():
     if 'user' not in session:
-        h.flash( "Oops, you must be logged in to use that.", "warning" )
-        #return redirect( h.url(controller='login', action="index") )
         return redirect(h.url(controller = 'home', action = 'index'))
     if not c.authuser:
         session.delete()
-        h.flash( "Oops, you must be logged in to use that.", "warning" )
         return redirect(h.url(controller = 'home', action = 'index'))
 
-# Deprecated
-"""
-def accessLevel(level):
-    user = get_user(session["user"])
-    thisLevel = getUserAccessLevel(user.id)
-    if thisLevel >= level:
-        return True
-    #h.flash("You need the proper authorization to access that page", "warning")
-    #return redirect(h.url(controller = 'home', action = 'index'))
-    return False
-
-"""

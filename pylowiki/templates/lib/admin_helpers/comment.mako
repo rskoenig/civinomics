@@ -1,31 +1,19 @@
 <%!
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.flag import getFlags
 %>
-
-<%def name="fields_alert()">
-	% if 'alert' in session:
-		<% alert = session['alert'] %> 
-        <div class="alert alert-${alert['type']}">
-            <button data-dismiss="alert" class="close">×</button>
-            <strong>${alert['title']}</strong>
-            ##${alert['content']}
-        </div>
-        <% 
-           session.pop('alert')
-           session.save()
-        %>
-	% endif
-</%def>
 
 <%def name="comment_admin()">
     % if c.commentType == 'suggestion':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/suggestion/${c.oCode}/${c.oURL}">Suggestion</a>
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/suggestion/${c.discussion['suggestionCode']}/${c.discussion['suggestionURL']}">Suggestion</a>
     % elif c.commentType == 'resource':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/resource/${c.oCode}/${c.oURL}">Resource</a>
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/resource/${c.discussion['resourceCode']}/${c.discussion['resourceURL']}">Resource</a>
+    % elif c.commentType == 'sresource':
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/resource/${c.discussion['resourceCode']}/${c.discussion['resourceURL']}">Suggestion Resource</a>
     % elif c.commentType == 'background':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/background">Background</a>
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/background">Background</a>
     % elif c.commentType == 'feedback':
-       Back to <a href="/workshop/${c.wCode}/${c.wURL}/feedback">Feedback</a>
+       Back to <a href="/workshop/${c.discussion['workshopCode']}/${c.discussion['workshopURL']}/feedback">Feedback</a>
     % endif
     <br /><br />
     Added ${c.comment['lastModified']} by ${c.user['name']}
@@ -33,10 +21,10 @@
     ${c.comment['data']}
     <br /><br />
     <% fString = "Flags" %>
-    % if c.comment['numFlags'] == '1':
+    % if len(c.flags) == 1:
        <% fString = "Flag" %>
     % endif
-    <strong>${c.comment['numFlags']} ${fString}:</strong>
+    <strong>${len(c.flags)} ${fString}:</strong>
     <br /><br />
     % for flag in c.flags:
        <% user = getUserByID(flag.owner) %>
@@ -61,10 +49,28 @@
     % endif
 </%def>
 
+<%def name="clearCommentFlags()">
+    % if len(getFlags(c.comment)) > 0:
+        <br /><br />
+        <strong>Clear Flags</strong>
+        <form name="moderate_comment" id="moderate_comment" class="left" action = "/clearCommentFlagsHandler/${c.comment['urlCode']}" enctype="multipart/form-data" method="post" >
+
+	    <br /><br />
+	    Reason for clearing flags: &nbsp;
+	    <input type=text name=clearCommentFlagsReason><br /><br />
+	    <button type="submit" name=modType value="disable" class="btn btn-warning">
+            <i class="icon-ban-circle icon-white"></i> Clear Flags
+            </button>
+
+        </form>
+    % endif
+    <br /><br />
+</%def>
+
 <%def name="moderateComments()">
     <p>
     % if c.comment['deleted'] == '0':
-	    <form name="moderate_comment" id="moderate_comment" class="left" action = "/modCommentHandler" enctype="multipart/form-data" method="post" >
+	    <form name="moderate_comment" id="moderate_comment" class="left" action = "/modCommentHandler/${c.comment['urlCode']}" enctype="multipart/form-data" method="post" >
 	    <input type=hidden name=commentID value="${c.commentID}">
 	    <input type=hidden name=commentType value="${c.commentType}">
 	    <input type=hidden name=workshopCode value="${c.wCode}">
@@ -84,7 +90,7 @@
 	       </button>
 	    % else:
 	       <button type="submit" name=modType value="disable" class="btn btn-warning">
-	           <i class="icon-ok icon-white"></i>Enable Suggestion
+	           <i class="icon-ok icon-white"></i>Enable Comment
 	       </button>
 	       <button type="submit" name=modType value="delete" class="btn btn-danger">
 	       		<i class="icon-trash icon-white"></i> Delete Comment

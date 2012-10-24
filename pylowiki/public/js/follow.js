@@ -14,7 +14,7 @@ $('button.followButton').live('click', function(e){
         
         $button.removeClass('following');
         $button.removeClass('unfollow');
-        var bText = 'Follow';
+        var bText = '+Follow';
         $button.text(bText);
     } else {
         
@@ -26,19 +26,21 @@ $('button.followButton').live('click', function(e){
         });
                    
         $button.addClass('following');
-        $button.text('Unfollow');
+        var bText = '-Unfollow';
+        $button.text(bText);
     }
 });
 
 $('button.followButton').hover(function(){
      $button = $(this);
     if($button.hasClass('following')){
+        $button.removeClass('unfollow');
         $button.addClass('unfollow');
-        $button.text('Unfollow');
+        $button.text('-Unfollow');
     }
 }, function(){
     if($button.hasClass('following')){
         $button.removeClass('unfollow');
-        $button.text('Following');
+        $button.text('+Following');
     }
 });

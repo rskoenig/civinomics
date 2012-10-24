@@ -14,26 +14,30 @@
 % endif
 
 <div class="row-fluid">
-    <form id="fileupload" action="/addSurvey/handler" method="POST" enctype="multipart/form-data" class="form-horizontal">
-        <fieldset>
-            <legend>Add a survey</legend>
-            <div class="offset1">
-                <div class="control-group">
-                    ${helpers.surveyName()}
+    % if c.conf['read_only.value'] == 'true':
+        <h1> Sorry, site is in read-only mode right now. </h1>
+    % else:
+        <form id="fileupload" action="/addSurvey/handler" method="POST" enctype="multipart/form-data" class="form-horizontal">
+            <fieldset>
+                <legend>Add a survey</legend>
+                <div class="offset1">
+                    <div class="control-group">
+                        ${helpers.surveyName()}
+                    </div>
+                    <div class="control-group">
+                        ${helpers.description()}
+                    </div>
+                    <div class="control-group">
+                        ${helpers.geoScope()}
+                    </div>
+                    <div class="control-group">
+                        ${helpers.estimatedTime()}
+                    </div>
+                    ${helpers.submitButton()}
                 </div>
-                <div class="control-group">
-                    ${helpers.description()}
-                </div>
-                <div class="control-group">
-                    ${helpers.geoScope()}
-                </div>
-                <div class="control-group">
-                    ${helpers.estimatedTime()}
-                </div>
-                ${helpers.submitButton()}
-            </div>
-        </fieldset>
-    </form>
+            </fieldset>
+        </form>
+    % endif
 </div>
 
 <%def name = 'extraStyles()'>

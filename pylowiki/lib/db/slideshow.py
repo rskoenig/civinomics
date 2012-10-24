@@ -11,12 +11,12 @@ log = logging.getLogger(__name__)
 # Setters
 def deleteSlideshow( slideshow ):
     """delete this slide"""
-    slideshow['deleted'] = True
+    slideshow['deleted'] = '1'
     commit(slideshow)
 
 def undeleteSlideshow( slideshow ):
     """undelete this slide"""
-    slideshow['deleted'] = False
+    slideshow['deleted'] = '0'
     commit(slideshow)
 
 # Getters
@@ -44,6 +44,6 @@ class Slideshow(object):
     def __init__( self, owner, workshop):
         s = Thing('slideshow', owner.id)
         s['workshop_id'] = workshop.id
-        s['deleted'] = False
+        s['deleted'] = '0'
         self.s = s
         commit(s)

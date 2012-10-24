@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import logging
 
+from pylons import tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
@@ -10,16 +11,11 @@ from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.flag import checkFlagged
 from pylons import config
 from time import time
+from revision import Revision
 from tldextract import extract
 
 log = logging.getLogger(__name__)
 
-def getResourceOld1(urlCode, url):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).one()
-    except:
-        return False
-    
 def getResourceByID(id):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'resource').filter_by(id = id).one()
@@ -32,21 +28,35 @@ def getResource(urlCode, url):
     except:
         return False
 
-def getResourceOld3(urlCode, url, workshop):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('urlCode', urlCode))).filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('workshop_id', workshop.id))).one()
-    except:
-        return False
-
-def getResourceByLink(link, workshop):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('workshop_id', workshop.id))).one()
-    except:
+def getResourceByLink(link, item):
+    if item.objType == 'workshop':
+        try:
+            return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('workshop_id', item.id))).filter(Thing.data.any(wc('parent_id', '0'))).all()
+        except:
+            return False
+    elif item.objType == 'suggestion':
+        try:
+            return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('parent_id', item.id))).all()
+        except:
+            return False
+    else:
         return False
 
 def getResourceByURL(url, workshopID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('workshopID', workshopID))).one()
+    except:
+        return False
+
+def getResourcesByParentID(parentID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('parent_id', parentID))).all()
+    except:
+        return False
+
+def getActiveResourcesByParentID(parentID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('parent_id', parentID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
     except:
         return False
 
@@ -58,7 +68,7 @@ def getResourcesByWorkshopID(workshopID):
 
 def getActiveResourcesByWorkshopID(workshopID):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('parent_type', None))).all()
     except:
         return False
 
@@ -123,7 +133,6 @@ class Resource(object):
         a['domain'] = tldResults.domain
         a['subdomain'] = tldResults.subdomain
         a['url'] = urlify(title[:30])
-        a['urlCode'] = toBase62('%s_%s_%s'%(title, owner['name'], int(time())))
         a['title'] = title
         a['comment'] = comment
         a['allowComments'] = allowComments
@@ -132,21 +141,25 @@ class Resource(object):
              a['parent_id'] = parent.id
              a['parent_type'] = parent.objType
         else:
-             a['parent_id'] = None
+             a['parent_id'] = 0
              a['parent_type'] = None
         a['type'] = 'post'
-        a['pending'] = False
-        a['disabled'] = False
-        a['deleted'] = False
-        a['allowComments'] = True
-        a['ups'] = 0
-        a['downs'] = 0
+        a['pending'] = '0'
+        a['disabled'] = '0'
+        a['deleted'] = '0'
+        a['allowComments'] = '1'
+        a['ups'] = '0'
+        a['downs'] = '0'
         commit(a)
+        a['urlCode'] = toBase62(a)
         if parent != None:
             if parent.objType == 'suggestion':
-                d = Discussion(owner = owner, discType = 'sresource', attachedThing = a, workshop = workshop, title = title)
+                d = Discussion(owner = owner, discType = 'sresource', attachedThing = a, workshop = workshop, title = title, suggestion = parent)
         else:
             d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
         a['discussion_id'] = d.d.id
         self.a = a
+        commit(a)
+        data = a['comment']
+        r = Revision(c.authuser, data, a)
 
