@@ -19,6 +19,7 @@
 
   <body>
     ${facebookID()}
+    
     <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
       <div class="navbar-inner" style="background-image: none; background-color: #FFFFFF;">
         <div class="container-fluid">
@@ -29,6 +30,9 @@
           </a>
           <a class="brand" href="#"> <img src="/images/splash/logo.png"> </a>
           <div class="nav-collapse collapse">
+            <ul class="nav pull-left">
+               <li class="nav-item"><p class="nav-item">build our civ</p></li> 
+            </ul>
             <ul class="nav pull-right">
               <li class="nav-item"><a href="/signup" class="nav-item" style="color: #86945A;">Sign Up</a></li>
               <li class="nav-item"><a href="/login" style="color: #86945A;">Log In</a></li>
@@ -38,106 +42,117 @@
       </div>
     </div>
 
-    <div class="imageChanger imageChanger2"></div>
-    <div class="imageChanger imageChanger1" style="display:none;"></div>
-    <div class="imageChanger imageChanger0" style="display:none;"></div>
+    ##
+    ## Top Carousel
+    ##
+
+    <div class="imageChanger imageChanger2">
+        <div class="span8">
+            <p class="photoCredits">Sage Ross/ Creative Commons</p>
+        </div>
+    </div>
+    <div class="imageChanger imageChanger1" style="display:none;">
+        <div class="span8">
+            <p class="photoCredits">Lauren Betesh/ The Brooklyn Ink</p>
+        </div>
+    </div>
+    <div class="imageChanger imageChanger0" style="display:none;">
+        <div class="span8">
+            <p class="photoCredits">Christian Mehlführer</p>
+        </div>
+    </div>
 
     <div class="container-fluid">
-            <div class="row-fluid">
-                <div class="span5"></div>
-                <div class="span6 offset5" style="padding-top:50px;">
-                    <div class="hero-unit main-well">
-                        <div class="row-fluid">
-                            <div class="span6">
-                                <h1 style="color:#5f774b; margin-top:0px;"> Build </h1>
-                                <p>Your community, online and in-person</p>
-                            </div>
-                            <div class="span1">
-                            </div>
-                            <div class="span4">
-                                <div class="btn-group btn-group-vertical">
-                                    <a href="/signup"><button class="btn btn-default btn-large" style="width: 120px;">Sign up</button></a>
-                                    <a href="#info"><button class="btn btn-info btn-large"  style="width: 120px;">Learn more</button></a>
-                                    <a href="/workshops"><button class="btn btn-success btn-large" style="width: 120px;">Browse</button></a>
-                                </div>
-                            </div>
-                        </div>
+        <div class="row-fluid">
+            <div class="span1"></div>
+            <div class="span5 offset5" style="padding-top:65px;">
+                <div class="hero-unit main-well">
+                    <div class="row-fluid">
+                            <p style="font-size: 24px;">Suggest, edit and vote on public policy in your community.</p>
+                            </br>
+                            <div style="text-align:center;">
+                                <a href="/signup"><button class="btn btn-success btn-default btn-large" style="width: 110px;">Sign up</button></a>
+                                <a href="/workshops"><button class="btn btn-info btn-large" style="width: 110px;">Browse</button></a>   
+                            </div>                     
                     </div>
-                </div>
-            </div>
-        </div>
+                </div><!-- hero-unit -->
+            </div><!-- span5 -->
+        </div><!-- row -->
+    </div><!-- container -->
+
+    ##
+    ## Info Section
+    ##
 
     <div class="info">
         <a name="info" style="padding-top:60px;"></a>
         <div class="container">
+            
+            ##How it works
+
             <div class="row">
-                <div class="span12" style="padding-top:20px;">
+                <div class="span12" style="padding-top:20px; text-align:center;">
+                    <h1> How it Works </h1>
+                    </br>
+                    <div class="span3">
+                       <img src="/images/splash/people.png"></image>
+                        </br>
+                        <p class="howitworks-number">1</p>
+                        <p>Find a workshop on a topic you care about and suggest a way to make things better.</p>
+                    </div>                
+                    <div class="span3 offset1">
+                        <img src="/images/splash/laptop.png"></image>
+                        </br>
+                        <p class="howitworks-number">2</p>
+                        <p>Participants vote on the best suggestions.</p>
+                    </div>
+                    <div class="span3 offset1">
+                       <img src="/images/splash/capitol.png"></image>
+                        </br>
+                        <p class="howitworks-number">3</p>
+                        <p>Build support for winning ideas and implement them in the real world.</p>
+                    </div>
+                </div>
+            </div>
 
-                    ##################
-                    ## 
-                    ## Online
-                    ## 
-                    ##################
+            ##
+            ##Join a Workshop
+            ##
 
-                    <div class="span5 offset1" style="border-right: 1px solid #DDDDDD;">
-                        <h1> Online </h1>
-                        <p>
-                            Talk to your community
-                        </p>
-
-                        ## 
-                        ## Some screenshots
-                        ## 
-                        <ul class="thumbnails" style="padding-top:20px; padding-bottom:20px;">
-                            % for i in range(1, 5):
-                            <li class="span2">
-                                <a href="#online-workshop-${i}" class="thumbnail-custom" data-toggle="modal" style="height:64px;">
-                                    <img src="/images/splash/online_workshop_thumbnail_${i}.png" height="64" width="105">
-                                    <div class="magnify"></div>
-                                </a>
-                            </li>
-                            % endfor
-                        </ul>
-
+            <div class="row">
+                <div class="span12 infoSection">
+                    <h1> Join a Civic Workshop </h1>  
+                    <div class="span5 offset1" style="margin-top:20px;">
                         ## 
                         ## A video
                         ## 
-                        
-                        <div style="padding-top:40px;"></div>
-                        <iframe src="http://player.vimeo.com/video/45529198?title=0&amp;byline=0&amp;portrait=0" width="350" height="197" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-
+                        <iframe src="http://player.vimeo.com/video/45529198?title=0&amp;byline=0&amp;portrait=0" width="350" height="297" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> 
                     </div>
+                    <div class="span5" style="margin-top:20px; text-align:left;">
+                        <p class="lead">
+                            <strong>Workshop</strong> [<strong>werk</strong>-shop]</br>
+                            </br>
+                            <em>(noun) </em><strong>1.</strong> An online forum for crowdsourcing public policy. <strong>2.</strong> An innovative distillation of the democratic process.</br>
+                            </br>
+                            <em>(verb)</em> <strong>3.</strong> To tinker with
+ideas, hammer out solutions, fix things that are broken and build a better world.
+                        </p>
+                        </br>
+                    </div>
+                    <div class="span5 offset6" style="text-align:center;">
+                        <a href="/workshops"><button class="btn btn-info btn-large" style="width: 170px;">Browse Workshops</button></a>
+                    </div>
+                </div>
+            </div>   
 
-                    ##################
-                    ## 
-                    ## In-Person
-                    ## 
-                    ##################
-                    <div class="span5">
-                        <h1> In-Person </h1>
-                        ## 
-                        ## A quotation
-                        ## 
-                        <blockquote style="padding-right:20px; text-align:center;">
-                            <p class="quote"> Everyone wants to have a voice. </p>
-                            <small class="pull-right">Survey Respondent (anonymous)</small>
-                        </blockquote>
-                        <br />
+            ##
+            ##Community Engagement
+            ##
 
-                        ## 
-                        ## Some photos
-                        ## 
-                        <ul class="thumbnails" style="padding-top:20px; padding-bottom:20px;">
-                            <% sizes = (71, 115) %>
-                            % for i in range(1, 3):
-                            <li class="span2">
-                                <a href="#inPerson-${i}" class="thumbnail-custom" data-toggle="modal" style="height:${sizes[0]}px;">
-                                    <img src="/images/splash/inPerson_${i}_thumb.jpg" height="${sizes[0]}" width="${sizes[1]}">
-                                    <div class="magnify"></div>
-                                </a>
-                            </li>
-                            % endfor
-                        </ul>
+            <div class="row">
+                <div class="span12 infoSection">
+                    <h1> Community Engagement </h1>  
+                    <div class="span5 offset1" style="margin-top:20px;">
 
                         ## 
                         ## A quotation
@@ -146,25 +161,48 @@
                             <p class="quote">I felt like I learned something about my community.</p>
                             <small class="pull-left">Participant (anonymous)</small>
                         </blockquote>
+                        <br />
 
                         ## 
-                        ## A video
+                        ## Some photos
                         ## 
-                        <div style="padding-top:35px;"></div>
-                        <iframe src="http://player.vimeo.com/video/42731448" width="350" height="197" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+                        <ul class="thumbnails" style="padding-top:10px;">
+                            <% sizes = (71, 115) %>
+                            % for i in range(3, 6):
+                            <li class="span2">
+                                <a href="#inPerson-${i}" class="thumbnail-custom" data-toggle="modal" style="height:${sizes[0]}px;">
+                                    <img src="/images/splash/inPerson_${i}_thumb.jpg" height="${sizes[0]}" width="${sizes[1]}">
+                                    <div class="magnify"></div>
+                                </a>
+                            </li>
+                            % endfor
+                        </ul> 
 
                     </div>
+
+                    ## 
+                    ## Section text
+                    ##
+                    <span class="span5" style="text-align:left; padding-top:30px;">
+                    </br>
+                        <p class="lead">Sometimes you have to take the workshop to the people. We specialize at doing just that - engaging the public in issues and collecting valuable feedback using our best-of-breed iPad app.</p>
+                    </span>
+                    <span class="span5" style="text-align:center;">
+                        </br>
+                        <a class="btn btn-info btn-large" href="mailto:info@civinomics.com" target="_blank">Contact Us</a>
+                    </span>
+                    <div class="span12">
+                        <p>Clients Include</p>
+                    </div>
+                    <div class="span12">
+                      <img class="casestudy" src="/images/splash/SFPUC_color.png"><img class="casestudy" src="/images/splash/cap_color.png"><img class="casestudy" src="/images/splash/scwd2_color.png"><img class="casestudy" src="/images/splash/landtrust_color.png">
+                    </div>
                 </div>
+            </div>   
+                       
+            
             </div> <!-- row -->
         </div> <!-- container -->
-        <div class="container">
-            <div class="row" style="border-top: 1px solid #DDDDDD; padding-top:20px;">
-                <div class="span6 offset3" style="text-align:center">
-                    Join your community!<br />
-                    <a href="/signup" class="btn btn-large">Sign up for free!</a>
-                </div>
-            </div>
-        </div>
     </div> <!-- info -->
 
     <div class="footer-separator"></div>
@@ -222,26 +260,12 @@
         </div>
     </div>
 
-
-    <% imageTitles = ['Workshop Landing', 'Workshop Listing', 'Workshop Resource', 'Profile'] %>
-    % for i in range(1, 5):
-        <div class="modal hide fade" id="online-workshop-${i}" style="width:70%; left:35%;">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">×</button>
-                <h3 id="myModalLabel-${i}" style="text-align:center;">${imageTitles[i-1]}</h3>
-            </div>
-            <div class="modal-body">
-                <img src="/images/splash/online_workshop_${i}.png">
-            </div>
-        </div>
-    % endfor
-
-    <% imageTitles = ['Make your voice heard', 'Technology for the real world'] %>
-    % for i in range(1, 3):
+    <% imageTitles = ['Make your voice heard', 'Technology for the real world', 'We can do it'] %>
+    % for i in range(3, 6):
         <div class="modal hide fade" id="inPerson-${i}" style="width:70%; left:35%;">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">×</button>
-                <h3 id="myModalLabel-inPerson-${i}" style="text-align:center;">${imageTitles[i-1]}</h3>
+                <h3 id="myModalLabel-inPerson-${i}" style="text-align:center;">${imageTitles[i-3]}</h3>
             </div>
             <div class="modal-body">
                 <img src="/images/splash/inPerson_${i}.jpg">
@@ -249,8 +273,9 @@
         </div>
     % endfor
 
+
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-    <script src="/bootstrap-2.1.0/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
     <script src="/js/splash/imageFader.js"></script>
 
     <!-- additional social media scripts -->
