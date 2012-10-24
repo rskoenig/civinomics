@@ -1,0 +1,59 @@
+#main h3 {
+	text-transform: uppercase;
+	padding: 5px 0;
+	text-indent: 5px;
+	width: 100%;
+	font-weight: bold;
+	letter-spacing: .4em;
+	border-bottom: 1px solid #b9b9b9;
+	border-top: 1px solid #b9b9b9;
+	color: #b9b9b9;
+	font-size: .8em;
+	float: left;
+	clear: both;
+	height: 19px;
+	margin-bottom: 10px;
+}
+
+#main h3>span {
+	text-transform: lowercase;
+	padding: 0;
+	font-weight: normal;
+	letter-spacing: 0;
+	font-size: .8em;
+}
+
+.headline {
+	width: 100%;
+	padding-bottom: 20px;
+}
+
+/* main bar */
+
+#suggestionmain {
+	width: 599px;
+	border-right: 1px solid #b9b9b9;
+}
+
+/* sidebar */
+
+#suggestionside {
+	width: 300px;
+}
+
+#suggestionside ul {
+	padding: 20px;
+}
+
+#relatedsuggestion li {
+	padding: 5px 0;
+}
+
+.share {
+	border-top: 1px solid #b9b9b9;
+}
+
+.share input[type="text"] {
+	border: 1px solid #b9b9b9;
+	color: #b9b9b9;
+}
