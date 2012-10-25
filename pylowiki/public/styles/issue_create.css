@@ -1,0 +1,100 @@
+/*textarea {resize: none;}*/
+hr {
+	position: relative;
+	left: -20px;
+}
+
+#main>div>div:first-child {
+	width: 200px;
+}
+
+#create_issue {
+	border: 1px solid #b9b9b9;
+	border-right: none;
+	border-top: none;
+	padding: 0 0 20px 20px;
+	width: 679px;
+}
+
+#government_sphere select {
+	font-style: italic;
+	width: 200px;
+}
+#government_sphere .select {
+	margin-top: 10px;
+}
+
+select {
+	background: none;
+	border: 1px solid #ccc;
+}
+.select {
+	box-shadow: 0px 0px 4px #ccc;
+	float: left;
+}
+
+#create_new {
+	padding-left: 40px;
+	margin-top: 10px;
+}
+
+#create_button {
+	color: #b9b9b9;
+	width: 60px;
+	height: 25px;
+}
+
+#goals textarea {
+	width: 300px;
+	height: 50px;
+}
+
+#end-dates {
+	padding: 30px 0 30px 0;
+}
+
+#end-dates table {
+	text-align: right;
+}
+
+#end-dates td {
+	padding: 10px 0 0 10px;
+}
+
+#end-dates td:first-child {
+	padding-left: 0;
+}
+
+#end-dates select, #end-dates input {
+	height: 20px;
+}
+
+#end-dates input[type="text"] {
+	width: 50px;
+	color: #b9b9b9;
+}
+
+#background_wiki {
+	padding: 20px 0 30px 0px;
+}
+
+#background_wiki textarea {
+	width: 90%;
+	height: 50px;
+}
+
+#issue_slideshow {
+	padding: 20px 0;
+}
+
+#create_issue button[type="submit"] {
+	font-weight: bold;
+	font-size: 1.3em;
+	height: 35px;
+	width: 130px;
+	border-radius: 3px;
+	color: white;
+	border: none;
+	position: relative;
+	left: 500px;
+}
