@@ -458,13 +458,25 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/admin', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/admin/', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
 
-    # User account admin
-    map.connect('/profile/{id1}/{id2}/account', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/account/', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
-    
     # Edit user info
     map.connect('/profile/edit', controller = 'profile', action = 'edit')
     map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')
+
+    # User account admin
+    map.connect('/profile/{id1}/{id2}/account', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/account/', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}', id2 = '{id2}')
+
+    # Account admin
+    map.connect('/account/{id1}', controller = 'account', action = 'accountAdmin', id1 = '{id1}')
+    map.connect('/account/{id1}/', controller = 'account', action = 'accountAdmin', id1 = '{id1}')
+
+    map.connect('/accountUpgradeHandler/{id1}', controller = 'account', action = 'accountUpgradeHandler', id1 = '{id1}')
+    map.connect('/accountUpgradeHandler/{id1}/', controller = 'account', action = '/accountUpgradeHandler', id1 = '{id1}')
+
+    map.connect('/accountAdminHandler/{id1}', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}')
+    map.connect('/accountAdminHandler/{id1}/', controller = 'account', action = '/accountAdminHandler', id1 = '{id1}')
+
+    
     
     ################
     # Action Lists #
