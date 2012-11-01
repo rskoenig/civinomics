@@ -16,6 +16,7 @@ from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
 from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.images import saveImage, resizeImage
+from pylowiki.lib.utils import urlify
 
 
 from hashlib import md5
@@ -43,6 +44,7 @@ class AccountController(BaseController):
         # update legacy objects
         if 'orgName' not in c.account:
             c.account['orgName'] = c.authuser['name']
+            c.account['url'] = urlify(c.acount['orgName'])
             commit(c.account)
 
         if 'orgEmail' not in c.account:
@@ -97,6 +99,7 @@ class AccountController(BaseController):
 
         if 'orgName' in request.params:
             orgName = request.params['orgName']
+            url = urlify(orgName)
             if orgName == '':
                 errorMsg = "Organization Name required. "
                 error = 1 
@@ -105,6 +108,7 @@ class AccountController(BaseController):
                     change = 1
                     changeMsg = changeMsg + "Organization name updated. "
                     c.account['orgName'] = orgName
+                    c.account['url'] = url
 
         if 'orgEmail' in request.params:
             orgEmail = request.params['orgEmail']

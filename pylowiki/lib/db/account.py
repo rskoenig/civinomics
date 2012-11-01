@@ -58,6 +58,7 @@ class Account(object):
         a['type'] = type
         a['disabled'] = '0'
         a['orgName'] = user['name']
+        a['orgURL'] = urlify(a['orgName'])
         a['orgEmail'] = user['email']
         a['orgMessage'] = user['tagline']
         a['orgLink'] = 'none'
