@@ -304,9 +304,6 @@
                 </p>
                 <br />
                 % if 'user' in session and c.authuser.id == c.user.id:
-                   % if c.account and c.account['numRemaining'] != '0':
-                      <a href="/addWorkshop"><button class="btn btn-mini btn-primary" title="Click to create a new workshop"><i class="icon-cog icon-white"></i> New Workshop</button></a>
-                    % endif
                     <a href="/profile/edit"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
                 % endif
                 % if 'user' in session and isAdmin(c.authuser.id):
@@ -404,6 +401,24 @@
     % endfor
     </ul>
 </%def>
+
+<%def name="accounts()">
+  % if 'user' in session and c.accounts and (c.authuser.id == c.user.id or isAdmin(c.authuser.id)):
+    <h2 class="civ-col"><i class="icon-list-alt"></i> Accounts I am Administrating</h2>
+    <div class="civ-col-inner">
+    <ul class="unstyled civ-block-list">
+    % for account in c.accounts:
+        <li>
+        <p><a href="/account/${account['urlCode']}">${account['orgName']}</a></p>
+        </li>
+    % endfor
+    </ul>
+
+    
+    </div> <!-- /.civ-col-inner -->
+  % endif
+</%def>
+
 
 <%def name="workshops()">
   % if c.facilitatorWorkshops:

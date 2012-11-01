@@ -1,0 +1,48 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace name="adminlib" file="/lib/admin_helpers/account.mako" />
+<%namespace file="/lib/mako_lib.mako" name="lib" />
+
+<%!
+    from pylowiki.lib.db.user import getUserByID
+%>  
+
+<div class="container-fluid">
+   <div class="row-fluid">
+      <div class="span12">
+          <h1>${c.account['orgName']}</h1>
+          <br />
+          <h2 class="civ-col">Administrate Account</h2>
+          ${lib.fields_alert()}
+          ${adminlib.accountAdmin()}
+          <br /> <br />
+      </div><!-- span12 -->
+   </div><!-- row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>
+        </div><!-- span12 -->
+   </div><!-- row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>

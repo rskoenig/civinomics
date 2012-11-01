@@ -59,6 +59,12 @@ def getWorkshopsByOwner(userID):
     except:
         return False
 
+def getWorkshopsByAccount(accountID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('account', accountID))).all()
+    except:
+        return False
+
 def isWorkshopDeleted(id):
     try:
         w =  meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(id = id).one()
