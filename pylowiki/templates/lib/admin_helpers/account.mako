@@ -31,13 +31,11 @@
             <strong>${event['title']}</strong> ${event['data']} ${event.date}<br />
         % endfor
     % endif
-    % if isAdmin(c.authuser.id):
-        <form action="/accountUpgradeHandler/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
+    <form action="/accountUpgradeHandler/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
         % if c.account['type'] != 'premium':
             <button class="btn btn-warning" type="submit" name=doupgrade>Upgrade Your Account</button>
         % endif
-        </form>
-    % endif
+    </form>
     </td>
     % if c.account['type'] != 'trial':
         <td>

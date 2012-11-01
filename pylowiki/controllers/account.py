@@ -188,12 +188,16 @@ class AccountController(BaseController):
         authorized = 0
         c.admins = []
         for admin in adminList:
+            log.info('admin is %s'%admin)
             if admin and admin != '':
                user = getUserByID(admin)
                if user:
                    c.admins.append(user)
-                   if int(admin) == c.authuser.id:
+                   if user.id == c.authuser.id:
                        authorized = 1
+                       
+        if isAdmin(c.authuser.id):
+            authorized = 1
 
         if authorized == 0:
             alert = {'type':'error'}

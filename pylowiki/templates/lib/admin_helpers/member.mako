@@ -168,7 +168,6 @@
     % else:
        <strong>Create User Account</strong><br /><br />
        <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
-       
        <br /><br />
        <button type="submit" class="btn btn-warning">Add Account</button>
        </form> 
