@@ -98,13 +98,13 @@
                        <img src="/images/splash/people.png"></image>
                         </br>
                         <p class="howitworks-number">1</p>
-                        <p>Find a workshop on a topic you care about and suggest a way to make things better.</p>
+                        <p>Find a topic you care about and suggest a way to make things better.</p>
                     </div>                
                     <div class="span3 offset1">
                         <img src="/images/splash/laptop.png"></image>
                         </br>
                         <p class="howitworks-number">2</p>
-                        <p>Participants vote on the best suggestions.</p>
+                        <p>Vote on the best suggestions.</p>
                     </div>
                     <div class="span3 offset1">
                        <img src="/images/splash/capitol.png"></image>
@@ -189,13 +189,16 @@ ideas, hammer out solutions, fix things that are broken and build a better world
                     </span>
                     <span class="span5" style="text-align:center;">
                         </br>
-                        <a class="btn btn-info btn-large" href="mailto:info@civinomics.com" target="_blank">Contact Us</a>
+                        <a class="btn btn-info btn-large" href="/corp/contact" target="_blank">Contact Us</a>
                     </span>
                     <div class="span12">
-                        <p>Clients Include</p>
+                        <h4>Case Studies</h4>
                     </div>
                     <div class="span12">
-                      <img class="casestudy" src="/images/splash/SFPUC_color.png"><img class="casestudy" src="/images/splash/cap_color.png"><img class="casestudy" src="/images/splash/scwd2_color.png"><img class="casestudy" src="/images/splash/landtrust_color.png">
+                        <a href="corp/caseStudies/SSIP"><img class="casestudy" src="/images/splash/SFPUC_color.png"></a>
+                        <a href="corp/caseStudies/cap2"><img class="casestudy" src="/images/splash/cap_color.png"></a>
+                        <a href="/corp/caseStudies/scwd2"><img class="casestudy" src="/images/splash/scwd2_color.png"></a>
+                        <a href="/corp/caseStudies/landtrust"><img class="casestudy" src="/images/splash/landtrust_color.png"></a>
                     </div>
                 </div>
             </div>   
@@ -221,6 +224,7 @@ ideas, hammer out solutions, fix things that are broken and build a better world
                             <li><a href="/corp/about"> About Us </a></li>
                             <li><a href="http://www.civinomics.wordpress.com" target="_blank">Development Blog</a></li>
                             <li><a href="/corp/careers">Careers</a></li>
+                            <li><a href="/corp/team">Team</a></li>
                             <li><a href="/corp/terms">Terms of Use</a></li>
                             <li><a href="/corp/privacy">Privacy Policy</a></li>
                             <li><a href="/corp/contact">Contact Us</a></li>
@@ -235,6 +239,7 @@ ideas, hammer out solutions, fix things that are broken and build a better world
                                 </h4>
                             </li>
                             <li><a href="/corp/outreach">Outreach</a></li>
+                            <li><a href="/corp/caseStudies/">Case Studies</a></li>
                             <li><a href="#">Create a workshop </a><span class="label label-warning">Coming Soon</span></li>
                         </ul>
                     </div>
