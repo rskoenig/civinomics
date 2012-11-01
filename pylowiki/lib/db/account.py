@@ -5,6 +5,8 @@ from pylowiki.model import Thing, meta
 from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.event import Event
+import sqlalchemy as sa
+
 log = logging.getLogger(__name__)
 
 # Getters
@@ -30,7 +32,12 @@ def getAccountByCode(hash):
     except sa.orm.exc.NoResultFound:
         return False
 
-
+def getAccountByName(orgName):
+    name = urlify(orgName)
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wc('url', name))).one()
+    except sa.orm.exc.NoResultFound:
+        return False
 
 # Setters
 def addHostToAccount(account, numHost):
@@ -62,7 +69,7 @@ class Account(object):
         a['orgEmail'] = user['email']
         a['orgMessage'] = user['tagline']
         a['orgLink'] = 'none'
-        a['admins'] = '|' + user.id + '|'
+        a['admins'] = '|' + str(user.id) + '|'
         commit(a)
 
         a['urlCode'] = toBase62(a)

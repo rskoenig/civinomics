@@ -816,17 +816,18 @@ class ProfileController(BaseController):
         c.title = c.user['name'] 
         c.events = getParentEvents(c.user)
         c.accounts = getUserAccounts(c.user.id)
-        for account in c.accounts:
-            if 'type' not in account:
-                account['type'] = 'basic'
-                account['numParticipants'] = '100'
-                account['urlCode'] = toBase62(account)
+        if c.accounts:
+            for account in c.accounts:
+                if 'type' not in account:
+                    account['type'] = 'basic'
+                    account['numParticipants'] = '100'
+                    account['urlCode'] = toBase62(account)
 
-            if 'orgName' not in account:
-                account['orgName'] = c.user['name']
-                account['orgEmail'] = c.user['email']
+                if 'orgName' not in account:
+                    account['orgName'] = c.user['name']
+                    account['orgEmail'] = c.user['email']
 
-        commit(account)
+            commit(account)
         log.info('c.accounts is %s' %c.accounts)
 
         return render("/derived/member_admin.bootstrap")

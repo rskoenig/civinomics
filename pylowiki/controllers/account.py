@@ -13,10 +13,11 @@ from pylons import config
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode
+from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode, getAccountByName
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.utils import urlify
+from pylowiki.lib.db.user import get_user
 
 
 from hashlib import md5
@@ -60,6 +61,19 @@ class AccountController(BaseController):
             return render("/derived/account_admin.bootstrap")
         else:
             return redirect("/")
+            
+    @h.login_required
+    def accountCreateHandler(self, id1, id2):
+        urlCode = id1
+        url = urlify(id2)
+        
+        user = get_user(urlCode, url)
+        Account(user, '1', '10', '0', 'trial')
+        accounts = getUserAccounts(user.id)
+        account = accounts[:0]
+        code = account['urlCode']
+        
+        return redirect("/account/" + code )
 
     @h.login_required
     def accountAdminHandler(self, id1):
@@ -104,7 +118,11 @@ class AccountController(BaseController):
                 errorMsg = "Organization Name required. "
                 error = 1 
             else:
-                if orgName != c.account['orgName']:
+                nameTest = getAccountByName(orgName)
+                if nameTest:
+                    error = 1
+                    errorMsg = errorMsg + "Organization name already in use by another account. "
+                elif orgName != c.account['orgName']:
                     change = 1
                     changeMsg = changeMsg + "Organization name updated. "
                     c.account['orgName'] = orgName

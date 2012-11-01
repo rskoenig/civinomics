@@ -1,6 +1,7 @@
 <%!
     from pylowiki.lib.db.event import getParentEvents
     from pylowiki.lib.db.user import getUserByID
+    from pylowiki.lib.db.workshop import getWorkshopsByAccount
 %>  
 
 <%def name="editProfileInfo()">
@@ -144,38 +145,30 @@
 
 
 <%def name="memberAccount()">
-    % if c.account:
-       <strong>Member Account</strong><br /><br />
-       Total hosting for account: ${c.account['numHost']}<br /> 
-       <% numWorkshops = len(c.workshops) %>
+    % if c.accounts:
+        % for account in c.accounts:
+           <strong><a href="/account/${account['urlCode']}">${account['orgName']}</a></strong><br /><br />
+           Account Type: ${account['type']}<br />
+           Total hosting for account: ${account['numHost']}<br /> 
+           Total participants for account: ${account['numParticipants']}<br /> 
+           <% 
+               accountWorkshops = getWorkshopsByAccount(account.id) 
+               numWorkshops = len(accountWorkshops)
+           %>
        Total workshops hosted for account: ${numWorkshops}<br /> 
-       % if c.workshops:
-          % for w in c.workshops:
-             &nbsp; &nbsp; &nbsp; &bull; &nbsp;<a href="/workshop/${w['urlCode']}/${w['url']}">${w['title']}</a>
-             <br />
-          % endfor
-       % endif
-       Total hosted remaining for account: ${c.account['numRemaining']}<br /> 
+           % if accountWorkshops:
+               % for w in accountWorkshops:
+                   &nbsp; &nbsp; &nbsp; &bull; &nbsp;<a href="/workshop/${w['urlCode']}/${w['url']}">${w['title']}</a>
+                   <br />
+               % endfor
+           % endif
+       Total hosted remaining for account: ${account['numRemaining']}<br /> 
        <br /><br /> 
-       <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
-       Change number of objects which may be hosted: 
-       <select name="numHost">
-       % for i in range(1, 11):
-        <option>${i}</option>
-       % endfor
-       </select>
-       <br /><br />
-       <button type="submit" class="btn btn-warning">Update Account</button>
-       </form> 
+        % endfor
     % else:
        <strong>Create User Account</strong><br /><br />
        <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
-       Number of objects which may be hosted: 
-       <select name="numHost">
-       % for i in range(1, 11):
-        <option>${i}</option>
-       % endfor
-       </select>
+       
        <br /><br />
        <button type="submit" class="btn btn-warning">Add Account</button>
        </form> 
