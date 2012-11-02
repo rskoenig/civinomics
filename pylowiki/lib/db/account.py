@@ -16,8 +16,8 @@ def getUserAccount(userID):
     except:
         return False
 
-def getUserAccounts(userID):
-        uID = '|' + str(int(userID)) + '|'
+def getUserAccounts(user):
+        uID = '|' + user['email'] + '|'
         uKey = 'admins'
         ##log.info('userID is %s, uID is %s and uKey is %s'%(userID, uID, uKey))
         accounts = meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wcl(uKey, uID))).all()
@@ -69,7 +69,7 @@ class Account(object):
         a['orgEmail'] = user['email']
         a['orgMessage'] = user['tagline']
         a['orgLink'] = 'none'
-        a['admins'] = '|' + str(user.id) + '|'
+        a['admins'] = '|' + user['email'] + '|'
         commit(a)
 
         a['urlCode'] = toBase62(a)

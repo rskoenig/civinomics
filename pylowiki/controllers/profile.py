@@ -52,7 +52,7 @@ class ProfileController(BaseController):
         else:
            c.isFollowing = False
 
-        c.accounts = getUserAccounts(c.user.id)
+        c.accounts = getUserAccounts(c.user)
 
         fList = getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
@@ -815,7 +815,7 @@ class ProfileController(BaseController):
         c.user = get_user(code, url)
         c.title = c.user['name'] 
         c.events = getParentEvents(c.user)
-        c.accounts = getUserAccounts(c.user.id)
+        c.accounts = getUserAccounts(c.user)
         if c.accounts:
             for account in c.accounts:
                 if 'type' not in account:

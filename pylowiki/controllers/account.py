@@ -13,11 +13,11 @@ from pylons import config
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode, getAccountByName
+from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode, getAccountByName, getUserAccounts
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.utils import urlify
-from pylowiki.lib.db.user import get_user
+from pylowiki.lib.db.user import get_user, getUserByEmail
 
 
 from hashlib import md5
@@ -34,13 +34,16 @@ class AccountController(BaseController):
         c.events = getParentEvents(c.account)
         adminList = c.account['admins'].split('|')
         c.admins = []
+        c.emails = []
         for admin in adminList:
             if admin and admin != '':
-                user = getUserByID(admin)
+                user = getUserByEmail(admin)
                 if user:
                     c.admins.append(user)
                     if user.id == c.authuser.id:
                         authorized = 1
+                else:
+                    c.emails.append(admin)
 
         # update legacy objects
         if 'orgName' not in c.account:
@@ -69,7 +72,7 @@ class AccountController(BaseController):
         
         user = get_user(urlCode, url)
         Account(user, '1', '10', '0', 'trial')
-        accounts = getUserAccounts(user.id)
+        accounts = getUserAccounts(user)
         account = accounts[:0]
         code = account['urlCode']
         
