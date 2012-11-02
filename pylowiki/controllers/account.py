@@ -97,7 +97,19 @@ class AccountController(BaseController):
            return redirect("/" )
 
         c.account = getAccountByCode(code)
+        
         c.events = getParentEvents(c.account)
+        
+        adminList = c.account['admins'].split('|')
+        c.admins = []
+        c.emails = []
+        for admin in adminList:
+            if admin and admin != '':
+                user = getUserByEmail(admin)
+                if user:
+                    c.admins.append(user)
+                c.emails.append(admin)
+                   
         changeMsg = ''
         change = 0
         error = 0
@@ -127,16 +139,34 @@ class AccountController(BaseController):
             if orgName == '':
                 errorMsg = "Organization Name required. "
                 error = 1 
-            else:
+            elif orgName != c.account['orgName']:
                 nameTest = getAccountByName(orgName)
                 if nameTest:
                     error = 1
                     errorMsg = errorMsg + "Organization name already in use by another account. "
-                elif orgName != c.account['orgName']:
+                else:
                     change = 1
                     changeMsg = changeMsg + "Organization name updated. "
                     c.account['orgName'] = orgName
                     c.account['url'] = url
+                    
+        if 'deleteAdmin' in request.params:
+            deleteAdmin = request.params['deleteAdmin']
+            adminList = ''
+            if 'confirmAdmin|' + deleteAdmin in request.params:
+                for email in c.emails:
+                    if deleteAdmin != email:
+                        adminList = adminList + '|' + email + '|'
+                    
+                c.account['admins'] = adminList
+                change = 1
+                changeMsg = changeMsg + "Admin email " + deleteAdmin + " deleted. "
+                
+            else:
+                error = 1
+                errorMsg = errorMsg + 'Please confirm delete of admin.'
+                
+                
 
         if 'orgEmail' in request.params:
             orgEmail = request.params['orgEmail']
@@ -162,6 +192,18 @@ class AccountController(BaseController):
                 change = 1
                 changeMsg = changeMsg + "Organization welcome message updated. "
                 c.account['orgMessage'] = orgMessage
+                
+        if 'adminEmail' in request.params:
+            adminEmail = request.params['adminEmail']
+            if adminEmail and adminEmail != '' and adminEmail not in c.emails:
+                adminList = '|' + adminEmail + '|'
+                change = 1
+                changeMsg = changeMsg + "Admin email " + adminEmail + " added. "
+                for email in c.emails:
+                    adminList = adminList + '|' + email + '|'
+                    
+                c.account['admins'] = adminList
+
 
         if change:
             if errorMsg:

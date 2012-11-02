@@ -98,13 +98,23 @@
         <form action="/accountAdminHandler/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
 
         <ul class="unstyled">
-        <% alen = len(c.admins) %>              
+        <% alen = len(c.admins) %> 
+        % if c.authuser in c.admins:
+            <br /><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a><br /> </li>
+        % endif
         % for admin in c.admins:
             <li>
-            % if alen > 1:
-                <button type="submit" class="btn btn-danger" name="delete" value="${admin['urlCode']}|${admin['url']}">Delete Admin</button> <input type=checkbox name="confirm|${admin['urlCode']}|${admin['url']}"> confirm &nbsp; &nbsp; &nbsp;
+            % if alen > 1 and c.authuser['email'] != admin['email']:
+                <button type="submit" class="btn btn-danger" name="deleteAdmin" value="${admin['email']}">Delete Admin</button> <input type=checkbox name="confirmAdmin|${admin['email']}"> confirm   &nbsp; &nbsp; &nbsp;
+                <a href="/profile/${admin['urlCode']}/${admin['url']}">${admin['name']}</a> </li>
             % endif
-            <a href="/profile/${admin['urlCode']}/${admin['url']}">${admin['name']}</a> </li>
+            
+        % endfor
+        % for email in c.emails:
+            <li>
+            <button type="submit" class="btn btn-danger" name="deleteAdmin" value="${email}">Delete Admin</button> <input type=checkbox name="confirmAdmin|${email}"> confirm &nbsp; &nbsp; &nbsp;
+            
+            ${email} </li>
         % endfor
         </ul>
         % if c.account['type'] != 'trial':
@@ -114,7 +124,7 @@
                 <label for="orgName" class="control-label">Administrator email:</label>
                 <div class="controls">
                 <input type="text" id="adminEmail" name="adminEmail">
-                <button class="btn btn-warning" name="add" type=submit>Add Admin</button>
+                <button class="btn btn-warning" name="addAdmin" type=submit>Add Admin</button>
             </div> <!-- /.control-group -->
         % endif
         </form>
