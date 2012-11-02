@@ -403,19 +403,24 @@
 </%def>
 
 <%def name="accounts()">
-  % if 'user' in session and c.accounts and (c.authuser.id == c.user.id or isAdmin(c.authuser.id)):
-    <h2 class="civ-col"><i class="icon-list-alt"></i> Accounts I am Administrating</h2>
-    <div class="civ-col-inner">
-    <ul class="unstyled civ-block-list">
-    % for account in c.accounts:
-        <li>
-        <p><a href="/account/${account['urlCode']}">${account['orgName']}</a></p>
-        </li>
-    % endfor
+    % if 'user' in session and c.accounts and (c.authuser.id == c.user.id or isAdmin(c.authuser.id)):
+        <h2 class="civ-col"><i class="icon-list-alt"></i> Accounts I am Administrating</h2>
+        <div class="civ-col-inner">
+        <ul class="unstyled civ-block-list">
+        % for account in c.accounts:
+            <li>
+            <p><a href="/account/${account['urlCode']}">${account['orgName']}</a></p>
+            </li>
+        % endfor
+        </div> <!-- /.civ-col-inner -->
     </ul>
-
-    
-    </div> <!-- /.civ-col-inner -->
+    % elif c.authuser.id == c.user.id and not c.accounts:
+        <h2 class="civ-col"><i class="icon-list-alt"></i> Create a Free Trial Workshop!</h2>
+        Create a free trial Civinomics workshop. The workshop is private, and you can have up to 10 other Civinomics members participate.
+        <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
+        <br />
+        <button type="submit" class="btn btn-warning">Create Workworkshop</button>
+        <br /><br />
   % endif
 </%def>
 

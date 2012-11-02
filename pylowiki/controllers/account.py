@@ -71,13 +71,20 @@ class AccountController(BaseController):
         url = urlify(id2)
         
         user = get_user(urlCode, url)
-        Account(user, '1', '10', '0', 'trial')
         accounts = getUserAccounts(user)
-        account = accounts[:0]
-        code = account['urlCode']
+        if accounts:
+            for account in accounts:
+                if account.owner == user.id and account['type'] == 'trial':
+                    alert = {'type':'error'}
+                    alert['title'] = 'You already have a trial account. Upgrade it to add workshops or participants.'
+                    alert['content'] = ''
+                    session['alert'] = alert
+                    session.save()
+                    return redirect("/profile/" + urlCode + "/" + url )
+                    
+        Account(user, '1', '10', '0', 'trial')
+        return redirect("/profile/" + urlCode + "/" + url )
         
-        return redirect("/account/" + code )
-
     @h.login_required
     def accountAdminHandler(self, id1):
         code = id1
@@ -193,7 +200,7 @@ class AccountController(BaseController):
         for admin in adminList:
             log.info('admin is %s'%admin)
             if admin and admin != '':
-               user = getUserByID(admin)
+               user = getUserByEmail(admin)
                if user:
                    c.admins.append(user)
                    if user.id == c.authuser.id:
