@@ -471,10 +471,14 @@ def make_map():
     map.connect('/account/{id1}/', controller = 'account', action = 'accountAdmin', id1 = '{id1}')
 
     map.connect('/accountUpgradeHandler/{id1}', controller = 'account', action = 'accountUpgradeHandler', id1 = '{id1}')
-    map.connect('/accountUpgradeHandler/{id1}/', controller = 'account', action = '/accountUpgradeHandler', id1 = '{id1}')
+    map.connect('/accountUpgradeHandler/{id1}/', controller = 'account', action = 'accountUpgradeHandler', id1 = '{id1}')
 
     map.connect('/accountAdminHandler/{id1}', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}')
-    map.connect('/accountAdminHandler/{id1}/', controller = 'account', action = '/accountAdminHandler', id1 = '{id1}')
+    map.connect('/accountAdminHandler/{id1}/', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}')
+    
+    # host profile display
+    map.connect('/host/{id1}', controller = 'host', action = 'showHost', id1 = '{id1}')
+    map.connect('/host/{id1}/', controller = 'host', action = 'showHost', id1 = '{id1}')
 
     
     

@@ -1,0 +1,47 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/derived/host/helpers.mako" />
+<%namespace name="profile_helpers" file="/derived/profile/helpers.mako" />
+
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span12">
+            <h2 class="civ-col">
+            </i> Host Profile
+            </h2>
+            <div class="well profile_header">
+                <div class="row">
+                <div class="span3">
+                        ${helpers.displayHostPicture()}
+                    </div><!-- span3 -->
+                <div class="span5">
+                        ${helpers.summary()}
+                    </div><!-- span5 -->
+                </div><!-- well -->
+            </div><!-- row -->
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
+    <div class="row-fluid">
+    <div class="span12">
+        <div class="civ-col">
+        <h2 class="civ-col">Workshops We are Hosting</h2>
+            ${profile_helpers.listWorkshops(c.workshops)}
+        </div><!-- civ-col -->
+    </div><!-- span12 -->
+</div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
+
+
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+ 
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>
