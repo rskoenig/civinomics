@@ -25,6 +25,19 @@
         % endfor
         </ul>
     % endif
+    % if len(workshops) < int(c.account['numHost']) and c.account['type'] != 'trial':
+        <h3>Create a New Workshop</h3><br />
+        <form action="/newWorkshop/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
+            <div class="control-group">
+                <label for="workshopName" class="control-label">Workshop Name:</label>
+                <div class="controls">
+                   <input type="text" id="workshopName" name="workshopName">
+                   <span class="help-inline"><span class="label label-important">Required</span></span>
+                </div> <!-- /.controls -->
+            </div> <!-- /.control-group -->
+            <button class="btn btn-warning" type="submit" name=newWorkshop>Create Workshop</button>
+        </form>
+    % endif
     % if c.events:
         <h3>Account Event Log</h3><br />
         % for event in c.events:

@@ -414,7 +414,7 @@
         % endfor
         </div> <!-- /.civ-col-inner -->
     </ul>
-    % elif c.authuser.id == c.user.id and not c.accounts:
+    % elif ('user' in session and c.authuser.id == c.user.id) and not c.accounts:
         <h2 class="civ-col"><i class="icon-list-alt"></i> Create a Free Trial Workshop!</h2>
         Create a free trial Civinomics workshop. The workshop is private, and you can have up to 10 other Civinomics members participate.
         <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">

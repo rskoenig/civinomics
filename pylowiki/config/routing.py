@@ -56,7 +56,6 @@ def make_map():
     map.connect('/moderation', controller = 'moderation', action = 'index')
     map.connect('/moderation/handler/{id}', controller = 'moderation', action = 'handler', id = '{id}')
     map.connect('/moderation/{id1}/{id2}', controller = 'moderation', action = 'index', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/addWorkshop', controller = 'workshop', action = 'addWorkshop')
     map.connect('/rating', controller = 'rating', action = 'index')
     map.connect('/admin', controller = 'admin', action = 'index')
     map.connect('/suggestion/rate', controller = 'suggestion', action = 'rate')
@@ -67,6 +66,7 @@ def make_map():
     map.connect('/ipadListener/sendSurveyData/', controller = 'ipadListener', action = 'sendSurveyData')
 
     # Workshop home page
+    map.connect('/newWorkshop/{id1}', controller = 'workshop', action = 'newWorkshopHandler', id1 = '{id1}')
     map.connect('/workshops/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')

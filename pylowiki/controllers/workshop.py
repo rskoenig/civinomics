@@ -24,7 +24,7 @@ from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
-from pylowiki.lib.db.account import Account, getUserAccount
+from pylowiki.lib.db.account import Account, getAccountByCode, isAccountAdmin
 from pylowiki.lib.db.event import Event
 
 from pylowiki.lib.utils import urlify
@@ -114,13 +114,6 @@ class WorkshopController(BaseController):
         if c.account and c.account['numRemaining'] > 0:
             c.title = "Create New Workshop"
             c.heading = "Basic information"
-
-            # tracks remaining number of workshops which can
-            # be created by this user
-            numRemaining = c.account['numRemaining'] 
-            numRemaining = int(numRemaining) - 1
-            c.account['numRemaining'] = numRemaining
-            commit(c.account)
 
             return render('/derived/workshop_create.bootstrap')
         else:
@@ -543,47 +536,54 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
-    def addWorkshopHandler(self):
+    def newWorkshopHandler(self, id1):
+        urlCode = id1
 
-        if 'user' in session and c.authuser:
-            c.account = getUserAccount(c.authuser.id)
-            if not c.account or c.account['numRemaining'] < 1:
-                return(redirect("/"))
-        else:          
-            return(redirect("/"))
+        account = getAccountByCode(urlCode)
+        
+        
+        if account and (isAccountAdmin(c.authuser, account) or isAdmin(c.authuser.id)):
+            error = 0
+            errorMsg = ''
+            if 'workshopName' in request.params:
+                workshopName = request.params['workshopName']
+                if not workshopName or workshopName == '':
+                    error = 1
+                    errorMsg = 'Workshop Name required. '
+            else:
+                error = 1
+                errorMsg = 'Workshop Name required. '
+               
+                
+            if error:
+                alert = {'type':'error'}
+                alert['title'] = 'Missing information'
+                alert['content'] = errorMsg
+                session['alert'] = alert
+                session.save()
+                return redirect('/account/' + urlCode)
+                
+           
+            w = Workshop(workshopName, account, 'trial')
+            c.workshop_id = w.w.id # TEST
+            c.title = 'Configure Workshop'
+            c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
+            c.postal = w.w['publicPostal']
+            titles = getGeoTitles(c.postal, 'united-states')
+            sList = titles.split('|')
+            c.country = sList[2].title()
+            c.state = sList[4].title()
+            c.county = sList[6].title()
+            c.city = sList[8].title()
+            return redirect('/workshop/%s/%s/configure'%(w.w['urlCode'], w.w['url']))   
+            
+        else:
+            alert = {'type':'error'}
+            alert['title'] = 'You are not authorized'
+            session['alert'] = alert
+            session.save()
+            return redirect('/')    
 
-        workshopName = request.params['workshopName']
-        try:
-            publicPrivate = request.params['publicPrivate']
-        except:
-            publicPrivate = ''
-
-        formSchema = addWorkshopForm()
-        try:
-            form_result = formSchema.to_python(request.params)
-        except validators.Invalid, error:
-            h.flash("Errors found, please fix the highlighted areas", "warning")
-            c.form_result = error.value
-            c.form_errors = error.error_dict or {}
-            html = render('/derived/workshop_configure.bootstrap')
-            return htmlfill.render(
-                html,
-                defaults=c.form_result,
-                errors=c.form_errors
-            )
-
-        w = Workshop(workshopName, c.authuser, publicPrivate)
-        c.workshop_id = w.w.id # TEST
-        c.title = 'Add slideshow'
-        c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
-        c.postal = w.w['publicPostal']
-        titles = getGeoTitles(c.postal, 'united-states')
-        sList = titles.split('|')
-        c.country = sList[2].title()
-        c.state = sList[4].title()
-        c.county = sList[6].title()
-        c.city = sList[8].title()
-        return redirect('/workshop/%s/%s/configure'%(w.w['urlCode'], w.w['url']))
     
     @h.login_required
     def adminWorkshopHandler(self, id1, id2):

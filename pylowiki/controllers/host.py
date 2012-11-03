@@ -14,7 +14,7 @@ class HostController(BaseController):
     def showHost(self, id1):
         accountName = id1
         account = getAccountByName(urlify(accountName))
-        if account:
+        if account and account['type'] != 'trial':
             c.account = account
             c.workshops = getWorkshopsByAccount(c.account.id)
             return render("/derived/host.bootstrap")

@@ -12,7 +12,9 @@
                 name = c.revision['data']
                 directoryNumber = c.revision['directoryNumber']
             else:
-                pictureHash = c.account['pictureHash']
+                pictureHash = 'flash'
+                if 'pictureHash' in c.account:
+                    pictureHash = c.account['pictureHash']
                 name = c.account['orgName']
                 if pictureHash != 'flash':
                   directoryNumber = c.account['directoryNumber']

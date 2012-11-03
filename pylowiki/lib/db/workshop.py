@@ -61,7 +61,7 @@ def getWorkshopsByOwner(userID):
 
 def getWorkshopsByAccount(accountID):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('account', accountID))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(owner = accountID).all()
     except:
         return False
 
@@ -191,23 +191,25 @@ class Workshop(object):
         w['startTime'] = '0000-00-00'
         w['endTime'] = '0000-00-00'
 
-        # do this in the publish part
-        #endTime = datetime.datetime.now()
-        #endTime = endTime.replace(year = endTime.year + 1)
-        #w['endTime'] = endTime.ctime()
         w['deleted'] = '0'
-        w['facilitators'] = owner.id
+        w['facilitators'] = c.authuser.id
         w['goals'] = 'No goals set'
         w['numResources'] = 1
         w['public_private'] = publicPrivate
+       
+        w['publicScope'] = 10
+        w['publicScopeTitle'] = 'postal code ' + c.authuser['postalCode']
+        w['publicPostal'] = c.authuser['postalCode']
+        w['publicPostalList'] = ''
+        # one of publicScope, publicPostalList. privateDomain, privateEmailList, trial
+        if publicPrivate == 'trial':
+            w['scopeMethod'] = 'trial'
+        else:
+            w['scopeMethod'] = 'publicScope'
+ 
         w['publicTags'] = 'none'
         w['memberTags'] = 'none'
-        w['publicScope'] = 10
-        w['publicScopeTitle'] = 'postal code ' + owner['postalCode']
-        w['publicPostal'] = owner['postalCode']
-        w['publicPostalList'] = ''
-        # one of publicScope, publicPostalList. privateDomain, privateEmailList
-        w['scopeMethod'] = 'publicScope'
+
         w['allowSuggestions'] = 1
         w['allowResources'] = 1
         commit(w)
@@ -218,15 +220,15 @@ class Workshop(object):
         p = Page(title, owner, w, background)
         #r = Revision(owner, background, p.p.id)
         
-        e = Event('Create workshop', 'User %s created a workshop'%(owner.id), w)
+        e = Event('Create workshop', 'User %s created a workshop'%(c.authuser.id), w)
         
-        slideshow = Slideshow(c.authuser, w)
+        slideshow = Slideshow(owner, w)
         slideshow = getSlideshow(slideshow.s.id)
         w['mainSlideshow_id'] = slideshow.id
         identifier = 'slide'
         title = 'Sample Title'
         caption = 'Sample Caption'
-        s = Slide(c.authuser, slideshow, title, caption, 'supDawg.png', 'no file here', '0')
+        s = Slide(owner, slideshow, title, caption, 'supDawg.png', 'no file here', '0')
         w['mainImage_caption'] = caption
         w['mainImage_title'] = title
         w['mainImage_hash'] = s.s['pictureHash']
@@ -244,6 +246,6 @@ class Workshop(object):
 
         commit(w)
         
-        f = Facilitator( owner.id, w.id ) 
+        f = Facilitator( c.authuser.id, w.id ) 
         
         

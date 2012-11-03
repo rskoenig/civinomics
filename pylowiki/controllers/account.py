@@ -12,8 +12,9 @@ from pylons import config
 
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode, getAccountByName, getUserAccounts
+from pylowiki.lib.db.workshop import Workshop, getWorkshopByID, getWorkshopsByOwner
+from pylowiki.lib.db.motd import MOTD
+from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode, getAccountByName, getUserAccounts, isAccountAdmin
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.utils import urlify
@@ -29,7 +30,6 @@ class AccountController(BaseController):
     @h.login_required
     def accountAdmin(self, id1):
         code = id1
-        authorized = 0
         c.account = getAccountByCode(code)
         c.events = getParentEvents(c.account)
         adminList = c.account['admins'].split('|')
@@ -40,27 +40,10 @@ class AccountController(BaseController):
                 user = getUserByEmail(admin)
                 if user:
                     c.admins.append(user)
-                    if user.id == c.authuser.id:
-                        authorized = 1
                 else:
                     c.emails.append(admin)
 
-        # update legacy objects
-        if 'orgName' not in c.account:
-            c.account['orgName'] = c.authuser['name']
-            c.account['url'] = urlify(c.acount['orgName'])
-            commit(c.account)
-
-        if 'orgEmail' not in c.account:
-            c.account['orgEmail'] = c.authuser['email'] 
-            commit(c.account)
-
-        if 'orgMessage' not in c.account:
-            c.account['orgMessage'] = c.authuser['tagline'] 
-            commit(c.account)
-
-
-        if authorized or isAdmin(c.authuser.id):
+        if isAccountAdmin(c.authuser, c.account) or isAdmin(c.authuser.id):
             return render("/derived/account_admin.bootstrap")
         else:
             return redirect("/")
@@ -82,21 +65,23 @@ class AccountController(BaseController):
                     session.save()
                     return redirect("/profile/" + urlCode + "/" + url )
                     
-        Account(user, '1', '10', '0', 'trial')
+        a = Account(user, '1', '10', '0', 'trial')
+        w = Workshop(user['name'], a.a, 'trial')
+        MOTD('Welcome to the workshop!', w.w.id, w.w.id)
         return redirect("/profile/" + urlCode + "/" + url )
         
     @h.login_required
     def accountAdminHandler(self, id1):
         code = id1
-        if not isAdmin(c.authuser.id):
+        c.account = getAccountByCode(code)
+        
+        if not isAdmin(c.authuser.id) and not isAccountAdmin(c.authuser, c.account):
            alert = {'type':'error'}
            alert['title'] = 'You are not authorized.'
            alert['content'] = ''
            session['alert'] = alert
            session.save()
            return redirect("/" )
-
-        c.account = getAccountByCode(code)
         
         c.events = getParentEvents(c.account)
         
@@ -262,6 +247,9 @@ class AccountController(BaseController):
         if 'upgrade' in request.params:
             uButton = request.params['upgrade']
             numUsed = int(c.account['numHost']) - int(c.account['numRemaining'])
+            if c.account['type'] == 'trial':
+                c.account['url'] = urlify(c.account['orgName'])
+                
             if uButton == 'basic':
                c.account['type'] = 'basic'
                c.account['numHost'] = '5'

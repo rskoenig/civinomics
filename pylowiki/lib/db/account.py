@@ -26,6 +26,14 @@ def getUserAccounts(user):
         else:
             return False
 
+def isAccountAdmin(user, account):
+        email = '|' + user['email'] + '|'
+        account = meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wc('urlCode', account['urlCode']))).filter(Thing.data.any(wcl('admins', email))).all()
+        if account:
+            return True
+        else:
+            return False
+
 def getAccountByCode(hash):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wc('urlCode', hash))).one()
@@ -65,7 +73,10 @@ class Account(object):
         a['type'] = type
         a['disabled'] = '0'
         a['orgName'] = user['name']
-        a['orgURL'] = urlify(a['orgName'])
+        if type == 'trial':
+            a['url'] = 'trial'
+        else:
+            a['url'] = urlify(a['orgName'])
         a['orgEmail'] = user['email']
         a['orgMessage'] = user['tagline']
         a['orgLink'] = 'none'
@@ -74,4 +85,6 @@ class Account(object):
 
         a['urlCode'] = toBase62(a)
         commit(a)
+        
+        self.a = a
 
