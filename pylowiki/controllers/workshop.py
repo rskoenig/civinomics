@@ -24,7 +24,7 @@ from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
-from pylowiki.lib.db.account import Account, getAccountByCode, isAccountAdmin
+from pylowiki.lib.db.account import Account, getAccountByCode, isAccountAdmin, getAccountByID
 from pylowiki.lib.db.event import Event
 
 from pylowiki.lib.utils import urlify
@@ -161,6 +161,7 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""        
         else:
@@ -205,7 +206,7 @@ class WorkshopController(BaseController):
         else:
            werror = 1
            werrMsg += 'Goals '
-
+            
         ##log.info('Got wGoals %s' % wGoals)
         if 'allowSuggestions' in request.params:
            allowSuggestions = request.params['allowSuggestions']
@@ -227,33 +228,43 @@ class WorkshopController(BaseController):
            werror = 1
            werrMsg += 'Allow Resources '
 
-        if not wstarted:
-            if 'publicTags' in request.params:
-              publicTags = request.params.getall('publicTags')
-              wpTags = ','.join(publicTags)
-              if wpTags and wpTags != c.w['publicTags']:
-                  wchanges = 1
-                  weventMsg = weventMsg + "Updated workshop tags."
-                  c.w['publicTags'] = wpTags
+        if c.account['type'] != 'trial':
+            if 'publicPrivate' in request.params:
+                publicPrivate = request.params['publicPrivate']
+                if (publicPrivate == 'public' or publicPrivate == 'private') and publicPrivate != c.w['public_private']:
+                    wchanges = 1
+                    weventMsg = weventMsg + "Changed public/private from " + c.w['public_private'] + " to " + publicPrivate + "."
+                    c.w['public_private'] = publicPrivate
             else:
-              werror = 1
-              werrMsg += 'System Tags '
+                werror = 1
+                werrMsg += 'Public or Private? '
+            if not wstarted:
+                if 'publicTags' in request.params:
+                    publicTags = request.params.getall('publicTags')
+                    wpTags = ','.join(publicTags)
+                    if wpTags and wpTags != c.w['publicTags']:
+                        wchanges = 1
+                        weventMsg = weventMsg + "Updated workshop tags."
+                        c.w['publicTags'] = wpTags
+                else:
+                    werror = 1
+                    werrMsg += 'System Tags '
    
-            if 'memberTags' in request.params:
-              wMemberTags = request.params['memberTags']
-              wMemberTags = wMemberTags.lstrip()
-              wMemberTags = wMemberTags.rstrip()
-              if wMemberTags and c.w['memberTags'] != wMemberTags:
-                  wchanges = 1
-                  weventMsg = weventMsg + "Updated facilitator contributed tags."
-              if wMemberTags == 'none':
-                  werror = 1
-                  werrMsg += 'Member Tags '
+                if 'memberTags' in request.params:
+                    wMemberTags = request.params['memberTags']
+                    wMemberTags = wMemberTags.lstrip()
+                    wMemberTags = wMemberTags.rstrip()
+                    if wMemberTags and c.w['memberTags'] != wMemberTags:
+                        wchanges = 1
+                        weventMsg = weventMsg + "Updated facilitator contributed tags."
+                    if wMemberTags == 'none':
+                        werror = 1
+                        werrMsg += 'Member Tags '
 
-              c.w['memberTags'] = wMemberTags
-            else:
-              werror = 1
-              werrMsg += 'Member Tags '
+                    c.w['memberTags'] = wMemberTags
+                else:
+                    werror = 1
+                    werrMsg += 'Member Tags '
 
         # save successful changes
         if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
@@ -282,6 +293,7 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""
         else:
@@ -349,6 +361,7 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Configure Workshop"
         c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""
         else:
@@ -436,6 +449,7 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Configure Workshop"
         c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""
         else:
@@ -930,6 +944,7 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
         if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
             h.flash("You are not authorized", "warning")
             return render('/')

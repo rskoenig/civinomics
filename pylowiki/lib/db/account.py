@@ -33,6 +33,13 @@ def isAccountAdmin(user, account):
             return True
         else:
             return False
+            
+def getAccountByID(accountID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'account').filter_by(id = accountID).one()
+    except:
+        return False
+
 
 def getAccountByCode(hash):
     try:
