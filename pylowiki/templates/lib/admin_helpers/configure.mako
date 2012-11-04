@@ -1,5 +1,6 @@
 <%!
     from pylowiki.lib.db.geoInfo import getGeoTitles
+    from pylowiki.lib.db.user import getUserByEmail
 %>
 
 <%def name="fields_alert()">
@@ -127,6 +128,7 @@
     </td>
     <td>
     % if c.account['type'] != 'trial':
+
         % if wstarted == 0: 
             <strong>Workshop Tags:</strong>
             <br />
@@ -204,9 +206,11 @@
             <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
             <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>
         % endif
+
     % endif
     <br />
     </td>
+    
     </tr>
     </tbody>
     </table>
@@ -318,4 +322,44 @@
        </div>
    % endif
 
+</%def>
+
+<%def name="associates()">
+    <%
+        associates = []
+        emails = []
+        all = []
+        if 'associates' in c.w:
+            aList = c.w['associates'].split('|')
+            for a in aList:
+                if a and a != '':
+                    all.append(a)
+                    user = getUserByEmail(a)
+                    if user:
+                        associates.append(user)
+                    else:
+                        emails.append(a)
+    %>
+    <form name="associates" id="associates" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureAssociatesWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <strong>Designate up to 10 private associates to participate in this workhop</strong><br />
+    <ul class="unstyled">
+    % for user in associates:
+        <li>        
+        <button type="submit" class="btn btn-danger" name="deleteAssociate" value="${user['email']}">Delete Associate</button> <input type=checkbox name="confirmDelete|${user['email']}"> confirm   &nbsp; &nbsp; &nbsp;
+        <a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a> </li>
+    % endfor
+    % for email in emails:
+        <li>
+        <button type="submit" class="btn btn-danger" name="deleteAssociate" value="${email}">Delete Associate</button> <input type=checkbox name="confirmDelete|${email}"> confirm &nbsp; &nbsp; &nbsp;
+        ${email} </li>
+    % endfor
+    </ul>
+    % if len(all) < 10:
+        
+        Add a new associate to this workshop:<br />
+        Email Address: <input type="text" name = "newAssociate" size="50" maxlength="140""/>
+        <br /><br />
+        <button type="submit" class="btn btn-warning" name="addAssociate">Add Associate</button>
+    % endif
+    </form>
 </%def>

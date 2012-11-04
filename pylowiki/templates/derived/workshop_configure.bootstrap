@@ -22,6 +22,7 @@
             <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-list-alt"></i> Basic Information</a></li>
             <li><a href="#tab2" data-toggle="tab"><i class="icon-picture"></i> Slideshow</a></li>
             <li><a href="#tab3" data-toggle="tab"><i class="icon-book"></i> Background</a></li>
+            <li><a href="#tab4" data-toggle="tab"><i class="icon-user"></i> Associates</a></li>
         </ul>
         % if c.conf['read_only.value'] == 'true':
             <!-- read only -->
@@ -37,6 +38,9 @@
                 <div class="tab-pane" id="tab3">
                 ${helpers.edit_background()}
                 </div><!-- tab-pane template tab3 -->
+                <div class="tab-pane" id="tab4">
+                ${helpers.associates()}
+                </div><!-- tab-pane template tab4 -->
             </div><!-- tab-content template -->
         % endif
     </div><!-- tabbable template -->	
