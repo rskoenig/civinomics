@@ -108,6 +108,17 @@
         <br /><br />
         </dd>
     % endif
+    % if c.account and c.account['type'] != 'trial':
+        <dl>
+        <dt>Hosted by:</dt><dd>
+            % if 'pictureHash' in c.account and c.account['pictureHash'] != 'flash':
+                <a href="/host/${c.account['url']}"><img src="/images/avatar/${c.account['directoryNumber']}/thumbnail/${c.account['pictureHash']}.thumbnail" alt="${c.account['orgName']}" title="${c.account['orgName']}" class="thumbnail"></a> &nbsp; &nbsp;
+            % else:
+                <a href="/host/${c.account['url']}"><img src="/images/avatars/flash.thumbnail" alt="${c.account['orgName']}" title="${c.account['orgName']}" class="thumbnail"></a> &nbsp; &nbsp;
+            % endif
+        </dd>
+        </dl>
+    % endif
     % if len(c.facilitators) == 1:
         <% fTitle = "Facilitator" %>
     % else:

@@ -727,6 +727,7 @@ class WorkshopController(BaseController):
         url = id2
         
         c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
         c.title = c.w['title']
         
 
