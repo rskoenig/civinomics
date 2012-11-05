@@ -729,11 +729,20 @@ class WorkshopController(BaseController):
         c.w = getWorkshop(code, urlify(url))
         c.title = c.w['title']
         
+
+        
         if 'user' in session:
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
             c.isScoped = isScoped(c.authuser, c.w)
             c.isFollowing = isFollowing(c.authuser.id, c.w.id)
             c.isAdmin = isAdmin(c.authuser.id)
+            
+        if c.w['public_private'] == 'trial':
+            if 'user' in session:
+                if not c.isFacilitator and not c.isScoped:
+                    return render('/derived/404.bootstrap')            
+            else:
+                return render('/derived/404.bootstrap')
         
         fList = []
         for f in (getFacilitatorsByWorkshop(c.w.id)):

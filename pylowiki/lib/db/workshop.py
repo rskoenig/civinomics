@@ -95,7 +95,26 @@ def getParticipantsByID(id):
         return meta.Session.query(Thing).filter_by(id = id).one()['participants']
     except:
         return False
+        
+def isAssociate(user, workshop):
+        email = user['email']
+        if 'associates' in workshop:
+            aList = workshop['associates'].split('|')
+            for a in aList:
+                if a == email:
+                    return True
+                    
+            return False
+        else:
+            return False
 
+def getAssociateWorkshops(user):
+    email = '|' + user['email'] + '|'
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wcl('associates', email))).all()
+    except:
+        return False
+            
 def getRecentMemberPosts(number):
         counter = 0
         returnList = []
@@ -139,10 +158,11 @@ def getWorkshopPostsSince(code, url, memberDatetime):
 
         return returnList
 
-
-
 def isScoped(user, workshop):
    upostal = user['postalCode']
+   if isAssociate(user, workshop):
+       return True
+       
    if workshop['scopeMethod'] == 'publicPostalList':
       pstring = workshop['publicPostalList']
       pstring = pstring.replace(' ', ',')

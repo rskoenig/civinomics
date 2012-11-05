@@ -17,7 +17,7 @@ from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword,
 from pylowiki.lib.db.activity import getMemberPosts
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
-from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
+from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner, getAssociateWorkshops
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.account import Account, getUserAccount, getUserAccounts
@@ -53,6 +53,11 @@ class ProfileController(BaseController):
            c.isFollowing = False
 
         c.accounts = getUserAccounts(c.user)
+        
+        if 'user' in session and c.user.id == c.authuser.id:
+            c.associates = getAssociateWorkshops(c.user)
+        else:
+            c.associates = False
 
         fList = getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
