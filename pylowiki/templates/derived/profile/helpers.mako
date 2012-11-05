@@ -2,7 +2,7 @@
     from pylowiki.lib.db.suggestion import getSuggestionByID, getSuggestion
     from pylowiki.lib.db.resource import getResource
     from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince, getAssociateWorkshops
-    from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
+    from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator, getFacilitatorsByUser
     from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.db.activity import getMemberPosts
     from pylowiki.lib.db.discussion import getDiscussionByID
@@ -871,15 +871,15 @@
 
 <%def name="inviteCoFacilitate()">
   %if 'user' in session and c.authuser:
-      <% checkW = getWorkshopsByOwner(c.authuser.id) %>
-      <% wList = [] %>
-      % for w in checkW:
-          % if w['deleted'] == '0':
-              % if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
-                  <% wList.append(w) %>
-              % endif 
-          % endif
-      % endfor
+      <% 
+          fList = getFacilitatorsByUser(c.authuser.id)
+          wList = []
+          for f in fList:
+              w = getWorkshopByID(f['workshopID'])
+              if w['deleted'] == '0' and w['public_private'] != 'trial':
+                  if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
+                      wList.append(w)
+      %>
       % if c.authuser.id != c.user.id and wList:
           <h2 class="civ-col">Invite This Member to Facilitate</h2>
           <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
