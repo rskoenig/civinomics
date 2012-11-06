@@ -218,17 +218,64 @@
     <br /><br />
 
     % if wstarted == 0 and c.account['type'] != 'trial':
+        % if c.w['public_private'] == 'public':
+            ${public()}
+        % elif c.w['public_private'] == 'private':
+            ${private()}
+        % endif
+       <br /><br />
+       When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
+   Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligible to participate. 
+       <br /><br />
+   Note that once a workshop has started, you may not change the workshop participant eligibility or tags. 
+       <div class="well">
+        <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
+       <br />
+       <input type="checkbox" name="startWorkshop" value="Start" /> Start Workshop &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Start Workshop
+       <br /><br />
+       <button type="submit" class="btn btn-warning">Start Workshop</button>
+       </form>
+       </div>
+   % endif
+
+</%def>
+
+<%def name="private()">
+    <strong>Workshop Eligiblity</strong>
+    <p>Private workshops are not visible to the public.</p>
+    <p>This establishes the list of email addresses and email domains for members eligible to browse and participate in this private workshop.<p>
+    % if c.pmembers:        
+        <br /><br />${len(c.pmembers)} Private Members in This Workshop<br /><br />
+    % endif
+    <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+        Add a new private member to this workshop:<br />
+        Email Address: <input type="text" name = "newMember" size="50" maxlength="140""/>
+        <br /><br />
+        <button type="submit" class="btn btn-warning" name="addMember">Add Member</button>
+  
+    % if c.pmembers:
+        <br /><br />
+        Delete a private member from this workshop:<br />
+        Email Address: <input type="text" name = "removeMember" size="50" maxlength="140""/>
+        <br /><br />
+        <button type="submit" class="btn btn-warning" name="deleteMember">Delete Member</button>
+
+    % endif
+    </form>
+</%def>
+
+<%def name="public()">
     <strong>Workshop Eligiblity</strong>
     <p>This establishes the geographic area, or <em>public sphere</em>, in which people need to reside to participate in this workshop.</p>
     <p>The public sphere for this workshop can be defined either as a single jurisdiction with a central "home" postal, or as a set of multiple postal codes.</p>
     Choose which method of public sphere to use for this workshop, Single Jurisdiction or Multiple Postal Codes, then fill out the information in the appropriate form below and save it.
     <% 
-      if c.w['scopeMethod'] == 'publicScope':
-          sActive = "active"
-          mActive = "inactive"
-      else:
-          sActive = "inactive"
-          mActive = "active"
+        if c.w['scopeMethod'] == 'publicScope':
+            sActive = "active"
+            mActive = "inactive"
+        else:
+            sActive = "inactive"
+            mActive = "active"
     %>
     <div class="tabbable">
         <ul class="nav nav-tabs">
@@ -251,47 +298,47 @@
                 <br />
                 Public Sphere: (choose one)<br><br>
                 <% 
-                  if c.w['publicScope'] == '10':
-                    checked = 'checked'
-                  else:
-                    checked = 'unchecked'
+                    if c.w['publicScope'] == '10':
+                        checked = 'checked'
+                    else:
+                        checked = 'unchecked'
                 %>
                 <input type="radio" name = "publicScope" value = "10" ${checked} onClick="clearZipList()" /> Postal Code <span id="wpostal">${sList[9]}</span><br>
-                 <%
-                  if c.w['publicScope'] == '09':
+                <%
+                    if c.w['publicScope'] == '09':
                        checked = 'checked'
-                  else:
+                    else:
                        checked = 'unchecked'
-                 %>
-                 <input type="radio" name = "publicScope" value = "09" ${checked} onClick="clearZipList()" /> City of <span id="wcity">${sList[8]}</span><br> 
-                 <% 
-                  if c.w['publicScope'] == '07':
+                %>
+                <input type="radio" name = "publicScope" value = "09" ${checked} onClick="clearZipList()" /> City of <span id="wcity">${sList[8]}</span><br> 
+                <% 
+                    if c.w['publicScope'] == '07':
                        checked = 'checked'
-                  else:
+                    else:
                        checked = 'unchecked'
-                 %>
-                 <input type="radio" name = "publicScope" value = "07" ${checked} onClick="clearZipList()" /> County of <span id="wcounty">${sList[6]}</span><br>
-                 <%
-                  if c.w['publicScope'] == '05':
+                %>
+                <input type="radio" name = "publicScope" value = "07" ${checked} onClick="clearZipList()" /> County of <span id="wcounty">${sList[6]}</span><br>
+                <%
+                    if c.w['publicScope'] == '05':
                        checked = 'checked'
-                  else:
+                    else:
                        checked = 'unchecked'
-                 %>
-                 <input type="radio" name = "publicScope" value = "05" ${checked} onClick="clearZipList()" /> State of <span id="wstate">${sList[4]}</span><br>
-                 <%
-                  if c.w['publicScope'] == '03':
+                %>
+                <input type="radio" name = "publicScope" value = "05" ${checked} onClick="clearZipList()" /> State of <span id="wstate">${sList[4]}</span><br>
+                <%
+                    if c.w['publicScope'] == '03':
                        checked = 'checked'
-                  else:
+                    else:
                        checked = 'unchecked'
-                 %>
+                %>
                  <input type="radio" name = "publicScope" value = "03" ${checked} onClick="clearZipList()" /> Country of <span id="wcountry">${sList[2]}</span><br>
-                 <%
-                  if c.w['publicScope'] == '01':
+                <%
+                    if c.w['publicScope'] == '01':
                        checked = 'checked'
-                  else:
+                    else:
                        checked = 'unchecked'
-                 %>
-                 <input type="radio" name = "publicScope" value = "01" ${checked} onClick="clearZipList()" /> The Planet<br>
+                %>
+                <input type="radio" name = "publicScope" value = "01" ${checked} onClick="clearZipList()" /> The Planet<br>
                 <br />
                 <button type="submit" class="btn btn-warning">Save Single Jurisdiction</button>
                 </form>
@@ -307,20 +354,6 @@
         </div><!-- tab-content configure -->
     </div><!-- tabbable configure -->
     
-       <br /><br />
-       When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
-   Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligible to participate. 
-       <br /><br />
-   Note that once a workshop has started, you may not change the workshop participant eligibility or tags. 
-       <div class="well">
-        <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
-       <br />
-       <input type="checkbox" name="startWorkshop" value="Start" /> Start Workshop &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Start Workshop
-       <br /><br />
-       <button type="submit" class="btn btn-warning">Start Workshop</button>
-       </form>
-       </div>
-   % endif
 
 </%def>
 

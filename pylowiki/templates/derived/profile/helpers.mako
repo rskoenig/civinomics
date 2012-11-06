@@ -437,6 +437,12 @@
       ${listWorkshops(c.associates)}
     </div><!- civ-col-inner -->
   % endif
+  % if 'user' in session and c.pworkshops and (c.authuser.id == c.user.id or isAdmin(c.authuser.id)):
+    <h2 class="civ-col"><i class="icon-list-alt"></i> My Private Workshops</h2>
+    <div class="civ-col-inner">
+      ${listWorkshops(c.pworkshops)}
+    </div><!- civ-col-inner -->
+  % endif
   % if c.followingWorkshops:
     <h2 class="civ-col"><i class="icon-cog"></i> Workshops I am following</h2>
     <div class="civ-col-inner">

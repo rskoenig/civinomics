@@ -34,7 +34,7 @@
         if c.revision:
             orgName = c.revision['data']
             orgMessage = c.revision['orgMessage']
-            orgLink = c.revision['oorgLink']
+            orgLink = c.revision['orgLink']
         else:
             orgName = c.account['orgName']
             orgMessage = c.account['orgMessage']

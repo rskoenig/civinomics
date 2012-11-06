@@ -23,6 +23,7 @@ from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
+from pylowiki.lib.db.pmember import PMember, getPrivateMembers, getPrivateMember
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
 from pylowiki.lib.db.account import Account, getAccountByCode, isAccountAdmin, getAccountByID
 from pylowiki.lib.db.event import Event
@@ -491,6 +492,69 @@ class WorkshopController(BaseController):
             session.save()
 
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+        
+    @h.login_required
+    def configurePrivateWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Configure Workshop"
+        c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
+        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
+            ""
+        else:
+            return(redirect("/"))
+            
+        if 'addMember' in request.params:
+            if 'newMember' in request.params:
+                newMember = request.params['newMember']
+                pTest = getPrivateMember(code, newMember)
+                if pTest:
+                    if pTest['deleted'] == '1':
+                       pTest['deleted'] = '1'
+                       commit(pTest)
+                    else:
+                        alert = {'type':'error'}
+                        alert['title'] = newMember + ' already a member.'
+                        session['alert'] = alert
+                        session.save()
+                else:
+                    PMember(code, newMember, 'A', c.w)
+                    alert = {'type':'success'}
+                    alert['title'] = newMember + ' added.'
+                    session['alert'] = alert
+                    session.save()
+                
+            else:
+                alert = {'type':'error'}
+                alert['title'] = 'No email address entered.'
+                session['alert'] = alert
+                session.save()
+                
+        if 'deleteMember' in request.params:
+            if 'removeMember' in request.params:
+                removeMember = request.params['removeMember']
+                pTest = getPrivateMember(code, removeMember)
+                if pTest:
+                    pTest['deleted'] = '1'
+                    commit(pTest)
+                    alert = {'type':'success'}
+                    alert['title'] = 'Member removed: ' +  removeMember
+                    session['alert'] = alert
+                    session.save()
+                else:
+                    alert = {'type':'error'}
+                    alert['title'] = 'No current member email: ' +  removeMember
+                    session['alert'] = alert
+                    session.save()
+                
+            else:
+                alert = {'type':'error'}
+                alert['title'] = 'No email address entered.'
+                session['alert'] = alert
+                session.save()
+            
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
     def configureStartWorkshopHandler(self, id1, id2):
@@ -738,7 +802,7 @@ class WorkshopController(BaseController):
             c.isFollowing = isFollowing(c.authuser.id, c.w.id)
             c.isAdmin = isAdmin(c.authuser.id)
             
-        if c.w['public_private'] == 'trial':
+        if c.w['public_private'] == 'trial' or c.w['public_private'] == 'private':
             if 'user' in session:
                 if not c.isFacilitator and not c.isScoped:
                     return render('/derived/404.bootstrap')            
@@ -1020,6 +1084,10 @@ class WorkshopController(BaseController):
 
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitatorsByWorkshop(c.w.id)
+
+        if c.w['public_private'] == 'private':
+            c.pmembers = getPrivateMembers(code)
+            
         r = get_revision(int(c.w['mainRevision_id']))
         reST = r['data']
         reSTlist = self.get_reSTlist(reST)

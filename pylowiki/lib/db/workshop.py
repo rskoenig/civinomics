@@ -3,6 +3,7 @@ from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator
 from pylowiki.lib.db.user import getUserByID
+from pylowiki.lib.db.pmember import getPrivateMember
 from pylowiki.lib.db.geoInfo import getGeoScope
 from pylowiki.lib.db.comment import getDiscussionCommentsSince
 from pylowiki.lib.db.discussion import getAllActiveDiscussionsForWorkshop, getDiscussionByID
@@ -163,6 +164,11 @@ def isScoped(user, workshop):
    if isAssociate(user, workshop):
        return True
        
+   if workshop['public_private'] == 'private':
+        pTest = getPrivateMember(workshop['urlCode'], user['email'])
+        if pTest:
+           return True 
+       
    if workshop['scopeMethod'] == 'publicPostalList':
       pstring = workshop['publicPostalList']
       pstring = pstring.replace(' ', ',')
@@ -221,7 +227,7 @@ class Workshop(object):
         w['publicScopeTitle'] = 'postal code ' + c.authuser['postalCode']
         w['publicPostal'] = c.authuser['postalCode']
         w['publicPostalList'] = ''
-        # one of publicScope, publicPostalList. privateDomain, privateEmailList, trial
+        # one of publicScope, publicPostalList, privateEmail, trial
         if publicPrivate == 'trial':
             w['scopeMethod'] = 'trial'
         else:
