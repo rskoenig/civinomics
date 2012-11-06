@@ -44,7 +44,8 @@ class ActionlistController(BaseController):
                 items_per_page = 15, item_count = c.count
             )
 
-            return render('/derived/list_workshops.bootstrap')
+            #return render('/derived/list_workshops.bootstrap')
+            return render('derived/6_main_listing.bootstrap')
         elif c.action == 'surveys':
             c.title = c.heading = 'Surveys'
             c.list = getActiveSurveys()

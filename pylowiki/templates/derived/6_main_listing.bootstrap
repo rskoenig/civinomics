@@ -1,0 +1,30 @@
+<%inherit file="/base/base.bootstrap"/>
+
+<div class="row">
+   <div class="span8"> <!-- listings -->
+      <div class="section-wrapper">
+         <div class="browse">
+            <h3 class="section-header"> Browse </h3>
+            <div class="row-fluid">
+               <div class="span6"> <!-- geographic navigation -->
+                  <ul class="nav nav-pills pull-left">
+                     <li class="active"> <a href="#">zip</a></li>
+                     <li> <a href="#">city</a></li>
+                     <li> <a href="#">county</a></li>
+                     <li> <a href="#">state</a></li>
+                     <li> <a href="#">country</a></li>
+                  </ul>
+               </div> <!-- /geographic navigation -->
+               
+               <div class="span6"> <!-- object navigation -->
+                  <ul class="nav nav-pills pull-right">
+                     <li class="active"> <a href="#">workshops</a></li>
+                     <li> <a href="#">suggestions</a></li>
+                  </ul>
+               </div> <!-- /object navigation -->
+               
+            </div>
+         </div><!--/.browse-->
+      </div><!--/.section-wrapper-->
+   </div> <!-- /listings -->
+</div>

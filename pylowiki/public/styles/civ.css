@@ -1,3 +1,12 @@
+body{
+   font-family: 'Open Sans', sans-serif;
+   font-weight: normal;
+}
+
+.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container{
+   width:1010px;
+}
+
 img.small-logo{
    height: 25px;
 }
@@ -13,4 +22,50 @@ hr.civ-topbar-hr{
    border: 1px solid #0ca900;
    margin-top: 0px;
    margin-bottom: 20px;
+}
+
+.section-wrapper {
+  border: 1px solid #ddd;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+.section-wrapper .section-header {
+  background: whiteSmoke;
+  border-bottom: 1px solid #ddd;
+  height: 50px;
+  margin-left: -10px;
+  margin-right: -10px;
+  margin-top: -10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+.section-wrapper .activity {
+  padding: 10px;
+}
+.section-wrapper .browse {
+  padding: 10px;
+}
+.section-wrapper hr {
+  border: 1px solid #ddd;
+  margin-top: 0px;
+  margin-bottom: 10px;
+}
+.section-wrapper h3 {
+  text-align: center;
+}
+
+.nav-pills > .active > a, .nav-pills > .active > a:hover {
+   background-color:#075D00;
+   border-radius: 20px;
+   color:white;
+   padding-left:10px;
+   padding-right:10px;
+}
+
+.nav-pills > li > a, .nav-pills > li > a:hover {
+   background-color:none;
+   border-radius: 20px;
+   color:#075D00;
+   padding-left:8px;
+   padding-right:8px;
 }
