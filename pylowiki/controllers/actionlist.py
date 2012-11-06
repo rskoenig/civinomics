@@ -45,6 +45,7 @@ class ActionlistController(BaseController):
             )
 
             #return render('/derived/list_workshops.bootstrap')
+            c.list = range(9)
             return render('derived/6_main_listing.bootstrap')
         elif c.action == 'surveys':
             c.title = c.heading = 'Surveys'

@@ -5,7 +5,7 @@
       <div class="section-wrapper">
          <div class="browse">
             <h3 class="section-header"> Browse </h3>
-            <div class="row-fluid">
+            <div class="row-fluid"><!--navigation row-->
                <div class="span6"> <!-- geographic navigation -->
                   <ul class="nav nav-pills pull-left">
                      <li class="active"> <a href="#">zip</a></li>
@@ -23,7 +23,30 @@
                   </ul>
                </div> <!-- /object navigation -->
                
+            </div><!--/navigation row-->
+            <%
+               if len(c.list) % 2 == 0:
+                  numRows = len(c.list)/2
+               else:
+                  numRows = len(c.list)/2 + 1
+               curItem = 0
+            %>
+            % for row in range(numRows):
+            <div class="row-fluid"> <!-- display row -->
+               % if curItem < len(c.list):
+               <div class="span6">
+                  ${c.list[curItem]}
+               </div>
+               % endif
+               <% curItem += 1 %>
+               % if curItem < len(c.list):
+               <div class="span6">
+                  ${c.list[curItem]}
+               </div>
+               % endif
+               <% curItem += 1 %>
             </div>
+            % endfor
          </div><!--/.browse-->
       </div><!--/.section-wrapper-->
    </div> <!-- /listings -->
