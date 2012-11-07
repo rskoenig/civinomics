@@ -76,10 +76,11 @@ hr.civ-topbar-hr{
 
 .navbar .nav > li > a:hover{
    color: #075D00;
+   text-decoration:underline
 }
 
 .avatar{
-   border-radius: 50px;
+   border-radius: 100px;
    height: 70px;
 }
 
@@ -122,7 +123,6 @@ a.name{
 /* --- Label configuration -------------------------------------------------------------- */
 .viewport a span {
     display: none;
-    font-size: 3.0em;
     font-weight: bold;
     height: 100%;
     padding-top: 120px;

@@ -1,5 +1,6 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
 
 <div class="row">
    <div class="span8"> <!-- listings -->
@@ -36,25 +37,19 @@
                <div class="row-fluid"> <!-- display row -->
                   % if curItem < len(c.list):
                      <div class="span6">
-                        <% w = c.list[curItem] %>
-                        <div class="viewport">
-                           <a href="/">
-                              <span class="dark-background"> ${w['mainImage_caption']} </span>
-                              <img src="/images/${w['mainImage_identifier']}/slideshow/${w['mainImage_hash']}.slideshow" alt="${w['title']}" title="${w['title']}">
-                           </a>
-                        </div>
+                        <% 
+                           w = c.list[curItem]
+                           helpers.show_workshop(w)
+                        %>
                      </div>
                   % endif
                   <% curItem += 1 %>
                   % if curItem < len(c.list):
                      <div class="span6">
-                        <% w = c.list[curItem] %>
-                        <div class="viewport">
-                           <a href="/">
-                              <span class="dark-background"> ${w['mainImage_caption']} </span>
-                              <img src="/images/${w['mainImage_identifier']}/slideshow/${w['mainImage_hash']}.slideshow" alt="${w['title']}" title="${w['title']}">
-                           </a>
-                        </div>
+                        <% 
+                           w = c.list[curItem]
+                           helpers.show_workshop(w)
+                        %>
                      </div>
                   % endif
                   <% curItem += 1 %>

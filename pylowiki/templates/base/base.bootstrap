@@ -44,7 +44,7 @@
       </div> <!-- /.navbar -->
       <hr class="civ-topbar-hr" />
       <div class="container">
-         ${next.body()}   
+         ${next.body()}
       </div>
       
       
