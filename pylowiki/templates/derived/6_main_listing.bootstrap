@@ -58,12 +58,11 @@
             % for i in range(len(c.activity)):
                <div class="row-fluid">
                   <div class="span4"> <!-- avatar -->
-                     <img class="avatar" src="">
+                     ${lib_6.userImage(c.authuser, className = 'avatar')}
                   </div> <!-- /avatar -->
                   
                   <div class="span8"> <!-- information -->
                      <p class="feed">
-                        ##<a class="name" href="#"> Username </a>
                         <% lib_6.userLink(c.authuser, className = 'name') %>
                         Forked the suggestion
                         <a href="#"> Suggestion name </a>

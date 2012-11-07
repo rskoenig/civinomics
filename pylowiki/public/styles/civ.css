@@ -72,8 +72,17 @@ hr.civ-topbar-hr{
 
 .avatar{
    border-radius: 50px;
+   height: 70px;
 }
 
 .small-avatar{
    height: 25px;
+}
+
+a, a:hover{
+   color: #D15D00;
+}
+
+a.name{
+   color: #530032;
 }

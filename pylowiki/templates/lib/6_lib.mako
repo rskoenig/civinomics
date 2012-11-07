@@ -12,3 +12,29 @@
    %>
    ${thisLink | n}
 </%def>
+
+<%def name="userImage(user, **kwargs)">
+   <%
+      imgStr = ''
+      if 'revision' in kwargs:
+         revision = kwargs['revision']
+         pictureHash = revision['pictureHash']
+         title = revision['data']
+         directoryNumber = revision['directoryNumber']
+      else:
+         pictureHash = user['pictureHash']
+         title = user['name']
+         if pictureHash != 'flash':
+            directoryNumber = user['directoryNumber']
+      if pictureHash == 'flash':
+         imgStr = '<img src="/images/avatars/flash.profile" alt="%s" title="%s"' %(title, title)
+      else:
+         imgStr = '<img src="/images/avatar/%s/profile/%s.profile" alt="%s" title="%s"' %(directoryNumber, pictureHash, title, title)
+         
+      if 'className' in kwargs:
+         imgStr += ' class="%s"' % kwargs['className']
+      
+      imgStr += '>'
+   %>
+   ${imgStr | n}
+</%def>
