@@ -90,10 +90,23 @@ hr.civ-topbar-hr{
 
 a, a:hover{
    color: #D15D00;
+   text-decoration: none;
 }
 
 a.name{
    color: #530032;
+}
+
+.small-eye{
+   width: 20px;
+}
+
+.small-bulb{
+   height: 15px;
+}
+
+.workshop-listing-info{
+   margin-right:7px;
 }
 
 /* --- Container configuration ---------------------------------------------------------- */

@@ -13,6 +13,10 @@
    ${thisLink | n}
 </%def>
 
+<%def name="workshopLink(w, **kwargs)">
+   href="/workshops/${w['urlCode']}/${w['url']}"
+</%def>
+
 <%def name="userImage(user, **kwargs)">
    <%
       imgStr = ''
