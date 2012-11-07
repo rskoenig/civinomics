@@ -32,22 +32,48 @@
                curItem = 0
             %>
             % for row in range(numRows):
-            <div class="row-fluid"> <!-- display row -->
-               % if curItem < len(c.list):
-               <div class="span6">
-                  ${c.list[curItem]}
+               <div class="row-fluid"> <!-- display row -->
+                  % if curItem < len(c.list):
+                     <div class="span6">
+                        ${c.list[curItem]}
+                     </div>
+                  % endif
+                  <% curItem += 1 %>
+                  % if curItem < len(c.list):
+                     <div class="span6">
+                        ${c.list[curItem]}
+                     </div>
+                  % endif
+                  <% curItem += 1 %>
                </div>
-               % endif
-               <% curItem += 1 %>
-               % if curItem < len(c.list):
-               <div class="span6">
-                  ${c.list[curItem]}
-               </div>
-               % endif
-               <% curItem += 1 %>
-            </div>
             % endfor
          </div><!--/.browse-->
       </div><!--/.section-wrapper-->
    </div> <!-- /listings -->
+   <div class="span4"> <!-- Activity Stream -->
+      <div class="section-wrapper">
+         <div class="activity">
+            <h3 class="section-header"> Activity </h3>
+            % for i in range(len(c.activity)):
+               <div class="row-fluid">
+                  <div class="span4"> <!-- avatar -->
+                     <img class="avatar" src="">
+                  </div> <!-- /avatar -->
+                  
+                  <div class="span8"> <!-- information -->
+                     <p class="feed">
+                        <a class="name" href="#"> Username </a>
+                        Forked the suggestion
+                        <a href="#"> Suggestion name </a>
+                     </p>
+                  </div> <!-- /information -->
+               % if i < len(c.activity) - 1:
+                  <hr>
+               % endif
+               </div>
+            % endfor
+            
+         </div>
+      </div>
+   </div> <!-- /Activity Stream -->
 </div>
