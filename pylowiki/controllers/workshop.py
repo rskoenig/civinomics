@@ -27,6 +27,7 @@ from pylowiki.lib.db.pmember import PMember, getPrivateMembers, getPrivateMember
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
 from pylowiki.lib.db.account import Account, getAccountByCode, isAccountAdmin, getAccountByID
 from pylowiki.lib.db.event import Event
+from pylowiki.lib.db.activity import updateWorkshopURL
 
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
@@ -239,6 +240,9 @@ class WorkshopController(BaseController):
             wTitle = wTitle.rstrip()
             if wTitle and wTitle != c.w['title']:
                 c.w['title'] = wTitle
+                oldTitle = c.w['url']
+                c.w['url'] = urlify(wTitle)
+                updateWorkshopURL(c.w['urlCode'], oldTitle, urlify(wTitle))
                 wchanges = 1
                 weventMsg = weventMsg + "Updated name. "
         else:
@@ -279,16 +283,17 @@ class WorkshopController(BaseController):
            werrMsg += 'Allow Resources '
 
         if c.account['type'] != 'trial':
-            if 'publicPrivate' in request.params:
-                publicPrivate = request.params['publicPrivate']
-                if (publicPrivate == 'public' or publicPrivate == 'private') and publicPrivate != c.w['public_private']:
-                    wchanges = 1
-                    weventMsg = weventMsg + "Changed public/private from " + c.w['public_private'] + " to " + publicPrivate + "."
-                    c.w['public_private'] = publicPrivate
-            else:
-                werror = 1
-                werrMsg += 'Public or Private? '
             if not wstarted:
+                if 'publicPrivate' in request.params:
+                    publicPrivate = request.params['publicPrivate']
+                    if (publicPrivate == 'public' or publicPrivate == 'private') and publicPrivate != c.w['public_private']:
+                        wchanges = 1
+                        weventMsg = weventMsg + "Changed public/private from " + c.w['public_private'] + " to " + publicPrivate + "."
+                        c.w['public_private'] = publicPrivate
+                else:
+                    werror = 1
+                    werrMsg += 'Public or Private? '
+            
                 if 'publicTags' in request.params:
                     publicTags = request.params.getall('publicTags')
                     wpTags = ','.join(publicTags)

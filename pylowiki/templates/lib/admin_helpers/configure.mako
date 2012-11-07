@@ -127,7 +127,7 @@
     <button type="submit" class="btn btn-warning">Save Basic Information</button>
     </td>
     <td>
-    % if c.account['type'] != 'trial':
+    % if c.account['type'] != 'trial' and c.w['public_private'] == 'public':
 
         % if wstarted == 0: 
             <strong>Workshop Tags:</strong>
@@ -236,6 +236,8 @@
        <button type="submit" class="btn btn-warning">Start Workshop</button>
        </form>
        </div>
+   % elif wstarted and c.w['public_private'] == 'private':
+       ${private()}
    % endif
 
 </%def>

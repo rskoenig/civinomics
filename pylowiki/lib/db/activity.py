@@ -2,6 +2,8 @@ from pylowiki.model import Thing, Data, meta
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc 
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
 from pylowiki.lib.db.discussion import getDiscussionByID
+from dbHelpers import commit
+from pylowiki.lib.utils import urlify
 
 def getMemberPosts(user, activeOnly = 1):
     returnList = []
@@ -18,8 +20,14 @@ def getMemberPosts(user, activeOnly = 1):
                returnList.append(item)
                 
 
-
     return returnList
+    
+    
+def updateWorkshopURL(workshopCode, oldURL, newURL):
+    itemList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'discussion'])).filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('workshopURL', oldURL))).all()
+    for item in itemList:
+        item['workshopURL'] = urlify(newURL)
+        commit(item)
 
 
 def isActiveWorkshop(thing):
