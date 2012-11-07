@@ -1,3 +1,7 @@
+<%! 
+   from pylowiki.lib.db.user import getUserByID
+   from pylowiki.lib.db.workshop import getWorkshopByID
+%>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="show_workshop(w)">
@@ -26,4 +30,30 @@
          </a> <!-- /Num inputs -->
       </p>
    </span>
+</%def>
+
+<%def name="showActivity(item)">
+   <%
+      thisUser = getUserByID(item.owner)
+   %>
+   <div class="span4"> <!-- avatar -->
+      ${lib_6.userImage(thisUser, className = 'avatar')}
+   </div> <!-- /avatar -->
+   
+   <div class="span8"> <!-- information -->
+      <p class="feed">
+         <%
+            lib_6.userLink(thisUser, className = 'name')
+            activityStr = ''
+            if item.objType == 'resource':
+               activityStr += 'Added the resource '
+               w = getWorkshopByID(item['workshop_id'])
+               activityStr += '<a %s>%s</a>' % (lib_6.resourceLink(item, w, embed=True), item['title'])
+            else:
+               activityStr += 'fucked up'
+            print activityStr
+         %>
+         ${activityStr | n}
+      </p>
+   </div> <!-- /information -->
 </%def>
