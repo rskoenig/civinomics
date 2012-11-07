@@ -69,3 +69,11 @@ hr.civ-topbar-hr{
    padding-left:8px;
    padding-right:8px;
 }
+
+.avatar{
+   border-radius: 50px;
+}
+
+.small-avatar{
+   height: 25px;
+}

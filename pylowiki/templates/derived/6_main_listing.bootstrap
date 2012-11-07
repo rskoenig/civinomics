@@ -1,4 +1,5 @@
 <%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <div class="row">
    <div class="span8"> <!-- listings -->
@@ -62,7 +63,8 @@
                   
                   <div class="span8"> <!-- information -->
                      <p class="feed">
-                        <a class="name" href="#"> Username </a>
+                        ##<a class="name" href="#"> Username </a>
+                        <% lib_6.userLink(c.authuser, className = 'name') %>
                         Forked the suggestion
                         <a href="#"> Suggestion name </a>
                      </p>

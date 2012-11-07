@@ -29,7 +29,7 @@
                <div class="nav-collapse collapse">
                   <ul class="nav pull-right">
                      % if 'user' in session:
-                        <li><a href="#">profile</a></li>
+                        <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">profile</a></li>
                      % endif
                      <li><a href="/help">help</a></li>
                      % if 'user' in session:
