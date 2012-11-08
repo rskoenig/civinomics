@@ -7,7 +7,7 @@ import webhelpers.paginate as paginate
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.db.workshop import getWorkshop, isScoped
+from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped
 from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin, getUserByID
@@ -31,7 +31,7 @@ class DiscussionController(BaseController):
     def index(self, id1, id2):
         workshopCode = id1
         workshopURL = id2
-        c.w = getWorkshop(workshopCode, urlify(workshopURL))
+        c.w = getWorkshopByCode(workshopCode)
         if c.w['public_private'] != 'public':
             if 'user' not in session or not isScoped(c.authuser, c.w):
                     return render('/derived/404.bootstrap')
@@ -62,14 +62,14 @@ class DiscussionController(BaseController):
         c.title = c.w['title']
         c.code = c.w['urlCode']
         c.url = c.w['url']
-        c.discussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        c.discussions = getActiveDiscussionsForWorkshop(workshopCode, 'general')
         c.discussions = sortBinaryByTopPop(c.discussions)
         if not c.discussions:
             c.discussions = []
-        disabledDiscussions = getDisabledDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        disabledDiscussions = getDisabledDiscussionsForWorkshop(workshopCode, 'general')
         if disabledDiscussions:
             c.discussions += disabledDiscussions
-        deletedDiscussions = getDeletedDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        deletedDiscussions = getDeletedDiscussionsForWorkshop(workshopCode, 'general')
         if deletedDiscussions:
             c.discussions += deletedDiscussions
         
@@ -89,7 +89,7 @@ class DiscussionController(BaseController):
         discussionUrl = id4
         revisionURL = id5
         
-        c.w = getWorkshop(workshopCode, urlify(workshopUrl))
+        c.w = getWorkshopByCode(workshopCode)
         if c.w['public_private'] != 'public':
             if 'user' not in session or not isScoped(c.authuser, c.w):
                 return render('/derived/404.bootstrap')
@@ -106,7 +106,7 @@ class DiscussionController(BaseController):
         c.discussion = getDiscussion(discussionCode, urlify(discussionUrl))
         c.flags = getFlags(c.discussion)
         c.events = getParentEvents(c.discussion)
-        c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
+        c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode)
         if 'disabled' in c.discussion and 'deleted' in c.discussion:
             if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
                 c.otherDiscussions.remove(c.discussion)
@@ -138,7 +138,7 @@ class DiscussionController(BaseController):
         code = id1
         url = id2
 
-        c.w = getWorkshop(code, urlify(url))
+        c.w = getWorkshopByCode(code)
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
             c.isAdmin = isAdmin(c.authuser.id)
@@ -163,7 +163,7 @@ class DiscussionController(BaseController):
         clearError = 0
         clearMessage = ""
         c.discussion = getDiscussion(code, urlify(url))
-        c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
+        c.w = getWorkshopByCode(c.discussion['workshopCode'])
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
             c.isAdmin = isAdmin(c.authuser.id)
@@ -210,7 +210,7 @@ class DiscussionController(BaseController):
     def newDiscussionHandler(self, id1, id2):
         code = id1
         url = id2
-        w = getWorkshop(code, urlify(url))
+        w = getWorkshopByCode(code)
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, w)
             c.isAdmin = isAdmin(c.authuser.id)
@@ -253,7 +253,7 @@ class DiscussionController(BaseController):
         code = id1
         url = id2
         c.discussion = getDiscussion(code, urlify(url))
-        c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
+        c.w = getWorkshopByCode(c.discussion['workshopCode'])
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
@@ -271,7 +271,7 @@ class DiscussionController(BaseController):
         code = id1
         url = id2
         discussion = getDiscussion(code, urlify(url))
-        w = getWorkshop(discussion['workshopCode'], discussion['workshopURL'])
+        w = getWorkshopByCode(discussion['workshopCode'])
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
             c.isFacilitator = isFacilitator(c.authuser.id, w.id)
@@ -320,7 +320,7 @@ class DiscussionController(BaseController):
         code = id1
         url = id2
         discussion = getDiscussion(code, urlify(url))
-        c.w = getWorkshop(discussion['workshopCode'], urlify(discussion['workshopURL']))
+        c.w = getWorkshopByCode(discussion['workshopCode'])
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
             c.isAdmin = isAdmin(c.authuser.id)
@@ -346,7 +346,7 @@ class DiscussionController(BaseController):
         code = id1
         url = id2
         c.discussion = getDiscussion(code, urlify(url))
-        c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
+        c.w = getWorkshopByCode(c.discussion['workshopCode'])
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
@@ -365,7 +365,7 @@ class DiscussionController(BaseController):
         
         workshopCode = request.params['workshopCode']
         workshopURL = request.params['workshopURL']
-        w = getWorkshop(workshopCode, workshopURL) 
+        w = getWorkshopByCode(workshopCode) 
 
         discussionCode = request.params['discussionCode']
         discussionURL = request.params['discussionURL']

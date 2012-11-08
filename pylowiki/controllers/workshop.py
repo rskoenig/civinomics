@@ -242,7 +242,6 @@ class WorkshopController(BaseController):
                 c.w['title'] = wTitle
                 oldTitle = c.w['url']
                 c.w['url'] = urlify(wTitle)
-                updateWorkshopURL(c.w['urlCode'], oldTitle, urlify(wTitle))
                 wchanges = 1
                 weventMsg = weventMsg + "Updated name. "
         else:
@@ -847,9 +846,9 @@ class WorkshopController(BaseController):
             if c.dresources:
                 c.resources = c.dresources 
 
-        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = getActiveSuggestionsForWorkshop(code)
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
-        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code)
         # put disabled and deleted at the end
         if c.suggestions:
             if c.dsuggestions:
@@ -858,7 +857,7 @@ class WorkshopController(BaseController):
             if c.dsuggestions:
                 c.suggestions = c.dsuggestions
 
-        c.asuggestions = getAdoptedSuggestionsForWorkshop(code, urlify(url))
+        c.asuggestions = getAdoptedSuggestionsForWorkshop(code)
         
         if 'user' in session:
             ratedSuggestionIDs = []
@@ -919,9 +918,9 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
-        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = getActiveSuggestionsForWorkshop(code)
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
-        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code)
         # put disabled and deleted at the end
         if c.suggestions:
             if c.dsuggestions:
@@ -1005,8 +1004,8 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
-        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
-        c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = getActiveSuggestionsForWorkshop(code)
+        c.dsuggestions = getInactiveSuggestionsForWorkshop(code)
 
         return render('/derived/suggestion_list.html')
 
@@ -1120,15 +1119,15 @@ class WorkshopController(BaseController):
         c.title = c.w['title']
         c.motd = getMessage(c.w.id)
 
-        c.s = getActiveSuggestionsForWorkshop(code, urlify(url))
-        c.disabledSug = getDisabledSuggestionsForWorkshop(code, urlify(url))
-        c.deletedSug = getDeletedSuggestionsForWorkshop(code, urlify(url))
+        c.s = getActiveSuggestionsForWorkshop(code)
+        c.disabledSug = getDisabledSuggestionsForWorkshop(code)
+        c.deletedSug = getDeletedSuggestionsForWorkshop(code)
         c.r = getActiveResourcesByWorkshopID(c.w.id)
         c.disabledRes = getDisabledResourcesByWorkshopID(c.w.id)
         c.deletedRes = getDeletedResourcesByWorkshopID(c.w.id)
-        c.d = getActiveDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
-        c.disabledDisc = getDisabledDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
-        c.deletedDisc = getDeletedDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
+        c.d = getActiveDiscussionsForWorkshop(c.w['urlCode'])
+        c.disabledDisc = getDisabledDiscussionsForWorkshop(c.w['urlCode'])
+        c.deletedDisc = getDeletedDiscussionsForWorkshop(c.w['urlCode'])
         c.f = getFacilitatorsByWorkshop(c.w.id)
         c.df = getFacilitatorsByWorkshop(c.w.id, 1)
         

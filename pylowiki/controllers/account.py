@@ -121,7 +121,7 @@ class AccountController(BaseController):
         if 'orgName' in request.params:
             orgName = request.params['orgName']
             url = urlify(orgName)
-            if orgName == '':
+            if orgName == '' or orgName == 'none':
                 errorMsg = "Organization Name required. "
                 error = 1 
             elif orgName != c.account['orgName']:
@@ -248,7 +248,8 @@ class AccountController(BaseController):
             uButton = request.params['upgrade']
             numUsed = int(c.account['numHost']) - int(c.account['numRemaining'])
             if c.account['type'] == 'trial':
-                c.account['url'] = urlify(c.account['orgName'])
+                c.account['url'] = 'none'
+                c.account['orgName'] = 'none'
                 
             if uButton == 'basic':
                c.account['type'] = 'basic'

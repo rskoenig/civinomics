@@ -54,6 +54,13 @@ def getWorkshopByID(id):
     except:
         return False
 
+def getWorkshopByCode(urlCode):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('urlCode', urlCode))).one()
+    except:
+        return False
+
+
 def getWorkshopsByOwner(userID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(owner = userID).all()
@@ -154,7 +161,7 @@ def getRecentMemberPosts(number, publicPrivate = 'public'):
 
 def getWorkshopPostsSince(code, url, memberDatetime):
         postList = meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).order_by('-date').all()
-        discussionList = getAllActiveDiscussionsForWorkshop(code, url)
+        discussionList = getAllActiveDiscussionsForWorkshop(code)
         commentList = []
         for d in discussionList:
             cList = getDiscussionCommentsSince(d.id, memberDatetime) 

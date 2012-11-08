@@ -49,6 +49,8 @@ def getAccountByCode(hash):
 
 def getAccountByName(orgName):
     name = urlify(orgName)
+    if name == 'none':
+        return False
     try:
         return meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wc('url', name))).one()
     except sa.orm.exc.NoResultFound:
@@ -79,11 +81,13 @@ class Account(object):
         a['monthyRate'] = monthlyRate
         a['type'] = type
         a['disabled'] = '0'
-        a['orgName'] = user['name']
+        
         if type == 'trial':
+            a['orgName'] = 'Trial Account'
             a['url'] = 'trial'
         else:
-            a['url'] = urlify(a['orgName'])
+            a['orgName'] = 'none'
+            a['url'] = 'none'
         a['orgEmail'] = user['email']
         a['orgMessage'] = user['tagline']
         a['orgLink'] = 'none'

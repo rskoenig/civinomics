@@ -1,7 +1,7 @@
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID, getSuggestion
     from pylowiki.lib.db.resource import getResource
-    from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince, getAssociateWorkshops
+    from pylowiki.lib.db.workshop import getWorkshopByCode, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince, getAssociateWorkshops
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator, getFacilitatorsByUser
     from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.db.activity import getMemberPosts
@@ -74,34 +74,34 @@
                    <% oLink = "/comment/" + mObj['urlCode'] %>
                    <% oiType = "comment" %>
                    <% d = getDiscussionByID(mObj['discussion_id']) %>
-                   <% w = getWorkshop(d['workshopCode'], d['workshopURL']) %>
-                   <% wLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] %>
+                   <% w = getWorkshopByCode(d['workshopCode']) %>
+                   <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                    <% parentTitle = d['discType'] %>
                    <% ooLink = "foo" %>
                    <% ooiType = "comment" %>
 
                    % if d['discType'] == 'background':
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/background" %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/background" %>
                        <% ooTitle = "Workshop Background" %>
                        <% ooiType = "comment" %>
                    % elif d['discType'] == 'suggestion':
                        <% s = getSuggestion(d['suggestionCode'], d['suggestionURL']) %>
                        <% ooTitle = s['title'] %>
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] %>
                        <% ooiType = "pencil" %>
                    % elif d['discType'] == 'general':
                        <% ooTitle = d['title'] %>
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/discussion/" + d['urlCode'] + "/" + d['url'] %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/discussion/" + d['urlCode'] + "/" + d['url'] %>
                        <% ooiType = "folder-open" %>
                    % elif d['discType'] == 'resource':
                        <% r = getResource(d['resourceCode'], d['resourceURL']) %>
                        <% ooTitle = r['title'] %>
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
                        <% ooiType = "book" %>
                    % elif d['discType'] == 'sresource':
                        <% r = getResource(d['resourceCode'], d['resourceURL']) %>
                        <% ooTitle = r['title'] %>
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
 
                    % endif
                % elif mObj.objType == 'resource':
@@ -110,15 +110,15 @@
                    <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                    <% oiType = "book" %>
                % elif mObj.objType == 'suggestion':
+                   <% w = getWorkshopByCode(mObj['workshopCode']) %>
                    <% oiType = "pencil" %>
-                   <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
-                   <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
-                   <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+                   <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                % elif mObj.objType == 'discussion':
+                   <% w = getWorkshopByCode(mObj['workshopCode']) %>
                    <% oiType = "comment" %>
-                   <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
-                   <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
-                   <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+                   <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>   
                % endif
                %if len(w['title']) > maxlen:
                    <% wTitle = w['title'][0:(maxlen - 4)] + '...' %>
@@ -501,7 +501,7 @@
         % for comment in cList:
             <%
                 d = getDiscussionByID(int(comment['discussion_id']))
-                w = getWorkshop(d['workshopCode'], d['workshopURL'])
+                w = getWorkshopByCode(d['workshopCode'])
             %>
             % if 'ups' in comment and 'downs' in comment:
                 <% cRating = int(comment['ups']) - int(comment['downs']) %>
@@ -622,7 +622,7 @@
                 % endif
             % endif
             <%
-                w = getWorkshop(s['workshopCode'], s['workshopURL'])
+                w = getWorkshopByCode(s['workshopCode'])
                 sFlags = getFlags(s)
                 if sFlags:
                     numFlags = len(sFlags)
@@ -798,7 +798,7 @@
                 % endif
             % endif
             <%
-                w = getWorkshop(d['workshopCode'], d['workshopURL'])
+                w = getWorkshopByCode(d['workshopCode'])
                 dFlags = getFlags(d)
                 if dFlags:
                     numFlags = len(dFlags)

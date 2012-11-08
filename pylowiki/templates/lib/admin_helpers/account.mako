@@ -2,6 +2,7 @@
     from pylowiki.lib.db.user import getUserByID
     from pylowiki.lib.db.workshop import getWorkshopsByAccount
     from pylowiki.lib.db.user import isAdmin
+    from pylowiki.lib.utils import urlify
 %>
 
 <%def name="accountAdmin()">
@@ -62,6 +63,10 @@
                    <span class="help-inline"><span class="label label-important">Required</span></span>
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
+            % if c.account['orgName'] != 'none':
+                <br />Your workshop host landing page URL:<br />
+                <a href="/host/${urlify(c.account['orgName'])}">http://civinomics.com/host/${urlify(c.account['orgName'])}</a><br />
+            % endif
             % if 'pictureHash' in c.account:
                <%
                    pictureHash = c.account['pictureHash']
