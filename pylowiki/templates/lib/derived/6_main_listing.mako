@@ -53,6 +53,10 @@
                activityStr += 'suggested '
                w = getWorkshopByCode(item['workshopCode'])
                activityStr += '<a %s>%s</a>' %(lib_6.suggestionLink(item, w, embed=True), item['title'])
+            elif item.objType == 'discussion':
+               activityStr += 'started the discussion '
+               w = getWorkshopByCode(item['workshopCode'])
+               activityStr += '<a %s>%s</a>' %(lib_6.discussionLink(item, w, embed=True), item['title'])
             else:
                activityStr += 'fucked up'
             print activityStr

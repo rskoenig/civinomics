@@ -37,6 +37,16 @@
    ${resourceStr}
 </%def>
 
+<%def name="discussionLink(d, w, **kwargs)">
+   <%
+      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s"' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+      if 'embed' in kwargs:
+         if kwargs['embed'] == True:
+            return resourceStr
+   %>
+   ${resourceStr}
+</%def>
+
 <%def name="userImage(user, **kwargs)">
    <%
       imgStr = ''
