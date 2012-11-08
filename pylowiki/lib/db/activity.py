@@ -45,7 +45,7 @@ def isActiveWorkshop(thing):
         else:
             w = False
 
-    if w and w['deleted'] == '0' and w['startTime'] != '0000-00-00':
+    if w and w['deleted'] == '0' and w['startTime'] != '0000-00-00' and w['public_private'] == 'public':
         return True
     else:
         return False

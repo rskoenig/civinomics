@@ -75,10 +75,10 @@ class ProfileController(BaseController):
            elif f['disabled'] == '0':
               wID = f['workshopID']
               myW = getWorkshopByID(wID)
-              if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1':
+              if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1' or myW['public_private'] == 'private':
                  # show to the workshop owner, show to the facilitator owner
                  if 'user' in session: 
-                     if c.authuser.id == f.owner or c.authuser.id == myW.owner:
+                     if c.authuser.id == f.owner:
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)

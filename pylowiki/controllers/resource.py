@@ -40,6 +40,10 @@ class ResourceController(BaseController):
     
         
         c.w = getWorkshop(workshopCode, workshopURL)
+        if c.w['public_private'] != 'public':
+            if 'user' not in session or not isScoped(c.authuser, c.w):
+                    return render('/derived/404.bootstrap')
+
         c.title = c.w['title']
         c.resource = getResource(resourceCode, urlify(resourceURL))
         if c.resource['parent_id'] != None and c.resource['parent_type'] != None:

@@ -36,6 +36,10 @@ class SuggestionController(BaseController):
         revisionURL = id5
         
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
+        if c.w['public_private'] != 'public':
+            if 'user' not in session or not isScoped(c.authuser, c.w):
+                    return render('/derived/404.bootstrap')
+                    
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         # for comment disable
         if 'allowComments' not in c.s:

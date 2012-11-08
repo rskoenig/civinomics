@@ -7,7 +7,7 @@
 <%def name="accountAdmin()">
     <br /><br />
     <% 
-        workshops = getWorkshopsByAccount(c.account.id)
+        workshops = getWorkshopsByAccount(c.account.id, 'all')
         numWorkshops = len(workshops) 
     %>
     <table class="table table-bordered">

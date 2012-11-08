@@ -44,7 +44,7 @@
     %>
     <div class="civ-col-inner">
     % if orgLink and orgLink != '':
-        <h1><a href="${orgLink}">${orgName}</a></h1>
+        <h1><a href="${orgLink}" target="_blank">${orgName}</a></h1>
     % else:
         <h1>${orgName}</h1>
     % endif

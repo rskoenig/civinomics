@@ -1,7 +1,7 @@
 from pylons import tmpl_context as c
 from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
-from pylowiki.lib.db.facilitator import Facilitator
+from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
 from pylowiki.lib.db.user import getUserByID
 from pylowiki.lib.db.pmember import getPrivateMember
 from pylowiki.lib.db.geoInfo import getGeoScope
@@ -44,7 +44,7 @@ def searchWorkshops( wKey, wValue):
 
 def getActiveWorkshops( deleted = '0'):
      try:
-        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).order_by('-date').all()
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wc('public_private', 'public'))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).order_by('-date').all()
      except:
         return False
 
@@ -60,11 +60,18 @@ def getWorkshopsByOwner(userID):
     except:
         return False
 
-def getWorkshopsByAccount(accountID):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(owner = accountID).all()
-    except:
-        return False
+def getWorkshopsByAccount(accountID, publicPrivate = 'public'):
+    if publicPrivate == 'all':
+        try:
+            return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(owner = accountID).all()
+        except:
+            return False
+        
+    else:
+        try:
+            return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(owner = accountID).filter(Thing.data.any(wc('public_private', publicPrivate))).all()
+        except:
+            return False
 
 def isWorkshopDeleted(id):
     try:
@@ -116,7 +123,7 @@ def getAssociateWorkshops(user):
     except:
         return False
             
-def getRecentMemberPosts(number):
+def getRecentMemberPosts(number, publicPrivate = 'public'):
         counter = 0
         returnList = []
         postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion', 'event'])).order_by('-date').all()
@@ -135,7 +142,7 @@ def getRecentMemberPosts(number):
                    returnList.append(item)
                    counter += 1
 
-           if w and w['startTime'] != '0000-00-00' and w['deleted'] != '1':
+           if w and w['startTime'] != '0000-00-00' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
                if item['deleted'] != '1' and item['disabled'] != '1':
                    returnList.append(item)
                    counter += 1
@@ -167,7 +174,10 @@ def isScoped(user, workshop):
    if workshop['public_private'] == 'private':
         pTest = getPrivateMember(workshop['urlCode'], user['email'])
         if pTest:
-           return True 
+           return True
+           
+   if isFacilitator(user.id, workshop.id):
+        return True        
        
    if workshop['scopeMethod'] == 'publicPostalList':
       pstring = workshop['publicPostalList']
