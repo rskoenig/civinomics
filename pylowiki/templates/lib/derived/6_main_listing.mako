@@ -1,6 +1,6 @@
 <%! 
    from pylowiki.lib.db.user import getUserByID
-   from pylowiki.lib.db.workshop import getWorkshopByID
+   from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopByCode
 %>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
@@ -46,9 +46,13 @@
             lib_6.userLink(thisUser, className = 'name')
             activityStr = ''
             if item.objType == 'resource':
-               activityStr += 'Added the resource '
+               activityStr += 'added the resource '
                w = getWorkshopByID(item['workshop_id'])
                activityStr += '<a %s>%s</a>' % (lib_6.resourceLink(item, w, embed=True), item['title'])
+            elif item.objType == 'suggestion':
+               activityStr += 'suggested '
+               w = getWorkshopByCode(item['workshopCode'])
+               activityStr += '<a %s>%s</a>' %(lib_6.suggestionLink(item, w, embed=True), item['title'])
             else:
                activityStr += 'fucked up'
             print activityStr

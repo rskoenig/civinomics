@@ -90,6 +90,13 @@ def getParticipantsByID(id):
     except:
         return False
 
+def getWorkshopByCode(code):
+   # This is now unique (1:1 mapping between code and Thing and ID), so this lookup is OK.
+   try:
+      return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('urlCode', code))).one()
+   except:
+      return False
+
 def getRecentMemberPosts(number):
         counter = 0
         returnList = []
