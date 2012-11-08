@@ -70,6 +70,14 @@ hr.civ-topbar-hr{
    padding-right:8px;
 }
 
+.nav .divider {
+   color: #CCC;
+}
+
+.nav > li > a {
+   display: inline-block;
+}
+
 .navbar .nav > li > a{
    color: #075D00;
 }
@@ -77,6 +85,10 @@ hr.civ-topbar-hr{
 .navbar .nav > li > a:hover{
    color: #075D00;
    text-decoration:underline
+}
+
+.nav li{
+   display: inline-block;
 }
 
 img.avatar{
@@ -110,6 +122,15 @@ a.name{
 
 .workshop-listing-info{
    margin-right:7px;
+}
+
+.btn.round{
+   border-radius:20px;
+   padding:10px;
+}
+
+img.watch{
+   height:12px;
 }
 
 /* --- Container configuration ---------------------------------------------------------- */

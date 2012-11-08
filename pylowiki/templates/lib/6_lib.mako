@@ -72,3 +72,14 @@
    %>
    ${imgStr | n}
 </%def>
+
+<%def name="geoBreadcrumbs()">
+   <ul class="nav nav-pills pull-left">
+      <li class="active"> <a href="#">Earth</a><span class="divider">/</span></li>
+      <li> <a href="#">USA</a> <span class="divider">/</span> </li>
+      <li> <a href="#">California</a> <span class="divider">/</span> </li>
+      <li> <a href="#">Santa Cruz Co.</a> <span class="divider">/</span> </li>
+      <li> <a href="#">Santa Cruz City</a> <span class="divider">/</span> </li>
+      <li> <a href="#">95060</a></li>
+   </ul>
+</%def>
