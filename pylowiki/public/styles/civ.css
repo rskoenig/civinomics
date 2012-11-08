@@ -79,9 +79,12 @@ hr.civ-topbar-hr{
    text-decoration:underline
 }
 
-.avatar{
+img.avatar{
    border-radius: 100px;
+}
+.avatar{
    height: 70px;
+   margin-bottom:10px;
 }
 
 .small-avatar{

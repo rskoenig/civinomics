@@ -36,11 +36,11 @@
    <%
       thisUser = getUserByID(item.owner)
    %>
-   <div class="span4"> <!-- avatar -->
+   <div class="span4 avatar"> <!-- avatar -->
       ${lib_6.userImage(thisUser, className = 'avatar')}
    </div> <!-- /avatar -->
    
-   <div class="span8"> <!-- information -->
+   <div class="span8 avatar"> <!-- information -->
       <p class="feed">
          <%
             lib_6.userLink(thisUser, className = 'name')
