@@ -133,12 +133,17 @@ img.watch{
    height:12px;
 }
 
+.centered{
+   text-align:center;
+}
+
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
     float: left;
     margin: 0 9px 9px 0;
     overflow: hidden;
     position: relative;
+    max-height: 190px;
 }
 
 /* This is so that the 2nd thumbnail in each row fits snugly. You will want to add a similar

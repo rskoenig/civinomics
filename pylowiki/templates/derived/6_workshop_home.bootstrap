@@ -11,6 +11,9 @@
          <div class="span2"> <!-- watch button -->
             ${helpers.watchButton()}
          </div><!-- /watch button -->
+      </div> <!-- /.row-fluid -->
+      <div class="row-fluid">
+         <h1 class="centered"> ${c.w['title']} </h1>
       </div>
    </div>
 </div>
