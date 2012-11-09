@@ -28,6 +28,7 @@ hr.civ-topbar-hr{
   border: 1px solid #ddd;
   -webkit-border-radius: 5px;
   border-radius: 5px;
+  margin-top:10px;
 }
 .section-wrapper .section-header {
   background: whiteSmoke;
@@ -158,8 +159,6 @@ padding-bottom:10px;
    border: 1px solid #DDDDDD;
    border-radius: 5px;
    padding:5px;
-   padding-left:0px;
-   adding-right:0px;
    margin-top:10px;
 }
 

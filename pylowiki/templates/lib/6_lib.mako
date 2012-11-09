@@ -1,5 +1,11 @@
+<%!
+   from pylowiki.lib.db.user import getUserByID
+%>
+
 <%def name="userLink(user, **kwargs)">
    <%
+      if user.objType == 'facilitator':
+         user = getUserByID(user.owner)
       thisLink = "<a href='/profile/%s/%s/'" %(user['urlCode'], user['url'])
       if 'className' in kwargs:
          thisLink += 'class = "' + kwargs['className'] + '"'
@@ -57,6 +63,8 @@
 
 <%def name="userImage(user, **kwargs)">
    <%
+      if user.objType == 'facilitator':
+         user = getUserByID(user.owner)
       imgStr = ''
       if 'revision' in kwargs:
          revision = kwargs['revision']
