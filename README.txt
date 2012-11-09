@@ -1,1 +1,1 @@
-Hello, Please contact edolfo@civinomics.com for more info.
+Hello, please contact edolfo@civinomics.com for more info.
