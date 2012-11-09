@@ -1,3 +1,7 @@
+<%!
+   from pylowiki.lib.db.slideshow import getAllSlides
+%>
+
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="watchButton()">
@@ -22,4 +26,37 @@
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources
       </a>
    </div>
+</%def>
+
+<%def name="slideshow(w)">
+   <% 
+      slides = getAllSlides(w['mainSlideshow_id']) 
+      slideNum = 0
+   %>
+   <ul class="block-grid" data-clearing>
+      % for slide in slides:
+         %if slide['deleted'] != '1':
+            ${_slide(slide, slideNum)}
+            <% slideNum += 1 %>
+         % endif
+      % endfor
+   </ul>
+</%def>
+
+<%def name="_slide(slide, slideNum)">
+   % if slideNum == 0:
+      <li class="clearing-feature">
+   % else:
+      <li>
+   % endif
+      % if slide['pictureHash'] == 'supDawg':
+         <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
+            <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['caption']}"/>
+         </a>
+      % else:
+         <a href="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow">
+            <img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['caption']}"/>
+         </a>
+      % endif
+   </li>
 </%def>
