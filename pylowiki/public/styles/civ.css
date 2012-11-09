@@ -137,6 +137,21 @@ img.watch{
    text-align:center;
 }
 
+.btn-group.four-up{
+   width: 100%;
+}
+
+.btn-group.four-up a.btn {
+width: 25%;
+padding-left:0px;
+padding-right:0px;
+padding-top:10px;
+padding-bottom:10px;
+}
+
+.workshop-nav-icon{
+   max-height:16px;
+}
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
     float: left;

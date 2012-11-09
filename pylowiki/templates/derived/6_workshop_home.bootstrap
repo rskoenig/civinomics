@@ -13,7 +13,14 @@
          </div><!-- /watch button -->
       </div> <!-- /.row-fluid -->
       <div class="row-fluid">
-         <h1 class="centered"> ${c.w['title']} </h1>
+         <div class="span12">
+            <h1 class="centered"> ${c.w['title']} </h1>
+         </div>
+      </div>
+      <div class="row-fluid">
+         <div class="span12">
+            ${helpers.workshopNav(c.w)}
+         </div>
       </div>
    </div>
 </div>
@@ -26,5 +33,5 @@
       else:
          backgroundImage = '"/images/%s/%s/slideshow/%s.slideshow"' %(c.w['mainImage_identifier'], c.w['mainImage_directoryNum'], c.w['mainImage_hash'])
    %>
-   <script>$.backstretch(${backgroundImage | n})</script>
+   <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
 </%def>

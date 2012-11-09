@@ -14,6 +14,14 @@
 </%def>
 
 <%def name="workshopLink(w, **kwargs)">
+   <%
+   if 'embed' in kwargs:
+      if kwargs['embed'] == True:
+         if 'raw' in kwargs:
+            if kwargs['raw'] == True:
+               return "/workshops/%s/%s" %(w['urlCode'], w['url'])
+         return 'href = "/workshops/%s/%s"' %(w['urlCode'], w['url'])
+   %>
    href="/workshops/${w['urlCode']}/${w['url']}"
 </%def>
 
