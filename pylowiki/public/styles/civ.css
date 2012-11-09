@@ -152,6 +152,20 @@ padding-bottom:10px;
 .workshop-nav-icon{
    max-height:16px;
 }
+
+.summary{
+   background: whiteSmoke;
+   border: 1px solid #DDDDDD;
+   border-radius: 5px;
+   padding:5px;
+   padding-left:0px;
+   adding-right:0px;
+   margin-top:10px;
+}
+
+.well{
+   background: white;
+}
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
     float: left;

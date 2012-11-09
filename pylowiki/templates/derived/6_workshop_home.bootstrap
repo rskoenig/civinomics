@@ -21,6 +21,14 @@
          <div class="span12">
             ${helpers.workshopNav(c.w)}
          </div>
+      </div> <!-- /.row-fluid -->
+      <div class="row">
+         <div class="span12">
+            <div class="summary">
+               Short, one-sentence summary here.
+               <a href="#information"> Read more </a>
+            </div>
+         </div>
       </div>
    </div>
 </div>
