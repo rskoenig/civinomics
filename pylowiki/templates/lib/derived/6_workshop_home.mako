@@ -33,7 +33,7 @@
       slides = getAllSlides(w['mainSlideshow_id']) 
       slideNum = 0
    %>
-   <ul class="block-grid" data-clearing>
+   <ul class="block-grid gallery" data-clearing>
       % for slide in slides:
          %if slide['deleted'] != '1':
             ${_slide(slide, slideNum)}

@@ -304,6 +304,7 @@ that IE7/8 do not support :nth-child.
 
 ul[data-clearing] li { display: block; }
 ul[data-clearing] li.clearing-feature ~ li { display: none; }
+ul[data-clearing].gallery { max-height:170px; }
 
 .clearing-assembled .clearing-container .carousel { background: black; background: rgba(0, 0, 0, 0.75); height: 150px; margin-top: 5px; }
 .clearing-assembled .clearing-container .visible-img { background: black; background: rgba(0, 0, 0, 0.75); overflow: hidden; }
