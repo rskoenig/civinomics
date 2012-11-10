@@ -5,6 +5,7 @@ from string import capwords
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
 from pylowiki.lib.db.workshop import getWorkshopByID
+from pylowiki.lib.db.suggestion import getAllSuggestions
 
 from pylowiki.lib.base import BaseController, render
 import webhelpers.paginate as paginate
@@ -51,8 +52,10 @@ class GeoController(BaseController):
            if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
+                             doit = 1
+                      else:
+                              doit = 0
 
                       if doit:
                           offset = 10 - int(scopeLevel)
@@ -105,8 +108,10 @@ class GeoController(BaseController):
            if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
+                             doit = 1
+                      else:
+                              doit = 0
 
                       if doit:
                           offset = 10 - int(scopeLevel)
@@ -156,8 +161,10 @@ class GeoController(BaseController):
            if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
+                             doit = 1
+                      else:
+                              doit = 0
 
                       if doit:
                           offset = 10 - int(scopeLevel)
@@ -204,8 +211,11 @@ class GeoController(BaseController):
            if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
+                             doit = 1
+                      else:
+                              doit = 0
+
 
                       if doit:
                           offset = 10 - int(scopeLevel)
@@ -252,8 +262,10 @@ class GeoController(BaseController):
            if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
                if w not in c.list:
                       doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
+                             doit = 1
+                      else:
+                              doit = 0
 
                       if doit:
                           offset = 10 - int(scopeLevel)
@@ -272,6 +284,68 @@ class GeoController(BaseController):
         )
 
         return render('/derived/list_geo.bootstrap')
+
+
+    def showPlanetInfo(self):
+
+        c.heading = "List Workshops: Planet Earth"
+        scope = '||' + urlify(c.planet) + '||LaLa||LaLaLa||LaLaLa|00000'
+        scopeLevel = "01"
+        wscopes = getWorkshopScopes(scope, scopeLevel)
+        c.list = []
+        for s in wscopes:
+           wID = s['workshopID']
+           w = getWorkshopByID(wID)
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
+               if w not in c.list:
+                      doit = 1
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
+                             doit = 1
+                      else:
+                              doit = 0
+
+                      if doit:
+                          offset = 10 - int(scopeLevel)
+                          offset = offset * -1
+                          wTest = s['scope'].split('|')
+                          sTest = scope.split('|')
+                          ##log.info('offset is %s'%offset)
+                          if wTest[:offset] == sTest[:offset]:
+                              c.list.append(w)
+
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        return render('/derived/list_geo.bootstrap')
+
+    def showPlanetSuggestions(self):
+
+        c.heading = "List Suggestions: Planet Earth"
+        scope = '||' + urlify(c.planet) + '||LaLa||LaLaLa||LaLaLa|00000'
+        scopeLevel = "01"
+        ## wscopes = getWorkshopScopes(scope, scopeLevel)
+        suggestions = getAllSuggestions(deleted = '0')
+        c.list = []
+        for suggestion in suggestions:
+          c.list.append(suggestion)
+
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        return render('/derived/list_geo.bootstrap')
+
+    def privacy(self):
+        c.title = 'Privacy'
+        c.pagetype="privacy" 
+        return render('/derived/corp_privacy.bootstrap')
 
     ##@h.login_required
     def geoHandler(self, id1, id2):

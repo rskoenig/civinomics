@@ -4,7 +4,24 @@
 <%namespace file="/lib/mako_lib.mako" import="civ_col_img" />
 
 <div class="row-fluid">
-    <div class="span3">
+    <div class="span8">
+        <div>
+            ${list_helpers.list_public_spheres()}
+        </div>
+        <div class="civ-col">
+            <h2 class="civ-col">${c.heading}</h2>
+            <div class="civ-col-inner">
+                ${helpers.featured_workshop()}
+            </div> <!-- /.civ-col-inner -->
+            <div class="civ-col-inner">
+                ${helpers.list_workshops()}
+            </div> <!-- /.civ-col-inner -->
+            <div class="civ-col-inner">
+                ${helpers.list_total_workshops()}
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
+    </div> <!-- /.span6 -->
+    <div class="span4">
         % if 'user' in session:
             <h2 class="civ-col">Welcome</h2>
             <div class="civ-col-inner">
@@ -12,12 +29,6 @@
                     ${list_helpers.draw_avatar()}
                 </div> <!-- /.civ-col-inner -->
             </div><!-- civ-col-inner --> 
-            <h2 class="civ-col">My Public Spheres</h2>
-            <div class="civ-col-inner">
-                <div class="civ-col-inner well profile_header">
-                    ${list_helpers.list_public_spheres()}
-                </div> <!-- /.civ-col-inner -->
-            </div> <!-- /.civ-col-inner -->
         % endif
         <h2 class="civ-col">Show me ... </h2>
         <div class="civ-col-inner">
@@ -39,22 +50,6 @@
                 ${list_helpers.member_tags()}
             </div> <!-- /.civ-col-inner -->
         </div> <!-- /.civ-col-inner -->
-    </div><!-- span3 -->
-    <div class="span6">
-        <div class="civ-col">
-            <h2 class="civ-col">${c.heading}</h2>
-            <div class="civ-col-inner">
-                ${helpers.featured_workshop()}
-            </div> <!-- /.civ-col-inner -->
-            <div class="civ-col-inner">
-                ${helpers.list_workshops()}
-            </div> <!-- /.civ-col-inner -->
-            <div class="civ-col-inner">
-                ${helpers.list_total_workshops()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-    </div> <!-- /.span6 -->
-    <div class="span3">
         <div class="civ-col">
             % if 'user' in session:
                 ${helpers.surveys()}

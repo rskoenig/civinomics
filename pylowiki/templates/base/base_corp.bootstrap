@@ -14,6 +14,7 @@
 
     <link type="text/css" rel="stylesheet" href = "/styles/flash.css" />
     ${self.page_specific_css()}
+    ${self.google_analytics()}
 
     <style type="text/css">
           html {
@@ -91,12 +92,12 @@
    ${self.navbar()}   
      
     <div id="wrap">
-        <div id="container">
+        <div id="container" style="padding-top:80px;">
             <div class="row"><!-- main content -->
                 <div id="left_navigbar" class="span2">
                     ${self.display_navigbarfn()}
                 </div>
-                <div id="right_content" class="span9">
+                <div id="right_content" class="span9" style="padding-bottom: 30px;">
                     ${self.display_body_right_content()}
                 </div>
             </div><!-- close row--> 
@@ -108,6 +109,7 @@
   
     <script src="/js/bootstrap/jquery.js"></script>
     <script src="/js/bootstrap/bootstrap-modal.js"></script> <!-- bootstrap modal scripts -->
+    <script src="/js/bootstrap/bootstrap-carousel.js"></script> <!-- bootstrap carousel scripts -->
     
     <script>
         function closeDialog () {
@@ -153,15 +155,17 @@
                         <li><a href="/corp/about">About Us</a></li>
                         <li><a href="http://www.civinomics.wordpress.com" target="_blank"> Development Blog</li>
                         <li><a href="/corp/careers">Careers</a></li>
-                        <li><a href="/corp/team">Civinomics Team</a></li>
+                        <li><a href="/corp/team">Team</a></li>
                         <li><a href="/corp/privacy">Privacy Policy</a></li>
                         <li><a href="/corp/terms">Terms of Use</a></li>
+                        <li><a href="/corp/contact">Contact Us</a></li>
                     </ul>
                 </div>
                 <div class="span3">
                     <ul class="unstyled">
                         <li><h4>SERVICES</h4></li>
                         <li><a href="/corp/outreach">Outreach</a></li>
+                        <li><a href="/corp/caseStudies/">Case Studies</a></li>
                         <li><a href="#">Create a workshop </a><span class="label label-warning">Coming Soon</span></li>
                     </ul>
                 </div>
@@ -190,42 +194,50 @@
     <div class="span2">
       <div class="well sidebar-nav" style="padding-top:10px; padding-left:14px; padding-right:14px;">
         <ul class="nav nav-list" >
-            % if display_navigbar == True:
-                <li class="nav-header">Organization</li>
-                <li 
-                % if highlight_name == "about":
-                    class ="active"
-                %endif
-                ><a href="/corp/about">About Us</a></li>
-                <li><a href="http://www.civinomics.wordpress.com" target="_blank">Development Blog</a></li>
-                <li 
-                % if highlight_name == "careers":
-                   class ="active"
-                %endif
-                ><a href="/corp/careers">Careers</a></li>
-                <li 
-                % if highlight_name == "team":
-                   class ="active"
-                %endif
-                ><a href="/corp/team">Civinomics Team</a></li>
-                <li 
-                % if highlight_name == "terms":
-                   class ="active"
-                %endif
-                ><a href="/corp/terms">Terms of Use</a></li>
-                <li 
-                % if highlight_name == "privacy":
-                   class ="active"
-                %endif
-                ><a href="/corp/privacy">Privacy Policy</a></li>
+            <li class="nav-header">Organization</li>
+            <li 
+            % if c.pagetype == "about":
+                class ="active"
+            %endif
+            ><a href="/corp/about">About Us</a></li>
+            <li><a href="http://www.civinomics.wordpress.com" target="_blank">Development Blog</a></li>
+            <li 
+            % if c.pagetype == "careers":
+               class ="active"
+            %endif
+            ><a href="/corp/careers">Careers</a></li>
+            <li 
+            % if c.pagetype == "team":
+               class ="active"
+            %endif
+            ><a href="/corp/team">Team</a></li>
+            <li 
+            % if c.pagetype == "privacy":
+               class ="active"
+            %endif
+            ><a href="/corp/privacy">Privacy Policy</a></li>
+            <li 
+            % if highlight_name == "terms":
+               class ="active"
+            %endif
+            ><a href="/corp/terms">Terms of Use</a></li>
+            <li 
+            % if c.pagetype == "contact":
+               class ="active"
+            %endif
+            ><a href="/corp/contact">Contact Us</a></li>
 
-                <li class="nav-header">Services</li>
-                <li
-                % if highlight_name == "outreach":
-                    class ="active"
-                %endif
-                ><a href="/corp/outreach">Outreach</a></li>
-                % endif
+            <li class="nav-header">Services</li>
+            <li
+            % if c.pagetype == "outreach":
+                class ="active"
+            %endif
+            ><a href="/corp/outreach">Outreach</a></li>
+            <li
+            % if c.pagetype == "casestudies":
+                class ="active"
+            %endif
+            ><a href="/corp/caseStudies/">Case Studies</a></li>
         </ul>
       </div><!--/.well -->
     </div><!--/span sidebar-->
@@ -241,7 +253,7 @@
                 <span class="icon-bar"></span>
               </a>
 
-                <div class="span2 offset">
+                <div class="span2 offset" style="padding-top: 2px; padding-bottom: 5px;">
                     <a href="/"><img src="/images/fluid1_images/civheaderlogo_alphawhite.png"></a>
                 </div>
 
@@ -250,6 +262,24 @@
             </div>
           </div>
         </div>
+</%def>
+
+<%def name="google_analytics()">
+    % if c.conf['google.analytics']:
+      <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', "${c.conf['google.analytics']}"]);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+      </script>
+    % endif
 </%def>
 
 

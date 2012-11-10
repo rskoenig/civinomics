@@ -139,6 +139,25 @@ def getWorkshopScopes(searchScope, scopeLevel):
     except sa.orm.exc.NoResultFound:
         return False
 
+def getSuggestionScopes(searchScope, scopeLevel):
+    ## geoInfo: a geo object from a user
+    ## scopeLevel: country = 3, state = 5, county = 7, city = 9, zip = 10
+    ## format of scope attribute ||country||state||county||city|zip
+    ##log.info('geoInfo is %s' % geoInfo)
+    ##log.info('searchScope is %s scopeLevel is %s' %(searchScope, scopeLevel))
+    #searchScope = geoInfo[0]['scope']
+    scopeLevel = int(scopeLevel) + 0
+    try:
+        sList = searchScope.split('|')
+        ##log.info('sList is %s' % len(sList))
+        sList = sList[:int(scopeLevel)]
+        searchScope = "|".join(sList)
+        searchScope = searchScope + '%'
+        ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
+        return meta.Session.query(Thing).filter_by(objType = 'sscope').filter(Thing.data.any(sc('deactivated', 'deleted'))).filter(Thing.data.any(scl('scope', searchScope, 1))).all()
+    except sa.orm.exc.NoResultFound:
+        return False
+
 def getGeoInfo(ownerID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'geo').filter_by(owner = ownerID).all()
@@ -227,7 +246,7 @@ class GeoInfo(object):
         g['cityURL'] = '/geo/city/united-states/' + urlify(state) + '/' + urlify(city)
         g['cityFlag'] = '/images/flags/country/united-states/city.gif'
         g['cityFlagThumb'] = '/images/flags/country/united-states/city_thumb.png'
-        g['postalTitle'] = 'Zip Code ' + postalCode
+        g['postalTitle'] = postalCode
         g['postalURL'] = '/geo/postal/united-states/' + postalCode
         g['postalFlag'] = '/images/flags/country/united-states/postal.gif'
         g['postalFlagThumb'] = '/images/flags/country/united-states/postal_thumb.gif'

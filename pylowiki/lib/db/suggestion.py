@@ -111,6 +111,8 @@ class Suggestion(object):
         s['data'] = data
         s['workshopCode'] = workshop['urlCode']
         s['workshopURL'] = workshop['url']
+        s['publicScope'] = workshop['publicScope']
+        s['startTime'] = workshop['startTime']
         s['allowComments'] = allowComments
         s['numComments'] = 0
         s['disabled'] = '0'

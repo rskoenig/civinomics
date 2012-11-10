@@ -5,7 +5,6 @@
 <%def name="display_body_right_content()">
     <div class="span8"><!--span body-->
         <div class="row-fluid">
-            </br>
             <h1>Contact Us</h1>
             </br>
             <h4>Street Address</h3>

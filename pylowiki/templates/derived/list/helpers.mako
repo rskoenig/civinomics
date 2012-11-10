@@ -22,27 +22,21 @@
 
 <%def name='list_public_spheres()'>
 	<% c.geoInfo = getGeoInfo(c.authuser.id) %>
-        <table>
-        <thead>
-        <tr><td colspan=2>
-        <p>Click on a link below to view all workshops in the public sphere.</p>
-        </td></tr>
-        </thead>
-        <tbody>
-        <tr>
-        <td><a href="${c.geoInfo[0]['cityURL']}" title="Click to view all workshops under the City of ${c.geoInfo[0]['cityTitle']} public sphere"><img src="${c.geoInfo[0]['cityFlagThumb']}" alt="${c.geoInfo[0]['cityTitle']}" class="thumbnail" style="max-width: 70px;"></a></td><td><a href="${c.geoInfo[0]['cityURL']}" title="Click to view all workshops under the City of ${c.geoInfo[0]['cityTitle']} public sphere">City of ${c.geoInfo[0]['cityTitle']}</a></td>
-        </tr>
-        <tr>
-        <td><a href="${c.geoInfo[0]['countyURL']}" title="Click to view all workshops under the County of ${c.geoInfo[0]['countyTitle']} public sphere"><img src="${c.geoInfo[0]['countyFlagThumb']}" alt="${c.geoInfo[0]['countyTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['countyURL']}" title="Click to view all workshops under the County of ${c.geoInfo[0]['countyTitle']} public sphere">County of ${c.geoInfo[0]['countyTitle']}</a></td>
-        </tr>
-        <tr>
-        <td><a href="${c.geoInfo[0]['stateURL']}" title="Click to view all workshops under the State of ${c.geoInfo[0]['stateTitle']} public sphere"><img src="${c.geoInfo[0]['stateFlagThumb']}" alt="${c.geoInfo[0]['stateTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['stateURL']}" title="Click to view all workshops under the State of ${c.geoInfo[0]['stateTitle']} public sphere">State of ${c.geoInfo[0]['stateTitle']}</a></td>
-        </tr>
-        <tr>
-        <td><img src="${c.geoInfo[0]['countryFlagThumb']}" title="Click to view all workshops under the Country of ${c.geoInfo[0]['countryTitle']} public sphere" alt="${c.geoInfo[0]['countryTitle']}" class="thumbnail" style="max-width: 70px"></td><td><a href="${c.geoInfo[0]['countryURL']}" title="Click to view all workshops under the Country of ${c.geoInfo[0]['countryTitle']} public sphere">${c.geoInfo[0]['countryTitle']}</a></td>
-        </tr>
-        </tbody>
-        </table>
+        <p class="zip">
+            <a href="/geo/planet/earth">Earth </a>/
+            <a href="${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}  </a>/
+            <a href="${c.geoInfo[0]['stateURL']}">  ${c.geoInfo[0]['stateTitle']}  </a>/
+            <a href="${c.geoInfo[0]['countyURL']}">  ${c.geoInfo[0]['countyTitle']}, Co.  </a>/
+            <a href="${c.geoInfo[0]['cityURL']}">  ${c.geoInfo[0]['cityTitle']}, City  </a>/
+            <a href="${c.geoInfo[0]['postalURL']}">  ${c.geoInfo[0]['postalCode']}</a>
+        </p>
+</%def>
+
+<%def name='ws_toggle()'>
+        <p class="zip">
+          <a href="#">Workshops</a>
+          <a href="/suggestions/geo/planet/earth">Suggestions</a>
+        </p>
 </%def>
 
 <%def name="show_me()">

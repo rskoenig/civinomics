@@ -43,7 +43,16 @@ def make_map():
     # 
     ########################################################################################################
     map.connect('/corp/', controller = 'corp', action = 'index', id = 'None')
-    map.connect('/corp/{id}', controller = 'corp', action = 'index', id = '{id}')
+    map.connect('/corp/about', controller = 'corp', action = 'about')
+    map.connect('/corp/careers', controller = 'corp', action = 'careers')
+    map.connect('/corp/careers/{id}', controller = 'corp', action = 'displayCareer', id = '{id}')
+    map.connect('/corp/team', controller = 'corp', action = 'team')
+    map.connect('/corp/terms', controller = 'corp', action = 'terms')
+    map.connect('/corp/privacy', controller = 'corp', action = 'privacy')
+    map.connect('/corp/outreach', controller = 'corp', action = 'outreach')
+    map.connect('/corp/contact', controller = 'corp', action = 'contact')
+    map.connect('/corp/caseStudies/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
+    map.connect('/corp/caseStudies', controller = 'corp', action = 'caseStudies')
 
     ########################################################################################################
     # 
@@ -330,6 +339,13 @@ def make_map():
     map.connect('/geo/county/{id1}/{id2}/{id3}', controller = 'geo', action = 'showCountyInfo', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/state/{id1}/{id2}', controller = 'geo', action = 'showStateInfo', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/country/{id1}', controller = 'geo', action = 'showCountryInfo', id1 = '{id1}')
+    map.connect('/geo/planet/earth', controller = 'geo', action = 'showPlanetInfo')
+    map.connect('/suggestions/geo/planet/earth', controller = 'geosuggestions', action = 'showPlanetSuggestions')
+    map.connect('/suggestions/test', controller = 'geosuggestions', action = 'privacy')
+
+    # List Suggestions
+    ##map.connect('/planet/earth/suggestions', controller = 'geoSuggestion', action = 'showPlanetSuggestions')
+    ##map.connect('/planet/earth/suggestions/', controller = 'geoSuggestion', action = 'showPlanetSuggestions')
 
     # Temporary
     map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')

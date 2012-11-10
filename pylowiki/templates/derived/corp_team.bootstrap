@@ -3,26 +3,16 @@
     <!-- None -->
 </%def>
 <%def name="display_body_right_content()">
-<div class="span8"><!--span body-->
+<div class="span8">
         <div class="row-fluid">
-        <div class="hero-unit">
-            <h2>Team</h2>
+            <h1>Team</h1>
             </br>
-
-            <h3>"The people who are crazy enough to think they can change the world, are the ones who do."</h3>
             <blockquote class="pull-right">
+                <p>The people who are crazy enough to think they can change the world, are the ones who do.</p>
                 <small>Steve Jobs</small>
-            </blockquote>    
-            </br>
-         </div><!--/.hero-unit-->
-
-
-        <div class="row-fluid">
-            </br>
+            </blockquote>
         </div>
-
-
-        <div class="row">   
+        <div class="row" style="padding-top:40px;">   
                 <div class="span">
                     <ul class="thumbnails">
                       <li>
@@ -33,6 +23,20 @@
                 <div class="span6">
                     <h3> Todd Anderson - Lead Mobile Engineer </h3>
                     <p>Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform.</p>
+                </div>
+        </div><!--/.row-fluid-->
+
+        <div class="row">   
+                <div class="span">
+                    <ul class="thumbnails">
+                      <li>
+                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/aj_burleson.jpg" alt="">
+                      </li>
+                    </ul>
+                </div><!--/.span-->
+                <div class="span6">
+                    <h3> AJ Burleson - Public Outreach Manager </h3>
+                    <p><em>AJ's bio coming soon</em></p>
                 </div>
         </div><!--/.row-fluid-->
 
@@ -73,10 +77,38 @@
                     </ul>
                 </div><!--/.span-->
                 <div class="span6">
-                    <h3> Edolfo Garza-Licudine - CTO </h3>
+                    <h3> Edolfo Garza-Licudine - CTO & Founder</h3>
                     <p>Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010.</p>
                 </div>
-        </div><!--/.row-fluid-->    
+        </div><!--/.row-fluid-->   
+
+        <div class="row">   
+                <div class="span">
+                    <ul class="thumbnails">
+                      <li>
+                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/traci_hukill.jpg" alt="">
+                      </li>
+                    </ul>
+                </div><!--/.span-->
+                <div class="span6">
+                    <h3> Traci Hukill - Director of Content</h3>
+                    <p>Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. She lives in the Santa Cruz Mountains with her husband and their cat.</p>
+                </div>
+        </div><!--/.row-fluid-->  
+
+        <div class="row">   
+                <div class="span">
+                    <ul class="thumbnails">
+                      <li>
+                        <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/danielle_keita.jpg" alt="">
+                      </li>
+                    </ul>
+                </div><!--/.span-->
+                <div class="span6">
+                    <h3>Danielle Keita-Taguchi - Research Intern</h3>
+                    <p>Danielle is a soon-to-be graduate from UCSC with a degree in Intensive Sociology. She is a part of the service learning program at UCSC called GIIP which brings social justice and technology together. She helps Civinomics with community outreach and is passionate about local water issues.</p>
+                </div>
+        </div><!--/.row-fluid--> 
 
         <div class="row">   
                 <div class="span">
@@ -87,7 +119,7 @@
                     </ul>
                 </div><!--/.span-->
                 <div class="span6">
-                    <h3>Manu Koenig - CEO </h3>
+                    <h3>Manu Koenig - CEO & Founder</h3>
                     <p>Manu is Civinomic's organizational mastermind. Previously he was General Manager of Strategic Partnerships at Martini Media Network - a Venrock backed vertical ad network. There he also served as Operations Manager, running campaigns for clients including Lexus, Chanel, and British Air. Manu holds dual US-European citizenship and worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin. He studied German and Management Science at Stanford.</p>
                 </div>
         </div><!--/.row-fluid-->
@@ -110,27 +142,13 @@
                 <div class="span">
                     <ul class="thumbnails">
                       <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/nora_lewis.jpg" alt="">
+                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/derrold_purifoy.jpg" alt="">
                       </li>
                     </ul>
                 </div><!--/.span-->
                 <div class="span6">
-                    <h3>Nora Lewis - Blogger </h3>
-                    <p>Nora Lewis is a soon-to-be graduate of UCSC with a degree in Politics. A busy bee, most of her out of class time is spent in a variety of places around town. She interns at NextSpace Santa Cruz, is a scooper at the Penny Ice Creamery and blogs about new, interesting and cool things happening locally for Civinomics.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/bianca_pisano.png" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Bianca Pisano - Community Representative </h3>
-                    <p>Bianca is a graduate from UCSB with a degree in Environmental Studies.  New to the Santa Cruz area, she spends a lot of her time exploring and hiking.  She is originally from New York so she likes to take advantage of all the Santa Cruz sunshine.  She loves good local food and good local people so you can often find her at the farmers markets.</p>
+                    <h3>Derrold Purifoy - Public Outreach Manager </h3>
+                    <p>Derrold was born in Orange, Texas and has lived his adult life in San Francisco. His business experience includes working in Customer Service, B2B Sales and Marketing Research. His hobbies include movies, literature and photography. He's excited to work on projects that have a positive impact on the community.</p>
                 </div>
         </div><!--/.row-fluid-->
 
@@ -143,22 +161,8 @@
                     </ul>
                 </div><!--/.span-->
                 <div class="span6">
-                    <h3>Robert Singleton - CMO </h3>
+                    <h3>Robert Singleton - Director of Public Outreach & Founder </h3>
                     <p>Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics.</p>
-                </div>
-        </div><!--/.row-fluid-->
-
-        <div class="row">   
-                <div class="span">
-                    <ul class="thumbnails">
-                      <li>
-                          <img class="thumbnail" height="100px" width="100px" src="/images/fluid1_images/aaron_white.jpg" alt="">
-                      </li>
-                    </ul>
-                </div><!--/.span-->
-                <div class="span6">
-                    <h3>Aaron White - Community Representative </h3>
-                    <p><em>Aaron's bio coming soon</em> </p>
                 </div>
         </div><!--/.row-fluid-->
 
