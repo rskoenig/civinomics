@@ -512,20 +512,29 @@ class WorkshopController(BaseController):
         if 'addMember' in request.params:
             if 'newMember' in request.params:
                 newMember = request.params['newMember']
-                pTest = getPrivateMember(code, newMember)
-                if pTest:
-                    if pTest['deleted'] == '1':
-                       pTest['deleted'] = '1'
-                       commit(pTest)
+                counter = 0
+                mList = newMember.split('\n')
+                for mEmail in mList:
+                    pTest = getPrivateMember(code, mEmail)
+                    if pTest:
+                        if pTest['deleted'] == '1':
+                            pTest['deleted'] = '1'
+                            commit(pTest)
+                        else:
+                            alert = {'type':'error'}
+                            alert['title'] = mEmail + ' already a member.'
+                            session['alert'] = alert
+                            session.save()
                     else:
-                        alert = {'type':'error'}
-                        alert['title'] = newMember + ' already a member.'
-                        session['alert'] = alert
-                        session.save()
-                else:
-                    PMember(code, newMember, 'A', c.w)
+                        PMember(code, mEmail, 'A', c.w)
+                        counter += 1
+                
+                if counter:
                     alert = {'type':'success'}
-                    alert['title'] = newMember + ' added.'
+                    if counter > 1:
+                        alert['title'] = str(counter) + ' new members added.'
+                    else:
+                        alert['title'] = '1 new member added.'  
                     session['alert'] = alert
                     session.save()
                 

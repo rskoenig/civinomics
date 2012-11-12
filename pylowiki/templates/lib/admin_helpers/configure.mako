@@ -250,8 +250,9 @@
         <br /><br />${len(c.pmembers)} Private Members in This Workshop<br /><br />
     % endif
     <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-        Add a new private member to this workshop:<br />
-        Email Address: <input type="text" name = "newMember" size="50" maxlength="140""/>
+        Add new private members to this workshop:<br />
+        Enter one or more email addresses, one per line:<br />
+        <textarea rows=6 cols=50 name="newMember"/></textarea>
         <br /><br />
         <button type="submit" class="btn btn-warning" name="addMember">Add Member</button>
   
