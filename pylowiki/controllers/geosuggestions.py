@@ -144,20 +144,15 @@ class GeosuggestionsController(BaseController):
         scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + urlify(c.county) + '||' + urlify(c.city) + '|' +  '00000'
         scopeLevel = "09"
         wscopes = getWorkshopScopes(scope, scopeLevel)
-        c.suggestions = []
-        
-        ##c.w = getWorkshop('4IDU', 'regional-transportation-commission')
-        '''if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)'''
-            
+        c.suggestions = [] 
         c.list = []
         for s in wscopes:
            wID = s['workshopID']
-           c.w = getWorkshopByID(wID)
-           if c.w['deleted'] != '1' and c.w['startTime'] != '0000-00-00':
-               if c.w not in c.list:
+           w = getWorkshopByID(wID)    
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
+               if w not in c.list:
                       doit = 1
-                      if c.w['scopeMethod'] == 'publicScope' and int(c.w['publicScope']) == int(scopeLevel):
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
                              doit = 1
                       else:
                               doit = 0
@@ -169,42 +164,43 @@ class GeosuggestionsController(BaseController):
                           sTest = scope.split('|')
                           ##log.info('offset is %s'%offset)
                           if wTest[:offset] == sTest[:offset]:   
-                            wsuggs = getSuggestionsForWorkshop(c.w['urlCode'], c.w['url'])
-                            if 'user' in session:
-                                ratedSuggestionIDs = []
-                                if 'ratedThings_suggestion_overall' in c.authuser.keys():
-                                    """
-                                        Here we get a Dictionary with the commentID as the key and the ratingID as the value
-                                        Check to see if the commentID as a string is in the Dictionary keys
-                                        meaning it was already rated by this user
-                                    """
-                                    sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                                    ratedSuggestionIDs = sugRateDict.keys()
-                            
+                            wsuggs = getSuggestionsForWorkshop(w['urlCode'], w['url'])
                             for suggestion in wsuggs:
-                                """ Grab first 250 chars as a summary """
-                                if len(suggestion['data']) <= 250:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                                else:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                            
-                                if 'user' in session:    
-                                    """ Grab the associated rating, if it exists """
-                                    found = False
-                                    try:
-                                        index = ratedSuggestionIDs.index(suggestion.id)
-                                        found = True
-                                    except:
-                                        pass
-                                    if found:
-                                        suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
-                                    else:
-                                        suggestion.rating = False
-                            
                                 c.suggestions.append(suggestion)
-                
-
-
+                                
+                            
+        if 'user' in session:
+            ratedSuggestionIDs = []
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                """
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
+                """
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = sugRateDict.keys()
+        
+        for suggestion in c.suggestions:
+            """ Grab first 250 chars as a summary """
+            if len(suggestion['data']) <= 250:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+            else:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+        
+            if 'user' in session:    
+                """ Grab the associated rating, if it exists """
+                found = False
+                try:
+                    index = ratedSuggestionIDs.index(suggestion.id)
+                    found = True
+                except:
+                    pass
+                if found:
+                    suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
+                else:
+                    suggestion.rating = False
+                            
+                            
         c.count = len( c.suggestions )
         c.paginator = paginate.Page(
             c.suggestions, page=int(request.params.get('page', 1)),
@@ -212,6 +208,7 @@ class GeosuggestionsController(BaseController):
         )
 
         return render('/derived/list_geoSuggestions.bootstrap')
+        
 
     def showCountySuggestions(self, id1, id2, id3):
         c.country = geoDeurlify(id1)
@@ -237,20 +234,15 @@ class GeosuggestionsController(BaseController):
         scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + urlify(c.county) + '||' + 'LaLaLa|00000'
         scopeLevel = "07"
         wscopes = getWorkshopScopes(scope, scopeLevel)
-        c.suggestions = []
-        
-        ##c.w = getWorkshop('4IDU', 'regional-transportation-commission')
-        '''if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)'''
-            
+        c.suggestions = [] 
         c.list = []
         for s in wscopes:
            wID = s['workshopID']
-           c.w = getWorkshopByID(wID)
-           if c.w['deleted'] != '1' and c.w['startTime'] != '0000-00-00':
-               if c.w not in c.list:
+           w = getWorkshopByID(wID)    
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
+               if w not in c.list:
                       doit = 1
-                      if c.w['scopeMethod'] == 'publicScope' and int(c.w['publicScope']) == int(scopeLevel):
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
                              doit = 1
                       else:
                               doit = 0
@@ -262,42 +254,43 @@ class GeosuggestionsController(BaseController):
                           sTest = scope.split('|')
                           ##log.info('offset is %s'%offset)
                           if wTest[:offset] == sTest[:offset]:   
-                            wsuggs = getSuggestionsForWorkshop(c.w['urlCode'], c.w['url'])
-                            if 'user' in session:
-                                ratedSuggestionIDs = []
-                                if 'ratedThings_suggestion_overall' in c.authuser.keys():
-                                    """
-                                        Here we get a Dictionary with the commentID as the key and the ratingID as the value
-                                        Check to see if the commentID as a string is in the Dictionary keys
-                                        meaning it was already rated by this user
-                                    """
-                                    sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                                    ratedSuggestionIDs = sugRateDict.keys()
-                            
+                            wsuggs = getSuggestionsForWorkshop(w['urlCode'], w['url'])
                             for suggestion in wsuggs:
-                                """ Grab first 250 chars as a summary """
-                                if len(suggestion['data']) <= 250:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                                else:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                            
-                                if 'user' in session:    
-                                    """ Grab the associated rating, if it exists """
-                                    found = False
-                                    try:
-                                        index = ratedSuggestionIDs.index(suggestion.id)
-                                        found = True
-                                    except:
-                                        pass
-                                    if found:
-                                        suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
-                                    else:
-                                        suggestion.rating = False
-                            
                                 c.suggestions.append(suggestion)
-                
-
-
+                                
+                            
+        if 'user' in session:
+            ratedSuggestionIDs = []
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                """
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
+                """
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = sugRateDict.keys()
+        
+        for suggestion in c.suggestions:
+            """ Grab first 250 chars as a summary """
+            if len(suggestion['data']) <= 250:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+            else:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+        
+            if 'user' in session:    
+                """ Grab the associated rating, if it exists """
+                found = False
+                try:
+                    index = ratedSuggestionIDs.index(suggestion.id)
+                    found = True
+                except:
+                    pass
+                if found:
+                    suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
+                else:
+                    suggestion.rating = False
+                            
+                            
         c.count = len( c.suggestions )
         c.paginator = paginate.Page(
             c.suggestions, page=int(request.params.get('page', 1)),
@@ -328,19 +321,14 @@ class GeosuggestionsController(BaseController):
         scopeLevel = "05"
         wscopes = getWorkshopScopes(scope, scopeLevel)
         c.suggestions = []
-        
-        ##c.w = getWorkshop('4IDU', 'regional-transportation-commission')
-        '''if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)'''
-            
         c.list = []
         for s in wscopes:
            wID = s['workshopID']
-           c.w = getWorkshopByID(wID)
-           if c.w['deleted'] != '1' and c.w['startTime'] != '0000-00-00':
-               if c.w not in c.list:
+           w = getWorkshopByID(wID)    
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
+               if w not in c.list:
                       doit = 1
-                      if c.w['scopeMethod'] == 'publicScope' and int(c.w['publicScope']) == int(scopeLevel):
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
                              doit = 1
                       else:
                               doit = 0
@@ -352,42 +340,43 @@ class GeosuggestionsController(BaseController):
                           sTest = scope.split('|')
                           ##log.info('offset is %s'%offset)
                           if wTest[:offset] == sTest[:offset]:   
-                            wsuggs = getSuggestionsForWorkshop(c.w['urlCode'], c.w['url'])
-                            if 'user' in session:
-                                ratedSuggestionIDs = []
-                                if 'ratedThings_suggestion_overall' in c.authuser.keys():
-                                    """
-                                        Here we get a Dictionary with the commentID as the key and the ratingID as the value
-                                        Check to see if the commentID as a string is in the Dictionary keys
-                                        meaning it was already rated by this user
-                                    """
-                                    sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                                    ratedSuggestionIDs = sugRateDict.keys()
-                            
+                            wsuggs = getSuggestionsForWorkshop(w['urlCode'], w['url'])
                             for suggestion in wsuggs:
-                                """ Grab first 250 chars as a summary """
-                                if len(suggestion['data']) <= 250:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                                else:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                            
-                                if 'user' in session:    
-                                    """ Grab the associated rating, if it exists """
-                                    found = False
-                                    try:
-                                        index = ratedSuggestionIDs.index(suggestion.id)
-                                        found = True
-                                    except:
-                                        pass
-                                    if found:
-                                        suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
-                                    else:
-                                        suggestion.rating = False
-                            
                                 c.suggestions.append(suggestion)
-                
-
-
+                                
+                            
+        if 'user' in session:
+            ratedSuggestionIDs = []
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                """
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
+                """
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = sugRateDict.keys()
+        
+        for suggestion in c.suggestions:
+            """ Grab first 250 chars as a summary """
+            if len(suggestion['data']) <= 250:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+            else:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+        
+            if 'user' in session:    
+                """ Grab the associated rating, if it exists """
+                found = False
+                try:
+                    index = ratedSuggestionIDs.index(suggestion.id)
+                    found = True
+                except:
+                    pass
+                if found:
+                    suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
+                else:
+                    suggestion.rating = False
+                            
+                            
         c.count = len( c.suggestions )
         c.paginator = paginate.Page(
             c.suggestions, page=int(request.params.get('page', 1)),
@@ -420,19 +409,14 @@ class GeosuggestionsController(BaseController):
         scopeLevel = "03"
         wscopes = getWorkshopScopes(scope, scopeLevel)
         c.suggestions = []
-        
-        ##c.w = getWorkshop('4IDU', 'regional-transportation-commission')
-        '''if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)'''
-            
         c.list = []
         for s in wscopes:
            wID = s['workshopID']
-           c.w = getWorkshopByID(wID)
-           if c.w['deleted'] != '1' and c.w['startTime'] != '0000-00-00':
-               if c.w not in c.list:
+           w = getWorkshopByID(wID)    
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
+               if w not in c.list:
                       doit = 1
-                      if c.w['scopeMethod'] == 'publicScope' and int(c.w['publicScope']) == int(scopeLevel):
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
                              doit = 1
                       else:
                               doit = 0
@@ -444,42 +428,43 @@ class GeosuggestionsController(BaseController):
                           sTest = scope.split('|')
                           ##log.info('offset is %s'%offset)
                           if wTest[:offset] == sTest[:offset]:   
-                            wsuggs = getSuggestionsForWorkshop(c.w['urlCode'], c.w['url'])
-                            if 'user' in session:
-                                ratedSuggestionIDs = []
-                                if 'ratedThings_suggestion_overall' in c.authuser.keys():
-                                    """
-                                        Here we get a Dictionary with the commentID as the key and the ratingID as the value
-                                        Check to see if the commentID as a string is in the Dictionary keys
-                                        meaning it was already rated by this user
-                                    """
-                                    sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                                    ratedSuggestionIDs = sugRateDict.keys()
-                            
+                            wsuggs = getSuggestionsForWorkshop(w['urlCode'], w['url'])
                             for suggestion in wsuggs:
-                                """ Grab first 250 chars as a summary """
-                                if len(suggestion['data']) <= 250:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                                else:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                            
-                                if 'user' in session:    
-                                    """ Grab the associated rating, if it exists """
-                                    found = False
-                                    try:
-                                        index = ratedSuggestionIDs.index(suggestion.id)
-                                        found = True
-                                    except:
-                                        pass
-                                    if found:
-                                        suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
-                                    else:
-                                        suggestion.rating = False
-                            
                                 c.suggestions.append(suggestion)
-                
-
-
+                                
+                            
+        if 'user' in session:
+            ratedSuggestionIDs = []
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                """
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
+                """
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = sugRateDict.keys()
+        
+        for suggestion in c.suggestions:
+            """ Grab first 250 chars as a summary """
+            if len(suggestion['data']) <= 250:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+            else:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+        
+            if 'user' in session:    
+                """ Grab the associated rating, if it exists """
+                found = False
+                try:
+                    index = ratedSuggestionIDs.index(suggestion.id)
+                    found = True
+                except:
+                    pass
+                if found:
+                    suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
+                else:
+                    suggestion.rating = False
+                            
+                            
         c.count = len( c.suggestions )
         c.paginator = paginate.Page(
             c.suggestions, page=int(request.params.get('page', 1)),
@@ -498,20 +483,15 @@ class GeosuggestionsController(BaseController):
         scope = '||' + urlify(c.planet) + '||LaLa||LaLaLa||LaLaLa|00000'
         scopeLevel = "01"
         wscopes = getWorkshopScopes(scope, scopeLevel)
-        c.suggestions = []
-        
-        ##c.w = getWorkshop('4IDU', 'regional-transportation-commission')
-        '''if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)'''
-            
+        c.suggestions = []  
         c.list = []
         for s in wscopes:
            wID = s['workshopID']
-           c.w = getWorkshopByID(wID)
-           if c.w['deleted'] != '1' and c.w['startTime'] != '0000-00-00':
-               if c.w not in c.list:
+           w = getWorkshopByID(wID)    
+           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
+               if w not in c.list:
                       doit = 1
-                      if c.w['scopeMethod'] == 'publicScope' and int(c.w['publicScope']) == int(scopeLevel):
+                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) == int(scopeLevel):
                              doit = 1
                       else:
                               doit = 0
@@ -523,120 +503,43 @@ class GeosuggestionsController(BaseController):
                           sTest = scope.split('|')
                           ##log.info('offset is %s'%offset)
                           if wTest[:offset] == sTest[:offset]:   
-                            wsuggs = getSuggestionsForWorkshop(c.w['urlCode'], c.w['url'])
-                            if 'user' in session:
-                                ratedSuggestionIDs = []
-                                if 'ratedThings_suggestion_overall' in c.authuser.keys():
-                                    """
-                                        Here we get a Dictionary with the commentID as the key and the ratingID as the value
-                                        Check to see if the commentID as a string is in the Dictionary keys
-                                        meaning it was already rated by this user
-                                    """
-                                    sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                                    ratedSuggestionIDs = sugRateDict.keys()
-                            
+                            wsuggs = getSuggestionsForWorkshop(w['urlCode'], w['url'])
                             for suggestion in wsuggs:
-                                """ Grab first 250 chars as a summary """
-                                if len(suggestion['data']) <= 250:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                                else:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                            
-                                if 'user' in session:    
-                                    """ Grab the associated rating, if it exists """
-                                    found = False
-                                    try:
-                                        index = ratedSuggestionIDs.index(suggestion.id)
-                                        found = True
-                                    except:
-                                        pass
-                                    if found:
-                                        suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
-                                    else:
-                                        suggestion.rating = False
-                            
                                 c.suggestions.append(suggestion)
-                
-
-
-        c.count = len( c.suggestions )
-        c.paginator = paginate.Page(
-            c.suggestions, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
-
-        return render('/derived/list_geoSuggestions.bootstrap')
-        
-        
-        
-    def showAllSuggestions1(self):
-        
-        c.geoType = 'none'
-        c.objecttype = 'suggestion'
-        c.heading = "All Suggestions"
-        scope = '||' + urlify(c.planet) + '||LaLa||LaLaLa||LaLaLa|00000'
-        scopeLevel = "01"
-        wscopes = getWorkshopScopes(scope, scopeLevel)
-        c.suggestions = []
-        
-        '''if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)'''
-            
-        c.list = []
-        for s in wscopes:
-           wID = s['workshopID']
-           c.w = getWorkshopByID(wID)
-           if c.w['deleted'] != '1' and c.w['startTime'] != '0000-00-00':
-               if c.w not in c.list:
-                      doit = 1
-                      if c.w['scopeMethod'] == 'publicScope' and int(c.w['publicScope']) >= int(scopeLevel):
-                             doit = 1
-                      else:
-                              doit = 0
-
-                      if doit:
-                          offset = 10 - int(scopeLevel)
-                          offset = offset * -1
-                          wTest = s['scope'].split('|')
-                          sTest = scope.split('|')
-                          ##log.info('offset is %s'%offset)
-                          if wTest[:offset] == sTest[:offset]:   
-                            wsuggs = getSuggestionsForWorkshop(c.w['urlCode'], c.w['url'])
-                            if 'user' in session:
-                                ratedSuggestionIDs = []
-                                if 'ratedThings_suggestion_overall' in c.authuser.keys():
-                                    """
-                                        Here we get a Dictionary with the commentID as the key and the ratingID as the value
-                                        Check to see if the commentID as a string is in the Dictionary keys
-                                        meaning it was already rated by this user
-                                    """
-                                    sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                                    ratedSuggestionIDs = sugRateDict.keys()
+                                
                             
-                            for suggestion in wsuggs:
-                                """ Grab first 250 chars as a summary """
-                                if len(suggestion['data']) <= 250:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
-                                else:
-                                    suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+        if 'user' in session:
+            ratedSuggestionIDs = []
+            if 'ratedThings_suggestion_overall' in c.authuser.keys():
+                """
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
+                """
+                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+                ratedSuggestionIDs = sugRateDict.keys()
+        
+        for suggestion in c.suggestions:
+            """ Grab first 250 chars as a summary """
+            if len(suggestion['data']) <= 250:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+            else:
+                suggestion['suggestionSummary'] = h.literal(h.reST2HTML(suggestion['data']))
+        
+            if 'user' in session:    
+                """ Grab the associated rating, if it exists """
+                found = False
+                try:
+                    index = ratedSuggestionIDs.index(suggestion.id)
+                    found = True
+                except:
+                    pass
+                if found:
+                    suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
+                else:
+                    suggestion.rating = False
                             
-                                if 'user' in session:    
-                                    """ Grab the associated rating, if it exists """
-                                    found = False
-                                    try:
-                                        index = ratedSuggestionIDs.index(suggestion.id)
-                                        found = True
-                                    except:
-                                        pass
-                                    if found:
-                                        suggestion.rating = getRatingByID(sugRateDict[suggestion.id])
-                                    else:
-                                        suggestion.rating = False
                             
-                                c.suggestions.append(suggestion)
-                
-
-
         c.count = len( c.suggestions )
         c.paginator = paginate.Page(
             c.suggestions, page=int(request.params.get('page', 1)),
