@@ -36,6 +36,8 @@ class ActionlistController(BaseController):
             c.list = get_all_pages()
         elif c.action == 'sitemapIssues':
             c.title = c.heading = 'All Workshops'
+            c.objecttype = 'workshop'
+            c.geoType = 'none'
             c.list = getActiveWorkshops()
 
             c.count = len( c.list )

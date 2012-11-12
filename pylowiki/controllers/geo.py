@@ -25,6 +25,7 @@ class GeoController(BaseController):
         
         c.heading = "Workshops in Postal Code " + c.postal
         c.geoType = 'postal'
+        c.objecttype = 'workshop'
         c.geoInfo = getPostalInfo(c.postal, c.country)
         c.city = capwords(c.geoInfo['City'])
         c.cityFlag = '/images/flags/country/united-states/city_thumb.png'
@@ -80,7 +81,7 @@ class GeoController(BaseController):
         
         c.heading = "List Workshops: City of " + capwords(c.city)
         c.geoType = 'city'
-        
+        c.objecttype = 'workshop'
         c.geoInfo = getCityInfo(c.city, c.state, c.country)
         c.city = capwords(c.city)
         c.cityFlag = '/images/flags/country/united-states/city_thumb.png'
@@ -137,7 +138,7 @@ class GeoController(BaseController):
         
         c.heading = "List Workshops: County of " + capwords(c.county)
         c.geoType = 'county'
-        
+        c.objecttype = 'workshop'
         c.geoInfo = getCountyInfo(c.county, c.state, c.country)
         c.county = capwords(c.geoInfo['County'])
         c.countyFlag = '/images/flags/country/united-states/county_thumb.png'
@@ -190,7 +191,7 @@ class GeoController(BaseController):
         
         c.heading = "List Workshops: State of " + capwords(c.state)
         c.geoType = 'state'
-
+        c.objecttype = 'workshop'
         c.geoInfo = getStateInfo(c.state, c.country)
         c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
         c.countryLink = '/geo/country/' + urlify(c.country)
@@ -239,8 +240,8 @@ class GeoController(BaseController):
         c.country = id1
         
         c.geoType = 'country'
+        c.objecttype = 'workshop'
         log.info('c.country is %s'%c.country)
-
         c.geoInfo = getCountryInfo(c.country)
         c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
         c.country = capwords(c.geoInfo['Country_title'])
@@ -287,7 +288,8 @@ class GeoController(BaseController):
 
 
     def showPlanetInfo(self):
-
+        c.geoType = 'planet'
+        c.objecttype = 'workshop'
         c.heading = "List Workshops: Planet Earth"
         scope = '||' + urlify(c.planet) + '||LaLa||LaLaLa||LaLaLa|00000'
         scopeLevel = "01"
@@ -322,30 +324,6 @@ class GeoController(BaseController):
 
         return render('/derived/list_geo.bootstrap')
 
-    def showPlanetSuggestions(self):
-
-        c.heading = "List Suggestions: Planet Earth"
-        scope = '||' + urlify(c.planet) + '||LaLa||LaLaLa||LaLaLa|00000'
-        scopeLevel = "01"
-        ## wscopes = getWorkshopScopes(scope, scopeLevel)
-        suggestions = getAllSuggestions(deleted = '0')
-        c.list = []
-        for suggestion in suggestions:
-          c.list.append(suggestion)
-
-
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
-
-        return render('/derived/list_geo.bootstrap')
-
-    def privacy(self):
-        c.title = 'Privacy'
-        c.pagetype="privacy" 
-        return render('/derived/corp_privacy.bootstrap')
 
     ##@h.login_required
     def geoHandler(self, id1, id2):

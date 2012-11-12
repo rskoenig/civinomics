@@ -7,6 +7,8 @@
     from pylowiki.lib.db.user import isAdmin, getUserByID
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.resource import getResourcesByParentID
+    from pylowiki.lib.db.workshop import getWorkshop, isScoped
+    
 %>
 
 ################################################
@@ -260,6 +262,8 @@
             % for suggestion in sList:
                 <% 
                     author = getUserByID(suggestion.owner)
+                    workshop = getWorkshop(suggestion['workshopCode'], suggestion['workshopURL'])
+                    scoped = isScoped(c.authuser, workshop)
                     flags = getFlags(suggestion)
                     resources = getResourcesByParentID(suggestion.id)
                     if flags:
@@ -274,10 +278,10 @@
                 <li>
                 <div class="row-fluid">
                     <h3>
-                    <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
+                    <a href="/workshop/${suggestion['workshopCode']}/${suggestion['workshopURL']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a>
                     </h3>
                     % if suggestion['deleted'] == '0':
-                        ${suggestion['data'][:50]}... <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">more</a>
+                        ${suggestion['data'][:50]}... <a href="/workshop/${suggestion['workshopCode']}/${suggestion['workshopURL']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">more</a>
                     % else:
                         Deleted
                     % endif
@@ -297,7 +301,7 @@
                     <span class="badge badge-info" title="Suggestion comments"><i class="icon-white icon-comment"></i>${numComments}</span>
                     <span class="badge badge-inverse" title="Suggestion flags"><i class="icon-white icon-flag"></i>${numFlags}</span>
                     </div><!-- ${badgeSpan} -->
-                % if 'user' in session and c.isScoped and doSlider == 1 and suggestion['disabled'] == '0' and suggestion['deleted'] == '0':
+                % if 'user' in session and scoped and doSlider == 1 and suggestion['disabled'] == '0' and suggestion['deleted'] == '0':
                     <div class="${slideSpan}">
                         <div id="ratings${counter}" class="rating wide pull-right">
                             <div id="overall_slider" class="ui-slider-container">
@@ -323,8 +327,8 @@
                 </div><!-- row-fluid -->
                 <div class="row-fluid">
                     <i class="icon-time"></i> Added <span class="old">${timeSince(suggestion.date)}</span> ago 
-                    % if 'user' in session and c.isScoped and doSlider == '1':
-                        | <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
+                    % if 'user' in session and scoped and doSlider == '1':
+                        | <a href="/workshop/${suggestion['workshopCode']}/${suggestion['workshopURL']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">Leave comment</a>
                     % endif
                     <br /><br />
                 </div><!-- row-fluid -->

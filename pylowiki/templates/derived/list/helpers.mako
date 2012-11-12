@@ -23,19 +23,97 @@
 <%def name='list_public_spheres()'>
 	<% c.geoInfo = getGeoInfo(c.authuser.id) %>
         <p class="zip">
-            <a href="/geo/planet/earth">Earth </a>/
-            <a href="${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}  </a>/
-            <a href="${c.geoInfo[0]['stateURL']}">  ${c.geoInfo[0]['stateTitle']}  </a>/
-            <a href="${c.geoInfo[0]['countyURL']}">  ${c.geoInfo[0]['countyTitle']}, Co.  </a>/
-            <a href="${c.geoInfo[0]['cityURL']}">  ${c.geoInfo[0]['cityTitle']}, City  </a>/
-            <a href="${c.geoInfo[0]['postalURL']}">  ${c.geoInfo[0]['postalCode']}</a>
+            <a 
+            % if c.geoType == "none":
+                    class ="active"
+            %endif 
+            href="/workshops">All </a>/
+            <a 
+            % if c.geoType == "planet":
+                class ="active"
+            %endif 
+            href="/geo/planet/earth">Earth </a>/
+            <a 
+            % if c.geoType == "country":
+                class ="active"
+            %endif
+            href="${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}  </a>/
+            <a 
+            % if c.geoType == "state":
+                class ="active"
+            %endif
+            href="${c.geoInfo[0]['stateURL']}">  ${c.geoInfo[0]['stateTitle']}  </a>/
+            <a 
+            % if c.geoType == "county":
+                class ="active"
+            %endif
+            href="${c.geoInfo[0]['countyURL']}">  ${c.geoInfo[0]['countyTitle']}, Co.  </a>/
+            <a 
+            % if c.geoType == "city":
+                class ="active"
+            %endif
+            href="${c.geoInfo[0]['cityURL']}">  ${c.geoInfo[0]['cityTitle']}, City  </a>/
+            <a 
+            % if c.geoType == "postal":
+                class ="active"
+            %endif
+            href="${c.geoInfo[0]['postalURL']}">  ${c.geoInfo[0]['postalCode']}</a>
+        </p>
+</%def>
+
+<%def name='list_public_spheres_suggestions()'>
+    <% c.geoInfo = getGeoInfo(c.authuser.id) %>
+        <p class="zip">
+            <a 
+            % if c.geoType == "none":
+                class ="active"
+            %endif
+            href="/suggestions">All </a>/
+            <a 
+            % if c.geoType == "planet":
+                class ="active"
+            %endif
+            href="/suggestions/geo/planet/earth">Earth </a>/
+            <a 
+            % if c.geoType == "country":
+                class ="active"
+            %endif
+            href="/suggestions${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}  </a>/
+            <a 
+            % if c.geoType == "state":
+                class ="active"
+            %endif
+            href="/suggestions${c.geoInfo[0]['stateURL']}">  ${c.geoInfo[0]['stateTitle']}  </a>/
+            <a 
+            % if c.geoType == "county":
+                class ="active"
+            %endif
+            href="/suggestions${c.geoInfo[0]['countyURL']}">  ${c.geoInfo[0]['countyTitle']}, Co.  </a>/
+            <a 
+            % if c.geoType == "city":
+                class ="active"
+            %endif
+            href="/suggestions${c.geoInfo[0]['cityURL']}">  ${c.geoInfo[0]['cityTitle']}, City  </a>/
+            <a 
+            % if c.geoType == "postal":
+                class ="active"
+            %endif
+            href="/suggestions${c.geoInfo[0]['postalURL']}">  ${c.geoInfo[0]['postalCode']}</a>
         </p>
 </%def>
 
 <%def name='ws_toggle()'>
         <p class="zip">
-          <a href="#">Workshops</a>
-          <a href="/suggestions/geo/planet/earth">Suggestions</a>
+            <a 
+            % if c.objecttype == "workshop":
+                class ="active"
+            %endif
+            href="/workshops">Workshops</a>
+            <a 
+            % if c.objecttype == "suggestion":
+                class ="active"
+            %endif
+            href="/suggestions">Suggestions</a>
         </p>
 </%def>
 

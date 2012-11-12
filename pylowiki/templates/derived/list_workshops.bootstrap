@@ -6,13 +6,13 @@
 <div class="row-fluid">
     <div class="span8">
         <div>
-            ${list_helpers.list_public_spheres()}
+            % if 'user' in session:
+                ${list_helpers.list_public_spheres()}
+            % endif
+            ${list_helpers.ws_toggle()}
         </div>
         <div class="civ-col">
             <h2 class="civ-col">${c.heading}</h2>
-            <div class="civ-col-inner">
-                ${helpers.featured_workshop()}
-            </div> <!-- /.civ-col-inner -->
             <div class="civ-col-inner">
                 ${helpers.list_workshops()}
             </div> <!-- /.civ-col-inner -->

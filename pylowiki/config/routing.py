@@ -340,8 +340,15 @@ def make_map():
     map.connect('/geo/state/{id1}/{id2}', controller = 'geo', action = 'showStateInfo', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/country/{id1}', controller = 'geo', action = 'showCountryInfo', id1 = '{id1}')
     map.connect('/geo/planet/earth', controller = 'geo', action = 'showPlanetInfo')
+    
+    #Sorting suggestions by Geo
+    map.connect('/suggestions', controller = 'geosuggestions', action = 'showAllSuggestions')
+    map.connect('/suggestions/geo/postal/{id1}/{id2}', controller = 'geosuggestions', action = 'showPostalSuggestions')
+    map.connect('/suggestions/geo/city/{id1}/{id2}/{id3}', controller = 'geosuggestions', action = 'showCitySuggestions', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/suggestions/geo/county/{id1}/{id2}/{id3}', controller = 'geosuggestions', action = 'showCountySuggestions', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/suggestions/geo/state/{id1}/{id2}', controller = 'geosuggestions', action = 'showStateSuggestions', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/suggestions/geo/country/{id1}', controller = 'geosuggestions', action = 'showCountrySuggestions', id1 = '{id1}')
     map.connect('/suggestions/geo/planet/earth', controller = 'geosuggestions', action = 'showPlanetSuggestions')
-    map.connect('/suggestions/test', controller = 'geosuggestions', action = 'privacy')
 
     # List Suggestions
     ##map.connect('/planet/earth/suggestions', controller = 'geoSuggestion', action = 'showPlanetSuggestions')
