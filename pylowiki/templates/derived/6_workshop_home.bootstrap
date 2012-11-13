@@ -35,14 +35,18 @@
             <div class="section-wrapper">
                <div class="browse">
                   <h3 class="section-header"> Who's listening? </h3>
-                  <ul>
-                     % for person in c.facilitators:
-                        <li>
-                           ${lib_6.userImage(person, className="avatar")}
-                           ${lib_6.userLink(person)}
-                        </li>
+                  ${helpers.whoListening(c.facilitators)}
+               </div> <!-- /.browse -->
+            </div> <!-- /.section-wrapper -->
+            <div class="section-wrapper activityStream">
+               <div class="browse">
+                  <h3 class="section-header"> Activity </h3>
+                     % for item in range(5):
+                        <div class="row-fluid">
+                           ${helpers.showActivity(c)}
+                        </div>
                      % endfor
-                  </ul>
+                  
                </div> <!-- /.browse -->
             </div> <!-- /.section-wrapper -->
          </div> <!-- /.span7 -->

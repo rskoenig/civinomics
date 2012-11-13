@@ -768,7 +768,6 @@ class WorkshopController(BaseController):
         else:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
 
-
         #return render('/derived/workshop_home.bootstrap')
         return render('/derived/6_workshop_home.bootstrap')
 

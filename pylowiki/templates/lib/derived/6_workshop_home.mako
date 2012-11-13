@@ -4,6 +4,34 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
+<%def name="whoListening(people)">
+   <ul class="listeners">
+      <% counter = 1 %>
+      % for person in people:
+         <li>
+            ${lib_6.userImage(person, className="avatar")}
+            <br>
+            ${lib_6.userLink(person)}
+         </li>
+         <%
+            counter += 1
+            if counter > 3:
+               break
+         %>
+      % endfor
+   </ul>
+</%def>
+
+<%def name="showActivity(c)">
+   
+   <%
+      #resources = c.resources
+      #suggestions = c.suggestions
+      #discussions = c.discussion
+   %>
+   ${lib_6.userImage(c.authuser, className="avatar small-avatar inline")}
+</%def>
+
 <%def name="watchButton()">
    <a class="btn round pull-right" href="#">
       <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">

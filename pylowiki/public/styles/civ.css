@@ -37,12 +37,17 @@ hr.civ-topbar-hr{
   margin-left: -10px;
   margin-right: -10px;
   margin-top: -10px;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  //padding-top: 10px;
+  //padding-bottom: 10px;
 }
 .section-wrapper .activity {
   padding: 10px;
 }
+
+.section-wrapper.activityStream{
+   height:250px;
+}
+
 .section-wrapper .browse {
   padding: 10px;
 }
@@ -103,7 +108,20 @@ img.avatar{
 .small-avatar{
    height: 25px;
 }
+/*
+.table.activity th, .table.activity td{
+   padding-top:10px;
+   padding-bottom:0px;
+   padding-left:0px;
+   padding-right:0px;
+   line-height:14px;
+}
 
+.table.activity{
+   margin-left:-10px;
+   margin-right:-20px;
+}
+*/
 a, a:hover{
    color: #D15D00;
    text-decoration: none;
@@ -172,6 +190,17 @@ ul.goals{
 
 ul.goals li.finished {
    text-decoration: line-through;
+}
+
+ul.listeners{
+   list-style-type: none;
+   margin-bottom:0px;
+}
+
+ul.listeners > li {
+   display: inline-block;
+   margin-left:25px;
+   margin-right:25px;
 }
 
 /* --- Container configuration ---------------------------------------------------------- */
