@@ -17,6 +17,8 @@ def linkChildToParent(child, parent):
       return False
    
    key = '%s%s' %(parent.objType, 'Code')
-   value = code
-   child[key] = value
+   if key not in child:
+      child[key] = code
+   else:
+      log.warning("linkChildToParent(): parent object link already exists in child.")
    return child
