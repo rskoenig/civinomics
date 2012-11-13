@@ -72,6 +72,8 @@ class Discussion(object):
         title = kwargs['title']
         discType = kwargs['discType']
         d['discType'] = discType # Used in determining the linkbacks
+        if 'workshop' in kwargs:
+            d = generic.linkChildToParent(d, kwargs['workshop'])
         if 'attachedThing' in kwargs.keys():
             attachedThing = kwargs['attachedThing']
             

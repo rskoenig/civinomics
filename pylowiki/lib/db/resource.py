@@ -13,6 +13,7 @@ from pylons import config
 from time import time
 from revision import Revision
 from tldextract import extract
+import pylowiki.lib.db.generic as generic
 
 log = logging.getLogger(__name__)
 
@@ -136,7 +137,8 @@ class Resource(object):
         a['title'] = title
         a['comment'] = comment
         a['allowComments'] = allowComments
-        a['workshopCode'] = workshop['urlCode']
+        #a['workshopCode'] = workshop['urlCode']
+        a = generic.linkChildToParent(a, workshop)
         if parent != None:
              a['parent_id'] = parent.id
              a['parent_type'] = parent.objType

@@ -103,6 +103,7 @@ def getRecentMemberPosts(number):
         postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion', 'event'])).order_by('-date').all()
         for item in postList:
            w = False
+           print "currently on item type %s" % item.objType
            if item.objType == 'suggestion':
                w = getWorkshopByCode(item['workshopCode'])
            elif item.objType == 'resource':

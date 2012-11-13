@@ -3,7 +3,8 @@
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
-   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
+   #from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
+   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByCode, getWorkshop
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.fuzzyTime import timeSince, timeUntil
 
@@ -128,7 +129,7 @@
           mname = muser['name']
           if mObj.objType == 'resource':
               linkTitle = "Click to view new resource"
-              w = getWorkshopByID(mObj['workshop_id'])
+              w = getWorkshopByCode(mObj['workshopCode'])
               oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url']
               wLink = "/workshop/" + w['urlCode'] + "/" + w['url']
               iType = "book"

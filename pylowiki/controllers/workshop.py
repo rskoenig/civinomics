@@ -16,6 +16,7 @@ from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID, getActiveDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop
+#from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
 from pylowiki.lib.db.resource import getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getInactiveResourcesByWorkshopCode, getDisabledResourcesByWorkshopCode, getDeletedResourcesByWorkshopCode
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
@@ -694,9 +695,11 @@ class WorkshopController(BaseController):
             if s:
                 c.slides.append(s)
             
-        c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
+        #c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        c.resources = getActiveResourcesByWorkshopCode(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
-        c.dresources = getInactiveResourcesByWorkshopCode(c.w['urlCode'])
+        #c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
+        c.dresources = getInactiveResourcesByWorkshopCode(c.w.id)
         # put disabled and deleted at the end
         if c.resources:
             if c.dresources:
@@ -705,7 +708,7 @@ class WorkshopController(BaseController):
             if c.dresources:
                 c.resources = c.dresources 
 
-        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = getActiveSuggestionsForWorkshop(code)
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
         # put disabled and deleted at the end
@@ -838,9 +841,9 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
-        c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
+        c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
-        c.dresources = getInactiveResourcesByWorkshopCode(c.w['urlCode'])
+        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
         # put disabled and deleted at the end
         if c.resources:
             if c.dresources:
@@ -874,8 +877,8 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
-        c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
-        c.dresources = getInactiveResourcesByWorkshopCode(c.w['urlCode'])
+        c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
 
         return render('/derived/resource_list.html')
 
@@ -885,10 +888,10 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
-        c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
+        c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
         # append the disabled and deleted resources
-        resources = getInactiveResourcesByWorkshopCode(c.w['urlCode'])
+        resources = getInactiveResourcesByWorkshopID(c.w.id)
         if resources:
           c.resources += resources
 
@@ -976,9 +979,9 @@ class WorkshopController(BaseController):
         c.s = getActiveSuggestionsForWorkshop(code, urlify(url))
         c.disabledSug = getDisabledSuggestionsForWorkshop(code, urlify(url))
         c.deletedSug = getDeletedSuggestionsForWorkshop(code, urlify(url))
-        c.r = getActiveResourcesByWorkshopCode(c.w['urlCode'])
-        c.disabledRes = getDisabledResourcesByWorkshopCode(c.w['urlCode'])
-        c.deletedRes = getDeletedResourcesByWorkshopCode(c.w['urlCode'])
+        c.r = getActiveResourcesByWorkshopID(c.w.id)
+        c.disabledRes = getDisabledResourcesByWorkshopID(c.w.id)
+        c.deletedRes = getDeletedResourcesByWorkshopID(c.w.id)
         c.d = getActiveDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
         c.disabledDisc = getDisabledDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
         c.deletedDisc = getDeletedDiscussionsForWorkshop(c.w['urlCode'], urlify(c.w['url']))
