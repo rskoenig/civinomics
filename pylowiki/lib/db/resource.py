@@ -31,7 +31,7 @@ def getResource(urlCode, url):
 def getResourceByLink(link, item):
     if item.objType == 'workshop':
         try:
-            return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('workshop_id', item.id))).filter(Thing.data.any(wc('parent_id', '0'))).all()
+            return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('link', link))).filter(Thing.data.any(wc('workshopCode', item['urlCode']))).filter(Thing.data.any(wc('parent_id', '0'))).all()
         except:
             return False
     elif item.objType == 'suggestion':
@@ -42,9 +42,9 @@ def getResourceByLink(link, item):
     else:
         return False
 
-def getResourceByURL(url, workshopID):
+def getResourceByURL(url, workshopCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('workshopID', workshopID))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('workshopCode', workshopCode))).one()
     except:
         return False
 
@@ -60,34 +60,34 @@ def getActiveResourcesByParentID(parentID):
     except:
         return False
 
-def getResourcesByWorkshopID(workshopID):
+def getResourcesByWorkshopCode(workshopCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshopCode', workshopCode))).all()
     except:
         return False
 
-def getActiveResourcesByWorkshopID(workshopID):
+def getActiveResourcesByWorkshopCode(workshopCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('parent_type', None))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('parent_type', None))).all()
     except:
         return False
 
-def getDisabledResourcesByWorkshopID(workshopID):
+def getDisabledResourcesByWorkshopCode(workshopCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('disabled', '1'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('disabled', '1'))).all()
     except:
         return False
 
-def getDeletedResourcesByWorkshopID(workshopID):
+def getDeletedResourcesByWorkshopCode(workshopCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).filter(Thing.data.any(wc('deleted', '1'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('deleted', '1'))).all()
     except:
         return False
 
-def getInactiveResourcesByWorkshopID(workshopID):
+def getInactiveResourcesByWorkshopCode(workshopCode):
     InactiveRes = []
-    DisabledRes = getDisabledResourcesByWorkshopID(workshopID)
-    DeletedRes = getDeletedResourcesByWorkshopID(workshopID)
+    DisabledRes = getDisabledResourcesByWorkshopCode(workshopCode)
+    DeletedRes = getDeletedResourcesByWorkshopCode(workshopCode)
     if DisabledRes:
         InactiveRes = DisabledRes
     if DeletedRes:
@@ -97,9 +97,9 @@ def getInactiveResourcesByWorkshopID(workshopID):
     else:
         return False
 
-def getFlaggedResourcesByWorkshopID(workshopID):
+def getFlaggedResourcesByWorkshopCode(workshopCode):
     try:
-        aList = meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshop_id', workshopID))).all()
+        aList = meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshopCode', workshopCode))).all()
         fList = []
         for a in aList:
            if checkFlagged(a) and a.id not in fList:
@@ -109,9 +109,9 @@ def getFlaggedResourcesByWorkshopID(workshopID):
     except:
         return False
 
-def getResourceByTitle(title, workshopID):
+def getResourceByTitle(title, workshopCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('title', title))).filter(Thing.data.any(wc('workshopID', workshopID))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('title', title))).filter(Thing.data.any(wc('workshopCode', workshopCode))).one()
     except:
         return False
 
@@ -136,7 +136,7 @@ class Resource(object):
         a['title'] = title
         a['comment'] = comment
         a['allowComments'] = allowComments
-        a['workshop_id'] = workshop.id
+        a['workshopCode'] = workshop['urlCode']
         if parent != None:
              a['parent_id'] = parent.id
              a['parent_type'] = parent.objType

@@ -13,7 +13,7 @@ def linkChildToParent(child, parent):
    try:
       code = parent['urlCode']
    except:
-      log.error("linkChildToParent(): parent object missing 'ulrCode' field.")
+      log.error("linkChildToParent(): parent object missing 'urlCode' field.")
       return False
    
    key = '%s%s' %(parent.objType, 'Code')

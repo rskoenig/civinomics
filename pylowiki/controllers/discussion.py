@@ -101,7 +101,8 @@ class DiscussionController(BaseController):
         c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
         if 'disabled' in c.discussion and 'deleted' in c.discussion:
             if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
-                c.otherDiscussions.remove(c.discussion)
+                if len(c.otherDiscussions) > 0:
+                    c.otherDiscussions.remove(c.discussion)
 
         c.title = c.w['title']
 
