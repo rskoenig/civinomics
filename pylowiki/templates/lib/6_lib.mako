@@ -6,6 +6,9 @@
    <%
       if user.objType == 'facilitator':
          user = getUserByID(user.owner)
+      if 'raw' in kwargs:
+         if kwargs['raw']:
+            return '/profile/%s/%s/' %(user['urlCode'], user['url'])
       thisLink = "<a href='/profile/%s/%s/'" %(user['urlCode'], user['url'])
       if 'className' in kwargs:
          thisLink += 'class = "' + kwargs['className'] + '"'
@@ -14,6 +17,9 @@
          thisLink += kwargs['title']
       else:
          thisLink += user['name']
+      if 'image' in kwargs:
+         if kwargs['image'] == True:
+            thisLink += userImage(user)
       thisLink += "</a>"
    %>
    ${thisLink | n}
@@ -63,9 +69,12 @@
 
 <%def name="userImage(user, **kwargs)">
    <%
+      imgStr = ''
       if user.objType == 'facilitator':
          user = getUserByID(user.owner)
-      imgStr = ''
+      imgStr += '<a href="'
+      imgStr += userLink(user, raw=True)
+      imgStr += '">'
       if 'revision' in kwargs:
          revision = kwargs['revision']
          pictureHash = revision['pictureHash']
@@ -77,14 +86,15 @@
          if pictureHash != 'flash':
             directoryNumber = user['directoryNumber']
       if pictureHash == 'flash':
-         imgStr = '<img src="/images/avatars/flash.profile" alt="%s" title="%s"' %(title, title)
+         imgStr += '<img src="/images/avatars/flash.profile" alt="%s" title="%s"' %(title, title)
       else:
-         imgStr = '<img src="/images/avatar/%s/profile/%s.profile" alt="%s" title="%s"' %(directoryNumber, pictureHash, title, title)
+         imgStr += '<img src="/images/avatar/%s/profile/%s.profile" alt="%s" title="%s"' %(directoryNumber, pictureHash, title, title)
          
       if 'className' in kwargs:
          imgStr += ' class="%s"' % kwargs['className']
       
-      imgStr += '>'
+      imgStr += '></a>'
+      print imgStr
    %>
    ${imgStr | n}
 </%def>
