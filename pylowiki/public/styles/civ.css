@@ -47,7 +47,12 @@ hr.civ-topbar-hr{
 .section-wrapper.activityStream{
    height:250px;
 }
-
+.section-wrapper.overview{
+   height:435px;
+}
+.section-wrapper.listening{
+   height:173px;
+}
 .section-wrapper .browse {
   padding: 10px;
 }

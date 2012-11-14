@@ -30,9 +30,9 @@
             </div> 
          </div> <!-- /.span12 -->
       </div> <!-- /.row -->
-      <div class="row">
+      <div class="row-fluid">
          <div class="span7">
-            <div class="section-wrapper">
+            <div class="section-wrapper listening">
                <div class="browse">
                   <h3 class="section-header"> Who's listening? </h3>
                   ${helpers.whoListening(c.facilitators)}
@@ -46,12 +46,11 @@
                            ${helpers.showActivity(c)}
                         </div>
                      % endfor
-                  
                </div> <!-- /.browse -->
             </div> <!-- /.section-wrapper -->
          </div> <!-- /.span7 -->
          <div class="span5">
-            <div class="section-wrapper">
+            <div class="section-wrapper overview">
                <div class="browse">
                   <h3 class="section-header"> Overview </h3>
                   <h5> Goals </h5>
@@ -64,13 +63,21 @@
                   </ul> <!-- /goals -->
                   <h5> Gallery </h5>
                   ${helpers.slideshow(c.w)}
-                  </div> <!-- /.row-fluid -->
-               </div>
+               </div> <!--/.browse-->
             </div> <!-- /.section-wrapper -->
          </div> <!-- /.span5 -->
       </div> <!-- /.row -->
-   </div>
-</div>
+      <div class="row-fluid" id="information">
+         <div class = "span12">
+            <div class="section-wrapper">
+               <div class="browse">
+                  <h3 class="section-header"> Information </h3>
+               </div>
+            </div> <!--/.section-wrapper-->
+         </div><!-- /.span12 -->
+      </div><!--/.row-->
+   </div><!-- /.span12.well -->
+</div><!--/.row-->
 
 <%def name="extraScripts()">
    <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
