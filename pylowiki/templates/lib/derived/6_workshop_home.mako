@@ -1,5 +1,6 @@
 <%!
    from pylowiki.lib.db.slideshow import getAllSlides
+   from pylowiki.lib.db.user import getUserByID
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -29,7 +30,7 @@
       #suggestions = c.suggestions
       #discussions = c.discussion
    %>
-   ${lib_6.userImage(c.authuser, className="avatar small-avatar inline")}
+   ${lib_6.userImage(getUserByID(1), className="avatar small-avatar inline")}
 </%def>
 
 <%def name="watchButton()">
