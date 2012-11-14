@@ -102,6 +102,11 @@ hr.civ-topbar-hr{
    display: inline-block;
 }
 
+img.config{
+   height:15px;
+   margin-right:10px;
+}
+
 img.avatar{
    border-radius: 100px;
 }

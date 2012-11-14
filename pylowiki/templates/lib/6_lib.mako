@@ -31,8 +31,8 @@
       if kwargs['embed'] == True:
          if 'raw' in kwargs:
             if kwargs['raw'] == True:
-               return "/workshops/%s/%s" %(w['urlCode'], w['url'])
-         return 'href = "/workshops/%s/%s"' %(w['urlCode'], w['url'])
+               return "/workshop/%s/%s" %(w['urlCode'], w['url'])
+         return 'href = "/workshop/%s/%s"' %(w['urlCode'], w['url'])
    %>
    href="/workshops/${w['urlCode']}/${w['url']}"
 </%def>
@@ -94,7 +94,6 @@
          imgStr += ' class="%s"' % kwargs['className']
       
       imgStr += '></a>'
-      print imgStr
    %>
    ${imgStr | n}
 </%def>

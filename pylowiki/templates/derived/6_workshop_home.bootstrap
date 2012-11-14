@@ -52,7 +52,13 @@
          <div class="span5">
             <div class="section-wrapper overview">
                <div class="browse">
-                  <h3 class="section-header"> Overview </h3>
+                     <h3 class="section-header"> 
+                        Overview 
+                        <%
+                           if c.isAdmin or c.isFacilitator:
+                              helpers.configButton(c.w)
+                        %>
+                     </h3>
                   <h5> Goals </h5>
                   <ul class="goals">
                      <li class="finished"> Goal number 1 </li>
