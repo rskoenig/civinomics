@@ -10,7 +10,7 @@ from pylowiki.lib.utils import urlify
 #fox added following imports
 #from pylowiki.model import commit_edit, get_page, get_all_pages
 from pylowiki.lib.db.page import get_page, get_all_pages, getPageByID
-from pylowiki.lib.db.workshop import getWorkshop
+from pylowiki.lib.db.workshop import getWorkshopByCode
 from pylowiki.lib.db.revision import Revision
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.user import isAdmin
@@ -75,7 +75,12 @@ class WikiController(BaseController):
         code = id1
         url = id2
 
-        w = getWorkshop(code, urlify(url))
+        w = getWorkshopByCode(code)
+        session['confTab'] = "tab3"
+        alert = {'type':'success'}
+        alert['title'] = 'Background Information Updated.'
+        session['alert'] = alert
+        session.save()
         if not w:
             h.flash('Workshop not found', 'error')
             return redirect('/')

@@ -12,15 +12,18 @@
 -->
 
 <%def name="add_slides()">
-
    <div class="container-fluid clr left">
    <!-- The file upload form used as target for the file upload widget -->
    <form id="fileupload" class="well" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
+        <h3>Slideshow</h3>
+        <br />
         <p><strong>Add slides to slideshow</strong></p>
         <p>You may only upload images you own or have permission to upload to this site.<p>
         <p>Make sure to upload images larger than 640 pixels wide by 480 pixels high! Small images or thumbnails will look terrible in the slide show! Images oriented in "landscape" mode (wider than higher) are best.</p>
         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
         <div class="row fileupload-buttonbar">
+            <div class="span1">
+            </div>
             <div class="span7">
                 <!-- The fileinput-button span is used to style the file input field as button -->
                 <span class="btn btn-success fileinput-button">

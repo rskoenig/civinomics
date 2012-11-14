@@ -3,46 +3,94 @@
 <%namespace name="helpers" file="/lib/admin_helpers/configure.mako" />
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
 
+<%
+    tab0active = ""
+    tab1active = ""
+    tab2active = ""
+    tab3active = ""
+    tab4active = ""
+    tab5active = ""
+                
+    if c.tab == "tab1":
+        tab1active = "active"
+    elif c.tab == "tab2":
+        tab2active = "active"
+    elif c.tab == "tab3":
+        tab3active = "active"
+    elif c.tab == "tab5":
+        tab5active = "active"
+    elif c.tab == "tab4":
+        tab4active = "active"
+    else:
+        tab1active = "active"
+
+%>
+
 <div class="container-fluid"><!-- header -->
     <div class="well workshop_header">
         ${lib_helpers.displayWorkshopHeader('configure')}
     </div><!-- well -->
-    <h2 class="civ-col">Configure Workshop</h2>
-    <br />
-    Use this control panel to configure your workshop settings.<br />
-    Set the workshop name, goals, category tags and public sphere in the <strong>Basic Information</strong> tab.<br />
-    Upload and arrange images, and edit titles and captions in the <strong>Slideshow</strong> tab.<br />
-    Create and edit the workshop introduction article in the <strong>Background</strong> tab.</br />
-    %if c.w['startTime'] == '0000-00-00':
-        <p>Before <em>starting the workshop</em> in the <strong>Basic Information</strong> tab, remember to complete the workshop Slideshow and Background article.</p> 
-    %endif
-    <br /><br />
+
     <div class="tabbable">
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#tab1" data-toggle="tab"><i class="icon-list-alt"></i> Basic Information</a></li>
-            <li><a href="#tab2" data-toggle="tab"><i class="icon-picture"></i> Slideshow</a></li>
-            <li><a href="#tab3" data-toggle="tab"><i class="icon-book"></i> Background</a></li>
-            <li><a href="#tab4" data-toggle="tab"><i class="icon-user"></i> Associates</a></li>
+    <div class="row-fluid">
+        <div class="span3 well">
+    <h3>Configure Workshop</h3>
+        ${helpers.intro()}
+        <br /><br />
+        <ul class="nav nav-pills nav-stacked">
+            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Settings
+            % if c.basicConfig:
+                <i class="icon-ok"></i>
+            % endif:
+                *
+            </a></li>
+            <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Slideshow 
+            % if c.slideConfig:
+                <i class="icon-ok"></i>
+            % endif
+                *
+            </a></li>
+            <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Background 
+            % if c.backConfig:
+                <i class="icon-ok"></i>
+            % endif:
+                *
+            </a></li>
+            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">4. Participants
+            % if c.scopeConfig:
+                <i class="icon-ok"></i>
+            % endif:
+                *
+            </a></li>
+            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">5. Associates</a></li>
         </ul>
+        </div><!-- span3 -->
+        <div class="span9"> 
         % if c.conf['read_only.value'] == 'true':
             <!-- read only -->
         % else:
+            ${helpers.fields_alert()}
             <div class="tab-content">
-                <div class="tab-pane active" id="tab1">
-                    ${helpers.configure()}
+                <div class="tab-pane ${tab1active}" id="tab1">
+                    ${helpers.basic()}
                 </div><!-- tab-pane template tab1 -->
-                <div class="tab-pane" id="tab2">
+                <div class="tab-pane ${tab2active}" id="tab2">
                      ${slide_helpers.add_slides()}
                      ${slide_helpers.edit_slideshow()}
                 </div><!-- tab-pane template tab2 -->
-                <div class="tab-pane" id="tab3">
+                <div class="tab-pane ${tab3active}" id="tab3">
                 ${helpers.edit_background()}
                 </div><!-- tab-pane template tab3 -->
-                <div class="tab-pane" id="tab4">
+                <div class="tab-pane ${tab4active}" id="tab4">
                 ${helpers.associates()}
                 </div><!-- tab-pane template tab4 -->
+                <div class="tab-pane ${tab5active}" id="tab5">
+                ${helpers.eligibility()}
+                </div><!-- tab-pane template tab5 -->
             </div><!-- tab-content template -->
         % endif
+        </div><!-- span9 -->
+        </div><!-- row-fluid -->
     </div><!-- tabbable template -->	
 </div><!-- container-fluid -->
             

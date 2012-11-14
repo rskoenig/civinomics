@@ -10,7 +10,7 @@ import webhelpers.paginate as paginate
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-from pylowiki.lib.db.workshop import Workshop, getWorkshop, isScoped
+from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped
 from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
@@ -161,6 +161,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
+        session['confTab'] = "tab4"
+        session.save()
 
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
@@ -181,6 +183,10 @@ class WorkshopController(BaseController):
                             
                     c.w['associates'] = associates
                     commit(c.w)
+                    alert = {'type':'success'}
+                    alert['title'] = 'Associate ' + deleteEmail + ' deleted.'
+                    session['alert'] = alert
+                    session.save()
                     return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/configure")  
                     
         if 'newAssociate' in request.params:
@@ -201,6 +207,10 @@ class WorkshopController(BaseController):
                 c.w['associates'] = '|' + newAssociate + '|'
                 
             commit(c.w)
+            alert = {'type':'success'}
+            alert['title'] = 'Associate ' + newAssociate + ' added.'
+            session['alert'] = alert
+            session.save()
             return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/configure")
             
         return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/configure")   
@@ -210,6 +220,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
+        session['confTab'] = "tab1"
+        session.save()
 
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
@@ -333,10 +345,6 @@ class WorkshopController(BaseController):
         else:
             if isFacilitator(c.authuser.id, c.w.id):
                 commit(c.w)
-                alert = {'type':'success'}
-                alert['title'] = 'Workshop basic information saved!'
-                session['alert'] = alert
-                session.save()
 
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
 
@@ -345,6 +353,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
+        session['confTab'] = "tab5"
+        session.save()
 
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
@@ -396,7 +406,7 @@ class WorkshopController(BaseController):
            return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
         if isFacilitator(c.authuser.id, c.w.id) and werror == 0:
            alert = {'type':'success'}
-           alert['title'] = "Workshop Eligibility Saved!"
+           alert['title'] = "Workshop Eligibility Saved!" + c.tab
            session['alert'] = alert
            session.save()
            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Public Sphere updated.', c.w, c.authuser)
@@ -414,6 +424,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
+        session['confTab'] = "tab5"
+        session.save()
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
@@ -502,6 +514,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
+        session['confTab'] = "tab5"
+        session.save()
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
@@ -1079,8 +1093,25 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
 
-        c.w = getWorkshop(code, urlify(url))
+        c.w = getWorkshopByCode(code)
+        if (c.w['goals'] != '' and c.w['goals'] != 'No goals set') and c.w['publicTags'] != '' and c.w['memberTags'] != '':
+            c.basicConfig = 1
+        else:
+            c.basicConfig = 0
+            
+        if c.w['public_private'] != 'private' and c.w['scopeMethod'] == 'publicScope' or (c.w['scopeMethod'] == 'publicPostalList' and c.w['publicPostalList'] != ''):
+            c.scopeConfig = 1
+        elif c.w['public_private'] == 'private':
+            c.scopeConfig = 1
+        else:
+            c.scopeConfig = 0
+            
+            
         c.account = getAccountByID(c.w.owner)
+        if 'confTab' in session:
+            c.tab = session['confTab']
+            session.pop('confTab')
+            session.save()
         if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
             h.flash("You are not authorized", "warning")
             return render('/')
@@ -1094,23 +1125,31 @@ class WorkshopController(BaseController):
             s = getSlide(id) # Don't grab deleted slides
             if s:
                 c.published_slides.append(s)
-
+        if len(c.slideshow) > 1 and len(c.published_slides) > 0:
+            c.slideConfig = 1
+        else:
+            c.slideConfig = 0
+            
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitatorsByWorkshop(c.w.id)
 
         if c.w['public_private'] == 'private':
             c.pmembers = getPrivateMembers(code)
             
-        r = get_revision(int(c.w['mainRevision_id']))
-        reST = r['data']
+        c.revision = get_revision(int(c.w['mainRevision_id']))
+        reST = c.revision['data']
         reSTlist = self.get_reSTlist(reST)
         HTMLlist = self.get_HTMLlist(reST)
+        if c.revision['data'] != "No wiki background set yet":
+            c.backConfig = 1
+        else:
+            c.backConfig = 0
 
         c.wikilist = zip(HTMLlist, reSTlist)
         c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
 
-        c.lastmoddate = r.date
-        c.lastmoduser = getUserByID(r.owner)
+        c.lastmoddate = c.revision.date
+        c.lastmoduser = getUserByID(c.revision.owner)
 
 
         return render('/derived/workshop_configure.bootstrap')

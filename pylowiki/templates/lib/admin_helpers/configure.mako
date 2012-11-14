@@ -19,6 +19,8 @@
 
 
 <%def name="edit_background()">
+    <h3>Background Information</h3>
+    <br /><br />
     ${h.form(url(controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']),method="put")}
     <% counter = 0 %>
     % for row in c.wikilist:
@@ -53,7 +55,7 @@
     <br /><br />
 </%def>
 
-<%def name="configure()">
+<%def name="basic()">
 
     <%
       if c.w['startTime'] == '0000-00-00':
@@ -61,9 +63,19 @@
       else:
         wstarted = 1
     %>
-    ${fields_alert()}
-<form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <table class="table well">
+    <div class="well">
+    <h3>Settings</h3>
+    % if c.w['startTime'] == '0000-00-00' and c.account['type'] != 'trial' and c.basicConfig and c.slideConfig and c.backConfig and c.scopeConfig:
+       <br />
+       <strong>Your Workshop is Ready to Publish</strong>
+        <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
+       <br />
+       <button type="submit" class="btn btn-warning">Publish Workshop</button> &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Publish Workshop
+       </form>
+    % endif
+
+    <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <table class="table">
     <tbody>
     <tr>
     <td>
@@ -215,7 +227,23 @@
     </tbody>
     </table>
     </form>
-    <br /><br />
+    </div><!-- well -->
+</%def>
+
+<%def name="eligibility()">
+    <%
+        if c.w['startTime'] == '0000-00-00':
+            wstarted = 0
+        else:
+            wstarted = 1
+
+        if 'public_private' in c.w and (c.w['public_private'] == 'public' or c.w['public_private'] == 'trial'):
+            publicChecked = 'checked'
+            privateChecked = ''
+        else:
+            publicChecked = ''
+            privateChecked = 'checked'
+    %>
 
     % if wstarted == 0 and c.account['type'] != 'trial':
         % if c.w['public_private'] == 'public':
@@ -223,27 +251,25 @@
         % elif c.w['public_private'] == 'private':
             ${private()}
         % endif
-       <br /><br />
-       When you have completed all the information above, and are <strong>sure</strong> it is correct and complete, check the two boxes below to start your workshop. 
-   Once a workshop has started, it is available for visiting and reading by the public, and contributions by members who are logged in and eligible to participate. 
-       <br /><br />
-   Note that once a workshop has started, you may not change the workshop participant eligibility or tags. 
-       <div class="well">
-        <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
-       <br />
-       <input type="checkbox" name="startWorkshop" value="Start" /> Start Workshop &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Start Workshop
-       <br /><br />
-       <button type="submit" class="btn btn-warning">Start Workshop</button>
-       </form>
-       </div>
-   % elif wstarted and c.w['public_private'] == 'private':
-       ${private()}
-   % endif
+    % elif wstarted == 0 and c.account['type'] == 'trial':
+        <strong>Workshop Type:</strong><br />
+        <input type="radio" name="publicPrivate" value="public" ${publicChecked} /> Public<br />
+        This means the workshop may be browsed by the public, and any members residing in the specificied geographic area may participate.<br /><br />
+        <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
+        This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
+        <br /><br />
+    % endif
+</%def>
 
+<%def name="intro()">
+    % if c.w['startTime'] == '0000-00-00':
+       Complete the checklist below.<br />
+       Required information marked with * <br />
+    % endif
 </%def>
 
 <%def name="private()">
-    <strong>Workshop Eligiblity</strong>
+    <h3>Participants: Private</h3>
     <p>Private workshops are not visible to the public.</p>
     <p>This establishes the list of email addresses and email domains for members eligible to browse and participate in this private workshop.<p>
     % if c.pmembers:        
@@ -268,7 +294,7 @@
 </%def>
 
 <%def name="public()">
-    <strong>Workshop Eligiblity</strong>
+    <h3>Paricipants: Public</h3>
     <p>This establishes the geographic area, or <em>public sphere</em>, in which people need to reside to participate in this workshop.</p>
     <p>The public sphere for this workshop can be defined either as a single jurisdiction with a central "home" postal, or as a set of multiple postal codes.</p>
     Choose which method of public sphere to use for this workshop, Single Jurisdiction or Multiple Postal Codes, then fill out the information in the appropriate form below and save it.
@@ -376,8 +402,9 @@
                     else:
                         emails.append(a)
     %>
+    <h3>Associates</h3>
     <form name="associates" id="associates" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureAssociatesWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <strong>Designate up to 10 private associates to participate in this workhop</strong><br />
+    <strong>Designate up to 10 private associates to participate in this workhop</strong><br /><br />
     <ul class="unstyled">
     % for user in associates:
         <li>        
@@ -391,7 +418,7 @@
     % endfor
     </ul>
     % if len(all) < 10:
-        
+        <br /><br />
         Add a new associate to this workshop:<br />
         Email Address: <input type="text" name = "newAssociate" size="50" maxlength="140""/>
         <br /><br />
