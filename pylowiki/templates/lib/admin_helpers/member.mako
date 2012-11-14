@@ -5,8 +5,8 @@
 
 <%def name="editProfileInfo()">
     <form action="/profile/editSubmit" enctype="multipart/form-data" method="post" class="form-horizontal">
-        <input type=hidden name="memberCode" value="${c.user['urlCode']}" >
-        <input type=hidden name="memberURL" value="${c.user['url']}" >
+        <input type="hidden" name="memberCode" value="${c.user['urlCode']}" >
+        <input type="hidden" name="memberURL" value="${c.user['url']}" >
         <fieldset>
             <legend>Basic Information</legend>
             <div class="control-group">
@@ -118,24 +118,24 @@
     <br /><br />
     <strong>${eAction} Member</strong><br /><br />
     <form method="post" name="enableUser" id="enableUser" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/">
-       Reason for Member ${eAction}: <input type=text name=enableUserReason> <br /><br />
-       <input type=radio name="verifyEnableUser" value="0"> Verify ${eAction}
+       Reason for Member ${eAction}: <input type="text" name="enableUserReason"> <br /><br />
+       <input type="radio" name="verifyEnableUser" value="0"> Verify ${eAction}
        &nbsp;&nbsp;<button type="submit" class="btn btn-warning">${eAction} Member</button>
     </form>
     <br /><br />
     <strong>Change Access Level</strong><br /><br />
     Current Access Level: ${c.user['accessLevel']}
     <form method="post" name="userPrivs" id="userPrivs" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/">
-     Reason for Member Access Level Change: <input type=text name=changeAccessReason><br /><br /> 
+     Reason for Member Access Level Change: <input type="text" name="changeAccessReason"><br /><br /> 
      % if c.user['accessLevel'] == '0':
-        <input type=radio name="setPrivsFacil" value="100"> Facilitator &nbsp; &nbsp; &nbsp;
-        <input type=radio name="setPrivsAdmin" value="200"> Admin
+        <input type="radio" name="setPrivsFacil" value="100"> Facilitator &nbsp; &nbsp; &nbsp;
+        <input type="radio" name="setPrivsAdmin" value="200"> Admin
      % elif c.user['accessLevel'] == '100':
-        <input type=radio name="setPrivsUser" value="0"> User &nbsp; &nbsp; &nbsp;
-        <input type=radio name="setPrivsAdmin" value="200"> Admin
+        <input type="radio" name="setPrivsUser" value="0"> User &nbsp; &nbsp; &nbsp;
+        <input type="radio" name="setPrivsAdmin" value="200"> Admin
      % else:
-        <input type=radio name="setPrivsUser" value="0"> User &nbsp; &nbsp; &nbsp;
-        <input type=radio name="setPrivsFacil" value="100"> Facilitator
+        <input type="radio" name="setPrivsUser" value="0"> User &nbsp; &nbsp; &nbsp;
+        <input type="radio" name="setPrivsFacil" value="100"> Facilitator
      % endif
      &nbsp;&nbsp;<button type="submit" name="setPrivs" class="btn btn-warning">Set Privs</button>
      </form>

@@ -2,6 +2,7 @@
 import logging
 
 from pylons import tmpl_context as c
+from pylons import request
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
@@ -178,6 +179,9 @@ class User(object):
         frEmail = c.conf['activation.email']
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, hash, toEmail) 
+        # testing framework needs this info for activating users:
+        if 'paste.testing_variables' in request.environ:
+            request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
         subject = "Civinomics Account Activation"
         message = 'Please click on the following link to activate your account:\n\n%s' % url
         send(toEmail, frEmail, subject, message)

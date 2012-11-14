@@ -23,6 +23,9 @@ def setup_app(command, conf, vars):
     if filename == 'development.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
+    if filename == 'test.ini':    
+        log.info("Dropping existing tables...")
+        meta.metadata.drop_all(bind=meta.engine)
 
     #Create the tables if they don't already exist
     meta.metadata.create_all(bind=meta.engine)
