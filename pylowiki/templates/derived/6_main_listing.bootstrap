@@ -3,23 +3,19 @@
 <%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
 
 <div class="row">
+   <div class = "span12">
+      ${lib_6.geoBreadcrumbs()}
+   </div><!--/.span12-->
+</div><!-- /.row-->
+
+<div class="row">
    <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
          <div class="browse">
             <h3 class="section-header"> Browse </h3>
             <div class="row-fluid"><!--navigation row-->
-               <div class="span6"> <!-- geographic navigation -->
-                  <ul class="nav nav-pills pull-left">
-                     <li class="active"> <a href="#">zip</a></li>
-                     <li> <a href="#">city</a></li>
-                     <li> <a href="#">county</a></li>
-                     <li> <a href="#">state</a></li>
-                     <li> <a href="#">country</a></li>
-                  </ul>
-               </div> <!-- /geographic navigation -->
-               
-               <div class="span6"> <!-- object navigation -->
-                  <ul class="nav nav-pills pull-right">
+               <div class="span12"> <!-- object navigation -->
+                  <ul class="nav nav-pills">
                      <li class="active"> <a href="#">workshops</a></li>
                      <li> <a href="#">suggestions</a></li>
                   </ul>
