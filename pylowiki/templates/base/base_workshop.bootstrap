@@ -1,0 +1,42 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+<div class="row">
+   <div class="span12 well workshop-panel">
+      <div class="row-fluid">
+         <div class="span10"> <!-- geographic breadcrumbs -->
+            ${lib_6.geoBreadcrumbs()}
+         </div><!-- /geographic breadcrumbs -->
+         <div class="span2"> <!-- watch button -->
+            ${helpers.watchButton()}
+         </div><!-- /watch button -->
+      </div> <!-- /.row-fluid -->
+      <div class="row-fluid">
+         <div class="span12">
+            <h1 class="centered"> ${c.w['title']} </h1>
+         </div>
+      </div>
+      <div class="row-fluid">
+         <div class="span12">
+            ${helpers.workshopNav(c.w)}
+         </div>
+      </div> <!-- /.row-fluid -->
+      ${next.body()}
+   </div><!-- /.span12.well -->
+</div><!--/.row-->
+
+<%def name="extraScripts()">
+   <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
+   <%
+      if c.w['mainImage_hash'] == 'supDawg':
+         backgroundImage = '"/images/%s/slideshow/%s.slideshow"' %(c.w['mainImage_identifier'], c.w['mainImage_hash'])
+      else:
+         backgroundImage = '"/images/%s/%s/slideshow/%s.slideshow"' %(c.w['mainImage_identifier'], c.w['mainImage_directoryNum'], c.w['mainImage_hash'])
+   %>
+   <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+</%def>
+
+<%def name="extraScripts2()">
+   ## Used for any additional scripts needed on child pages
+</%def>
