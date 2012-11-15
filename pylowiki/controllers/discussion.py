@@ -76,7 +76,9 @@ class DiscussionController(BaseController):
             items_per_page = 15, item_count = c.count
         )
 
-        return render('/derived/discussion_landing.bootstrap')
+        #return render('/derived/discussion_landing.bootstrap')
+        c.listingType = 'discussion'
+        return render('/derived/6_detailed_listing.bootstrap')
 
     def topic(self, id1, id2, id3, id4, id5 = ''):
         workshopCode = id1

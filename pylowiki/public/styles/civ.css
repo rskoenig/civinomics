@@ -6,7 +6,6 @@ body{
 .container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container{
    width:1010px;
 }
-
 img.small-logo{
    height: 25px;
 }
@@ -14,7 +13,9 @@ img.small-logo{
    max-height:50px;
    margin-bottom:0px;
 }
-
+.workshop-title{
+   color:black;
+}
 .civ-navbar .container .brand{
    padding-bottom: 0px;
 }
@@ -177,7 +178,12 @@ padding-right:0px;
 padding-top:10px;
 padding-bottom:10px;
 }
-
+.btn-group.four-up a.btn.selected-nav{
+   color:#075D00;
+   border-bottom-color:#075D00;
+   border-bottom-width:2px;
+   padding-top:9px;
+}
 .workshop-nav-icon{
    max-height:16px;
 }
@@ -212,6 +218,7 @@ ul.listeners > li {
    margin-left:25px;
    margin-right:25px;
 }
+
 
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {

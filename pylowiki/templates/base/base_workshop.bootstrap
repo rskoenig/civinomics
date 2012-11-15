@@ -14,12 +14,22 @@
       </div> <!-- /.row-fluid -->
       <div class="row-fluid">
          <div class="span12">
-            <h1 class="centered"> ${c.w['title']} </h1>
+            <h1 class="centered"> 
+               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" class="workshop-title">
+                  ${c.w['title']} 
+               </a>
+            </h1>
          </div>
       </div>
       <div class="row-fluid">
          <div class="span12">
-            ${helpers.workshopNav(c.w)}
+            <%
+               if c.listingType != '':
+                  listingType = c.listingType
+               else:
+                  listingType = None
+            %>
+            ${helpers.workshopNav(c.w, listingType)}
          </div>
       </div> <!-- /.row-fluid -->
       ${next.body()}
