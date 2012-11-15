@@ -2,6 +2,23 @@
    from pylowiki.lib.db.user import getUserByID
 %>
 
+<%def name="createNew(thing)">
+   <%
+      if c.conf['read_only.value'] == 'true' or c.conf['read_only.value'] == 'True':
+         readOnlyMessage(thing)
+         return False
+   %>
+   % if c.isScoped or c.isFacilitator or c.isAdmin:
+      % if thing == 'discussion':
+         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop">Add Discussion Topic</a>
+      % endif
+   % endif
+</%def>
+
+<%def name="readOnlyMessage(thing)">
+   <p> Read-only: cannot add a ${thing}. </p>
+</%def>
+
 <%def name="userLink(user, **kwargs)">
    <%
       if user.objType == 'facilitator':

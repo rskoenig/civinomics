@@ -9,6 +9,14 @@
 
 <%def name="discussion()">
    <div class="row-fluid">
-      <p> Hello </p>
+      <div class="span12">
+         % if (c.discussions != '') and (len(c.discussions) != len(c.paginator)):
+            <h3>
+               Showing ${len(c.paginator)} of ${len(c.discussions)} topics | Page ${ c.paginator.pager('~3~')}
+            </h3>
+         % else:
+            ${lib_6.createNew('discussion')}
+         % endif
+      </div><!--/.span12-->
    </div><!--/.row-fluid-->
 </%def>
