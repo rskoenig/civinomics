@@ -161,7 +161,7 @@
        Change number of objects which may be hosted: 
        <select name="numHost">
        % for i in range(1, 11):
-        <option>${i}</option>
+        <option value="${i}">${i}</option>
        % endfor
        </select>
        <br /><br />
@@ -173,7 +173,7 @@
        Number of objects which may be hosted: 
        <select name="numHost">
        % for i in range(1, 11):
-        <option>${i}</option>
+        <option value="${i}">${i}</option>
        % endfor
        </select>
        <br /><br />

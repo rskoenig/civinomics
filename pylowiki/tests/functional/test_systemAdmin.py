@@ -6,7 +6,7 @@ from urlparse import urlparse
 from pylowiki.tests.helpers.authorization import login_and_set_user_auth_level, logout
 from pylowiki.tests.helpers.registration import create_and_activate_user, create_user, activate_user, login_user
 
-class TestSurveyController(TestController):
+class TestSystemAdminController(TestController):
 
     user1 = 'test1@civinomics.org'
     pass1 = 'test1'
@@ -43,18 +43,17 @@ class TestSurveyController(TestController):
     adminController = 'systemAdmin'
     adminAction = 'index'
     displayActiveUsers = 'Show Active Users'
-    accessControls = 'Access Controls'
     
 
     def test_view_admin(self):
         # create a user
-        create_and_activate_user(self, TestSurveyController.user1, TestSurveyController.pass1, TestSurveyController.zip1, TestSurveyController.member1,TestSurveyController.first1, TestSurveyController.last1)
+        create_and_activate_user(self, TestSystemAdminController.user1, TestSystemAdminController.pass1, TestSystemAdminController.zip1, TestSystemAdminController.member1,TestSystemAdminController.first1, TestSystemAdminController.last1)
         # login as an admin, find this new user and set the desired access level 
-        adminPrivsRes = login_and_set_user_auth_level(self, TestSurveyController.adminEmail, TestSurveyController.adminPass, TestSurveyController.adminController, TestSurveyController.adminAction, TestSurveyController.first1, TestSurveyController.last1, TestSurveyController.user1AccessLevel)
+        adminPrivsRes = login_and_set_user_auth_level(self, TestSystemAdminController.adminEmail, TestSystemAdminController.adminPass, TestSystemAdminController.adminController, TestSystemAdminController.adminAction, TestSystemAdminController.first1, TestSystemAdminController.last1, TestSystemAdminController.user1AccessLevel)
         # logout
         logout(self)
         # login as this new user
-        login_user(self, TestSurveyController.user1, TestSurveyController.pass1)
+        login_user(self, TestSystemAdminController.user1, TestSystemAdminController.pass1)
         # try and view the system admin page as a new admin
         response = self.app.get(
             url=url(controller='systemAdmin', action='index'),
@@ -66,15 +65,13 @@ class TestSurveyController(TestController):
 
     def test_view_facilitator(self):
         # create a user
-        create_and_activate_user(self, TestSurveyController.user2, TestSurveyController.pass2, TestSurveyController.zip2, TestSurveyController.member2,TestSurveyController.first2, TestSurveyController.last2)
+        create_and_activate_user(self, TestSystemAdminController.user2, TestSystemAdminController.pass2, TestSystemAdminController.zip2, TestSystemAdminController.member2,TestSystemAdminController.first2, TestSystemAdminController.last2)
         # login as an admin, find this new user and set the desired access level 
-        adminPrivsRes = login_and_set_user_auth_level(self, TestSurveyController.adminEmail, TestSurveyController.adminPass, TestSurveyController.adminController, TestSurveyController.adminAction, TestSurveyController.first2, TestSurveyController.last2, TestSurveyController.user2AccessLevel)
+        adminPrivsRes = login_and_set_user_auth_level(self, TestSystemAdminController.adminEmail, TestSystemAdminController.adminPass, TestSystemAdminController.adminController, TestSystemAdminController.adminAction, TestSystemAdminController.first2, TestSystemAdminController.last2, TestSystemAdminController.user2AccessLevel)
         # logout
         logout(self)
         # login as this new user
-        login_user(self, TestSurveyController.user2, TestSurveyController.pass2)
-        # visit a page to fill session['return_to'] 
-        initSession = self.app.get(url=url(controller='actionlist', action='index', id='sitemapIssues'))
+        login_user(self, TestSystemAdminController.user2, TestSystemAdminController.pass2)
         # try and view the system admin page as a new admin, expect a redirect
         response = self.app.get(
            url=url(controller='systemAdmin', action='index'),
@@ -84,11 +81,19 @@ class TestSurveyController(TestController):
 
     def test_view_user(self):
         # create a user
-        create_and_activate_user(self, TestSurveyController.user3, TestSurveyController.pass3, TestSurveyController.zip3, TestSurveyController.member3,TestSurveyController.first3, TestSurveyController.last3)
+        create_and_activate_user(self, TestSystemAdminController.user3, TestSystemAdminController.pass3, TestSystemAdminController.zip3, TestSystemAdminController.member3,TestSystemAdminController.first3, TestSystemAdminController.last3)
         # login as this new user
-        login_user(self, TestSurveyController.user3, TestSurveyController.pass3)
-        # visit a page to fill session['return_to'] 
-        initSession = self.app.get(url=url(controller='actionlist', action='index', id='sitemapIssues'))
+        login_user(self, TestSystemAdminController.user3, TestSystemAdminController.pass3)
+        # try and view the system admin page as a new admin, expect a redirect
+        response = self.app.get(
+           url=url(controller='systemAdmin', action='index'),
+           status=302
+        )
+        assert response.status_int == 302
+
+    def test_view_public(self):
+        # make sure no one is logged in
+        logout(self)
         # try and view the system admin page as a new admin, expect a redirect
         response = self.app.get(
            url=url(controller='systemAdmin', action='index'),
