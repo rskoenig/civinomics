@@ -46,7 +46,3 @@
    %>
    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
 </%def>
-
-<%def name="extraScripts2()">
-   ## Used for any additional scripts needed on child pages
-</%def>

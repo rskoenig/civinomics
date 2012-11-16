@@ -52,6 +52,7 @@
    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 	<script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    ${self.extraScripts()}
+   ${self.extraScripts2()}
    </body>
 </html>
 
@@ -61,6 +62,11 @@
 </%def>
 
 <%def name="extraScripts()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
+
+<%def name="extraScripts2()">
    ## do nothing by default.  Overwritten if the function is defined
    ## in a child template
 </%def>
