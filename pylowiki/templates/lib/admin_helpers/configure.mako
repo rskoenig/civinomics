@@ -1,5 +1,5 @@
 <%!
-    from pylowiki.lib.db.geoInfo import getGeoTitles
+    from pylowiki.lib.db.geoInfo import getGeoTitles, getWScopesByWorkshopID
     from pylowiki.lib.db.user import getUserByEmail
 %>
 
@@ -70,7 +70,7 @@
        <strong>Your Workshop is Ready to Publish</strong>
         <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
        <br />
-       <button type="submit" class="btn btn-warning">Publish Workshop</button> &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Publish Workshop
+       <button type="submit" class="btn btn-warning" name="startWorkshop" value="Start" >Publish Workshop</button> &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Publish Workshop
        </form>
     % endif
 
@@ -245,12 +245,10 @@
             privateChecked = 'checked'
     %>
 
-    % if wstarted == 0 and c.account['type'] != 'trial':
-        % if c.w['public_private'] == 'public':
-            ${public()}
-        % elif c.w['public_private'] == 'private':
-            ${private()}
-        % endif
+    % if c.account['type'] != 'trial' and c.w['public_private'] == 'public':
+        ${public()}
+    % elif c.w['public_private'] == 'private':
+        ${private()}
     % elif wstarted == 0 and c.account['type'] == 'trial':
         <strong>Workshop Type:</strong><br />
         <input type="radio" name="publicPrivate" value="public" ${publicChecked} /> Public<br />
@@ -294,10 +292,7 @@
 </%def>
 
 <%def name="public()">
-    <h3>Paricipants: Public</h3>
-    <p>This establishes the geographic area, or <em>public sphere</em>, in which people need to reside to participate in this workshop.</p>
-    <p>The public sphere for this workshop can be defined either as a single jurisdiction with a central "home" postal, or as a set of multiple postal codes.</p>
-    Choose which method of public sphere to use for this workshop, Single Jurisdiction or Multiple Postal Codes, then fill out the information in the appropriate form below and save it.
+    <h3>Participants: Public</h3>
     <% 
         if c.w['scopeMethod'] == 'publicScope':
             sActive = "active"
@@ -306,7 +301,12 @@
             sActive = "inactive"
             mActive = "active"
     %>
-    <div class="tabbable">
+    % if c.w['startTime'] == '0000-00-00':
+    <p>This establishes the geographic area, or <em>public sphere</em>, in which people need to reside to participate in this workshop.</p>
+    <p>The public sphere for this workshop can be defined either as a single jurisdiction with a central "home" postal, or as a set of multiple postal codes.</p>
+    Choose which method of public sphere to use for this workshop, Single Jurisdiction or Multiple Postal Codes, then fill out the information in the appropriate form below and save it.
+
+        <div class="tabbable">
         <ul class="nav nav-tabs">
         <li class="${sActive}">
             <a href="#tab11" data-toggle="tab">Single Jurisdiction</a>
@@ -381,7 +381,12 @@
                 </form>
             </div><!-- tab-pane tab12 configure -->
         </div><!-- tab-content configure -->
-    </div><!-- tabbable configure -->
+        </div><!-- tabbable configure -->
+    % else:
+        This workshop is visible to the public.<br /> 
+        Civinomics members residing within the public sphere of the <strong>${c.w['publicScopeTitle']}</strong> may participate in this workshop.<br />
+        
+    % endif
     
 
 </%def>
@@ -403,26 +408,27 @@
                         emails.append(a)
     %>
     <h3>Associates</h3>
-    <form name="associates" id="associates" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureAssociatesWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <strong>Designate up to 10 private associates to participate in this workhop</strong><br /><br />
-    <ul class="unstyled">
-    % for user in associates:
-        <li>        
-        <button type="submit" class="btn btn-danger" name="deleteAssociate" value="${user['email']}">Delete Associate</button> <input type=checkbox name="confirmDelete|${user['email']}"> confirm   &nbsp; &nbsp; &nbsp;
-        <a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a> </li>
-    % endfor
-    % for email in emails:
-        <li>
-        <button type="submit" class="btn btn-danger" name="deleteAssociate" value="${email}">Delete Associate</button> <input type=checkbox name="confirmDelete|${email}"> confirm &nbsp; &nbsp; &nbsp;
-        ${email} </li>
-    % endfor
-    </ul>
+    <form name="associates" id="associates" class="form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureAssociatesWorkshopHandler" enctype="multipart/form-data" method="post" >
+    You can designate up to 10 private associates to participate in this workhop</strong><br /><br />
     % if len(all) < 10:
         <br /><br />
-        Add a new associate to this workshop:<br />
-        Email Address: <input type="text" name = "newAssociate" size="50" maxlength="140""/>
-        <br /><br />
+        <strong>Add a new associate:</strong><br /><br />
+        Email Address: <input type="text" name = "newAssociate" size="50" maxlength="140""/> &nbsp; &nbsp;
         <button type="submit" class="btn btn-warning" name="addAssociate">Add Associate</button>
+    % endif
+    % if len(associates) > 0 or len(emails) > 0:
+        <ul class="unstyled">
+        % for user in associates:
+            <li>        
+            <a href="/profile/${user['urlCode']}/${user['url']}">${user['name']}</a> &nbsp; &nbsp; <button type="submit" class="btn btn-danger" name="deleteAssociate" value="${user['email']}">Delete Associate</button> <input type=checkbox name="confirmDelete|${user['email']}"> confirm
+            </li>
+        % endfor
+        % for email in emails:
+            <li>
+            <button type="submit" class="btn btn-danger" name="deleteAssociate" value="${email}">Delete Associate</button> <input type=checkbox name="confirmDelete|${email}"> confirm &nbsp; &nbsp; &nbsp;
+            ${email} </li>
+        % endfor
+        </ul>
     % endif
     </form>
 </%def>

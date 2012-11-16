@@ -120,6 +120,12 @@ def getUserScopes(searchScope, scopeLevel):
     except sa.orm.exc.NoResultFound:
         return False
 
+def getWScopesByWorkshopID(workshopID):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'wscope').filter(Thing.data.any(wc('workshopID', workshopID))).all()
+    except sa.orm.exc.NoResultFound:
+        return False
+        
 def getWorkshopScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 3, state = 5, county = 7, city = 9, zip = 10

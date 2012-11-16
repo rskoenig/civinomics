@@ -595,8 +595,6 @@ class WorkshopController(BaseController):
         else:
             return(redirect("/"))
 
-
-
         slideshow = getSlideshow(c.w['mainSlideshow_id'])
         c.slideshow = getAllSlides(slideshow.id)
 
