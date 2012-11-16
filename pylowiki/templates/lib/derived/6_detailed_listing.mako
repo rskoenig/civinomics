@@ -16,13 +16,17 @@
       % for item in renderList:
          <% author = getUserByID(item.owner) %>
          <li>
-            <div class="row-fluid">
-               <div class="span1">
+            <div class="row-fluid list-item">
+               <div class="span1 voteBlock">
                   ${lib_6.upDownVote(item)}
                </div>
                <div class="span2">
                   ${lib_6.userImage(author, className = 'avatar')}
                </div> <!--/.span2-->
+               <div class="span9 list-item-text">
+                  <% itemTitle = '<h5><a %s>%s</a></h5>' %(lib_6.discussionLink(item, c.w, embed=True), item['title']) %>
+                  ${itemTitle | n}
+               </div><!--/.span9-->
             </div><!--/.row-fluid-->
          </li>
       % endfor
