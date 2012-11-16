@@ -855,9 +855,10 @@ class WorkshopController(BaseController):
             items_per_page = 15, item_count = c.count
         )
         c.listingType = 'resources'
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-        c.isScoped = isScoped(c.authuser, c.w)
-        c.isAdmin = isAdmin(c.authuser.id)
+        if 'user' in session:
+           c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+           c.isScoped = isScoped(c.authuser, c.w)
+           c.isAdmin = isAdmin(c.authuser.id)
         return render('/derived/6_detailed_listing.bootstrap')
         #return render('/derived/workshop_resources.bootstrap')
 
