@@ -28,15 +28,17 @@
 
 <%def name="createNew(thing)">
    <%
-      if c.conf['read_only.value'] == 'true' or c.conf['read_only.value'] == 'True':
+      if isReadOnly():
          readOnlyMessage(thing)
          return False
+
+      if c.isScoped or c.isFacilitator or c.isAdmin:
+         if thing == 'discussion':
+            printStr = '<a href="/workshop/%s/%s/addDiscussion" title="Click to add a general discussion topic to this workshop" class="pull-right">Add Discussion Topic</a>' %(c.w['urlCode'], c.w['url'])
+         elif thing == 'resources':
+            printStr = '<a href="/newResource/%s/%s" title="Click to add a resource to this workshop" class="pull-right">Add Resource</a>' %(c.w['urlCode'], c.w['url'])
    %>
-   % if c.isScoped or c.isFacilitator or c.isAdmin:
-      % if thing == 'discussion':
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop" class="pull-right">Add Discussion Topic</a>
-      % endif
-   % endif
+   ${printStr | n}
 </%def>
 
 <%def name="readOnlyMessage(thing)">
