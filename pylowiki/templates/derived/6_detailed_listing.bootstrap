@@ -24,7 +24,12 @@
    </div><!--/.row-fluid-->
    <div class="row-fluid">
       <div class="span12">
-         ${helpers.showListing('discussion')}
+         <div class="section-wrapper">
+            <div class="browse">
+               <h3 class="section-header"> Discussions </h3>
+               ${helpers.showListing('discussion')}
+            </div><!--/.browse-->
+         </div><!--/.section-wrapper-->
       </div><!--/.span12-->
    </div><!--/.row-fluid-->
 </%def>

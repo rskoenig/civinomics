@@ -2,6 +2,30 @@
    from pylowiki.lib.db.user import getUserByID
 %>
 
+<%def name="upDownVote(thing)">
+   <% rating = int(thing['ups']) - int(thing['downs']) %>
+   % if 'user' in session and c.isScoped and not self.isReadOnly():
+      <a href="/rate${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="vote upVote">
+         <i class="icon-chevron-up"></i>
+      </a>
+         <div class="centered">${rating}</div>
+      <a href="/rate${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="vote downVote">
+         <i class="icon-chevron-down"></i>
+      </a>
+   % else:
+      <div> ${rating} </div>
+   % endif
+</%def>
+
+<%def name="isReadOnly()">
+   <%
+      if (c.conf['read_only.value'] == 'true') or (c.conf['read_only.value'] == 'True'):
+         return True
+      else:
+         return False
+   %>
+</%def>
+
 <%def name="createNew(thing)">
    <%
       if c.conf['read_only.value'] == 'true' or c.conf['read_only.value'] == 'True':
@@ -10,7 +34,7 @@
    %>
    % if c.isScoped or c.isFacilitator or c.isAdmin:
       % if thing == 'discussion':
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop">Add Discussion Topic</a>
+         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/addDiscussion" title="Click to add a general discussion topic to this workshop" class="pull-right">Add Discussion Topic</a>
       % endif
    % endif
 </%def>

@@ -171,6 +171,10 @@ img.watch{
    width: 100%;
 }
 
+.vote{
+   padding-left:22px;
+}
+
 .btn-group.four-up a.btn {
 width: 25%;
 padding-left:0px;

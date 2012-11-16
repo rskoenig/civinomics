@@ -17,6 +17,9 @@
          <% author = getUserByID(item.owner) %>
          <li>
             <div class="row-fluid">
+               <div class="span1">
+                  ${lib_6.upDownVote(item)}
+               </div>
                <div class="span2">
                   ${lib_6.userImage(author, className = 'avatar')}
                </div> <!--/.span2-->
