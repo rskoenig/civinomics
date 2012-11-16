@@ -854,8 +854,9 @@ class WorkshopController(BaseController):
             c.resources, page=int(request.params.get('page', 1)),
             items_per_page = 15, item_count = c.count
         )
-
-        return render('/derived/workshop_resources.bootstrap')
+        c.listingType = 'resources'
+        return render('/derived/6_detailed_listing.bootstrap')
+        #return render('/derived/workshop_resources.bootstrap')
 
     def inactiveSuggestions(self, id1, id2):
         code = id1

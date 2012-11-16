@@ -7,27 +7,35 @@
 
 <% 
    if c.listingType == 'discussion':
-      self.discussion()
+      itemList = c.discussions
+   elif c.listingType == 'resources':
+      itemList = c.resources
+   self.showListing(c.listingType, itemList)
 %>
 
-<%def name="discussion()">
+<%def name="showListing(listingType, itemList)">
+   <%
+      if listingType == 'discussion':
+         pluralType = 'topics'
+      elif listingType == 'resources':
+         pluralType = 'resources'
+   %>
    <div class="row-fluid">
       <div class="span12">
-         % if (c.discussions != '') and (len(c.discussions) != len(c.paginator)):
-            <h3>
-               Showing ${len(c.paginator)} of ${len(c.discussions)} topics | Page ${ c.paginator.pager('~3~')}
+         % if (itemList != '') and (len(itemList) != len(c.paginator)):
+            <h3 class="pull-left">
+               Showing ${len(c.paginator)} of ${len(itemList)} ${pluralType} | Page ${ c.paginator.pager('~3~')}
             </h3>
-         % else:
-            ${lib_6.createNew('discussion')}
          % endif
+         ${lib_6.createNew(listingType)}
       </div><!--/.span12-->
    </div><!--/.row-fluid-->
    <div class="row-fluid">
       <div class="span12">
          <div class="section-wrapper">
             <div class="browse">
-               <h3 class="section-header"> Discussions </h3>
-               ${helpers.showListing('discussion')}
+               <h3 class="section-header"> ${pluralType.title()} </h3>
+               ${helpers.showListing(listingType)}
             </div><!--/.browse-->
          </div><!--/.section-wrapper-->
       </div><!--/.span12-->
