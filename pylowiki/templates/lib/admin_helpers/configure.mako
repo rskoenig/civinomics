@@ -260,8 +260,9 @@
 </%def>
 
 <%def name="intro()">
+    Use these tools to configure your workshop before publishing.<br />
     % if c.w['startTime'] == '0000-00-00':
-       Complete the checklist below.<br />
+       <br />Complete the checklist below.<br />
        Required information marked with * <br />
     % endif
 </%def>

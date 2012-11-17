@@ -10,7 +10,6 @@
 </%def>
 
 <%def name="admin_show()">
-        <br />
 	<div class="left well">
 	<form name="admin_issue" id="admin_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
     <strong>Message to Participants:</strong>
@@ -48,7 +47,6 @@
 
 <%def name="admin_event_log()">
     <% wEvents = getParentEvents(c.w) %>
-    <br /><br />
     <table class="table table-bordered">
     <thead>
     <tr><th><i class="icon-bookmark"></i>Workshop Events</th></tr>
@@ -66,7 +64,6 @@
 
 
 <%def name="admin_facilitators()">
-    <br /><br />
     <table class="table table-bordered">
     <thead>
     <tr><th><i class="icon-user"></i>Current Facilitators</th></tr>
@@ -120,7 +117,6 @@
 
 <%def name="admin_info()">
     <% wEvents = getParentEvents(c.w) %>
-    <br /><br />
     <table class="table table-bordered">
     <thead>
     <tr><th><i class="icon-bookmark"></i>Workshop Events</th></tr>
@@ -187,8 +183,6 @@
 </%def>
 
 <%def name="admin_flagged()">
-	<br />
-
     <table class="table table-bordered">
     <thead>
     <tr><th><i class="icon-flag"></i>Flagged Background Comments</th</tr>
@@ -369,7 +363,6 @@
 </%def>
 
 <%def name="admin_disabled()">
-    <br /><br />
     <table class="table table-bordered">
     <thead>
     <tr><th><i class="icon-ban-circle"></i>Disabled Background Comments</tr></th>
@@ -576,7 +569,6 @@
 </%def>
 
 <%def name="admin_deleted()">
-    <br /><br />
     <table class="table table-bordered">
     <thead>
     <tr><th><i class="icon-ban-circle"></i>Deleted Background Comments</tr></th>

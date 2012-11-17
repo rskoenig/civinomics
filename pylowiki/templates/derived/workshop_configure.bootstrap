@@ -4,7 +4,6 @@
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
 
 <%
-    tab0active = ""
     tab1active = ""
     tab2active = ""
     tab3active = ""
