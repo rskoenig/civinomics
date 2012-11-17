@@ -10,6 +10,8 @@
       itemList = c.discussions
    elif c.listingType == 'resources':
       itemList = c.resources
+   elif c.listingType == 'ideas':
+      itemList = c.ideas
    self.showListing(c.listingType, itemList)
 %>
 
@@ -19,6 +21,8 @@
          pluralType = 'topics'
       elif listingType == 'resources':
          pluralType = 'resources'
+      elif listingType == 'ideas':
+         pluralType = 'ideas'
    %>
    <div class="row-fluid">
       <div class="span12">

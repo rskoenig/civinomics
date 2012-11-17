@@ -11,6 +11,10 @@
       else:
          if thing == 'discussion':
             renderList = c.discussions
+         elif thing == 'resource':
+            renderList = c.resources
+         elif thing == 'ideas':
+            renderList = c.ideas
    %>
    <ul class="unstyled">
       % for item in renderList:

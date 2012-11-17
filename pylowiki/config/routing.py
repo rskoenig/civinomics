@@ -233,6 +233,9 @@ def make_map():
     # Resource flagging
     map.connect('/flagResource/{id1}/{id2}', controller = 'resource', action = 'flagResource', id1 = '{id1}', id2 = '{id2}')
 
+    # Ideas
+    map.connect('/workshop/{id1}/{id2}/ideas', controller = 'idea', action = 'listing', id1 = '{id1}', id2 = '{id2}')
+
     # Suggestions
     map.connect('/addSuggestion/{id1}/{id2}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/addSuggestion/{id1}/{id2}/', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
