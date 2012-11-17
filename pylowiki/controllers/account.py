@@ -31,6 +31,10 @@ class AccountController(BaseController):
     def accountAdmin(self, id1):
         code = id1
         c.account = getAccountByCode(code)
+        if 'confTab' in session:
+            c.tab = session['confTab']
+            session.pop('confTab')
+            session.save()
         c.events = getParentEvents(c.account)
         adminList = c.account['admins'].split('|')
         c.admins = []
@@ -101,6 +105,8 @@ class AccountController(BaseController):
         errorMsg = ''
 
         if 'pictureFile' in request.POST:
+            session['confTab'] = "tab2"
+            session.save()
             picture = request.POST['pictureFile']
             if picture == "":
                 picture = False
@@ -118,7 +124,10 @@ class AccountController(BaseController):
            change = 1
            changeMsg = changeMsg + "Logo updated. "
 
+
         if 'orgName' in request.params:
+            session['confTab'] = "tab2"
+            session.save()
             orgName = request.params['orgName']
             url = urlify(orgName)
             if orgName == '' or orgName == 'none':
@@ -135,7 +144,54 @@ class AccountController(BaseController):
                     c.account['orgName'] = orgName
                     c.account['url'] = url
                     
+
+        if 'orgEmail' in request.params:
+            session['confTab'] = "tab2"
+            session.save()
+            orgEmail = request.params['orgEmail']
+            if orgEmail == '':
+                errorMsg = "Organization Email contact required. "
+                error = 1 
+            else:
+                if orgEmail != c.account['orgEmail']:
+                    change = 1
+                    changeMsg = changeMsg + "Organization contact email updated. "
+                    c.account['orgEmail'] = orgEmail
+
+        if 'orgLink' in request.params:
+            session['confTab'] = "tab2"
+            session.save()
+            orgLink = request.params['orgLink']
+            if orgLink != c.account['orgLink']:
+                change = 1
+                changeMsg = changeMsg + "Organization web site updated. "
+                c.account['orgLink'] = orgLink
+
+        if 'orgMessage' in request.params:
+            session['confTab'] = "tab2"
+            session.save()
+            orgMessage = request.params['orgMessage']
+            if orgMessage != c.account['orgMessage']:
+                change = 1
+                changeMsg = changeMsg + "Organization welcome message updated. "
+                c.account['orgMessage'] = orgMessage
+                
+        if 'adminEmail' in request.params:
+            session['confTab'] = "tab3"
+            session.save()
+            adminEmail = request.params['adminEmail']
+            if adminEmail and adminEmail != '' and adminEmail not in c.emails:
+                adminList = '|' + adminEmail + '|'
+                change = 1
+                changeMsg = changeMsg + "Admin email " + adminEmail + " added. "
+                for email in c.emails:
+                    adminList = adminList + '|' + email + '|'
+                    
+                c.account['admins'] = adminList
+                
         if 'deleteAdmin' in request.params:
+            session['confTab'] = "tab3"
+            session.save()
             deleteAdmin = request.params['deleteAdmin']
             adminList = ''
             if 'confirmAdmin|' + deleteAdmin in request.params:
@@ -150,44 +206,6 @@ class AccountController(BaseController):
             else:
                 error = 1
                 errorMsg = errorMsg + 'Please confirm delete of admin.'
-                
-                
-
-        if 'orgEmail' in request.params:
-            orgEmail = request.params['orgEmail']
-            if orgEmail == '':
-                errorMsg = "Organization Email contact required. "
-                error = 1 
-            else:
-                if orgEmail != c.account['orgEmail']:
-                    change = 1
-                    changeMsg = changeMsg + "Organization contact email updated. "
-                    c.account['orgEmail'] = orgEmail
-
-        if 'orgLink' in request.params:
-            orgLink = request.params['orgLink']
-            if orgLink != c.account['orgLink']:
-                change = 1
-                changeMsg = changeMsg + "Organization web site updated. "
-                c.account['orgLink'] = orgLink
-
-        if 'orgMessage' in request.params:
-            orgMessage = request.params['orgMessage']
-            if orgMessage != c.account['orgMessage']:
-                change = 1
-                changeMsg = changeMsg + "Organization welcome message updated. "
-                c.account['orgMessage'] = orgMessage
-                
-        if 'adminEmail' in request.params:
-            adminEmail = request.params['adminEmail']
-            if adminEmail and adminEmail != '' and adminEmail not in c.emails:
-                adminList = '|' + adminEmail + '|'
-                change = 1
-                changeMsg = changeMsg + "Admin email " + adminEmail + " added. "
-                for email in c.emails:
-                    adminList = adminList + '|' + email + '|'
-                    
-                c.account['admins'] = adminList
 
 
         if change:

@@ -81,12 +81,12 @@
     <td>
     <strong>Workshop Name:</strong>
     <br />
-    <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>
+    <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>  <span class="help-inline"><span class="label label-important">Required</span></span>
     <br />
     <br />
     <strong>Workshop Goals:</strong>
     <br />
-    <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>
+    <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>  <span class="help-inline"><span class="label label-important">Required</span></span>
     <br /><br />
     % if wstarted == 0 and c.account and c.account['type'] != 'trial':
         <%
@@ -142,7 +142,7 @@
     % if c.account['type'] != 'trial' and c.w['public_private'] == 'public':
 
         % if wstarted == 0: 
-            <strong>Workshop Tags:</strong>
+            <strong>Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
             <br />
             <% tags = c.w['publicTags'] %>
             <% workshopTags = tags.split(',') %>
@@ -209,7 +209,7 @@
             <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
             <br />
             <br />
-            <strong>Additional Workshop Tags:</strong>
+            <strong>Additional Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
             <br />
             Enter at least one, separate multiple tags with a comma (140 char. max.):<br />
             <input type="text" name = "memberTags" size="50" maxlength="140" value = "${c.w['memberTags']}"/>

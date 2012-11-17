@@ -5,56 +5,56 @@
     from pylowiki.lib.utils import urlify
 %>
 
-<%def name="accountAdmin()">
-    <br /><br />
+<%def name="accountSummary()">
     <% 
         workshops = getWorkshopsByAccount(c.account.id, 'all')
         numWorkshops = len(workshops) 
     %>
-    <table class="table table-bordered">
-    <tr><td>
-    <h3>Account Information</h3>
-    <br />
-    <strong>Account Type:</strong> ${c.account['type']}<br />
-    <strong>Account Workshops:</strong> ${c.account['numHost']}<br />
-    <strong>Account Participants:</strong> ${c.account['numParticipants']}<br /><br />
-    % if workshops:
-        <h3>Account Workshops</h3><br />
-        <ul class="unstyled">
-        % for w in workshops:
-           <li><a href="/workshop/${w['urlCode']}/${w['url']}">${w['title']}</a></li>
-        % endfor
-        </ul>
-    % endif
-    % if len(workshops) < int(c.account['numHost']) and c.account['type'] != 'trial':
-        <h3>Create a New Workshop</h3><br />
-        <form action="/newWorkshop/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
-            <div class="control-group">
-                <label for="workshopName" class="control-label">Workshop Name:</label>
-                <div class="controls">
-                   <input type="text" id="workshopName" name="workshopName">
-                   <span class="help-inline"><span class="label label-important">Required</span></span>
-                </div> <!-- /.controls -->
-            </div> <!-- /.control-group -->
-            <button class="btn btn-warning" type="submit" name=newWorkshop>Create Workshop</button>
-        </form>
-    % endif
-    % if c.events:
-        <h3>Account Event Log</h3><br />
-        % for event in c.events:
-            <strong>${event['title']}</strong> ${event['data']} ${event.date}<br />
-        % endfor
-    % endif
-    <form action="/accountUpgradeHandler/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
+    <div class="well">
+        <h3>Account Summary</h3>
+        <br />
+        <strong>Organization Name: </strong> ${c.account['orgName']}<br />
+        <strong>Account Type:</strong> ${c.account['type']}<br />
+        <strong>Account Workshops:</strong> ${c.account['numHost']}<br />
+        <strong>Account Participants:</strong> ${c.account['numParticipants']}<br /><br />
+
         % if c.account['type'] != 'premium':
+            <form action="/accountUpgradeHandler/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
             <button class="btn btn-warning" type="submit" name=doupgrade>Upgrade Your Account</button>
+            </form>
+            <br /><br />
         % endif
-    </form>
-    </td>
+
+        % if workshops:
+            <h3>Account Workshops</h3><br />
+            <ul class="unstyled">
+            % for w in workshops:
+               <li><a href="/workshop/${w['urlCode']}/${w['url']}">${w['title']}</a></li>
+            % endfor
+            </ul>
+        % endif
+        % if len(workshops) < int(c.account['numHost']) and c.account['type'] != 'trial':
+            <h3>Create a New Workshop</h3><br />
+            <form action="/newWorkshop/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
+                <div class="control-group">
+                    <label for="workshopName" class="control-label">Workshop Name:</label>
+                    <div class="controls">
+                        <input type="text" id="workshopName" name="workshopName">
+                        <button class="btn btn-warning" type="submit" name=newWorkshop>Create Workshop</button>
+                    </div> <!-- /.controls -->
+                </div> <!-- /.control-group -->
+
+            </form>
+        % endif
+    </div>
+</%def>
+
+<%def name="accountOrg()">
     % if c.account['type'] != 'trial':
-        <td>
+        <div class="well">
         <h3>Organization Information</h3>
         <br />
+        This information is displayed on your host landing page, with a listing and linking to all of the published workshops under your account.<br />
         <form action="/accountAdminHandler/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
             <div class="control-group">
                 <label for="orgName" class="control-label">Organization name:</label>
@@ -109,30 +109,41 @@
                 </div>
             </fieldset>
             </form>
-            </td>
         % endif
-        <td>
-        <h3>Account Administrators</h3><br />
+    </div><!-- well -->
+</%def>
+
+<%def name="accountAdmin()">
+
+    <div class="well">
+        <h3>Account Administration</h3><br />
+
+        <strong>Administrators</strong><br />
         <form action="/accountAdminHandler/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
 
-        <ul class="unstyled">
         <% alen = len(c.admins) %> 
         % if c.authuser in c.admins:
-            <br /><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a><br /> </li>
+            <div class="row">
+            <div class="span1"></div><!-- span1 -->
+            <div class="span3"><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a>  (You)</div><!-- span3 -->
+            </div><!-- row -->
         % endif
         % for admin in c.admins:
-            <li>
             % if alen > 1 and c.authuser['email'] != admin['email']:
-                <button type="submit" class="btn btn-danger" name="deleteAdmin" value="${admin['email']}">Delete Admin</button> <input type=checkbox name="confirmAdmin|${admin['email']}"> confirm   &nbsp; &nbsp; &nbsp;
-                <a href="/profile/${admin['urlCode']}/${admin['url']}">${admin['name']}</a> </li>
+                <div class="row">
+                <div class="span1"></div><!-- span1 -->
+                <div class="span3"><a href="/profile/${admin['urlCode']}/${admin['url']}">${admin['name']}</a></div><!-- span3 -->
+                <div class="span3"><button type="submit" class="btn btn-danger" name="deleteAdmin" value="${admin['email']}">Delete Admin</button> <input type=checkbox name="confirmAdmin|${admin['email']}"> confirm</div><!-- span3 -->
+                </div><!-- row -->
             % endif
             
         % endfor
         % for email in c.emails:
-            <li>
-            <button type="submit" class="btn btn-danger" name="deleteAdmin" value="${email}">Delete Admin</button> <input type=checkbox name="confirmAdmin|${email}"> confirm &nbsp; &nbsp; &nbsp;
-            
-            ${email} </li>
+            <div class="row">
+            <div class="span1"></div><!-- span1 -->
+            <div class="span3">${email}</div><!-- span3 -->
+            <div class="span3"><button type="submit" class="btn btn-danger" name="deleteAdmin" value="${email}">Delete Admin</button> <input type=checkbox name="confirmAdmin|${email}"></div><!-- span3 -->      
+            </div><!-- row -->
         % endfor
         </ul>
         % if c.account['type'] != 'trial':
@@ -146,9 +157,17 @@
             </div> <!-- /.control-group -->
         % endif
         </form>
-    </td></tr>
-    </table>
+
+        % if c.events:
+            <br /><br />
+            <strong>Account Event Log</strong><br />
+            % for event in c.events:
+                &nbsp; &nbsp; &nbsp; ${event['title']} ${event['data']} ${event.date}<br />
+            % endfor
+        % endif
+    </div><!-- well -->
 </%def>
+  
 
 <%def name="basicButton()">
     <strong>Civinomics Basic</strong><br>
