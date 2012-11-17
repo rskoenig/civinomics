@@ -37,6 +37,8 @@
             printStr = '<a href="/workshop/%s/%s/addDiscussion" title="Click to add a general discussion topic to this workshop" class="pull-right">Add Discussion Topic</a>' %(c.w['urlCode'], c.w['url'])
          elif thing == 'resources':
             printStr = '<a href="/newResource/%s/%s" title="Click to add a resource to this workshop" class="pull-right">Add Resource</a>' %(c.w['urlCode'], c.w['url'])
+         elif thing == 'ideas':
+            printStr = '<a href="/workshop/%s/%s/addIdea" title="Click to add an idea to this workshop" class="pull-right">Add Idea</a>' %(c.w['urlCode'], c.w['url'])
    %>
    ${printStr | n}
 </%def>
