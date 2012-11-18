@@ -37,10 +37,10 @@
         Use these tools and lists in the daily administration of your workshop after it has been published.
         <br /><br />
             <ul class="nav nav-pills nav-stacked">
-                <li class="${tab1active}"><a href="#tab1" data-toggle="tab">Facilitators</a></li>
-                <li class="${tab2active}"><a href="#tab2" data-toggle="tab">Flagged</a></li>
-                <li class="${tab3active}"><a href="#tab3" data-toggle="tab">Disabled</a></li>
-                <li class="${tab4active}"><a href="#tab4" data-toggle="tab">Deleted</a></li>
+                <li class="${tab1active}"><a href="#tab1" data-toggle="tab">Facilitator Tools</a></li>
+                <li class="${tab2active}"><a href="#tab2" data-toggle="tab">Flagged Items</a></li>
+                <li class="${tab3active}"><a href="#tab3" data-toggle="tab">Disabled Items</a></li>
+                <li class="${tab4active}"><a href="#tab4" data-toggle="tab">Deleted Items</a></li>
                 <li class="${tab5active}"><a href="#tab5" data-toggle="tab">Event Log</a></li>
             </ul>
         </div><!-- span3 -->
@@ -50,14 +50,8 @@
             % else:
                 <div class="tab-content">
                     <div class="tab-pane ${tab1active}" id="tab1">
-                            <div class="row-fluid">
-                                <div class="span4">
-                                    ${helpers.admin_show()}
-                                </div><!-- span4 -->
-                                <div class="span8">
-                                    ${helpers.admin_facilitators()}
-                                </div><!-- span8 -->
-                            </div><!-- row-fluid -->
+                        ${helpers.admin_show()}
+                        ${helpers.admin_facilitators()}
                     </div><!-- tab1 -->
                     <div class="tab-pane ${tab2active}" id="tab2">
                         ${helpers.admin_flagged()}

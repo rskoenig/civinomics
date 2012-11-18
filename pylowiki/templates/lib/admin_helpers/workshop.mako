@@ -11,11 +11,14 @@
 
 <%def name="admin_show()">
 	<div class="left well">
-	<form name="admin_issue" id="admin_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <h3>Facilitator Tools</h3>
+    <br />
+	<form name="admin_issue" id="admin_issue" class="form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
     <strong>Message to Participants:</strong>
     <br />
-    <textarea name="motd" rows="5" cols="50">${c.motd['data']}</textarea>
-    <br />
+    This is displayed on the workshop landing page. Use this to welcome members to the workshop or to make announcements.
+    <textarea name="motd" rows="2" cols="80">${c.motd['data']}</textarea>
+    &nbsp; &nbsp;
     <% 
       if c.motd['enabled'] == '1':
         pChecked = 'checked'
@@ -26,30 +29,30 @@
     %>
     <input type=radio name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type=radio name="enableMOTD" value="0" ${uChecked}> Unpublish Message
     <br /><br />
-    <br /><br />
     % if c.w['deleted'] == '1':
-       <strong>Enable Workshop</strong>
-       <% eAction = 'Enable' %>
+       <strong>Publish Workshop</strong><br />
+       This republishes the workshop, displaying it in lists of active workshops. It may be unpublished again later.<br />
+       <% eAction = 'Publish' %>
     % else:
-       <strong>Disable Workshop</strong>
-       <% eAction = 'Disable' %>
+       <strong>Unpublish Workshop</strong><br />
+       This unpublishes the workshop, removing it from lists of active workshops. It may be republished again later.<br />
+       <% eAction = 'Unpublish' %>
     % endif
-    <br />
-    Reason: <input type=text name=eventReason id=eventReason>
-    <br />
+    Reason: <input type=text name=eventReason id=eventReason> &nbsp; &nbsp;
     <input type=radio name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type=radio name="verifyEnableWorkshop" value="0"> Verify ${eAction}
     <br /><br />
-    <br /><br />
-    <button type="submit" class="btn btn-warning">Save Changes</button>
+    <button type="submit" class="btn btn-warning">Save All Changes</button>
     </form>
     </div>
 </%def>
 
 <%def name="admin_event_log()">
+    <h3>Event Log</h3>
+    A record of configuration and administrative changes to the workshop.<br />
     <% wEvents = getParentEvents(c.w) %>
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-bookmark"></i>Workshop Events</th></tr>
+    <tr><th>Workshop Events</th></tr>
     </thead>
     <tbody>
     % if wEvents:
@@ -66,7 +69,7 @@
 <%def name="admin_facilitators()">
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-user"></i>Current Facilitators</th></tr>
+    <tr><th>Current Facilitators</th></tr>
     </thead>
     <tbody>
     % for f in c.f:
@@ -93,9 +96,10 @@
     % endfor
     </tbody>
     </table>
+    <p>To invite an active member to co-facilitate this workshop, visit their profile page and look for the "Invite to co-facilitate" button!</p>
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-user"></i>Disabled Facilitators</th></tr>
+    <tr><th>Disabled Facilitators</th></tr>
     </thead>
     <tbody>
     % for f in c.df:
@@ -119,7 +123,7 @@
     <% wEvents = getParentEvents(c.w) %>
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-bookmark"></i>Workshop Events</th></tr>
+    <tr><th>Workshop Events</th></tr>
     </thead>
     <tbody>
     % if wEvents:
@@ -134,7 +138,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-user"></i>Current Facilitators</th></tr>
+    <tr><th>Current Facilitators</th></tr>
     </thead>
     <tbody>
     % for f in c.f:
@@ -163,7 +167,7 @@
     </table>
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-user"></i>Disabled Facilitators</th></tr>
+    <tr><th>Disabled Facilitators</th></tr>
     </thead>
     <tbody>
     % for f in c.df:
@@ -183,9 +187,11 @@
 </%def>
 
 <%def name="admin_flagged()">
+    <h3>Flagged Items</h3>
+    These are items in the workshop which have been flagged by members. Each flagged item needs to be examined by the facilitator and some action taken, even if it is only clearing the flags.<br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-flag"></i>Flagged Background Comments</th</tr>
+    <tr><th>Flagged Background Comments</th</tr>
     </thead>
     <tbody>
     <% cList = getPureFlaggedDiscussionComments(c.w['backgroundDiscussion_id']) %>
@@ -220,7 +226,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-flag"></i>Flagged Resources and Comments</th</tr>
+    <tr><th>Flagged Resources and Comments</th</tr>
     </thead>
     <tbody>
     % if c.r:
@@ -269,7 +275,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-flag"></i>Flagged Suggestions and Comments:</td><tr>
+    <tr><th>Flagged Suggestions and Comments:</td><tr>
     </thead>
     <tbody>
     % for s in c.s:
@@ -316,7 +322,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-flag"></i>Flagged Discussions and Comments:</td><tr>
+    <tr><th>Flagged Discussions and Comments:</td><tr>
     </thead>
     <tbody>
     % for d in c.d:
@@ -363,9 +369,13 @@
 </%def>
 
 <%def name="admin_disabled()">
+    <h3>Disabled Items</h3>
+    These are items in the workshop which have been disabled by a facilitator or admin. These items are filtered to the bottom of lists 
+    or not displayed by default. Items are often disabled for being off-topic, duplicates of existing items, or have been flagged as 
+    offensive or otherwise violating the terms of service.
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-ban-circle"></i>Disabled Background Comments</tr></th>
+    <tr><th>Disabled Background Comments</tr></th>
     </thead>
     <tbody>
     <% disabledComments = getDisabledComments(c.w['backgroundDiscussion_id']) %>
@@ -403,7 +413,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-ban-circle"></i>Disabled Resources and Comments</tr></th>
+    <tr><th>Disabled Resources and Comments</tr></th>
     </thead>
     <tbody>
     % if c.disabledRes:
@@ -458,7 +468,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-ban-circle"></i>Disabled Suggestions and Comments:</th></tr>
+    <tr><th>Disabled Suggestions and Comments:</th></tr>
     </thead>
     <tbody>
     % if c.disabledSug:
@@ -513,7 +523,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-ban-circle"></i>Disabled Discussions and Comments:</th></tr>
+    <tr><th>Disabled Discussions and Comments:</th></tr>
     </thead>
     <tbody>
     % if c.disabledDisc:
@@ -569,9 +579,13 @@
 </%def>
 
 <%def name="admin_deleted()">
+    <h3>Deleted Items</h3>
+    These are items in the workshop which have been deleted by a facilitator or admin. These items are filtered to the bottom of lists 
+    and their content not displayed to anyone, including members and admins. Items are deleted when they are in violation of the law such 
+    as linking to pirated content or child porn or if they are serious breech of the terms of service such as displaying or linking to porn.
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-ban-circle"></i>Deleted Background Comments</tr></th>
+    <tr><th>Deleted Background Comments</tr></th>
     </thead>
     <tbody>
     <% deletedComments = getDeletedComments(c.w['backgroundDiscussion_id']) %>
@@ -609,7 +623,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-trash"></i>Deleted Resources and Comments</th></tr>
+    <tr><th>Deleted Resources and Comments</th></tr>
     </thead>
     <tbody>
     % if c.deletedRes:
@@ -665,7 +679,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-trash"></i>Deleted Suggestions and Comments</th></tr>
+    <tr><th>Deleted Suggestions and Comments</th></tr>
     </thead>
     <tbody>
     % if c.deletedSug:
@@ -720,7 +734,7 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-trash"></i>Deleted Discussions and Comments</th></tr>
+    <tr><th>Deleted Discussions and Comments</th></tr>
     </thead>
     <tbody>
     % if c.deletedDisc:

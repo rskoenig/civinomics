@@ -388,8 +388,6 @@
         Civinomics members residing within the public sphere of the <strong>${c.w['publicScopeTitle']}</strong> may participate in this workshop.<br />
         
     % endif
-    
-
 </%def>
 
 <%def name="associates()">
@@ -408,6 +406,7 @@
                     else:
                         emails.append(a)
     %>
+    <div class="well">
     <h3>Associates</h3>
     <form name="associates" id="associates" class="form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureAssociatesWorkshopHandler" enctype="multipart/form-data" method="post" >
     You can designate up to 10 private associates to participate in this workhop</strong><br /><br />
@@ -432,4 +431,5 @@
         </ul>
     % endif
     </form>
+    </div><!-- well -->
 </%def>
