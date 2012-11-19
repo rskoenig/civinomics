@@ -5,6 +5,12 @@ from urlparse import urlparse
 
 from pylowiki.tests.helpers.registration import login_user
 
+def get_adminAction():
+    return 'index'
+
+def get_adminController():
+    return 'systemAdmin'
+
 def find_active_users():
     return 'Show Active Users'
 
@@ -17,7 +23,7 @@ def find_user_admin_button(firstName, lastName):
 def find_access_privelages_form():
     return 'userPrivs'
 
-def login_and_set_user_auth_level(self, adminEmail, adminPass, adminController, adminAction, firstName, lastName, authLevel):
+def login_and_set_user_auth_level(self, adminEmail, adminPass, firstName, lastName, authLevel):
 
     displayActiveUsers = find_active_users()
     usersName = make_user_full_name(firstName, lastName)
@@ -37,7 +43,7 @@ def login_and_set_user_auth_level(self, adminEmail, adminPass, adminController, 
     # login as an admin
     login = login_user(self, adminEmail, adminPass)
     # go to the desired admin page (workshops here)
-    adminPage = self.app.get(url=url_for(controller=adminController, action=adminAction))
+    adminPage = self.app.get(url=url_for(controller=get_adminController(), action=get_adminAction()))
     # click the tab for displaying active users
     listActiveUsers = adminPage.click(description=displayActiveUsers, verbose=True)
     # click the name of the new user
@@ -55,7 +61,7 @@ def login_and_set_user_auth_level(self, adminEmail, adminPass, adminController, 
 
     return adminPrivsRes
 
-def login_and_view_user_admin_page(self, adminEmail, adminPass, adminController, adminAction, firstName, lastName):
+def login_and_view_user_admin_page(self, adminEmail, adminPass, firstName, lastName):
     
     displayActiveUsers = find_active_users()
     usersName = make_user_full_name(firstName, lastName)
@@ -64,7 +70,7 @@ def login_and_view_user_admin_page(self, adminEmail, adminPass, adminController,
     # login as an admin
     login = login_user(self, adminEmail, adminPass)
     # go to the desired admin page (workshops here)
-    adminPage = self.app.get(url=url_for(controller=adminController, action=adminAction))
+    adminPage = self.app.get(url=url_for(controller=get_adminController(), action=get_adminAction()))
     # click the tab for displaying active users
     listActiveUsers = adminPage.click(description=displayActiveUsers, verbose=True)
     # click the name of the new user

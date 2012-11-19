@@ -40,20 +40,36 @@ class TestSystemAdminController(TestController):
 
     adminEmail = 'username@civinomics.com'
     adminPass = 'password'
-    adminController = 'systemAdmin'
-    adminAction = 'index'
-    displayActiveUsers = 'Show Active Users'
     
 
     def test_view_admin(self):
         # create a user
-        create_and_activate_user(self, TestSystemAdminController.user1, TestSystemAdminController.pass1, TestSystemAdminController.zip1, TestSystemAdminController.member1,TestSystemAdminController.first1, TestSystemAdminController.last1)
+        create_and_activate_user(
+            self, 
+            TestSystemAdminController.user1, 
+            TestSystemAdminController.pass1, 
+            TestSystemAdminController.zip1, 
+            TestSystemAdminController.member1,
+            TestSystemAdminController.first1, 
+            TestSystemAdminController.last1
+        )
         # login as an admin, find this new user and set the desired access level 
-        adminPrivsRes = login_and_set_user_auth_level(self, TestSystemAdminController.adminEmail, TestSystemAdminController.adminPass, TestSystemAdminController.adminController, TestSystemAdminController.adminAction, TestSystemAdminController.first1, TestSystemAdminController.last1, TestSystemAdminController.user1AccessLevel)
+        adminPrivsRes = login_and_set_user_auth_level(
+            self, 
+            TestSystemAdminController.adminEmail, 
+            TestSystemAdminController.adminPass, 
+            TestSystemAdminController.first1, 
+            TestSystemAdminController.last1, 
+            TestSystemAdminController.user1AccessLevel
+        )
         # logout
         logout(self)
         # login as this new user
-        login_user(self, TestSystemAdminController.user1, TestSystemAdminController.pass1)
+        login_user(
+            self, 
+            TestSystemAdminController.user1, 
+            TestSystemAdminController.pass1
+        )
         # try and view the system admin page as a new admin
         response = self.app.get(
             url=url(controller='systemAdmin', action='index'),
@@ -65,13 +81,32 @@ class TestSystemAdminController(TestController):
 
     def test_view_facilitator(self):
         # create a user
-        create_and_activate_user(self, TestSystemAdminController.user2, TestSystemAdminController.pass2, TestSystemAdminController.zip2, TestSystemAdminController.member2,TestSystemAdminController.first2, TestSystemAdminController.last2)
+        create_and_activate_user(
+            self, 
+            TestSystemAdminController.user2, 
+            TestSystemAdminController.pass2, 
+            TestSystemAdminController.zip2, 
+            TestSystemAdminController.member2,
+            TestSystemAdminController.first2, 
+            TestSystemAdminController.last2
+        )
         # login as an admin, find this new user and set the desired access level 
-        adminPrivsRes = login_and_set_user_auth_level(self, TestSystemAdminController.adminEmail, TestSystemAdminController.adminPass, TestSystemAdminController.adminController, TestSystemAdminController.adminAction, TestSystemAdminController.first2, TestSystemAdminController.last2, TestSystemAdminController.user2AccessLevel)
+        adminPrivsRes = login_and_set_user_auth_level(
+            self, 
+            TestSystemAdminController.adminEmail, 
+            TestSystemAdminController.adminPass, 
+            TestSystemAdminController.first2, 
+            TestSystemAdminController.last2, 
+            TestSystemAdminController.user2AccessLevel
+        )
         # logout
         logout(self)
         # login as this new user
-        login_user(self, TestSystemAdminController.user2, TestSystemAdminController.pass2)
+        login_user(
+            self, 
+            TestSystemAdminController.user2, 
+            TestSystemAdminController.pass2
+        )
         # try and view the system admin page as a new admin, expect a redirect
         response = self.app.get(
            url=url(controller='systemAdmin', action='index'),
@@ -81,9 +116,21 @@ class TestSystemAdminController(TestController):
 
     def test_view_user(self):
         # create a user
-        create_and_activate_user(self, TestSystemAdminController.user3, TestSystemAdminController.pass3, TestSystemAdminController.zip3, TestSystemAdminController.member3,TestSystemAdminController.first3, TestSystemAdminController.last3)
+        create_and_activate_user(
+            self, 
+            TestSystemAdminController.user3, 
+            TestSystemAdminController.pass3, 
+            TestSystemAdminController.zip3, 
+            TestSystemAdminController.member3,
+            TestSystemAdminController.first3, 
+            TestSystemAdminController.last3
+        )
         # login as this new user
-        login_user(self, TestSystemAdminController.user3, TestSystemAdminController.pass3)
+        login_user(
+            self, 
+            TestSystemAdminController.user3, 
+            TestSystemAdminController.pass3
+        )
         # try and view the system admin page as a new admin, expect a redirect
         response = self.app.get(
            url=url(controller='systemAdmin', action='index'),
