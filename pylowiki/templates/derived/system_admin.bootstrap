@@ -1,0 +1,39 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<div class="container-fluid">
+    <div class="well">
+        <h3>System Administration</h3>     
+        <br /><br />
+
+        <strong>Object Lists</strong>
+        <br />
+        <ul class="unstyled">
+        <li><a href="/searchWorkshops/startTime/0000-00-00/">Show Unpublished Workshops</a><li>
+        <li><a href="/searchWorkshops/deleted/1/">Show Disabled Workshops</a></li>
+        <li><a href="/searchUsers/disabled/0/">Show Active Users</a></li>
+        <li><a href="/searchUsers/disabled/1/">Show Disabled Users</a></li>
+        </ul>
+        <br />
+        <form name="system_admin" class="form-inline" id="system_admin" class="left" action = "/systemAdmin/handler" enctype="multipart/form-data" method="post" >
+        Message to Members:
+        <br />
+        <textarea name="motd" rows="5" cols="50">foo</textarea> &nbsp; &nbsp;
+        <input type=radio name="enable" value="1" > Publish&nbsp;&nbsp;&nbsp;<input type=radio name="enable" value="0" > Unpublish
+        <br /><br />
+        <button type="submit" class="btn btn-warning">Save Changes</button>
+        </form>
+    </div><!-- well -->
+</div><!-- container-fluid -->
+
+            
+<%def name = 'extraHTML()'>
+
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+
+<%def name = 'extraScripts()'>
+
+</%def>
