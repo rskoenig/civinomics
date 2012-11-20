@@ -76,9 +76,9 @@ class ProfileController(BaseController):
               wID = f['workshopID']
               myW = getWorkshopByID(wID)
               if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1' or myW['public_private'] == 'private':
-                 # show to the workshop owner, show to the facilitator owner
+                 # show to the workshop owner, show to the facilitator owner, show to admin
                  if 'user' in session: 
-                     if c.authuser.id == f.owner:
+                     if c.authuser.id == f.owner or isAdmin(c.authuser.id):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)

@@ -829,7 +829,7 @@ class WorkshopController(BaseController):
             
         if c.w['public_private'] == 'trial' or c.w['public_private'] == 'private':
             if 'user' in session:
-                if not c.isFacilitator and not c.isScoped:
+                if not c.isFacilitator and not c.isScoped and not c.isAdmin:
                     return render('/derived/404.bootstrap')            
             else:
                 return render('/derived/404.bootstrap')
