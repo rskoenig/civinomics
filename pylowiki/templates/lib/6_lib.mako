@@ -49,6 +49,8 @@
 
 <%def name="userLink(user, **kwargs)">
    <%
+      if type(user) == type(1L):
+         user = getUserByID(user)
       if user.objType == 'facilitator':
          user = getUserByID(user.owner)
       if 'raw' in kwargs:
@@ -127,6 +129,8 @@
 
 <%def name="userImage(user, **kwargs)">
    <%
+      if type(user) == type(1L):
+         user = getUserByID(user)
       imgStr = ''
       if user.objType == 'facilitator':
          user = getUserByID(user.owner)

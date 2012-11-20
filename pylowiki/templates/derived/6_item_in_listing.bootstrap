@@ -2,29 +2,34 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <div class="spacer" style="height:20px;"></div>
+<%
+    d = {'discussion':'Topic'}
+    showItem(d)
+%>
 
-${showItem()}
-
-<%def name="showItem()">
+<%def name="showItem(d)">
     <div class="row-fluid">
       <div class="span12">
          <div class="section-wrapper">
             <div class="browse">
-                <h3 class="section-header"> ${c.listingType} </h3>
-                <div class="row">
+                <h3 class="section-header"> ${d[c.listingType]} </h3>
+                <div class="row-fluid">
                     <%
                         if c.listingType == 'discussion':
                             thing = c.discussion
-                        self.showItemContents(thing)
+                        self.showItemTitle(thing)
                     %>
-                </div><!--/.row-->
+                </div><!--/.row-fluid-->
+                <div class="row-fluid">
+                    ${self.showItemOwner(thing)}
+                </div><!--/.row-fluid-->
             </div><!--/.browse-->
          </div><!--/.section-wrapper-->
       </div><!--/.span12-->
    </div><!--/.row-fluid-->
 </%def>
 
-<%def name="showItemContents(thing)">
+<%def name="showItemTitle(thing)">
     <div class="span1">
         ${lib_6.upDownVote(thing)}
     </div>
@@ -33,5 +38,12 @@ ${showItem()}
             <% link = '<a %s>%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) %>
             ${link | n}
         </h4>
+    </div>
+</%def>
+
+<%def name="showItemOwner(thing)">
+    <div class="span11 offset1">
+        ${lib_6.userImage(thing.owner, className="avatar")}
+        ${lib_6.userLink(thing.owner)} posted this
     </div>
 </%def>
