@@ -112,6 +112,19 @@
    ${resourceStr}
 </%def>
 
+<%def name="thingLinkRouter(thing, workshop, **kwargs)">
+    <%
+        if thing.objType == 'discussion':
+            return discussionLink(thing, workshop, **kwargs)
+        elif thing.objType == 'suggestion':
+            return suggestionLink(thing, workshop, **kwargs)
+        elif thing.objType == 'resource':
+            return resourceLink(thing, workshop, **kwargs)
+        elif thing.objType == 'idea':
+            return ideaLink(thing, workshop, **kwargs)
+    %>
+</%def>
+
 <%def name="userImage(user, **kwargs)">
    <%
       imgStr = ''
