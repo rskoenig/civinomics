@@ -124,7 +124,9 @@ class ResourceController(BaseController):
             c.heading = "OTHER RESOURCES"
             c.resources = getResourcesByWorkshopID(c.w.id)
 
-            return render('/derived/resource_edit.bootstrap')
+            #return render('/derived/resource_edit.bootstrap')
+            c.listingType = 'resource'
+            return render('/derived/6_add_to_listing.bootstrap')
         else:
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
 

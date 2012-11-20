@@ -38,13 +38,37 @@
          <span class="help-block"> (Try to keep your title informative, but concise.) </span>
       </fieldset>
       <hr/>
-      <fieldset>
-         <label>Discussion title</label>
-         <textarea name="text" rows="12" class="input-block-level"></textarea>
-         <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
-      </fieldset>
+      ${self.additionalInfo()}
       <fieldset>
          <button class="btn btn-large btn-civ pull-right" type="submit">Submit</button>
       </fieldset>
    </form>
+</%def>
+
+<%def name="addResource()">
+   <form action="/addResource/${c.w['urlCode']}/${c.w['url']}" method="post">
+      <fieldset>
+         <label>Resource title</label>
+         <input type="text" class="input-block-level" name="title">
+         <span class="help-block"> (Try to keep your title informative, but concise.) </span>
+      </fieldset>
+      <hr/>
+      <fieldset>
+         <label>Resource URL</label>
+         <input type="text" class="input-block-level" name="link">
+      </fieldset>
+      <hr/>
+      ${self.additionalInfo(name="comment")}
+      <fieldset>
+         <button class="btn btn-large btn-civ pull-right" type="submit">Submit</button>
+      </fieldset>
+   </form>
+</%def>
+
+<%def name="additionalInfo(name='text')">
+   <fieldset>
+      <label>Additional information</label>
+      <textarea name="${name}" rows="12" class="input-block-level"></textarea>
+      <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
+   </fieldset>
 </%def>
