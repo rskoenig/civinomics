@@ -9,7 +9,7 @@
     tab3active = ""
     tab4active = ""
     tab5active = ""
-                
+
     if c.tab == "tab1":
         tab1active = "active"
     elif c.tab == "tab2":
@@ -59,7 +59,9 @@
             % if c.scopeConfig:
                 <i class="icon-ok"></i>
             % endif:
+            % if c.w['public_private'] != 'trial':
                 *
+            % endif
             </a></li>
             <li class="${tab4active}"><a href="#tab4" data-toggle="tab">5. Associates</a></li>
         </ul>

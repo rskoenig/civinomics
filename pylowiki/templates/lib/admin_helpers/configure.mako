@@ -75,10 +75,6 @@
     % endif
 
     <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <table class="table">
-    <tbody>
-    <tr>
-    <td>
     <strong>Workshop Name:</strong>
     <br />
     <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>  <span class="help-inline"><span class="label label-important">Required</span></span>
@@ -88,7 +84,80 @@
     <br />
     <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>  <span class="help-inline"><span class="label label-important">Required</span></span>
     <br /><br />
-    % if wstarted == 0 and c.account and c.account['type'] != 'trial':
+    % if wstarted == 0 and c.account and c.account['type'] != 'trial': 
+        <strong>Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
+        <br />
+        <% tags = c.w['publicTags'] %>
+        <% workshopTags = tags.split(',') %>
+        Choose at least one from the list below<br /> 
+        <%
+            if 'Environment' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+        %>
+        <input type="checkbox" name="publicTags" value="Environment" ${checked} /> Environment<br />
+        <%
+            if 'Government' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+        %>
+        <input type="checkbox" name="publicTags" value="Government" ${checked} /> Government <br />
+        <%
+            if 'Municipal Services' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+        %>
+        <input type="checkbox" name="publicTags" value="Municipal Services" ${checked} /> Municipal Services<br />
+        <%
+            if 'Economy' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+        %>
+        <input type="checkbox" name="publicTags" value="Economy" ${checked} /> Economy <br />
+
+        <%
+            if 'Infrastructure' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+        %>
+        <input type="checkbox" name="publicTags" value="Infrastructure" ${checked} /> Infrastructure <br />
+
+        <%
+            if 'Civil Rights' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+        %>
+        <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights<br /> 
+
+        <%
+            if 'Civic Response' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+        %>
+        <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response<br /> 
+
+        <%
+            if 'Business' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+        %>
+        <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
+        <br />
+        <br />
+        <strong>Additional Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
+        <br />
+        Enter at least one, separate multiple tags with a comma (140 char. max.):<br />
+        <input type="text" name = "memberTags" size="50" maxlength="140" value = "${c.w['memberTags']}"/>
+        <br /><br />
+
         <%
             if 'public_private' in c.w and (c.w['public_private'] == 'public' or c.w['public_private'] == 'trial'):
                 publicChecked = 'checked'
@@ -103,11 +172,10 @@
         This means the workshop may be browsed by the public, and any members residing in the specificied geographic area may participate.<br /><br />
         <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
         This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
-        <br /><br />
     % else:
-        <strong>Workshop Type:</strong><br />
-        ${c.w['public_private']}
-        <br /><br />
+        <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
+        <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>
+        <strong>Workshop Type: ${c.w['public_private']}<p>
     % endif
     <%
       if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
@@ -137,95 +205,6 @@
     Allow members to add resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
     <br />
     <button type="submit" class="btn btn-warning">Save Basic Information</button>
-    </td>
-    <td>
-    % if c.account['type'] != 'trial' and c.w['public_private'] == 'public':
-
-        % if wstarted == 0: 
-            <strong>Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
-            <br />
-            <% tags = c.w['publicTags'] %>
-            <% workshopTags = tags.split(',') %>
-            Choose at least one from the list below<br /> 
-            <%
-                if 'Environment' in workshopTags:
-                    checked = 'checked'
-                else:
-                    checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Environment" ${checked} /> Environment<br />
-            <%
-                if 'Government' in workshopTags:
-                    checked = 'checked'
-                else:
-                    checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Government" ${checked} /> Government <br />
-            <%
-                if 'Municipal Services' in workshopTags:
-                    checked = 'checked'
-                else:
-                    checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Municipal Services" ${checked} /> Municipal Services<br />
-            <%
-                if 'Economy' in workshopTags:
-                    checked = 'checked'
-                else:
-                    checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Economy" ${checked} /> Economy <br />
-
-            <%
-                if 'Infrastructure' in workshopTags:
-                    checked = 'checked'
-                else:
-                    checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Infrastructure" ${checked} /> Infrastructure <br />
-
-            <%
-                if 'Civil Rights' in workshopTags:
-                    checked = 'checked'
-                else:
-                    checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights<br /> 
-
-            <%
-                if 'Civic Response' in workshopTags:
-                    checked = 'checked'
-                else:
-                    checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response<br /> 
-
-            <%
-                if 'Business' in workshopTags:
-                    checked = 'checked'
-                else:
-                    checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
-            <br />
-            <br />
-            <strong>Additional Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
-            <br />
-            Enter at least one, separate multiple tags with a comma (140 char. max.):<br />
-            <input type="text" name = "memberTags" size="50" maxlength="140" value = "${c.w['memberTags']}"/>
-            <br /><br />
-        % else:
-            <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
-            <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>
-        % endif
-
-    % endif
-    <br />
-    </td>
-    
-    </tr>
-    </tbody>
-    </table>
     </form>
     </div><!-- well -->
 </%def>
@@ -249,13 +228,16 @@
         ${public()}
     % elif c.w['public_private'] == 'private':
         ${private()}
-    % elif wstarted == 0 and c.account['type'] == 'trial':
+    % elif wstarted == 0 and c.account['type'] == 'zippy':
         <strong>Workshop Type:</strong><br />
         <input type="radio" name="publicPrivate" value="public" ${publicChecked} /> Public<br />
         This means the workshop may be browsed by the public, and any members residing in the specificied geographic area may participate.<br /><br />
         <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
         This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
         <br /><br />
+    % elif wstarted == 0 and c.account['type'] == 'trial':
+        <h3>Participants: Trial Workshop</h3>
+        <p>Participation in trial workshops is limited to 10 Associates.<p>
     % endif
 </%def>
 

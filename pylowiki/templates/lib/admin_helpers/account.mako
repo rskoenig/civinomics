@@ -64,15 +64,15 @@
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
             % if c.account['orgName'] != 'none':
-                <br />Your workshop host landing page URL:<br />
+                Your workshop host landing page URL:<br />
                 <a href="/host/${urlify(c.account['orgName'])}">http://civinomics.com/host/${urlify(c.account['orgName'])}</a><br />
             % endif
             % if 'pictureHash' in c.account:
-               <%
+                <%
                    pictureHash = c.account['pictureHash']
                    directoryNumber = c.account['directoryNumber']
-               %>
-               <img src="/images/avatar/${directoryNumber}/profile/${pictureHash}.profile" alt="${c.account['orgName']}" title="${c.account['orgName']}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
+                %>
+                <img src="/images/avatar/${directoryNumber}/profile/${pictureHash}.profile" alt="${c.account['orgName']}" title="${c.account['orgName']}" class="thumbnail" style="display: block; margin-left: auto; margin-right: auto;">
             % endif
             <div class="control-group">
                 <label for="pictureFile" class="control-label">Organization logo image upload:</label>
@@ -93,6 +93,12 @@
                 <div class="controls">
                    <input type="text" id="orgLink" name="orgLink" value="${c.account['orgLink']}">
                 </div> <!-- /.controls -->
+            </div> <!-- /.control-group -->
+            <div class="control-group">
+                <label for="orgLink" class="control-label">Organization web site description:</label>
+                <div class="controls">
+                   <textarea rows="4" cols="50" id="orgLinkDesc" name="orgLinkDesc">${c.account['orgLinkDesc']}</textarea>
+                </div> <!-- /.controls -->
             </div> <!-- /.control-group --> 
             <div class="control-group">
                 <label for="orgMessage" class="control-label">Welcome message:</label>
@@ -109,8 +115,8 @@
                 </div>
             </fieldset>
             </form>
+        </div><!-- well -->
         % endif
-    </div><!-- well -->
 </%def>
 
 <%def name="accountAdmin()">

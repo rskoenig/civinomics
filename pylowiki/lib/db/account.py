@@ -91,6 +91,7 @@ class Account(object):
         a['orgEmail'] = user['email']
         a['orgMessage'] = user['tagline']
         a['orgLink'] = 'none'
+        a['orgLinkDesc'] = 'none'
         a['admins'] = '|' + user['email'] + '|'
         commit(a)
 

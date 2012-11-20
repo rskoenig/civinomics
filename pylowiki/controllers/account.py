@@ -166,6 +166,15 @@ class AccountController(BaseController):
                 change = 1
                 changeMsg = changeMsg + "Organization web site updated. "
                 c.account['orgLink'] = orgLink
+                
+        if 'orgLinkDesc' in request.params:
+            session['confTab'] = "tab2"
+            session.save()
+            orgLinkDesc = request.params['orgLinkDesc']
+            if orgLinkDesc != c.account['orgLinkDesc']:
+                change = 1
+                changeMsg = changeMsg + "Organization web site description updated. "
+                c.account['orgLinkDesc'] = orgLinkDesc
 
         if 'orgMessage' in request.params:
             session['confTab'] = "tab2"

@@ -35,22 +35,24 @@
             orgName = c.revision['data']
             orgMessage = c.revision['orgMessage']
             orgLink = c.revision['orgLink']
+            orgLinkDesc = c.revision['orgLinkDesc']
         else:
             orgName = c.account['orgName']
             orgMessage = c.account['orgMessage']
             orgLink = c.account['orgLink']
-            
+            orgLinkDesc = c.account['orgLinkDesc']
         endif
     %>
     <div class="civ-col-inner">
-    % if orgLink and orgLink != '':
-        <h1><a href="${orgLink}" target="_blank">${orgName}</a></h1>
-    % else:
         <h1>${orgName}</h1>
-    % endif
     <p>
       ${orgMessage}
     </p>
+    % if orgLink and orgLink != '' and orgLink != 'none':
+        <br />
+        ${orgLinkDesc}<br />
+        <a href="${orgLink}" target="_blank">${orgLink}</a><br />
+    % endif
     % if c.revisions:
          <strong>Edit log:</strong><br />
          % for rev in c.revisions:

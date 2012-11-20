@@ -29,17 +29,19 @@
     %>
     <input type=radio name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type=radio name="enableMOTD" value="0" ${uChecked}> Unpublish Message
     <br /><br />
-    % if c.w['deleted'] == '1':
-       <strong>Publish Workshop</strong><br />
-       This republishes the workshop, displaying it in lists of active workshops. It may be unpublished again later.<br />
-       <% eAction = 'Publish' %>
-    % else:
-       <strong>Unpublish Workshop</strong><br />
-       This unpublishes the workshop, removing it from lists of active workshops. It may be republished again later.<br />
-       <% eAction = 'Unpublish' %>
+    % if c.w['startTime'] != '0000-00-00':
+        % if c.w['deleted'] == '1':
+           <strong>Publish Workshop</strong><br />
+           This republishes the workshop, displaying it in lists of active workshops. It may be unpublished again later.<br />
+           <% eAction = 'Publish' %>
+        % else:
+           <strong>Unpublish Workshop</strong><br />
+           This unpublishes the workshop, removing it from lists of active workshops. It may be republished again later.<br />
+           <% eAction = 'Unpublish' %>
+        % endif
+        Reason: <input type=text name=eventReason id=eventReason> &nbsp; &nbsp;
+        <input type=radio name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type=radio name="verifyEnableWorkshop" value="0"> Verify ${eAction}
     % endif
-    Reason: <input type=text name=eventReason id=eventReason> &nbsp; &nbsp;
-    <input type=radio name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type=radio name="verifyEnableWorkshop" value="0"> Verify ${eAction}
     <br /><br />
     <button type="submit" class="btn btn-warning">Save All Changes</button>
     </form>
@@ -67,55 +69,58 @@
 
 
 <%def name="admin_facilitators()">
-    <table class="table table-bordered">
-    <thead>
-    <tr><th>Current Facilitators</th></tr>
-    </thead>
-    <tbody>
-    % for f in c.f:
-       <% fUser = getUserByID(f.owner) %>
-       <% fEvents = getParentEvents(f) %>
-       <% fPending = "" %>
-       % if pending in f and f['pending'] == '1':
-          <% fPending = "(Pending)" %>
-       % endif
-       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
-       % if fEvents:
-          % for fE in fEvents:
-          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
-          % endfor
-       % endif
-       % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
-           <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
-               &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
-               <button type="submit" class="gold" value="Resign">Resign</button>
-           <br />
-           </form>
-       % endif
-       </td></tr>
-    % endfor
-    </tbody>
-    </table>
-    <p>To invite an active member to co-facilitate this workshop, visit their profile page and look for the "Invite to co-facilitate" button!</p>
-    <table class="table table-bordered">
-    <thead>
-    <tr><th>Disabled Facilitators</th></tr>
-    </thead>
-    <tbody>
-    % for f in c.df:
-       <% fUser = getUserByID(f.owner) %>
-       <% fEvents = getParentEvents(f) %>
-       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
-       % if fEvents:
-          % for fE in fEvents:
-          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
-          % endfor
-       % endif
-       </tr></td>
-    % endfor
-    </tbody>
-    </table>
-
+    % if c.w['public_private'] != 'trial':
+        <table class="table table-bordered">
+        <thead>
+        <tr><th>Current Facilitators</th></tr>
+        </thead>
+        <tbody>
+        % for f in c.f:
+            <% fUser = getUserByID(f.owner) %>
+            <% fEvents = getParentEvents(f) %>
+            <% fPending = "" %>
+            % if pending in f and f['pending'] == '1':
+              <% fPending = "(Pending)" %>
+            % endif
+            <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
+            % if fEvents:
+                % for fE in fEvents:
+                    &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+                % endfor
+            % endif
+            % if len(c.f) > 1:
+                <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
+                    &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
+                    <button type="submit" class="gold" value="Resign">Resign</button>
+                    <br />
+                </form>
+            % endif
+            </td></tr>
+        % endfor
+        </tbody>
+        </table>
+        <p>To invite an active member to co-facilitate this workshop, visit their profile page and look for the "Invite to co-facilitate" button!</p>
+        % if len(c.df) > 0:
+            <table class="table table-bordered">
+            <thead>
+            <tr><th>Disabled Facilitators</th></tr>
+            </thead>
+            <tbody>
+            % for f in c.df:
+                <% fUser = getUserByID(f.owner) %>
+                <% fEvents = getParentEvents(f) %>
+                <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
+                % if fEvents:
+                    % for fE in fEvents:
+                        &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+                    % endfor
+                % endif
+                </tr></td>
+            % endfor
+            </tbody>
+            </table>
+        % endif
+    % endif
 </%def>
 
 

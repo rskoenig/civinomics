@@ -34,8 +34,10 @@
             <br /><br />
             <ul class="nav nav-pills nav-stacked">
                 <li class="${tab1active}"><a href="#tab1" data-toggle="tab">Summary</a></li>
-                <li class="${tab2active}"><a href="#tab2" data-toggle="tab">Organization </a></li>
-                <li class="${tab3active}"><a href="#tab3" data-toggle="tab">Administration</a></li>
+                % if c.account['type'] != 'trial':
+                    <li class="${tab2active}"><a href="#tab2" data-toggle="tab">Organization </a></li>
+                    <li class="${tab3active}"><a href="#tab3" data-toggle="tab">Administration</a></li>
+                % endif
             </ul>
             </div><!-- well -->
         </div><!-- span3 -->
