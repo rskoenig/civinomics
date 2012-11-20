@@ -421,6 +421,7 @@
         <br />
         <button type="submit" class="btn btn-warning">Create Workworkshop</button>
         <br /><br />
+        </form>
   % endif
 </%def>
 
