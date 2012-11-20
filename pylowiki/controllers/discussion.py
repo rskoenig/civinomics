@@ -144,7 +144,9 @@ class DiscussionController(BaseController):
         
         if c.isScoped or c.isAdmin or c.isFacilitator:
             c.title = c.w['title']
-            return render('/derived/discussion_edit.bootstrap')
+            #return render('/derived/discussion_edit.bootstrap')
+            c.listingType = 'discussion'
+            return render('/derived/6_add_to_listing.bootstrap')
         else:
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
 

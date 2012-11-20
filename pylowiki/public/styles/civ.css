@@ -236,6 +236,29 @@ ul.listeners > li {
    margin-right:25px;
 }
 
+.help-block{
+   color:grey;
+}
+
+.btn-civ {
+   color: white;
+   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+   background-color: #D15D00;
+   background-image: -moz-linear-gradient(top, #FF9A48, #D15E00);
+   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FF9A48), to(#D15E00));
+   background-image: -webkit-linear-gradient(top, #FF9A48, #D15E00);
+   background-image: -o-linear-gradient(top, #FF9A48, #D15E00);
+   background-image: linear-gradient(to bottom, #FF9A48, #D15E00);
+   background-repeat: repeat-x;
+   border-color: #FF9A48 #D15E00 #aa4c00;
+   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+   background-image: -ms-linear-gradient(top, #FF9A48, #D15E00);
+}
+
+.btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled] {
+   color: white;
+   background-color: #D15D00;
+}
 
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
