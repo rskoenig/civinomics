@@ -29,3 +29,17 @@ class IdeaController(BaseController):
            c.isScoped = isScoped(c.authuser, c.w)
            c.isAdmin = isAdmin(c.authuser.id)
         return render('/derived/6_detailed_listing.bootstrap')
+    
+    def addIdea(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshopByCode(code)
+        c.title = c.w['title']
+        
+        c.listingType = 'idea'
+        if 'user' in session:
+           c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+           c.isScoped = isScoped(c.authuser, c.w)
+           c.isAdmin = isAdmin(c.authuser.id)
+        return render('/derived/6_add_to_listing.bootstrap')

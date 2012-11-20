@@ -65,6 +65,19 @@
    </form>
 </%def>
 
+<%def name="addIdea()">
+   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/addIdeaHandler" method="post">
+      <fieldset>
+         <label>Idea</label>
+         <input type="text" class="input-block-level" name="title">
+         <span class="help-block"> (Try to keep your title informative, but concise.) </span>
+      </fieldset>
+      <fieldset>
+         <button class="btn btn-large btn-civ pull-right" type="submit">Submit</button>
+      </fieldset>
+   </form>
+</%def>
+
 <%def name="additionalInfo(name='text')">
    <fieldset>
       <label>Additional information</label>
