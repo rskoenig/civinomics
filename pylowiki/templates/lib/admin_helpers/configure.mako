@@ -175,7 +175,7 @@
     % else:
         <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
         <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>
-        <strong>Workshop Type: ${c.w['public_private']}<p>
+        <p><strong>Workshop Type</strong>: ${c.w['public_private']}<p>
     % endif
     <%
       if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
