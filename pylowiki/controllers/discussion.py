@@ -124,8 +124,10 @@ class DiscussionController(BaseController):
                 c.lastmoddate = c.discussion.date
 
         c.revisions = getParentRevisions(c.discussion.id)
-
-        return render('/derived/discussion_topic.bootstrap')
+        
+        c.listingType = 'discussion'
+        return render('/derived/6_item_in_listing.bootstrap')
+        #return render('/derived/discussion_topic.bootstrap')
 
     @h.login_required
     def addDiscussion(self, id1, id2):

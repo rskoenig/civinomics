@@ -2,8 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
 
-<div class="spacer" style="height:20px;">
-</div>
+<div class="spacer" style="height:20px;"></div>
 
 <% 
    if c.listingType == 'discussion':
