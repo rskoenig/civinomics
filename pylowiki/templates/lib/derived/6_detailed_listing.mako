@@ -28,7 +28,7 @@
                   ${lib_6.userImage(author, className = 'avatar')}
                </div> <!--/.span2-->
                <div class="span9 list-item-text">
-                  <% itemTitle = '<h5><a %s>%s</a></h5>' %(lib_6.discussionLink(item, c.w, embed=True), item['title']) %>
+                  <% itemTitle = '<h5><a %s>%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True), item['title']) %>
                   ${itemTitle | n}
                </div><!--/.span9-->
             </div><!--/.row-fluid-->
