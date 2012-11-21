@@ -107,7 +107,9 @@ class ResourceController(BaseController):
                 break
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
         
-        return render('/derived/resource.bootstrap')
+        c.listingType = 'resource'
+        return render('/derived/6_item_in_listing.bootstrap')
+        #return render('/derived/resource.bootstrap')
 
     @h.login_required
     def newResource(self, id1, id2):

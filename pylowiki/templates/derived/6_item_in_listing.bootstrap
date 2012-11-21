@@ -3,7 +3,7 @@
 
 <div class="spacer" style="height:20px;"></div>
 <%
-    d = {'discussion':'Topic'}
+    d = {'discussion':'Topic', 'resource':'Resource'}
     showItem(d)
 %>
 
@@ -17,6 +17,8 @@
                     <%
                         if c.listingType == 'discussion':
                             thing = c.discussion
+                        elif c.listingType == 'resource':
+                            thing = c.resource
                         self.showItemTitle(thing)
                     %>
                 </div><!--/.row-fluid-->
