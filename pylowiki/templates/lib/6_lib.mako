@@ -161,6 +161,7 @@
 </%def>
 
 <%def name="geoBreadcrumbs()">
+    % if 'user' in session:
    <ul class="nav nav-pills pull-left">
       <li class="active"> <a href="#">Earth</a><span class="divider">/</span></li>
       <li> <a href="${c.authuser_geo['countryURL']}">${c.authuser_geo['countryTitle']}</a> <span class="divider">/</span> </li>
@@ -169,4 +170,5 @@
       <li> <a href="${c.authuser_geo['cityURL']}">${c.authuser_geo['cityTitle']}</a> <span class="divider">/</span> </li>
       <li> <a href="${c.authuser_geo['postalURL']}">${c.authuser_geo['postalCode']}</a></li>
    </ul>
+   % endif
 </%def>
