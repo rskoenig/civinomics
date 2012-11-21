@@ -72,7 +72,7 @@ class AccountController(BaseController):
         a = Account(user, '1', '10', '0', 'trial')
         w = Workshop(user['name'], a.a, 'trial')
         MOTD('Welcome to the workshop!', w.w.id, w.w.id)
-        return redirect("/profile/" + urlCode + "/" + url )
+        return redirect("/workshop/" + w.w['urlCode'] + "/" + w.w['url'] + "/configure" )
         
     @h.login_required
     def accountAdminHandler(self, id1):

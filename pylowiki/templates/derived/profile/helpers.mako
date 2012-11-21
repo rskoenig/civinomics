@@ -419,7 +419,7 @@
         Create a free trial Civinomics workshop. The workshop is private, and you can have up to 10 other Civinomics members participate.
         <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
         <br />
-        <button type="submit" class="btn btn-warning">Create Workworkshop</button>
+        <button type="submit" class="btn btn-warning">Create Trial Workshop</button>
         <br /><br />
         </form>
   % endif

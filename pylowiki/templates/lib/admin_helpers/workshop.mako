@@ -16,7 +16,7 @@
 	<form name="admin_issue" id="admin_issue" class="form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
     <strong>Message to Participants:</strong>
     <br />
-    This is displayed on the workshop landing page. Use this to welcome members to the workshop or to make announcements.
+    This is displayed on the workshop landing page. Use this to welcome members to the workshop or to make announcements.<br />
     <textarea name="motd" rows="2" cols="80">${c.motd['data']}</textarea>
     &nbsp; &nbsp;
     <% 
