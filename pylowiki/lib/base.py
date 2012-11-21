@@ -14,6 +14,7 @@ from pylons.controllers.util import abort, redirect
 #from pylowiki.model import meta, get_user, getPoints
 from pylowiki.model import meta
 from pylowiki.lib.db.user import get_user
+from pylowiki.lib.db.geoInfo import getGeoInfo
 
 class BaseController(WSGIController):
 
@@ -30,6 +31,7 @@ class BaseController(WSGIController):
 
         if "user" in session:
             c.authuser = get_user( session['userCode'], session['userURL'] )
+            c.authuser_geo = getGeoInfo(c.authuser.id)[0]
             
         
         try:

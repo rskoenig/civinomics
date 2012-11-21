@@ -187,7 +187,6 @@
          % endif
              </div><!-- span3 -->
              <div class="span9">
-             ${log.info(oTitle)}
             New <a href="${oLink}" title="${linkTitle}"><i class="icon-${iType}"></i> ${oTitle}</a><br />
             % if ooTitle:
                 in <a href="${ooLink}" title="${oolinkTitle}"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />

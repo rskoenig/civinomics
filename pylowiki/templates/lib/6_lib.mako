@@ -163,10 +163,10 @@
 <%def name="geoBreadcrumbs()">
    <ul class="nav nav-pills pull-left">
       <li class="active"> <a href="#">Earth</a><span class="divider">/</span></li>
-      <li> <a href="#">USA</a> <span class="divider">/</span> </li>
-      <li> <a href="#">California</a> <span class="divider">/</span> </li>
-      <li> <a href="#">Santa Cruz Co.</a> <span class="divider">/</span> </li>
-      <li> <a href="#">Santa Cruz City</a> <span class="divider">/</span> </li>
-      <li> <a href="#">95060</a></li>
+      <li> <a href="${c.authuser_geo['countryURL']}">${c.authuser_geo['countryTitle']}</a> <span class="divider">/</span> </li>
+      <li> <a href="${c.authuser_geo['stateURL']}">${c.authuser_geo['stateTitle']}</a> <span class="divider">/</span> </li>
+      <li> <a href="${c.authuser_geo['countyURL']}">${c.authuser_geo['countyTitle']}</a> <span class="divider">/</span> </li>
+      <li> <a href="${c.authuser_geo['cityURL']}">${c.authuser_geo['cityTitle']}</a> <span class="divider">/</span> </li>
+      <li> <a href="${c.authuser_geo['postalURL']}">${c.authuser_geo['postalCode']}</a></li>
    </ul>
 </%def>
