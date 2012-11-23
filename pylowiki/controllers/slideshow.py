@@ -42,6 +42,7 @@ class SlideshowController(BaseController):
         
         w = getWorkshop(code, url)
         s = getSlideshow(w['mainSlideshow_id'])
+        allSlides = getAllSlides(s.id)
         if not w:
             h.flash('Could not find workshop!', 'error')
             return redirect('/')
@@ -62,12 +63,7 @@ class SlideshowController(BaseController):
                 imageFile.seek(0)
 
             slide = Slide(c.authuser, s, 'Sample title', 'Sample caption', filename, imageFile, '1')
-            
-            #hash = saveImage(imageFile, filename, c.authuser, identifier, s)
-            #resizeImage(identifier, hash, 120, 65, 'thumbnail')
-            #resizeImage(identifier, hash, 835, 550, 'slideshow')
-            
-            
+                      
             i = getImageIdentifier(identifier)
             directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
             hash = slide.s['pictureHash']
@@ -90,6 +86,15 @@ class SlideshowController(BaseController):
             d['-'] = hash
             d['type'] = 'image/png'
             l.append(d)
+            
+            if len(allSlides) == 1:
+                if allSlides[0]['filename'] == 'supDawg.png':
+                    s = allSlides[0]
+                    s['deleted'] = "1"
+                    commit(s)
+                    session['confTab'] = "tab2"
+                    session.save()
+            ##return redirect("/workshop/" + w['urlCode'] + "/" + w['url'] + "/configure") 
             return json.dumps(l)
         """
         Return a JSON-encoded string of the following format:
