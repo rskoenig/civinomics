@@ -92,9 +92,12 @@ class SlideshowController(BaseController):
                     s = allSlides[0]
                     s['deleted'] = "1"
                     commit(s)
-                    session['confTab'] = "tab2"
-                    session.save()
-            ##return redirect("/workshop/" + w['urlCode'] + "/" + w['url'] + "/configure") 
+            session['confTab'] = "tab2"
+            alert = {'type':'success'}
+            alert['title'] = 'New image uploaded and added to the slideshow.'
+            session['alert'] = alert
+            session.save()
+            session.save() 
             return json.dumps(l)
         """
         Return a JSON-encoded string of the following format:

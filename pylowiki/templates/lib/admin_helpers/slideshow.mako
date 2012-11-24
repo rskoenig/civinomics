@@ -177,7 +177,7 @@
     });
     </script>
    <p><strong>Edit Slideshow</strong></p>
-<p>Click and drag to re-arrange a slideshow's orde.  </p>
+<p>Click and drag to re-arrange a slideshow's order.</p>
 <br />
 <p>Click on a title or a caption to edit it.  Press enter to save your title or caption
     edits, press escape to cancel an edit.</p>
