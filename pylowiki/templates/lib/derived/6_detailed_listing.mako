@@ -30,6 +30,7 @@
                <div class="span9 list-item-text">
                   <% itemTitle = '<h5><a %s>%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True), item['title']) %>
                   ${itemTitle | n}
+                  Posted by ${lib_6.userLink(item.owner)} - see <a ${lib_6.thingLinkRouter(item, c.w, embed=True) | n}>comments</a>
                </div><!--/.span9-->
             </div><!--/.row-fluid-->
          </li>
