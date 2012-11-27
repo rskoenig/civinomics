@@ -1,5 +1,6 @@
 <%!
    from pylowiki.lib.db.user import getUserByID
+   from pylowiki.lib.db.geoInfo import getGeoInfo
 %>
 
 <%def name="upDownVote(thing)">
@@ -171,4 +172,30 @@
       <li> <a href="${c.authuser_geo['postalURL']}">${c.authuser_geo['postalCode']}</a></li>
    </ul>
    % endif
+</%def>
+
+<%def name="userGeoLink(user, **kwargs)">
+    <%
+        if type(user) == type(1L):
+            user = getUserByID(user)
+        userGeo = getGeoInfo(user.id)[0]
+        geoLinkStr = ''
+        
+        geoLinkStr += '<a href="%s">%s</a>' %(userGeo['cityURL'], userGeo['cityTitle'])
+        geoLinkStr += ', '
+        geoLinkStr += '<a href="%s">%s</a>' %(userGeo['stateURL'], userGeo['stateTitle'])
+        geoLinkStr += ', '
+        geoLinkStr += '<a href="%s">%s</a>' %(userGeo['countryURL'], userGeo['countryTitle'])
+    %>
+    ${geoLinkStr | n}
+</%def>
+
+<%def name="discussionLink(d, w, **kwargs)">
+   <%
+      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s"' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+      if 'embed' in kwargs:
+         if kwargs['embed'] == True:
+            return resourceStr
+   %>
+   ${resourceStr}
 </%def>
