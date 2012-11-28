@@ -1,5 +1,6 @@
 <%inherit file="/base/base_workshop.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/comments.mako" import="comments" />
 
 <div class="spacer" style="height:20px;"></div>
 <%
@@ -19,13 +20,18 @@
                             thing = c.discussion
                         elif c.listingType == 'resource':
                             thing = c.resource
-                        self.showItemTitle(thing)
+                        showItemTitle(thing)
                     %>
                 </div><!--/.row-fluid-->
                 <div class="row-fluid">
                     ${self.showItemOwner(thing)}
                 </div><!--/.row-fluid-->
                 ${extraText(thing)}
+                <div class="row-fluid">
+                    <div class="span12">
+                        <h4 class="centered">Comments</p>
+                    </div>
+                </div>
             </div><!--/.browse-->
          </div><!--/.section-wrapper-->
       </div><!--/.span12-->
@@ -55,7 +61,12 @@
     </div>
     <div class="span11">
         <h4>
-            <% link = '<a %s>%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) %>
+            <% 
+                if thing.objType == 'resource':
+                    link = '<a href="%s">%s</a>' %(thing['link'], thing['title'])
+                else:
+                    link = '<a %s>%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+            %>
             ${link | n}
         </h4>
     </div>
