@@ -58,6 +58,7 @@
       <div class="section-wrapper">
          <div class="browse">
             <h3 class="section-header"> Information </h3>
+            ${helpers.showInfo(c.w)}
          </div>
       </div> <!--/.section-wrapper-->
    </div><!-- /.span12 -->

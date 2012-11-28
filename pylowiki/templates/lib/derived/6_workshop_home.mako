@@ -151,3 +151,7 @@
       % endif
    </li>
 </%def>
+
+<%def name="showInfo(workshop)">
+    ## Do nothing...yet
+</%def>

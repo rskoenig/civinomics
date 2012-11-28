@@ -27,16 +27,18 @@
             replies += "ies"
         c.author = author
     %>
-    <div class="row-fluid">
-        <div class="span12">
-            <span>
-                <button class="btn btn-mini inline" id="hide${comment['urlCode']}" title="Hide comment and any replies" alt="Hide comment and any replies"><i class="icon-minus"></i> hide</button>
+    ##<div class="row-fluid">
+        ##<div class="span12">
+            ##<span>
+                <button class="btn btn-mini inline accordion-toggle" title="Hide comment and any replies" alt="Hide comment and any replies" data-toggle="collapse" data-parent="#comment-${comment['urlCode']}" href="#comment-data-${comment['urlCode']}">
+                    <i class="icon-minus"></i>
+                    hide
+                </button>
                 ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar")}
-                <a href = "/profile/${author['urlCode']}/${author['url']}" class="inline">${author['name']}</a> &mdash;
-                ${numReplies} ${replies}
-            </span>
-        </div> <!--/.span12-->
-    </div><!-- row-fluid -->
+                ${lib_6.userLink(author, className="inline")} &mdash; ${numReplies} ${replies}
+            ##</span>
+        ##</div> <!--/.span12-->
+    ##</div><!-- row-fluid -->
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
@@ -323,17 +325,33 @@
         if int(comment['parent']) != 0:
             reply += " reply"
         if int(author['accessLevel']) >= 200:
-            log.info('%s:%s' % (author['email'], comment['data']))
             moderator += "alert alert-success"
     %>
     <div class="row-fluid ${reply}">
+        <div class="accordion" id="comment-${comment['urlCode']}">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    ${userSays(comment, author)}
+                </div>
+                <div class="accordion-body collapse in" id="comment-data-${comment['urlCode']}">
+                    <div class="accordion-inner">
+                    <%
+                        if commentType == 'thread':
+                            commentContent(comment, counter, comType = commentType)
+                        else:
+                            commentContent(comment, counter)
+                    %>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="span1 civ-votey">
             ${displayRating(comment, commentType)}
         </div> <!-- /.civ-votey -->
         <div class="span11">
             <div class="${moderator}">
                 <%
-                    userSays(comment, author)
+                    #userSays(comment, author)
                     if commentType == 'thread':
                         commentContent(comment, counter, comType = commentType)
                     else:
