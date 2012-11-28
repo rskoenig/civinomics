@@ -260,7 +260,7 @@
                     % endif
                     % if "user" in session and c.isScoped or (c.isAdmin or c.isFacilitator):
                         % if type != 'thread':
-                            <textarea rows="4" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span6"></textarea>
+                            <textarea rows="4" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span12"></textarea>
                             <div id="comment-preview-div"></div>
                                 <button type="submit" name = "submit" value = "submit" class="btn">Submit</button>
                             <br />
@@ -329,7 +329,8 @@
         reply, moderator = "comment", ""
         if int(comment['parent']) != 0:
             reply += " reply"
-        if author['accessLevel'] >= 200:
+        if int(author['accessLevel']) >= 200:
+            log.info('%s:%s' % (author['email'], comment['data']))
             moderator += "alert alert-success"
     %>
     <div class="row-fluid ${reply}">
@@ -337,7 +338,7 @@
             ${displayRating(comment, commentType)}
         </div> <!-- /.civ-votey -->
         <div class="span11">
-            <div class="civ-comment ${moderator}">
+            <div class="${moderator}">
                 <%
                     userSays(comment, author)
                     if commentType == 'thread':
