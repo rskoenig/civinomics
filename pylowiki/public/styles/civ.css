@@ -128,6 +128,10 @@ img.avatar{
 .small-avatar{
    height: 25px;
 }
+
+.comment-avatar{
+    margin-top:5px;
+}
 /*
 .table.activity th, .table.activity td{
    padding-top:10px;
@@ -258,6 +262,10 @@ ul.listeners > li {
 .btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled] {
    color: white;
    background-color: #D15D00;
+}
+
+.inline{
+    display:inline-block;
 }
 
 /* --- Container configuration ---------------------------------------------------------- */

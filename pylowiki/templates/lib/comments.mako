@@ -11,6 +11,7 @@
 %>
 
 <%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
@@ -26,24 +27,16 @@
             replies += "ies"
         c.author = author
     %>
-    <p>
     <div class="row-fluid">
-        <div class="span2"> 
-        <button class="btn btn-mini" id="hide${comment['urlCode']}" title="Hide comment and any replies" alt="Hide comment and any replies"><i class="icon-minus"></i> hide</button>
-        </div><!-- span2 -->
-        <div class="span1">
-        % if author['pictureHash'] == 'flash':
-            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="${c.author['name']}" title="${c.author['name']}" class="thumbnail" width="20" /></a>
-        % else:
-            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" class="thumbnail" alt="${c.author['name']}" title="${c.author['name']}" class="thumbnail" /></a>
-        % endif
-        </div><!-- span1 -->
-        <div class="span8 pull-left">
-        <a href = "/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> &mdash;
-        <span class="recent">${timeSince(datetime.strptime(comment['lastModified'], '%a %b %d %H:%M:%S %Y'))}</span> ago &mdash; ${numReplies} ${replies}
-        </div><!-- span8 -->
+        <div class="span12">
+            <span>
+                <button class="btn btn-mini inline" id="hide${comment['urlCode']}" title="Hide comment and any replies" alt="Hide comment and any replies"><i class="icon-minus"></i> hide</button>
+                ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar")}
+                <a href = "/profile/${author['urlCode']}/${author['url']}" class="inline">${author['name']}</a> &mdash;
+                ${numReplies} ${replies}
+            </span>
+        </div> <!--/.span12-->
     </div><!-- row-fluid -->
-    </p>
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
