@@ -209,40 +209,31 @@
 
 ## Main function that gets called by the template
 <%def name="comments( type, **kwargs )">
-    % if type == "background" or type == "feedback" or type == "discussion":
-        <% 
+    <%
+        if type == "background" or type == "feedback" or type == "discussion":
             discussion = c.discussion
             allowComments = '1'
-        %>
-    % elif type == "suggestionMain" or type == "resource":
-        <%  
+        elif type == "suggestionMain" or type == "resource":
             discussion = c.discussion
             workshop = c.w
             allowComments = c.allowComments
-        %>
-    % elif type == "thread":
-        <%
+        elif type == "thread":
             maxDepth = kwargs['maxDepth']
             rootComment = kwargs['rootComment']
             c.discussion = discussion = kwargs['discussion']
             allowComments = '1'
-        %>
-    % endif
-
-    % if c.conf['read_only.value'] == 'true':
-        <% return %>
-    % endif
-    % if c.conf['allow.comments'] == 'false' or allowComments == '0':
-        <% return %>
-    % endif
-    % if type != "thread":
-        % if discussion['numComments'] == '1':
-            <% commentString = 'comment' %>
-        % else:
-            <% commentString = 'comments' %>
-        % endif
-    % endif
-    ${lib.fields_alert()}
+    
+        if c.conf['read_only.value'] == 'true':
+            return
+        if c.conf['allow.comments'] == 'false' or allowComments == '0':
+            return
+        if type != "thread":
+            if discussion['numComments'] == '1':
+                commentString = 'comment'
+            else:
+                commentString = 'comments'
+        lib.fields_alert()
+    %>
     <div class="civ-col-inner">
         <div class="row-fluid">
             <div class="span12">
@@ -361,13 +352,13 @@
             ## Showing non-edit events
             ## 
             ##############################
-            <% events = getParentEvents(comment) %>
-            <% eventsList = [] %>
-            % for e in events:
-                % if not e['title'].startswith('Comment edited'):
-                    <% eventsList.append(e) %>
-                % endif
-            % endfor
+            <% 
+                events = getParentEvents(comment)
+                eventsList = []
+                for e in events:
+                    if not e['title'].startswith('Comment edited'):
+                        eventsList.append(e)
+            %>
             % if len(eventsList) != 0:
                 <span style="color:black;">
                     ##<strong>Event log:</strong><br />

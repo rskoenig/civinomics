@@ -29,7 +29,12 @@
                 ${extraText(thing)}
                 <div class="row-fluid">
                     <div class="span12">
-                        <h4 class="centered">Comments</p>
+                        <h4 class="centered">Comments</h4>
+                        <div class="row-fluid">
+                            <div class="span11 offset1">
+                                ${comments("discussion")}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div><!--/.browse-->
