@@ -155,65 +155,6 @@ class WorkshopController(BaseController):
            commit(f)
            
         return "ok"
-        
-    @h.login_required
-    def configureAssociatesWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.title = "Configure Workshop"
-        session['confTab'] = "tab4"
-        session.save()
-
-        c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""        
-        else:
-            return(redirect("/"))
-        
-        if 'deleteAssociate' in request.params:
-            deleteEmail = request.params['deleteAssociate']
-            if 'confirmDelete|' + deleteEmail in request.params:
-                if 'associates' in c.w:
-                    aList = c.w['associates'].split('|')
-                    associates = ''
-                    for a in aList:
-                        if a and a != '' and a != deleteEmail:
-                            associates = associates + '|' + a + '|'
-                            
-                    c.w['associates'] = associates
-                    commit(c.w)
-                    alert = {'type':'success'}
-                    alert['title'] = 'Associate ' + deleteEmail + ' deleted.'
-                    session['alert'] = alert
-                    session.save()
-                    return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/configure")  
-                    
-        if 'newAssociate' in request.params:
-            newAssociate = request.params['newAssociate']
-            if 'associates' in c.w:
-                aList = c.w['associates'].split('|')
-                associates = []
-                for a in aList:
-                    if a and a != '':
-                        associates.append(a)
-                    
-                if newAssociate not in associates:
-                    if 'associates' in c.w:
-                        c.w['associates'] = c.w['associates'] + '|' + newAssociate + '|'
-                    else:
-                        c.w['associates'] = '|' + newAssociate + '|'
-            else:
-                c.w['associates'] = '|' + newAssociate + '|'
-                
-            commit(c.w)
-            alert = {'type':'success'}
-            alert['title'] = 'Associate ' + newAssociate + ' added.'
-            session['alert'] = alert
-            session.save()
-            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/configure")
-            
-        return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/configure")   
 
     @h.login_required
     def configureBasicWorkshopHandler(self, id1, id2):
@@ -353,7 +294,7 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        session['confTab'] = "tab5"
+        session['confTab'] = "tab4"
         session.save()
 
         c.w = getWorkshop(code, urlify(url))
@@ -424,7 +365,7 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        session['confTab'] = "tab5"
+        session['confTab'] = "tab4"
         session.save()
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
@@ -514,7 +455,7 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        session['confTab'] = "tab5"
+        session['confTab'] = "tab4"
         session.save()
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)

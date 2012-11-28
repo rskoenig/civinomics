@@ -1,7 +1,7 @@
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID, getSuggestion
     from pylowiki.lib.db.resource import getResource
-    from pylowiki.lib.db.workshop import getWorkshopByCode, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince, getAssociateWorkshops
+    from pylowiki.lib.db.workshop import getWorkshopByCode, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince
     from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator, getFacilitatorsByUser
     from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.db.activity import getMemberPosts
@@ -431,12 +431,6 @@
     <div class="civ-col-inner">
       ${listWorkshops(c.facilitatorWorkshops)}
     </div> <!-- /.civ-col-inner -->
-  % endif
-  % if 'user' in session and c.associates and (c.authuser.id == c.user.id or isAdmin(c.authuser.id)):
-    <h2 class="civ-col"><i class="icon-list-alt"></i> I am an Associate in these Workshops</h2>
-    <div class="civ-col-inner">
-      ${listWorkshops(c.associates)}
-    </div><!- civ-col-inner -->
   % endif
   % if 'user' in session and c.pworkshops and (c.authuser.id == c.user.id or isAdmin(c.authuser.id)):
     <h2 class="civ-col"><i class="icon-list-alt"></i> My Private Workshops</h2>

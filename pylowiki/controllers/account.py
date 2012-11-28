@@ -14,7 +14,7 @@ from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import Workshop, getWorkshopByID, getWorkshopsByOwner
 from pylowiki.lib.db.motd import MOTD
-from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode, getAccountByName, getUserAccounts, isAccountAdmin
+from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode, getUserAccounts, isAccountAdmin
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.utils import urlify
@@ -134,15 +134,10 @@ class AccountController(BaseController):
                 errorMsg = "Organization Name required. "
                 error = 1 
             elif orgName != c.account['orgName']:
-                nameTest = getAccountByName(orgName)
-                if nameTest:
-                    error = 1
-                    errorMsg = errorMsg + "Organization name already in use by another account. "
-                else:
-                    change = 1
-                    changeMsg = changeMsg + "Organization name updated. "
-                    c.account['orgName'] = orgName
-                    c.account['url'] = url
+                change = 1
+                changeMsg = changeMsg + "Organization name updated. "
+                c.account['orgName'] = orgName
+                c.account['url'] = url
                     
 
         if 'orgEmail' in request.params:

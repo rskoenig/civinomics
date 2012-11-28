@@ -3,7 +3,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import redirect
 from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.db.account import getAccountByName, isAccountAdmin
+from pylowiki.lib.db.account import getAccountByCode, isAccountAdmin
 from pylowiki.lib.db.workshop import getWorkshopsByAccount
 from pylowiki.lib.utils import urlify
 
@@ -11,9 +11,10 @@ log = logging.getLogger(__name__)
 
 class HostController(BaseController):
 
-    def showHost(self, id1):
-        accountName = id1
-        account = getAccountByName(urlify(accountName))
+    def showHost(self, id1, id2):
+        accountCode = id1
+        accountName = id2
+        account = getAccountByCode(accountCode)
         if account and account['type'] != 'trial':
             c.account = account
             if 'user' in session and isAccountAdmin(c.authuser, c.account):

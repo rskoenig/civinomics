@@ -8,7 +8,6 @@
     tab2active = ""
     tab3active = ""
     tab4active = ""
-    tab5active = ""
 
     if c.tab == "tab1":
         tab1active = "active"
@@ -16,8 +15,6 @@
         tab2active = "active"
     elif c.tab == "tab3":
         tab3active = "active"
-    elif c.tab == "tab5":
-        tab5active = "active"
     elif c.tab == "tab4":
         tab4active = "active"
     else:
@@ -55,7 +52,7 @@
             % endif:
                 *
             </a></li>
-            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">4. Participants
+            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Participants
             % if c.scopeConfig:
                 <i class="icon-ok"></i>
             % endif:
@@ -63,7 +60,6 @@
                 *
             % endif
             </a></li>
-            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">5. Associates</a></li>
         </ul>
         </div><!-- span3 -->
         <div class="span9"> 
@@ -83,11 +79,8 @@
                 ${helpers.edit_background()}
                 </div><!-- tab-pane template tab3 -->
                 <div class="tab-pane ${tab4active}" id="tab4">
-                ${helpers.associates()}
-                </div><!-- tab-pane template tab4 -->
-                <div class="tab-pane ${tab5active}" id="tab5">
                 ${helpers.eligibility()}
-                </div><!-- tab-pane template tab5 -->
+                </div><!-- tab-pane template tab4 -->
             </div><!-- tab-content template -->
         % endif
         </div><!-- span9 -->

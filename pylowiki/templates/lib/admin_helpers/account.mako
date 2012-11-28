@@ -65,7 +65,7 @@
             </div> <!-- /.control-group -->
             % if c.account['orgName'] != 'none':
                 Your workshop host landing page URL:<br />
-                <a href="/host/${urlify(c.account['orgName'])}">http://civinomics.com/host/${urlify(c.account['orgName'])}</a><br />
+                <a href="/host/${c.account['urlCode']}/${urlify(c.account['orgName'])}">http://civinomics.com/host/${c.account['urlCode']}/${urlify(c.account['orgName'])}</a><br />
             % endif
             % if 'pictureHash' in c.account:
                 <%

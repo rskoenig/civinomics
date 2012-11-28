@@ -94,7 +94,7 @@ class SlideshowController(BaseController):
                     commit(s)
             session['confTab'] = "tab2"
             alert = {'type':'success'}
-            alert['title'] = 'New image uploaded and added to the slideshow.'
+            alert['title'] = 'Upload complete. Please add a title and caption to new slideshow images below.'
             session['alert'] = alert
             session.save()
             session.save() 

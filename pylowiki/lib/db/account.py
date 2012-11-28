@@ -47,15 +47,6 @@ def getAccountByCode(hash):
     except sa.orm.exc.NoResultFound:
         return False
 
-def getAccountByName(orgName):
-    name = urlify(orgName)
-    if name == 'none':
-        return False
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'account').filter(Thing.data.any(wc('url', name))).one()
-    except sa.orm.exc.NoResultFound:
-        return False
-
 # Setters
 def addHostToAccount(account, numHost):
     """add ability to host numHost additional objects on site"""
