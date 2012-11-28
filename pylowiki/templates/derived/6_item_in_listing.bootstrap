@@ -25,10 +25,28 @@
                 <div class="row-fluid">
                     ${self.showItemOwner(thing)}
                 </div><!--/.row-fluid-->
+                ${extraText(thing)}
             </div><!--/.browse-->
          </div><!--/.section-wrapper-->
       </div><!--/.span12-->
    </div><!--/.row-fluid-->
+</%def>
+
+<%def name="extraText(thing)">
+    % if thing.objType == 'discussion':
+        <div class="row-fluid">
+            <div class="span11 offset1">
+                ${thing['text']}
+            </div>
+        </div><!--/.row-fluid-->
+    % endif
+    % if thing.objType == 'resource':
+        <div class="row-fluid">
+            <div class="span11 offset1">
+                ${thing['comment']}
+            </div>
+        </div><!--/.row-fluid-->
+    % endif
 </%def>
 
 <%def name="showItemTitle(thing)">
@@ -46,6 +64,6 @@
 <%def name="showItemOwner(thing)">
     <div class="span11 offset1">
         ${lib_6.userImage(thing.owner, className="avatar")}
-        ${lib_6.userLink(thing.owner)} posted this
+        Posted by ${lib_6.userLink(thing.owner)} from ${lib_6.userGeoLink(thing.owner)}
     </div>
 </%def>
