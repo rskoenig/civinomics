@@ -137,6 +137,8 @@
          user = getUserByID(user.owner)
       imgStr += '<a href="'
       imgStr += userLink(user, raw=True)
+      if 'linkClass' in kwargs:
+         imgStr += '" class="%s"' %(kwargs['linkClass'])
       imgStr += '">'
       if 'revision' in kwargs:
          revision = kwargs['revision']

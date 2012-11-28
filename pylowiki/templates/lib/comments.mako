@@ -34,8 +34,9 @@
                     <i class="icon-minus"></i>
                     hide
                 </button>
-                ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar")}
-                ${lib_6.userLink(author, className="inline")} &mdash; ${numReplies} ${replies}
+                ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
+                ${lib_6.userLink(author, className="inline")} 
+                &mdash; ${numReplies} ${replies}
             ##</span>
         ##</div> <!--/.span12-->
     ##</div><!-- row-fluid -->
