@@ -6,11 +6,19 @@
 <%def name="upDownVote(thing)">
    <% rating = int(thing['ups']) - int(thing['downs']) %>
    % if 'user' in session and c.isScoped and not self.isReadOnly():
+      % if thing.objType != 'comment':
       <a href="/rate${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="vote upVote">
+      % else:
+      <a href="/rate${thing.objType}/${thing['urlCode']}/1" class="vote upVote">
+      % endif
          <i class="icon-chevron-up"></i>
       </a>
          <div class="centered">${rating}</div>
+      % if thing.objType != 'comment':
       <a href="/rate${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="vote downVote">
+      % else:
+      <a href="/rate${thing.objType}/${thing['urlCode']}/-1" class="vote downVote">
+      % endif
          <i class="icon-chevron-down"></i>
       </a>
    % else:

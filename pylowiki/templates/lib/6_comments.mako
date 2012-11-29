@@ -148,7 +148,14 @@
     %>
     <div id="${collapseID}" class="${thisClass}">
         <div class="accordion-inner">
-            ${comment['data']}
+            <div class="row-fluid">
+                <div class="span1">
+                    ${lib_6.upDownVote(comment)}
+                </div> <!--/.span1-->
+                <div class="span11">
+                    ${comment['data']}
+                </div> <!--/.span11-->
+            </div> <!--/.row-fluid-->
         </div>
     </div>
 </%def>
