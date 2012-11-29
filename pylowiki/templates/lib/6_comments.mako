@@ -10,13 +10,26 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="comments(thing, **kwargs)">
+########################################################################
+##
+## comments() is the only function called from outside of this library.
+##
+########################################################################
+<%def name="comments(thing, discussion, **kwargs)">
     <%
-        addCommentToDiscussion(thing)
+        if 'user' in session:
+            addCommentToDiscussion(thing)
+        displayDiscussion(thing, discussion)
     %>
 </%def>
 
+
 <%def name="addCommentToDiscussion(thing)">
+    ######################
+    ##
+    ## Add a comment to the root of the discussion tree
+    ##
+    ######################
     <div class="row-fluid">
         <div class="span12">
             <form action="/addComment">
@@ -35,6 +48,11 @@
 </%def>
 
 <%def name="commentClubRule()">
+    ######################
+    ##
+    ## Fun way of increasing stickiness and cultivating the right atmosphere
+    ##
+    ######################
     <%
         rules = []
         rules.append("Rule #1 of comment club: Don't call people Hitler.")
@@ -50,6 +68,86 @@
     ## TODO
 </%def>
 
-<%def name="sortCommentTree(tree)">
-    ## TODO
+<%def name="sortComments(commentList)">
+    <% return commentList %>
+</%def>
+
+<%def name="displayDiscussion(thing, discussion)">
+    <%
+        maxDepth = 4
+        curDepth = 0
+        if 'children' in discussion.keys():
+            recurseCommentTree(discussion, thing.objType, maxDepth, curDepth)
+    %>
+</%def>
+
+<%def name="recurseCommentTree(node, commentType, maxDepth, curDepth)">
+    <%
+        if not node: # if node == 0
+            return
+        if type(node) == int:
+            node = getComment(node)
+        if curDepth >= maxDepth or node['children'] == 0:
+            return
+
+        if commentType == 'thread':
+            if curDepth == 0:
+                childList = [int(node.id)]
+            else:
+                childList = map(int, node['children'].split(','))
+        else:
+            childList = map(int, node['children'].split(','))
+
+        childList = sortComments(childList)
+
+        for child in childList:
+            # Hack to resolve slight difference between discussion objects and comment objects
+            if type(child) == type(1L):
+                child = node.children[child]
+            if child == 0:
+                pass
+            try:
+                displayComment(child, commentType, maxDepth, curDepth)
+            except:
+                raise
+    %>
+</%def>
+
+<%def name="displayComment(comment, commentType, maxDepth, curDepth)">
+    <%
+        comment = getComment(comment)
+        if comment:
+            author = getUserByID(comment.owner)
+        else:
+            return
+        accordionID = 'accordion-%s' % comment['urlCode']
+        collapseID = 'collapse-%s' % comment['urlCode']
+    %>
+    <div class="accordion" id="${accordionID}">
+        ${commentHeading(comment, author, accordionID, collapseID)}
+        ${commentContent(comment, author, accordionID, collapseID)}
+    </div>
+</%def>
+
+<%def name="commentHeading(comment, author, accordionID, collapseID)">
+    <div class="accordion-heading">
+        <button class="accordion-toggle inline" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
+            Hide
+        </button>
+        ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
+        ${lib_6.userLink(author, className="inline")} 
+    </div> <!--/.accordion-heading-->
+</%def>
+
+<%def name="commentContent(comment, author, accordionID, collapseID)">
+    <%
+        thisClass = 'accordion-body collapse'
+        if comment['disabled'] == '0' and comment['deleted'] == '0':
+            thisClass += ' in'
+    %>
+    <div id="${collapseID}" class="${thisClass}">
+        <div class="accordion-inner">
+            ${comment['data']}
+        </div>
+    </div>
 </%def>

@@ -268,7 +268,7 @@ ul.listeners > li {
     display:inline-block;
 }
 
-.btn.btn-mini.inline.accordion-toggle{
+.accordion-toggle.inline{
     display:inline-block;
 }
 
