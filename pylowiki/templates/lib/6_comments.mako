@@ -135,7 +135,8 @@
             Hide
         </button>
         ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
-        ${lib_6.userLink(author, className="inline")} 
+        ${lib_6.userLink(author, className="inline")}
+        from ${lib_6.userGeoLink(author)}
     </div> <!--/.accordion-heading-->
 </%def>
 
