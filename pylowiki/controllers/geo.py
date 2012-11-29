@@ -3,7 +3,7 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from string import capwords
 from pylowiki.lib.utils import urlify
-from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCityList, getCountyInfo, getCountyList, getStateInfo, getStateList, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
 from pylowiki.lib.db.workshop import getWorkshopByID
 
 from pylowiki.lib.base import BaseController, render
@@ -282,4 +282,40 @@ class GeoController(BaseController):
         titles = getGeoTitles(postalCode, country)
         ##log.info('geoHandler titles %s' % titles)
         return json.dumps({'result':titles})
+        
+    def geoStateHandler(self, id1):
+        country = id1
+
+        states = getStateList(country)
+        sList = ""
+        for state in states:
+            if state['StateFullName'] != 'District of Columbia':
+                sList = sList + state['StateFullName'] + '|'
+        return json.dumps({'result':sList})
+
+    def geoCountyHandler(self, id1, id2):
+        country = id1
+        state = geoDeurlify(id2)
+        state = state.title()
+
+        counties = getCountyList(country, state)
+        cList = ""
+        for county in counties:
+            cList = cList + county['County'].title() + '|'
+        return json.dumps({'result':cList})
+
+
+    def geoCityHandler(self, id1, id2, id3):
+        country = id1
+        state = geoDeurlify(id2)
+        state = state.title()
+        county = geoDeurlify(id3)
+        county = county.upper()
+
+        cities = getCityList(country, state, county)
+        cList = ""
+        for city in cities:
+            cList = cList + city['City'].title() + '|'
+        return json.dumps({'result':cList})
+
 

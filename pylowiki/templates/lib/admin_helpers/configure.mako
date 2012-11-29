@@ -65,16 +65,8 @@
     %>
     <div class="well">
     <h3>Settings</h3>
-    % if c.w['startTime'] == '0000-00-00' and c.account['type'] != 'trial' and c.basicConfig and c.slideConfig and c.backConfig and c.scopeConfig:
-       <br />
-       <strong>Your Workshop is Ready to Publish</strong>
-        <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
-       <br />
-       <button type="submit" class="btn btn-warning" name="startWorkshop" value="Start" >Publish Workshop</button> &nbsp; &nbsp; &nbsp; <input type="checkbox" name="startWorkshop" value="VerifyStart" /> Verify Publish Workshop
-       </form>
-    % endif
-
-    <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <br />
+    <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
     <strong>Workshop Name:</strong>
     <br />
     <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>  <span class="help-inline"><span class="label label-important">Required</span></span>
@@ -85,11 +77,25 @@
     <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>  <span class="help-inline"><span class="label label-important">Required</span></span>
     <br /><br />
     % if wstarted == 0 and c.account and c.account['type'] != 'trial': 
-        <strong>Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
+
+        <strong>Workshop Geo Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
+        <br />
+        <br />
+        Help people in your area find your workshop in a search. Specify the geographic area affected by your workshop in the menus below.<br />
+        Earth - United States - State: <select name="geoTageState" id="geoTagState"> 
+        <option>Choose a state</option>
+        </select> - County: <select name="geoTageCounty" id="geoTagCounty">
+        <option>Choose a state first</option>
+        </select> - City: <select name="geoTageCity" id="geoTagCity">
+        <option>Choose a state first</option>
+        </select>
+        <br />
+        <br />
+        <strong>Workshop Category Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
         <br />
         <% tags = c.w['publicTags'] %>
         <% workshopTags = tags.split(',') %>
-        Choose at least one from the list below<br /> 
+        Help people find your workshop in a search with relevant category key word tags. Choose at least one category from the list below<br /> 
         <%
             if 'Environment' in workshopTags:
                 checked = 'checked'
@@ -243,7 +249,14 @@
 
 <%def name="intro()">
     Use these tools to configure your workshop before publishing.<br />
-    % if c.w['startTime'] == '0000-00-00':
+    % if c.w['startTime'] == '0000-00-00' and c.account['type'] != 'trial' and c.basicConfig and c.slideConfig and c.backConfig and c.scopeConfig:
+       <br />
+       <strong>Workshop Ready to Publish</strong>
+        <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
+       <br />
+       <button type="submit" class="btn btn-warning" name="startWorkshop" value="Start" >Publish Workshop</button><br />
+       </form>
+    % elif c.w['startTime'] == '0000-00-00':
        <br />Complete the checklist below.<br />
        Required information marked with * <br />
     % endif

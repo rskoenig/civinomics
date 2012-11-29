@@ -36,6 +36,15 @@ def getCityInfo( city, state, country ):
     c.close()
     db.close()
     return rlist
+    
+def getCityList( country, state, county ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT City from US_City WHERE StateFullName = %s and County = %s""",(state, county))
+    rlist = c.fetchall()
+    c.close()
+    db.close()
+    return rlist
 
 def getCountyInfo( county, state, country ):
     db = getDB()
@@ -45,12 +54,31 @@ def getCountyInfo( county, state, country ):
     c.close()
     db.close()
     return rlist
+    
+def getCountyList( county, state ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT County from US_County WHERE StateFullName = %s""",(state))
+    rlist = c.fetchall()
+    c.close()
+    db.close()
+    return rlist
+
 
 def getStateInfo( state, country ):
     db = getDB()
     c = db.cursor()
     c.execute("""SELECT * from US_State WHERE StateFullName = %s""",(state,))
     rlist = c.fetchone()
+    c.close()
+    db.close()
+    return rlist
+    
+def getStateList( country ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT StateFullName from US_State""")
+    rlist = c.fetchall()
     c.close()
     db.close()
     return rlist
@@ -63,7 +91,7 @@ def getCountryInfo( country ):
     c.close()
     db.close()
     return rlist
-
+    
 def getGeoScope( postalCode, country ):
     db = getDB()
     c = db.cursor()
