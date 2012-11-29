@@ -32,7 +32,7 @@ ${lib.return_to()}
                 ${extraText(thing)}
                 <div class="row-fluid">
                     <div class="span12">
-                        <h4 class="centered">Comments</h4>
+                        ##<h4 class="centered">Comments</h4>
                         <div class="row-fluid">
                             <div class="span11 offset1">
                                 ${comments(thing, c.discussion)}
@@ -71,9 +71,9 @@ ${lib.return_to()}
         <h4>
             <% 
                 if thing.objType == 'resource':
-                    link = '<a href="%s">%s</a>' %(thing['link'], thing['title'])
+                    link = '<a href="%s" class="listed-item-title">%s</a>' %(thing['link'], thing['title'])
                 else:
-                    link = '<a %s>%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+                    link = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
             %>
             ${link | n}
         </h4>

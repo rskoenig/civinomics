@@ -272,6 +272,14 @@ ul.listeners > li {
     display:inline-block;
 }
 
+.geoLink, .geoLink:hover{
+   color: #075D00;
+}
+
+.listed-item-title{
+   color: black;
+}
+
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
     float: left;
