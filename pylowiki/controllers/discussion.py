@@ -53,8 +53,6 @@ class DiscussionController(BaseController):
 
         c.facilitators = fList
 
-
-        log.info(c.w)
         c.title = c.w['title']
         c.code = c.w['urlCode']
         c.url = c.w['url']

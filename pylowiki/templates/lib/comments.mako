@@ -27,19 +27,13 @@
             replies += "ies"
         c.author = author
     %>
-    ##<div class="row-fluid">
-        ##<div class="span12">
-            ##<span>
-                <button class="btn btn-mini inline accordion-toggle" title="Hide comment and any replies" alt="Hide comment and any replies" data-toggle="collapse" data-parent="#comment-${comment['urlCode']}" href="#comment-data-${comment['urlCode']}">
-                    <i class="icon-minus"></i>
-                    hide
-                </button>
-                ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
-                ${lib_6.userLink(author, className="inline")} 
-                &mdash; ${numReplies} ${replies}
-            ##</span>
-        ##</div> <!--/.span12-->
-    ##</div><!-- row-fluid -->
+    <button class="btn btn-mini inline accordion-toggle" title="Hide comment and any replies" alt="Hide comment and any replies" data-toggle="collapse" data-parent="#comment-${comment['urlCode']}" href="#comment-data-${comment['urlCode']}">
+        <i class="icon-minus"></i>
+        hide
+    </button>
+    ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
+    ${lib_6.userLink(author, className="inline")} 
+    &mdash; ${numReplies} ${replies}
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
@@ -84,7 +78,7 @@
                     if comment['deleted'] == '1':
                         showDeleted()
                     else:
-                        if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+                        if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id) or c.authuser.id == comment.owner:
                             editComment(comment, counter)
                         else:
                             showComment(comment)
@@ -151,10 +145,12 @@
             % endif
         % endif
         <a data-toggle="collapse" data-target=".reply${comment['urlCode']}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
-        % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+        % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id) or c.authuser.id == comment.owner:
             <a id="edit${comment['urlCode']}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${comment['urlCode']}">
                 <i class="icon-white icon-edit"></i> edit
             </a>
+        % endif
+        % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
             <a href="/adminComment/${comment['urlCode']}" class="btn btn-mini btn-warning pull-right" title="Admin comment">
                 <i class="icon-white icon-list-alt"></i> admin
             </a>
@@ -163,7 +159,7 @@
     </p> <!-- /.btn-group -->
 </%def>
 
-## Displays the footer of the comment (post date, flag, reply, rate)
+## Displays the footer of the comment (post date, flag, reply)
 <%def name="commentFeedback(comment, commentType)">
     <div class="buttons collapse in hide${comment['urlCode']}">
         % if "user" in session:
@@ -336,29 +332,42 @@
                 </div>
                 <div class="accordion-body collapse in" id="comment-data-${comment['urlCode']}">
                     <div class="accordion-inner">
-                    <%
-                        if commentType == 'thread':
-                            commentContent(comment, counter, comType = commentType)
-                        else:
-                            commentContent(comment, counter)
-                    %>
+                        <div class="row-fluid">
+                            <div class="span1">
+                                ${displayRating(comment, commentType)}
+                            </div> <!--/.span1-->
+                            <div class="span11">
+                                <%
+                                    if commentType == 'thread':
+                                        commentContent(comment, counter, comType = commentType)
+                                    else:
+                                        commentContent(comment, counter)
+                                %>
+                                ${commentFeedback(comment, commentType)}
+                                ##############################
+                                ## 
+                                ## Depth-based pagination
+                                ## 
+                                ##############################
+                                ## curDepth starts counting at 0, so subtract 1 from maxDepth
+                                % if curDepth == maxDepth - 1:
+                                    <% children = map(int, comment['children'].split(',')) %>
+                                    % if children[0] != 0:
+                                            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/thread/${comment['urlCode']}" style="float:right;">Continue this thread --></a>
+                                        <br />
+                                    % endif
+                                % endif
+                    
+                                </div> <!-- /.civ-comment -->
+                                <div class="collapse in hide${comment['urlCode']}">
+                                    ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}
+                                </div>
+                            </div> <!--/.span11-->
+                        </div> <!--/.row-fluid-->
                     </div>
                 </div>
             </div>
         </div>
-        <div class="span1 civ-votey">
-            ${displayRating(comment, commentType)}
-        </div> <!-- /.civ-votey -->
-        <div class="span11">
-            <div class="${moderator}">
-                <%
-                    #userSays(comment, author)
-                    if commentType == 'thread':
-                        commentContent(comment, counter, comType = commentType)
-                    else:
-                        commentContent(comment, counter)
-                %>
-            ${commentFeedback(comment, commentType)}
 
             ##############################
             ## 
@@ -414,6 +423,7 @@
                 % endif
             % endif
 
+            <%doc>
             ##############################
             ## 
             ## Depth-based pagination
@@ -432,6 +442,7 @@
             <div class="collapse in hide${comment['urlCode']}">
                 ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}
             </div>
+            </%doc>
         </div> <!-- /.span11 -->
     </div> <!-- /.row-fluid -->
 </%def>
