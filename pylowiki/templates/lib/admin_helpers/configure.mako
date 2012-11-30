@@ -78,91 +78,6 @@
     <br /><br />
     % if wstarted == 0 and c.account and c.account['type'] != 'trial': 
 
-        <strong>Workshop Geo Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
-        <br />
-        <br />
-        Help people in your area find your workshop in a search. Specify the geographic area affected by your workshop in the menus below.<br />
-        Earth - United States - State: <select name="geoTageState" id="geoTagState"> 
-        <option>Choose a state</option>
-        </select> - County: <select name="geoTageCounty" id="geoTagCounty">
-        <option>Choose a state first</option>
-        </select> - City: <select name="geoTageCity" id="geoTagCity">
-        <option>Choose a state first</option>
-        </select>
-        <br />
-        <br />
-        <strong>Workshop Category Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
-        <br />
-        <% tags = c.w['publicTags'] %>
-        <% workshopTags = tags.split(',') %>
-        Help people find your workshop in a search with relevant category key word tags. Choose at least one category from the list below<br /> 
-        <%
-            if 'Environment' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-        %>
-        <input type="checkbox" name="publicTags" value="Environment" ${checked} /> Environment<br />
-        <%
-            if 'Government' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-        %>
-        <input type="checkbox" name="publicTags" value="Government" ${checked} /> Government <br />
-        <%
-            if 'Municipal Services' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-        %>
-        <input type="checkbox" name="publicTags" value="Municipal Services" ${checked} /> Municipal Services<br />
-        <%
-            if 'Economy' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-        %>
-        <input type="checkbox" name="publicTags" value="Economy" ${checked} /> Economy <br />
-
-        <%
-            if 'Infrastructure' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-        %>
-        <input type="checkbox" name="publicTags" value="Infrastructure" ${checked} /> Infrastructure <br />
-
-        <%
-            if 'Civil Rights' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-        %>
-        <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights<br /> 
-
-        <%
-            if 'Civic Response' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-        %>
-        <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response<br /> 
-
-        <%
-            if 'Business' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-        %>
-        <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
-        <br />
-        <br />
-        <strong>Additional Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
-        <br />
-        Enter at least one, separate multiple tags with a comma (140 char. max.):<br />
-        <input type="text" name = "memberTags" size="50" maxlength="140" value = "${c.w['memberTags']}"/>
-        <br /><br />
 
         <%
             if 'public_private' in c.w and (c.w['public_private'] == 'public' or c.w['public_private'] == 'trial'):
@@ -213,6 +128,111 @@
     <button type="submit" class="btn btn-warning">Save Basic Information</button>
     </form>
     </div><!-- well -->
+</%def>
+
+<%def name="tags()">
+    <div class="well">
+    <h3>Tags</h3>
+    <br />
+    Tags are descriptive key words used to categorize your workshop. This is useful for searches and makes it easier for members to find workshops of particular interest.<br />
+    <form name="workshop_tags" id="workshop_tags" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureTagsWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <div class="row">
+        <div class="span1">
+        </div><!-- span1 -->
+        <div class="span5">
+            <br />
+            <strong>Workshop Geo Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
+            <br /><br />
+            Specify the geographic area associated with your workshop:<br /><br />
+            <span id="countrySelect">
+                Country: <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+                <option>Choose a country</option>
+                <option>United States</option>
+                </select>
+            </span>
+            <span id="stateSelect"><br />or leave blank if your workshop is specific to the entire planet.</span><br />
+            <span id="countySelect"></span><br />
+            <span id="citySelect"></span><br />
+            <span id="underCity"></span><br />
+
+        </div><!-- span5 -->
+        <div class="span5">
+            <strong>Workshop Category Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
+            <br />
+            <% tags = c.w['publicTags'] %>
+            <% workshopTags = tags.split(',') %>
+           Choose at least one category:<br /> 
+           <%
+            if 'Environment' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+            %>
+            <input type="checkbox" name="publicTags" value="Environment" ${checked} /> Environment<br />
+            <%
+            if 'Government' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+            %>
+            <input type="checkbox" name="publicTags" value="Government" ${checked} /> Government <br />
+            <%
+            if 'Municipal Services' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+            %>
+            <input type="checkbox" name="publicTags" value="Municipal Services" ${checked} /> Municipal Services<br />
+            <%
+            if 'Economy' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+            %>
+            <input type="checkbox" name="publicTags" value="Economy" ${checked} /> Economy <br />
+
+            <%
+            if 'Infrastructure' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+            %>
+            <input type="checkbox" name="publicTags" value="Infrastructure" ${checked} /> Infrastructure <br />
+
+            <%
+            if 'Civil Rights' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+            %>
+            <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights<br /> 
+
+            <%
+            if 'Civic Response' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+            %>
+            <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response<br /> 
+
+            <%
+            if 'Business' in workshopTags:
+                checked = 'checked'
+            else:
+                checked = 'unchecked'
+            %>
+            <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
+            <br /><br />
+            <strong>Additional Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
+            <br />
+            Enter at least one, separate multiple tags with a comma (140 char. max.):<br />
+            <input type="text" name = "memberTags" size="50" maxlength="140" value = "${c.w['memberTags']}"/>
+            <br /><br />
+        </div><!-- span6 -->
+    </div><!-- row -->
+    </form>
+    </div><!-- well -->
+
 </%def>
 
 <%def name="eligibility()">

@@ -11,7 +11,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped
-from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles
+from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles, getStateList
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
@@ -1089,7 +1089,8 @@ class WorkshopController(BaseController):
 
         c.lastmoddate = c.revision.date
         c.lastmoduser = getUserByID(c.revision.owner)
-
+        
+        c.states = getStateList('United-States')
 
         return render('/derived/workshop_configure.bootstrap')
     

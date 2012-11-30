@@ -92,7 +92,7 @@ class SlideshowController(BaseController):
                     s = allSlides[0]
                     s['deleted'] = "1"
                     commit(s)
-            session['confTab'] = "tab2"
+            session['confTab'] = "tab3"
             alert = {'type':'success'}
             alert['title'] = 'Upload complete. Please add a title and caption to new slideshow images below.'
             session['alert'] = alert

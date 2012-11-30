@@ -40,25 +40,23 @@
             % endif:
                 *
             </a></li>
-            <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Slideshow 
+            <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Tags
+            % if c.tagConfig:
+                <i class="icon-ok"></i>
+            % endif:
+                *
+            </a></li>
+            <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Slideshow 
             % if c.slideConfig:
                 <i class="icon-ok"></i>
             % endif
                 *
             </a></li>
-            <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Background 
+            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Background 
             % if c.backConfig:
                 <i class="icon-ok"></i>
             % endif:
                 *
-            </a></li>
-            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Participants
-            % if c.scopeConfig:
-                <i class="icon-ok"></i>
-            % endif:
-            % if c.w['public_private'] != 'trial':
-                *
-            % endif
             </a></li>
         </ul>
         </div><!-- span3 -->
@@ -72,14 +70,14 @@
                     ${helpers.basic()}
                 </div><!-- tab-pane template tab1 -->
                 <div class="tab-pane ${tab2active}" id="tab2">
+                    ${helpers.tags()}
+                </div><!-- tab-pane template tab2 -->
+                <div class="tab-pane ${tab3active}" id="tab3">
                      ${slide_helpers.add_slides()}
                      ${slide_helpers.edit_slideshow()}
                 </div><!-- tab-pane template tab2 -->
-                <div class="tab-pane ${tab3active}" id="tab3">
-                ${helpers.edit_background()}
-                </div><!-- tab-pane template tab3 -->
                 <div class="tab-pane ${tab4active}" id="tab4">
-                ${helpers.eligibility()}
+                ${helpers.edit_background()}
                 </div><!-- tab-pane template tab4 -->
             </div><!-- tab-content template -->
         % endif
