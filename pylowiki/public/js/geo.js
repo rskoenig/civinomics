@@ -40,7 +40,7 @@ function geoTagCountyChange(){
         document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if your workshop is specific to the entire state.";
         document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";   
     } else {
-        document.getElementById("stateSelect").innerText = "";
+        document.getElementById("citySelect").innerText = "";
         var urlString = '/geo/cityList/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-");
         var cityList = $.ajax({
             type : 'POST',
@@ -50,13 +50,13 @@ function geoTagCountyChange(){
         var gobj = jQuery.parseJSON(cityList);
         if (gobj.result != "0") {
             var cities = gobj.result.split(/\|/);
-            var cityMenu = "City:  <select id=\"geoTagCity\" name=\"geoTagCity\" class=\"geoTagCity\" onChange=\"geoTagCityChange(); return 1;\"><option value=\"Choose a city\">Choose a city</option>";
+            var cityMenu = "<div class=\"span2\">City:</div><div class=\"span10\">  <select id=\"geoTagCity\" name=\"geoTagCity\" class=\"geoTagCity\" onChange=\"geoTagCityChange(); return 1;\"><option value=\"Choose a city\">Choose a city</option>";
             for(var i = 0;i < cities.length;i++){
                 if (cities[i] !== "") {
                     cityMenu = cityMenu + "<option value=\"" + cities[i] + "\">" + cities[i] + "</option>";
                 }
             }
-            cityMenu = cityMenu + "</select>";
+            cityMenu = cityMenu + "</select></div>";
             document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
             document.getElementById("citySelect").innerHTML = cityMenu;  
             document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "or leave blank if your workshop is specific to the entire county.";
@@ -74,7 +74,7 @@ function geoTagStateChange(){
         document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
         document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";  
     } else {
-        document.getElementById("stateSelect").innerText = "";
+        document.getElementById("countySelect").innerText = "";
         var urlString = '/geo/countyList/united-states/' + stateName.replace(" ", "-");
         var countyList = $.ajax({
             type : 'POST',
@@ -84,13 +84,13 @@ function geoTagStateChange(){
         var gobj = jQuery.parseJSON(countyList);
         if (gobj.result != "0") {
             var counties = gobj.result.split(/\|/);
-            var countyMenu = "County:  <select id=\"geoTagCounty\" name=\"geoTagCounty\" class=\"geoTagCounty\" onChange=\"geoTagCountyChange(); return 1;\"><option value=\"Choose a county\">Choose a county</option>";
+            var countyMenu = "<div class=\"span2\">County:</div><div class=\"span10\"><select id=\"geoTagCounty\" name=\"geoTagCounty\" class=\"geoTagCounty\" onChange=\"geoTagCountyChange(); return 1;\"><option value=\"Choose a county\">Choose a county</option>";
             for(var i = 0;i < counties.length;i++){
                 if (counties[i] !== "") {
                     countyMenu = countyMenu + "<option value=\"" + counties[i] + "\">" + counties[i] + "</option>";
                 }
             }
-            countyMenu = countyMenu + "</select>";
+            countyMenu = countyMenu + "</select></div>";
             document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
             document.getElementById("countySelect").innerHTML = countyMenu;  
             document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if your workshop is specific to the entire state.";
@@ -117,13 +117,13 @@ $('.geoTagCountry').change(function(e){
         var gobj = jQuery.parseJSON(stateList);
         if (gobj.result != "0") {
             var states = gobj.result.split(/\|/);
-            var stateMenu = "<br />State:  <select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"Choose a state\">Choose a state</option>";
+            var stateMenu = "<div class=\"span2\">State:</div><div class=\"span10\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"Choose a state\">Choose a state</option>";
             for(var i = 0;i < states.length;i++){
                 if (states[i] !== "") {
                     stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";
                 }
             }
-            stateMenu = stateMenu + "</select>";
+            stateMenu = stateMenu + "</select></div>";
             document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
             document.getElementById("stateSelect").innerHTML = stateMenu;            
             document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if your workshop is specific to the entire country.";

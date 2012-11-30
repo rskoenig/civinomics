@@ -144,16 +144,19 @@
             <strong>Workshop Geo Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
             <br /><br />
             Specify the geographic area associated with your workshop:<br /><br />
-            <span id="countrySelect">
-                Country: <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+            <div class="row"><span id="countrySelect">
+                <div class="span2">Country:</div><!-- span2 -->
+                <div class="span10"><select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
                 <option>Choose a country</option>
                 <option>United States</option>
                 </select>
+                </div><!-- span10 -->
             </span>
-            <span id="stateSelect"><br />or leave blank if your workshop is specific to the entire planet.</span><br />
-            <span id="countySelect"></span><br />
-            <span id="citySelect"></span><br />
-            <span id="underCity"></span><br />
+            </div><!-- row -->
+            <div class="row"><br /><span id="stateSelect">or leave blank if your workshop is specific to the entire planet.</span><br /></div><!-- row-fluid -->
+            <div class="row"><br /><span id="countySelect"></span><br /></div><!-- row -->
+            <div class="row"><br /><span id="citySelect"></span><br /></div><!-- row -->
+            <div class="row"><br /><span id="underCity"></span><br /></div><!-- row -->
 
         </div><!-- span5 -->
         <div class="span5">
