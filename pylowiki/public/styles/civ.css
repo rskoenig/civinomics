@@ -268,8 +268,9 @@ ul.listeners > li {
     display:inline-block;
 }
 
-.accordion-toggle.inline{
+.accordion-toggle.inline.btn.btn-mini{
     display:inline-block;
+    padding: 1px 6px;
 }
 
 .geoLink, .geoLink:hover{

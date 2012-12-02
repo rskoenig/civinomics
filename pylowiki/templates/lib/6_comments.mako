@@ -64,10 +64,6 @@
     ${rules[ruleNum] | n}
 </%def>
 
-<%def name="commentHeader(comment)">
-    ## TODO
-</%def>
-
 <%def name="sortComments(commentList)">
     <% return commentList %>
 </%def>
@@ -131,7 +127,7 @@
 
 <%def name="commentHeading(comment, author, accordionID, collapseID)">
     <div class="accordion-heading">
-        <button class="accordion-toggle inline" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
+        <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
             Hide
         </button>
         ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
