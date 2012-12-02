@@ -36,9 +36,10 @@ function geoTagCountyChange(){
     var stateSelectIndex = document.getElementById("geoTagState").selectedIndex;
     var stateSelect = document.getElementById("geoTagState");
     var stateName = stateSelect.options[stateSelectIndex].value;
+    document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";
+    document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
     if (selectIndex === 0) {
-        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if your workshop is specific to the entire state.";
-        document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";   
+        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if your workshop is specific to the entire state."; 
     } else {
         document.getElementById("citySelect").innerText = "";
         var urlString = '/geo/cityList/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-");
@@ -50,7 +51,7 @@ function geoTagCountyChange(){
         var gobj = jQuery.parseJSON(cityList);
         if (gobj.result != "0") {
             var cities = gobj.result.split(/\|/);
-            var cityMenu = "<div class=\"span2\">City:</div><div class=\"span10\">  <select id=\"geoTagCity\" name=\"geoTagCity\" class=\"geoTagCity\" onChange=\"geoTagCityChange(); return 1;\"><option value=\"Choose a city\">Choose a city</option>";
+            var cityMenu = "<div class=\"span2\">City:</div><div class=\"span10\">  <select id=\"geoTagCity\" name=\"geoTagCity\" class=\"geoTagCity\" onChange=\"geoTagCityChange(); return 1;\"><option value=\"0\">Select a city</option>";
             for(var i = 0;i < cities.length;i++){
                 if (cities[i] !== "") {
                     cityMenu = cityMenu + "<option value=\"" + cities[i] + "\">" + cities[i] + "</option>";
@@ -69,10 +70,11 @@ function geoTagStateChange(){
     var selectIndex = document.getElementById("geoTagState").selectedIndex;
     var stateSelect = document.getElementById("geoTagState");
     var stateName = stateSelect.options[selectIndex].value;
+    document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";
+    document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
+    document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
     if (selectIndex === 0) {
         document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if your workshop is specific to the entire country.";
-        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
-        document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";  
     } else {
         document.getElementById("countySelect").innerText = "";
         var urlString = '/geo/countyList/united-states/' + stateName.replace(" ", "-");
@@ -84,7 +86,7 @@ function geoTagStateChange(){
         var gobj = jQuery.parseJSON(countyList);
         if (gobj.result != "0") {
             var counties = gobj.result.split(/\|/);
-            var countyMenu = "<div class=\"span2\">County:</div><div class=\"span10\"><select id=\"geoTagCounty\" name=\"geoTagCounty\" class=\"geoTagCounty\" onChange=\"geoTagCountyChange(); return 1;\"><option value=\"Choose a county\">Choose a county</option>";
+            var countyMenu = "<div class=\"span2\">County:</div><div class=\"span10\"><select id=\"geoTagCounty\" name=\"geoTagCounty\" class=\"geoTagCounty\" onChange=\"geoTagCountyChange(); return 1;\"><option value=\"0\">Select a county</option>";
             for(var i = 0;i < counties.length;i++){
                 if (counties[i] !== "") {
                     countyMenu = countyMenu + "<option value=\"" + counties[i] + "\">" + counties[i] + "</option>";
@@ -103,9 +105,11 @@ $('.geoTagCountry').change(function(e){
     e.preventDefault();
     var selectIndex = document.getElementById("geoTagCountry").selectedIndex;
     if (selectIndex === 0) {
+        document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
         document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "or leave blank if your workshop is specific to the entire planet.";
         document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
-        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";       
+        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
+        document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";
     }
     if (selectIndex === 1) {
         var urlString = '/geo/stateList/united-states';
@@ -117,7 +121,7 @@ $('.geoTagCountry').change(function(e){
         var gobj = jQuery.parseJSON(stateList);
         if (gobj.result != "0") {
             var states = gobj.result.split(/\|/);
-            var stateMenu = "<div class=\"span2\">State:</div><div class=\"span10\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"Choose a state\">Choose a state</option>";
+            var stateMenu = "<div class=\"span2\">State:</div><div class=\"span10\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
             for(var i = 0;i < states.length;i++){
                 if (states[i] !== "") {
                     stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";

@@ -559,10 +559,6 @@
             <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
             <br/>
             ${nav_thing(page)}
-            <!--
-            <img src="/images/glyphicons_pro/glyphicons_halflings/png/glyphicons_halflings_134_globe.png"> ${c.w['publicScopeTitle']} &nbsp; &nbsp; 
-            <i class="icon icon-cog"></i> ${c.w['goals']}
-            -->
         </div><!-- span9 -->
    </div><!-- row-fluid -->
 </%def>

@@ -1,6 +1,7 @@
 <%!
-    from pylowiki.lib.db.geoInfo import getGeoTitles, getWScopesByWorkshopID
+    from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList
     from pylowiki.lib.db.user import getUserByEmail
+    from pylowiki.lib.db.workshop import getCategoryTagList
 %>
 
 <%def name="fields_alert()">
@@ -94,8 +95,7 @@
         <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
         This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
     % else:
-        <p><strong>Tags</strong>: ${c.w['publicTags']}, ${c.w['memberTags']}</p>
-        <p><strong>Public Sphere</strong>: ${c.w['publicScopeTitle']}</p>
+        <p><strong>Tags</strong>: ${c.w['categoryTags']}, ${c.w['memberTags']}</p>
         <p><strong>Workshop Type</strong>: ${c.w['public_private']}<p>
     % endif
     <%
@@ -134,7 +134,7 @@
     <div class="well">
     <h3>Tags</h3>
     <br />
-    Tags are descriptive key words used to categorize your workshop. This is useful for searches and makes it easier for members to find workshops of particular interest.<br />
+    Tags are descriptive key words used to categorize your workshop.<br />
     <form name="workshop_tags" id="workshop_tags" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureTagsWorkshopHandler" enctype="multipart/form-data" method="post" >
     <div class="row">
         <div class="span1">
@@ -144,87 +144,115 @@
             <strong>Workshop Geo Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
             <br /><br />
             Specify the geographic area associated with your workshop:<br /><br />
+            <% 
+                countrySelected = ""
+                countyMessage = ""
+                cityMessage = ""
+                underCityMessage = ""
+                if c.country != "0":
+                    countrySelected = "selected"
+                    states = getStateList("united-states")
+                    countyMessage = "or leave blank if your workshop is specific to the entire country."
+                else:
+                    countrySelected = ""
+                endif
+            %>
+
             <div class="row"><span id="countrySelect">
                 <div class="span2">Country:</div><!-- span2 -->
                 <div class="span10"><select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
-                <option>Choose a country</option>
-                <option>United States</option>
+                <option value="0">Select a country</option>
+                <option ${countrySelected}>United States</option>
                 </select>
                 </div><!-- span10 -->
             </span>
             </div><!-- row -->
-            <div class="row"><br /><span id="stateSelect">or leave blank if your workshop is specific to the entire planet.</span><br /></div><!-- row-fluid -->
-            <div class="row"><br /><span id="countySelect"></span><br /></div><!-- row -->
-            <div class="row"><br /><span id="citySelect"></span><br /></div><!-- row -->
-            <div class="row"><br /><span id="underCity"></span><br /></div><!-- row -->
+            <div class="row"><br /><span id="stateSelect">
+            % if c.country != "0":
+                <div class="span2">State:</div><div class="span10">
+                <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
+                <option value="0">Select a state</option>
+                % for state in states:
+                    % if state != 'District of Columbia':
+                        % if c.state == state['StateFullName']:
+                            <% stateSelected = "selected" %>
+                        % else:
+                            <% stateSelected = "" %>
+                        % endif
+                        <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
+                    % endif
+                % endfor
+                </select>
+                </div><!-- span10 -->
+            % else:
+                or leave blank if your workshop is specific to the entire planet.
+            % endif
+            </span><br /></div><!-- row-fluid -->
+            <div class="row"><br /><span id="countySelect">
+            % if c.state != "0":
+                <% counties = getCountyList("united-states", c.state) %>
+                <% cityMessage = "or leave blank if your workshop is specific to the entire state." %>
+                <div class="span2">County:</div><div class="span10">
+                <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
+                <option value="0">Select a county</option>
+                % for county in counties:
+                    % if c.county == county['County'].title():
+                        <% countySelected = "selected" %>
+                    % else:
+                        <% countySelected = "" %>
+                    % endif
+                    <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
+                % endfor
+                </select>
+                </div><!-- span10 -->
+            % else:
+                <% cityMessage = "" %>
+                ${countyMessage}
+            % endif
+            </span><br /></div><!-- row -->
+            <div class="row"><br /><span id="citySelect">
+            % if c.county != "0":
+                <% cities = getCityList("united-states", c.state, c.county) %>
+                <% underCityMessage = "or leave blank if your workshop is specific to the entire county." %>
+                <div class="span2">City:</div><div class="span10">
+                <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+                <option value="0">Select a city</option>
+                % for city in cities:
+                    % if c.city == city['City'].title():
+                        <% citySelected = "selected" %>
+                    % else:
+                        <% citySelected = "" %>
+                    % endif
+                    <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
+                % endfor
+                </select>
+                </div><!-- span10 -->
+            % else:
+                <% underCityMessage = "" %>
+                ${cityMessage}
+            % endif
+            </span><br /></div><!-- row -->
+            <div class="row"><br /><span id="underCity">${underCityMessage}</span><br /></div><!-- row -->
+            <br />
+            <button type="submit" class="btn btn-warning">Save All Tags</button>
 
         </div><!-- span5 -->
         <div class="span5">
             <strong>Workshop Category Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
             <br />
-            <% tags = c.w['publicTags'] %>
-            <% workshopTags = tags.split(',') %>
-           Choose at least one category:<br /> 
-           <%
-            if 'Environment' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Environment" ${checked} /> Environment<br />
-            <%
-            if 'Government' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Government" ${checked} /> Government <br />
-            <%
-            if 'Municipal Services' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Municipal Services" ${checked} /> Municipal Services<br />
-            <%
-            if 'Economy' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Economy" ${checked} /> Economy <br />
+            <% tagList = getCategoryTagList() %>
+            <% tags = c.w['categoryTags'] %>
+            <% workshopTags = tags.split('|') %>
+           Choose at least one category:<br />
+            % for tag in tagList:
+                % if tag in workshopTags:
+                    <% checked = 'checked' %>
+                % else:
+                    <% checked = 'unchecked' %>
+                % endif
+                <input type="checkbox" name="categoryTags" value="${tag}" ${checked} /> ${tag}<br />
+            % endfor
 
-            <%
-            if 'Infrastructure' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Infrastructure" ${checked} /> Infrastructure <br />
-
-            <%
-            if 'Civil Rights' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Civil Rights" ${checked} /> Civil Rights<br /> 
-
-            <%
-            if 'Civic Response' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Civic Response" ${checked} /> Civic Response<br /> 
-
-            <%
-            if 'Business' in workshopTags:
-                checked = 'checked'
-            else:
-                checked = 'unchecked'
-            %>
-            <input type="checkbox" name="publicTags" value="Business" ${checked} /> Business
             <br /><br />
             <strong>Additional Workshop Tags:</strong>  <span class="help-inline"><span class="label label-important">Required</span></span>
             <br />
@@ -271,8 +299,8 @@
 </%def>
 
 <%def name="intro()">
-    Use these tools to configure your workshop before publishing.<br />
-    % if c.w['startTime'] == '0000-00-00' and c.account['type'] != 'trial' and c.basicConfig and c.slideConfig and c.backConfig and c.scopeConfig:
+    Use these forms to configure your workshop.<br />
+    % if c.w['startTime'] == '0000-00-00' and c.account['type'] != 'trial' and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
        <br />
        <strong>Workshop Ready to Publish</strong>
         <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
@@ -280,8 +308,7 @@
        <button type="submit" class="btn btn-warning" name="startWorkshop" value="Start" >Publish Workshop</button><br />
        </form>
     % elif c.w['startTime'] == '0000-00-00':
-       <br />Complete the checklist below.<br />
-       Required information marked with * <br />
+       <br />Checklist must be completed before the workshop can be published.<br />
     % endif
 </%def>
 
@@ -309,102 +336,3 @@
     % endif
     </form>
 </%def>
-
-<%def name="public()">
-    <h3>Participants: Public</h3>
-    <% 
-        if c.w['scopeMethod'] == 'publicScope':
-            sActive = "active"
-            mActive = "inactive"
-        else:
-            sActive = "inactive"
-            mActive = "active"
-    %>
-    % if c.w['startTime'] == '0000-00-00':
-    <p>This establishes the geographic area, or <em>public sphere</em>, in which people need to reside to participate in this workshop.</p>
-    <p>The public sphere for this workshop can be defined either as a single jurisdiction with a central "home" postal, or as a set of multiple postal codes.</p>
-    Choose which method of public sphere to use for this workshop, Single Jurisdiction or Multiple Postal Codes, then fill out the information in the appropriate form below and save it.
-
-        <div class="tabbable">
-        <ul class="nav nav-tabs">
-        <li class="${sActive}">
-            <a href="#tab11" data-toggle="tab">Single Jurisdiction</a>
-        </li>
-        <li class="${mActive}">
-            <a href="#tab12" data-toggle="tab">Multiple Postal Codes</a>
-        </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane ${sActive} well" id="tab11">
-                <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureSingleWorkshopHandler" enctype="multipart/form-data" method="post" >
-                <% titles = getGeoTitles(c.w['publicPostal'], 'united-states') %>
-                <% sList = titles.split('|') %>
-                <br /> <br />
-                Enter New Home Postal Code: <input type="text" id="publicPostal" name="publicPostal" value="${c.w['publicPostal']}" style="width:60px;"> <button class="btn btn-primary btn-mini geoButton">Check New Postal Code</button>
-                <br />
-                <span id="werror"></span>
-                <br />
-                Public Sphere: (choose one)<br><br>
-                <% 
-                    if c.w['publicScope'] == '10':
-                        checked = 'checked'
-                    else:
-                        checked = 'unchecked'
-                %>
-                <input type="radio" name = "publicScope" value = "10" ${checked} onClick="clearZipList()" /> Postal Code <span id="wpostal">${sList[9]}</span><br>
-                <%
-                    if c.w['publicScope'] == '09':
-                       checked = 'checked'
-                    else:
-                       checked = 'unchecked'
-                %>
-                <input type="radio" name = "publicScope" value = "09" ${checked} onClick="clearZipList()" /> City of <span id="wcity">${sList[8]}</span><br> 
-                <% 
-                    if c.w['publicScope'] == '07':
-                       checked = 'checked'
-                    else:
-                       checked = 'unchecked'
-                %>
-                <input type="radio" name = "publicScope" value = "07" ${checked} onClick="clearZipList()" /> County of <span id="wcounty">${sList[6]}</span><br>
-                <%
-                    if c.w['publicScope'] == '05':
-                       checked = 'checked'
-                    else:
-                       checked = 'unchecked'
-                %>
-                <input type="radio" name = "publicScope" value = "05" ${checked} onClick="clearZipList()" /> State of <span id="wstate">${sList[4]}</span><br>
-                <%
-                    if c.w['publicScope'] == '03':
-                       checked = 'checked'
-                    else:
-                       checked = 'unchecked'
-                %>
-                 <input type="radio" name = "publicScope" value = "03" ${checked} onClick="clearZipList()" /> Country of <span id="wcountry">${sList[2]}</span><br>
-                <%
-                    if c.w['publicScope'] == '01':
-                       checked = 'checked'
-                    else:
-                       checked = 'unchecked'
-                %>
-                <input type="radio" name = "publicScope" value = "01" ${checked} onClick="clearZipList()" /> The Planet<br>
-                <br />
-                <button type="submit" class="btn btn-warning">Save Single Jurisdiction</button>
-                </form>
-            </div><!-- tab-pane tab11 configure -->
-            <div class="tab-pane well ${mActive}" id="tab12">
-                <form name="edit_issue" id="edit_issue" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureMultipleWorkshopHandler" enctype="multipart/form-data" method="post" >
-                <br /><br />
-                Enter at least one postal code. Separate multiple postal codes with a comma.<br>
-                <textarea name = "publicPostalList" onClick="clearEligibleCheckboxes(document.edit_issue.publicScope)" rows="4" cols="60">${c.w['publicPostalList']}</textarea><br /><br />
-                <button type="submit" class="btn btn-warning">Save Multiple Postal Codes</button>
-                </form>
-            </div><!-- tab-pane tab12 configure -->
-        </div><!-- tab-content configure -->
-        </div><!-- tabbable configure -->
-    % else:
-        This workshop is visible to the public.<br /> 
-        Civinomics members residing within the public sphere of the <strong>${c.w['publicScopeTitle']}</strong> may participate in this workshop.<br />
-        
-    % endif
-</%def>
-

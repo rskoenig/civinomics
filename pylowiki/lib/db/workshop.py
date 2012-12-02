@@ -153,53 +153,34 @@ def getWorkshopPostsSince(code, url, memberDatetime):
         returnList = postList + commentList
 
         return returnList
+        
+def getCategoryTagList():
+    cTagList = []
+    cTagList.append('Business')
+    cTagList.append('Civil Rights')
+    cTagList.append('Economy')
+    cTagList.append('Education')
+    cTagList.append('Environment')
+    cTagList.append('Government')
+    cTagList.append('Health')
+    cTagList.append('Housing')
+    cTagList.append('Infrastructure')
+    cTagList.append('Land Use')
+    cTagList.append('Municipal Services')
+    cTagList.append('Transportation')
+    return cTagList
 
-def isScoped(user, workshop):
-   upostal = user['postalCode']
-       
-   if workshop['public_private'] == 'private':
+
+def isScoped(user, workshop):   
+    if workshop['public_private'] != 'public':
         pTest = getPrivateMember(workshop['urlCode'], user['email'])
         if pTest:
            return True
            
-   if isFacilitator(user.id, workshop.id):
+    if isFacilitator(user.id, workshop.id):
         return True        
        
-   if workshop['scopeMethod'] == 'publicPostalList':
-      pstring = workshop['publicPostalList']
-      pstring = pstring.replace(' ', ',')
-      plist = pstring.split(',')
-      if upostal in plist:
-         return True
-      else:
-         return False
-   elif workshop['scopeMethod'] == 'publicScope':
-      wScope = int(workshop['publicScope'])
-      ##log.info('wScope is %s'%wScope)
-      offset = 10 - wScope
-      offset = offset * -1
-      # for indexing offset
-      wScope =- 1
-      wPostal = workshop['publicPostal']
-      wScopeString = getGeoScope(wPostal, 'United States')
-      ##log.info('wScopeString is %s'%wScopeString)
-      wScopeList = wScopeString.split('|')
-      uScopeString = getGeoScope(upostal, 'United States')
-      ##log.info('uScopeString is %s'%uScopeString)
-      uScopeList = uScopeString.split('|')
-      ##log.info('offset is %s wScopeList is %s and uScopeList is %s'%(offset, wScopeList[:offset], uScopeList[:offset]))
-      if offset == 0:
-          if wScopeList[wScope] == uScopeList[wScope]:
-              return True
-          else:
-              return False
-      else:
-          if wScopeList[:offset] == uScopeList[:offset]:
-              return True
-          else:
-              return False
-   else:
-      return False
+    return False
 
 class Workshop(object):
     # title -> A string
@@ -218,20 +199,9 @@ class Workshop(object):
         w['goals'] = 'No goals set'
         w['numResources'] = 1
         w['public_private'] = publicPrivate
-       
-        w['publicScope'] = 10
-        w['publicScopeTitle'] = 'postal code ' + c.authuser['postalCode']
-        w['publicPostal'] = c.authuser['postalCode']
-        w['publicPostalList'] = ''
-        # one of publicScope, publicPostalList, privateEmail, trial
-        if publicPrivate == 'trial':
-            w['scopeMethod'] = 'trial'
-        else:
-            w['scopeMethod'] = 'publicScope'
- 
-        w['publicTags'] = 'none'
-        w['memberTags'] = 'none'
-
+        w['categoryTags'] = ''
+        w['geoTags'] = ''
+        w['memberTags'] = ''
         w['allowSuggestions'] = 1
         w['allowResources'] = 1
         commit(w)

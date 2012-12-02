@@ -11,7 +11,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped
-from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles, getStateList
+from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles, getStateList, getCountyList, getCityList
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
@@ -78,28 +78,11 @@ class NoGoalsSet(validators.FancyValidator):
         if len(value) > self.max:
             raise validators.Invalid(self.message("too_many", state, max=self.max), value, state)
 
-class NotBothPublicInputs(validators.FancyValidator):
-
-    def validate_python(self, field_dict, state):
-
-        pubScope = field_dict['publicScope']
-        pubPostList = field_dict['publicPostalList']
-
-        if pubScope and pubPostList:
-            h.flash("Public scope error.", 'error')
-            raise formencode.Invalid("Please select a public scope, or enter a list of zipcodes.", field_dict, state, error_dict={'publicScope':'Please select a public scope,', 'publicPostalList':'OR enter a list of zipcodes.'})
-
 class editWorkshopForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
     title = validators.String(strip=True, not_empty=True, messages = {'empty' : 'Please provide a name for your workshop.'})
     goals = NoGoalsSet()
-    publicScope = formencode.validators.String(if_missing=None)
-    publicPostalList = formencode.validators.String(if_missing=None)
-    chained_validators = [validators.RequireIfPresent('publicScope', missing="publicPostalList", messages = {'empty' : 'Please select one of these options OR provide a list of zipcodes in the next field.'})]
-    chained_validators = [validators.RequireIfPresent('publicPostalList', missing="publicScope", messages = {'empty' : 'Please select one of these options OR provide a list of zipcodes in the next field.'})]
-    chained_validators = [NotBothPublicInputs()]
-    publicPostalList = CommaSepList(cannot_be_empty=False)
     memberTags = CommaSepList(cannot_be_empty=True)
 
 class addWorkshopForm(formencode.Schema):
@@ -246,32 +229,6 @@ class WorkshopController(BaseController):
                     werror = 1
                     werrMsg += 'Public or Private? '
             
-                if 'publicTags' in request.params:
-                    publicTags = request.params.getall('publicTags')
-                    wpTags = ','.join(publicTags)
-                    if wpTags and wpTags != c.w['publicTags']:
-                        wchanges = 1
-                        weventMsg = weventMsg + "Updated workshop tags."
-                        c.w['publicTags'] = wpTags
-                else:
-                    werror = 1
-                    werrMsg += 'System Tags '
-   
-                if 'memberTags' in request.params:
-                    wMemberTags = request.params['memberTags']
-                    wMemberTags = wMemberTags.lstrip()
-                    wMemberTags = wMemberTags.rstrip()
-                    if wMemberTags and c.w['memberTags'] != wMemberTags:
-                        wchanges = 1
-                        weventMsg = weventMsg + "Updated facilitator contributed tags."
-                    if wMemberTags == 'none':
-                        werror = 1
-                        werrMsg += 'Member Tags '
-
-                    c.w['memberTags'] = wMemberTags
-                else:
-                    werror = 1
-                    werrMsg += 'Member Tags '
 
         # save successful changes
         if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
@@ -288,168 +245,102 @@ class WorkshopController(BaseController):
                 commit(c.w)
 
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
-
+        
     @h.login_required
-    def configureSingleWorkshopHandler(self, id1, id2):
+    def configureTagsWorkshopHandler(self, id1, id2):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        session['confTab'] = "tab4"
+        session['confTab'] = "tab2"
         session.save()
 
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
+            ""        
         else:
             return(redirect("/"))
-
-
-
-
-        slideshow = getSlideshow(c.w['mainSlideshow_id'])
-        c.slideshow = getAllSlides(slideshow.id)
-
+            
         werror = 0
-        wstarted = 0
-        if c.w['startTime'] != '0000-00-00':
-           wstarted = 1
-
-        ##log.info('wstarted is %s' % wstarted)
-
-        # Is there anything more painful than form validation?
-        # I don't think so...
-
-        if 'publicPostal' in request.params:
-           pTest = request.params['publicPostal']
-           sTest = getGeoScope(pTest, 'united-states')
-           if sTest:
-               c.w['publicPostal'] = request.params['publicPostal']
-           else:
-              werror = 1
-              werrMsg = 'Postal Code of ' + pTest + ' does not exist.'
-        else:
-           werror = 1
-           werrMsg = 'No Workshop Home Postal'
-
-        if 'publicScope' in request.params:
-           c.w['publicScope'] = request.params['publicScope']
-           c.w['scopeMethod'] = 'publicScope'
-           c.w['publicScopeTitle'] = getScopeTitle(c.w['publicPostal'], 'United States', c.w['publicScope'])
-           c.w['publicPostalList'] = ''
-        else:
-           werror = 1
-           werrMsg = 'No Workshop Public Sphere'
-           alert = {'type':'error'}
-           alert['title'] = werrMsg
-           session['alert'] = alert
-           session.save()
-           return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
-        if isFacilitator(c.authuser.id, c.w.id) and werror == 0:
-           alert = {'type':'success'}
-           alert['title'] = "Workshop Eligibility Saved!" + c.tab
-           session['alert'] = alert
-           session.save()
-           Event('Workshop Config Updated by %s'%c.authuser['name'], 'Public Sphere updated.', c.w, c.authuser)
-           commit(c.w)
-        else:
-           alert = {'type':'error'}
-           alert['title'] = werrMsg
-           session['alert'] = alert
-           session.save()
-
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
-
-    @h.login_required
-    def configureMultipleWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.title = "Configure Workshop"
-        session['confTab'] = "tab4"
-        session.save()
-        c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
-        else:
-            return(redirect("/"))
-
-        slideshow = getSlideshow(c.w['mainSlideshow_id'])
-        c.slideshow = getAllSlides(slideshow.id)
-
-        werror = 0
+        wchanges = 0
+        weventMsg = ''
         werrMsg = 'Missing Info: '
         wstarted = 0
         if c.w['startTime'] != '0000-00-00':
            wstarted = 1
 
-        ##log.info('wstarted is %s' % wstarted)
-
-        # Is there anything more painful than form validation?
-        # I don't think so...
-
-        if 'publicPostalList' in request.params:
-           pString = request.params['publicPostalList']
-           log.info('publicPostalList is %s' % pString)
-           pString = pString.lstrip()
-           pString = pString.rstrip()
-           pString = pString.replace(' ', ',')
-           pString = pString.replace(',,', ',')
-           pString = pString.replace('    ', ',')
-           pList = pString.split(',')
-           pBad = []
-           pGood = []
-           for pCode in pList:
-              pTest = getGeoTitles(pCode, 'united-states')
-              log.info('pCode is %s pString is %s pTest is %s'%(pCode,pString, pTest))
-              if pTest != '0':
-                  log.info('adding pGood %s'%pCode)
-                  pGood.append(pCode)
-              else:
-                  log.info('adding pBad %s'%pCode)
-                  pBad.append(pCode)
-        if pBad:
-            werrMsg = ','.join(pBad)
-            ##werror = 1
-
-        if pGood:
-            c.w['publicPostalList'] = ','.join(pGood)
-            log.info('publicPostalList is %s'%c.w['publicPostalList'])
-
-        if pList != '' and pGood:
-            c.w['scopeMethod'] = 'publicPostalList'
-            c.w['publicScope'] = '00'
-
+        if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
+            geoTagCountry = request.params['geoTagCountry']
         else:
-          werror = 1
-          werrMsg += 'Public Postal List '
-           
-        if c.w['scopeMethod'] == 'publicPostalList':
-          c.w['publicScopeTitle'] = 'postal codes of ' + c.w['publicPostalList']
-          c.w['publicScope'] = ''
+            geoTagCountry = "0"
+            
+        if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
+            geoTagState = request.params['geoTagState']
+        else:
+            geoTagState = "0"
+            
+        if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
+            geoTagCounty = request.params['geoTagCounty']
+        else:
+            geoTagCounty = "0"
+            
+        if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
+            geoTagCity = request.params['geoTagCity']
+        else:
+            geoTagCity = "0"
+            
+        # assemble a workshop scope string 
+        # ||country||state||county||city|zip
+        geoTagString = "||" + geoTagCountry + "||" + geoTagState + "||" + geoTagCounty + "||" + geoTagCity + "|0"
+        if geoTagString != c.w['geoTags']:
+            wchanges = 1
+            weventMsg = weventMsg + "Updated geo tags."
+            c.w['geoTags'] = geoTagString        
+            
+        if 'categoryTags' in request.params:
+            categoryTags = request.params.getall('categoryTags')
+            cTags = '|'.join(categoryTags)
+            if cTags and cTags != c.w['categoryTags']:
+                wchanges = 1
+                weventMsg = weventMsg + "Updated category tags."
+                c.w['categoryTags'] = cTags
+        else:
+            werror = 1
+            werrMsg += 'Category Tags '
+   
+        if 'memberTags' in request.params:
+            wMemberTags = request.params['memberTags']
+            wMemberTags = wMemberTags.lstrip()
+            wMemberTags = wMemberTags.rstrip()
+            if wMemberTags and c.w['memberTags'] != wMemberTags:
+                wchanges = 1
+                weventMsg = weventMsg + "Updated additional contributed tags."
+            if wMemberTags == 'none':
+                werror = 1
+                werrMsg += 'Additional Tags '
 
-        if werror == 1:
-            alert = {'type':'error'}
-            alert['title'] = werrMsg
-            session['alert'] = alert
-            session.save()
-            return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))  #c.form_result[''], c.form_result[''],)
-
-        if isFacilitator(c.authuser.id, c.w.id) and werror == 0:
-            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Public Sphere postal code list updated.', c.w, c.authuser)
+            c.w['memberTags'] = wMemberTags
+        else:
+            werror = 1
+            werrMsg += 'Additional Tags '
+            
+        # save successful changes
+        if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
             commit(c.w)
-            alert = {'type':'success'}
-            alert['title'] = 'Workshop Multiple Postal Codes Saved!'
-            session['alert'] = alert
-            session.save()
-        else:
+            Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+
+        if werror:
             alert = {'type':'error'}
             alert['title'] = werrMsg
             session['alert'] = alert
             session.save()
+        else:
+            if isFacilitator(c.authuser.id, c.w.id):
+                commit(c.w)
 
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
-        
+
+
     @h.login_required
     def configurePrivateWorkshopHandler(self, id1, id2):
         code = id1
@@ -570,7 +461,7 @@ class WorkshopController(BaseController):
                     werrMsg = werrMsg + 'No goals set. '
                     werror = 1
 
-                if c.w['publicTags'] == 'none':
+                if c.w['categoryTags'] == 'none':
                     werrMsg = werrMsg + 'No workshop tags set. '
                     werror = 1
 
@@ -594,27 +485,6 @@ class WorkshopController(BaseController):
                 c.w['endTime'] = endTime
                 Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
                 commit(c.w)
-
-                # Make the Tag objects
-                for pTag in c.w['publicTags'].split(','):
-                   pTag = pTag.lstrip()
-                   pTag = pTag.rstrip()
-                   Tag('system', pTag, c.w.id, c.w.owner)
-                for mTag in c.w['memberTags'].split(','):
-                   mTag = mTag.lstrip()
-                   mTag = mTag.rstrip()
-                   Tag('member', mTag, c.w.id, c.w.owner)
-
-                # Set the geo scope objects
-                if c.w['scopeMethod'] == 'publicPostalList':
-                    pString = c.w['publicPostalList']
-                    pList = pString.split(',')
-                    for p in pList:
-                       if p != '':
-                          WorkshopScope(p, 'United States', c.w.id, c.w.owner)
-                elif c.w['scopeMethod'] == 'publicScope':
-                    p = c.w['publicPostal']
-                    WorkshopScope(p, 'United States', c.w.id, c.w.owner)
 
                 alert = {'type':'success'}
                 alert['title'] = 'Workshop Started!'
@@ -661,13 +531,7 @@ class WorkshopController(BaseController):
             c.workshop_id = w.w.id # TEST
             c.title = 'Configure Workshop'
             c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
-            c.postal = w.w['publicPostal']
-            titles = getGeoTitles(c.postal, 'united-states')
-            sList = titles.split('|')
-            c.country = sList[2].title()
-            c.state = sList[4].title()
-            c.county = sList[6].title()
-            c.city = sList[8].title()
+
             return redirect('/workshop/%s/%s/configure'%(w.w['urlCode'], w.w['url']))   
             
         else:
@@ -1036,15 +900,7 @@ class WorkshopController(BaseController):
         if (c.w['goals'] != '' and c.w['goals'] != 'No goals set') and c.w['publicTags'] != '' and c.w['memberTags'] != '':
             c.basicConfig = 1
         else:
-            c.basicConfig = 0
-            
-        if c.w['public_private'] != 'private' and c.w['scopeMethod'] == 'publicScope' or (c.w['scopeMethod'] == 'publicPostalList' and c.w['publicPostalList'] != ''):
-            c.scopeConfig = 1
-        elif c.w['public_private'] == 'private':
-            c.scopeConfig = 1
-        else:
-            c.scopeConfig = 0
-            
+            c.basicConfig = 0        
             
         c.account = getAccountByID(c.w.owner)
         if 'confTab' in session:
@@ -1091,6 +947,18 @@ class WorkshopController(BaseController):
         c.lastmoduser = getUserByID(c.revision.owner)
         
         c.states = getStateList('United-States')
+        # ||country||state||county||city|zip
+        if c.w['geoTags'] and c.w['geoTags'] != '':
+            geoTags = c.w['geoTags'].split('|')
+            c.country = geoTags[2]
+            c.state = geoTags[4]
+            c.county = geoTags[6]
+            c.city = geoTags[8]
+        else:
+            c.country = 0
+            c.state = 0
+            c.county = 0
+            c.city = 0
 
         return render('/derived/workshop_configure.bootstrap')
     

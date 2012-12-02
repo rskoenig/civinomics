@@ -37,26 +37,22 @@
             <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Settings
             % if c.basicConfig:
                 <i class="icon-ok"></i>
-            % endif:
-                *
+            % endif
             </a></li>
             <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Tags
             % if c.tagConfig:
                 <i class="icon-ok"></i>
-            % endif:
-                *
+            % endif
             </a></li>
             <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Slideshow 
             % if c.slideConfig:
                 <i class="icon-ok"></i>
             % endif
-                *
             </a></li>
             <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Background 
             % if c.backConfig:
                 <i class="icon-ok"></i>
-            % endif:
-                *
+            % endif
             </a></li>
         </ul>
         </div><!-- span3 -->
