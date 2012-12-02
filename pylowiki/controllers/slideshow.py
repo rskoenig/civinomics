@@ -92,6 +92,13 @@ class SlideshowController(BaseController):
                     s = allSlides[0]
                     s['deleted'] = "1"
                     commit(s)
+                    w['mainImage_hash'] = slide.s['pictureHash']
+                    w['mainImage_directoryNum'] = directoryNumber
+                    w['mainImage_postFix'] = 'orig'
+                    w['mainImage_identifier'] = identifier
+                    w['mainImage_id'] = slide.s.id
+                    s['slideshow_order'] = slide.s.id
+                    commit(s)       
             session['confTab'] = "tab3"
             alert = {'type':'success'}
             alert['title'] = 'Upload complete. Please add a title and caption to new slideshow images below.'

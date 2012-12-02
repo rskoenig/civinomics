@@ -337,6 +337,10 @@ class WorkshopController(BaseController):
         else:
             if isFacilitator(c.authuser.id, c.w.id):
                 commit(c.w)
+            alert = {'type':'success'}
+            alert['title'] = weventMsg
+            session['alert'] = alert
+            session.save()
 
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
 
@@ -897,10 +901,15 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshopByCode(code)
-        if (c.w['goals'] != '' and c.w['goals'] != 'No goals set') and c.w['publicTags'] != '' and c.w['memberTags'] != '':
+        if (c.w['goals'] != '' and c.w['goals'] != 'No goals set'):
             c.basicConfig = 1
         else:
-            c.basicConfig = 0        
+            c.basicConfig = 0
+            
+        if c.w['categoryTags'] != '' and c.w['memberTags'] != '':
+            c.tagConfig = 1
+        else:
+            c.tagConfig = 0
             
         c.account = getAccountByID(c.w.owner)
         if 'confTab' in session:
@@ -955,10 +964,10 @@ class WorkshopController(BaseController):
             c.county = geoTags[6]
             c.city = geoTags[8]
         else:
-            c.country = 0
-            c.state = 0
-            c.county = 0
-            c.city = 0
+            c.country = "0"
+            c.state = "0"
+            c.county = "0"
+            c.city = "0"
 
         return render('/derived/workshop_configure.bootstrap')
     

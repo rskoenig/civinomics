@@ -165,8 +165,10 @@ def getCategoryTagList():
     cTagList.append('Health')
     cTagList.append('Housing')
     cTagList.append('Infrastructure')
+    cTagList.append('Justice')
     cTagList.append('Land Use')
     cTagList.append('Municipal Services')
+    cTagList.append('Safety')
     cTagList.append('Transportation')
     return cTagList
 

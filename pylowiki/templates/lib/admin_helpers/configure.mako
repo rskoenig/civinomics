@@ -95,7 +95,6 @@
         <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
         This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
     % else:
-        <p><strong>Tags</strong>: ${c.w['categoryTags']}, ${c.w['memberTags']}</p>
         <p><strong>Workshop Type</strong>: ${c.w['public_private']}<p>
     % endif
     <%
