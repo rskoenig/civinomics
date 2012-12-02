@@ -28,9 +28,9 @@
                   ${lib_6.userImage(author, className = 'avatar')}
                </div> <!--/.span2-->
                <div class="span9 list-item-text">
-                  <% itemTitle = '<h5><a %s>%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True), item['title']) %>
+                  <% itemTitle = '<h5><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True), item['title']) %>
                   ${itemTitle | n}
-                  Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)} - see <a ${lib_6.thingLinkRouter(item, c.w, embed=True) | n}>comments</a>
+                  Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
                </div><!--/.span9-->
             </div><!--/.row-fluid-->
          </li>
