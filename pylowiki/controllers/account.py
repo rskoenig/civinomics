@@ -12,7 +12,7 @@ from pylons import config
 
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.workshop import Workshop, getWorkshopByID, getWorkshopsByOwner
+from pylowiki.lib.db.workshop import Workshop, getWorkshopByID, getWorkshopsByOwner, getWorkshopsByAccount
 from pylowiki.lib.db.motd import MOTD
 from pylowiki.lib.db.account import Account, getUserAccount, getAccountByCode, getUserAccounts, isAccountAdmin
 from pylowiki.lib.db.event import Event, getParentEvents
@@ -270,8 +270,14 @@ class AccountController(BaseController):
             uButton = request.params['upgrade']
             numUsed = int(c.account['numHost']) - int(c.account['numRemaining'])
             if c.account['type'] == 'trial':
-                c.account['url'] = 'none'
-                c.account['orgName'] = 'none'
+                c.account['orgName'] = c.authuser['name']
+                c.account['url'] = urlify(c.authuser['name'])
+                tWorkshops = getWorkshopsByAccount(c.account.id, 'trial')
+                if tWorkshops:
+                    for w in tWorkshops:
+                        w['public_private'] = 'private'
+                        commit(w)
+                        
                 
             if uButton == 'basic':
                c.account['type'] = 'basic'
@@ -290,8 +296,7 @@ class AccountController(BaseController):
                c.account['numParticipants'] = '1000'
 
             commit(c.account)
-            user = getUserByID(c.authuser.id)
-            Event('Account Updated', '%s updated account to %s'%(user['name'], c.account['type']), c.account, c.account) 
+            Event('Account Updated', '%s updated account to %s'%(c.authuser['name'], c.account['type']), c.account, c.account) 
             return render("/derived/account_admin.bootstrap")
         else:
             return render("/derived/account_upgrade.bootstrap")
