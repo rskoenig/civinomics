@@ -369,29 +369,39 @@ class WorkshopController(BaseController):
         werrMsg = ''
         
         if 'addMember' in request.params:
+            pList = getPrivateMembers(code, "0")
             if 'newMember' in request.params and request.params['newMember'] != '':
-                newMember = request.params['newMember']
-                counter = 0
-                mList = newMember.split('\n')
-                for mEmail in mList:
-                    mEmail = mEmail.replace('\n', '')
-                    pTest = getPrivateMember(code, mEmail)
-                    if pTest:
-                        if pTest['deleted'] == '1':
-                            pTest['deleted'] = '0'
-                            commit(pTest)
-                        else:
-                            werror = 1
-                            werrMsg += mEmail + ' already a member.'
+                if c.w['public_private'] == 'trial' and len(pList) >= 10:
+                    werror = 1
+                    werrMsg += 'You have already reached the maximum number of 10 participants for a trial workshop.'
+                else:
+                    newMember = request.params['newMember']
+                    counter = 0
+                    mList = newMember.split('\n')
+                    if c.w['public_private'] == 'trial' and (len(pList) + len(mList) > 10):
+                        werror = 1
+                        werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, trial workshops are limited to a maximum of 10 participants.'
                     else:
-                        PMember(code, mEmail, 'A', c.w)
-                        counter += 1
+                        for mEmail in mList:
+                            mEmail = mEmail.rstrip()
+                            mEmail = mEmail.lstrip()
+                            pTest = getPrivateMember(code, mEmail)
+                            if pTest:
+                                if pTest['deleted'] == '1':
+                                    pTest['deleted'] = '0'
+                                    commit(pTest)
+                                else:
+                                    werror = 1
+                                    werrMsg += mEmail + ' already a member.'
+                            else:
+                                PMember(code, mEmail, 'A', c.w)
+                                counter += 1
                 
-                if counter:
-                    if counter > 1:
-                        weventMsg += str(counter) + ' new members added.'
-                    else:
-                        weventMsg += '1 new member added.'
+                    if counter:
+                        if counter > 1:
+                            weventMsg += str(counter) + ' new members added.'
+                        else:
+                            weventMsg += '1 new member added.'
                 
             else:
                 werror = 1
@@ -945,7 +955,7 @@ class WorkshopController(BaseController):
         c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitatorsByWorkshop(c.w.id)
 
-        if c.w['public_private'] == 'private':
+        if c.w['public_private'] != 'public':
             c.pmembers = getPrivateMembers(code)
             
         c.revision = get_revision(int(c.w['mainRevision_id']))
