@@ -179,7 +179,7 @@ class WorkshopController(BaseController):
                 oldTitle = c.w['url']
                 c.w['url'] = urlify(wTitle)
                 wchanges = 1
-                weventMsg = weventMsg + "Updated name. "
+                weventMsg += "Updated name. "
         else:
             werrMsg += 'Name '
             werror = 1
@@ -191,7 +191,7 @@ class WorkshopController(BaseController):
            if wGoals and wGoals != c.w['goals']:
                c.w['goals'] = wGoals
                wchanges = 1
-               weventMsg = weventMsg + "Updated goals. "
+               weventMsg += "Updated goals. "
         else:
            werror = 1
            werrMsg += 'Goals '
@@ -201,7 +201,7 @@ class WorkshopController(BaseController):
            allowSuggestions = request.params['allowSuggestions']
            if (allowSuggestions == '1' or allowSuggestions == '0') and allowSuggestions != c.w['allowSuggestions']:
               wchanges = 1
-              weventMsg = weventMsg + "Changed allowSuggestions from " + c.w['allowSuggestions'] + " to " + allowSuggestions + "."
+              weventMsg += "Changed allowSuggestions from " + c.w['allowSuggestions'] + " to " + allowSuggestions + "."
               c.w['allowSuggestions'] = allowSuggestions
         else:
            werror = 1
@@ -211,7 +211,7 @@ class WorkshopController(BaseController):
            allowResources = request.params['allowResources']
            if (allowResources == '1' or allowResources == '0') and allowResources != c.w['allowResources']:
               wchanges = 1
-              weventMsg = weventMsg + "Changed allowResources from " + c.w['allowResources'] + " to " + allowResources + "."
+              weventMsg += "Changed allowResources from " + c.w['allowResources'] + " to " + allowResources + "."
               c.w['allowResources'] = allowResources
         else:
            werror = 1
@@ -223,13 +223,13 @@ class WorkshopController(BaseController):
                     publicPrivate = request.params['publicPrivate']
                     if (publicPrivate == 'public' or publicPrivate == 'private') and publicPrivate != c.w['public_private']:
                         wchanges = 1
-                        weventMsg = weventMsg + "Changed public/private from " + c.w['public_private'] + " to " + publicPrivate + "."
+                        weventMsg = weventMsg + "Changed workshop type from " + c.w['public_private'] + " to " + publicPrivate + "."
                         c.w['public_private'] = publicPrivate
                 else:
                     werror = 1
                     werrMsg += 'Public or Private? '
             
-
+                
         # save successful changes
         if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
             commit(c.w)
@@ -243,6 +243,10 @@ class WorkshopController(BaseController):
         else:
             if isFacilitator(c.authuser.id, c.w.id):
                 commit(c.w)
+                alert = {'type':'success'}
+                alert['title'] = weventMsg
+                session['alert'] = alert
+                session.save()
 
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
         
@@ -350,7 +354,7 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        session['confTab'] = "tab4"
+        session['confTab'] = "tab1"
         session.save()
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
@@ -359,63 +363,67 @@ class WorkshopController(BaseController):
         else:
             return(redirect("/"))
             
+        werror = 0
+        wchanges = 0
+        weventMsg = ''
+        werrMsg = ''
+        
         if 'addMember' in request.params:
-            if 'newMember' in request.params:
+            if 'newMember' in request.params and request.params['newMember'] != '':
                 newMember = request.params['newMember']
                 counter = 0
                 mList = newMember.split('\n')
                 for mEmail in mList:
+                    mEmail = mEmail.replace('\n', '')
                     pTest = getPrivateMember(code, mEmail)
                     if pTest:
                         if pTest['deleted'] == '1':
-                            pTest['deleted'] = '1'
+                            pTest['deleted'] = '0'
                             commit(pTest)
                         else:
-                            alert = {'type':'error'}
-                            alert['title'] = mEmail + ' already a member.'
-                            session['alert'] = alert
-                            session.save()
+                            werror = 1
+                            werrMsg += mEmail + ' already a member.'
                     else:
                         PMember(code, mEmail, 'A', c.w)
                         counter += 1
                 
                 if counter:
-                    alert = {'type':'success'}
                     if counter > 1:
-                        alert['title'] = str(counter) + ' new members added.'
+                        weventMsg += str(counter) + ' new members added.'
                     else:
-                        alert['title'] = '1 new member added.'  
-                    session['alert'] = alert
-                    session.save()
+                        weventMsg += '1 new member added.'
                 
             else:
-                alert = {'type':'error'}
-                alert['title'] = 'No email address entered.'
-                session['alert'] = alert
-                session.save()
+                werror = 1
+                werrMsg += 'No email address entered.'
+
                 
         if 'deleteMember' in request.params:
-            if 'removeMember' in request.params:
+            if 'removeMember' in request.params and request.params['removeMember'] != '':
                 removeMember = request.params['removeMember']
                 pTest = getPrivateMember(code, removeMember)
                 if pTest:
                     pTest['deleted'] = '1'
                     commit(pTest)
-                    alert = {'type':'success'}
-                    alert['title'] = 'Member removed: ' +  removeMember
-                    session['alert'] = alert
-                    session.save()
+                    weventMsg += 'Member removed: ' +  removeMember
                 else:
-                    alert = {'type':'error'}
-                    alert['title'] = 'No current member email: ' +  removeMember
-                    session['alert'] = alert
-                    session.save()
+                    werror = 1
+                    werrMsg += 'No current member email: ' +  removeMember
                 
             else:
-                alert = {'type':'error'}
-                alert['title'] = 'No email address entered.'
-                session['alert'] = alert
-                session.save()
+                werror = 1
+                werrMsg += 'No email address entered.'
+                
+        if werror:
+            alert = {'type':'error'}
+            alert['title'] = werrMsg
+            session['alert'] = alert
+            session.save()
+        else:
+            alert = {'type':'success'}
+            alert['title'] = weventMsg
+            session['alert'] = alert
+            session.save()
             
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
 

@@ -20,6 +20,11 @@
     else:
         tab1active = "active"
 
+    if c.w['public_private'] == 'public':
+        participants = ""
+    else:
+        participants = "& Participants"
+
 %>
 
 <div class="container-fluid"><!-- header -->
@@ -34,7 +39,7 @@
         ${helpers.intro()}
         <br /><br />
         <ul class="nav nav-pills nav-stacked">
-            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Settings
+            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Settings ${participants}
             % if c.basicConfig:
                 <i class="icon-ok"></i>
             % endif

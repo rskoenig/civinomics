@@ -65,67 +65,79 @@
         wstarted = 1
     %>
     <div class="well">
-    <h3>Settings</h3>
-    <br />
-    <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <strong>Workshop Name:</strong>
-    <br />
-    <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>  <span class="help-inline"><span class="label label-important">Required</span></span>
-    <br />
-    <br />
-    <strong>Workshop Goals:</strong>
-    <br />
-    <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>  <span class="help-inline"><span class="label label-important">Required</span></span>
-    <br /><br />
-    % if wstarted == 0 and c.account and c.account['type'] != 'trial': 
-
-
-        <%
-            if 'public_private' in c.w and (c.w['public_private'] == 'public' or c.w['public_private'] == 'trial'):
-                publicChecked = 'checked'
-                privateChecked = ''
-            else:
-                publicChecked = ''
-                privateChecked = 'checked'
-        %>
-
-        <strong>Workshop Type:</strong><br />
-        <input type="radio" name="publicPrivate" value="public" ${publicChecked} /> Public<br />
-        This means the workshop may be browsed by the public, and any members residing in the specificied geographic area may participate.<br /><br />
-        <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
-        This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
+    % if c.w['public_private'] == 'public':
+        <h3>Settings</h3>
     % else:
-        <p><strong>Workshop Type</strong>: ${c.w['public_private']}<p>
+        <h3>Settings & Participants</h3>
     % endif
-    <%
-      if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
-          yesChecked = 'checked'
-          noChecked = ''
-      elif 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '0':
-          yesChecked = ''
-          noChecked = 'checked'
-      else:
-          yesChecked = 'checked'
-          noChecked = ''
-
-    %>
-    <strong>Workshop Suggestions and Resources:</strong><br />
-    Allow members to add suggestions: <input type=radio name=allowSuggestions value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowSuggestions value=0 ${noChecked}> No<br /><br />
-    <% 
-      if 'allowResources' in c.w and c.w['allowResources'] == '1':
-          yesChecked = 'checked'
-          noChecked = ''
-      elif 'allowResources' in c.w and c.w['allowResources'] == '0':
-          yesChecked = ''
-          noChecked = 'checked'
-      else:
-          yesChecked = 'checked'
-          noChecked = ''
-    %>
-    Allow members to add resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
     <br />
-    <button type="submit" class="btn btn-warning">Save Basic Information</button>
-    </form>
+    <div class="row">
+        <div class="span1">
+        </div><!-- span1 -->
+        <div class="span6">
+            <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
+            <strong>Workshop Name:</strong>
+            <br />
+            <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>  <span class="help-inline"><span class="label label-important">Required</span></span>
+            <br />
+            <br />
+            <strong>Workshop Goals:</strong>
+            <br />
+            <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>  <span class="help-inline"><span class="label label-important">Required</span></span>
+            <br /><br />
+            % if wstarted == 0 and c.account and c.account['type'] != 'trial': 
+                <%
+                    if 'public_private' in c.w and (c.w['public_private'] == 'public' or c.w['public_private'] == 'trial'):
+                        publicChecked = 'checked'
+                        privateChecked = ''
+                    else:
+                        publicChecked = ''
+                        privateChecked = 'checked'
+                %>
+
+                <strong>Workshop Type:</strong><br />
+                <input type="radio" name="publicPrivate" value="public" ${publicChecked} /> Public<br />
+                This means the workshop may be browsed by the public, and any members residing in the specificied geographic area may participate.<br /><br />
+                <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
+                This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
+            % else:
+                <p><strong>Workshop Type</strong>: ${c.w['public_private']}<p>
+            % endif
+            <%
+                if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
+                    yesChecked = 'checked'
+                    noChecked = ''
+                elif 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '0':
+                    yesChecked = ''
+                    noChecked = 'checked'
+                else:
+                    yesChecked = 'checked'
+                    noChecked = ''
+            %>
+            <strong>Workshop Suggestions and Resources:</strong><br />
+            Allow members to add suggestions: <input type=radio name=allowSuggestions value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowSuggestions value=0 ${noChecked}> No<br /><br />
+            <% 
+                if 'allowResources' in c.w and c.w['allowResources'] == '1':
+                    yesChecked = 'checked'
+                    noChecked = ''
+                elif 'allowResources' in c.w and c.w['allowResources'] == '0':
+                    yesChecked = ''
+                    noChecked = 'checked'
+                else:
+                    yesChecked = 'checked'
+                    noChecked = ''
+            %>
+            Allow members to add resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
+            <br />
+            <button type="submit" class="btn btn-warning">Save Settings</button>
+            </form>
+        </div><!-- span5 -->
+        <div class="span5">
+            % if c.w['public_private'] != 'public':
+                ${private()}
+            % endif
+        </div><!-- span5 -->
+    </div><!-- row -->
     </div><!-- well -->
 </%def>
 
@@ -265,37 +277,6 @@
 
 </%def>
 
-<%def name="eligibility()">
-    <%
-        if c.w['startTime'] == '0000-00-00':
-            wstarted = 0
-        else:
-            wstarted = 1
-
-        if 'public_private' in c.w and (c.w['public_private'] == 'public' or c.w['public_private'] == 'trial'):
-            publicChecked = 'checked'
-            privateChecked = ''
-        else:
-            publicChecked = ''
-            privateChecked = 'checked'
-    %>
-
-    % if c.account['type'] != 'trial' and c.w['public_private'] == 'public':
-        ${public()}
-    % elif c.w['public_private'] == 'private':
-        ${private()}
-    % elif wstarted == 0 and c.account['type'] == 'zippy':
-        <strong>Workshop Type:</strong><br />
-        <input type="radio" name="publicPrivate" value="public" ${publicChecked} /> Public<br />
-        This means the workshop may be browsed by the public, and any members residing in the specificied geographic area may participate.<br /><br />
-        <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
-        This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
-        <br /><br />
-    % elif wstarted == 0 and c.account['type'] == 'trial':
-        <h3>Participants: Trial Workshop</h3>
-        <p>Participation in trial workshops is limited to 10 Associates.<p>
-    % endif
-</%def>
 
 <%def name="intro()">
     Use these forms to configure your workshop.<br />
@@ -312,25 +293,32 @@
 </%def>
 
 <%def name="private()">
-    <h3>Participants: Private</h3>
-    <p>Private workshops are not visible to the public.</p>
-    <p>This establishes the list of email addresses and email domains for members eligible to browse and participate in this private workshop.<p>
+    <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <strong>Manage Workshop Participants List</strong>
+    % if c.w['public_private'] == 'trial':
+        <p>Trial workshops are not visible to the public.</p>
+        <p>Up to 10 other members may participate in your trial workshop. Enter the email address of members you wish to participate in this workshop.<p>
+    % else:
+        <p>Private workshops are not visible to the public.</p>
+        <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
+        <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
+    % endif
     % if c.pmembers:        
         <br /><br />${len(c.pmembers)} Private Members in This Workshop<br /><br />
     % endif
     <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-        Add new private members to this workshop:<br />
-        Enter one or more email addresses, one per line:<br />
+        To add new private members to this workshop,
+        enter one or more email addresses, one per line. This does not send an email invitation:<br />
         <textarea rows=6 cols=50 name="newMember"/></textarea>
         <br /><br />
-        <button type="submit" class="btn btn-warning" name="addMember">Add Member</button>
+        <button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
   
     % if c.pmembers:
         <br /><br />
         Delete a private member from this workshop:<br />
         Email Address: <input type="text" name = "removeMember" size="50" maxlength="140""/>
         <br /><br />
-        <button type="submit" class="btn btn-warning" name="deleteMember">Delete Member</button>
+        <button type="submit" class="btn btn-warning" name="deleteMember">Delete Member from List</button>
 
     % endif
     </form>
