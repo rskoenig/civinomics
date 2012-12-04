@@ -180,8 +180,10 @@
             <div class="btn-group">
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+                % if int(c.authuser['accessLevel']) >= 200:
+                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+                % endif
             </div>
         </div><!--/.span11.offset1-->
     </div><!--/.row-fluid-->
@@ -211,14 +213,18 @@
     ## Edit
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
-            Edit here.
+            <form action="/comment/edit/${comment['urlCode']}" method="post" class="form form-horizontal">
+                <textarea class="comment-reply span12" name="textarea${comment['urlCode']}">${comment['data']}</textarea>
+            </form>
         </div>
     </div>
     
     ## Admin
-    <div class="row-fluid collapse" id="${adminID}">
-        <div class="span11 offset1">
-            Admin here.
+    % if int(c.authuser['accessLevel']) >= 200:
+        <div class="row-fluid collapse" id="${adminID}">
+            <div class="span11 offset1">
+                Admin here.
+            </div>
         </div>
-    </div>
+    % endif
 </%def>

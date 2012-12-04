@@ -319,8 +319,7 @@ class CommentController(BaseController):
         commentCode = id1
         cError = 0
         data = request.params['textarea' + commentCode]
-        data = data.lstrip()
-        data = data.rstrip()
+        data = data.strip()
         if data == '':
             alert = {'type':'error'}
             alert['title'] = 'Edit Comment failed.'
