@@ -276,6 +276,7 @@ ul.listeners > li {
 .accordion-toggle.inline.btn.btn-mini{
     display:inline-block;
     padding: 1px 6px;
+    margin-left:5px;
 }
 
 .geoLink, .geoLink:hover{
