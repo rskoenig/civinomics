@@ -25,11 +25,11 @@
 
 
 <%def name="addCommentToDiscussion(thing)">
-    ######################
+    ########################################################################
     ##
     ## Add a comment to the root of the discussion tree
     ##
-    ######################
+    ########################################################################
     <div class="row-fluid">
         <div class="span12">
             <form action="/addComment">
@@ -48,11 +48,11 @@
 </%def>
 
 <%def name="commentClubRule()">
-    ######################
+    ########################################################################
     ##
     ## Fun way of increasing stickiness and cultivating the right atmosphere
     ##
-    ######################
+    ########################################################################
     <%
         rules = []
         rules.append("Rule #1 of comment club: Don't call people Hitler.")
@@ -152,6 +152,54 @@
                     ${comment['data']}
                 </div> <!--/.span11-->
             </div> <!--/.row-fluid-->
+            <%
+                if 'user' in session:
+                    commentFooter(comment, author)
+            %>
+        </div>
+    </div>
+</%def>
+
+<%def name="commentFooter(comment, author)">
+    ########################################################################
+    ##
+    ## Displays the {reply, flag, edit, admin} buttons
+    ##
+    ########################################################################
+    <%
+        replyID = 'reply-%s' % comment['urlCode']
+        flagID = 'flag-%s' % comment['urlCode']
+        editID = 'edit-%s' % comment['urlCode']
+        adminID = 'admin-%s' % comment['urlCode']
+    %>
+    <div class="row-fluid">
+        <div class="span11 offset1">
+            <div class="btn-group">
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+            </div>
+        </div><!--/.span11.offset1-->
+    </div><!--/.row-fluid-->
+    <div class="row-fluid collapse" id="${replyID}">
+        <div class="span11 offset1">
+            Reply here.
+        </div>
+    </div>
+    <div class="row-fluid collapse" id="${flagID}">
+        <div class="span11 offset1">
+            Flag here.
+        </div>
+    </div>
+    <div class="row-fluid collapse" id="${editID}">
+        <div class="span11 offset1">
+            Edit here.
+        </div>
+    </div>
+    <div class="row-fluid collapse" id="${adminID}">
+        <div class="span11 offset1">
+            Admin here.
         </div>
     </div>
 </%def>
