@@ -103,7 +103,7 @@
             if child == 0:
                 pass
             try:
-                displayComment(child, commentType, maxDepth, curDepth)
+                displayComment(child, maxDepth, curDepth)
             except:
                 raise
     %>
