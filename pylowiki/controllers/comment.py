@@ -212,6 +212,7 @@ class CommentController(BaseController):
     
     @h.login_required
     def addComment(self):
+        # Expect errors here, as the Thing URL is no longer being transferred; only the urlCode is necessary
         cError = 0
         try:
             request.params['submit']
@@ -219,8 +220,7 @@ class CommentController(BaseController):
             parentCommentID = request.params['parentID']
             comType = request.params['type']
             data = request.params['comment-textarea']
-            data = data.lstrip()
-            data = data.rstrip()
+            data = data.strip()
             if data == '':
                 alert = {'type':'error'}
                 alert['title'] = 'Add Comment failed.'
@@ -230,7 +230,6 @@ class CommentController(BaseController):
                 cError = 1
             
             workshopCode = request.params['workshopCode']
-            workshopURL = request.params['workshopURL']
             
             discussion = getDiscussionByID(discussionID)
 
@@ -254,15 +253,12 @@ class CommentController(BaseController):
             return redirect('/workshop/%s/%s/feedback' % (workshopCode, workshopURL) )
         elif comType == 'resource':
             resourceCode = request.params['resourceCode']
-            resourceURL = request.params['resourceURL']
             return redirect('/workshop/%s/%s/resource/%s/%s/' % (workshopCode, workshopURL, resourceCode, resourceURL ) )
         elif comType == 'suggestionMain':
             suggestionCode = request.params['suggestionCode']
-            suggestionURL = request.params['suggestionURL']
             return redirect('/workshop/%s/%s/suggestion/%s/%s'%(workshopCode, workshopURL, suggestionCode, suggestionURL))
         elif comType == 'discussion':
             discussionCode = discussion['urlCode']
-            discussionURL = discussion['url']
             return redirect('/workshop/%s/%s/discussion/%s/%s'%(workshopCode, workshopURL, discussionCode, discussionURL))
         elif comType == 'thread':
             return redirect(session['return_to'])
