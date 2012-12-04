@@ -199,8 +199,12 @@
     
     ## Flag
     <div class="row-fluid collapse" id="${flagID}">
-        <div class="span11 offset1">
-            Flag here.
+        <div class="span11 offset1 alert">
+            <strong>Are you sure you want to flag this comment?</strong>
+            <br />
+            <a href="/flagComment/${comment['urlCode']}" class="btn btn-danger flagCommentButton">Yes</a>
+            <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${flagID}">No</a>
+            <span id = 'flagged_${comment['urlCode']}'></span>
         </div>
     </div>
     
