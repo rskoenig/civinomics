@@ -103,13 +103,13 @@
             if child == 0:
                 pass
             try:
-                displayComment(child, maxDepth, curDepth)
+                displayComment(child, commentType, maxDepth, curDepth)
             except:
                 raise
     %>
 </%def>
 
-<%def name="displayComment(comment, maxDepth, curDepth)">
+<%def name="displayComment(comment, commentType, maxDepth, curDepth)">
     <%
         comment = getComment(comment)
         if comment:
@@ -120,8 +120,10 @@
         collapseID = 'collapse-%s' % comment['urlCode']
     %>
     <div class="accordion" id="${accordionID}">
-        ${commentHeading(comment, author, accordionID, collapseID)}
-        ${commentContent(comment, author, accordionID, collapseID)}
+        <div class="accordion-group">
+            ${commentHeading(comment, author, accordionID, collapseID)}
+            ${commentContent(comment, commentType, curDepth, author, accordionID, collapseID)}
+        </div>
     </div>
 </%def>
 
@@ -136,7 +138,7 @@
     </div> <!--/.accordion-heading-->
 </%def>
 
-<%def name="commentContent(comment, author, accordionID, collapseID)">
+<%def name="commentContent(comment, commentType, curDepth, author, accordionID, collapseID)">
     <%
         thisClass = 'accordion-body collapse'
         if comment['disabled'] == '0' and comment['deleted'] == '0':
@@ -156,8 +158,9 @@
                 if 'user' in session:
                     commentFooter(comment, author)
             %>
-        </div>
-    </div>
+            ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1)}
+        </div><!--/.accordion-inner-->
+    </div><!--/.accordion-body.collapse-->
 </%def>
 
 <%def name="commentFooter(comment, author)">
@@ -192,6 +195,7 @@
     <div class="row-fluid collapse" id="${replyID}">
         <div class="span11 offset1">
             <form action="/addComment" method="post">
+                <label>reply</label>
                 <textarea name="comment-textarea" class="comment-reply span12"></textarea>
                 <input type="hidden" name="parentCode" value="${comment['urlCode']}" />
                 <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
@@ -214,7 +218,9 @@
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
             <form action="/comment/edit/${comment['urlCode']}" method="post" class="form form-horizontal">
+                <label>edit</label>
                 <textarea class="comment-reply span12" name="textarea${comment['urlCode']}">${comment['data']}</textarea>
+                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
     </div>
