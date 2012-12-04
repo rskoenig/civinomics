@@ -216,8 +216,7 @@ class CommentController(BaseController):
         cError = 0
         try:
             request.params['submit']
-            discussionID = request.params['discussionID']
-            parentCommentID = request.params['parentID']
+            parentCommentID = request.params['parentCode']
             comType = request.params['type']
             data = request.params['comment-textarea']
             data = data.strip()

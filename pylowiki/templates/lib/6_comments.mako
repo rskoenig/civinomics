@@ -109,7 +109,7 @@
     %>
 </%def>
 
-<%def name="displayComment(comment, commentType, maxDepth, curDepth)">
+<%def name="displayComment(comment, maxDepth, curDepth)">
     <%
         comment = getComment(comment)
         if comment:
@@ -121,7 +121,7 @@
     %>
     <div class="accordion" id="${accordionID}">
         ${commentHeading(comment, author, accordionID, collapseID)}
-        ${commentContent(comment, author, commentType, accordionID, collapseID)}
+        ${commentContent(comment, author, accordionID, collapseID)}
     </div>
 </%def>
 
@@ -136,7 +136,7 @@
     </div> <!--/.accordion-heading-->
 </%def>
 
-<%def name="commentContent(comment, author, commentType, accordionID, collapseID)">
+<%def name="commentContent(comment, author, accordionID, collapseID)">
     <%
         thisClass = 'accordion-body collapse'
         if comment['disabled'] == '0' and comment['deleted'] == '0':
@@ -154,19 +154,18 @@
             </div> <!--/.row-fluid-->
             <%
                 if 'user' in session:
-                    commentFooter(comment, commentType, author)
+                    commentFooter(comment, author)
             %>
         </div>
     </div>
 </%def>
 
-<%def name="commentFooter(comment, commentType, author)">
+<%def name="commentFooter(comment, author)">
     ########################################################################
     ##
     ## Displays the {reply, flag, edit, admin} buttons
     ## 
     ## comment          ->  The comment Thing
-    ## commentType      ->  The object type to which this comment is attached (resource/discussion/etc...)
     ## author           ->  The owner of the comment (a user Thing)
     ##
     ########################################################################
@@ -192,13 +191,8 @@
         <div class="span11 offset1">
             <form action="/addComment" method="post">
                 <textarea name="comment-textarea" class="comment-reply span12"></textarea>
-                <input type="hidden" name="type" value="${commentType}" />
-                <input type="hidden" name="discussionCode" value="${c.discussion['urlCode']}" />
                 <input type="hidden" name="parentCode" value="${comment['urlCode']}" />
-                <input type="hidden" name="workshopCode" value="${c.w['urlCode']}" />
-                % if commentType == 'resource':
-                    <input type="hidden" name = "resourceCode" value = "${c.resource['urlCode']}" />
-                % endif
+                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
     </div>
