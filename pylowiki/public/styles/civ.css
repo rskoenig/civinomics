@@ -189,12 +189,25 @@ img.watch{
    width: 100%;
 }
 
+/*
 .vote{
-   padding-left:22px;
+   //padding-left:19px;
+   margin-left:auto;
+   margin-right:auto;
 }
+*/
 
 .voteBlock{
    padding-top:8px;
+}
+.voteWrapper{
+   position:relative;
+}
+
+.voteWrapper a{
+   width: 100%;
+   text-align: center;
+   position: absolute;
 }
 
 .btn-group.four-up a.btn {
