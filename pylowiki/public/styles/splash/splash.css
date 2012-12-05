@@ -37,9 +37,9 @@ html, body {
     display:block;
     position: absolute;
     width: 100%;
-    min-width:50%;
-    min-height:50%;
+    min-width: 1024px;
     margin-top:5px;
+    background-size:cover;
 }
 
 .imageChanger0{
@@ -212,8 +212,14 @@ html, body {
     height: 80px;
     padding-left: 10px;
     padding-right: 15px;
+    margin-top: 15px; 
+    -webkit-transition: margin 0.5s ease-out; 
+    -moz-transition: margin 0.5s ease-out; 
+    -o-transition: margin 0.5s ease-out;
 }
-
+.casestudy:hover{
+    margin-top: 2px; 
+}
 
 
 
