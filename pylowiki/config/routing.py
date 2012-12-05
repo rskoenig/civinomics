@@ -176,6 +176,7 @@ def make_map():
     #map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     #map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler/', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configureBasicWorkshopHandler', controller = 'workshop', action = 'configureBasicWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/configureScopeWorkshopHandler', controller = 'workshop', action = 'configureScopeWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configureBasicWorkshopHandler/', controller = 'workshop', action = 'configureBasicWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configureTagsWorkshopHandler', controller = 'workshop', action = 'configureTagsWorkshopHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/configureTagsWorkshopHandler/', controller = 'workshop', action = 'configureTagsWorkshopHandler', id1 = '{id1}', id2 = '{id2}')

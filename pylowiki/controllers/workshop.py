@@ -457,7 +457,43 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+        
+    @h.login_required
+    def configureScopeWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Configure Workshop"
+        c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
+        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
+            ""
+        else:
+            return(redirect("/"))
+
+        c.title = "Configure Workshop"
+        session['confTab'] = "tab2"
+        session.save()
+        
+        if c.w['public_private'] == 'public' and 'changeScopeToPrivate' in request.params:
+            c.w['public_private'] = 'private'
+            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Scope changed from public to private', c.w, c.authuser)
+            commit(c.w)
+            alert = {'type':'success'}
+            alert['title'] = 'Workshop scope changed from public to private'
+            session['alert'] = alert
+            session.save()
+
+        if c.w['public_private'] == 'private' and 'changeScopeToPublic' in request.params:
+            c.w['public_private'] = 'public'
+            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Scope changed from private to public', c.w, c.authuser)
+            commit(c.w)
+            alert = {'type':'success'}
+            alert['title'] = 'Workshop scope changed from private to public'
+            session['alert'] = alert
+            session.save()   
+            
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
     def configureStartWorkshopHandler(self, id1, id2):
@@ -470,9 +506,6 @@ class WorkshopController(BaseController):
             ""
         else:
             return(redirect("/"))
-
-        slideshow = getSlideshow(c.w['mainSlideshow_id'])
-        c.slideshow = getAllSlides(slideshow.id)
 
         werror = 0
         wstarted = 0

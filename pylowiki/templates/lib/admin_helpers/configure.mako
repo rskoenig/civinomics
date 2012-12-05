@@ -35,8 +35,9 @@
         wstarted = 1
     %>
     <div class="well">
-    <h3>Settings</h3>
-    <br />
+    <h3>Setup Your Workshop</h3>
+    Describe and configure your workshop here.
+    <br /><br />
     <div class="row">
         <div class="span1">
         </div><!-- span1 -->
@@ -51,24 +52,6 @@
             <br />
             <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>  <span class="help-inline"><span class="label label-important">Required</span></span>
             <br /><br />
-            % if wstarted == 0 and c.account and c.account['type'] != 'trial': 
-                <%
-                    if 'public_private' in c.w and (c.w['public_private'] == 'public' or c.w['public_private'] == 'trial'):
-                        publicChecked = 'checked'
-                        privateChecked = ''
-                    else:
-                        publicChecked = ''
-                        privateChecked = 'checked'
-                %>
-
-                <strong>Workshop Type:</strong><br />
-                <input type="radio" name="publicPrivate" value="public" ${publicChecked} /> Public<br />
-                This means the workshop may be browsed by the public, and any members residing in the specificied geographic area may participate.<br /><br />
-                <input type="radio" name="publicPrivate" value="private" ${privateChecked} /> Private<br />
-                This means the workshop is not visible to the public, and any only members on the private email address or email domain list may browse and participate in the workshop.<br /><br />
-            % else:
-                <p><strong>Workshop Type</strong>: ${c.w['public_private']}<p>
-            % endif
             <%
                 if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
                     yesChecked = 'checked'
@@ -80,8 +63,8 @@
                     yesChecked = 'checked'
                     noChecked = ''
             %>
-            <strong>Workshop Suggestions and Resources:</strong><br />
-            Allow members to add suggestions: <input type=radio name=allowSuggestions value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowSuggestions value=0 ${noChecked}> No<br /><br />
+            <strong>What can participants do in your workshop:</strong><br />
+            Participants can add ideas: <input type=radio name=allowSuggestions value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowSuggestions value=0 ${noChecked}> No<br /><br />
             <% 
                 if 'allowResources' in c.w and c.w['allowResources'] == '1':
                     yesChecked = 'checked'
@@ -93,7 +76,7 @@
                     yesChecked = 'checked'
                     noChecked = ''
             %>
-            Allow members to add resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
+            Participants can add information resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
             <br />
             <button type="submit" class="btn btn-warning">Save Settings</button>
             </form>
@@ -105,11 +88,11 @@
 <%def name="scope()">
     <div class="well">
     % if c.w['public_private'] == 'public':
-        <h3>Public Workshop</h3>
+        <h3>It's a Public Workshop</h3>
     % elif c.w['public_private'] == 'private':
-        <h3>Private Workshop</h3>
+        <h3>It's a Private Workshop</h3>
     % else:
-        <h3>Private Trial Workshop</h3>
+        <h3>It's a Private Trial Workshop</h3>
     % endif
     % if c.w['public_private'] != 'public':
         ${private()}
@@ -198,14 +181,12 @@
 <%def name="private()">
     <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     <strong>Manage Workshop Participants List</strong>
+    <p>Private workshops are not visible to the public.</p>
     % if c.w['public_private'] == 'trial':
-        <p>Trial workshops are not visible to the public.</p>
-        <p>Up to 10 other members may participate in your trial workshop. Enter the email address of members you wish to participate in this workshop.<p>
-    % else:
-        <p>Private workshops are not visible to the public.</p>
-        <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
-        <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
+        <p>Up to 10 other members may participate in your private trial workshop.</p>
     % endif
+    <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
+    <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
     % if c.pmembers:        
         <br /><br />${len(c.pmembers)} Private Members in This Workshop<br /><br />
     % endif
@@ -222,8 +203,12 @@
         Email Address: <input type="text" name = "removeMember" size="50" maxlength="140""/>
         <br /><br />
         <button type="submit" class="btn btn-warning" name="deleteMember">Delete Member from List</button>
-
     % endif
+    </form>
+    <br />
+    <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
+    You can make this a public workshop if you wish. This means the workshop will be visible to the public, and members residing in the specified geographic area can participate in the workshop.<br />
+    <button type="submit" class="btn btn-warning" name="changeScopeToPublic">Change to Public Workshop</button>
     </form>
 </%def>
 
@@ -323,6 +308,11 @@
     <div class="row-fluid"><span id="underCity">${underCityMessage}</span><br /></div><!-- row -->
     <br />
     <button type="submit" class="btn btn-warning">Save Scope</button>
+    </form>
+    <br />
+    <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
+    You can make this a private workshop if you wish. This means the workshop will not be visible to the public, and ony members with email addresses specified by you can participate in the workshop.<br />
+    <button type="submit" class="btn btn-warning" name="changeScopeToPrivate">Change to Private Workshop</button>
     </form>
 </%def>
 
