@@ -8,6 +8,7 @@
     tab2active = ""
     tab3active = ""
     tab4active = ""
+    tab5active = ""
 
     if c.tab == "tab1":
         tab1active = "active"
@@ -17,6 +18,8 @@
         tab3active = "active"
     elif c.tab == "tab4":
         tab4active = "active"
+    elif c.tab == "tab5":
+        tab5active = "active"
     else:
         tab1active = "active"
 
@@ -37,27 +40,41 @@
         <div class="span3 well">
     <h3>Configure Workshop</h3>
         ${helpers.intro()}
-        <br /><br />
         <ul class="nav nav-pills nav-stacked">
-            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Settings ${participants}
+            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Set it up
             % if c.basicConfig:
                 <i class="icon-ok"></i>
             % endif
+            <br />
+            What's your workshop?
             </a></li>
-            <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Tags
+            <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Scope it
+            % if c.w['public_private'] == 'trial' or c.w['public_private'] == 'private' or (c.w['public_private'] == 'public' and c.w['geoTags'] != ''):
+                <i class="icon-ok"></i>
+            % endif
+            <br />
+            Who can participate?
+            </a></li>
+            <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Tag it
             % if c.tagConfig:
                 <i class="icon-ok"></i>
             % endif
+            <br />
+            Make it easy to find.
             </a></li>
-            <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Slideshow 
+            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Add an image 
             % if c.slideConfig:
                 <i class="icon-ok"></i>
             % endif
+            <br />
+            Or better yet, a whole slideshow.
             </a></li>
-            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Background 
+            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Summarize 
             % if c.backConfig:
                 <i class="icon-ok"></i>
             % endif
+            <br />
+            Briefly, what's the point?
             </a></li>
         </ul>
         </div><!-- span3 -->
@@ -65,22 +82,26 @@
         % if c.conf['read_only.value'] == 'true':
             <!-- read only -->
         % else:
+            ${helpers.publish()}
             ${helpers.fields_alert()}
             <div class="tab-content">
                 <div class="tab-pane ${tab1active}" id="tab1">
                     ${helpers.basic()}
                 </div><!-- tab-pane template tab1 -->
                 <div class="tab-pane ${tab2active}" id="tab2">
-                    ${helpers.tags()}
+                    ${helpers.scope()}
                 </div><!-- tab-pane template tab2 -->
                 <div class="tab-pane ${tab3active}" id="tab3">
+                    ${helpers.tags()}
+                </div><!-- tab-pane template tab3 -->
+                <div class="tab-pane ${tab4active}" id="tab4">
                      ${slide_helpers.add_slides()}
                      ${slide_helpers.edit_slideshow()}
-                </div><!-- tab-pane template tab2 -->
-                <div class="tab-pane ${tab4active}" id="tab4">
-                ${helpers.edit_background()}
                 </div><!-- tab-pane template tab4 -->
-            </div><!-- tab-content template -->
+                <div class="tab-pane ${tab5active}" id="tab5">
+                ${helpers.edit_background()}
+                </div><!-- tab-pane template tab5 -->
+            </div><!-- tab-content -->
         % endif
         </div><!-- span9 -->
         </div><!-- row-fluid -->

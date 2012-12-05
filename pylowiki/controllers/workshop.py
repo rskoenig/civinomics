@@ -234,6 +234,9 @@ class WorkshopController(BaseController):
         if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
             commit(c.w)
             Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+        else:
+            werror = 1
+            werrMsg = "No changes submitted."
 
         if werror:
             alert = {'type':'error'}
@@ -255,7 +258,7 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        session['confTab'] = "tab2"
+        session['confTab'] = "tab3"
         session.save()
 
         c.w = getWorkshop(code, urlify(url))
@@ -272,7 +275,60 @@ class WorkshopController(BaseController):
         wstarted = 0
         if c.w['startTime'] != '0000-00-00':
            wstarted = 1
+            
+        if 'categoryTags' in request.params:
+            categoryTags = request.params.getall('categoryTags')
+            cTags = '|'.join(categoryTags)
+            if cTags and cTags != c.w['categoryTags']:
+                wchanges = 1
+                weventMsg = weventMsg + "Updated category tags."
+                c.w['categoryTags'] = cTags
+        else:
+            werror = 1
+            werrMsg += 'Category Tags '
+   
+        # save successful changes
+        if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
+            commit(c.w)
+            Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+        else:
+            werror = 1
+            werrMsg = "No changes submitted."
 
+        if werror:
+            alert = {'type':'error'}
+            alert['title'] = werrMsg
+            session['alert'] = alert
+            session.save()
+        else:
+            if isFacilitator(c.authuser.id, c.w.id):
+                commit(c.w)
+            alert = {'type':'success'}
+            alert['title'] = weventMsg
+            session['alert'] = alert
+            session.save()
+
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+
+    @h.login_required
+    def configurePublicWorkshopHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Configure Workshop"
+        session['confTab'] = "tab2"
+        session.save()
+        c.w = getWorkshop(code, urlify(url))
+        c.account = getAccountByID(c.w.owner)
+        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
+            ""
+        else:
+            return(redirect("/"))
+            
+        werror = 0
+        wchanges = 0
+        weventMsg = ''
+        werrMsg = ''
+        
         if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
             geoTagCountry = request.params['geoTagCountry']
         else:
@@ -297,55 +353,21 @@ class WorkshopController(BaseController):
         # ||country||state||county||city|zip
         geoTagString = "||" + geoTagCountry + "||" + geoTagState + "||" + geoTagCounty + "||" + geoTagCity + "|0"
         if geoTagString != c.w['geoTags']:
-            wchanges = 1
-            weventMsg = weventMsg + "Updated geo tags."
-            c.w['geoTags'] = geoTagString        
-            
-        if 'categoryTags' in request.params:
-            categoryTags = request.params.getall('categoryTags')
-            cTags = '|'.join(categoryTags)
-            if cTags and cTags != c.w['categoryTags']:
-                wchanges = 1
-                weventMsg = weventMsg + "Updated category tags."
-                c.w['categoryTags'] = cTags
-        else:
-            werror = 1
-            werrMsg += 'Category Tags '
-   
-        if 'memberTags' in request.params:
-            wMemberTags = request.params['memberTags']
-            wMemberTags = wMemberTags.lstrip()
-            wMemberTags = wMemberTags.rstrip()
-            if wMemberTags and c.w['memberTags'] != wMemberTags:
-                wchanges = 1
-                weventMsg = weventMsg + "Updated additional contributed tags."
-            if wMemberTags == 'none':
-                werror = 1
-                werrMsg += 'Additional Tags '
-
-            c.w['memberTags'] = wMemberTags
-        else:
-            werror = 1
-            werrMsg += 'Additional Tags '
-            
-        # save successful changes
-        if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
+            c.w['geoTags'] = geoTagString
             commit(c.w)
+            wchanges = 1
+            weventMsg = weventMsg + "Updated workshop scope."
             Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
-
-        if werror:
-            alert = {'type':'error'}
-            alert['title'] = werrMsg
-            session['alert'] = alert
-            session.save()
-        else:
-            if isFacilitator(c.authuser.id, c.w.id):
-                commit(c.w)
             alert = {'type':'success'}
             alert['title'] = weventMsg
             session['alert'] = alert
             session.save()
-
+        else:
+            alert = {'type':'error'}
+            alert['title'] = 'No changes submitted.'
+            session['alert'] = alert
+            session.save()
+            
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
 
 
@@ -354,7 +376,7 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        session['confTab'] = "tab1"
+        session['confTab'] = "tab2"
         session.save()
         c.w = getWorkshop(code, urlify(url))
         c.account = getAccountByID(c.w.owner)
@@ -469,55 +491,20 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
 
         if 'startWorkshop' in request.params:
-            startButtons = request.params.getall('startWorkshop')
-            if 'Start' in startButtons and 'VerifyStart' in startButtons:
-                # Make sure we have all the information we need
-                werror == 0
-                werrMsg = ''
-                goalsDefault = 'No goals set'
-                if c.w['title'] == '':
-                    werrMsg = werrMsg + 'No name set. '
-                    werror = 1
+            # Set workshop start and end time
+            startTime = datetime.datetime.now(None)
+            c.w['startTime'] = startTime
+            endTime = datetime.datetime.now(None)
+            endTime = endTime.replace(year = endTime.year + 1)
+            c.w['endTime'] = endTime
+            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
+            commit(c.w)
 
-                if c.w['goals'] == '' or c.w['goals'] == goalsDefault:
-                    werrMsg = werrMsg + 'No goals set. '
-                    werror = 1
-
-                if c.w['categoryTags'] == 'none':
-                    werrMsg = werrMsg + 'No workshop tags set. '
-                    werror = 1
-
-                if c.w['memberTags'] == 'none' or c.w['memberTags'] == '':
-                    werrMsg = werrMsg + 'No additional tags set. '
-                    werror = 1
-
-                # if we have everything...
-                if werror == 1:
-                    alert = {'type':'error'}
-                    alert['title'] = werrMsg
-                    session['alert'] = alert
-                    session.save()
-                    return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
-
-                # Set workshop start and end time
-                startTime = datetime.datetime.now(None)
-                c.w['startTime'] = startTime
-                endTime = datetime.datetime.now(None)
-                endTime = endTime.replace(year = endTime.year + 1)
-                c.w['endTime'] = endTime
-                Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
-                commit(c.w)
-
-                alert = {'type':'success'}
-                alert['title'] = 'Workshop Started!'
-                session['alert'] = alert
-                session.save()
-            else:
-                alert = {'type':'error'}
-                alert['title'] = werrMsg
-                session['alert'] = alert
-                session.save()
-
+            alert = {'type':'success'}
+            alert['title'] = 'Workshop Started!'
+            session['alert'] = alert
+            session.save()
+            
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required

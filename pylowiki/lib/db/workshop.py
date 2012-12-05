@@ -158,9 +158,11 @@ def getCategoryTagList():
     cTagList = []
     cTagList.append('Business')
     cTagList.append('Civil Rights')
+    cTagList.append('Community')
     cTagList.append('Economy')
     cTagList.append('Education')
     cTagList.append('Environment')
+    cTagList.append('Family')
     cTagList.append('Government')
     cTagList.append('Health')
     cTagList.append('Housing')
@@ -168,6 +170,7 @@ def getCategoryTagList():
     cTagList.append('Justice')
     cTagList.append('Land Use')
     cTagList.append('Municipal Services')
+    cTagList.append('Policy')
     cTagList.append('Safety')
     cTagList.append('Transportation')
     return cTagList
@@ -203,7 +206,6 @@ class Workshop(object):
         w['public_private'] = publicPrivate
         w['categoryTags'] = ''
         w['geoTags'] = ''
-        w['memberTags'] = ''
         w['allowSuggestions'] = 1
         w['allowResources'] = 1
         commit(w)

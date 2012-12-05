@@ -76,7 +76,7 @@ class WikiController(BaseController):
         url = id2
 
         w = getWorkshopByCode(code)
-        session['confTab'] = "tab4"
+        session['confTab'] = "tab5"
         alert = {'type':'success'}
         alert['title'] = 'Background Information Updated.'
         session['alert'] = alert

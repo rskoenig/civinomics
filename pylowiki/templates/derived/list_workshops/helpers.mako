@@ -25,8 +25,7 @@
         % endif
         <div class="cap">
             <h5>Latest Workshop: ${mainWorkshop['title']}</h5>
-            Public Sphere: ${mainWorkshop['publicScopeTitle']}<br>
-            Tags: ${mainWorkshop['publicTags']}, ${mainWorkshop['memberTags']}<br>
+            Tags: ${mainWorkshop['categoryTags']}<br>
             <a href="/workshops/${mainWorkshop['urlCode']}/${mainWorkshop['url']}" title="Click to view workshop" style="color:white"><strong>View Workshop</strong></a>
             </div> <!-- /.cap -->
         </div> <!-- /.civ-img-cap -->
@@ -58,7 +57,6 @@
             </div><!-- span3 -->
             <div class="span9">
             <h4><a href="/workshops/${item['urlCode']}/${item['url']}" title="Click to view ${item['title']}">${item['title']}</a></h4>
-            Public Sphere: ${item['publicScopeTitle']}
             % if participate and participate == 1:
                 <span class="pull-right label label-success"><a href="/workshops/${item['urlCode']}/${item['url']}" style="color:white;text-decoration:none;" title="This workshop is within your Public Sphere. Click to participate!">Participate!</a></span>
             % else:
