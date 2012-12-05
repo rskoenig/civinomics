@@ -212,12 +212,9 @@ class CommentController(BaseController):
     
     @h.login_required
     def addComment(self):
-        # Expect errors here, as the Thing URL is no longer being transferred; only the urlCode is necessary
-        cError = 0
         try:
             request.params['submit']
-            parentCommentID = request.params['parentCode']
-            comType = request.params['type']
+            parentCommentCode = request.params['parentCode']
             data = request.params['comment-textarea']
             data = data.strip()
             if data == '':
@@ -226,44 +223,22 @@ class CommentController(BaseController):
                 alert['content'] = 'No comment text entered.'
                 session['alert'] = alert
                 session.save()
-                cError = 1
-            
-            workshopCode = request.params['workshopCode']
-            
-            discussion = getDiscussionByID(discussionID)
-
-            log.info('parent comment = %s' % parentCommentID)
-            if parentCommentID and parentCommentID != '0' and parentCommentID != '':
-                parentComment = getCommentByCode(parentCommentID)
+                return redirect(session['return_to'])
+    
+            if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
+                parentComment = getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
-
-            if cError == 0:
-                comment = Comment(data, c.authuser, discussion, int(parentCommentID))
+                discussion = getDiscussionByID(int(parentComment['discussion_id']))
+                comment = Comment(data, c.authuser, discussion, parentCommentID)
+                return redirect(session['return_to'])
+                
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
-            h.flash('Do not access a handler directly', 'error')
-        except:
-            raise
-            h.flash('Unknown error', 'error')
-        
-        if comType == 'background':
-            return redirect('/workshop/%s/%s/background' % (workshopCode, workshopURL) )
-        elif comType == 'feedback':
-            return redirect('/workshop/%s/%s/feedback' % (workshopCode, workshopURL) )
-        elif comType == 'resource':
-            resourceCode = request.params['resourceCode']
-            return redirect('/workshop/%s/%s/resource/%s/%s/' % (workshopCode, workshopURL, resourceCode, resourceURL ) )
-        elif comType == 'suggestionMain':
-            suggestionCode = request.params['suggestionCode']
-            return redirect('/workshop/%s/%s/suggestion/%s/%s'%(workshopCode, workshopURL, suggestionCode, suggestionURL))
-        elif comType == 'discussion':
-            discussionCode = discussion['urlCode']
-            return redirect('/workshop/%s/%s/discussion/%s/%s'%(workshopCode, workshopURL, discussionCode, discussionURL))
-        elif comType == 'thread':
             return redirect(session['return_to'])
-        else:
-            return redirect('/')
-            
+        except:
+            h.flash('Unknown error', 'error')
+            return redirect(session['return_to'])
+    
     """ id1: the issue's URL.
     """
     ##@h.login_required
