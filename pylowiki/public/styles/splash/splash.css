@@ -37,7 +37,6 @@ html, body {
     display:block;
     position: absolute;
     width: 100%;
-    min-width: 1024px;
     margin-top:5px;
     background-size:cover;
 }

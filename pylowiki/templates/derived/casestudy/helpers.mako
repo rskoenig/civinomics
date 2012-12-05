@@ -63,43 +63,36 @@
 </%def>
 
 <%def name='slideShow(study)'>
-              % if len(study['pictures']) > 0:
-                </br>
-                  <div id="myCarousel" class="carousel slide centered" style="width:600px; background-color:#000000;">
-                      <!-- Carousel items -->
-                      <div class="carousel-inner"> 
-                      <% pictures= study['pictures']%>
-                      
-                      <% picture = pictures[0] %>
-                        <div class="active item"><img class="centered" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
+      % if len(study['pictures']) > 0:
+        </br>
+          <div id="myCarousel" class="carousel slide centered" style="background-color:#000000;">
+              <!-- Carousel items -->
+              <div class="carousel-inner"> 
+              <% pictures= study['pictures']%>
+              
+              <% picture = pictures[0] %>
+                <div class="active item"><img class="centered" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
+                            <div class="carousel-caption">
+                                <h4>${picture['title']}</h4>
+                                <div style="color:#ffffff;">${picture['caption']}</div>
+                            </div>
+                        </div>  
+              
+                    <% assclownpics = pictures[1:] %>
+                        % for picture in assclownpics:
+                                <div class="item"><img class="centered" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
                                     <div class="carousel-caption">
                                         <h4>${picture['title']}</h4>
                                         <div style="color:#ffffff;">${picture['caption']}</div>
                                     </div>
                                 </div>  
-                      
-                      
-
-                       <% assclownpics = pictures[1:] %>
-                             % for picture in assclownpics:
-                                    <div class="item"><img class="centered" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
-                                        <div class="carousel-caption">
-                                            <h4>${picture['title']}</h4>
-                                            <div style="color:#ffffff;">${picture['caption']}</div>
-                                        </div>
-                                    </div>  
-                            % endfor
-                            
-
-
-                        </div>
-            
-                      
-                      <!-- Carousel nav -->
-                      <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-                      <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
-                   </div>
-              % endif
+                        % endfor
+                </div>
+              <!-- Carousel nav -->
+              <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+              <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+           </div>
+      % endif
 </%def>
 
 
@@ -110,7 +103,13 @@
                 <% questions= study['questions']%>
                 % for question in questions:
                 <p><em>${question['title']}</em></p>
-                <img class="thumbnail centered" width="600px" src="/images/corp/casestudies/${study['url']}/${question['image']}" alt="">
+                    <ul class="thumbnails">
+                        <li class="span6">
+                            <div class="thumbnail">
+                                <img class="centered" src="/images/corp/casestudies/${study['url']}/${question['image']}" alt="">
+                            </div>
+                        </li>
+                    </ul>
                 </br>
                 % endfor
               % endif
