@@ -62,7 +62,6 @@
                activityStr += '<a %s>%s</a>' %(lib_6.discussionLink(item, w, embed=True), title)
             else:
                activityStr += 'fucked up'
-            print activityStr
          %>
          ${activityStr | n}
       </p>

@@ -210,6 +210,13 @@ img.watch{
    position: absolute;
 }
 
+.oddComment{
+    background-color:whitesmoke;
+}
+.evenComment{
+    background-color:white;
+}
+
 .btn-group.four-up a.btn {
 width: 25%;
 padding-left:0px;

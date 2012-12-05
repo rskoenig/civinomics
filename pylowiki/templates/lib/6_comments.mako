@@ -70,7 +70,7 @@
 
 <%def name="displayDiscussion(thing, discussion)">
     <%
-        maxDepth = 4
+        maxDepth = 8
         curDepth = 0
         if 'children' in discussion.keys():
             recurseCommentTree(discussion, thing.objType, maxDepth, curDepth)
@@ -118,9 +118,15 @@
             return
         accordionID = 'accordion-%s' % comment['urlCode']
         collapseID = 'collapse-%s' % comment['urlCode']
+        
+        if curDepth % 2 == 1:
+            backgroundShade = ' oddComment'
+        else:
+            backgroundShade = ' evenComment'
+        
     %>
     <div class="accordion" id="${accordionID}">
-        <div class="accordion-group">
+        <div class="accordion-group ${backgroundShade}">
             ${commentHeading(comment, author, accordionID, collapseID)}
             ${commentContent(comment, commentType, curDepth, author, accordionID, collapseID)}
         </div>

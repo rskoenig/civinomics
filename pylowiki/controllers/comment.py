@@ -235,9 +235,7 @@ class CommentController(BaseController):
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             return redirect(session['return_to'])
-        except:
-            h.flash('Unknown error', 'error')
-            return redirect(session['return_to'])
+        return redirect(session['return_to'])
     
     """ id1: the issue's URL.
     """
