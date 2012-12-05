@@ -189,7 +189,9 @@
             <div class="btn-group">
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+                % if int(c.authuser['accessLevel']) >= 200 or c.authuser.id == comment.owner:
+                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+                % endif
                 % if int(c.authuser['accessLevel']) >= 200:
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                 % endif
@@ -221,15 +223,17 @@
     </div>
     
     ## Edit
-    <div class="row-fluid collapse" id="${editID}">
-        <div class="span11 offset1">
-            <form action="/comment/edit/${comment['urlCode']}" method="post" class="form form-horizontal">
-                <label>edit</label>
-                <textarea class="comment-reply span12" name="textarea${comment['urlCode']}">${comment['data']}</textarea>
-                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
-            </form>
+    % if int(c.authuser['accessLevel']) >= 200 or c.authuser.id == comment.owner:
+        <div class="row-fluid collapse" id="${editID}">
+            <div class="span11 offset1">
+                <form action="/comment/edit/${comment['urlCode']}" method="post" class="form form-horizontal">
+                    <label>edit</label>
+                    <textarea class="comment-reply span12" name="textarea${comment['urlCode']}">${comment['data']}</textarea>
+                    <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
+                </form>
+            </div>
         </div>
-    </div>
+    % endif
     
     ## Admin
     % if int(c.authuser['accessLevel']) >= 200:
