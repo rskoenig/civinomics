@@ -69,7 +69,7 @@
             <br />
             Or better yet, a whole slideshow.
             </a></li>
-            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Summarize 
+            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Summarize, Summarize 
             % if c.backConfig:
                 <i class="icon-ok"></i>
             % endif

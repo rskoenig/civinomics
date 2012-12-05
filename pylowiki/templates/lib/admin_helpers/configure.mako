@@ -36,21 +36,23 @@
     %>
     <div class="well">
     <h3>Setup Your Workshop</h3>
-    Describe and configure your workshop here.
+    Describe your workshop topic and goals here, and configure how members can participate.
     <br /><br />
     <div class="row">
         <div class="span1">
         </div><!-- span1 -->
-        <div class="span6">
+        <div class="span10">
             <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
-            <strong>Workshop Name:</strong>
+            <strong>Workshop Name:</strong> <span class="label label-important">Required</span>
             <br />
-            <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>  <span class="help-inline"><span class="label label-important">Required</span></span>
+            The name should act as a short description of the workshop topic. It is displayed in listings and the workshop home page. (70 char max)<br />
+            <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>
             <br />
             <br />
-            <strong>Workshop Goals:</strong>
+            <strong>Workshop Goals:</strong> <span class="label label-important">Required</span>
             <br />
-            <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>  <span class="help-inline"><span class="label label-important">Required</span></span>
+            The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
+            <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>
             <br /><br />
             <%
                 if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
@@ -80,7 +82,7 @@
             <br />
             <button type="submit" class="btn btn-warning">Save Settings</button>
             </form>
-        </div><!-- span5 -->
+        </div><!-- span10 -->
     </div><!-- row -->
     </div><!-- well -->
 </%def>
@@ -105,8 +107,7 @@
 <%def name="tags()">
     <div class="well">
     <h3>Category Tags </h3>
-    <br />
-    Tags are descriptive key words used to categorize your workshop. <br />
+    Tags are descriptive key words used to categorize your workshop.<br />
     <form name="workshop_tags" id="workshop_tags" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureTagsWorkshopHandler" enctype="multipart/form-data" method="post" >
     <div class="row">
         <div class="span1">
@@ -116,7 +117,8 @@
             <% tagList = getCategoryTagList() %>
             <% tags = c.w['categoryTags'] %>
             <% workshopTags = tags.split('|') %>
-           Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />
+            <br />
+            Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />
             % for tag in tagList:
                 % if tag in workshopTags:
                     <% checked = 'checked' %>
@@ -137,8 +139,8 @@
 
 
 <%def name="edit_background()">
-    <h3>Summarize</h3>
-    Use the wiki editor below to provide introductory background information about your workshop topic and goals. What do participants need to know about the topic? What do you hope to accomplish in this workshop?  
+    <h3>Summarize Your Workshop</h3>
+    Use the wiki editor below to provide introductory background information about your workshop topic and goals. What do participants need to know about the topic? What do you hope to accomplish in this workshop? This information will appear on the workshop home page with the slideshow.  
     <br /><br />
     ${h.form(url(controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']),method="put")}
     <% counter = 0 %>
@@ -164,8 +166,9 @@
                 <div style="text-align:right; padding-right:35px;">
                     <!--
                     <input type="text" id="remark${counter}"  name="remark${counter}" class="text tiny" placeholder="Optional remark"/>
-                    -->
                     ${h.submit('submit', 'Save')}
+                    -->
+                    <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
                 </div>
             </div>
         </div> <!-- /#wiki-section-break -->
@@ -180,7 +183,6 @@
 
 <%def name="private()">
     <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <strong>Manage Workshop Participants List</strong>
     <p>Private workshops are not visible to the public.</p>
     % if c.w['public_private'] == 'trial':
         <p>Up to 10 other members may participate in your private trial workshop.</p>
@@ -190,6 +192,7 @@
     % if c.pmembers:        
         <br /><br />${len(c.pmembers)} Private Members in This Workshop<br /><br />
     % endif
+    <strong>Manage Workshop Participants List</strong><br />
     <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
         To add new private members to this workshop,
         enter one or more email addresses, one per line. This does not send an email invitation:<br />
@@ -307,7 +310,7 @@
         </span></div><!-- row-fluid -->
     <div class="row-fluid"><span id="underCity">${underCityMessage}</span><br /></div><!-- row -->
     <br />
-    <button type="submit" class="btn btn-warning">Save Scope</button>
+    <button type="submit" class="btn btn-warning">Save Geographic Area</button>
     </form>
     <br />
     <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
