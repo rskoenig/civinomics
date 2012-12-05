@@ -95,7 +95,7 @@ class DiscussionController(BaseController):
             c.isAdmin = False
             c.isFacilitator = False
 
-        c.discussion = getDiscussion(discussionCode, urlify(discussionUrl))
+        c.discussion = getDiscussion(discussionCode)
         c.flags = getFlags(c.discussion)
         c.events = getParentEvents(c.discussion)
         c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
@@ -158,7 +158,7 @@ class DiscussionController(BaseController):
 
         clearError = 0
         clearMessage = ""
-        c.discussion = getDiscussion(code, urlify(url))
+        c.discussion = getDiscussion(code)
         c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
@@ -248,7 +248,7 @@ class DiscussionController(BaseController):
     def editDiscussion(self, id1, id2):
         code = id1
         url = id2
-        c.discussion = getDiscussion(code, urlify(url))
+        c.discussion = getDiscussion(code)
         c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
@@ -266,7 +266,7 @@ class DiscussionController(BaseController):
     def editDiscussionHandler(self, id1, id2):
         code = id1
         url = id2
-        discussion = getDiscussion(code, urlify(url))
+        discussion = getDiscussion(code)
         w = getWorkshop(discussion['workshopCode'], discussion['workshopURL'])
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
@@ -315,7 +315,7 @@ class DiscussionController(BaseController):
     def flagDiscussion(self, id1, id2):
         code = id1
         url = id2
-        discussion = getDiscussion(code, urlify(url))
+        discussion = getDiscussion(code)
         c.w = getWorkshop(discussion['workshopCode'], urlify(discussion['workshopURL']))
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
@@ -341,7 +341,7 @@ class DiscussionController(BaseController):
     def adminDiscussion(self, id1, id2):
         code = id1
         url = id2
-        c.discussion = getDiscussion(code, urlify(url))
+        c.discussion = getDiscussion(code)
         c.w = getWorkshop(c.discussion['workshopCode'], urlify(c.discussion['workshopURL']))
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
@@ -365,7 +365,7 @@ class DiscussionController(BaseController):
 
         discussionCode = request.params['discussionCode']
         discussionURL = request.params['discussionURL']
-        d = getDiscussion(discussionCode, discussionURL)
+        d = getDiscussion(discussionCode)
         ##log.info("BEFORE")
                 
         try:

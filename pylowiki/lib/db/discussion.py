@@ -15,9 +15,9 @@ def getDiscussionByID(id):
     except:
         return False
 
-def getDiscussion(code, url):
+def getDiscussion(code):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('urlCode', code))).filter(Thing.data.any(wc('url', url))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('urlCode', code))).one()
     except:
         return False
 

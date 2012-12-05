@@ -10,12 +10,11 @@ from pylowiki.lib.comments import addDiscussion, addComment
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.workshop import getWorkshop, isScoped
-#from pylowiki.model import commit, Event, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
 from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode, editComment
-from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.discussion import getDiscussionByID, getDiscussion as getDiscussionByCode
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 from pylowiki.lib.db.revision import getRevisionByCode
 
@@ -224,13 +223,19 @@ class CommentController(BaseController):
                 session['alert'] = alert
                 session.save()
                 return redirect(session['return_to'])
-    
+            
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
+                # Reply to an existing comment
                 parentComment = getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
                 discussion = getDiscussionByID(int(parentComment['discussion_id']))
-                comment = Comment(data, c.authuser, discussion, parentCommentID)
-                return redirect(session['return_to'])
+            elif 'discussionCode' in request.params:
+                # Root level comment
+                log.info('root level comment')
+                discussion = getDiscussionByCode(request.params['discussionCode'])
+                parentCommentID = 0
+            comment = Comment(data, c.authuser, discussion, parentCommentID)
+            return redirect(session['return_to'])
                 
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.

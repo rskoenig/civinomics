@@ -38,9 +38,9 @@
                 <input type="hidden" name="parentCode" value="0" />
                 <fieldset>
                     <legend>Add comment</legend>
-                    <textarea rows="4" class="span12"></textarea>
+                    <textarea rows="4" class="span12" name="comment-textarea"></textarea>
                     <span class="help-block">${commentClubRule()}</span>
-                    <button type="submit" class="btn">Submit</button>
+                    <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
                 </fieldset>
             </form>
         </div>
