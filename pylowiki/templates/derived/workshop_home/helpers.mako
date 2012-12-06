@@ -67,7 +67,7 @@
     <dl class="dl-horizontal" style="font-size:large;">
     <dt>Name:</dt><dd><strong>${c.w['title']}</strong><br /><br /></dd>
     <dt>Goals:</dt><dd>${c.w['goals']}<br /><br /></dd>
-    <dt>Tags:</dt><dd>${c.w['categoryTags']}, ${c.w['memberTags']}<br /><br /></dd>
+    <dt>Tags:</dt><dd>${c.w['categoryTags']}<br /><br /></dd>
     % if c.w['startTime'] != '0000-00-00': 
         <dt>Started:</dt><dd><span class="recent">${timeSince(c.w['startTime'])}</span> ago</dd>
         <dt>Ends:</dt><dd><span class="old">${timeUntil(c.w['endTime'])}</span> from now<br /><br /></dd>

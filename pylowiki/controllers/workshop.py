@@ -958,7 +958,7 @@ class WorkshopController(BaseController):
         else:
             c.basicConfig = 0
             
-        if c.w['categoryTags'] != '' and c.w['memberTags'] != '':
+        if c.w['categoryTags'] != '':
             c.tagConfig = 1
         else:
             c.tagConfig = 0
