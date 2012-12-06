@@ -20,7 +20,9 @@
 
 <%def name="intro()">
     Use these forms to configure your workshop.<br />
-    % if c.w['startTime'] == '0000-00-00':
+    % if c.w['public_private'] == 'trial':
+       <br />Complete the checklist before sharing your workshop.<br />
+    % elif c.w['startTime'] == '0000-00-00' and c.w['public_private'] != 'trial':
        <br />Checklist must be completed before the workshop can be published.<br />
     % endif
 </%def>
