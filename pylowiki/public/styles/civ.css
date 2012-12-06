@@ -147,6 +147,10 @@ textarea.comment-reply{
     background-color:#ffc4c4;
 }
 
+.facilitator{
+    background-color:#c4ffbf;
+}
+
 a, a:hover{
    color: #D15D00;
    text-decoration: none;

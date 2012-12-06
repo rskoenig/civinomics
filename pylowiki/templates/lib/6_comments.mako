@@ -138,6 +138,8 @@
         headerClass = "accordion-heading"
         if int(author['accessLevel']) >= 200:
             headerClass += " admin"
+        elif isFacilitator( author.id, c.w.id ):
+            headerClass += " facilitator"
     %>
     <div class="${headerClass}">
         <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
@@ -147,6 +149,8 @@
         ${lib_6.userLink(author, className="inline")}
         % if int(author['accessLevel']) >= 200:
             (admin)
+        % elif isFacilitator( author.id, c.w.id ):
+            (facilitator)
         % endif
         from ${lib_6.userGeoLink(author)}
     </div> <!--/.accordion-heading-->
