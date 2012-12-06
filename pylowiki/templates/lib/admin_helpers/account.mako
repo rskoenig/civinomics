@@ -13,7 +13,12 @@
     <div class="well">
         <h3>Account Summary</h3>
         <br />
-        <strong>Organization Name: </strong> ${c.account['orgName']}<br />
+        % if c.account['type'] == 'trial':
+            <strong>Your Name: </strong> 
+        % else:
+            <strong>Organization Name: </strong>
+        % endif
+        ${c.account['orgName']}<br />
         <strong>Account Type:</strong> ${c.account['type']}<br />
         <strong>Account Workshops:</strong> ${c.account['numHost']}<br />
         <strong>Account Participants:</strong> ${c.account['numParticipants']}<br /><br />
@@ -54,19 +59,21 @@
         <div class="well">
         <h3>Organization Information</h3>
         <br />
-        This information is displayed on your host landing page, with a listing and linking to all of the published workshops under your account.<br />
+        The information you provide here is displayed on your host landing page, with a listing and linking to all of the published workshops under your account.<br />
+        % if c.account['orgName'] != 'none':
+            <br />
+            Your workshop host landing page URL:<br />
+            <a href="/host/${c.account['urlCode']}/${urlify(c.account['orgName'])}">http://civinomics.com/host/${c.account['urlCode']}/${urlify(c.account['orgName'])}</a><br /><br />
+        % endif
         <form action="/accountAdminHandler/${c.account['urlCode']}" enctype="multipart/form-data" method="post" class="form-horizontal">
-            <div class="control-group">
+        <div class="control-group">
                 <label for="orgName" class="control-label">Organization name:</label>
                 <div class="controls">
                    <input type="text" id="orgName" name="orgName" value="${c.account['orgName']}">
                    <span class="help-inline"><span class="label label-important">Required</span></span>
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
-            % if c.account['orgName'] != 'none':
-                Your workshop host landing page URL:<br />
-                <a href="/host/${c.account['urlCode']}/${urlify(c.account['orgName'])}">http://civinomics.com/host/${c.account['urlCode']}/${urlify(c.account['orgName'])}</a><br />
-            % endif
+
             % if 'pictureHash' in c.account:
                 <%
                    pictureHash = c.account['pictureHash']
@@ -85,11 +92,11 @@
                 <label for="orgEmail" class="control-label">Organization contact email address:</label>
                 <div class="controls">
                    <input type="text" id="orgEmail" name="orgEmail" value="${c.account['orgEmail']}">
-                   <span class="help-inline"><span class="label label-important">Required</span></span>
+                   <span class="help-inline"><span class="label label-important">Required</span> (not displayed on host landing page)</span>
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group --> 
             <div class="control-group">
-                <label for="orgLink" class="control-label">Organization web site:</label>
+                <label for="orgLink" class="control-label">Organization web site link:</label>
                 <div class="controls">
                    <input type="text" id="orgLink" name="orgLink" value="${c.account['orgLink']}">
                 </div> <!-- /.controls -->
@@ -101,7 +108,7 @@
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group --> 
             <div class="control-group">
-                <label for="orgMessage" class="control-label">Welcome message:</label>
+                <label for="orgMessage" class="control-label">Welcome message for visitors to host landing page:</label>
                 <div class="controls">
                    <textarea rows="4" cols="40" id="orgMessage" name="orgMessage"">${c.account['orgMessage']}</textarea>
                 </div> <!-- /.controls -->

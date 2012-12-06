@@ -33,10 +33,10 @@
             Use this dashboard to manage your civ.io account.
             <br /><br />
             <ul class="nav nav-pills nav-stacked">
-                <li class="${tab1active}"><a href="#tab1" data-toggle="tab">Summary</a></li>
+                <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Your account<br />Information about your account.</a></li>
                 % if c.account['type'] != 'trial':
-                    <li class="${tab2active}"><a href="#tab2" data-toggle="tab">Organization </a></li>
-                    <li class="${tab3active}"><a href="#tab3" data-toggle="tab">Administration</a></li>
+                    <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Your Organization<br />Information about you.</a></li>
+                    <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Administration<br />Account Management & housekeeping.</a></li>
                 % endif
             </ul>
             </div><!-- well -->
