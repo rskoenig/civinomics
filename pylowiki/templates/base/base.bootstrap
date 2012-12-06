@@ -1,3 +1,5 @@
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
 <!DOCTYPE HTML>
 <html lang="en-US">
    <head>
@@ -29,7 +31,10 @@
                <div class="nav-collapse collapse">
                   <ul class="nav pull-right">
                      % if 'user' in session:
-                        <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">profile</a></li>
+                        <li>
+                            ${lib_6.userImage(c.authuser, className="avatar topbar-avatar")}
+                            <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">profile</a>
+                        </li>
                      % endif
                      <li><a href="/help">help</a></li>
                      % if 'user' in session:

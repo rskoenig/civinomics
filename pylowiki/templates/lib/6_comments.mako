@@ -134,12 +134,20 @@
 </%def>
 
 <%def name="commentHeading(comment, author, accordionID, collapseID)">
-    <div class="accordion-heading">
+    <%
+        headerClass = "accordion-heading"
+        if int(author['accessLevel']) >= 200:
+            headerClass += " admin"
+    %>
+    <div class="${headerClass}">
         <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
             Hide
         </button>
         ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
         ${lib_6.userLink(author, className="inline")}
+        % if int(author['accessLevel']) >= 200:
+            (admin)
+        % endif
         from ${lib_6.userGeoLink(author)}
     </div> <!--/.accordion-heading-->
 </%def>
