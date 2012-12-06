@@ -209,10 +209,12 @@
     % endif
     </form>
     <br />
-    <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
-    You can make this a public workshop if you wish. This means the workshop will be visible to the public, and members residing in the specified geographic area can participate in the workshop.<br />
-    <button type="submit" class="btn btn-warning" name="changeScopeToPublic">Change to Public Workshop</button>
-    </form>
+    % if c.w['public_private'] == 'private':
+        <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
+        You can make this a public workshop if you wish. This means the workshop will be visible to the public, and members residing in the specified geographic area can participate in the workshop.<br />
+        <button type="submit" class="btn btn-warning" name="changeScopeToPublic">Change to Public Workshop</button>
+        </form>
+    % endif
 </%def>
 
 <%def name="public()">
