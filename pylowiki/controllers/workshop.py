@@ -460,6 +460,20 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
         
     @h.login_required
+    def listPrivateMembersHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.w = getWorkshop(code, urlify(url))
+        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
+            ""
+        else:
+            return(redirect("/"))
+            
+        c.privateMembers = getPrivateMembers(c.w['urlCode'])
+        return render('/derived/list_pmembers.bootstrap')
+
+        
+    @h.login_required
     def configureScopeWorkshopHandler(self, id1, id2):
         code = id1
         url = id2

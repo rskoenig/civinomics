@@ -190,7 +190,7 @@
     <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
     <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
     % if c.pmembers:        
-        <br /><br />${len(c.pmembers)} Private Members in This Workshop<br /><br />
+        <br /><br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
     % endif
     <strong>Manage Workshop Participants List</strong><br />
     <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
