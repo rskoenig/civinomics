@@ -17,7 +17,7 @@
 ########################################################################
 <%def name="comments(thing, discussion, **kwargs)">
     <%
-        if 'user' in session:
+        if 'user' in session and discussion.objType != 'comment':
             addCommentToDiscussion(thing)
         displayDiscussion(thing, discussion)
     %>
@@ -169,7 +169,7 @@
                 </div> <!--/.span1-->
                 <div class="span11">
                     ${comment['data']}
-                    % if curDepth + 1 == maxDepth:
+                    % if curDepth + 1 == maxDepth and comment['children'] != '0':
                         ${continueThread(comment)}
                     % endif
                 </div> <!--/.span11-->
@@ -263,7 +263,7 @@
 <%def name="continueThread(comment)">
     <br />
     <%
-        continueStr = '<a %s>%s</a>' %(lib_6.discussionLink(comment, c.w, embed=True, commentRoot=comment), "Continue this thread -->")
+        continueStr = '<a %s>%s</a>' %(lib_6.threadLink(comment, c.w, c.listingType, embed=True, commentRoot=comment), "Continue this thread -->")
     %>
     ${continueStr | n}
 </%def>

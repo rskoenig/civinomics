@@ -2,6 +2,7 @@
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.discussion import getDiscussionByID
+   from pylowiki.lib.db.resource import getResourceByCode
    
    import logging
    log = logging.getLogger(__name__)
@@ -199,16 +200,23 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
    <%
-      if d.objType == 'comment':
-         d = getDiscussionByID(d['discussion_id'])
-      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-      if 'commentRoot' in kwargs:
-         commentRoot = kwargs['commentRoot']
-         resourceStr += "/thread/%s" % commentRoot['urlCode']
-      resourceStr += '"'
+      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s"' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
       if 'embed' in kwargs:
          if kwargs['embed'] == True:
             return resourceStr
    %>
    ${resourceStr}
+</%def>
+
+<%def name="threadLink(comment, w, thingType, **kwargs)">
+   <%      
+      d = getDiscussionByID(comment['discussion_id'])
+      if d['discType'] == 'resource':
+         d = getResourceByCode(d['resourceCode'])
+      linkStr = 'href="/workshop/%s/%s/%s/%s/%s/thread/%s"' %(w["urlCode"], w["url"], thingType, d["urlCode"], d["url"], comment['urlCode'])
+      if 'embed' in kwargs:
+         if kwargs['embed'] == True:
+            return linkStr
+   %>
+   ${linkStr}
 </%def>

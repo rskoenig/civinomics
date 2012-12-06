@@ -11,6 +11,7 @@ from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getResourceByID, getResource, getActiveResourcesByParentID
 from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
 from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.comment import getCommentByCode
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags, clearFlags
 from pylowiki.lib.db.page import Page, getPageByID, get_page
@@ -110,6 +111,78 @@ class ResourceController(BaseController):
         c.listingType = 'resource'
         return render('/derived/6_item_in_listing.bootstrap')
         #return render('/derived/resource.bootstrap')
+
+    def thread(self, id1, id2, id3, id4, id5 = ''):
+        workshopCode = id1
+        workshopURL = id2
+        resourceCode = id3
+        resourceURL = id4
+        commentCode = id5
+    
+        c.w = getWorkshop(workshopCode, workshopURL)
+        c.title = c.w['title']
+        c.resource = getResource(resourceCode, urlify(resourceURL))
+        if c.resource['parent_id'] != None and c.resource['parent_type'] != None:
+            if c.resource['parent_type'] == 'suggestion':
+                c.suggestion = getSuggestionByID(c.resource['parent_id'])
+    
+        c.events = getParentEvents(c.resource)
+        if c.resource['disabled'] == '1' or c.resource['allowComments'] == '0':
+            c.commentsDisabled = 1
+        else:
+            c.commentsDisabled = 0
+    
+        c.content = h.literal(h.reST2HTML(c.resource['comment']))
+        c.revision = False
+        c.lastmoduser = getUserByID(c.resource.owner)
+        if 'mainRevision_id' in c.resource:
+            r = get_revision(int(c.resource['mainRevision_id']))
+            c.lastmoddate = r.date
+        else:
+            c.lastmoddate = c.resource.date
+    
+        c.revisions = getParentRevisions(c.resource.id)
+    
+        c.flagged = False
+        if checkFlagged(c.resource):
+           c.flagged = True
+    
+        if 'user' in session:
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.allowComments = c.resource['allowComments']
+    
+            if 'ratedThings_resource_overall' in c.authuser.keys():
+                """
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
+                """
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall']))
+                if c.resource.id in resRateDict.keys():
+                    c.rating = getRatingByID(resRateDict[c.resource.id])
+        else:            
+            c.isFacilitator = False
+            c.isAdmin = False
+            c.isScoped = False
+            c.allowComments = False
+    
+        c.poster = getUserByID(c.resource.owner)
+        
+        if c.suggestion:
+            c.resources = getActiveResourcesByParentID(c.suggestion.id)
+        else:
+            c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        for i in range(len(c.resources)):
+            resource = c.resources[i]
+            if resource.id == c.resource.id:
+                c.resources.pop(i)
+                break
+        c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
+        c.rootComment = getCommentByCode(commentCode)
+        c.listingType = 'resource'
+        return render('/derived/6_item_in_listing.bootstrap')
 
     @h.login_required
     def newResource(self, id1, id2):

@@ -224,8 +224,9 @@ def make_map():
     map.connect('/resource/handler/{id1}/{id2}/', controller = 'resource', action = 'handler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '')
     map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/{id5}', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}')
-    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/{id5}/', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}')
+    #map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/{id5}', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}')
+    #map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/{id5}/', controller = 'resource', action = 'index', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}')
+    map.connect('/workshop/{id1}/{id2}/resource/{id3}/{id4}/thread/{id5}', controller = 'resource', action = 'thread', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}')
     map.connect('/workshop/{id1}/{id2}/inactiveResources', controller = 'workshop', action = 'inactiveResources', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/inactiveResources/', controller = 'workshop', action = 'inactiveResources', id1 = '{id1}', id2 = '{id2}')
 

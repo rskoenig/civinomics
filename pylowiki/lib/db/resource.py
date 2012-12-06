@@ -28,6 +28,12 @@ def getResource(urlCode, url):
     except:
         return False
 
+def getResourceByCode(urlCode):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('urlCode', urlCode))).one()
+    except:
+        return False
+
 def getResourceByLink(link, item):
     if item.objType == 'workshop':
         try:
