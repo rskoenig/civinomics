@@ -169,7 +169,9 @@
                 </div> <!--/.span1-->
                 <div class="span11">
                     ${comment['data']}
-                    ${curDepth}
+                    % if curDepth + 1 == maxDepth:
+                        ${continueThread(comment)}
+                    % endif
                 </div> <!--/.span11-->
             </div> <!--/.row-fluid-->
             <%
@@ -255,4 +257,13 @@
             </div>
         </div>
     % endif
+</%def>
+
+
+<%def name="continueThread(comment)">
+    <br />
+    <%
+        continueStr = '<a %s>%s</a>' %(lib_6.discussionLink(comment, c.w, embed=True, commentRoot=comment), "Continue this thread -->")
+    %>
+    ${continueStr | n}
 </%def>

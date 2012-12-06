@@ -35,7 +35,12 @@ ${lib.return_to()}
                         ##<h4 class="centered">Comments</h4>
                         <div class="row-fluid">
                             <div class="span11 offset1">
-                                ${comments(thing, c.discussion)}
+                                <%
+                                    if c.rootComment != '':
+                                        comments(thing, c.rootComment)
+                                    else:
+                                        comments(thing, c.discussion)
+                                %>
                             </div>
                         </div>
                     </div>

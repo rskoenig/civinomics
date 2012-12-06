@@ -9,6 +9,7 @@ from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.workshop import getWorkshop, isScoped
 from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
+from pylowiki.lib.db.comment import getCommentByCode
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin, getUserByID
 from pylowiki.lib.db.event import getParentEvents
@@ -126,6 +127,30 @@ class DiscussionController(BaseController):
         c.listingType = 'discussion'
         return render('/derived/6_item_in_listing.bootstrap')
         #return render('/derived/discussion_topic.bootstrap')
+
+    def thread(self, id1, id2, id3, id4, id5):
+        workshopCode = id1
+        workshopUrl = id2
+        discussionCode = id3
+        discussionUrl = id4
+        commentCode = id5
+        
+        c.w = getWorkshop(workshopCode, urlify(workshopUrl))
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        else:
+            c.isScoped = False
+            c.isAdmin = False
+            c.isFacilitator = False
+        
+        c.rootComment = getCommentByCode(commentCode)
+        c.discussion = getDiscussionByID(c.rootComment['discussion_id'])
+        c.title = c.w['title']
+        c.content = h.literal(h.reST2HTML(c.discussion['text']))
+        c.listingType = 'discussion'
+        return render('/derived/6_item_in_listing.bootstrap')
 
     @h.login_required
     def addDiscussion(self, id1, id2):
