@@ -93,9 +93,8 @@
                 childList = map(int, node['children'].split(','))
         else:
             childList = map(int, node['children'].split(','))
-
+            
         childList = sortComments(childList)
-
         for child in childList:
             # Hack to resolve slight difference between discussion objects and comment objects
             if type(child) == type(1L):
@@ -128,7 +127,7 @@
     <div class="accordion" id="${accordionID}">
         <div class="accordion-group ${backgroundShade}">
             ${commentHeading(comment, author, accordionID, collapseID)}
-            ${commentContent(comment, commentType, curDepth, author, accordionID, collapseID)}
+            ${commentContent(comment, commentType, curDepth, maxDepth, author, accordionID, collapseID)}
         </div>
     </div>
 </%def>
@@ -156,7 +155,7 @@
     </div> <!--/.accordion-heading-->
 </%def>
 
-<%def name="commentContent(comment, commentType, curDepth, author, accordionID, collapseID)">
+<%def name="commentContent(comment, commentType, curDepth, maxDepth, author, accordionID, collapseID)">
     <%
         thisClass = 'accordion-body collapse'
         if comment['disabled'] == '0' and comment['deleted'] == '0':
@@ -170,6 +169,7 @@
                 </div> <!--/.span1-->
                 <div class="span11">
                     ${comment['data']}
+                    ${curDepth}
                 </div> <!--/.span11-->
             </div> <!--/.row-fluid-->
             <%
