@@ -322,10 +322,10 @@ def make_map():
     map.connect('/clearCommentFlagsHandler/{id1}/', controller = 'comment', action = 'clearCommentFlagsHandler', id1 = '{id1}')
 
     # Ratings
-    map.connect('/rateSuggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/rate/suggestion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/rateFacilitation/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateFacilitation', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rateResource/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rateDiscussion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateDiscussion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/rate/resource/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/rate/discussion/{id1}/{id2}/{id3}', controller = 'rating', action = 'rateDiscussion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/rate/comment/{id1}/{id2}', controller = 'rating', action = 'rateComment', id1 = '{id1}', id2 = '{id2}')
 
     map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')

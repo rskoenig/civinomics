@@ -98,7 +98,7 @@ class RatingController(BaseController):
             voteType = 1
         
         dKey = 'ratedThings_discussion_overall'
-        dis = getDiscussion(code, urlify(url))
+        dis = getDiscussion(code)
         found = False
         if dKey in c.authuser.keys():
             """

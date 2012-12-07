@@ -1,10 +1,12 @@
 <%inherit file="/base/base_workshop.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
 
 <div class="spacer" style="height:20px;"></div>
 
 <% 
+   lib.return_to()
    if c.listingType == 'discussion':
       itemList = c.discussions
    elif c.listingType == 'resources':
