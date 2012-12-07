@@ -13,7 +13,7 @@ from pylowiki.lib.db.workshop import getWorkshop
 from pylowiki.lib.db.resource import getResource
 from pylowiki.lib.db.discussion import getDiscussion
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.comment import getComment
+from pylowiki.lib.db.comment import getComment, getCommentByCode
 
 import pylowiki.lib.helpers as h
 
@@ -231,7 +231,7 @@ class RatingController(BaseController):
     
     @h.login_required
     def rateComment(self, id1, id2):
-        commentID = id1
+        commentCode = id1
         amount = int(id2)
         
         """
@@ -253,7 +253,7 @@ class RatingController(BaseController):
             return "OK"
         
         cKey = 'ratedThings_comment_overall'
-        com = getComment(commentID)
+        com = getCommentByCode(commentCode)
         found = False
         if cKey in c.authuser.keys():
             """
