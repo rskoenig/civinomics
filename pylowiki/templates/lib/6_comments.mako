@@ -151,7 +151,11 @@
         % elif isFacilitator( author.id, c.w.id ):
             (facilitator)
         % endif
-        from ${lib_6.userGeoLink(author)}
+        from ${lib_6.userGeoLink(author, comment=True)}
+        
+        % if comment['disabled'] == '1':
+            <span class="pull-right tiny disabledComment-notice">(comment disabled)</span>
+        % endif
     </div> <!--/.accordion-heading-->
 </%def>
 

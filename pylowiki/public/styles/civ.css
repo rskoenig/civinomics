@@ -66,6 +66,15 @@ hr.civ-topbar-hr{
   text-align: center;
 }
 
+.tiny{
+    font-size:8px;
+}
+
+.disabledComment-notice{
+    margin-top:8px;
+    margin-right:5px;
+}
+
 .list-item{
    height:85px;
 }

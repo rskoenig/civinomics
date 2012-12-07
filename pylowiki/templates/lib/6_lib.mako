@@ -192,8 +192,9 @@
         geoLinkStr += '<a href="%s" class="geoLink">%s</a>' %(userGeo['cityURL'], userGeo['cityTitle'])
         geoLinkStr += ', '
         geoLinkStr += '<a href="%s" class="geoLink">%s</a>' %(userGeo['stateURL'], userGeo['stateTitle'])
-        geoLinkStr += ', '
-        geoLinkStr += '<a href="%s" class="geoLink">%s</a>' %(userGeo['countryURL'], userGeo['countryTitle'])
+        if 'comment' not in kwargs:
+            geoLinkStr += ', '
+            geoLinkStr += '<a href="%s" class="geoLink">%s</a>' %(userGeo['countryURL'], userGeo['countryTitle'])
     %>
     ${geoLinkStr | n}
 </%def>
