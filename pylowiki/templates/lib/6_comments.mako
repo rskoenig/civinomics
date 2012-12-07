@@ -262,20 +262,22 @@
                         <div class="tab-pane active" id="disable-${adminID}">
                             <form class="form-inline">
                                 <fieldset>
-                                    <label>Reason</label>
+                                    <label>Reason:</label>
                                     <input type="text" name="disableReason" class="span8">
-                                    <a href="#" class="btn">Submit</a>
+                                    <a ${lib_6.disableThing(comment, embed=True) | n} class="btn disableButton">Submit</a>
                                 </fieldset>
                             </form>
+                            <span id="disableResponse-${comment['urlCode']}"></span>
                         </div>
                         <div class="tab-pane" id="delete-${adminID}">
                             <form class="form-inline">
                                 <fieldset>
-                                    <label>Reason</label>
-                                    <input type="text" name="disableReason" class="span8">
-                                    <a href="#" class="btn">Submit</a>
+                                    <label>Reason:</label>
+                                    <input type="text" name="deleteReason" class="span8">
+                                    <a ${lib_6.deleteThing(comment, embed=True) | n} class="btn deleteButton">Submit</a>
                                 </fieldset>
                             </form>
+                            <span id="deleteResponse-${comment['urlCode']}"></span>
                         </div>
                     </div>
                 </div>

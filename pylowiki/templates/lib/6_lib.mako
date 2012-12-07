@@ -220,3 +220,23 @@
    %>
    ${linkStr}
 </%def>
+
+<%def name="disableThing(thing, **kwargs)">
+    <%
+        disableStr = 'href = "/disable/%s/%s"' %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return disableStr
+    %>
+    ${disableStr | n}
+</%def>
+
+<%def name="deleteThing(thing, **kwargs)">
+    <%
+        deleteStr = 'href = "/delete/%s/%s"' %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return deleteStr
+    %>
+    ${deleteStr | n}
+</%def>

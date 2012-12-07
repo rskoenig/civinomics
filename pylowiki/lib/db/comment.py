@@ -72,7 +72,7 @@ def getDeletedComments(discussionID):
     except:
        return False  
 
-"Pure meaning they are not disabled or deleted yet"
+# Pure meaning they are not disabled or deleted yet
 def getPureFlaggedDiscussionComments( id ):
     try:
         cList =  meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', id))).all()
@@ -84,6 +84,11 @@ def getPureFlaggedDiscussionComments( id ):
         return fList
     except sa.orm.exc.NoResultFound:
         return False
+
+def isDisabled(comment):
+    if comment['disabled'] == '1':
+        return True
+    return False
 
 # Setters
 def disableComment( comment ):

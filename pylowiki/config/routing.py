@@ -338,7 +338,10 @@ def make_map():
     # Temporary
     map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
     
-
+    # Disabling Things
+    map.connect('/disable/comment/{id}', controller = 'comment', action = 'disable', id = '{id}')
+    
+    
     ########################################################################################################
     # 
     # Online Survey specific routes
@@ -508,7 +511,7 @@ def make_map():
     ##map.connect('/contact/handler', controller = 'contact', action = 'handler' ) # contact handler route
 
     map.connect('/comment/index/*id', controller='comment', action='index') # comment handler route
-    map.connect('/comment/disable/{id}', controller='comment', action='disable') # set comment to disabled
+    #map.connect('/comment/disable/{id}', controller='comment', action='disable') # set comment to disabled
         
     map.connect('/{controller}', controller='{controller}', action='index') # Maps url to controller index
     map.connect('/{controller}/', controller = '{controller}', action = 'index')

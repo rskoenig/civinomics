@@ -13,7 +13,7 @@ from pylowiki.lib.db.workshop import getWorkshop, isScoped
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
 from pylowiki.lib.db.page import get_page
-from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode, editComment
+from pylowiki.lib.db.comment import Comment, getComment, isDisabled, disableComment, enableComment, getCommentByCode, editComment
 from pylowiki.lib.db.discussion import getDiscussionByID, getDiscussion as getDiscussionByCode
 from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
 from pylowiki.lib.db.revision import getRevisionByCode
@@ -267,21 +267,15 @@ class CommentController(BaseController):
     @h.login_required   
     def disable(self, id):
         """disable a comment by id"""
-        comment = getComment( id )
-        if comment:
-            if session['user'] == comment.event.user.name:
-                comment.disable()
-                h.flash( "The comment was disabled!", "success" )
-            else:
-                h.flash( "The comment was NOT disabled!", "warning" )
+        comment = getCommentByCode( id )
+        if not comment:
+            return json.dumps({'code':id, 'result':'ERROR'})
         else:
-            h.flash( "Invalid comment id", "error" )
-        return redirect( session['return_to'] )
-
-    def adminCommentDelete(self, id):
-        comment = getComment(id)
-        deleteComment(comment)
-        return redirect( session['return_to'] )  
+            if isDisabled(comment):
+                return json.dumps({'code':id, 'result':'Already disabled!'})
+            else:
+                disableComment(comment)
+                return json.dumps({'code':id, 'result':'Successfully disabled!'})
     
     @h.login_required
     def edit(self, id1):
