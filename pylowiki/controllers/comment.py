@@ -28,9 +28,8 @@ class CommentController(BaseController):
 
     @h.login_required
     def flagComment(self, id1):
-        commentID = id1
-        comment = getComment(commentID)
-        commentCode = comment['urlCode']
+        commentCode = id1
+        comment = getCommentByCode(commentCode)
         if not comment:
             return json.dumps({'id':commentCode, 'result':'ERROR'})
         if not isFlagged(comment, c.authuser):
