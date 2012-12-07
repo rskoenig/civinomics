@@ -66,7 +66,6 @@ def getDeletedComments(discussionID):
        cList = meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
        comDisabledList = []
        for c in cList:
-           log.info('%d' % int(c['disabled']))
            if c['deleted'] == '1':
                comDisabledList.append(c.id)
        return comDisabledList

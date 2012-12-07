@@ -252,8 +252,33 @@
     ## Admin
     % if int(c.authuser['accessLevel']) >= 200:
         <div class="row-fluid collapse" id="${adminID}">
-            <div class="span11 offset1">
-                Admin here.
+            <div class="span11 offset1 alert">
+                <div class="tabbable"> <!-- Only required for left/right tabs -->
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
+                        <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="disable-${adminID}">
+                            <form class="form-inline">
+                                <fieldset>
+                                    <label>Reason</label>
+                                    <input type="text" name="disableReason" class="span8">
+                                    <a href="#" class="btn">Submit</a>
+                                </fieldset>
+                            </form>
+                        </div>
+                        <div class="tab-pane" id="delete-${adminID}">
+                            <form class="form-inline">
+                                <fieldset>
+                                    <label>Reason</label>
+                                    <input type="text" name="disableReason" class="span8">
+                                    <a href="#" class="btn">Submit</a>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     % endif

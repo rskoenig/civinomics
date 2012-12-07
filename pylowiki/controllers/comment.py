@@ -46,7 +46,6 @@ class CommentController(BaseController):
         c.w = getWorkshop(c.discussion['workshopCode'], c.discussion['workshopURL'])
         c.commentType = c.discussion['discType']
         c.flags = getFlags(c.comment)
-        log.info('len of c.flags is %s'%len(c.flags))
         c.events = getParentEvents(c.comment)
         c.user = getUserByID(c.comment.owner)
 
