@@ -91,3 +91,7 @@ ${lib.return_to()}
         Posted by ${lib_6.userLink(thing.owner)} from ${lib_6.userGeoLink(thing.owner)}
     </div>
 </%def>
+
+<%def name="extraScripts2()">
+   <script src="/js/flag.js" type="text/javascript"></script>
+</%def>
