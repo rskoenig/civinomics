@@ -21,7 +21,6 @@ from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
 from pylowiki.lib.db.pmember import getPrivateMemberWorkshops
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.account import Account, getUserAccount, getUserAccounts
 from pylowiki.lib.db.flag import getFlags
 from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
 
@@ -53,7 +52,6 @@ class ProfileController(BaseController):
         else:
            c.isFollowing = False
 
-        c.accounts = getUserAccounts(c.user)
         
         if 'user' in session and c.user.id == c.authuser.id:
             c.pworkshops = []
@@ -194,8 +192,6 @@ class ProfileController(BaseController):
         else:
            c.isFollowing = False
 
-        c.account = getUserAccount(c.user.id)
-
         pList = getUserPosts(c.user)
         c.totalPoints = 0
         c.suggestions = []
@@ -257,8 +253,6 @@ class ProfileController(BaseController):
            c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
         else:
            c.isFollowing = False
-
-        c.account = getUserAccount(c.user.id)
 
         uList = getUserFollows(c.user.id)
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
@@ -322,8 +316,6 @@ class ProfileController(BaseController):
            c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
         else:
            c.isFollowing = False
-
-        c.account = getUserAccount(c.user.id)
 
         uList = getUserFollows(c.user.id)
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
@@ -389,8 +381,6 @@ class ProfileController(BaseController):
         else:
            c.isFollowing = False
 
-        c.account = getUserAccount(c.user.id)
-
         uList = getUserFollows(c.user.id)
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
         c.followingUsers = []
@@ -454,8 +444,6 @@ class ProfileController(BaseController):
         else:
            c.isFollowing = False
 
-        c.account = getUserAccount(c.user.id)
-
         uList = getUserFollows(c.user.id)
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
         c.followingUsers = []
@@ -503,8 +491,6 @@ class ProfileController(BaseController):
            c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
         else:
            c.isFollowing = False
-
-        c.account = getUserAccount(c.user.id)
 
         uList = getUserFollows(c.user.id)
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
@@ -825,20 +811,6 @@ class ProfileController(BaseController):
         c.user = get_user(code, url)
         c.title = c.user['name'] 
         c.events = getParentEvents(c.user)
-        c.accounts = getUserAccounts(c.user)
-        if c.accounts:
-            for account in c.accounts:
-                if 'type' not in account:
-                    account['type'] = 'basic'
-                    account['numParticipants'] = '100'
-                    account['urlCode'] = toBase62(account)
-
-                if 'orgName' not in account:
-                    account['orgName'] = c.user['name']
-                    account['orgEmail'] = c.user['email']
-
-            commit(account)
-        log.info('c.accounts is %s' %c.accounts)
 
         return render("/derived/member_admin.bootstrap")
 
@@ -859,13 +831,13 @@ class ProfileController(BaseController):
               eAction = 'User Enabled'
               alert = {'type':'success'}
               alert['title'] = 'Enabled:'
-              alert['content'] = 'Account Enabled'
+              alert['content'] = 'Member Enabled'
            else:
               c.user['disabled'] = '1'
               eAction = 'User Disabled'
               alert = {'type':'warning'}
               alert['title'] = 'Disabled:'
-              alert['content'] = 'Account Disabled'
+              alert['content'] = 'Member Disabled'
               
            e = Event(eAction, enableUserReason, c.user, c.authuser)
            commit(c.user)

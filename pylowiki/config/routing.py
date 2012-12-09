@@ -66,7 +66,7 @@ def make_map():
     map.connect('/ipadListener/sendSurveyData/', controller = 'ipadListener', action = 'sendSurveyData')
 
     # Workshop home page
-    map.connect('/newWorkshop/{id1}', controller = 'workshop', action = 'newWorkshopHandler', id1 = '{id1}')
+    map.connect('/newWorkshop', controller = 'workshop', action = 'newWorkshopHandler')
     map.connect('/workshops/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
@@ -466,25 +466,6 @@ def make_map():
     # Edit user info
     map.connect('/profile/edit', controller = 'profile', action = 'edit')
     map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')
-
-    # User account admin
-    map.connect('/profile/{id1}/{id2}/account', controller = 'account', action = 'accountCreateHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/account/', controller = 'account', action = 'accountCreateHandler', id1 = '{id1}', id2 = '{id2}')
-
-    # Account admin
-    map.connect('/account/{id1}', controller = 'account', action = 'accountAdmin', id1 = '{id1}')
-    map.connect('/account/{id1}/', controller = 'account', action = 'accountAdmin', id1 = '{id1}')
-
-    map.connect('/accountUpgradeHandler/{id1}', controller = 'account', action = 'accountUpgradeHandler', id1 = '{id1}')
-    map.connect('/accountUpgradeHandler/{id1}/', controller = 'account', action = 'accountUpgradeHandler', id1 = '{id1}')
-
-    map.connect('/accountAdminHandler/{id1}', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}')
-    map.connect('/accountAdminHandler/{id1}/', controller = 'account', action = 'accountAdminHandler', id1 = '{id1}')
-    
-    # host profile display
-    map.connect('/host/{id1}/{id2}', controller = 'host', action = 'showHost', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/host/{id1}/{id2}/', controller = 'host', action = 'showHost', id1 = '{id1}', id2 = '{id2}')
-
     
     
     ################

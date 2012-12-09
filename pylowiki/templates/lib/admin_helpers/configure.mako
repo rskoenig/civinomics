@@ -20,9 +20,7 @@
 
 <%def name="intro()">
     Use these forms to configure your workshop.<br />
-    % if c.w['public_private'] == 'trial':
-       <br />Complete the checklist before sharing your workshop.<br />
-    % elif c.w['startTime'] == '0000-00-00' and c.w['public_private'] != 'trial':
+    % if c.w['startTime'] == '0000-00-00':
        <br />Checklist must be completed before the workshop can be published.<br />
     % endif
 </%def>
@@ -96,7 +94,7 @@
     % elif c.w['public_private'] == 'private':
         <h3>It's a Private Workshop</h3>
     % else:
-        <h3>It's a Private Trial Workshop</h3>
+        <h3>It's a Personal Workshop</h3>
     % endif
     % if c.w['public_private'] != 'public':
         ${private()}
@@ -186,8 +184,8 @@
 <%def name="private()">
     <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     <p>Private workshops are not visible to the public.</p>
-    % if c.w['public_private'] == 'trial':
-        <p>Up to 10 other members may participate in your private trial workshop.</p>
+    % if c.w['public_private'] == 'personal':
+        <p>Up to 10 other members may participate in your private workshop.</p>
     % endif
     <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
     <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
@@ -324,7 +322,7 @@
 </%def>
 
 <%def name="publish()">
-    % if c.w['startTime'] == '0000-00-00' and c.account['type'] != 'trial' and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
+    % if c.w['startTime'] == '0000-00-00' and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
         <div class="well">
             <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
             <strong>Your workshop is ready to publish: </strong> <button type="submit" class="btn btn-warning" name="startWorkshop" value="Start" >Publish Workshop</button>

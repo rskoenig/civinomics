@@ -3,16 +3,9 @@
 		<fieldset>
 			<legend>Basic Information</legend>
 			<div class="control-group">
-				<label for="first-name" class="control-label">First name:</label>
+				<label for="member-name" class="control-label">Name:</label>
 				<div class="controls">
-					<input type="text" id="first-name" name="first_name" value="${c.authuser['firstName']}">
-					<span class="help-inline"><span class="label label-important">Required</span></span>
-				</div> <!-- /.controls -->
-			</div> <!-- /.control-group -->
-			<div class="control-group">
-				<label for="last-name" class="control-label">Last name:</label>
-				<div class="controls">
-					<input type="text" id="last-name" name="last_name" value="${c.authuser['lastName']}">
+					<input type="text" id="member-name" name="member_name" value="${c.authuser['name']}">
 					<span class="help-inline"><span class="label label-important">Required</span></span>
 				</div> <!-- /.controls -->
 			</div> <!-- /.control-group -->

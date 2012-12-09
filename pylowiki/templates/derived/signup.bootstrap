@@ -57,7 +57,7 @@
                         </div>
                     % endif
                     <div class="login-top">
-                        <h2> Sign Up </h2>
+                        <h2> Sign Up </h2><br />
                         % if float(c.numAccounts - c.numUsers)/float(c.numAccounts) <= .25:
                             <p> ${c.numAccounts - c.numUsers}/${c.numAccounts} accounts left </p>
                         % endif
@@ -69,12 +69,12 @@
                             <form id="sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
                                 <input type="hidden" name="country" value="United States">
                                 <div class="control-group">
-                                    <label class="control-label" for="memberType"> Membership type: </label>
+                                    <label class="control-label" for="memberType"> This membership is for:<br > </label>
                                     <div class="controls">
-                                        <select name="memberType" id="memberType">
-                                        <option value="individual">I am a person</option>
-                                        <option value="organization">I am an organization</option>
-                                        </select>
+                                        <input type=radio name=memberType value="individual" checked>&nbsp; &nbsp;<strong>A person</strong><br />
+                                        Create free private workshops for up to 10 participants. Browse and participate in the workshops hosted by other people and organizations!<br /><br />
+                                        <input type=radio name=memberType value="organization"> &nbsp; &nbsp;<strong>An organization</strong><br />
+                                        Create public and private workshops for an unlimited number of participants.<br /><br />
                                     </div>
                                 </div>                                
                                 <div class="control-group">

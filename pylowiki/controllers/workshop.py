@@ -25,7 +25,6 @@ from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.pmember import PMember, getPrivateMembers, getPrivateMember
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
-from pylowiki.lib.db.account import Account, getAccountByCode, isAccountAdmin, getAccountByID
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.activity import updateWorkshopURL
 
@@ -94,18 +93,6 @@ class addWorkshopForm(formencode.Schema):
 class WorkshopController(BaseController):
 
     @h.login_required
-    def addWorkshop(self):
-        c.account = getUserAccount(c.authuser.id)
-        if c.account and c.account['numRemaining'] > 0:
-            c.title = "Create New Workshop"
-            c.heading = "Basic information"
-
-            return render('/derived/workshop_create.bootstrap')
-        else:
-            h.flash("You are not authorized to view that page", "warning")
-            return redirect('/')
-
-    @h.login_required
     def followHandler(self, id1, id2):
         code = id1
         url = id2
@@ -148,7 +135,6 @@ class WorkshopController(BaseController):
         session.save()
 
         c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""        
         else:
@@ -217,17 +203,16 @@ class WorkshopController(BaseController):
            werror = 1
            werrMsg += 'Allow Resources '
 
-        if c.account['type'] != 'trial':
-            if not wstarted:
-                if 'publicPrivate' in request.params:
-                    publicPrivate = request.params['publicPrivate']
-                    if (publicPrivate == 'public' or publicPrivate == 'private') and publicPrivate != c.w['public_private']:
-                        wchanges = 1
-                        weventMsg = weventMsg + "Changed workshop type from " + c.w['public_private'] + " to " + publicPrivate + "."
-                        c.w['public_private'] = publicPrivate
-                else:
-                    werror = 1
-                    werrMsg += 'Public or Private? '
+        if not wstarted:
+            if 'publicPrivate' in request.params:
+                publicPrivate = request.params['publicPrivate']
+                if (publicPrivate == 'public' or publicPrivate == 'private') and publicPrivate != c.w['public_private']:
+                    wchanges = 1
+                    weventMsg = weventMsg + "Changed workshop type from " + c.w['public_private'] + " to " + publicPrivate + "."
+                    c.w['public_private'] = publicPrivate
+            else:
+                werror = 1
+                werrMsg += 'Public or Private? '
             
                 
         # save successful changes
@@ -262,7 +247,6 @@ class WorkshopController(BaseController):
         session.save()
 
         c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""        
         else:
@@ -318,7 +302,6 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab2"
         session.save()
         c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""
         else:
@@ -379,7 +362,6 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab2"
         session.save()
         c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""
         else:
@@ -479,7 +461,6 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Configure Workshop"
         c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""
         else:
@@ -515,7 +496,6 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Configure Workshop"
         c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
         if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
             ""
         else:
@@ -555,35 +535,16 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
-    def newWorkshopHandler(self, id1):
-        urlCode = id1
-
-        account = getAccountByCode(urlCode)
+    def newWorkshopHandler(self):
         
-        
-        if account and (isAccountAdmin(c.authuser, account) or isAdmin(c.authuser.id)):
-            error = 0
-            errorMsg = ''
-            if 'workshopName' in request.params:
-                workshopName = request.params['workshopName']
-                if not workshopName or workshopName == '':
-                    error = 1
-                    errorMsg = 'Workshop Name required. '
+        if 'user' in session and c.authuser:
+            if c.authuser['memberType'] == 'individual':
+                wType = 'personal'
             else:
-                error = 1
-                errorMsg = 'Workshop Name required. '
-               
-                
-            if error:
-                alert = {'type':'error'}
-                alert['title'] = 'Missing information'
-                alert['content'] = errorMsg
-                session['alert'] = alert
-                session.save()
-                return redirect('/account/' + urlCode)
-                
+                # put the callback to the payment processor here
+                wType = 'private'
            
-            w = Workshop(workshopName, account, 'trial')
+            w = Workshop('replace with a real name!', c.authuser, wType)
             c.workshop_id = w.w.id # TEST
             c.title = 'Configure Workshop'
             c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
@@ -677,10 +638,7 @@ class WorkshopController(BaseController):
         url = id2
         
         c.w = getWorkshop(code, urlify(url))
-        c.account = getAccountByID(c.w.owner)
         c.title = c.w['title']
-        
-
         
         if 'user' in session:
             c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
@@ -963,7 +921,6 @@ class WorkshopController(BaseController):
         else:
             c.tagConfig = 0
             
-        c.account = getAccountByID(c.w.owner)
         if 'confTab' in session:
             c.tab = session['confTab']
             session.pop('confTab')

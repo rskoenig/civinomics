@@ -414,12 +414,14 @@
         % endfor
         </div> <!-- /.civ-col-inner -->
     </ul>
-    % elif ('user' in session and c.authuser.id == c.user.id) and not c.accounts:
-        <h2 class="civ-col"><i class="icon-list-alt"></i> Create a Free Trial Workshop!</h2>
-        Create a free trial Civinomics workshop. The workshop is private, and you can have up to 10 other Civinomics members participate.
-        <form method="post" name="userAccount" id="userAccount" action="/profile/${c.user['urlCode']}/${c.user['url']}/account/">
+    % elif 'user' in session and c.authuser.id == c.user.id:
+        <h2 class="civ-col"><i class="icon-list-alt"></i> Create a Workshop!</h2>
+        % if c.authuser['memberType'] == 'individual':
+            Create a free Civinomics workshop. The workshop is private, and up to 10 other Civinomics members may participate.
+        % endif
+        <form method="post" name="userAccount" id="userAccount" action="/newWorkshop">
         <br />
-        <button type="submit" class="btn btn-warning">Create Trial Workshop</button>
+        <button type="submit" class="btn btn-warning">Create Workshop</button>
         <br /><br />
         </form>
   % endif
