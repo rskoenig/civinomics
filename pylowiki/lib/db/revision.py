@@ -39,8 +39,7 @@ class Revision(Thing):
         r = Thing('revision', owner.id)
         r['data'] = data
         if thing.objType == 'user':
-            r['firstName'] = thing['firstName']
-            r['lastName'] = thing['lastName']
+            r['name'] = thing['name']
             r['email'] = thing['email']
             r['postalCode'] = thing['postalCode']
             r['pictureHash'] = thing['pictureHash']

@@ -136,13 +136,11 @@ def hashPassword(password):
 
 
 class User(object):
-    def __init__(self, email, firstName, lastName, password, country, memberType, postalCode = '00000'):
+    def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
         u = Thing('user')
-        u['firstName'] = firstName
-        u['lastName'] = lastName
         u['tagline'] = ''
         u['email'] = email
-        u['name'] = '%s %s'%(firstName, lastName)
+        u['name'] = name
         u['activated'] = '0'
         u['disabled'] = '0'
         u['pictureHash'] = 'flash' # default picture
@@ -151,7 +149,7 @@ class User(object):
         u['memberType'] =  memberType
         u['password'] = self.hashPassword(password)
         u['totalPoints'] = 1
-        u['url'] = urlify('%s %s' %(firstName, lastName))
+        u['url'] = urlify('%s' %name)
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         u['accessLevel'] = 0

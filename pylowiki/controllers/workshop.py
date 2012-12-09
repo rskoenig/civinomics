@@ -1021,7 +1021,7 @@ class WorkshopController(BaseController):
             c.county = "0"
             c.city = "0"
 
-        return render('/derived/workshop_configure.bootstrap')
+        return render('/derived/workshop_dashboard.bootstrap')
     
     @h.login_required
     def admin(self, id1, id2):

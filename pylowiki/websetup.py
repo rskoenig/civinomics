@@ -43,26 +43,23 @@ def setup_app(command, conf, vars):
 
         #user, passwd, email = conf['admin.user'], conf['admin.pass'], conf['admin.email']
         # Edolfo
-        firstName = conf['admin.firstName']
-        lastName = conf['admin.lastName']
+        name = conf['admin.name']
         email = conf['admin.email']
         passwd = conf['admin.pass']
         postalCode = conf['admin.postalCode']
         country = 'United States'
         memberType = 'individual'
-        userName = "%s %s"%(firstName, lastName)
 
-        if firstName != "" and lastName != "" and userName != "" and passwd != ""  and email != "" and postalCode != "":
+        if name != "" and passwd != ""  and email != "" and postalCode != "":
         
             # Create the admin user
-            u = User( email, firstName, lastName, passwd, country, memberType, postalCode )
+            u = User( email, name, passwd, country, memberType, postalCode )
             u = getUserByEmail(email)
             u['accessLevel'] = '300'
             u['activated'] = '1'
             u['disabled'] = '0'
             # Create event log entry
             e = Event("Create", "Auto create admin acct.", u, u)
-            # commented out by CCN - crashes
             log.info('hi!')
             commit(u)
 

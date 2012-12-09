@@ -68,17 +68,19 @@
                         <div class="login-body" style="border-bottom:none;">
                             <form id="sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
                                 <input type="hidden" name="country" value="United States">
-                                <input type="hidden" name="memberType" value="individual">
                                 <div class="control-group">
-                                    <label class="control-label" for="firstName"> First Name: </label>
+                                    <label class="control-label" for="memberType"> Membership type: </label>
                                     <div class="controls">
-                                        <input type="text" name="firstName" id="firstName">
+                                        <select name="memberType" id="memberType">
+                                        <option value="individual">I am a person</option>
+                                        <option value="organization">I am an organization</option>
+                                        </select>
                                     </div>
-                                </div>
+                                </div>                                
                                 <div class="control-group">
-                                    <label class="control-label" for="lastName"> Last Name: </label>
+                                    <label class="control-label" for="name"> Name: </label>
                                     <div class="controls">
-                                        <input type="text" name="lastName" id="lastName">
+                                        <input type="text" name="name" id="name">
                                     </div>
                                 </div>
                                 <div class="control-group">
