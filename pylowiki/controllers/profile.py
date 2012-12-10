@@ -544,12 +544,20 @@ class ProfileController(BaseController):
         code = id1
         url = id2
         c.user = get_user(code, url)
-        c.title = 'Member Dashboard'
-        if 'confTab' in session:
-            c.tab = session['confTab']
-            session.pop('confTab')
-            session.save()
-        return render('/derived/profile_dashboard.bootstrap')
+        c.events = getParentEvents(c.user)
+        if isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
+            c.title = 'Member Dashboard'
+            if 'confTab' in session:
+                c.tab = session['confTab']
+                session.pop('confTab')
+                session.save()
+            if isAdmin(c.authuser.id):
+                c.admin = True
+            else:
+                c.admin = False
+            return render('/derived/profile_dashboard.bootstrap')
+        else:
+            return render('/derived/404.bootstrap')
 
     @h.login_required
     def editHandler(self,id1, id2):
@@ -563,7 +571,7 @@ class ProfileController(BaseController):
 
         # make sure they are authorized to do this
         if c.user.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
             
         session['confTab'] = "tab1"
         session.save()
@@ -683,10 +691,8 @@ class ProfileController(BaseController):
         changeMsg = ""
         # make sure they are authorized to do this
         if c.user.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
-            return redirect('/')
+            return render('/derived/404.bootstrap')
             
-        session['confTab'] = "tab2"
-        session.save()
         
         if 'password' in request.params:
             password = request.params['password']
@@ -813,8 +819,7 @@ class ProfileController(BaseController):
     @h.login_required
     def userAdmin(self, id1, id2):
         if not isAdmin(c.authuser.id):
-           h.flash('You are not authorized.', 'error')
-           return redirect("/")
+           return render("/derived/404.bootstrap")
 
         code = id1
         url = id2
@@ -830,8 +835,12 @@ class ProfileController(BaseController):
         code = id1
         url = id2
         c.user = get_user(code, url)
-        log.info('enableHandler %s %s' % (code, url))
+        if not isAdmin(c.authuser.id):
+            return render("/derived/404.bootstrap")
 
+        session['confTab'] = "tab3"
+        session.save()
+        
         if 'verifyEnableUser' in request.params and 'enableUserReason' in request.params and len(request.params['enableUserReason']) > 0:
            log.info('disabled is %s' % c.user['disabled'])
            enableUserReason = request.params['enableUserReason']
@@ -860,41 +869,45 @@ class ProfileController(BaseController):
            session['alert'] = alert
            session.save()
 
-        return redirect("/profile/" + code + "/" + url + "/admin" )
+        return redirect("/profile/" + code + "/" + url + "/dashboard" )
 
     @h.login_required
     def privsHandler(self, id1, id2):
         code = id1
         url = id2
         c.user = get_user(code, url)
-        log.info('privHandler %s %s' % (code, url))
-        "Check which of three radio type buttons was bubbled in"
-        if ('changeAccessReason' in request.params) and (request.params['changeAccessReason'] != '') and ('setPrivsUser' in request.params or 'setPrivsFacil' in request.params or 'setPrivsAdmin' in request.params):
-           eAction = 'Access Level Changed from ' + c.user['accessLevel'] + ' to '
-           if 'setPrivsUser' in request.params:
-               c.user['accessLevel'] = '0'
-               eAction += '0'
-           elif 'setPrivsFacil' in request.params:
-               c.user['accessLevel'] = '100'
-               eAction += '0'
-           else:
-               c.user['accessLevel'] = '200'
-               eAction += '0'
-           changeAccessReason = request.params['changeAccessReason']
-           e = Event(eAction, changeAccessReason, c.user, c.authuser)
-           commit(c.user)
-           alert = {'type':'success'}
-           alert['title'] = 'Success:'
-           alert['content'] = 'New Access Level Set'
-           session['alert'] = alert
-           session.save()
+        if not isAdmin(c.authuser.id):
+            return render("/derived/404.bootstrap")
+            
+        session['confTab'] = "tab3"
+        session.save()
+        if 'accessChangeReason' in request.params and request.params['accessChangeReason'] != '' and 'accessChangeVerify' in request.params:
+            if c.user['accessLevel'] == '0':
+                newAccessTitle = "Admin"
+                newAccess = "200"
+                oldAccessTitle = "User"
+            else:
+                newAccessTitle = "User"
+                newAccess = "0"
+                oldAccessTitle = "Admin"
+                
+            eAction = 'Access Level Changed from ' + oldAccessTitle + ' to ' + newAccessTitle
+            c.user['accessLevel'] = '200'
+            accessChangeReason = request.params['accessChangeReason']
+            e = Event(eAction, accessChangeReason, c.user, c.authuser)
+            commit(c.user)
+            alert = {'type':'success'}
+            alert['title'] = 'Success:'
+            alert['content'] = 'New Access Level Set'
+            session['alert'] = alert
+            session.save()
         else:
-           alert = {'type':'error'}
-           alert['title'] = 'Error:'
-           alert['content'] = 'Enter reason and specify a new access level'
-           session['alert'] = alert
-           session.save()
+            alert = {'type':'error'}
+            alert['title'] = 'Error:'
+            alert['content'] = 'Enter reason and specify a new access level'
+            session['alert'] = alert
+            session.save()
 
-        return redirect("/profile/" + code + "/" + url + "/admin" )
+        return redirect("/profile/" + code + "/" + url + "/dashboard" )
 
 

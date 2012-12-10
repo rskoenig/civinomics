@@ -1,3 +1,7 @@
+<%!
+    from pylowiki.lib.db.user import getUserByID
+%> 
+
 <%def name="profileInfo()">
     <div class="well">
 	<form action="/profile/${c.user['urlCode']}/${c.user['url']}/editHandler" enctype="multipart/form-data" method="post" class="form-horizontal">
@@ -77,4 +81,73 @@
         <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
     </form>
     </div><!-- well -->
+</%def>
+
+<%def name="memberEvents()">
+    % if c.events:
+       <% numEvents = len(c.events) %>
+       <% eString = "Events" %>
+       % if numEvents == 1:
+          <% eString = "Event" %>
+       % endif
+       <strong>${numEvents} ${eString}:</strong>
+       <br /><br />
+       % for event in c.events:
+          <% user = getUserByID(event.owner) %>
+          ${event['title']} ${event.date}
+          % if user:
+              by ${user['name']}
+          % endif
+          <br />
+          Reason: ${event['data']}
+          <br /><br />
+       %endfor
+    % endif
+</%def>
+
+<%def name="memberAdmin()">
+    <h3>Administrate Member</h3><br />
+    % if c.user['disabled'] == '1':
+       <% eAction = 'Enable' %>
+    % else:
+       <% eAction = 'Disable' %>
+    % endif
+    <form method="post" name="enableUser" id="enableUser" class="form-horizontal" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/">
+        <strong>${eAction} Member</strong><br />
+        <fieldset>
+            <div class="control-group">
+                <label for="enable" class="control-label">Reason for ${eAction}</label>
+                <div class="controls">
+                    <input type=text name=enableUserReason>
+                    <input type=radio name="verifyEnableUser" value="0"> Verify ${eAction}
+                    &nbsp;&nbsp;<button type="submit" class="btn btn-warning">${eAction} Member</button>
+                </div> <!-- /.controls -->
+            </div> <!-- /.control-group -->
+        </fieldset>
+    </form>
+    <br /><br />
+    <% 
+        if c.user['accessLevel'] == '0':
+            newAccess = "200"
+            newTitle = "Admin"
+            oldTitle = "User"
+        else:
+            newAccess = "0"
+            newTitle = "User"
+            oldTitle = "Admin"
+    %>
+    <form method="post" name="userPrivs" id="userPrivs" class="form-horizontal" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/">
+        <strong>Change Access Level From ${oldTitle} To ${newTitle}</strong><br />
+        <fieldset>
+            <div class="control-group">
+                <label for="setPrivs" class="control-label">Reason for Change</label>
+                <div class="controls">
+                        <input type=text name=accessChangeReason>
+                        <input type=radio name="accessChangeVerify" value="0"> Verify Change
+                        &nbsp;&nbsp;<button type="submit" name="setPrivs" class="btn btn-warning">Change Access</button>
+                </div> <!-- /.controls -->
+            </div> <!-- /.control-group -->
+        </fieldset>
+     </form>
+    <br /><br />
 </%def>

@@ -7,11 +7,14 @@
 
     tab1active = ""
     tab2active = ""
+    tab3active = ""
                 
     if c.tab == "tab1":
         tab1active = "active"
     elif c.tab == "tab2":
         tab2active = "active"
+    elif c.tab == "tab3":
+        tab3active = "active"
     else:
         tab1active = "active"
 
@@ -19,7 +22,7 @@
 
 <div class="container-fluid">
    <div class="well profile_header">
-       <h1><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${c.authuser['name']}</a></h1>
+       <h1><a href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.user['name']}</a></h1>
    </div><!-- well -->
 <div class="row-fluid">
     % if c.conf['read_only.value'] == 'true':
@@ -40,6 +43,10 @@
                 </a></li>
                 <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Change password<br />
                 For extra security.</a></li>
+                % if c.admin:
+                    <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Administrate<br />
+                    Admin only - shhh!.</a></li>
+                % endif
             </ul>
         </div> <!-- /.span3 -->
         <div class="span9">
@@ -55,6 +62,14 @@
                     <div class="tab-pane ${tab2active}" id="tab2">
                         ${helpers.changePassword()}
                     </div><!-- tab2 -->
+                    % if c.admin:
+                        <div class="tab-pane ${tab3active}" id="tab3">
+                            <div class="well">
+                                ${helpers.memberAdmin()}
+                                ${helpers.memberEvents()}
+                            </div><!-- well -->
+                        </div><!-- tab3 -->
+                    % endif
                 </div><!-- tab-content -->
             % endif
         </div> <!-- /.span9 -->
