@@ -153,5 +153,5 @@
 </%def>
 
 <%def name="showInfo(workshop)">
-    ## Do nothing...yet
+    ${c.information['data']}
 </%def>

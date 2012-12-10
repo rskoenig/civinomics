@@ -769,6 +769,9 @@ class WorkshopController(BaseController):
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
 
         #return render('/derived/workshop_home.bootstrap')
+        
+        c.information = get_revision(int(c.w['mainRevision_id']))
+        
         return render('/derived/6_workshop_home.bootstrap')
 
     def displayAllSuggestions(self, id1, id2):
