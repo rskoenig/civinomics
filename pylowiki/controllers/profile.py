@@ -13,7 +13,7 @@ from pylons import config
 
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
-from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, checkPassword, getUserPosts
+from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, checkPassword, getUserPosts, getUserByEmail
 from pylowiki.lib.db.activity import getMemberPosts
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
@@ -538,41 +538,156 @@ class ProfileController(BaseController):
         )
         c.title = c.heading = "User Accounts"
         return render( "/derived/AccountList.mako" )
+        
+    @h.login_required
+    def dashboard(self, id1, id2):
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        c.title = 'Member Dashboard'
+        if 'confTab' in session:
+            c.tab = session['confTab']
+            session.pop('confTab')
+            session.save()
+        return render('/derived/profile_dashboard.bootstrap')
 
     @h.login_required
-    def edit(self):
-        c.title = 'Edit Your Civinomics Profile'
-        return render('/derived/profile_edit.bootstrap')
-
-    @h.login_required
-    def editSubmit(self):
+    def editHandler(self,id1, id2):
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        
         perror = 0
         perrorMsg = ""
         changeMsg = ""
 
-        # see if an admin is doing this
-        if 'memberCode' in request.params and 'memberURL' in request.params and isAdmin(c.authuser.id):
-            code = request.params['memberCode']
-            url = request.params['memberURL']
-            u = get_user(code, urlify(url))
-            returnURL = "/profile/" + code + "/" + url + "/admin"
-        else:
-            u = c.authuser
-            returnURL = "/profile/edit"
-
         # make sure they are authorized to do this
-        if u.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
             return redirect('/')
-
+            
+        session['confTab'] = "tab1"
+        session.save()
+        
         if 'pictureFile' in request.POST:
             picture = request.POST['pictureFile']
             if picture == "":
                 picture = False
         else:
             picture = False
-        #log.info('picture is %s'%picture)
-        u = c.authuser
 
+        name = False
+        if 'member_name' in request.params:
+            name = request.params['member_name']
+            if name == '':
+               name = False
+        if not name:
+            perror = 1
+            perrorMsg = perrorMsg + ' Member name required.'
+
+        email = False
+        if 'email' in request.params:
+            email = request.params['email']
+            if email == '':
+                email = False
+            elif email != c.user['email']:
+                checkUser = getUserByEmail(email)
+                if checkUser:
+                    perror = 1
+                    perrorMsg = perrorMsg + ' Email address ' + email + ' is already in use by other member!'
+                    email = c.user['email']
+        if not email:
+            perror = 1
+            perrorMsg = perrorMsg + ' Email required.'
+
+        if 'tagline' in request.params:
+            tagline = request.params['tagline']
+        else:
+            tagline = False
+
+        nameChange = False
+        anyChange = False
+        if name and name != '' and name != c.user['name']:
+            c.user['name'] = name
+            nameChange = True
+            anyChange = True
+            changeMsg = changeMsg + "Member name updated. "
+        if email and email != '' and email != c.user['email']:
+            c.user['email'] = email
+            anyChange = True
+            changeMsg = changeMsg + "Member email updated. "
+        if tagline and tagline != '' and tagline != c.authuser['tagline']:
+            if len(tagline)>140:
+                c.user['tagline'] = tagline[:140]
+            else:
+                c.user['tagline'] = tagline
+                anyChange = True
+
+            changeMsg = changeMsg + "Tagline updated. "
+
+        if picture != False:
+           identifier = 'avatar'
+           ##log.info('doing new picture for %s'%c.authuser['name'])
+           imageFile = picture.file
+           filename = picture.filename
+           hash = saveImage(imageFile, filename, c.user, 'avatar', c.user)
+           c.user['pictureHash'] = hash
+           resizeImage(identifier, hash, 200, 200, 'profile')
+           resizeImage(identifier, hash, 25, 25, 'thumbnail')
+           anyChange = True
+           changeMsg = changeMsg + "Picture updated. "
+
+        if nameChange:
+            c.user['url'] = urlify(c.user['name'])
+            if c.user.id == c.authuser.id:
+                session["userURL"] = c.user['url']
+                session.save()
+                c.authuser = c.user
+            log.info('Changed name')
+        if anyChange and perror == 0:
+            commit(c.user)
+            Event('Profile updated.', changeMsg, c.user, c.authuser)
+            Revision(c.user, c.user['name'], c.user)
+            alert = {'type':'success'}
+            alert['title'] = changeMsg
+            alert['content'] = ''
+            session['alert'] = alert
+            session.save()
+
+        elif perror == 1:
+            alert = {'type':'error'}
+            alert['title'] = perrorMsg 
+            alert['content'] = ''
+            session['alert'] = alert
+            session.save()
+
+        else:
+            if 'alert' not in session:
+                alert = {'type':'error'}
+                alert['title'] = 'No changes submitted.'
+                alert['content'] = ''
+                session['alert'] = alert
+                session.save()
+                
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/dashboard"
+                
+        return redirect(returnURL)
+        
+    @h.login_required
+    def passwordHandler(self, id1, id2):
+        code = id1
+        url = id2
+        c.user = get_user(code, url)
+        
+        perror = 0
+        perrorMsg = ""
+        changeMsg = ""
+        # make sure they are authorized to do this
+        if c.user.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
+            return redirect('/')
+            
+        session['confTab'] = "tab2"
+        session.save()
+        
         if 'password' in request.params:
             password = request.params['password']
 
@@ -580,16 +695,12 @@ class ProfileController(BaseController):
             password = False 
         if 'verify_password' in request.params:
             verify_password = request.params['verify_password']
-
         else:
             verify_password = False 
 
         if password and verify_password and password == verify_password:
-            changePassword(u, password)
+            changePassword(c.user, password)
             changeMsg = changeMsg + "Password updated. "
-            ##log.info('changed password for  %s'%u['name'])
-
-
         if password and verify_password and password != verify_password:
             perror = 1
             perrorMsg = 'Password and Verify Password must match'
@@ -601,8 +712,6 @@ class ProfileController(BaseController):
         pass_error = 4
         if 'oldPassword' in request.params:
             old_password = checkPassword(c.authuser, request.params['oldPassword'])
-            log.info('OLD is %s'%request.params['oldPassword'])
-            log.info('Pass is %s'%old_password)
             pass_error = 0
             
             if not old_password:
@@ -631,7 +740,8 @@ class ProfileController(BaseController):
                 pass_error = 4
             
         if pass_error == 0:
-            changePassword(u, newPassword)
+            changePassword(c.user, newPassword)
+            Event('Profile updated.', 'Password changed', c.user, c.authuser)
             log.info('changed password for  %s'%c.authuser['name'])
             alert = {'type':'success'}
             alert['title'] = 'Password Change Successful'
@@ -656,109 +766,9 @@ class ProfileController(BaseController):
             alert['content'] = ''
             session['alert'] = alert
             session.save()
-
-        firstName = False
-        if 'first_name' in request.params:
-            firstName = request.params['first_name']
-            if firstName == '':
-               firstName = False
-        if not firstName:
-            perror = 1
-            perrorMsg = perrorMsg + ' First name required.'
-
-
-        lastName = False
-        if 'last_name' in request.params:
-            lastName = request.params['last_name']
-            if lastName == '':
-                lastName = False
-        if not lastName:
-            perror = 1
-            perrorMsg = perrorMsg + ' Last name required.'
-
-        email = False
-        if 'email' in request.params:
-            email = request.params['email']
-            if email == '':
-                email = False
-        if not email:
-            perror = 1
-            perrorMsg = perrorMsg + ' Email required.'
-
-        if 'tagline' in request.params:
-            tagline = request.params['tagline']
-        else:
-            tagline = False
-
-        nameChange = False
-        anyChange = False
-        if firstName and firstName != '' and firstName != c.authuser['firstName']:
-            u['firstName'] = firstName
-            nameChange = True
-            anyChange = True
-            changeMsg = changeMsg + "First name updated. "
-        if lastName and lastName != '' and lastName != c.authuser['lastName']:
-            u['lastName'] = lastName
-            nameChange = True
-            anyChange = True
-            changeMsg = changeMsg + "Last name updated. "
-        if tagline and tagline != '' and tagline != c.authuser['tagline']:
-            if len(tagline)>140:
-                u['tagline'] = tagline[:140]
-            else:
-                u['tagline'] = tagline
-                anyChange = True
-
-            changeMsg = changeMsg + "Tagline updated. "
-
-        ##log.info('before doing new picture for %s'%c.authuser['name'])
-        if picture != False:
-           identifier = 'avatar'
-           ##log.info('doing new picture for %s'%c.authuser['name'])
-           imageFile = picture.file
-           filename = picture.filename
-           hash = saveImage(imageFile, filename, u, 'avatar', u)
-           u['pictureHash'] = hash
-           resizeImage(identifier, hash, 200, 200, 'profile')
-           resizeImage(identifier, hash, 25, 25, 'thumbnail')
-           ##log.info('Saving picture change for %s'%c.authuser['name'])
-           anyChange = True
-           changeMsg = changeMsg + "Picture updated. "
-
-        if nameChange:
-            u['name'] = '%s %s' %(u['firstName'], u['lastName'])
-            u['url'] = urlify(u['name'])
-            if u.id == c.authuser.id:
-                session["userURL"] = u['url']
-                session.save()
-                c.authuser = u
-            log.info('Changed name')
-        if anyChange and perror == 0:
-            commit(u)
-            Event('Profile updated.', changeMsg, u, c.authuser)
-            Revision(u, u['name'], u)
-            alert = {'type':'success'}
-            alert['title'] = changeMsg
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-
-        elif perror == 1:
-            alert = {'type':'error'}
-            alert['title'] = perrorMsg 
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-
-        else:
-            if 'alert' not in session:
-                alert = {'type':'error'}
-                alert['title'] = 'No changes submitted.'
-                alert['content'] = ''
-                session['alert'] = alert
-                session.save()
-
-
+            
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/dashboard"
+                
         return redirect(returnURL)
     
     def hashPicture(self, username, title):

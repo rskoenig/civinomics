@@ -303,8 +303,8 @@
   <span class="badge badge-success" title="Followers"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info" title="Total ups - downs of contributed resources, comments and discussions"><i class="icon-white icon-ok"></i> ${c.totalPoints}</span> <span class="badge badge-info" title="Resource and suggestion contributions"><i class="icon-white icon-file"></i> ${c.posts}</span> <span class="badge badge-inverse" title="Flags on contributions"><i class="icon-white icon-flag"></i> ${c.flags}</span>
                 </p>
                 <br />
-                % if 'user' in session and c.authuser.id == c.user.id:
-                    <a href="/profile/edit"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
+                % if 'user' in session and c.authuser.id == c.user.id or isAdmin(c.authuser.id):
+                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/dashboard"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
                 % endif
                 % if 'user' in session and isAdmin(c.authuser.id):
                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning" title="Click to administrate this member"><i class="icon-list-alt icon-white"></i> Admin</button></a>

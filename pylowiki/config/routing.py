@@ -467,6 +467,14 @@ def make_map():
     map.connect('/profile/edit', controller = 'profile', action = 'edit')
     map.connect('/profile/editSubmit', controller = 'profile', action = 'editSubmit')
     
+    # Profile dashboard
+    map.connect('/profile/{id1}/{id2}/dashboard', controller = 'profile', action = 'dashboard', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/dashboard/', controller = 'profile', action = 'dashboard', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/editHandler', controller = 'profile', action = 'editHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/editHandler/', controller = 'profile', action = 'editHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/passwordHandler', controller = 'profile', action = 'passwordHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/passwordHandler/', controller = 'profile', action = 'passwordHandler', id1 = '{id1}', id2 = '{id2}')
+    
     
     ################
     # Action Lists #
