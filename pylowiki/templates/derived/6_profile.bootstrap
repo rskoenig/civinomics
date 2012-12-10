@@ -1,8 +1,24 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
 
 <div class="row-fluid">
-    <div class="span12">
-        Hi
+    <div class="span8">
+        <h1>${c.user['name']}</h1>
+        ${lib_6.userGeoLink(c.user)}
+        <div class="row-fluid">
+            <div class="span4">
+                ${helpers.commentCount(c.comments)}
+            </div>
+            <div class="span4">
+                ${helpers.resourceCount(c.resources)}
+            </div>
+            <div class="span4">
+                ${helpers.ideaCount(c.ideas)}
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        ${lib_6.userImage(c.user, className="avatar avatar-large")}
     </div>
 </div>

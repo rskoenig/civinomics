@@ -129,6 +129,10 @@ img.config{
 img.avatar{
    border-radius: 100px;
 }
+.avatar.avatar-large{
+    height:100%;
+    width:100%;
+}
 .avatar{
    height: 70px;
    margin-bottom:10px;

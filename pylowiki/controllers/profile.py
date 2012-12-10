@@ -101,6 +101,7 @@ class ProfileController(BaseController):
         c.resources = []
         c.discussions = []
         c.comments = []
+        c.ideas = []
         c.flags = 0
         resUpVotes = 0
         c.resVotes = 0
