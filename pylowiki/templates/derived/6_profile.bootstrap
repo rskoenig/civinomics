@@ -6,7 +6,7 @@
     <div class="span8">
         <h1>${c.user['name']}</h1>
         ${lib_6.userGeoLink(c.user)}
-        <div class="row-fluid">
+        <div class="row-fluid spacer centered">
             <div class="span4">
                 ${helpers.commentCount(c.comments)}
             </div>
