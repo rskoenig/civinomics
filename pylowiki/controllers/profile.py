@@ -169,7 +169,8 @@ class ProfileController(BaseController):
         else:
             c.comUpsPercent = 0
 
-        return render("/derived/profile.bootstrap")
+        #return render("/derived/profile.bootstrap")
+        return render("/derived/6_profile.bootstrap")
     
     def showUserSuggestions(self, id1, id2):
         # Called when visiting /profile/urlCode/url/suggestions
