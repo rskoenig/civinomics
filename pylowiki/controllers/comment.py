@@ -277,6 +277,19 @@ class CommentController(BaseController):
                 disableComment(comment)
                 return json.dumps({'code':id, 'result':'Successfully disabled!'})
     
+    @h.login_required   
+    def enable(self, id):
+        """disable a comment by id"""
+        comment = getCommentByCode( id )
+        if not comment:
+            return json.dumps({'code':id, 'result':'ERROR'})
+        else:
+            if not isDisabled(comment):
+                return json.dumps({'code':id, 'result':'Already enabled!'})
+            else:
+                enableComment(comment)
+                return json.dumps({'code':id, 'result':'Successfully enabled!'})
+    
     @h.login_required
     def edit(self, id1):
         """

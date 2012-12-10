@@ -260,6 +260,7 @@
                 <div class="tabbable"> <!-- Only required for left/right tabs -->
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
+                        <li><a href="#enable-${adminID}" data-toggle="tab">Enable</a></li>
                         <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
                     </ul>
                     <div class="tab-content">
@@ -272,6 +273,16 @@
                                 </fieldset>
                             </form>
                             <span id="disableResponse-${comment['urlCode']}"></span>
+                        </div>
+                        <div class="tab-pane" id="enable-${adminID}">
+                            <form class="form-inline">
+                                <fieldset>
+                                    <label>Reason:</label>
+                                    <input type="text" name="enableReason" class="span8">
+                                    <a ${lib_6.enableThing(comment, embed=True) | n} class="btn enableButton">Submit</a>
+                                </fieldset>
+                            </form>
+                            <span id="enableResponse-${comment['urlCode']}"></span>
                         </div>
                         <div class="tab-pane" id="delete-${adminID}">
                             <form class="form-inline">

@@ -232,6 +232,16 @@
     ${disableStr | n}
 </%def>
 
+<%def name="enableThing(thing, **kwargs)">
+    <%
+        enableStr = 'href = "/enable/%s/%s"' %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return enableStr
+    %>
+    ${enableStr | n}
+</%def>
+
 <%def name="deleteThing(thing, **kwargs)">
     <%
         deleteStr = 'href = "/delete/%s/%s"' %(thing.objType, thing['urlCode'])

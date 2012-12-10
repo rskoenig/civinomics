@@ -338,9 +338,10 @@ def make_map():
     # Temporary
     map.connect('/workshops/{id1}/{id2}/discussion', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
     
-    # Disabling Things
+    # Disable/enable/delete Things
     map.connect('/disable/comment/{id}', controller = 'comment', action = 'disable', id = '{id}')
-    
+    map.connect('/enable/comment/{id}', controller = 'comment', action = 'enable', id = '{id}')
+    map.connect('/delete/comment/{id}', controller = 'comment', action = 'delete', id = '{id}')
     
     ########################################################################################################
     # 
