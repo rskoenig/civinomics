@@ -103,7 +103,13 @@
 
 <%def name="resourceLink(r, w, **kwargs)">
    <%
-      resourceStr = 'href="/workshop/%s/%s/resource/%s/%s"' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+      if 'directLink' in kwargs:
+         if kwargs['directLink'] == True:
+            resourceStr = 'href="%s"' %(r['link'])
+         else:
+            resourceStr = 'href="/workshop/%s/%s/resource/%s/%s"' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+      else:
+         resourceStr = 'href="/workshop/%s/%s/resource/%s/%s"' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
       if 'embed' in kwargs:
          if kwargs['embed'] == True:
             return resourceStr
