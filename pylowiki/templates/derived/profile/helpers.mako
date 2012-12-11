@@ -306,9 +306,6 @@
                 % if 'user' in session and c.authuser.id == c.user.id or isAdmin(c.authuser.id):
                     <a href="/profile/${c.user['urlCode']}/${c.user['url']}/dashboard"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
                 % endif
-                % if 'user' in session and isAdmin(c.authuser.id):
-                   <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning" title="Click to administrate this member"><i class="icon-list-alt icon-white"></i> Admin</button></a>
-                % endif
     % if 'user' in session and c.authuser['email'] != c.user['email']:
       <span class="button_container">
         % if c.conf['read_only.value'] == 'true':
