@@ -614,16 +614,29 @@ class WorkshopController(BaseController):
            ##log.info('equal and deleted is %s' % w['deleted'])
            if w['deleted'] == '1':
               w['deleted'] = '0'
-              eAction = 'enabled'
+              eAction = 'published'
               ##log.info('doing undelete')
            else:
               w['deleted'] = '1'
-              eAction = 'disabled'
+              eAction = 'unpublished'
               ##log.info('doing delete')
 
            setWorkshopTagEnable(w, w['deleted'])
+           eMsg = 'Workshop %s'%eAction
            Event('Workshop %s'%eAction, 'Workshop %s by %s Note: %s'%(eAction, c.authuser['name'], eventReason), w, c.authuser)
            commit(w)
+           
+        if werror:
+            alert = {'type':'error'}
+            alert['title'] = werrMsg
+            session['alert'] = alert
+            session.save()
+        else:
+            alert = {'type':'success'}
+            alert['title'] = eMsg
+            session['alert'] = alert
+            session.save()
+            
 
             
         commit(m)
