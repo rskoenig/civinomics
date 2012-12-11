@@ -107,13 +107,14 @@
         <br /><br />
         </dd>
     % endif
-    % if c.account and c.account['type'] != 'trial':
+    % if c.w['public_private'] != 'personal':
+        <% owner = getUserByID(c.w.owner) %>
         <dl>
         <dt>Hosted by:</dt><dd>
-            % if 'pictureHash' in c.account and c.account['pictureHash'] != 'flash':
-                <a href="/host/${c.account['urlCode']}/${c.account['url']}"><img src="/images/avatar/${c.account['directoryNumber']}/thumbnail/${c.account['pictureHash']}.thumbnail" alt="${c.account['orgName']}" title="${c.account['orgName']}" class="thumbnail"></a> &nbsp; &nbsp;
+            % if 'pictureHash' in owner and owner['pictureHash'] != 'flash':
+                <a href="/profile/${owner['urlCode']}/${owner['url']}"><img src="/images/avatar/${owner['directoryNumber']}/thumbnail/${owner['pictureHash']}.thumbnail" alt="${owner['name']}" title="${owner['name']}" class="thumbnail"></a> &nbsp; &nbsp;
             % else:
-                <a href="/host/${c.account['urlCode']}/${c.account['url']}"><img src="/images/avatars/flash.thumbnail" alt="${c.account['orgName']}" title="${c.account['orgName']}" class="thumbnail"></a> &nbsp; &nbsp;
+                <a href="/profile/${owner['urlCode']}/${owner['url']}"><img src="/images/avatars/flash.thumbnail" alt="${owner['name']}" title="${owner['name']}" class="thumbnail"></a> &nbsp; &nbsp;
             % endif
         </dd>
         </dl>

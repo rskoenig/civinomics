@@ -210,10 +210,6 @@ class WorkshopController(BaseController):
                     wchanges = 1
                     weventMsg = weventMsg + "Changed workshop type from " + c.w['public_private'] + " to " + publicPrivate + "."
                     c.w['public_private'] = publicPrivate
-            else:
-                werror = 1
-                werrMsg += 'Public or Private? '
-            
                 
         # save successful changes
         if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
@@ -977,9 +973,10 @@ class WorkshopController(BaseController):
             c.state = "0"
             c.county = "0"
             c.city = "0"
-
+            
+        c.motd = getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
-            c.motd = getMessage(c.w.id)
+
             c.s = getActiveSuggestionsForWorkshop(code)
             c.disabledSug = getDisabledSuggestionsForWorkshop(code)
             c.deletedSug = getDeletedSuggestionsForWorkshop(code)
