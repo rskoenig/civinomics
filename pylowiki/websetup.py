@@ -48,7 +48,7 @@ def setup_app(command, conf, vars):
         passwd = conf['admin.pass']
         postalCode = conf['admin.postalCode']
         country = 'United States'
-        memberType = 'individual'
+        memberType = 'professional'
 
         if name != "" and passwd != ""  and email != "" and postalCode != "":
         

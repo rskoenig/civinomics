@@ -573,10 +573,9 @@ class ProfileController(BaseController):
         name = False
         email = False
         picture = False
-        tagline = False
-        orgWelcomeMsg = False
-        orgLink = False
-        orgLinkMsg = False
+        greetingMsg = False
+        websiteLink = False
+        websiteDesc = False
 
         # make sure they are authorized to do this
         if c.user.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
@@ -614,23 +613,15 @@ class ProfileController(BaseController):
             perror = 1
             perrorMsg = perrorMsg + ' Email required.'
 
-        if c.user['memberType'] == 'individual':
-            if 'tagline' in request.params:
-                tagline = request.params['tagline']
+        if 'greetingMsg' in request.params:
+            greetingMsg = request.params['greetingMsg']
 
-        else:
-            if 'orgWelcomeMsg' in request.params:
-                orgWelcomeMsg = request.params['orgWelcomeMsg']
-            else:
-                orgWelcomeMsg = False
-            if 'orgLinkMsg' in request.params:
-                orgLinkMsg = request.params['orgLinkMsg']
-            else:
-                orgLinkMsg = False
-            if 'orgLink' in request.params:
-                orgLink = request.params['orgLink']
-            else:
-                orgLink = False
+
+        if 'websiteLink' in request.params:
+            websiteLink = request.params['websiteLink']
+
+        if 'websiteDesc' in request.params:
+            websiteDesc = request.params['websiteDesc']
 
         if name and name != '' and name != c.user['name']:
             c.user['name'] = name
@@ -641,41 +632,18 @@ class ProfileController(BaseController):
             c.user['email'] = email
             anyChange = True
             changeMsg = changeMsg + "Member email updated. "
-        if tagline and tagline != '' and tagline != c.user['tagline']:
-            if len(tagline)>140:
-                c.user['tagline'] = tagline[:140]
-            else:
-                c.user['tagline'] = tagline
-                anyChange = True
-            changeMsg = changeMsg + "Tagline updated. "
-        if orgWelcomeMsg and orgWelcomeMsg != '':
-            if 'orgWelcomeMsg' not in c.user:
-                changeMsg = changeMsg + "Welcome message added. "
-                anyChange = True
-                c.user['orgWelcomeMsg'] = orgWelcomeMsg
-            elif orgWelcomeMsg != c.user['orgWelcomeMsg']:
-                anyChange = True
-                changeMsg = changeMsg + "Welcome message updated. "
-                c.user['orgWelcomeMsg'] = orgWelcomeMsg
-        if orgLink and orgLink != '':
-            if 'orgLink' not in c.user:
-                changeMsg = changeMsg + "Website link added. "
-                anyChange = True
-                c.user['orgLink'] = orgLink
-            elif orgLink != c.user['orgLink']:
-                anyChange = True
-                changeMsg = changeMsg + "Website link updated. "
-                c.user['orgLink'] = orgLink
-        if orgLinkMsg and orgLinkMsg != '':
-            if 'orgLinkMsg' not in c.user:
-                changeMsg = changeMsg + "Website description added. "
-                anyChange = True
-                c.user['orgLinkMsg'] = orgLinkMsg
-            elif orgLinkMsg != c.user['orgLinkMsg']:
-                anyChange = True
-                changeMsg = changeMsg + "Website description updated. "
-                c.user['orgLinkMsg'] = orgLinkMsg
-
+        if greetingMsg and greetingMsg != '' and greetingMsg != c.user['greetingMsg']:
+            c.user['greetingMsg'] = greetingMsg
+            anyChange = True
+            changeMsg = changeMsg + "Greeting message updated. "
+        if websiteLink and websiteLink != '' and websiteLink != c.user['websiteLink']:
+            anyChange = True
+            changeMsg = changeMsg + "Website link updated. "
+            c.user['websiteLink'] = websiteLink
+        if websiteDesc and websiteDesc != ''and websiteDesc != c.user['websiteDesc']:
+            anyChange = True
+            changeMsg = changeMsg + "Website description updated. "
+            c.user['websiteDesc'] = websiteDesc
 
         if picture != False:
            identifier = 'avatar'

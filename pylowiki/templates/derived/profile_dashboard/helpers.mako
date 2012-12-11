@@ -38,49 +38,23 @@
 					${h.file("pictureFile")}
 				</div> <!-- /.controls -->
 			</div> <!-- /.control-group -->
-            % if c.user['memberType'] == 'individual':
-			    <div class="control-group">
-				    <label for="tagline" class="control-label">Give us a short description of yourself:</label>
-				    <div class="controls">
-					    % if 'tagline' in c.user.keys():
-						    <input type="text" id="tagline" name="tagline" value="${c.user['tagline']}">
-					    % else:
-						    <input type="text" id="tagline" name="tagline" placeholder="In 140 characters or fewer ... ">
-					    % endif
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
-            % else:
-    		    <div class="control-group">
-				    <label for="orgWelcomeMsg" class="control-label">Enter a welcome message for visitors to your profile:</label>
-				    <div class="controls">
-					    <% 
-                            welcomeMsg = ''
-                            if 'orgWelcomeMsg' in c.user.keys():
-                                welcomeMsg = c.user['orgWelcomeMsg']
-                        %>
-                        <textarea name="orgWelcomeMsg" rows=4 cols=50>${welcomeMsg}</textarea>
-				    </div> <!-- /.controls -->
-			    </div> <!-- /.control-group -->
+        	<div class="control-group">
+				<label for="greetingMsg" class="control-label">Enter a greeting message for visitors to your profile:</label>
+				<div class="controls">
+                    <textarea name="greetingMsg" rows=4 cols=50>${c.user['greetingMsg']}</textarea>
+				</div> <!-- /.controls -->
+			</div> <!-- /.control-group -->
+            % if c.user['memberType'] == 'professional':
        	        <div class="control-group">
-				    <label for="orgLink" class="control-label">Enter the URL to your organization website:</label>
-				    <div class="controls">
-					    <% 
-                            orgLink = ''
-                            if 'orgLink' in c.user.keys():
-                                orgLink = c.user['orgLink']
-                        %>
-                        <input type=text name="orgLink" value="${orgLink}">
+				    <label for="orgLink" class="control-label">Enter the URL to your  website:</label>
+    			    <div class="controls">
+                        <input type=text name="websiteLink" value="${c.user['websiteLink']}">
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
 				    <label for="orgLinkMsg" class="control-label">Enter a description of your organization website:</label>
 				    <div class="controls">
-					    <% 
-                            orgLinkMsg = ''
-                            if 'orgLinkMsg' in c.user.keys():
-                                orgLinkMsg = c.user['orgLinkMsg']
-                        %>
-                        <textarea name="orgLinkMsg" rows=4 cols=50>${orgLinkMsg}</textarea>
+                        <textarea name="websiteDesc" rows=4 cols=50>${c.user['websiteDesc']}</textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
             % endif

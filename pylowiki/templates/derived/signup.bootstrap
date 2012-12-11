@@ -69,12 +69,12 @@
                             <form id="sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
                                 <input type="hidden" name="country" value="United States">
                                 <div class="control-group">
-                                    <label class="control-label" for="memberType"> This membership is for:<br > </label>
+                                    <label class="control-label" for="memberType"> Membership type:<br > </label>
                                     <div class="controls">
-                                        <input type=radio name=memberType value="individual" checked>&nbsp; &nbsp;<strong>A person</strong><br />
+                                        <input type=radio name=memberType value="personal" checked>&nbsp; &nbsp;<strong>Personal</strong><br />
                                         Create free private workshops for up to 10 participants. Browse and participate in the workshops hosted by other people and organizations!<br /><br />
-                                        <input type=radio name=memberType value="organization"> &nbsp; &nbsp;<strong>An organization</strong><br />
-                                        Create public and private workshops for an unlimited number of participants.<br /><br />
+                                        <input type=radio name=memberType value="professional"> &nbsp; &nbsp;<strong>Professional</strong><br />
+                                        Create public and private workshops for an unlimited number of participants for as low as $N per month!<br /><br />
                                     </div>
                                 </div>                                
                                 <div class="control-group">

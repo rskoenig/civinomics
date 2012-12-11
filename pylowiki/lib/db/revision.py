@@ -48,10 +48,18 @@ class Revision(Thing):
             else:
                 r['directoryNumber'] = ''
 
-            if 'tagline' in thing:
-                r['tagline'] = thing['tagline']
+            if 'greetingMsg' in thing:
+                r['greetingMsg'] = thing['greetingMsg']
             else:
-                r['tagline'] = ''
+                r['greetingMsg'] = ''
+            if 'websiteLink' in thing:
+                r['websiteLink'] = thing['websiteLink']
+            else:
+                r['websiteLink'] = ''
+            if 'websiteDesc' in thing:
+                r['websiteDesc'] = thing['websiteDesc']
+            else:
+                r['websiteDesc'] = ''
 
         if thing.objType == 'resource':
             r['title'] = thing['title']

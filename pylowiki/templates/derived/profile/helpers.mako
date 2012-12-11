@@ -271,22 +271,27 @@
     <% 
         if c.revision:
             name = c.revision['data']
-            tagline = c.revision['tagline']
+            greetingMsg = c.revision['greetingMsg']
+            websiteLink = c.revision['websiteLink']
+            websiteDesc = c.revision['websiteDesc']
         else:
             name = c.user['name']
-            if 'tagline' in c.user.keys():
-                tagline = c.user['tagline']
-            else:
-                tagline = 'No tagline.'
+            greetingMsg = c.user['greetingMsg']
+            websiteLink = c.user['websiteLink']
+            websiteDesc = c.user['websiteDesc']
         endif
     %>
     <div class="civ-col-inner">
     <h1>${name}</h1>
     <p>
-      ${tagline}
-      <% mStart = c.user.date.strftime('%B %d, %Y') %>
-      <br /> <br />
-      Member since <span class="recent">${mStart}</span>
+        ${greetingMsg}
+        % if c.user['memberType'] == 'professional':
+            <p>${websiteDesc}</p><br />
+            <a href="${websiteLink}" target=_blank alt="$c.user['name']">${websiteLink}</a><br />
+        % endif
+        <% mStart = c.user.date.strftime('%B %d, %Y') %>
+        <br /> <br />
+        Member since <span class="recent">${mStart}</span>
     </p>
     % if c.revisions:
          <strong>Edit log:</strong><br />
@@ -304,7 +309,7 @@
                 </p>
                 <br />
                 % if 'user' in session and c.authuser.id == c.user.id or isAdmin(c.authuser.id):
-                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/dashboard"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
+                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/dashboard"><button class="btn btn-mini btn-warning" title="Click to go to your profile dashboard">Member Dashboard</button></a>
                 % endif
     % if 'user' in session and c.authuser['email'] != c.user['email']:
       <span class="button_container">

@@ -138,7 +138,9 @@ def hashPassword(password):
 class User(object):
     def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
         u = Thing('user')
-        u['tagline'] = ''
+        u['greetingMsg'] = ''
+        u['websiteLink'] = ''
+        u['websiteDesc'] = ''
         u['email'] = email
         u['name'] = name
         u['activated'] = '0'

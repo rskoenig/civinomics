@@ -7,9 +7,7 @@ from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
-#from pylowiki.lib.activate import activateCreate
 
-#from pylowiki.model import User, commit, Event, get_user, get_user_by_email, Points
 from pylowiki.lib.db.user import User, getUserByEmail, getActiveUsers
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
