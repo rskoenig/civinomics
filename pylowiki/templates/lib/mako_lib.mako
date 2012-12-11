@@ -419,7 +419,7 @@
 <%def name="nav_thing(page)">
     <%
         if 'user' in session:
-	       pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])
+	       pages = OrderedDict([("home",""), ("dashboard", "dashboard"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])
         else:
 	       pages = OrderedDict([("home",""), ("background", "background"), ("discussion", "discussion")])
     %>
@@ -430,7 +430,7 @@
 		% if page == li:
             <% lclass="current" %>
         % endif
-        % if li == 'configure' or li == 'administrate':
+        % if li == 'dashboard':
             % if c.conf['read_only.value'] == 'true':
                 <% continue %>
             % endif

@@ -169,8 +169,8 @@ def make_map():
 
 
     # Workshop configuration
-    map.connect('/workshop/{id1}/{id2}/configure', controller = 'workshop', action = 'configure', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/workshop/{id1}/{id2}/configure/', controller = 'workshop', action = 'configure', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/dashboard', controller = 'workshop', action = 'dashboard', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/workshop/{id1}/{id2}/dashboard/', controller = 'workshop', action = 'dashboard', id1 = '{id1}', id2 = '{id2}')
 
     # Workshop configuration submit handler
     #map.connect('/workshop/{id1}/{id2}/configureWorkshopHandler', controller = 'workshop', action = 'configureWorkshopHandler', id1 = '{id1}', id2 = '{id2}')

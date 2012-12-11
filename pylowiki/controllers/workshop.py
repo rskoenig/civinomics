@@ -236,7 +236,7 @@ class WorkshopController(BaseController):
                 session['alert'] = alert
                 session.save()
 
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
         
     @h.login_required
     def configureTagsWorkshopHandler(self, id1, id2):
@@ -292,7 +292,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
 
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
     def configurePublicWorkshopHandler(self, id1, id2):
@@ -351,7 +351,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
 
     @h.login_required
@@ -439,7 +439,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
         
     @h.login_required
     def listPrivateMembersHandler(self, id1, id2):
@@ -488,7 +488,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()   
             
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
     def configureStartWorkshopHandler(self, id1, id2):
@@ -532,7 +532,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url']))
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
     def newWorkshopHandler(self):
@@ -549,7 +549,7 @@ class WorkshopController(BaseController):
             c.title = 'Configure Workshop'
             c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
 
-            return redirect('/workshop/%s/%s/configure'%(w.w['urlCode'], w.w['url']))   
+            return redirect('/workshop/%s/%s/dashboard'%(w.w['urlCode'], w.w['url']))   
             
         else:
             alert = {'type':'error'}
@@ -631,7 +631,7 @@ class WorkshopController(BaseController):
 
             
         commit(m)
-        return redirect('/workshop/%s/%s/admin'%(w['urlCode'], w['url']))
+        return redirect('/workshop/%s/%s/dashboard'%(w['urlCode'], w['url']))
     
     def display(self, id1, id2):
         code = id1
@@ -906,7 +906,7 @@ class WorkshopController(BaseController):
         return render('/derived/workshop_bg.bootstrap')
 
     @h.login_required
-    def configure(self, id1, id2):
+    def dashboard(self, id1, id2):
         code = id1
         url = id2
 
@@ -978,6 +978,20 @@ class WorkshopController(BaseController):
             c.county = "0"
             c.city = "0"
 
+        if c.w['startTime'] != '0000-00-00':
+            c.motd = getMessage(c.w.id)
+            c.s = getActiveSuggestionsForWorkshop(code)
+            c.disabledSug = getDisabledSuggestionsForWorkshop(code)
+            c.deletedSug = getDeletedSuggestionsForWorkshop(code)
+            c.r = getActiveResourcesByWorkshopID(c.w.id)
+            c.disabledRes = getDisabledResourcesByWorkshopID(c.w.id)
+            c.deletedRes = getDeletedResourcesByWorkshopID(c.w.id)
+            c.d = getActiveDiscussionsForWorkshop(c.w['urlCode'])
+            c.disabledDisc = getDisabledDiscussionsForWorkshop(c.w['urlCode'])
+            c.deletedDisc = getDeletedDiscussionsForWorkshop(c.w['urlCode'])
+            c.f = getFacilitatorsByWorkshop(c.w.id)
+            c.df = getFacilitatorsByWorkshop(c.w.id, 1)
+            
         return render('/derived/workshop_dashboard.bootstrap')
     
     @h.login_required

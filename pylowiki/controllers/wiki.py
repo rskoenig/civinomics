@@ -106,8 +106,8 @@ class WikiController(BaseController):
             except KeyError: 
                 h.flash( "Do not access a handler directly", "error" )
             
-            if 'configure' in request.params:
-                return redirect( "/workshop/%s/%s/configure" %(code, url) )
+            if 'dashboard' in request.params:
+                return redirect( "/workshop/%s/%s/dashboard" %(code, url) )
             else:
                 return redirect( "/workshop/%s/%s/background" %(code, url) )
         else:

@@ -1,6 +1,7 @@
 <%inherit file = "/base/template.bootstrap"/>
 <%namespace name="lib_helpers" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/admin_helpers/configure.mako" />
+<%namespace name="admin_helpers" file="/lib/admin_helpers/workshop.mako" />
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
 
 <%
@@ -9,42 +10,94 @@
     tab3active = ""
     tab4active = ""
     tab5active = ""
+    tab6active = ""
+    tab7active = ""
+    tab8active = ""
+    tab9active = ""
+    tab10active = ""
+    menu1active = ""
+    menu2active = ""
+
 
     if c.tab == "tab1":
         tab1active = "active"
+        menu1active = "in"
     elif c.tab == "tab2":
         tab2active = "active"
+        menu1active = "in"
     elif c.tab == "tab3":
         tab3active = "active"
+        menu1active = "in"
     elif c.tab == "tab4":
         tab4active = "active"
+        menu1active = "in"
     elif c.tab == "tab5":
         tab5active = "active"
+        menu1active = "in"
+    elif c.tab == "tab6":
+        tab6active = "active"
+        menu2active = "in"
+    elif c.tab == "tab7":
+        tab7active = "active"
+        menu2active = "in"
+    elif c.tab == "tab8":
+        tab8active = "active"
+        menu2active = "in"
+    elif c.tab == "tab9":
+        tab9active = "active"
+        menu2active = "in"
+    elif c.tab == "tab10":
+        tab10active = "active"
+        menu2active = "in"
     else:
-        tab1active = "active"
-
-    if c.w['public_private'] == 'public':
-        participants = ""
-    else:
-        participants = "& Participants"
-
+        if c.w['startTime'] == '0000-00-00':
+            tab1active = "active"
+            menu1active = "in"
+        else:
+            tab6active = "active"
+            menu2active = "in"
 %>
 
 <div class="container-fluid"><!-- header -->
     <div class="well workshop_header">
-        ${lib_helpers.displayWorkshopHeader('configure')}
+        ${lib_helpers.displayWorkshopHeader('dashboard')}
     </div><!-- well -->
 
     <div class="tabbable">
         <div class="row-fluid">
             <div class="span3 well">
                 <div class="accordion" id="accordion2">
+                    % if c.w['startTime'] != '0000-00-00':
+                        <div class="accordion-group">
+                            <div class="accordion-heading">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
+                                <h3 class="civ-col">Administrate Workshop</h3></a>
+                                Use these tools and lists in the daily administration of your workshop after it has been published.
+                            </div>
+                            <div id="collapseTwo" class="accordion-body collapse ${menu2active}">
+                                <div class="accordion-inner">
+                                    <ul class="nav nav-pills nav-stacked">
+                                        <li class="${tab6active}"><a href="#tab6" data-toggle="tab">1. Workshop Management<br />
+                                        For periodic upkeep.</a></li>
+                                        <li class="${tab7active}"><a href="#tab7" data-toggle="tab">2. Flagged Items<br />
+                                        Check this list daily.</a></li>
+                                        <li class="${tab8active}"><a href="#tab8" data-toggle="tab">3. Disabled Items<br />
+                                        Dupes, off-topic, nasty...</a></li>
+                                        <li class="${tab9active}"><a href="#tab9" data-toggle="tab">4. Deleted Items<br />
+                                        Illegal, spam, porn...</a></li>
+                                        <li class="${tab10active}"><a href="#tab10" data-toggle="tab">5. Event Log<br />
+                                        A record of facilitator actions.</a></li>
+                                    </ul>
+                                </div><!-- accordion-inner -->
+                            </div><!-- accordion-body -->
+                        </div><!-- accordion-group -->
+                    % endif
                     <div class="accordion-group">
                         <div class="accordion-heading">
                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne"><h3>Configure Workshop</h3></a>
                             ${helpers.intro()}
                         </div><!-- accordian-heading -->
-                        <div id="collapseOne" class="accordion-body collapse in">
+                        <div id="collapseOne" class="accordion-body collapse ${menu1active}">
                             <div class="accordion-inner">
                                 <ul class="nav nav-pills nav-stacked">
                                     <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Set it up
@@ -86,29 +139,6 @@
                             </div><!-- accordion-inner -->
                         </div><!-- accordion-body -->
                     </div><!-- accordion-group -->
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                            <h3 class="civ-col">Administrate Workshop</h3></a>
-                            Use these tools and lists in the daily administration of your workshop after it has been published.
-                    </div>
-<div id="collapseTwo" class="accordion-body collapse">
-<div class="accordion-inner">
-                                <ul class="nav nav-pills nav-stacked">
-                                    <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Workshop Management<br />
-                                    For periodic upkeep.</a></li>
-                                    <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Flagged Items<br />
-                                    Check this list daily.</a></li>
-                                    <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Disabled Items<br />
-                                    Dupes, off-topic, nasty...</a></li>
-                                    <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Deleted Items<br />
-                                    Illegal, spam, pornographic...</a></li>
-                                    <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Event Log<br />
-                                    A record of facilitator actions.</a></li>
-                                </ul>
-                            </div><!-- accordion-inner -->
-                        </div><!-- accordion-body -->
-                    </div><!-- accordion-group -->
                 </div><!-- accordion -->
         </div><!-- span3 -->
         <div class="span9"> 
@@ -134,6 +164,22 @@
                 <div class="tab-pane ${tab5active}" id="tab5">
                 ${helpers.edit_background()}
                 </div><!-- tab-pane template tab5 -->
+                <div class="tab-pane ${tab6active}" id="tab6">
+                    ${admin_helpers.admin_show()}
+                    ${admin_helpers.admin_facilitators()}
+                </div><!-- tab6 -->
+                <div class="tab-pane ${tab7active}" id="tab7">
+                    ${admin_helpers.admin_flagged()}
+                </div><!-- tab7 -->
+                <div class="tab-pane ${tab8active}" id="tab8">    
+                    ${admin_helpers.admin_disabled()}
+                </div><!-- tab8 -->
+                <div class="tab-pane ${tab9active}" id="tab9">    
+                    ${admin_helpers.admin_deleted()}
+                </div><!-- tab9 -->
+                <div class="tab-pane ${tab10active}" id="tab10">    
+                    ${admin_helpers.admin_event_log()}
+                </div><!-- tab10 -->
             </div><!-- tab-content -->
         % endif
         </div><!-- span9 -->

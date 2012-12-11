@@ -175,7 +175,7 @@
         <% counter += 1 %>
     % endfor
     ${h.hidden("count",counter)}
-    ${h.hidden("configure","configure")}
+    ${h.hidden("dashboard","dashboard")}
     ${h.end_form()}
     <br /><br />
 </%def>
