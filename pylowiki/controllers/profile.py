@@ -568,6 +568,15 @@ class ProfileController(BaseController):
         perror = 0
         perrorMsg = ""
         changeMsg = ""
+        nameChange = False
+        anyChange = False
+        name = False
+        email = False
+        picture = False
+        tagline = False
+        orgWelcomeMsg = False
+        orgLink = False
+        orgLinkMsg = False
 
         # make sure they are authorized to do this
         if c.user.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
@@ -580,10 +589,9 @@ class ProfileController(BaseController):
             picture = request.POST['pictureFile']
             if picture == "":
                 picture = False
-        else:
-            picture = False
 
-        name = False
+
+
         if 'member_name' in request.params:
             name = request.params['member_name']
             if name == '':
@@ -592,7 +600,6 @@ class ProfileController(BaseController):
             perror = 1
             perrorMsg = perrorMsg + ' Member name required.'
 
-        email = False
         if 'email' in request.params:
             email = request.params['email']
             if email == '':
@@ -607,13 +614,24 @@ class ProfileController(BaseController):
             perror = 1
             perrorMsg = perrorMsg + ' Email required.'
 
-        if 'tagline' in request.params:
-            tagline = request.params['tagline']
-        else:
-            tagline = False
+        if c.user['memberType'] == 'individual':
+            if 'tagline' in request.params:
+                tagline = request.params['tagline']
 
-        nameChange = False
-        anyChange = False
+        else:
+            if 'orgWelcomeMsg' in request.params:
+                orgWelcomeMsg = request.params['orgWelcomeMsg']
+            else:
+                orgWelcomeMsg = False
+            if 'orgLinkMsg' in request.params:
+                orgLinkMsg = request.params['orgLinkMsg']
+            else:
+                orgLinkMsg = False
+            if 'orgLink' in request.params:
+                orgLink = request.params['orgLink']
+            else:
+                orgLink = False
+
         if name and name != '' and name != c.user['name']:
             c.user['name'] = name
             nameChange = True
@@ -623,14 +641,41 @@ class ProfileController(BaseController):
             c.user['email'] = email
             anyChange = True
             changeMsg = changeMsg + "Member email updated. "
-        if tagline and tagline != '' and tagline != c.authuser['tagline']:
+        if tagline and tagline != '' and tagline != c.user['tagline']:
             if len(tagline)>140:
                 c.user['tagline'] = tagline[:140]
             else:
                 c.user['tagline'] = tagline
                 anyChange = True
-
             changeMsg = changeMsg + "Tagline updated. "
+        if orgWelcomeMsg and orgWelcomeMsg != '':
+            if 'orgWelcomeMsg' not in c.user:
+                changeMsg = changeMsg + "Welcome message added. "
+                anyChange = True
+                c.user['orgWelcomeMsg'] = orgWelcomeMsg
+            elif orgWelcomeMsg != c.user['orgWelcomeMsg']:
+                anyChange = True
+                changeMsg = changeMsg + "Welcome message updated. "
+                c.user['orgWelcomeMsg'] = orgWelcomeMsg
+        if orgLink and orgLink != '':
+            if 'orgLink' not in c.user:
+                changeMsg = changeMsg + "Website link added. "
+                anyChange = True
+                c.user['orgLink'] = orgLink
+            elif orgLink != c.user['orgLink']:
+                anyChange = True
+                changeMsg = changeMsg + "Website link updated. "
+                c.user['orgLink'] = orgLink
+        if orgLinkMsg and orgLinkMsg != '':
+            if 'orgLinkMsg' not in c.user:
+                changeMsg = changeMsg + "Website description added. "
+                anyChange = True
+                c.user['orgLinkMsg'] = orgLinkMsg
+            elif orgLinkMsg != c.user['orgLinkMsg']:
+                anyChange = True
+                changeMsg = changeMsg + "Website description updated. "
+                c.user['orgLinkMsg'] = orgLinkMsg
+
 
         if picture != False:
            identifier = 'avatar'
