@@ -6,7 +6,9 @@
     <div class="span8">
         <div class="section-wrapper">
             <div class="browse">
-                <a href="/profile/edit" class="editProfile inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png"></a>
+                % if c.authuser['email'] == c.user['email']:
+                    <a href="/profile/edit" class="editProfile inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png"></a>
+                % endif
                 <h1 class="section-header centered profile-summary">${c.user['name']}</h1>
                 ${lib_6.userGeoLink(c.user)}
                 <div class="row-fluid spacer centered">
