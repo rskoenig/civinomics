@@ -65,14 +65,7 @@ hr.civ-topbar-hr{
 .section-wrapper h3 {
   text-align: center;
 }
-a.editProfile{
-   margin-right:5px;
-   padding-top:10px;
-}
-.profile-summary{
-    padding-top:10px;
-    padding-bottom:10px;
-}
+
 .tiny{
     font-size:8px;
 }
@@ -158,9 +151,8 @@ img.avatar{
     margin-top:5px;
 }
 
-h1.profile-count{
-    font-size:100px;
-    line-height:100px;
+.profile-count{
+    margin:0;
 }
 
 .spacer{
