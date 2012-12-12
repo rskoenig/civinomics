@@ -230,6 +230,9 @@ class WorkshopController(BaseController):
                 alert = {'type':'success'}
                 alert['title'] = weventMsg
                 session['alert'] = alert
+                # to reload at the next tab
+                if c.w['startTime'] == '0000-00-00':
+                    session['confTab'] = "tab2"
                 session.save()
 
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
@@ -286,6 +289,8 @@ class WorkshopController(BaseController):
             alert = {'type':'success'}
             alert['title'] = weventMsg
             session['alert'] = alert
+            if c.w['startTime'] == '0000-00-00':
+                session['confTab'] = "tab4"
             session.save()
 
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
@@ -371,16 +376,16 @@ class WorkshopController(BaseController):
         if 'addMember' in request.params:
             pList = getPrivateMembers(code, "0")
             if 'newMember' in request.params and request.params['newMember'] != '':
-                if c.w['public_private'] == 'trial' and len(pList) >= 10:
+                if c.w['public_private'] == 'personal' and len(pList) >= 10:
                     werror = 1
-                    werrMsg += 'You have already reached the maximum number of 10 participants for a trial workshop.'
+                    werrMsg += 'You have already reached the maximum number of 10 participants for a personal workshop.'
                 else:
                     newMember = request.params['newMember']
                     counter = 0
                     mList = newMember.split('\n')
-                    if c.w['public_private'] == 'trial' and (len(pList) + len(mList) > 10):
+                    if c.w['public_private'] == 'personal' and (len(pList) + len(mList) > 10):
                         werror = 1
-                        werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, trial workshops are limited to a maximum of 10 participants.'
+                        werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, personal workshops are limited to a maximum of 10 participants.'
                     else:
                         for mEmail in mList:
                             mEmail = mEmail.rstrip()
@@ -423,17 +428,21 @@ class WorkshopController(BaseController):
             else:
                 werror = 1
                 werrMsg += 'No email address entered.'
-                
-        if werror:
-            alert = {'type':'error'}
-            alert['title'] = werrMsg
-            session['alert'] = alert
+    
+        if 'continueToNext' in request.params:
+            session['confTab'] = "tab3"
             session.save()
         else:
-            alert = {'type':'success'}
-            alert['title'] = weventMsg
-            session['alert'] = alert
-            session.save()
+            if werror:
+                alert = {'type':'error'}
+                alert['title'] = werrMsg
+                session['alert'] = alert
+                session.save()
+            else:
+                alert = {'type':'success'}
+                alert['title'] = weventMsg
+                session['alert'] = alert
+                session.save()
             
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
         
@@ -534,7 +543,7 @@ class WorkshopController(BaseController):
     def newWorkshopHandler(self):
         
         if 'user' in session and c.authuser:
-            if c.authuser['memberType'] == 'individual':
+            if c.authuser['memberType'] == 'personal':
                 wType = 'personal'
             else:
                 # put the callback to the payment processor here
@@ -655,7 +664,7 @@ class WorkshopController(BaseController):
             c.isFollowing = isFollowing(c.authuser.id, c.w.id)
             c.isAdmin = isAdmin(c.authuser.id)
             
-        if c.w['public_private'] == 'trial' or c.w['public_private'] == 'private':
+        if c.w['public_private'] == 'personal' or c.w['public_private'] == 'private':
             if 'user' in session:
                 if not c.isFacilitator and not c.isScoped and not c.isAdmin:
                     return render('/derived/404.bootstrap')            
@@ -934,6 +943,10 @@ class WorkshopController(BaseController):
             c.tab = session['confTab']
             session.pop('confTab')
             session.save()
+        # hack for continue button in tab4 of configure
+        if 'continueToNext' in request.params:
+            c.tab = 'tab5'
+        
         if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
             h.flash("You are not authorized", "warning")
             return render('/')

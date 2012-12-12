@@ -66,6 +66,7 @@
     <div class="tabbable">
         <div class="row-fluid">
             <div class="span3 well">
+                <h3>Workshop Dashboard</h3><br>
                 <div class="accordion" id="accordion2">
                     % if c.w['startTime'] != '0000-00-00':
                         <div class="accordion-group">
@@ -108,7 +109,7 @@
                                     What's your workshop?
                                     </a></li>
                                     <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Scope it
-                                    % if c.w['public_private'] == 'trial' or c.w['public_private'] == 'private' or (c.w['public_private'] == 'public' and c.w['geoTags'] != ''):
+                                    % if c.w['public_private'] == 'personal' or c.w['public_private'] == 'private' or (c.w['public_private'] == 'public' and c.w['geoTags'] != ''):
                                         <i class="icon-ok"></i>
                                     % endif
                                     <br />

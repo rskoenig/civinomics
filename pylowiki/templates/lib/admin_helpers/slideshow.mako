@@ -228,6 +228,11 @@
 </td></tr>
 </thead>
 </table>
+% if c.w['startTime'] == '0000-00-00':
+    <form name="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
+        <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
+    </form>
+% endif
 </div><!-- container -->
 
 </%def>

@@ -80,7 +80,11 @@
             %>
             Participants can add information resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
             <br />
-            <button type="submit" class="btn btn-warning">Save Settings</button>
+            % if c.w['startTime'] == '0000-00-00':
+                <button type="submit" class="btn btn-warning">Save Settings and Continue</button>
+            % else:
+                <button type="submit" class="btn btn-warning">Save Settings</button>
+            % endif
             </form>
         </div><!-- span10 -->
     </div><!-- row -->
@@ -128,7 +132,11 @@
                 <input type="checkbox" name="categoryTags" value="${tag}" ${checked} /> ${tag}<br />
             % endfor
             <br />
-            <button type="submit" class="btn btn-warning">Save Tags</button>
+            % if c.w['startTime'] == '0000-00-00':
+                <button type="submit" class="btn btn-warning">Save Tags and Continue</button>
+            % else:
+                <button type="submit" class="btn btn-warning">Save Tags</button>
+            % endif
         </div><!-- span5 -->
     </div><!-- row -->
     </form>
@@ -186,35 +194,37 @@
     <p>Private workshops are not visible to the public.</p>
     % if c.w['public_private'] == 'personal':
         <p>Up to 10 other members may participate in your private workshop.</p>
-    % endif
-    <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
-    <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
-    % if c.pmembers:        
-        <br /><br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
-    % endif
-    <strong>Manage Workshop Participants List</strong><br />
-    <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-        To add new private members to this workshop,
-        enter one or more email addresses, one per line. This does not send an email invitation:<br />
-        <textarea rows=6 cols=50 name="newMember"/></textarea>
-        <br /><br />
-        <button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
-  
-    % if c.pmembers:
-        <br /><br />
-        Delete a private member from this workshop:<br />
-        Email Address: <input type="text" name = "removeMember" size="50" maxlength="140""/>
-        <br /><br />
-        <button type="submit" class="btn btn-warning" name="deleteMember">Delete Member from List</button>
-    % endif
-    </form>
-    <br />
-    % if c.w['public_private'] == 'private':
+    % elif c.w['public_private'] == 'private':
         <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
-        You can make this a public workshop if you wish. This means the workshop will be visible to the public, and members residing in the specified geographic area can participate in the workshop.<br />
+        You can make this a public workshop if you wish.<br>This means the workshop will be visible to the public, and members residing in the specified geographic area can participate in the workshop.<br />
         <button type="submit" class="btn btn-warning" name="changeScopeToPublic">Change to Public Workshop</button>
         </form>
     % endif
+    <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
+    <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
+    <br /><strong>Manage Workshop Participants List</strong><br />
+    % if c.pmembers:        
+        <br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
+    % endif
+    <form name="private" id="private" class="form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+        <strong>Add New Member</strong><br>
+        To add new private members to this workshop, enter one or more email addresses, one per line.<br />
+        This does not send an email invitation:<br />
+        <textarea rows=6 cols=50 name="newMember"/></textarea> &nbsp; &nbsp; <button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
+  
+    % if c.pmembers:
+        <br /><br />
+        <strong>Delete Member</strong><br>
+        Delete a private member from this workshop.<br />
+        Enter member email address to delete:<br />
+        <input type="text" name="removeMember" /> &nbsp; &nbsp; <button type="submit" class="btn btn-warning" name="deleteMember">Delete Member from List</button>
+        <br />
+    % endif
+    % if c.w['startTime'] == '0000-00-00':
+        <br /><br /><br /><button type="submit" class="btn btn-warning" name="continueToNext">Continue to Next Step</button>
+    % endif
+    </form>
+    <br />
 </%def>
 
 <%def name="public()">
@@ -312,7 +322,13 @@
         </span></div><!-- row-fluid -->
     <div class="row-fluid"><span id="underCity">${underCityMessage}</span><br /></div><!-- row -->
     <br />
-    <button type="submit" class="btn btn-warning">Save Geographic Area</button>
+    <% 
+        if c.w['startTime'] == '0000-00-00':
+            buttonMsg = "Save Geographic Area and Continue"
+        else:
+            buttonMsg = "Save Geographic Area"
+    %>
+    <button type="submit" class="btn btn-warning">${buttonMsg}</button>
     </form>
     <br />
     <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
