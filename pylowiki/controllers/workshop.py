@@ -534,10 +534,11 @@ class WorkshopController(BaseController):
 
             alert = {'type':'success'}
             alert['title'] = 'Workshop Started!'
+            alert['content'] = ' You may return to the Dashboard by clicking on the Dashboard link on any page in the workshop. Have fun!'
             session['alert'] = alert
             session.save()
             
-        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+        return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
     def newWorkshopHandler(self):
