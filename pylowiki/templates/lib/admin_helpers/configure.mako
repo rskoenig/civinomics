@@ -190,7 +190,6 @@
 
 
 <%def name="private()">
-    <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     <p>Private workshops are not visible to the public.</p>
     % if c.w['public_private'] == 'personal':
         <p>Up to 10 other members may participate in your private workshop.</p>
@@ -200,6 +199,7 @@
         <button type="submit" class="btn btn-warning" name="changeScopeToPublic">Change to Public Workshop</button>
         </form>
     % endif
+    <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
     <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
     <br /><strong>Manage Workshop Participants List</strong><br />

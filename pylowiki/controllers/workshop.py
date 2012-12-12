@@ -352,6 +352,10 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
+        if c.w['startTime'] == '0000-00-00':
+            session['confTab'] = "tab3"
+            session.save()
+            
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
 

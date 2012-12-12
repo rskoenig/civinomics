@@ -17,7 +17,7 @@ from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword,
 from pylowiki.lib.db.activity import getMemberPosts
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
-from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner, getPersonalMemberWorkshops
+from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
 from pylowiki.lib.db.pmember import getPrivateMemberWorkshops
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
 from pylowiki.lib.db.event import Event, getParentEvents
@@ -59,8 +59,6 @@ class ProfileController(BaseController):
             for p in privList:
                 w = getWorkshopByID(p.owner)
                 c.pworkshops.append(w)
-                
-            persList = getPersonalMemberWorkshops(c.user['email'])
         else:
             c.pmembers = False
 
