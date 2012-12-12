@@ -98,7 +98,7 @@
     % elif c.w['public_private'] == 'private':
         <h3>It's a Private Workshop</h3>
     % else:
-        <h3>It's a Personal Workshop</h3>
+        <h3>It's a Personal Private Workshop</h3>
     % endif
     % if c.w['public_private'] != 'public':
         ${private()}

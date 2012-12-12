@@ -17,7 +17,7 @@ from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword,
 from pylowiki.lib.db.activity import getMemberPosts
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
-from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
+from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner, getPersonalMemberWorkshops
 from pylowiki.lib.db.pmember import getPrivateMemberWorkshops
 from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
 from pylowiki.lib.db.event import Event, getParentEvents
@@ -55,10 +55,12 @@ class ProfileController(BaseController):
         
         if 'user' in session and c.user.id == c.authuser.id:
             c.pworkshops = []
-            pList = getPrivateMemberWorkshops(c.user['email'])
-            for p in pList:
+            privList = getPrivateMemberWorkshops(c.user['email'])
+            for p in privList:
                 w = getWorkshopByID(p.owner)
                 c.pworkshops.append(w)
+                
+            persList = getPersonalMemberWorkshops(c.user['email'])
         else:
             c.pmembers = False
 
@@ -71,7 +73,7 @@ class ProfileController(BaseController):
            elif f['disabled'] == '0':
               wID = f['workshopID']
               myW = getWorkshopByID(wID)
-              if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1' or myW['public_private'] == 'private':
+              if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1' or myW['public_private'] != 'public':
                  # show to the workshop owner, show to the facilitator owner, show to admin
                  if 'user' in session: 
                      if c.authuser.id == f.owner or isAdmin(c.authuser.id):

@@ -418,7 +418,7 @@
     </ul>
     % elif 'user' in session and c.authuser.id == c.user.id:
         <h2 class="civ-col"><i class="icon-list-alt"></i> Create a Workshop!</h2>
-        % if c.authuser['memberType'] == 'individual':
+        % if c.authuser['memberType'] == 'personal':
             Create a free Civinomics workshop. The workshop is private, and up to 10 other Civinomics members may participate.
         % endif
         <form method="post" name="userAccount" id="userAccount" action="/newWorkshop">
@@ -881,7 +881,7 @@
           wList = []
           for f in fList:
               w = getWorkshopByID(f['workshopID'])
-              if w['deleted'] == '0' and w['public_private'] != 'trial':
+              if w['deleted'] == '0' and w['public_private'] != 'personal':
                   if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
                       wList.append(w)
       %>
