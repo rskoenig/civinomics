@@ -6,12 +6,12 @@
 </%def>
 
 <%def name="showWorkshop(workshop)">
-    <div class="media">
+    <div class="media profile-workshop">
         <a class="pull-left" ${lib_6.workshopLink(workshop)}>
             <img class="media-object" src="${lib_6.workshopImage(workshop, raw=True) | n}">
         </a>
         <div class="media-body">
-            <a ${lib_6.workshopLink(workshop)}><h4 class="media-heading">${workshop['title']}</h4></a>
+            <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading">${workshop['title']}</h5></a>
             Short, one sentence description here
         </div>
     </div>
