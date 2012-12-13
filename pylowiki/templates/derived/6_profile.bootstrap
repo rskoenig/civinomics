@@ -9,8 +9,10 @@
                 <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
                 <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">Workshops</a></li>
                 <li><a href="#tab-awards" data-toggle="tab" class="green green-hover">Awards</a></li>
-                % if c.user['email'] == c.authuser['email']:
-                    <li class="pull-right"><a href="/profile/edit">Edit my profile</a></li>
+                % if 'user' in session:
+                    % if c.user['email'] == c.authuser['email']:
+                        <li class="pull-right"><a href="/profile/edit">Edit my profile</a></li>
+                    % endif
                 % endif
                 <li class="pull-right"><a href="#tab-stats" data-toggle="tab" class="green green-hover">Stats</a></li>
             </ul>
@@ -98,11 +100,6 @@
                 </div>
             </div>
         </div>
-    <%doc>
-        % if c.authuser['email'] == c.user['email']:
-            <a href="/profile/edit" class="editProfile inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png"></a>
-        % endif
-    </%doc>
     </div>
     <div class="span4">
         ${lib_6.userImage(c.user, className="avatar avatar-large")}
