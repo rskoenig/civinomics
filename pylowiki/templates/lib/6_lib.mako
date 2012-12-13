@@ -101,6 +101,35 @@
    href="/workshops/${w['urlCode']}/${w['url']}"
 </%def>
 
+<%def name="workshopImage(w, **kwargs)">
+    <%
+      if 'raw' in kwargs:
+         if kwargs['raw'] == True:
+            if w['mainImage_hash'] == 'supDawg':
+               return "/images/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_hash'])
+            else:
+               return "/images/%s/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
+               
+      imgStr += '<a href="'
+      imgStr += workshopLink(w, embed=True, raw=True)
+      if 'linkClass' in kwargs:
+         imgStr += '" class="%s"' %(kwargs['linkClass'])
+      imgStr += '">'
+      if workshop['mainImage_hash'] == 'supDawg':
+         picturePath = "/images/${w['mainImage_identifier']}/thumbnail/${w['mainImage_hash']}.thumbnail"
+      else:
+         picturePath = "/images/${w['mainImage_identifier']}/${w['mainImage_directoryNum']}/thumbnail/${w['mainImage_hash']}.thumbnail"
+      title = w['title']
+      imgStr += '<img src="%s" alt="%s" title="%s"' %(picturePath, title, title)
+         
+      if 'className' in kwargs:
+         imgStr += ' class="%s"' % kwargs['className']
+      
+      imgStr += '></a>'
+   %>
+   ${imgStr | n}
+</%def>
+
 <%def name="resourceLink(r, w, **kwargs)">
    <%
       if 'directLink' in kwargs:

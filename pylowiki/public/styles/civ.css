@@ -25,6 +25,10 @@ hr.civ-topbar-hr{
    margin-bottom: 20px;
 }
 
+.right-border{
+    border-right: 1px solid #DDDDDD;
+}
+
 .section-wrapper {
   border: 1px solid #ddd;
   -webkit-border-radius: 5px;
@@ -291,6 +295,10 @@ ul.listeners > li {
 }
 
 .green{
+    color:#075D00;
+}
+
+.green-hover:hover{
     color:#075D00;
 }
 

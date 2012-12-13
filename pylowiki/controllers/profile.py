@@ -31,7 +31,6 @@ log = logging.getLogger(__name__)
 
 class ProfileController(BaseController):
     
-    ##@h.login_required
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
         code = id1

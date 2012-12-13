@@ -4,9 +4,105 @@
 
 <div class="row-fluid">
     <div class="span8">
+        <div class="tabbable"> <!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
+                <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">Workshops</a></li>
+                <li><a href="#tab-awards" data-toggle="tab" class="green green-hover">Awards</a></li>
+                % if c.user['email'] == c.authuser['email']:
+                    <li class="pull-right"><a href="/profile/edit">Edit my profile</a></li>
+                % endif
+                <li class="pull-right"><a href="#tab-stats" data-toggle="tab" class="green green-hover">Stats</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab-activity">
+                    <ul>
+                        <li> Something ${c.user['name']} did </li>
+                        <li> Something ${c.user['name']} did </li>
+                        <li> Something ${c.user['name']} did </li>
+                        <li> Something ${c.user['name']} did </li>
+                        <li> Something ${c.user['name']} did </li>
+                    </ul>
+                </div>
+                <div class="tab-pane" id="tab-workshops">
+                    <div class="section-wrapper">
+                        <div class="browse">
+                            <h3 class="centered section-header">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="centered">Facilitating</div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="centered">Watching</div>
+                                    </div>
+                                </div>
+                            </h3>
+                            <div class="row-fluid">
+                                <div class="span6 right-border">
+                                    % if len(c.facilitatorWorkshops) == 0:
+                                        There doesn't seem to be anything here!
+                                    % else:
+                                        % for item in c.facilitatorWorkshops:
+                                            ${helpers.showWorkshop(item)}
+                                        % endfor
+                                    % endif
+                                </div>
+                                <div class="span6">
+                                    % if len(c.followingWorkshops) == 0:
+                                        There doesn't seem to be anything here!
+                                    % else:
+                                        % for item in c.followingWorkshops:
+                                            ${helpers.showWorkshop(item)}
+                                        % endfor
+                                    % endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%doc>
+                        <div class="span6">
+                            <div class="section-wrapper">
+                                <div class="browse">
+                                    <h3 class="centered section-header">Facilitating</h3>
+                                    % if len(c.facilitatorWorkshops) == 0:
+                                        There doesn't seem to be anything here!
+                                    % else:
+                                        % for item in c.facilitatorWorkshops:
+                                            ${helpers.showWorkshop(item)}
+                                        % endfor
+                                    % endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span6">
+                            <div class="section-wrapper">
+                                <div class="browse">
+                                    <h3 class="centered section-header">Watching</h3>
+                                    % if len(c.followingWorkshops) == 0:
+                                        There doesn't seem to be anything here!
+                                    % else:
+                                        % for item in c.followingWorkshops:
+                                            ${helpers.showWorkshop(item)}
+                                        % endfor
+                                    % endif
+                                </div>
+                            </div>
+                        </div>
+                    </%doc>
+                </div>
+                <div class="tab-pane" id="tab-awards">
+                    <p>Howdy, I'm in Section 3.</p>
+                </div>
+                <div class="tab-pane" id="tab-stats">
+                    <p>Howdy, I'm in Section 4.</p>
+                </div>
+            </div>
+        </div>
+    <%doc>
         % if c.authuser['email'] == c.user['email']:
             <a href="/profile/edit" class="editProfile inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png"></a>
         % endif
+    </%doc>
     </div>
     <div class="span4">
         ${lib_6.userImage(c.user, className="avatar avatar-large")}
