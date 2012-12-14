@@ -93,10 +93,10 @@
                     </%doc>
                 </div>
                 <div class="tab-pane" id="tab-awards">
-                    <p>Howdy, I'm in Section 3.</p>
+                    <p>Placeholder for badges/awards</p>
                 </div>
                 <div class="tab-pane" id="tab-stats">
-                    <p>Howdy, I'm in Section 4.</p>
+                    <svg id="chart"></svg>
                 </div>
             </div>
         </div>
@@ -138,3 +138,106 @@
         </div><!--/.section-wrapper-->
     </div><!--/.span4-->
 </div>
+
+<%def name="extraScripts()">
+    <script src="/js/vendor/d3.v3.min.js"></script>
+    <script type="text/javascript" src="/js/vendor/crossfilter.min.js"></script>
+    
+    <script>
+        var dataset;
+        var width = 600;
+        var height = 300;
+        var radius = Math.min(width, height)/2;
+        var color = d3.scale.category20();
+        
+        var arc = d3.svg.arc()
+            .outerRadius(radius - 70)
+            .innerRadius(radius - 120);
+        
+        var pie = d3.layout.pie()
+            .sort(null);
+        
+        var svg = d3.select("#chart")
+                .attr("width", width)
+                .attr("height", height)
+            .append("g")
+                .attr("transform", "translate(" + width / 4 + "," + height / 2 + ")");
+        
+        d3.json("/profile/${c.user['urlCode']}/${c.user['url']}/stats.json", function(err, json){
+            dataset = json;
+            var path = svg.selectAll("path")
+                    .data(pie(dataset.values))
+                .enter().append("path")
+                    .attr("class", "arc")
+                    .attr("fill", function(d, i) { return color(i); })
+                    .attr("d", arc)
+                    .each(function(d) { this._current = d; }); // store the initial values
+            
+            d3.selectAll("input").on("change", change);
+            
+            function change() {
+                path = path.data(pie(dataset[this.value].counts)); // update the data
+                path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+            }
+            
+            // Store the displayed angles in _current.
+            // Then, interpolate from _current to the new angles.
+            // During the transition, _current is updated in-place by d3.interpolate.
+            function arcTween(a) {
+                var i = d3.interpolate(this._current, a);
+                this._current = i(0);
+                return function(t) {
+                    return arc(i(t));
+                };
+            }
+            
+            
+            var legend = svg.selectAll(".legend")
+              .data(color.domain().slice().reverse())
+            .enter().append("g")
+              .attr("class", "legend")
+              .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+        
+            legend.append("rect")
+                .attr("x", width/2 - 125)
+                .attr("width", 15)
+                .attr("height", 15)
+                .style("fill", color);
+        
+            legend.append("text")
+                .attr("x", width/2)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .style("text-anchor", "end")
+                .text(function(d, i) { return dataset.titles[i] + ": " + dataset.values[i]; });
+            
+        })
+    </script>
+    
+    <%doc>
+    <script type="text/javascript">
+        var pie = d3.layout.pie()
+            .sort(null)
+            .value(function(d){ return d.value;});
+        d3.json("/profile/${c.user['urlCode']}/${c.user['url']}/stats.json", function(error, data){
+            var chart = d3.select('#chart'),
+                width = 500,
+                height = 500,
+                radius = 200;
+            var colour = d3.scale.ordinal()
+                .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+            var arc = d3.svg.arc()
+                .outerRadius(radius - 10)
+                .innerRadius(radius - 40);
+            chart.attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
+            var g = d3.selectAll(".arc")
+                .data(pie(data))
+                .enter().append("g")
+                .attr("class", "arc");
+            });
+    </script>
+    </%doc>
+</%def>

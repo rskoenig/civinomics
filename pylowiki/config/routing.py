@@ -444,6 +444,7 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/followers/', controller = 'profile', action = 'showUserFollowers', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/following', controller = 'profile', action = 'showUserFollows', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/following/', controller = 'profile', action = 'showUserFollows', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/stats.json', controller = 'profile', action = 'stats', id1 = '{id1}', id2 = '{id2}')
 
     # User activation
     map.connect('/activate/*id', controller = 'activate', action = 'index') # Account Activation

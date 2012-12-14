@@ -23,7 +23,7 @@ from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.account import Account, getUserAccount
 from pylowiki.lib.db.flag import getFlags
 from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
-
+import simplejson as json
 
 from hashlib import md5
 
@@ -171,6 +171,24 @@ class ProfileController(BaseController):
 
         #return render("/derived/profile.bootstrap")
         return render("/derived/6_profile.bootstrap")
+    
+    def stats(self, id1, id2):
+        user = get_user(id1, id2)
+        if not user:
+            return json.dumps({"error":"user not found"})
+        if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
+            posts = getMemberPosts(user, 0)
+        else:
+            posts = getMemberPosts(user, 1)
+        
+        types = ['discussion', 'comment', 'resource']
+        counts = {}
+        for item in types:
+            counts[item] = len([post for post in posts if post.objType == item])
+        retObj = {}
+        retObj['titles'] = types
+        retObj['values'] = [counts[key] for key in types] # Key off of types to preserve order
+        return json.dumps(retObj)
     
     def showUserSuggestions(self, id1, id2):
         # Called when visiting /profile/urlCode/url/suggestions
