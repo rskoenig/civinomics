@@ -207,11 +207,25 @@
         <br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
     % endif
     <form name="private" id="private" class="form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-        <strong>Add New Member</strong><br>
-        To add new private members to this workshop, enter one or more email addresses, one per line.<br />
-        This does not send an email invitation:<br />
-        <textarea rows=6 cols=50 name="newMember"/></textarea> &nbsp; &nbsp; <button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
-  
+
+
+        <div class="container-fluid">
+            <strong>Add New Member</strong><br>
+            <div class="row-fluid">
+                <div class="span6">
+                To add new private members to this workshop, enter one or more email addresses, one per line.<br />
+                <textarea rows=6 cols=50 name="newMember"/></textarea>
+                </div><!-- span6 -->
+                <div class="span6">
+                Click to email an invitation: <input type=checkbox name=sendInvite><br />
+                Add optional message to invitation: <textarea rows=2 cols=50 name="inviteMsg"/></textarea><br />
+                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation">Preview Invitation</a> (will open in a new window)<br />
+
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
+            <button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
+        </div><!-- container-fluid -->
+
     % if c.pmembers:
         <br /><br />
         <strong>Delete Member</strong><br>

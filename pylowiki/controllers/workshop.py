@@ -636,7 +636,7 @@ class WorkshopController(BaseController):
               ##log.info('doing delete')
 
            setWorkshopTagEnable(w, w['deleted'])
-           eMsg = 'Workshop %s'%eAction
+           eMsg = 'Workshop ' + eAction
            Event('Workshop %s'%eAction, 'Workshop %s by %s Note: %s'%(eAction, c.authuser['name'], eventReason), w, c.authuser)
            commit(w)
            
