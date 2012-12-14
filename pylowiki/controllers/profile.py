@@ -24,6 +24,7 @@ from pylowiki.lib.db.account import Account, getUserAccount
 from pylowiki.lib.db.flag import getFlags
 from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
 import simplejson as json
+import csv
 
 from hashlib import md5
 
@@ -189,6 +190,36 @@ class ProfileController(BaseController):
         retObj['titles'] = types
         retObj['values'] = [counts[key] for key in types] # Key off of types to preserve order
         return json.dumps(retObj)
+    
+    def statsCSV(self, id1, id2):
+        user = get_user(id1, id2)
+        if not user:
+            return json.dumps({"error":"user not found"})
+        if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
+            posts = getMemberPosts(user, 0)
+        else:
+            posts = getMemberPosts(user, 1)
+        
+        headers = ['objType', 'time']
+        data = []
+        counts = {}
+        for post in posts:
+            data.append([post.objType, post.date])
+            if post.objType not in counts:
+                counts[post.objType] = 1
+            else:
+                counts[post.objType] += 1
+                
+        for key in counts.keys():
+            log.info(key)
+            log.info(counts[key])
+            
+        response.content_type = 'text/csv'
+        writer = csv.writer(response)
+        writer.writerow(headers)
+        for row in data:
+            writer.writerow(row)
+        return response
     
     def showUserSuggestions(self, id1, id2):
         # Called when visiting /profile/urlCode/url/suggestions

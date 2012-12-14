@@ -96,7 +96,7 @@
                     <p>Placeholder for badges/awards</p>
                 </div>
                 <div class="tab-pane" id="tab-stats">
-                    <svg id="chart"></svg>
+                    <svg id="chart-counts" class="chart"></svg>
                 </div>
             </div>
         </div>
@@ -142,75 +142,35 @@
 <%def name="extraScripts()">
     <script src="/js/vendor/d3.v3.min.js"></script>
     <script type="text/javascript" src="/js/vendor/crossfilter.min.js"></script>
-    
+    <script type="text/javascript" src="/js/vendor/dc.min.js"></script>
     <script>
-        var dataset;
+        var dataset, dateFormat;
         var width = 600;
-        var height = 300;
-        var radius = Math.min(width, height)/2;
-        var color = d3.scale.category20();
-        
-        var arc = d3.svg.arc()
-            .outerRadius(radius - 70)
-            .innerRadius(radius - 120);
-        
-        var pie = d3.layout.pie()
-            .sort(null);
-        
-        var svg = d3.select("#chart")
-                .attr("width", width)
-                .attr("height", height)
-            .append("g")
-                .attr("transform", "translate(" + width / 4 + "," + height / 2 + ")");
-        
-        d3.json("/profile/${c.user['urlCode']}/${c.user['url']}/stats.json", function(err, json){
-            dataset = json;
-            var path = svg.selectAll("path")
-                    .data(pie(dataset.values))
-                .enter().append("path")
-                    .attr("class", "arc")
-                    .attr("fill", function(d, i) { return color(i); })
-                    .attr("d", arc)
-                    .each(function(d) { this._current = d; }); // store the initial values
+        var height = 400;
+        var times, types, timeGroup, typeGroup;
+        d3.csv("/profile/${c.user['urlCode']}/${c.user['url']}/stats.csv", function(err, data) {
+            dataset = data;
+            dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
+            data.forEach(function(e) { e.datetime = dateFormat.parse(e.time); });
+            var ndx = crossfilter(data);
             
-            d3.selectAll("input").on("change", change);
+            times = ndx.dimension(function(d){ return d.datetime; });
+            types = ndx.dimension(function(d){ return d.objType; });
             
-            function change() {
-                path = path.data(pie(dataset[this.value].counts)); // update the data
-                path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
-            }
+            timeGroup = times.group().reduceSum(function(d) {return 1;} );
+            typeGroup = types.group().reduceSum(function(d) {return 1;} );
             
-            // Store the displayed angles in _current.
-            // Then, interpolate from _current to the new angles.
-            // During the transition, _current is updated in-place by d3.interpolate.
-            function arcTween(a) {
-                var i = d3.interpolate(this._current, a);
-                this._current = i(0);
-                return function(t) {
-                    return arc(i(t));
-                };
-            }
-            
-            
-            var legend = svg.selectAll(".legend")
-              .data(color.domain().slice())
-            .enter().append("g")
-              .attr("class", "legend")
-              .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-        
-            legend.append("rect")
-                .attr("x", width/2 - 125)
-                .attr("width", 15)
-                .attr("height", 15)
-                .style("fill", color);
-        
-            legend.append("text")
-                .attr("x", width/2)
-                .attr("y", 9)
-                .attr("dy", ".35em")
-                .style("text-anchor", "end")
-                .text(function(d, i) { return dataset.titles[i] + ": " + dataset.values[i]; });
-            
-        })
+            var countChart = dc.barChart("#chart-counts");
+            countChart.width(width)
+                .height(height)
+                .margins({top: 0, right: 50, bottom: 20, left: 90})
+                .dimension(types)
+                .group(typeGroup)
+                .centerBar(true)
+                .x(d3.scale.ordinal().domain(['comment', 'discussion', 'resource']))
+                .xUnits(dc.units.ordinal)
+                .elasticY(true);
+            dc.renderAll()
+        });
     </script>
 </%def>
