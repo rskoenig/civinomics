@@ -193,7 +193,7 @@
             
             
             var legend = svg.selectAll(".legend")
-              .data(color.domain().slice().reverse())
+              .data(color.domain().slice())
             .enter().append("g")
               .attr("class", "legend")
               .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
@@ -213,31 +213,4 @@
             
         })
     </script>
-    
-    <%doc>
-    <script type="text/javascript">
-        var pie = d3.layout.pie()
-            .sort(null)
-            .value(function(d){ return d.value;});
-        d3.json("/profile/${c.user['urlCode']}/${c.user['url']}/stats.json", function(error, data){
-            var chart = d3.select('#chart'),
-                width = 500,
-                height = 500,
-                radius = 200;
-            var colour = d3.scale.ordinal()
-                .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-            var arc = d3.svg.arc()
-                .outerRadius(radius - 10)
-                .innerRadius(radius - 40);
-            chart.attr("width", width)
-                .attr("height", height)
-                .append("g")
-                .attr("transform", "translate(" + width/2 + "," + height/2 + ")");
-            var g = d3.selectAll(".arc")
-                .data(pie(data))
-                .enter().append("g")
-                .attr("class", "arc");
-            });
-    </script>
-    </%doc>
 </%def>
