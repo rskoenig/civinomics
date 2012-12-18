@@ -197,6 +197,9 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     senderEmail = sender['email']
     subject = senderName + ' invites you to a workshop.'
     
+    if message and message != '':
+        message = '\n' + message
+    
     emailDir = config['app_conf']['emailDirectory']
     imageDir = config['app_conf']['imageDirectory']
     myURL = config['app_conf']['site_base_url']
@@ -215,8 +218,8 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     htmlMessage = htmlMessage.replace('${c.sender}', senderName)
     htmlMessage = htmlMessage.replace('${c.workshopName}', workshopName)
     htmlMessage = htmlMessage.replace('${c.inviteMessage}', message)
-    htmlMessage = htmlMessage.replace('${c.regURL}', regURL)
-    htmlMessage = htmlMessage.replace('${c.browseURL}', browseURL)
+    htmlMessage = htmlMessage.replace('${c.regLink}', regLink)
+    htmlMessage = htmlMessage.replace('${c.browseLink}', browseLink)
     htmlMessage = htmlMessage.replace('${c.imageSrc}', 'cid:civinomicslogo')
     
     # open and read the text file
@@ -225,8 +228,12 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     fp.close()
     
     # do the substitutions
-
-    
+    textMessage = textMessage.replace('${c.sender}', senderName)
+    textMessage = textMessage.replace('${c.workshopName}', workshopName)
+    textMessage = textMessage.replace('${c.inviteMessage}', message)
+    textMessage = textMessage.replace('${c.regLink}', regLink)
+    textMessage = textMessage.replace('${c.browseLink}', browseLink)
+  
     # open and read in the image
     fp = open(headerImage, 'rb')
     logo = fp.read()
@@ -243,13 +250,13 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     email['To'] = recipient
     
     # now attatch the text and html and picture parts
-    part2 = MIMEText(textMessage, 'plain')
-    part1 = MIMEText(htmlMessage, 'html')
-    part3 = MIMEImage(logo, 'png')
-    part3.add_header('Content-Id', '<civinomicslogo>')
+    part1 = MIMEText(textMessage, 'plain')
+    #part2 = MIMEText(htmlMessage, 'html')
+    #part3 = MIMEImage(logo, 'png')
+    #part3.add_header('Content-Id', '<civinomicslogo>')
     email.attach(part1)
-    email.attach(part2)
-    email.attach(part3)
+    #email.attach(part2)
+    #email.attach(part3)
     
     # send that suckah
     s = smtplib.SMTP('localhost')

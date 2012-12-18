@@ -3,6 +3,7 @@ import logging
 
 from pylons import tmpl_context as c
 from pylowiki.model import Thing, Data, meta
+from pylowiki.lib.utils import toBase62
 import sqlalchemy as sa
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
@@ -44,4 +45,6 @@ class PMember(object):
         # type - one of A for address or D for domain
         p['type'] = type
         p['deleted'] = '0'
+        commit(p)
+        p['urlCode'] = toBase62(p)
         commit(p)

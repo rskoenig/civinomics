@@ -206,10 +206,10 @@
     % if c.pmembers:        
         <br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
     % endif
-    <form name="private" id="private" class="form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
 
 
-        <div class="container-fluid">
+        <div class="container-fluid well">
             <strong>Add New Member</strong><br>
             <div class="row-fluid">
                 <div class="span6">
@@ -223,19 +223,22 @@
 
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
-            <button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
+            <br /><button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
         </div><!-- container-fluid -->
 
     % if c.pmembers:
-        <br /><br />
-        <strong>Delete Member</strong><br>
-        Delete a private member from this workshop.<br />
-        Enter member email address to delete:<br />
-        <input type="text" name="removeMember" /> &nbsp; &nbsp; <button type="submit" class="btn btn-warning" name="deleteMember">Delete Member from List</button>
-        <br />
+        <div class="container-fluid well">
+            <strong>Delete Member</strong><br>
+            Delete a private member from this workshop.<br />
+            Enter member email address to delete:<br />
+            <input type="text" name="removeMember" /><br />
+            <br /><button type="submit" class="btn btn-warning" name="deleteMember">Delete Member from List</button>
+        </div><!-- container-fluid -->
     % endif
     % if c.w['startTime'] == '0000-00-00':
-        <br /><br /><br /><button type="submit" class="btn btn-warning" name="continueToNext">Continue to Next Step</button>
+        <div class="container-fluid well">
+            <button type="submit" class="btn btn-warning" name="continueToNext">Continue to Next Step</button>
+        </div><!-- container-fluid -->
     % endif
     </form>
     <br />
