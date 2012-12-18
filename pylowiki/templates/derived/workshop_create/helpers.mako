@@ -14,24 +14,30 @@
     </div>
 </%def>
 
-<%def name="addWorkshop()">
-    <div class="fluid-row">
-        <div class="span4">
-            <form id="create_issue" action = "${c.site_secure_url}/workshop/addWorkshopHandler" class="form-vertical" method = "post">
-            <input type="hidden" name="publicPrivate" value="public">
-                <fieldset>
-                    <div class="control-group">
-                        <label class="control-label">Workshop Name (70 char. max.):</label>
-                        <div class="controls docs-input-sizes">
-                            <input type="text" name = "workshopName" maxlength="70"/>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-success">Next Page</button>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
+<%def name="createWorkshop()">
+    
+    <div class="row-fluid">
+        <form id="create_issue" action = "/newWorkshop" class="form-vertical" method = "post">
+        <div class="well">
+            <h3>A Personal Workshop</h3>
+            <ul>
+            <li>It's Free!</li>
+            <li>It's limited to private, invitation only.  Not visible to the public.</li> 
+            <li>Invite up to 10 people to participate!</li>
+            <li>You can upgrade it to a professional workshop at any time! (Good for trying things out, first)
+            </ul>
+            <button type="submit" name="createPersonal" class="btn btn-warning">Create Personal Workshop</button> 
+        </div><!-- well -->
+        <div class="well">
+            <h3>A Professional Workshop</h3>
+            <ul>
+            <li>It costs $25 per month, cancel at any time.</li>
+            <li>Unlimited participants!</li> 
+            <li>You can make it private by invitation only or available for public participation.</li>
+            </ul>
+            <button type="submit" name="createProfessional" class="btn btn-warning">Create Professional Workshop</button> 
+        </div><!-- well -->
+        </form>
     </div>
 </%def>
 

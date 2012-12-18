@@ -421,7 +421,7 @@
         % if c.authuser['memberType'] == 'personal':
             Create a free Civinomics workshop. The workshop is private, and up to 10 other Civinomics members may participate.
         % endif
-        <form method="post" name="userAccount" id="userAccount" action="/newWorkshop">
+        <form method="post" name="createWorkshop" id="createWorkshop" action="/createWorkshop">
         <br />
         <button type="submit" class="btn btn-warning">Create Workshop</button>
         <br /><br />

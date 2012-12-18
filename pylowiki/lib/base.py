@@ -31,7 +31,6 @@ class BaseController(WSGIController):
         if "user" in session:
             c.authuser = get_user( session['userCode'], session['userURL'] )
             
-        
         try:
             spamremark = request.params['sremark']
         except KeyError:

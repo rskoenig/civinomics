@@ -65,8 +65,10 @@ def make_map():
     map.connect('/ipadListener/sendSurveyData', controller = 'ipadListener', action = 'sendSurveyData')
     map.connect('/ipadListener/sendSurveyData/', controller = 'ipadListener', action = 'sendSurveyData')
 
-    # Workshop home page
+    # Workshop 
     map.connect('/newWorkshop', controller = 'workshop', action = 'newWorkshopHandler')
+    map.connect('/createWorkshop', controller = 'workshop', action = 'createWorkshopHandler')
+    
     map.connect('/workshops/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshops/{id1}/{id2}/', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')
@@ -84,6 +86,9 @@ def make_map():
     map.connect('/workshop/{id1}/{id2}/unfollow', controller = 'workshop', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/workshop/{id1}/{id2}/unfollow/', controller = 'workshop', action = 'unfollowHandler', id1 = '{id1}', id2 = '{id2}')
     
+    # Workshop "guests"
+    map.connect('/guest/{id1}', controller = 'workshop', action = 'guest', id1 = '{id1}')
+    map.connect('/guest/{id1}/', controller = 'workshop', action = 'guest', id1 = '{id1}')
     
     # Add image(s) to workshop slideshow
     map.connect('/workshop/{id1}/{id2}/addImages', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')

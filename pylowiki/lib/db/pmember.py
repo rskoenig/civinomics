@@ -22,6 +22,12 @@ def getPrivateMember(workshopCode, email, deleted = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'pmember').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('email', email))).filter(Thing.data.any(wc('deleted', deleted))).one()
     except:
         return False
+        
+def getPrivateMemberByCode(code):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'pmember').filter(Thing.data.any(wc('urlCode', code))).one()
+    except:
+        return False
 
 def getPrivateMemberWorkshops(email, deleted = '0'):
     elist = email.split('@')

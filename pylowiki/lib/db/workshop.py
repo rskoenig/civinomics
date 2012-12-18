@@ -1,9 +1,9 @@
-from pylons import tmpl_context as c, config
+from pylons import tmpl_context as c, config, session
 from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
-from pylowiki.lib.db.user import getUserByID
-from pylowiki.lib.db.pmember import getPrivateMember
+from pylowiki.lib.db.user import getUserByID, getUserByEmail
+from pylowiki.lib.db.pmember import getPrivateMember, getPrivateMemberByCode
 from pylowiki.lib.db.geoInfo import getGeoScope
 from pylowiki.lib.db.comment import getDiscussionCommentsSince
 from pylowiki.lib.db.discussion import getAllActiveDiscussionsForWorkshop, getDiscussionByID
@@ -179,7 +179,14 @@ def getCategoryTagList():
     cTagList.append('Transportation')
     return cTagList
 
+def isGuest(workshop):
+    if 'guestCode' in session and 'workshopCode' in session:
+        pTest = getPrivateMemberByCode(session['guestCode'])
+        if pTest and pTest['urlCode'] == session['guestCode'] and pTest['workshopCode'] == session['workshopCode'] and workshop['urlCode'] == session['workshopCode']:
+            return True
 
+    return False
+    
 def isScoped(user, workshop):   
     if workshop['public_private'] != 'public':
         pTest = getPrivateMember(workshop['urlCode'], user['email'])
@@ -203,8 +210,17 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     emailDir = config['app_conf']['emailDirectory']
     imageDir = config['app_conf']['imageDirectory']
     myURL = config['app_conf']['site_base_url']
+    
+    # see if they are alread a user
+    uTest = getUserByEmail(recipient)
+    if uTest:
+        browseLink = 'Login to your Civinomics account, then visit the workshop here:\n' +  myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
+    else:
+        guest = getPrivateMember(workshop['urlCode'], recipient)
+        browseLink = 'You can visit and browse the workshop here:\n' +  myURL + '/guest/' + guest['urlCode']
+        
     regLink = myURL + '/signup'
-    browseLink = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
+
     htmlFile = emailDir + "/private_invite.html"
     txtFile = emailDir + "/private_invite.txt"
     headerImage = imageDir + "/email_logo.png"

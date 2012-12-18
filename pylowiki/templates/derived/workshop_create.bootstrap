@@ -6,23 +6,14 @@
 <%inherit file="/base/template.bootstrap"/>
 <%namespace name="helpers" file="/derived/workshop_create/helpers.mako" />
 
-<div class="container-fluid">
-    ${helpers.showTitle(c.title)}
-    <div class="row-fluid">
-        <div class="offset2 span10">
-            <div class="civ-col">
-                <h2 class="civ-col">${c.heading}</h2>
-                <div class="civ-col-inner">
-                    ${helpers.spacer()}
-                    % if c.conf['read_only.value'] == 'true':
-                        <!-- read only -->
-                    % else:
-                        ${helpers.addWorkshop()}
-                    % endif
-                </div> <!-- /.civ-col-inner -->
-            </div> <!-- /.civ-col -->
-        </div> <!-- /.span6 -->
-    </div> <!-- /.row-fluid -->
+<div class="container-fluid well">
+    <h3>Create A New Workshop</h3><br />
+    <strong>Choose which kind of workshop to create:</strong><br /><br />
+    % if c.conf['read_only.value'] == 'true':
+        <!-- read only -->
+    % else:
+        ${helpers.createWorkshop()}
+    % endif
 </div><!-- container -->
 
 <%def name = 'extraStyles()'>

@@ -12,7 +12,7 @@ import webhelpers.paginate as paginate
 from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped, sendPMemberInvite
+from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped, sendPMemberInvite, isGuest
 from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles, getStateList, getCountyList, getCityList
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
@@ -25,7 +25,7 @@ from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
-from pylowiki.lib.db.pmember import PMember, getPrivateMembers, getPrivateMember
+from pylowiki.lib.db.pmember import PMember, getPrivateMembers, getPrivateMember, getPrivateMemberByCode
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.activity import updateWorkshopURL
@@ -127,6 +127,19 @@ class WorkshopController(BaseController):
            commit(f)
            
         return "ok"
+        
+    def guest(self, id1):
+        code = id1
+        pMember = getPrivateMemberByCode(code)
+        wCode = pMember['workshopCode']
+        workshop = getWorkshopByCode(wCode)
+        session["user"] = 'Guest'
+        session['guestCode'] = code
+        session['workshopCode'] = wCode
+        session.save()
+
+        return redirect('/workshop/%s/%s'%(workshop['urlCode'], workshop['url'])) 
+        
 
     @h.login_required
     def configureBasicWorkshopHandler(self, id1, id2):
@@ -486,12 +499,9 @@ class WorkshopController(BaseController):
             ""
         else:
             return(redirect("/"))
-        c.sender = c.authuser['name']
+        c.facilitator = c.authuser['name']
         c.workshopName = c.w['title']
-        myURL = config['app_conf']['site_base_url']
-        c.regLink = myURL + '/signup'
-        c.browseLink = myURL + '/workshop/' + c.w['urlCode'] + '/' + c.w['url']
-        c.inviteMessage = 'Your Invitation Message Will Appear Here'
+        c.inviteMsg = 'Your Invitation Message Will Appear Here'
         c.imageSrc = "/images/logo_header8.1.png"
         
         return render('/derived/preview_invitation.bootstrap')
@@ -578,10 +588,17 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
+    def createWorkshopHandler(self):
+        if 'user' in session and c.authuser:
+            return render('/derived/workshop_create.bootstrap')
+            
+        return render('/derived/404.bootstrap')   
+        
+    @h.login_required
     def newWorkshopHandler(self):
         
         if 'user' in session and c.authuser:
-            if c.authuser['memberType'] == 'personal':
+            if 'createPersonal' in request.params:
                 wType = 'personal'
             else:
                 # put the callback to the payment processor here
@@ -695,16 +712,19 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, urlify(url))
         c.title = c.w['title']
+        c.isGuest = False
         
         if 'user' in session:
-            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-            c.isScoped = isScoped(c.authuser, c.w)
-            c.isFollowing = isFollowing(c.authuser.id, c.w.id)
-            c.isAdmin = isAdmin(c.authuser.id)
+            c.isGuest = isGuest(c.w)
+            if not c.isGuest and c.authuser:
+                c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+                c.isScoped = isScoped(c.authuser, c.w)
+                c.isFollowing = isFollowing(c.authuser.id, c.w.id)
+                c.isAdmin = isAdmin(c.authuser.id)
             
         if c.w['public_private'] == 'personal' or c.w['public_private'] == 'private':
             if 'user' in session:
-                if not c.isFacilitator and not c.isScoped and not c.isAdmin:
+                if not c.isFacilitator and not c.isScoped and not c.isAdmin and not c.isGuest:
                     return render('/derived/404.bootstrap')            
             else:
                 return render('/derived/404.bootstrap')
@@ -755,7 +775,7 @@ class WorkshopController(BaseController):
 
         c.asuggestions = getAdoptedSuggestionsForWorkshop(code)
         
-        if 'user' in session:
+        if 'user' in session and not c.isGuest:
             ratedSuggestionIDs = []
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
                 """
@@ -774,7 +794,7 @@ class WorkshopController(BaseController):
                 item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
                 ##item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
         
-            if 'user' in session:    
+            if 'user' in session and not c.isGuest:    
                 """ Grab the associated rating, if it exists """
                 found = False
                 try:
