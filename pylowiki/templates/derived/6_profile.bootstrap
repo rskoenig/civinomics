@@ -8,13 +8,11 @@
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
                 <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">Workshops</a></li>
-                <li><a href="#tab-awards" data-toggle="tab" class="green green-hover">Awards</a></li>
                 % if 'user' in session:
                     % if c.user['email'] == c.authuser['email']:
                         <li class="pull-right"><a href="/profile/edit">Edit my profile</a></li>
                     % endif
                 % endif
-                <li class="pull-right"><a href="#tab-stats" data-toggle="tab" class="green green-hover">Stats</a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab-activity">
@@ -92,12 +90,6 @@
                         </div>
                     </%doc>
                 </div>
-                <div class="tab-pane" id="tab-awards">
-                    <p>Placeholder for badges/awards</p>
-                </div>
-                <div class="tab-pane" id="tab-stats">
-                    <svg id="chart-counts" class="chart"></svg>
-                </div>
             </div>
         </div>
     </div>
@@ -138,39 +130,3 @@
         </div><!--/.section-wrapper-->
     </div><!--/.span4-->
 </div>
-
-<%def name="extraScripts()">
-    <script src="/js/vendor/d3.v3.min.js"></script>
-    <script type="text/javascript" src="/js/vendor/crossfilter.min.js"></script>
-    <script type="text/javascript" src="/js/vendor/dc.min.js"></script>
-    <script>
-        var dataset, dateFormat;
-        var width = 600;
-        var height = 400;
-        var times, types, timeGroup, typeGroup;
-        d3.csv("/profile/${c.user['urlCode']}/${c.user['url']}/stats.csv", function(err, data) {
-            dataset = data;
-            dateFormat = d3.time.format("%Y-%m-%d %H:%M:%S");
-            data.forEach(function(e) { e.datetime = dateFormat.parse(e.time); });
-            var ndx = crossfilter(data);
-            
-            times = ndx.dimension(function(d){ return d.datetime; });
-            types = ndx.dimension(function(d){ return d.objType; });
-            
-            timeGroup = times.group().reduceSum(function(d) {return 1;} );
-            typeGroup = types.group().reduceSum(function(d) {return 1;} );
-            
-            var countChart = dc.barChart("#chart-counts");
-            countChart.width(width)
-                .height(height)
-                .margins({top: 0, right: 50, bottom: 20, left: 90})
-                .dimension(types)
-                .group(typeGroup)
-                .centerBar(true)
-                .x(d3.scale.ordinal().domain(['comment', 'discussion', 'resource']))
-                .xUnits(dc.units.ordinal)
-                .elasticY(true);
-            dc.renderAll()
-        });
-    </script>
-</%def>
