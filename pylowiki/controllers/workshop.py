@@ -1,5 +1,7 @@
 import logging, re, pickle, formencode
 import time, datetime
+import os
+import re
 
 from formencode import validators, htmlfill
 from formencode.compound import All
@@ -7,10 +9,10 @@ from formencode.foreach import ForEach
 from ordereddict import OrderedDict
 import webhelpers.paginate as paginate
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped
+from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped, sendPMemberInvite
 from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles, getStateList, getCountyList, getCityList
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
@@ -214,7 +216,7 @@ class WorkshopController(BaseController):
         # save successful changes
         if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
             commit(c.w)
-            Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+            Event('Workshop Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
         else:
             werror = 1
             werrMsg = "No changes submitted."
@@ -358,7 +360,6 @@ class WorkshopController(BaseController):
             
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
-
     @h.login_required
     def configurePrivateWorkshopHandler(self, id1, id2):
         code = id1
@@ -394,23 +395,35 @@ class WorkshopController(BaseController):
                         for mEmail in mList:
                             mEmail = mEmail.rstrip()
                             mEmail = mEmail.lstrip()
-                            pTest = getPrivateMember(code, mEmail)
-                            if pTest:
-                                if pTest['deleted'] == '1':
-                                    pTest['deleted'] = '0'
-                                    commit(pTest)
-                                else:
-                                    werror = 1
-                                    werrMsg += mEmail + ' already a member.'
+                            # make sure a valid email address
+                            if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", mEmail):
+                                werror = 1
+                                werrMsg = werrMsg + 'Not valid email address: ' + mEmail
                             else:
-                                PMember(code, mEmail, 'A', c.w)
-                                counter += 1
+                                pTest = getPrivateMember(code, mEmail)
+                                if pTest:
+                                    if pTest['deleted'] == '1':
+                                        pTest['deleted'] = '0'
+                                        commit(pTest)
+                                    else:
+                                        werror = 1
+                                        werrMsg += mEmail + ' already a member.'
+                                else:
+                                    PMember(code, mEmail, 'A', c.w)
+                                    if 'sendInvite' in request.params:
+                                        inviteMsg = ''
+                                        if 'inviteMsg' in request.params:
+                                            inviteMsg = request.params['inviteMsg']
+                                        sendPMemberInvite(c.w, c.authuser, mEmail, inviteMsg)
+                                    counter += 1
                 
                     if counter:
                         if counter > 1:
                             weventMsg += str(counter) + ' new members added.'
                         else:
                             weventMsg += '1 new member added.'
+                            if 'inviteMsg' in request.params:
+                                weventMsg += ' An email invitation has been sent.'
                 
             else:
                 werror = 1
@@ -462,6 +475,26 @@ class WorkshopController(BaseController):
             
         c.privateMembers = getPrivateMembers(c.w['urlCode'])
         return render('/derived/list_pmembers.bootstrap')
+
+    @h.login_required
+    def previewInvitation(self, id1, id2):
+        code = id1
+        url = id2
+        c.title = "Private Workshop"
+        c.w = getWorkshop(code, urlify(url))
+        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
+            ""
+        else:
+            return(redirect("/"))
+        c.sender = c.authuser['name']
+        c.workshopName = c.w['title']
+        myURL = config['app_conf']['site_base_url']
+        c.regLink = myURL + '/signup'
+        c.browseLink = myURL + '/workshop/' + c.w['urlCode'] + '/' + c.w['url']
+        c.inviteMessage = 'Your Invitation Message Will Appear Here'
+        c.imageSrc = "/images/logo_header8.1.png"
+        
+        return render('/derived/preview_invitation.bootstrap')
 
         
     @h.login_required

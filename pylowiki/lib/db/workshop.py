@@ -1,4 +1,4 @@
-from pylons import tmpl_context as c
+from pylons import tmpl_context as c, config
 from pylowiki.model import Thing, meta
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
@@ -17,6 +17,10 @@ from discussion import Discussion
 
 import time, datetime
 import logging
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
 
 log = logging.getLogger(__name__)
 
@@ -186,6 +190,71 @@ def isScoped(user, workshop):
         return True        
        
     return False
+    
+def sendPMemberInvite(workshop, sender, recipient, message):
+    workshopName = workshop['title']
+    senderName = sender['name']
+    senderEmail = sender['email']
+    subject = senderName + ' invites you to a workshop.'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    imageDir = config['app_conf']['imageDirectory']
+    myURL = config['app_conf']['site_base_url']
+    regLink = myURL + '/signup'
+    browseLink = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
+    htmlFile = emailDir + "/private_invite.html"
+    txtFile = emailDir + "/private_invite.txt"
+    headerImage = imageDir + "/email_logo.png"
+    
+    # open and read in HTML file
+    fp = open(htmlFile, 'r')
+    htmlMessage = fp.read()
+    fp.close()
+    
+    # do the substitutions
+    htmlMessage = htmlMessage.replace('${c.sender}', senderName)
+    htmlMessage = htmlMessage.replace('${c.workshopName}', workshopName)
+    htmlMessage = htmlMessage.replace('${c.inviteMessage}', message)
+    htmlMessage = htmlMessage.replace('${c.regURL}', regURL)
+    htmlMessage = htmlMessage.replace('${c.browseURL}', browseURL)
+    htmlMessage = htmlMessage.replace('${c.imageSrc}', 'cid:civinomicslogo')
+    
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    # do the substitutions
+
+    
+    # open and read in the image
+    fp = open(headerImage, 'rb')
+    logo = fp.read()
+    fp.close()
+    
+    senderImage = ''
+    if sender['pictureHash'] != 'flash':
+        senderImage = "/images/avatar/" + sender['directoryNumber'] + "/profile/" + sender['pictureHash'] + ".profile"
+        
+    # create a MIME email object, initialize the header info
+    email = MIMEMultipart(_subtype='related')
+    email['Subject'] = subject
+    email['From'] = senderEmail
+    email['To'] = recipient
+    
+    # now attatch the text and html and picture parts
+    part2 = MIMEText(textMessage, 'plain')
+    part1 = MIMEText(htmlMessage, 'html')
+    part3 = MIMEImage(logo, 'png')
+    part3.add_header('Content-Id', '<civinomicslogo>')
+    email.attach(part1)
+    email.attach(part2)
+    email.attach(part3)
+    
+    # send that suckah
+    s = smtplib.SMTP('localhost')
+    s.sendmail(senderEmail, recipient, email.as_string())
+    s.quit()
 
 class Workshop(object):
     # title -> A string
