@@ -60,7 +60,7 @@
                             ${showWorkshop(workshop, imageOnly = True)}
                             <a ${thingLink | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a> in workshop <a ${workshopLink | n}> ${workshop['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
                             <br />
-                            Description: ${lib_6.ellipsisIZE(descriptionText, 150)}
+                            Description: ${lib_6.ellipsisIZE(descriptionText, 135)}
                         </td> </tr>
                         <% counter += 1 %>
                     % endfor
