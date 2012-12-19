@@ -179,7 +179,9 @@ class User(object):
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, hash, toEmail) 
         subject = "Civinomics Account Activation"
-        message = 'Please click on the following link to activate your account:\n\n%s' % url
+        message = 'Greetings from Civinomics!\n\nOnly one more step to complete your Civinomics member registration!\n'
+        message = message + 'Please click on the following link to activate your account:\n\n%s' % url
+        message = message + '\n\nThis will log you into your Civinomics member dashboard, where you can update\nyour member profile with a picture and other details.' 
         send(toEmail, frEmail, subject, message)
         
         u['activationHash'] = hash
