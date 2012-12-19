@@ -606,6 +606,26 @@ class WorkshopController(BaseController):
             
         return render('/derived/404.bootstrap')
         
+    def upgradeHandler(self, id1):
+        code = id1
+        c.w = getWorkshopByCode(code)
+        if 'user' in session and c.authuser:
+            if 'upgradeToken' in request.params:
+                    if 'workshopCode' in request.params:
+                        workshopCode = request.params['workshopCode']
+                        workshop = getWorkshopByCode(workshopCode)
+                        workshop['type'] = 'professional'
+                        commit(workshop)
+                        alert = {'type':'success'}
+                        alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
+                        session['alert'] = alert
+                        session.save()
+                        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+            else:
+                return render('/derived/workshop_payment.bootstrap')
+            
+        return render('/derived/404.bootstrap')
+        
     @h.login_required
     def newWorkshopHandler(self):
         
@@ -613,7 +633,7 @@ class WorkshopController(BaseController):
             if 'createPersonal' in request.params:
                 wType = 'personal'
             else:
-                # put the callback to the payment processor here
+
                 if 'paymentToken' in request.params:
                     wType = 'professional'
                 else:
@@ -1022,7 +1042,6 @@ class WorkshopController(BaseController):
             c.tab = 'tab5'
         
         if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
-            h.flash("You are not authorized", "warning")
             return render('/')
 
         slideshow = getSlideshow(c.w['mainSlideshow_id'])

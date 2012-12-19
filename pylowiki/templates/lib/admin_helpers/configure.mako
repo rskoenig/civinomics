@@ -23,6 +23,11 @@
     % if c.w['startTime'] == '0000-00-00':
        <br />Checklist must be completed before the workshop can be published.<br />
     % endif
+    % if c.w['type'] == 'personal':
+        <form name="workshopUpgrade" id="workshopUpgrade" action="/workshopUpgrade/${c.w['urlCode']}" method="POST">
+        <button type="submit" class="btn btn-warning">Upgrade to Professional</button>
+        </form>
+    % endif
 </%def>
 
 
