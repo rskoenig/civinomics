@@ -133,7 +133,6 @@ class WorkshopController(BaseController):
         pMember = getPrivateMemberByCode(code)
         wCode = pMember['workshopCode']
         workshop = getWorkshopByCode(wCode)
-        session["user"] = 'Guest'
         session['guestCode'] = code
         session['workshopCode'] = wCode
         session.save()
@@ -599,7 +598,13 @@ class WorkshopController(BaseController):
         if 'user' in session and c.authuser:
             return render('/derived/workshop_create.bootstrap')
             
-        return render('/derived/404.bootstrap')   
+        return render('/derived/404.bootstrap')
+        
+    def paymentHandler(self):
+        if 'user' in session and c.authuser:
+            return render('/derived/workshop_payment.bootstrap')
+            
+        return render('/derived/404.bootstrap')
         
     @h.login_required
     def newWorkshopHandler(self):
@@ -609,7 +614,11 @@ class WorkshopController(BaseController):
                 wType = 'personal'
             else:
                 # put the callback to the payment processor here
-                wType = 'professional'
+                if 'paymentToken' in request.params:
+                    wType = 'professional'
+                else:
+                    return redirect('/workshopPayment')
+                    
            
             w = Workshop('replace with a real name!', c.authuser, 'private', wType)
             c.workshop_id = w.w.id # TEST

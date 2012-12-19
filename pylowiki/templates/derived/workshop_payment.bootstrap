@@ -1,0 +1,103 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<div class="container-fluid well">
+    <h3>Professional Workshop Payment</h3><br />
+    % if c.conf['read_only.value'] == 'true':
+        <!-- read only -->
+    % else:
+    	<strong>Please complete all of the information below:</strong><br /><br />
+        <form name="payment" id="payment" action="/newWorkshop" method="POST">
+            <input type="hidden" name="paymentToken" value="hella">
+            <div class="control-group">
+                <label class="control-label" for="ccname"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The name on your credit card"></i> Name on Credit Card: </label>
+                <div class="controls">
+                    <input type="text" name="ccname" id="ccname">
+                </div><!-- controls -->
+            </div><!-- control-label -->
+            <div class="control-group">
+                <label class="control-label" for="ccaddress"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The address to which your credit card bill is sent."></i> Credit Card Billing Address: </label>
+                <div class="controls">
+                    <input type="text" name="ccaddress" id="ccaddress">
+                </div><!-- controls -->
+            </div><!-- control-group -->
+            <div class="control-group">
+                <label class="control-label" for="cccity"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The credit card billing city."></i> Billing City: </label>
+                <div class="controls">
+                    <input type="text" name="cccity" id="cccity">
+                </div><!-- controls -->
+            </div><!-- control-group -->
+            <div class="control-group">
+                <label class="control-label" for="ccstate"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The credit card billing state."></i> Billing State: </label>
+                <div class="controls">
+                    <input type="text" name="ccstate" id="ccstate">
+                </div><!-- controls -->
+            </div><!-- control-group -->
+            <div class="control-group">
+                <label class="control-label" for="ccpostal"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The credit card billing postal/zip code."></i> Billing Postal Code: </label>
+                <div class="controls">
+                    <input type="text" name="ccpostal" id="ccpostal">
+                </div><!-- controls -->
+            </div><!-- control-group -->
+            <div class="control-group">
+                <label class="control-label" for="ccnumber"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The credit card number, no spaces or dashes."></i> Credit Card Number: </label>
+                <div class="controls">
+                    <input type="text" name="ccnumber" id="ccnumber">
+                </div><!-- controls -->
+            </div><!-- control-group -->
+            <div class="control-group">
+                <label class="control-label" for="ccexpmonth"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The credit card expire month."></i> Credit Card Expire Month: </label>
+                <div class="controls">
+                    <select name="ccexpmonth" id="ccexpmonth">
+                    <option value="01">01 - January</option>
+                    <option value="02">02 - February</option>
+                    <option value="03">03 - March</option>
+                    <option value="04">04 - April</option>
+                    <option value="05">05 - May</option>
+                    <option value="06">06 - June</option>
+                    <option value="07">07 - July</option>
+                    <option value="08">08 - August</option>
+                    <option value="09">09 - September</option>
+                    <option value="10">10 - October</option>
+                    <option value="11">11 - November</option>
+                    <option value="12">12 - December</option>
+                    </select>
+                </div><!-- controls -->
+            </div><!-- control-group -->
+            <div class="control-group">
+                <label class="control-label" for="ccexpyear"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The credit card expire year."></i> Credit Card Expire Year: </label>
+                <div class="controls">
+                    <select name="ccexpyear" id="ccexpyear">
+                    <option value="2013">2013</option>
+                    <option value="2014">2014</option>
+                    <option value="2015">2015</option>
+                    <option value="2016">2016</option>
+                    <option value="2017">2017</option>
+                    <option value="2018">2018</option>
+                    </select>
+                </div><!-- controls -->
+            </div><!-- control-group -->
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox" name="chkTOS" id="chkTOS"> I agree to the <a href="/corp/terms" style="color: #5f774b;">Terms Of Use</a>
+                    </label>
+                </div><!-- controls -->
+            </div><!-- control-group -->
+            <div class="control-group">
+                <div class="controls">
+                    <button name="paymentToken" type="submit" class="btn btn-success">Submit Payment</button>
+                </div><!-- controls -->
+            </div><!-- control-group -->
+        </form>
+    % endif
+</div><!-- container -->
+
+<%def name = 'extraStyles()'>
+
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+
+</%def>

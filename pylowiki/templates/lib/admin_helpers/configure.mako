@@ -202,11 +202,6 @@
     <p>Private workshops are not visible to the public.</p>
     % if c.w['type'] == 'personal':
         <p>Up to 10 other members may participate in your personal workshop.</p>
-    % elif c.w['public_private'] == 'private':
-        <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
-        You can make this a public workshop if you wish.<br>This means the workshop will be visible to the public, and members residing in the specified geographic area can participate in the workshop.<br />
-        <button type="submit" class="btn btn-warning" name="changeScopeToPublic">Change to Public Workshop</button>
-        </form>
     % endif
     <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
