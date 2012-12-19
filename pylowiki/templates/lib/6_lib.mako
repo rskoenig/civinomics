@@ -181,9 +181,12 @@
          user = getUserByID(user.owner)
       imgStr += '<a href="'
       imgStr += userLink(user, raw=True)
+      imgStr += '"'
       if 'linkClass' in kwargs:
-         imgStr += '" class="%s"' %(kwargs['linkClass'])
-      imgStr += '">'
+         imgStr += ' class="%s"' %(kwargs['linkClass'])
+      if 'rel' in kwargs:
+         imgStr += ' rel="%s"' %(kwargs['rel'])
+      imgStr += '>'
       if 'revision' in kwargs:
          revision = kwargs['revision']
          pictureHash = revision['pictureHash']
@@ -201,6 +204,8 @@
          
       if 'className' in kwargs:
          imgStr += ' class="%s"' % kwargs['className']
+      if 'placement' in kwargs:
+         imgStr += ' data-placement="%s"' % kwargs['placement']
       
       imgStr += '></a>'
    %>

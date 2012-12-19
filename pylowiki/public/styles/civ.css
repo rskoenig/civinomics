@@ -137,8 +137,14 @@ img.avatar{
     height: 200px;
     width: 200px;
 }
+
+.thumbnails li.follow{
+    margin:15px 10px;
+}
+
 .avatar{
    height: 70px;
+   width:70px;
    margin-bottom:10px;
 }
 
@@ -148,6 +154,7 @@ img.avatar{
 
 .avatar.topbar-avatar{
     height:20px;
+    width:20px;
     margin-bottom:0;
 }
 

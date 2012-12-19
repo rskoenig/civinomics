@@ -78,16 +78,17 @@
                 There doesn't seem to be anything here!
                 <% return %>
             % endif
-            <% objType = things[0].objType %>
-            % if objType == 'workshop':
-                % for workshop in things:
-                    This is a workshop
+            <% 
+                objType = things[0].objType
+                counter = 0
+            %>
+            <ul class="thumbnails">
+                % for thing in things:
+                    <li class="follow">
+                        ${lib_6.userImage(thing, className="avatar hoverTip", rel="tooltip", placement="bottom")}
+                    </li>
                 % endfor
-            % else:
-                % for person in things:
-                    ${lib_6.userImage(person, className="avatar avatar-large")}
-                % endfor
-            % endif
+            </ul>
         </div>
     </div>
 </%def>

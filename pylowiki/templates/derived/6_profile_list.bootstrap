@@ -15,3 +15,10 @@
         ${helpers.profileDashboard()}
     </div><!--/.span4-->
 </div>
+
+<%def name="extraScripts()">
+   <script type="text/javascript">
+      //$('a[rel="tooltip"]').tooltip();
+      $('.hoverTip').tooltip();
+   </script>
+</%def>
