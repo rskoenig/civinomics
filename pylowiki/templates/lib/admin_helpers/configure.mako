@@ -23,11 +23,6 @@
     % if c.w['startTime'] == '0000-00-00':
        <br />Checklist must be completed before the workshop can be published.<br />
     % endif
-    % if c.w['type'] == 'personal':
-        <form name="workshopUpgrade" id="workshopUpgrade" action="/workshopUpgrade/${c.w['urlCode']}" method="POST">
-        <button type="submit" class="btn btn-warning">Upgrade to Professional</button>
-        </form>
-    % endif
 </%def>
 
 
@@ -204,13 +199,14 @@
 
 
 <%def name="private()">
-    <p>Private workshops are not visible to the public.</p>
+    <ul>
     % if c.w['type'] == 'personal':
-        <p>Up to 10 other members may participate in your personal workshop.</p>
+        <li>Personal workshops are private and limited to 10 participants.</p>
     % endif
+    <li>Private workshops are not visible to the public.</li>
+    <li>Private workshops are invitation only.</li>
+    </ul>
     <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <p>Specify the email addresses of the members you wish to participate in this workshop.</p>
-    <p>Members with specified email addresses will see a link to your workshop in their member profiles. They must be registered members using the email address specified here.</p>
     <br /><strong>Manage Workshop Participants List</strong><br />
     % if c.pmembers:        
         <br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
@@ -219,10 +215,10 @@
 
 
         <div class="container-fluid well">
-            <strong>Add New Member</strong><br>
+            <strong>Invite People To Your Workshop</strong><br>
             <div class="row-fluid">
                 <div class="span6">
-                To add new private members to this workshop, enter one or more email addresses, one per line.<br />
+                Enter the email addresses of people to invite, one per line.<br />
                 <textarea rows=6 cols=50 name="newMember"/></textarea>
                 </div><!-- span6 -->
                 <div class="span6">
@@ -237,10 +233,13 @@
 
     % if c.pmembers:
         <div class="container-fluid well">
-            <strong>Delete Member</strong><br>
-            Delete a private member from this workshop.<br />
-            Enter member email address to delete:<br />
-            <input type="text" name="removeMember" /><br />
+            <strong>Delete People From Your Workshop</strong><br>
+            Choose email address to delete:<br />
+            <select name="removeMember">
+            % for pmember in c.pmembers:
+                <option value="${pmember['email']}">${pmember['email']}</option>
+            % endfor
+            </select><br />
             <br /><button type="submit" class="btn btn-warning" name="deleteMember">Delete Member from List</button>
         </div><!-- container-fluid -->
     % endif
@@ -254,8 +253,12 @@
 </%def>
 
 <%def name="public()">
-    <p>This means the workshop may be browsed by the public, and any members residing in the specificied geographic area may participate.</p>
-
+    <ul>
+    <li>Public workshops are visible to everyone!</li> 
+    <li>Residents of the specificied geographic area are encouraged to participate.</li>
+    <li>Unlimited participants!</li>
+    </ul>
+    <br />
     <p>Specify the geographic area associated with your workshop: <span class="label label-important">Required</span></span>:</p>
     <% 
         countrySelected = ""
@@ -354,9 +357,11 @@
         else:
             buttonMsg = "Save Geographic Area"
     %>
-    <div class="well">
-        <button type="submit" class="btn btn-warning">${buttonMsg}</button>
-    </div><!-- well -->
+    <div class="row-fluid">
+        <div class="well">
+            <button type="submit" class="btn btn-warning">${buttonMsg}</button>
+        </div><!-- well -->
+    </div><!-- row -->
     </form>
 </%def>
 

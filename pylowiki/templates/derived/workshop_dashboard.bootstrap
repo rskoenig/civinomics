@@ -136,6 +136,11 @@
                                     <br />
                                     Briefly, what's the point?
                                     </a></li>
+                                    % if c.w['type'] == 'personal':
+                                        <form name="workshopUpgrade" id="workshopUpgrade" action="/workshopUpgrade/${c.w['urlCode']}" method="POST">
+                                        <li><button type="submit" class="btn btn-warning">Upgrade to Professional</button></li>
+                                        </form>
+                                    % endif
                                 </ul>
                             </div><!-- accordion-inner -->
                         </div><!-- accordion-body -->

@@ -359,6 +359,7 @@ class WorkshopController(BaseController):
         geoTagString = "||" + geoTagCountry + "||" + geoTagState + "||" + geoTagCounty + "||" + geoTagCity + "|0"
         if geoTagString != c.w['geoTags']:
             c.w['geoTags'] = geoTagString
+            c.w['public_private'] = 'public'
             commit(c.w)
             wchanges = 1
             weventMsg = weventMsg + "Updated workshop scope."
@@ -644,6 +645,10 @@ class WorkshopController(BaseController):
             c.workshop_id = w.w.id # TEST
             c.title = 'Configure Workshop'
             c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
+            alert = {'type':'success'}
+            alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
+            session['alert'] = alert
+            session.save()
 
             return redirect('/workshop/%s/%s/dashboard'%(w.w['urlCode'], w.w['url']))   
             
