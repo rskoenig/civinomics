@@ -43,11 +43,9 @@
    <div class="span8 avatar"> <!-- information -->
       <p class="feed">
          <%
-            lib_6.userLink(thisUser, className = 'name')
+            lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)
             activityStr = ''
-            title = item['title']
-            if len(title) > 50:
-               title = title[:50] + '...'
+            title = lib_6.ellipsisIZE(item['title'], 40)
             if item.objType == 'resource':
                activityStr += 'added the resource '
                w = getWorkshopByID(item['workshop_id'])

@@ -78,9 +78,12 @@
          thisLink += 'class = "' + kwargs['className'] + '"'
       thisLink += '>'
       if 'title' in kwargs:
-         thisLink += kwargs['title']
+         thisTitle = kwargs['title']
       else:
-         thisLink += user['name']
+         thisTitle = user['name']
+      if 'maxChars' in kwargs:
+         thisTitle = ellipsisIZE(thisTitle, kwargs['maxChars'])
+      thisLink += thisTitle
       if 'image' in kwargs:
          if kwargs['image'] == True:
             thisLink += userImage(user)
