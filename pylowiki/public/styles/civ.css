@@ -38,7 +38,7 @@ hr.civ-topbar-hr{
 .section-wrapper .section-header {
   background: whiteSmoke;
   border-bottom: 1px solid #ddd;
-  height: 50px;
+  min-height: 50px;
   margin-left: -10px;
   margin-right: -10px;
   margin-top: -10px;
@@ -212,6 +212,15 @@ img.watch{
 
 .btn-group.four-up{
    width: 100%;
+}
+
+.btn.followButton{
+    border: 1px solid #BBBBBB;
+    padding:3px 7px;
+}
+
+.btn.followButton:hover{
+    border: 1px solid #BBBBBB;
 }
 
 /*

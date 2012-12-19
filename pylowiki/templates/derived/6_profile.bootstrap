@@ -11,6 +11,8 @@
                 % if 'user' in session:
                     % if c.user['email'] == c.authuser['email']:
                         <li class="pull-right"><a href="/profile/edit">Edit my profile</a></li>
+                    % else:
+                        ${helpers.followButton(c.user)}
                     % endif
                 % endif
             </ul>
