@@ -284,7 +284,7 @@ class Workshop(object):
     # owner -> A user object in Thing form
     #
     # Note this will generate the page and event for you.
-    def __init__(self, title, owner, publicPrivate):
+    def __init__(self, title, owner, publicPrivate, type = "personal"):
         w = Thing('workshop', owner.id)
         w['title'] = title
         w['url'] = urlify(title)
@@ -296,6 +296,7 @@ class Workshop(object):
         w['goals'] = 'No goals set'
         w['numResources'] = 1
         w['public_private'] = publicPrivate
+        w['type'] = type
         w['categoryTags'] = ''
         w['geoTags'] = ''
         w['allowSuggestions'] = 1

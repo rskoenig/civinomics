@@ -394,14 +394,14 @@ class WorkshopController(BaseController):
         if 'addMember' in request.params:
             pList = getPrivateMembers(code, "0")
             if 'newMember' in request.params and request.params['newMember'] != '':
-                if c.w['public_private'] == 'personal' and len(pList) >= 10:
+                if c.w['type'] == 'personal' and len(pList) >= 10:
                     werror = 1
                     werrMsg += 'You have already reached the maximum number of 10 participants for a personal workshop.'
                 else:
                     newMember = request.params['newMember']
                     counter = 0
                     mList = newMember.split('\n')
-                    if c.w['public_private'] == 'personal' and (len(pList) + len(mList) > 10):
+                    if c.w['type'] == 'personal' and (len(pList) + len(mList) > 10):
                         werror = 1
                         werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, personal workshops are limited to a maximum of 10 participants.'
                     else:
@@ -602,9 +602,9 @@ class WorkshopController(BaseController):
                 wType = 'personal'
             else:
                 # put the callback to the payment processor here
-                wType = 'private'
+                wType = 'professional'
            
-            w = Workshop('replace with a real name!', c.authuser, wType)
+            w = Workshop('replace with a real name!', c.authuser, 'private', wType)
             c.workshop_id = w.w.id # TEST
             c.title = 'Configure Workshop'
             c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
@@ -722,7 +722,7 @@ class WorkshopController(BaseController):
                 c.isFollowing = isFollowing(c.authuser.id, c.w.id)
                 c.isAdmin = isAdmin(c.authuser.id)
             
-        if c.w['public_private'] == 'personal' or c.w['public_private'] == 'private':
+        if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
             if 'user' in session:
                 if not c.isFacilitator and not c.isScoped and not c.isAdmin and not c.isGuest:
                     return render('/derived/404.bootstrap')            

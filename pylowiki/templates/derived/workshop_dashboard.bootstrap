@@ -265,7 +265,7 @@
             connectWith: ".column"
         });
         */
-       
+
         $(".column").sortable(
             { items: ".portlet" },
             { connectWith: ".column" },

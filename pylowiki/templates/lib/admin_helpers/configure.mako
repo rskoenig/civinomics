@@ -92,20 +92,29 @@
 </%def>
 
 <%def name="scope()">
+    <%
+        if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
+            privateActive="active"
+            publicActive="foo"
+        else:
+            privateActive="foo"
+            publicActive="active"
+    %>
+        
     <div class="well">
-    % if c.w['public_private'] == 'public':
-        <h3>It's a Public Workshop</h3>
-    % elif c.w['public_private'] == 'private':
-        <h3>It's a Private Workshop</h3>
-    % else:
-        <h3>It's a Personal Private Workshop</h3>
-    % endif
-    % if c.w['public_private'] != 'public':
-        ${private()}
-    % else:
-        ${public()}
-    % endif
-    </div><!-- well -->
+        <h3>Workshop Scope</h3>
+        Specifiy if the workshop is public or private, and who may participate.<br /><br />
+        <div class="tabbable">
+            <ul class="nav nav-tabs" id="scopeTab">
+            <li class="${privateActive}"><a href="#private" data-toggle="tab">Private Workshop</a></li>
+            <li class="${publicActive}"><a href="#public" data-toggle="tab">Public Workhop</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane ${privateActive}" id="private">${private()}</div>
+                <div class="tab-pane ${publicActive}" id="public">${public()}</div>
+            </div><!-- tab-content -->
+        </div><!-- tabbable -->
+    </div><!-- well -->               
 </%def>
 
 <%def name="tags()">
@@ -191,8 +200,8 @@
 
 <%def name="private()">
     <p>Private workshops are not visible to the public.</p>
-    % if c.w['public_private'] == 'personal':
-        <p>Up to 10 other members may participate in your private workshop.</p>
+    % if c.w['type'] == 'personal':
+        <p>Up to 10 other members may participate in your personal workshop.</p>
     % elif c.w['public_private'] == 'private':
         <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
         You can make this a public workshop if you wish.<br>This means the workshop will be visible to the public, and members residing in the specified geographic area can participate in the workshop.<br />
