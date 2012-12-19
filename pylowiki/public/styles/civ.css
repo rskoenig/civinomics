@@ -289,8 +289,8 @@ ul.listeners > li {
    margin-left:25px;
    margin-right:25px;
 }
-.table.user-thing-listing td{
-    border-top: none;
+.no-border{
+    border: none;
 }
 .table.user-thing-listing{
     margin-bottom:0;
@@ -299,7 +299,7 @@ ul.listeners > li {
    color:grey;
 }
 
-.no-border{
+.table td.no-border{
     border: none;
 }
 

@@ -1,5 +1,5 @@
 <%!
-    from pylowiki.lib.db.workshop import getWorkshopByID
+    from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopByCode
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -30,19 +30,35 @@
             <h3 class="centered section-header"> ${title} </h3>
             <table class="table table-condensed table-hover user-thing-listing">
                 <tbody>
+                <% counter = 0 %>
                     % for thing in things:
-                        <tr> <td>
+                        % if counter == 0:
+                            <tr> <td class="no-border">
+                        % else:
+                            <tr> <td>
+                        % endif
                             <%
-                                workshop = getWorkshopByID(thing['workshop_id'])
+                                if thing.objType != 'discussion':
+                                    workshop = getWorkshopByID(thing['workshop_id'])
+                                else:
+                                    workshop = getWorkshopByCode(thing['workshopCode'])
                                 thingLink = lib_6.thingLinkRouter(thing, workshop, raw=True, embed=True)
                                 workshopLink = lib_6.workshopLink(workshop, embed=True)
                             %>
-                            <a ${thingLink | n}> ${thing['title']} </a> in workshop <a ${workshopLink | n}> ${workshop['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
-                            % if thing['comment'] != '':
-                                <br />
-                                Description: ${lib_6.ellipsisIZE(thing['comment'], 150)}
-                            % endif
+                            <a ${thingLink | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a> in workshop <a ${workshopLink | n}> ${workshop['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
+                            <%
+                                descriptionText = 'No description'
+                                if 'comment' in thing.keys():
+                                    if thing['comment'] != '':
+                                        descriptionText = thing['comment']
+                                elif 'text' in thing.keys():
+                                    if thing['text'] != '':
+                                        descriptionText = thing['text']
+                            %>
+                            <br />
+                            Description: ${lib_6.ellipsisIZE(descriptionText, 150)}
                         </td> </tr>
+                        <% counter += 1 %>
                     % endfor
                 </tbody>
             </table>

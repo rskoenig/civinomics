@@ -423,7 +423,16 @@ class ProfileController(BaseController):
         )
 
 
-        return render("/derived/profileDiscussions.bootstrap")
+        #return render("/derived/profileDiscussions.bootstrap")
+        c.suggestions = []
+        c.resources = []
+        #c.discussions = []
+        c.comments = []
+        c.ideas = []
+        c.listingType = 'discussion'
+        c.things = c.discussions
+        c.thingsTitle = 'Discussions'
+        return render("/derived/6_profile_list.bootstrap")
     
     def showUserComments(self, id1, id2):
         # Called when visiting /profile/urlCode/url/comments
