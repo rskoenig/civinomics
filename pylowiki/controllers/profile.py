@@ -348,7 +348,16 @@ class ProfileController(BaseController):
             items_per_page = 25, item_count = c.count
         )
 
-        return render("/derived/profileResources.bootstrap")
+        #return render("/derived/profileResources.bootstrap")
+        c.suggestions = []
+        #c.resources = []
+        c.discussions = []
+        c.comments = []
+        c.ideas = []
+        c.listingType = 'resource'
+        c.things = c.resources
+        c.thingsTitle = 'Resources'
+        return render("/derived/6_profile_list.bootstrap")
     
     def showUserDiscussions(self, id1, id2):
         # Called when visiting /profile/urlCode/url/discussions

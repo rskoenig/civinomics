@@ -286,3 +286,12 @@
     %>
     ${deleteStr | n}
 </%def>
+
+<%def name="ellipsisIZE(string, numChars, **kwargs)">
+    <%
+        if numChars > len(string):
+            return string
+        else:
+            return string[:numChars] + "..."
+    %>
+</%def>

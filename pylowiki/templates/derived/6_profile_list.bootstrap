@@ -1,0 +1,45 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+
+<div class="row-fluid">
+    <div class="span8">
+        ${helpers.listThings(c.user, c.things, c.thingsTitle)}
+    </div>
+    <div class="span4">
+        ${lib_6.userImage(c.user, className="avatar avatar-large")}
+        <div class="section-wrapper">
+            <div class="browse">
+                <h3 class="section-header">${c.user['name']}</h3>
+                <p>${lib_6.userGeoLink(c.user)}</p>
+                <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
+                <hr>
+                <div class="row-fluid">
+                    <div class="span4">
+                        ${helpers.thingCount(c.user, c.resources, 'resources')}
+                    </div>
+                    <div class="span4">
+                        ${helpers.thingCount(c.user, c.ideas, 'ideas')}
+                    </div>
+                    <div class="span4">
+                        ${helpers.thingCount(c.user, c.discussions, 'discussions')}
+                    </div>
+                </div> <!--/.row-fluid-->
+                <hr>
+                <div class="row-fluid">
+                    <div class="span4">
+                        ${helpers.thingCount(c.user, c.ideas, 'followers')}
+                    </div>
+                    <div class="span4">
+                        ${helpers.thingCount(c.user, c.ideas, 'following')}
+                    </div>
+                    <div class="span4">
+                        ${helpers.thingCount(c.user, c.ideas, 'watching')}
+                    </div>
+                </div> <!--/.row-fluid-->
+                <hr>
+                Placeholder for listing organizations
+            </div><!--/.browse-->
+        </div><!--/.section-wrapper-->
+    </div><!--/.span4-->
+</div>

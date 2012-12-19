@@ -289,13 +289,26 @@ ul.listeners > li {
    margin-left:25px;
    margin-right:25px;
 }
-
+.table.user-thing-listing td{
+    border-top: none;
+}
+.table.user-thing-listing{
+    margin-bottom:0;
+}
 .help-block{
    color:grey;
 }
 
+.no-border{
+    border: none;
+}
+
 .green{
     color:#075D00;
+}
+
+.black{
+    color:#333333;
 }
 
 .green-hover:hover{

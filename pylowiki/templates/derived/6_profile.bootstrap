@@ -103,25 +103,25 @@
                 <hr>
                 <div class="row-fluid">
                     <div class="span4">
-                        ${helpers.thingCount(c.resources, 'resources')}
+                        ${helpers.thingCount(c.user, c.resources, 'resources')}
                     </div>
                     <div class="span4">
-                        ${helpers.thingCount(c.ideas, 'ideas')}
+                        ${helpers.thingCount(c.user, c.ideas, 'ideas')}
                     </div>
                     <div class="span4">
-                        ${helpers.thingCount(c.discussions, 'discussions')}
+                        ${helpers.thingCount(c.user, c.discussions, 'discussions')}
                     </div>
                 </div> <!--/.row-fluid-->
                 <hr>
                 <div class="row-fluid">
                     <div class="span4">
-                        ${helpers.thingCount(c.ideas, 'followers')}
+                        ${helpers.thingCount(c.user, c.ideas, 'followers')}
                     </div>
                     <div class="span4">
-                        ${helpers.thingCount(c.ideas, 'following')}
+                        ${helpers.thingCount(c.user, c.ideas, 'following')}
                     </div>
                     <div class="span4">
-                        ${helpers.thingCount(c.ideas, 'watching')}
+                        ${helpers.thingCount(c.user, c.ideas, 'watching')}
                     </div>
                 </div> <!--/.row-fluid-->
                 <hr>
