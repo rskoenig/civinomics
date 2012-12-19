@@ -350,16 +350,13 @@
     <br />
     <% 
         if c.w['startTime'] == '0000-00-00':
-            buttonMsg = "Save Geographic Area and Continue"
+            buttonMsg = "Save And Continue To Next Step"
         else:
             buttonMsg = "Save Geographic Area"
     %>
-    <button type="submit" class="btn btn-warning">${buttonMsg}</button>
-    </form>
-    <br />
-    <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureScopeWorkshopHandler" enctype="multipart/form-data" method="post" >
-    You can make this a private workshop if you wish. This means the workshop will not be visible to the public, and ony members with email addresses specified by you can participate in the workshop.<br />
-    <button type="submit" class="btn btn-warning" name="changeScopeToPrivate">Change to Private Workshop</button>
+    <div class="well">
+        <button type="submit" class="btn btn-warning">${buttonMsg}</button>
+    </div><!-- well -->
     </form>
 </%def>
 

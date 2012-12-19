@@ -322,6 +322,13 @@ class WorkshopController(BaseController):
             ""
         else:
             return(redirect("/"))
+        
+        if c.w['type'] == 'personal':
+            alert = {'type':'error'}
+            alert['title'] = 'Personal workshops are limited to being private invitation only with a maximum of 10 participants.'
+            session['alert'] = alert
+            session.save()
+            return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
             
         werror = 0
         wchanges = 0
