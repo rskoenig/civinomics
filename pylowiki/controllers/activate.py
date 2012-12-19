@@ -29,9 +29,21 @@ class ActivateController(BaseController):
                     user['activated'] = '1'
                     user['laston'] = time.time()
                     if commit(user):
-                        message['type'] = 'success'
-                        message['title'] = 'Congratulations!  '
-                        message['content'] = '%s, you are now registered!  Please login below.' % email
+                        session["user"] = user['name']
+                        session["userCode"] = user['urlCode']
+                        session["userURL"] = user['url']
+                        alert = {'type':'success'}
+                        alert['title'] = 'Member registration complete!'
+                        alert['content'] = 'Welcome to your member dashboard. Please upload a photo while you are here.'
+                        session['alert'] = alert
+                        session.save()
+                        c.authuser = user
+                        #message['type'] = 'success'
+                        #message['title'] = 'Congratulations!  '
+                        #message['content'] = '%s, you are now registered!  Please login below.' % email
+                        returnURL = "/profile/" + c.authuser['urlCode'] + "/" + c.authuser['url'] + "/dashboard"
+                        return redirect(returnURL)
+                        
                     else:
                         message['type'] = 'error'
                         message['title'] = 'Error: '

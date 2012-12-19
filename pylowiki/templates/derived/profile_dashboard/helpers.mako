@@ -46,13 +46,13 @@
 			</div> <!-- /.control-group -->
             % if c.user['memberType'] == 'professional':
        	        <div class="control-group">
-				    <label for="orgLink" class="control-label">Enter the URL to your  website:</label>
+				    <label for="orgLink" class="control-label">Enter the URL to your website:</label>
     			    <div class="controls">
                         <input type=text name="websiteLink" value="${c.user['websiteLink']}">
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
-				    <label for="orgLinkMsg" class="control-label">Enter a description of your organization website:</label>
+				    <label for="orgLinkMsg" class="control-label">Enter a description of your website:</label>
 				    <div class="controls">
                         <textarea name="websiteDesc" rows=4 cols=50>${c.user['websiteDesc']}</textarea>
 				    </div> <!-- /.controls -->
