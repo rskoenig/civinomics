@@ -547,7 +547,16 @@ class ProfileController(BaseController):
             items_per_page = 25, item_count = c.count
         )
 
-        return render("/derived/profileFollowers.bootstrap")
+        #return render("/derived/profileFollowers.bootstrap")
+        c.suggestions = []
+        c.resources = []
+        c.discussions = []
+        c.comments = []
+        c.ideas = []
+        c.listingType = 'followers'
+        c.things = c.listUserFollowers
+        c.thingsTitle = 'Followers'
+        return render("/derived/6_profile_list.bootstrap")
     
     def showUserFollows(self, id1, id2):
         # Called when visiting /profile/urlCode/url/following

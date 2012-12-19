@@ -24,7 +24,7 @@
     </div>
 </%def>
 
-<%def name="listThings(user, things, title)">
+<%def name="listCreatedThings(user, things, title)">
     <div class="section-wrapper">
         <div class="browse">
             <h3 class="centered section-header"> ${title} </h3>
@@ -62,6 +62,19 @@
                     % endfor
                 </tbody>
             </table>
+        </div>
+    </div>
+</%def>
+
+<%def name="listInterestedThings(user, things, title)">
+    <div class="section-wrapper">
+        <div class="browse">
+            <h3 class="centered section-header"> ${title} </h3>
+            % if len(things) == 0:
+                There doesn't seem to be anything here!
+            % else:
+                List some things here
+            % endif
         </div>
     </div>
 </%def>

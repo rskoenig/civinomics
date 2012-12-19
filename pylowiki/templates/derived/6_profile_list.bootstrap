@@ -4,7 +4,12 @@
 
 <div class="row-fluid">
     <div class="span8">
-        ${helpers.listThings(c.user, c.things, c.thingsTitle)}
+    <%
+        if c.listingType == 'discussion' or c.listingType == 'resource' or c.listingType == 'idea':
+            helpers.listCreatedThings(c.user, c.things, c.thingsTitle)
+        else:
+            helpers.listInterestedThings(c.user, c.things, c.thingsTitle)
+    %>
     </div>
     <div class="span4">
         ${lib_6.userImage(c.user, className="avatar avatar-large")}
