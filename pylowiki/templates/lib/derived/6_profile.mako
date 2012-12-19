@@ -76,8 +76,17 @@
             <h3 class="centered section-header"> ${title} </h3>
             % if len(things) == 0:
                 There doesn't seem to be anything here!
+                <% return %>
+            % endif
+            <% objType = things[0].objType %>
+            % if objType == 'workshop':
+                % for workshop in things:
+                    This is a workshop
+                % endfor
             % else:
-                List some things here
+                % for person in things:
+                    ${lib_6.userImage(person, className="avatar avatar-large")}
+                % endfor
             % endif
         </div>
     </div>
@@ -88,4 +97,43 @@
       <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
       <span> Follow </span>
    </a>
+</%def>
+
+<%def name="profileDashboard()">
+    <div class="centered">
+        ${lib_6.userImage(c.user, className="avatar avatar-large")}
+    </div>
+    <div class="section-wrapper">
+        <div class="browse">
+            <h3 class="section-header">${c.user['name']}</h3>
+            <p>${lib_6.userGeoLink(c.user)}</p>
+            <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
+            <hr>
+            <div class="row-fluid">
+                <div class="span4">
+                    ${thingCount(c.user, c.resources, 'resources')}
+                </div>
+                <div class="span4">
+                    ${thingCount(c.user, c.ideas, 'ideas')}
+                </div>
+                <div class="span4">
+                    ${thingCount(c.user, c.discussions, 'discussions')}
+                </div>
+            </div> <!--/.row-fluid-->
+            <hr>
+            <div class="row-fluid">
+                <div class="span4">
+                    ${thingCount(c.user, c.ideas, 'followers')}
+                </div>
+                <div class="span4">
+                    ${thingCount(c.user, c.ideas, 'following')}
+                </div>
+                <div class="span4">
+                    ${thingCount(c.user, c.ideas, 'watching')}
+                </div>
+            </div> <!--/.row-fluid-->
+            <hr>
+            Placeholder for listing organizations
+        </div><!--/.browse-->
+    </div><!--/.section-wrapper-->
 </%def>

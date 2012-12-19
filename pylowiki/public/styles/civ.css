@@ -131,11 +131,11 @@ img.config{
 }
 
 img.avatar{
-   border-radius: 100px;
+   border-radius: 500px;
 }
 .avatar.avatar-large{
-    height:100%;
-    width:100%;
+    height: 200px;
+    width: 200px;
 }
 .avatar{
    height: 70px;
