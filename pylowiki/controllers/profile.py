@@ -501,61 +501,7 @@ class ProfileController(BaseController):
     
     def showUserFollowers(self, id1, id2):
         # Called when visiting /profile/urlCode/url/followers
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        c.title = c.user['name']
-        c.geoInfo = getGeoInfo(c.user.id)
-        c.isFollowing = False
-        if 'user' in session and c.authuser:
-           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
-        else:
-           c.isFollowing = False
-
-        c.account = getUserAccount(c.user.id)
-
-        uList = getUserFollows(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.followingUsers = []
-        for u in uList:
-           uID = u['thingID']
-           c.followingUsers.append(getUserByID(uID))
-
-        uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.listUserFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.listUserFollowers.append(getUserByID(uID))
-
-        pList = getUserPosts(c.user)
-        c.totalPoints = 0
-        c.flags = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           fList = getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        c.count = len(c.listUserFollowers)
-        c.paginator = paginate.Page(
-            c.listUserFollowers, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        #return render("/derived/profileFollowers.bootstrap")
-        c.suggestions = []
-        c.resources = []
-        c.discussions = []
-        c.comments = []
-        c.ideas = []
-        c.listingType = 'followers'
-        c.things = c.listUserFollowers
-        c.thingsTitle = 'Followers'
+        self._basicSetup(id1, id2, 'followers')
         return render("/derived/6_profile_list.bootstrap")
     
     def showUserFollows(self, id1, id2):
@@ -600,10 +546,10 @@ class ProfileController(BaseController):
         followers = getUserFollowers(user.id)
         items['followers'] = []
         for item in followers:
-            items['followers'].append(getUserByID(item['thingID']))
+            items['followers'].append(getUserByID(item.owner))
             
-        items['watching'] = []
         watching = getWorkshopFollows(user.id)
+        items['watching'] = []
         for item in watching:
             items['watching'].append(getWorkshopByID(item['thingID']))
         
