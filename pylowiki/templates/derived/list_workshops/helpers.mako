@@ -1,6 +1,7 @@
 <%! 
    from pylowiki.lib.db.suggestion import getActiveSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop
-   from pylowiki.lib.db.resource import getResourcesByWorkshopID
+   #from pylowiki.lib.db.resource import getResourcesByWorkshopID
+   from pylowiki.lib.db.resource import getResourcesByWorkshopCode
    from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
@@ -67,7 +68,7 @@
                 % endif
             % endif
             <br />
-            <span class="badge badge-info" alt="Suggestions in workshop" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i> ${len(getActiveSuggestionsForWorkshop(item['urlCode'], item['url']))}</span> <span class="badge badge-info" alt="Information resources in workshop" title="Information resources in workshop"><i class="icon-white icon-book"></i> ${len(getResourcesByWorkshopID(item.id))}</span> <span class="badge badge-info" alt="Discussion topics in workshop" title="Discussion topics in workshop"><i class="icon-white icon-folder-open"></i> ${len(getActiveDiscussionsForWorkshop(item['urlCode'], item['url']))}</span> <span class="badge badge-success" alt="Following workshop" title="Following workshop"><i class="icon-white icon-user"></i> ${len(getWorkshopFollowers(item.id))}</span> <span class="badge badge-success" alt="Adopted Suggestions in workshop" title="Adopted Suggestions in workshop"><i class="icon-white icon-heart"></i> ${len(getAdoptedSuggestionsForWorkshop(item['urlCode'], item['url']))}</span><br />
+            <span class="badge badge-info" alt="Suggestions in workshop" title="Suggestions in workshop"><i class="icon-white icon-pencil"></i> ${len(getActiveSuggestionsForWorkshop(item['urlCode'], item['url']))}</span> <span class="badge badge-info" alt="Information resources in workshop" title="Information resources in workshop"><i class="icon-white icon-book"></i> ${len(getResourcesByWorkshopCode(item['urlCode']))}</span> <span class="badge badge-info" alt="Discussion topics in workshop" title="Discussion topics in workshop"><i class="icon-white icon-folder-open"></i> ${len(getActiveDiscussionsForWorkshop(item['urlCode'], item['url']))}</span> <span class="badge badge-success" alt="Following workshop" title="Following workshop"><i class="icon-white icon-user"></i> ${len(getWorkshopFollowers(item.id))}</span> <span class="badge badge-success" alt="Adopted Suggestions in workshop" title="Adopted Suggestions in workshop"><i class="icon-white icon-heart"></i> ${len(getAdoptedSuggestionsForWorkshop(item['urlCode'], item['url']))}</span><br />
             % if item['endTime'] == '0000-00-00':
                 Not started yet<br />
             % else:

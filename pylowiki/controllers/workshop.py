@@ -16,7 +16,8 @@ from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID, getActiveDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop
-from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
+#from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
+from pylowiki.lib.db.resource import getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getInactiveResourcesByWorkshopCode, getDisabledResourcesByWorkshopCode, getDeletedResourcesByWorkshopCode
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
@@ -694,9 +695,12 @@ class WorkshopController(BaseController):
             if s:
                 c.slides.append(s)
             
-        c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        #c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
+        print c.resources
         c.resources = sortBinaryByTopPop(c.resources)
-        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
+        #c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
+        c.dresources = getInactiveResourcesByWorkshopCode(c.w.id)
         # put disabled and deleted at the end
         if c.resources:
             if c.dresources:
@@ -705,7 +709,7 @@ class WorkshopController(BaseController):
             if c.dresources:
                 c.resources = c.dresources 
 
-        c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+        c.suggestions = getActiveSuggestionsForWorkshop(code)
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
         c.dsuggestions = getInactiveSuggestionsForWorkshop(code, urlify(url))
         # put disabled and deleted at the end

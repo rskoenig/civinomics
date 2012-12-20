@@ -6,12 +6,11 @@
 <%def name="display_body_right_content()">
     <div class="span8">
        <div>
-            </br>
             <h1>Privacy Policy</h1>
-            </p>
-            </br>
-        This Privacy Policy explains how Civinomics collects, uses, and may in some cases disclose information collected through your use of the Services. This Privacy Policy is expressly incorporated into our Terms of Service. If you have any questions concerning this Privacy Policy, please email us at <a href="#">privacy @ civinomics.com</a>.
-         </div><!--/.hero-unit-->
+            <div style="padding-top: 20px;">
+                <p class="lead">This Privacy Policy explains how Civinomics collects, uses, and may in some cases disclose information collected through your use of the Services. This Privacy Policy is expressly incorporated into our Terms of Service. If you have any questions concerning this Privacy Policy, please email us at <a href="#">privacy @ civinomics.com</a>.</p>
+            </div>
+         </div>
         <p>
 
         <h2>

@@ -6,12 +6,16 @@ from pylons import tmpl_context as c
 from pylowiki.lib.utils import toBase62
 from pylowiki.model import Thing, Data, meta
 from pylowiki.lib.db.flag import checkFlagged
+from pylowiki.lib.db.workshop import getWorkshopByCode
 import sqlalchemy as sa
 from time import time
 from dbHelpers import commit, with_characteristic as wc
 from pylons import config
 from datetime import datetime
 from revision import Revision
+import pylowiki.lib.db.generic as generic
+
+
 log = logging.getLogger(__name__)
 
 # Getters
@@ -27,11 +31,11 @@ def getUserComments(user, disabled = 0):
     except:
        return False
 
-def getDiscussionCommentsSince(discussionID, memberDatetime):
-    try:
-       return meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
-    except:
-       return False  
+##def getDiscussionCommentsSince(discussionID, memberDatetime):
+##    try:
+##       return meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
+##    except:
+##       return False  
 
 def getCommentByCode( code ):
     try:
@@ -118,7 +122,9 @@ def editComment(commentCode, discussionID, data):
 class Comment(object):
     # parent is a Thing id
     def __init__(self, data, owner, discussion, parent = 0):
+        w = getWorkshopByCode(discussion['workshopCode'])
         c = Thing('comment', owner.id)
+        c = generic.linkChildToParent(c, w)
         c['disabled'] = '0'
         c['deleted'] = '0'
         c['pending'] = '0'
