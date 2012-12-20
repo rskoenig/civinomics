@@ -606,7 +606,16 @@ class ProfileController(BaseController):
             items_per_page = 25, item_count = c.count
         )
 
-        return render("/derived/profileFollowing.bootstrap")
+        #return render("/derived/profileFollowing.bootstrap")
+        c.suggestions = []
+        c.resources = []
+        c.discussions = []
+        c.comments = []
+        c.ideas = []
+        c.listingType = 'following'
+        c.things = c.listFollowingUsers
+        c.thingsTitle = 'Following'
+        return render("/derived/6_profile_list.bootstrap")
     
     @h.login_required
     def index( self ):
