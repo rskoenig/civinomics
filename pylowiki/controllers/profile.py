@@ -560,8 +560,10 @@ class ProfileController(BaseController):
     
     def showUserFollows(self, id1, id2):
         # Called when visiting /profile/urlCode/url/following
-        code = id1
-        url = id2
+        self._basicSetup(id1, id2, 'following')
+        return render("/derived/6_profile_list.bootstrap")
+    
+    def _basicSetup(self, code, url, page):
         c.user = get_user(code, url)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
@@ -572,50 +574,52 @@ class ProfileController(BaseController):
            c.isFollowing = False
 
         c.account = getUserAccount(c.user.id)
-
-        uList = getUserFollows(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.listFollowingUsers = []
-        for u in uList:
-           uID = u['thingID']
-           c.listFollowingUsers.append(getUserByID(uID))
-
-        uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.userFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.userFollowers.append(getUserByID(uID))
-
-        pList = getUserPosts(c.user)
-        c.totalPoints = 0
-        c.flags = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           fList = getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        c.count = len(c.listFollowingUsers)
-        c.paginator = paginate.Page(
-            c.listFollowingUsers, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        #return render("/derived/profileFollowing.bootstrap")
-        c.suggestions = []
-        c.resources = []
-        c.discussions = []
-        c.comments = []
-        c.ideas = []
-        c.listingType = 'following'
-        c.things = c.listFollowingUsers
-        c.thingsTitle = 'Following'
-        return render("/derived/6_profile_list.bootstrap")
+        
+        items = self._userItems(c.user)
+        c.listingType = page
+        c.things = items[page]
+        c.thingsTitle = page.title()
+        
+        c.discussions = items['discussions']
+        c.resources = items['resources']
+        c.ideas = items['ideas']
+        c.followers = items['followers']
+        c.following = items['following']
+        c.watching = items['watching']
+    
+    def _userItems(self, user):
+        # returns a dictionary of user-created (e.g. resources, discussions, ideas)
+        # or user-interested (e.g. followers, following, watching) objects
+        items = {}
+        
+        following = getUserFollows(user.id)
+        items['following'] = []
+        for item in following:
+            items['following'].append(getUserByID(item['thingID']))
+        
+        followers = getUserFollowers(user.id)
+        items['followers'] = []
+        for item in followers:
+            items['followers'].append(getUserByID(item['thingID']))
+            
+        items['watching'] = []
+        watching = getWorkshopFollows(user.id)
+        for item in watching:
+            items['watching'].append(getWorkshopByID(item['thingID']))
+        
+        # Already checks for disabled/deleted by default
+        # The following section feels like a good candidate for map/reduce
+        createdThings = getUserPosts(user)
+        items['resources'] = []
+        items['discussions'] = []
+        items['ideas'] = [] # TODO
+        for thing in createdThings:
+            if thing.objType == 'resource':
+                items['resources'].append(thing)
+            elif thing.objType == 'discussion':
+                items['discussions'].append(thing)
+        
+        return items
     
     @h.login_required
     def index( self ):
