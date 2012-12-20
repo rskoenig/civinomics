@@ -124,13 +124,13 @@
             <hr>
             <div class="row-fluid">
                 <div class="span4">
-                    ${thingCount(c.user, c.ideas, 'followers')}
+                    ${thingCount(c.user, c.followers, 'followers')}
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.ideas, 'following')}
+                    ${thingCount(c.user, c.following, 'following')}
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.ideas, 'watching')}
+                    ${thingCount(c.user, c.watching, 'watching')}
                 </div>
             </div> <!--/.row-fluid-->
             <hr>
