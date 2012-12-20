@@ -76,19 +76,19 @@
             <h3 class="centered section-header"> ${title} </h3>
             % if len(things) == 0:
                 There doesn't seem to be anything here!
-                <% return %>
+            % else:
+                <% 
+                    objType = things[0].objType
+                    counter = 0
+                %>
+                <ul class="thumbnails">
+                    % for thing in things:
+                        <li class="follow">
+                            ${lib_6.userImage(thing, className="avatar hoverTip", rel="tooltip", placement="bottom")}
+                        </li>
+                    % endfor
+                </ul>
             % endif
-            <% 
-                objType = things[0].objType
-                counter = 0
-            %>
-            <ul class="thumbnails">
-                % for thing in things:
-                    <li class="follow">
-                        ${lib_6.userImage(thing, className="avatar hoverTip", rel="tooltip", placement="bottom")}
-                    </li>
-                % endfor
-            </ul>
         </div>
     </div>
 </%def>
