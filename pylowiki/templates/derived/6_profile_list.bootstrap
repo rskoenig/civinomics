@@ -5,7 +5,7 @@
 <div class="row-fluid">
     <div class="span8">
     <%
-        if c.listingType == 'discussion' or c.listingType == 'resource' or c.listingType == 'idea':
+        if c.listingType == 'discussions' or c.listingType == 'resources' or c.listingType == 'ideas':
             helpers.listCreatedThings(c.user, c.things, c.thingsTitle)
         else:
             helpers.listInterestedThings(c.user, c.things, c.thingsTitle)
