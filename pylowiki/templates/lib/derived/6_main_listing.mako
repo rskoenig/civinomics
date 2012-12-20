@@ -46,17 +46,15 @@
             lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)
             activityStr = ''
             title = lib_6.ellipsisIZE(item['title'], 40)
+            w = getWorkshopByCode(item['workshopCode'])
             if item.objType == 'resource':
                activityStr += 'added the resource '
-               w = getWorkshopByID(item['workshop_id'])
                activityStr += '<a %s>%s</a>' % (lib_6.resourceLink(item, w, embed=True), title)
             elif item.objType == 'suggestion':
                activityStr += 'suggested '
-               w = getWorkshopByCode(item['workshopCode'])
                activityStr += '<a %s>%s</a>' %(lib_6.suggestionLink(item, w, embed=True), title)
             elif item.objType == 'discussion':
                activityStr += 'started the discussion '
-               w = getWorkshopByCode(item['workshopCode'])
                activityStr += '<a %s>%s</a>' %(lib_6.discussionLink(item, w, embed=True), title)
             else:
                activityStr += 'fucked up'

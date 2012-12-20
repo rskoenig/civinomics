@@ -185,7 +185,7 @@ class ResourceController(BaseController):
         return render('/derived/6_item_in_listing.bootstrap')
 
     @h.login_required
-    def newResource(self, id1, id2):
+    def addResource(self, id1, id2):
         code = id1
         url = id2
 
@@ -335,7 +335,7 @@ class ResourceController(BaseController):
         return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], urlify(w['url']), code, url))
 
     @h.login_required
-    def addResource(self, id1, id2):
+    def addResourceHandler(self, id1, id2):
         code = id1
         url = id2
         

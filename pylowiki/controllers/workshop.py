@@ -845,9 +845,9 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
-        c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        c.resources = getActiveResourcesByWorkshopCode(code)
         c.resources = sortBinaryByTopPop(c.resources)
-        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
+        c.dresources = getInactiveResourcesByWorkshopCode(code)
         # put disabled and deleted at the end
         if c.resources:
             if c.dresources:

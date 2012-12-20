@@ -57,7 +57,7 @@ class DiscussionController(BaseController):
         c.title = c.w['title']
         c.code = c.w['urlCode']
         c.url = c.w['url']
-        c.discussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
+        c.discussions = getActiveDiscussionsForWorkshop(workshopCode, 'general')
         c.discussions = sortBinaryByTopPop(c.discussions)
         if not c.discussions:
             c.discussions = []
@@ -99,11 +99,11 @@ class DiscussionController(BaseController):
         c.discussion = getDiscussion(discussionCode)
         c.flags = getFlags(c.discussion)
         c.events = getParentEvents(c.discussion)
-        c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
-        if 'disabled' in c.discussion and 'deleted' in c.discussion:
-            if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
-                if len(c.otherDiscussions) > 0:
-                    c.otherDiscussions.remove(c.discussion)
+        #c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
+        #if 'disabled' in c.discussion and 'deleted' in c.discussion:
+        #    if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
+        #        if len(c.otherDiscussions) > 0:
+        #            c.otherDiscussions.remove(c.discussion)
 
         c.title = c.w['title']
 
@@ -229,7 +229,7 @@ class DiscussionController(BaseController):
         return redirect(returnURL)
 
     @h.login_required
-    def newDiscussionHandler(self, id1, id2):
+    def addDiscussionHandler(self, id1, id2):
         code = id1
         url = id2
         w = getWorkshopByCode(code)

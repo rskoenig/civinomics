@@ -31,7 +31,7 @@
 </%def>
 
 <%def name="addDiscussion()">
-   <form action="/newDiscussion/${c.w['urlCode']}/${c.w['url']}" method="post">
+   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/discussion/handler" method="post">
       <fieldset>
          <label>Discussion title</label>
          <input type="text" class="input-block-level" name="title">
@@ -46,7 +46,7 @@
 </%def>
 
 <%def name="addResource()">
-   <form action="/addResource/${c.w['urlCode']}/${c.w['url']}" method="post">
+   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/resource/handler" method="post">
       <fieldset>
          <label>Resource title</label>
          <input type="text" class="input-block-level" name="title">
@@ -66,7 +66,7 @@
 </%def>
 
 <%def name="addIdea()">
-   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/addIdeaHandler" method="post">
+   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/idea/handler" method="post">
       <fieldset>
          <label>Idea</label>
          <input type="text" class="input-block-level" name="title">
