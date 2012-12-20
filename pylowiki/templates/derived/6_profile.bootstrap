@@ -9,6 +9,10 @@
                 <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
                 <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">Workshops</a></li>
                 % if 'user' in session:
+                    ## To be removed
+                    % if int(c.authuser['accessLevel']) >= 200:
+                        <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin">Admin</a></li>
+                    % endif
                     % if c.user['email'] == c.authuser['email']:
                         <li class="pull-right"><a href="/profile/edit">Edit my profile</a></li>
                     % else:
