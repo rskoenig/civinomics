@@ -43,10 +43,7 @@
                             <tr> <td>
                         % endif
                             <%
-                                if thing.objType != 'discussion':
-                                    workshop = getWorkshopByID(thing['workshop_id'])
-                                else:
-                                    workshop = getWorkshopByCode(thing['workshopCode'])
+                                workshop = getWorkshopByCode(thing['workshopCode'])
                                 thingLink = lib_6.thingLinkRouter(thing, workshop, raw=True, embed=True)
                                 workshopLink = lib_6.workshopLink(workshop, embed=True)
                                 descriptionText = 'No description'
