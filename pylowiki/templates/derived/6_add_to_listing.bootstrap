@@ -73,7 +73,7 @@
          <span class="help-block"> (Try to keep your title informative, but concise.) </span>
       </fieldset>
       <fieldset>
-         <button class="btn btn-large btn-civ pull-right" type="submit">Submit</button>
+         <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
       </fieldset>
    </form>
 </%def>

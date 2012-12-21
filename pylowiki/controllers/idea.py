@@ -1,7 +1,7 @@
 import logging
 
 from pylons import request, response, session, tmpl_context as c
-from pylons.controllers.util import abort, redirect_to
+from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.user import isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
@@ -49,3 +49,15 @@ class IdeaController(BaseController):
         else:
             c.listingType = 'ideas'
             return render('/derived/6_detailed_listing.bootstrap')
+
+    @h.login_required
+    def addIdeaHandler(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.w = getWorkshopByCode(code)
+        if 'submit' not in request.params or 'title' not in request.params:
+            return redirect(session['return_to'])
+        
+        log.info(request.params['title'])
+        return redirect(session['return_to'])
