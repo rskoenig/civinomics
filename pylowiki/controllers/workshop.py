@@ -697,7 +697,6 @@ class WorkshopController(BaseController):
             
         #c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
-        print c.resources
         c.resources = sortBinaryByTopPop(c.resources)
         #c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
         c.dresources = getInactiveResourcesByWorkshopCode(c.w.id)
