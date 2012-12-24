@@ -830,20 +830,6 @@ class ProfileController(BaseController):
         return "ok"
 
     @h.login_required
-    def userAdmin(self, id1, id2):
-        if not isAdmin(c.authuser.id):
-           return render("/derived/404.bootstrap")
-
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        c.title = c.user['name'] 
-        c.events = getParentEvents(c.user)
-
-        return render("/derived/member_admin.bootstrap")
-
-
-    @h.login_required
     def enableHandler(self, id1, id2):
         code = id1
         url = id2
