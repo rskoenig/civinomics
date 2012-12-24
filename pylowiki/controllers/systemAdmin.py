@@ -17,7 +17,7 @@ class SystemadminController(BaseController):
         if isAdmin(int(c.authuser.id)):
             log.info('%s rendering sysadmin page'%(c.authuser['name']))
             c.title = 'System Administration'
-            return render('/derived/system_admin.bootstrap')
+            return render('/derived/6_system_admin.bootstrap')
         else:
             h.flash("You are not authorized to view that page", "warning")
             return redirect(session['return_to'])
@@ -29,7 +29,7 @@ class SystemadminController(BaseController):
             log.info('%s rendering sysadmin page'%(c.authuser['name']))
             c.title = 'System Administration'
             h.flash("Changes saved.", "success")
-            return render('/derived/system_admin.bootstrap')
+            return render('/derived/6_system_admin.bootstrap')
         else:
             h.flash("You are not authorized to view that page", "warning")
             return redirect('/')
