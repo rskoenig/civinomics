@@ -21,14 +21,6 @@ def getMemberPosts(user, activeOnly = 1):
                 
 
     return returnList
-    
-    
-def updateWorkshopURL(workshopCode, oldURL, newURL):
-    itemList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'discussion'])).filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('workshopURL', oldURL))).all()
-    for item in itemList:
-        item['workshopURL'] = urlify(newURL)
-        commit(item)
-
 
 def isActiveWorkshop(thing):
     w = False

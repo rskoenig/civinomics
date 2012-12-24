@@ -555,7 +555,7 @@ class ProfileController(BaseController):
                 c.admin = True
             else:
                 c.admin = False
-            return render('/derived/profile_dashboard.bootstrap')
+            return render('/derived/6_profile_dashboard.bootstrap')
         else:
             return render('/derived/404.bootstrap')
 

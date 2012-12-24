@@ -28,7 +28,6 @@ from pylowiki.lib.db.motd import MOTD, getMessage
 from pylowiki.lib.db.pmember import PMember, getPrivateMembers, getPrivateMember, getPrivateMemberByCode
 from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
 from pylowiki.lib.db.event import Event
-from pylowiki.lib.db.activity import updateWorkshopURL
 
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
@@ -1111,7 +1110,7 @@ class WorkshopController(BaseController):
             c.f = getFacilitatorsByWorkshop(c.w.id)
             c.df = getFacilitatorsByWorkshop(c.w.id, 1)
             
-        return render('/derived/workshop_dashboard.bootstrap')
+        return render('/derived/6_workshop_dashboard.bootstrap')
     
     @h.login_required
     def admin(self, id1, id2):
