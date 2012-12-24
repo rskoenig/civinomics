@@ -217,7 +217,7 @@ def sendPMemberInvite(workshop, sender, recipient, message):
         browseLink = 'Login to your Civinomics account, then visit the workshop here:\n' +  myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
     else:
         guest = getPrivateMember(workshop['urlCode'], recipient)
-        browseLink = 'You can visit and browse the workshop here:\n' +  myURL + '/guest/' + guest['urlCode']
+        browseLink = 'You can visit and browse the workshop here:\n' +  myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
         
     regLink = myURL + '/signup'
 

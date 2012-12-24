@@ -137,7 +137,7 @@
                                     Briefly, what's the point?
                                     </a></li>
                                     % if c.w['type'] == 'personal':
-                                        <form name="workshopUpgrade" id="workshopUpgrade" action="/workshopUpgrade/${c.w['urlCode']}" method="POST">
+                                        <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade" method="POST">
                                         <li><button type="submit" class="btn btn-warning">Upgrade to Professional</button></li>
                                         </form>
                                     % endif

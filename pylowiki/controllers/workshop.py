@@ -128,13 +128,13 @@ class WorkshopController(BaseController):
            
         return "ok"
         
-    def guest(self, id1):
-        code = id1
-        pMember = getPrivateMemberByCode(code)
-        wCode = pMember['workshopCode']
-        workshop = getWorkshopByCode(wCode)
-        session['guestCode'] = code
-        session['workshopCode'] = wCode
+    def guest(self, id1, id2):
+        guestCode = id1
+        workshopCode = id2
+        pMember = getPrivateMemberByCode(guestCode)
+        workshop = getWorkshopByCode(workshopCode)
+        session['guestCode'] = guestCode
+        session['workshopCode'] = workshopCode
         session.save()
 
         return redirect('/workshop/%s/%s'%(workshop['urlCode'], workshop['url'])) 
@@ -413,8 +413,7 @@ class WorkshopController(BaseController):
                         werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, personal workshops are limited to a maximum of 10 participants.'
                     else:
                         for mEmail in mList:
-                            mEmail = mEmail.rstrip()
-                            mEmail = mEmail.lstrip()
+                            mEmail = mEmail.strip()
                             # make sure a valid email address
                             if not re.match(r"^[A-Za-z0-9\.\+_-]+@[A-Za-z0-9\._-]+\.[a-zA-Z]*$", mEmail):
                                 werror = 1
@@ -753,10 +752,9 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, urlify(url))
         c.title = c.w['title']
-        c.isGuest = False
+        c.isGuest = isGuest(c.w)
         
         if 'user' in session:
-            c.isGuest = isGuest(c.w)
             if not c.isGuest and c.authuser:
                 c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
                 c.isScoped = isScoped(c.authuser, c.w)
@@ -764,7 +762,7 @@ class WorkshopController(BaseController):
                 c.isAdmin = isAdmin(c.authuser.id)
             
         if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
-            if 'user' in session:
+            if 'user' in session or c.isGuest:
                 if not c.isFacilitator and not c.isScoped and not c.isAdmin and not c.isGuest:
                     return render('/derived/404.bootstrap')            
             else:
