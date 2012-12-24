@@ -492,7 +492,7 @@ class WorkshopController(BaseController):
             return(redirect("/"))
             
         c.privateMembers = getPrivateMembers(c.w['urlCode'])
-        return render('/derived/list_pmembers.bootstrap')
+        return render('/derived/6_list_pmembers.bootstrap')
 
     @h.login_required
     def previewInvitation(self, id1, id2):
@@ -509,7 +509,7 @@ class WorkshopController(BaseController):
         c.inviteMsg = 'Your Invitation Message Will Appear Here'
         c.imageSrc = "/images/logo_header8.1.png"
         
-        return render('/derived/preview_invitation.bootstrap')
+        return render('/derived/6_preview_invitation.bootstrap')
 
         
     @h.login_required
@@ -595,13 +595,13 @@ class WorkshopController(BaseController):
     @h.login_required
     def createWorkshopHandler(self):
         if 'user' in session and c.authuser:
-            return render('/derived/workshop_create.bootstrap')
+            return render('/derived/6_workshop_create.bootstrap')
             
         return render('/derived/404.bootstrap')
         
     def paymentHandler(self):
         if 'user' in session and c.authuser:
-            return render('/derived/workshop_payment.bootstrap')
+            return render('/derived/6_workshop_payment.bootstrap')
             
         return render('/derived/404.bootstrap')
         
@@ -621,7 +621,7 @@ class WorkshopController(BaseController):
                         session.save()
                         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
             else:
-                return render('/derived/workshop_payment.bootstrap')
+                return render('/derived/6_workshop_payment.bootstrap')
             
         return render('/derived/404.bootstrap')
         
@@ -1111,33 +1111,6 @@ class WorkshopController(BaseController):
             c.df = getFacilitatorsByWorkshop(c.w.id, 1)
             
         return render('/derived/6_workshop_dashboard.bootstrap')
-    
-    @h.login_required
-    def admin(self, id1, id2):
-        code = id1
-        url = id2
-
-        c.w = getWorkshop(code, urlify(url))
-        if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
-           h.flash("You are not authorized", "warning")
-           return redirect('/')
-
-        c.title = c.w['title']
-        c.motd = getMessage(c.w.id)
-
-        c.s = getActiveSuggestionsForWorkshop(code)
-        c.disabledSug = getDisabledSuggestionsForWorkshop(code)
-        c.deletedSug = getDeletedSuggestionsForWorkshop(code)
-        c.r = getActiveResourcesByWorkshopID(c.w.id)
-        c.disabledRes = getDisabledResourcesByWorkshopID(c.w.id)
-        c.deletedRes = getDeletedResourcesByWorkshopID(c.w.id)
-        c.d = getActiveDiscussionsForWorkshop(c.w['urlCode'])
-        c.disabledDisc = getDisabledDiscussionsForWorkshop(c.w['urlCode'])
-        c.deletedDisc = getDeletedDiscussionsForWorkshop(c.w['urlCode'])
-        c.f = getFacilitatorsByWorkshop(c.w.id)
-        c.df = getFacilitatorsByWorkshop(c.w.id, 1)
-        
-        return render('/derived/workshop_admin.bootstrap')
     
     # ------------------------------------------
     #    Helper functions for wiki controller
