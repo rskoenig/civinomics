@@ -9,6 +9,7 @@ from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped
 from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
+from pylowiki.lib.db.comment import getCommentByCode
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin, getUserByID
 from pylowiki.lib.db.event import getParentEvents
@@ -57,8 +58,6 @@ class DiscussionController(BaseController):
 
         c.facilitators = fList
 
-
-        log.info(c.w)
         c.title = c.w['title']
         c.code = c.w['urlCode']
         c.url = c.w['url']
@@ -66,10 +65,10 @@ class DiscussionController(BaseController):
         c.discussions = sortBinaryByTopPop(c.discussions)
         if not c.discussions:
             c.discussions = []
-        disabledDiscussions = getDisabledDiscussionsForWorkshop(workshopCode, 'general')
+        disabledDiscussions = getDisabledDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
         if disabledDiscussions:
             c.discussions += disabledDiscussions
-        deletedDiscussions = getDeletedDiscussionsForWorkshop(workshopCode, 'general')
+        deletedDiscussions = getDeletedDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
         if deletedDiscussions:
             c.discussions += deletedDiscussions
         
@@ -80,7 +79,9 @@ class DiscussionController(BaseController):
             items_per_page = 15, item_count = c.count
         )
 
-        return render('/derived/discussion_landing.bootstrap')
+        #return render('/derived/discussion_landing.bootstrap')
+        c.listingType = 'discussion'
+        return render('/derived/6_detailed_listing.bootstrap')
 
     def topic(self, id1, id2, id3, id4, id5 = ''):
         workshopCode = id1
@@ -103,13 +104,14 @@ class DiscussionController(BaseController):
             c.isAdmin = False
             c.isFacilitator = False
 
-        c.discussion = getDiscussion(discussionCode, urlify(discussionUrl))
+        c.discussion = getDiscussion(discussionCode)
         c.flags = getFlags(c.discussion)
         c.events = getParentEvents(c.discussion)
-        c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode)
-        if 'disabled' in c.discussion and 'deleted' in c.discussion:
-            if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
-                c.otherDiscussions.remove(c.discussion)
+        #c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
+        #if 'disabled' in c.discussion and 'deleted' in c.discussion:
+        #    if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
+        #        if len(c.otherDiscussions) > 0:
+        #            c.otherDiscussions.remove(c.discussion)
 
         c.title = c.w['title']
 
@@ -130,8 +132,34 @@ class DiscussionController(BaseController):
                 c.lastmoddate = c.discussion.date
 
         c.revisions = getParentRevisions(c.discussion.id)
+        
+        c.listingType = 'discussion'
+        return render('/derived/6_item_in_listing.bootstrap')
+        #return render('/derived/discussion_topic.bootstrap')
 
-        return render('/derived/discussion_topic.bootstrap')
+    def thread(self, id1, id2, id3, id4, id5):
+        workshopCode = id1
+        workshopUrl = id2
+        discussionCode = id3
+        discussionUrl = id4
+        commentCode = id5
+        
+        c.w = getWorkshop(workshopCode, urlify(workshopUrl))
+        if 'user' in session:
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+        else:
+            c.isScoped = False
+            c.isAdmin = False
+            c.isFacilitator = False
+        
+        c.rootComment = getCommentByCode(commentCode)
+        c.discussion = getDiscussionByID(c.rootComment['discussion_id'])
+        c.title = c.w['title']
+        c.content = h.literal(h.reST2HTML(c.discussion['text']))
+        c.listingType = 'discussion'
+        return render('/derived/6_item_in_listing.bootstrap')
 
     @h.login_required
     def addDiscussion(self, id1, id2):
@@ -150,7 +178,9 @@ class DiscussionController(BaseController):
         
         if c.isScoped or c.isAdmin or c.isFacilitator:
             c.title = c.w['title']
-            return render('/derived/discussion_edit.bootstrap')
+            #return render('/derived/discussion_edit.bootstrap')
+            c.listingType = 'discussion'
+            return render('/derived/6_add_to_listing.bootstrap')
         else:
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
 
@@ -207,7 +237,7 @@ class DiscussionController(BaseController):
         return redirect(returnURL)
 
     @h.login_required
-    def newDiscussionHandler(self, id1, id2):
+    def addDiscussionHandler(self, id1, id2):
         code = id1
         url = id2
         w = getWorkshopByCode(code)
@@ -369,7 +399,7 @@ class DiscussionController(BaseController):
 
         discussionCode = request.params['discussionCode']
         discussionURL = request.params['discussionURL']
-        d = getDiscussion(discussionCode, discussionURL)
+        d = getDiscussion(discussionCode)
         ##log.info("BEFORE")
                 
         try:

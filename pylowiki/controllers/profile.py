@@ -23,7 +23,8 @@ from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUser
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.flag import getFlags
 from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
-
+import simplejson as json
+import csv
 
 from hashlib import md5
 
@@ -31,7 +32,6 @@ log = logging.getLogger(__name__)
 
 class ProfileController(BaseController):
     
-    ##@h.login_required
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
         code = id1
@@ -109,6 +109,7 @@ class ProfileController(BaseController):
         c.resources = []
         c.discussions = []
         c.comments = []
+        c.ideas = []
         c.flags = 0
         resUpVotes = 0
         c.resVotes = 0
@@ -177,7 +178,56 @@ class ProfileController(BaseController):
         else:
             c.comUpsPercent = 0
 
-        return render("/derived/profile.bootstrap")
+        #return render("/derived/profile.bootstrap")
+        return render("/derived/6_profile.bootstrap")
+    
+    def stats(self, id1, id2):
+        user = get_user(id1, id2)
+        if not user:
+            return json.dumps({"error":"user not found"})
+        if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
+            posts = getMemberPosts(user, 0)
+        else:
+            posts = getMemberPosts(user, 1)
+        
+        types = ['discussion', 'comment', 'resource']
+        counts = {}
+        for item in types:
+            counts[item] = len([post for post in posts if post.objType == item])
+        retObj = {}
+        retObj['titles'] = types
+        retObj['values'] = [counts[key] for key in types] # Key off of types to preserve order
+        return json.dumps(retObj)
+    
+    def statsCSV(self, id1, id2):
+        user = get_user(id1, id2)
+        if not user:
+            return json.dumps({"error":"user not found"})
+        if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
+            posts = getMemberPosts(user, 0)
+        else:
+            posts = getMemberPosts(user, 1)
+        
+        headers = ['objType', 'time']
+        data = []
+        counts = {}
+        for post in posts:
+            data.append([post.objType, post.date])
+            if post.objType not in counts:
+                counts[post.objType] = 1
+            else:
+                counts[post.objType] += 1
+                
+        for key in counts.keys():
+            log.info(key)
+            log.info(counts[key])
+            
+        response.content_type = 'text/csv'
+        writer = csv.writer(response)
+        writer.writerow(headers)
+        for row in data:
+            writer.writerow(row)
+        return response
     
     def showUserSuggestions(self, id1, id2):
         # Called when visiting /profile/urlCode/url/suggestions
@@ -243,130 +293,13 @@ class ProfileController(BaseController):
 
     def showUserResources(self, id1, id2):
         # Called when visiting /profile/urlCode/url
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        c.title = c.user['name']
-        c.geoInfo = getGeoInfo(c.user.id)
-        c.isFollowing = False
-        if 'user' in session and c.authuser:
-           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
-        else:
-           c.isFollowing = False
-
-        uList = getUserFollows(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.followingUsers = []
-        for u in uList:
-           uID = u['thingID']
-           c.followingUsers.append(getUserByID(uID))
-
-        uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.userFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.userFollowers.append(getUserByID(uID))
-
-        pList = getUserPosts(c.user)
-        c.totalPoints = 0
-        c.resources = []
-        c.flags = 0
-        resUpVotes = 0
-        c.resVotes = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           if p['deleted'] == '0' and p['disabled'] == '0':
-               if p.objType == 'resource':
-                   c.resources.append(p)
-                   resUpVotes += int(p['ups'])
-                   c.resVotes = c.resVotes + int(p['ups']) + int(p['downs'])
-
-           fList = getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        c.numRes = len(c.resources)
-        if c.resVotes > 0:
-            c.resUpsPercent = 100*float(resUpVotes)/float(c.resVotes)
-        else:
-            c.resUpsPercent = 0
-
-        c.count = len(c.resources)
-        c.paginator = paginate.Page(
-            c.resources, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        return render("/derived/profileResources.bootstrap")
+        self._basicSetup(id1, id2, 'resources')
+        return render("/derived/6_profile_list.bootstrap")
     
     def showUserDiscussions(self, id1, id2):
         # Called when visiting /profile/urlCode/url/discussions
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        c.title = c.user['name']
-        c.geoInfo = getGeoInfo(c.user.id)
-        c.isFollowing = False
-        if 'user' in session and c.authuser:
-           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
-        else:
-           c.isFollowing = False
-
-        uList = getUserFollows(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.followingUsers = []
-        for u in uList:
-           uID = u['thingID']
-           c.followingUsers.append(getUserByID(uID))
-
-        uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.userFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.userFollowers.append(getUserByID(uID))
-
-        pList = getUserPosts(c.user)
-        c.totalPoints = 0
-        c.discussions = []
-        c.flags = 0
-        disUpVotes = 0
-        c.disVotes = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           if p['deleted'] == '0' and p['disabled'] == '0':
-               if p.objType == 'discussion':
-                   c.discussions.append(p)
-                   disUpVotes += int(p['ups'])
-                   c.disVotes = c.disVotes + int(p['ups']) + int(p['downs'])
-
-           fList = getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        c.numDis = len(c.discussions)
-        if c.disVotes > 0:
-            c.disUpsPercent = 100*float(disUpVotes)/float(c.disVotes)
-        else:
-            c.disUpsPercent = 0
-
-        c.count = len(c.discussions)
-        c.paginator = paginate.Page(
-            c.discussions, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-
-        return render("/derived/profileDiscussions.bootstrap")
+        self._basicSetup(id1, id2, 'discussions')
+        return render("/derived/6_profile_list.bootstrap")
     
     def showUserComments(self, id1, id2):
         # Called when visiting /profile/urlCode/url/comments
@@ -433,56 +366,15 @@ class ProfileController(BaseController):
     
     def showUserFollowers(self, id1, id2):
         # Called when visiting /profile/urlCode/url/followers
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        c.title = c.user['name']
-        c.geoInfo = getGeoInfo(c.user.id)
-        c.isFollowing = False
-        if 'user' in session and c.authuser:
-           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
-        else:
-           c.isFollowing = False
-
-        uList = getUserFollows(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.followingUsers = []
-        for u in uList:
-           uID = u['thingID']
-           c.followingUsers.append(getUserByID(uID))
-
-        uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.listUserFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.listUserFollowers.append(getUserByID(uID))
-
-        pList = getUserPosts(c.user)
-        c.totalPoints = 0
-        c.flags = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           fList = getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        c.count = len(c.listUserFollowers)
-        c.paginator = paginate.Page(
-            c.listUserFollowers, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        return render("/derived/profileFollowers.bootstrap")
+        self._basicSetup(id1, id2, 'followers')
+        return render("/derived/6_profile_list.bootstrap")
     
     def showUserFollows(self, id1, id2):
         # Called when visiting /profile/urlCode/url/following
-        code = id1
-        url = id2
+        self._basicSetup(id1, id2, 'following')
+        return render("/derived/6_profile_list.bootstrap")
+    
+    def _basicSetup(self, code, url, page):
         c.user = get_user(code, url)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
@@ -492,40 +384,52 @@ class ProfileController(BaseController):
         else:
            c.isFollowing = False
 
-        uList = getUserFollows(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.listFollowingUsers = []
-        for u in uList:
-           uID = u['thingID']
-           c.listFollowingUsers.append(getUserByID(uID))
-
-        uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.userFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.userFollowers.append(getUserByID(uID))
-
-        pList = getUserPosts(c.user)
-        c.totalPoints = 0
-        c.flags = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           fList = getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        c.count = len(c.listFollowingUsers)
-        c.paginator = paginate.Page(
-            c.listFollowingUsers, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        return render("/derived/profileFollowing.bootstrap")
+        
+        items = self._userItems(c.user)
+        c.listingType = page
+        c.things = items[page]
+        c.thingsTitle = page.title()
+        
+        c.discussions = items['discussions']
+        c.resources = items['resources']
+        c.ideas = items['ideas']
+        c.followers = items['followers']
+        c.following = items['following']
+        c.watching = items['watching']
+    
+    def _userItems(self, user):
+        # returns a dictionary of user-created (e.g. resources, discussions, ideas)
+        # or user-interested (e.g. followers, following, watching) objects
+        items = {}
+        
+        following = getUserFollows(user.id)
+        items['following'] = []
+        for item in following:
+            items['following'].append(getUserByID(item['thingID']))
+        
+        followers = getUserFollowers(user.id)
+        items['followers'] = []
+        for item in followers:
+            items['followers'].append(getUserByID(item.owner))
+            
+        watching = getWorkshopFollows(user.id)
+        items['watching'] = []
+        for item in watching:
+            items['watching'].append(getWorkshopByID(item['thingID']))
+        
+        # Already checks for disabled/deleted by default
+        # The following section feels like a good candidate for map/reduce
+        createdThings = getUserPosts(user)
+        items['resources'] = []
+        items['discussions'] = []
+        items['ideas'] = [] # TODO
+        for thing in createdThings:
+            if thing.objType == 'resource':
+                items['resources'].append(thing)
+            elif thing.objType == 'discussion':
+                items['discussions'].append(thing)
+        
+        return items
     
     @h.login_required
     def index( self ):
@@ -538,7 +442,7 @@ class ProfileController(BaseController):
         )
         c.title = c.heading = "User Accounts"
         return render( "/derived/AccountList.mako" )
-        
+
     @h.login_required
     def dashboard(self, id1, id2):
         code = id1

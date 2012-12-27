@@ -11,6 +11,7 @@
 %>
 
 <%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 ## The header for the comment - has user's name, avatar
 <%def name="userSays(comment, author)">
@@ -26,24 +27,13 @@
             replies += "ies"
         c.author = author
     %>
-    <p>
-    <div class="row-fluid">
-        <div class="span2"> 
-        <button class="btn btn-mini" id="hide${comment['urlCode']}" title="Hide comment and any replies" alt="Hide comment and any replies"><i class="icon-minus"></i> hide</button>
-        </div><!-- span2 -->
-        <div class="span1">
-        % if author['pictureHash'] == 'flash':
-            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="${c.author['name']}" title="${c.author['name']}" class="thumbnail" width="20" /></a>
-        % else:
-            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" class="thumbnail" alt="${c.author['name']}" title="${c.author['name']}" class="thumbnail" /></a>
-        % endif
-        </div><!-- span1 -->
-        <div class="span8 pull-left">
-        <a href = "/profile/${author['urlCode']}/${author['url']}">${author['name']}</a> &mdash;
-        <span class="recent">${timeSince(datetime.strptime(comment['lastModified'], '%a %b %d %H:%M:%S %Y'))}</span> ago &mdash; ${numReplies} ${replies}
-        </div><!-- span8 -->
-    </div><!-- row-fluid -->
-    </p>
+    <button class="btn btn-mini inline accordion-toggle" title="Hide comment and any replies" alt="Hide comment and any replies" data-toggle="collapse" data-parent="#comment-${comment['urlCode']}" href="#comment-data-${comment['urlCode']}">
+        <i class="icon-minus"></i>
+        hide
+    </button>
+    ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
+    ${lib_6.userLink(author, className="inline")} 
+    &mdash; ${numReplies} ${replies}
 </%def>
 
 ## Assumes the user is already authenticated for comment editing
@@ -88,7 +78,7 @@
                     if comment['deleted'] == '1':
                         showDeleted()
                     else:
-                        if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+                        if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id) or c.authuser.id == comment.owner:
                             editComment(comment, counter)
                         else:
                             showComment(comment)
@@ -155,10 +145,12 @@
             % endif
         % endif
         <a data-toggle="collapse" data-target=".reply${comment['urlCode']}" class="btn btn-mini btn-primary" title="Reply to comment" alt="Reply to comment"><i class="icon-white icon-repeat"></i> reply</a>
-        % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
+        % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id) or c.authuser.id == comment.owner:
             <a id="edit${comment['urlCode']}" class="btn btn-mini btn-primary  pull-right" data-toggle="collapse" title="Edit comment" data-target="#textareadiv${comment['urlCode']}">
                 <i class="icon-white icon-edit"></i> edit
             </a>
+        % endif
+        % if isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id):
             <a href="/adminComment/${comment['urlCode']}" class="btn btn-mini btn-warning pull-right" title="Admin comment">
                 <i class="icon-white icon-list-alt"></i> admin
             </a>
@@ -167,7 +159,7 @@
     </p> <!-- /.btn-group -->
 </%def>
 
-## Displays the footer of the comment (post date, flag, reply, rate)
+## Displays the footer of the comment (post date, flag, reply)
 <%def name="commentFeedback(comment, commentType)">
     <div class="buttons collapse in hide${comment['urlCode']}">
         % if "user" in session:
@@ -209,40 +201,31 @@
 
 ## Main function that gets called by the template
 <%def name="comments( type, **kwargs )">
-    % if type == "background" or type == "feedback" or type == "discussion":
-        <% 
+    <%
+        if type == "background" or type == "feedback" or type == "discussion":
             discussion = c.discussion
             allowComments = '1'
-        %>
-    % elif type == "suggestionMain" or type == "resource":
-        <%  
+        elif type == "suggestionMain" or type == "resource":
             discussion = c.discussion
             workshop = c.w
             allowComments = c.allowComments
-        %>
-    % elif type == "thread":
-        <%
+        elif type == "thread":
             maxDepth = kwargs['maxDepth']
             rootComment = kwargs['rootComment']
             c.discussion = discussion = kwargs['discussion']
             allowComments = '1'
-        %>
-    % endif
-
-    % if c.conf['read_only.value'] == 'true':
-        <% return %>
-    % endif
-    % if c.conf['allow.comments'] == 'false' or allowComments == '0':
-        <% return %>
-    % endif
-    % if type != "thread":
-        % if discussion['numComments'] == '1':
-            <% commentString = 'comment' %>
-        % else:
-            <% commentString = 'comments' %>
-        % endif
-    % endif
-    ${lib.fields_alert()}
+    
+        if c.conf['read_only.value'] == 'true':
+            return
+        if c.conf['allow.comments'] == 'false' or allowComments == '0':
+            return
+        if type != "thread":
+            if discussion['numComments'] == '1':
+                commentString = 'comment'
+            else:
+                commentString = 'comments'
+        lib.fields_alert()
+    %>
     <div class="civ-col-inner">
         <div class="row-fluid">
             <div class="span12">
@@ -269,7 +252,7 @@
                     % endif
                     % if "user" in session and c.isScoped or (c.isAdmin or c.isFacilitator):
                         % if type != 'thread':
-                            <textarea rows="4" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span6"></textarea>
+                            <textarea rows="4" placeholder="What do you think?" id="comment-textarea" name="comment-textarea" onkeyup="previewAjax( 'comment-textarea', 'comment-preview-div' )" class="markitup span12"></textarea>
                             <div id="comment-preview-div"></div>
                                 <button type="submit" name = "submit" value = "submit" class="btn">Submit</button>
                             <br />
@@ -338,36 +321,66 @@
         reply, moderator = "comment", ""
         if int(comment['parent']) != 0:
             reply += " reply"
-        if author['accessLevel'] >= 200:
+        if int(author['accessLevel']) >= 200:
             moderator += "alert alert-success"
     %>
     <div class="row-fluid ${reply}">
-        <div class="span1 civ-votey">
-            ${displayRating(comment, commentType)}
-        </div> <!-- /.civ-votey -->
-        <div class="span11">
-            <div class="civ-comment ${moderator}">
-                <%
-                    userSays(comment, author)
-                    if commentType == 'thread':
-                        commentContent(comment, counter, comType = commentType)
-                    else:
-                        commentContent(comment, counter)
-                %>
-            ${commentFeedback(comment, commentType)}
+        <div class="accordion" id="comment-${comment['urlCode']}">
+            <div class="accordion-group">
+                <div class="accordion-heading">
+                    ${userSays(comment, author)}
+                </div>
+                <div class="accordion-body collapse in" id="comment-data-${comment['urlCode']}">
+                    <div class="accordion-inner">
+                        <div class="row-fluid">
+                            <div class="span1">
+                                ${displayRating(comment, commentType)}
+                            </div> <!--/.span1-->
+                            <div class="span11">
+                                <%
+                                    if commentType == 'thread':
+                                        commentContent(comment, counter, comType = commentType)
+                                    else:
+                                        commentContent(comment, counter)
+                                %>
+                                ${commentFeedback(comment, commentType)}
+                                ##############################
+                                ## 
+                                ## Depth-based pagination
+                                ## 
+                                ##############################
+                                ## curDepth starts counting at 0, so subtract 1 from maxDepth
+                                % if curDepth == maxDepth - 1:
+                                    <% children = map(int, comment['children'].split(',')) %>
+                                    % if children[0] != 0:
+                                            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/thread/${comment['urlCode']}" style="float:right;">Continue this thread --></a>
+                                        <br />
+                                    % endif
+                                % endif
+                    
+                                </div> <!-- /.civ-comment -->
+                                <div class="collapse in hide${comment['urlCode']}">
+                                    ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}
+                                </div>
+                            </div> <!--/.span11-->
+                        </div> <!--/.row-fluid-->
+                    </div>
+                </div>
+            </div>
+        </div>
 
             ##############################
             ## 
             ## Showing non-edit events
             ## 
             ##############################
-            <% events = getParentEvents(comment) %>
-            <% eventsList = [] %>
-            % for e in events:
-                % if not e['title'].startswith('Comment edited'):
-                    <% eventsList.append(e) %>
-                % endif
-            % endfor
+            <% 
+                events = getParentEvents(comment)
+                eventsList = []
+                for e in events:
+                    if not e['title'].startswith('Comment edited'):
+                        eventsList.append(e)
+            %>
             % if len(eventsList) != 0:
                 <span style="color:black;">
                     ##<strong>Event log:</strong><br />
@@ -410,6 +423,7 @@
                 % endif
             % endif
 
+            <%doc>
             ##############################
             ## 
             ## Depth-based pagination
@@ -428,6 +442,7 @@
             <div class="collapse in hide${comment['urlCode']}">
                 ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1, counter)}
             </div>
+            </%doc>
         </div> <!-- /.span11 -->
     </div> <!-- /.row-fluid -->
 </%def>

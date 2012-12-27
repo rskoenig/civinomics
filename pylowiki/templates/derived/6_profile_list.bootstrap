@@ -1,0 +1,24 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+
+<div class="row-fluid">
+    <div class="span8">
+    <%
+        if c.listingType == 'discussions' or c.listingType == 'resources' or c.listingType == 'ideas':
+            helpers.listCreatedThings(c.user, c.things, c.thingsTitle)
+        else:
+            helpers.listInterestedThings(c.user, c.things, c.thingsTitle)
+    %>
+    </div>
+    <div class="span4">
+        ${helpers.profileDashboard()}
+    </div><!--/.span4-->
+</div>
+
+<%def name="extraScripts()">
+   <script type="text/javascript">
+      //$('a[rel="tooltip"]').tooltip();
+      $('.hoverTip').tooltip();
+   </script>
+</%def>

@@ -7,7 +7,7 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 
 from pylowiki.lib.db.page import get_all_pages
-from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID
+from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID, getRecentMemberPosts
 from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
@@ -44,7 +44,10 @@ class ActionlistController(BaseController):
                 items_per_page = 15, item_count = c.count
             )
 
-            return render('/derived/list_workshops.bootstrap')
+            #return render('/derived/list_workshops.bootstrap')
+            #c.activity = range(12)
+            c.activity = getRecentMemberPosts(10)
+            return render('derived/6_main_listing.bootstrap')
         elif c.action == 'surveys':
             c.title = c.heading = 'Surveys'
             c.list = getActiveSurveys()

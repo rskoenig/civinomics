@@ -37,7 +37,6 @@
             % else:
                 ${helpers.inviteCoFacilitate()}
             % endif
-            ${helpers.accounts()}
             ${helpers.workshops()}
             <h2 class="civ-col"><i class="icon-pencil"></i> Suggestions</h2>
             <div class="row-fluid">

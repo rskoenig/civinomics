@@ -69,11 +69,11 @@ def getUserPosts(user, active = 1):
         postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).order_by('-date').all()
 
     for item in postList:
-       if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment':
-           returnList.append(item)
-       elif item.objType == 'discussion':
-           if item['discType'] == 'general':
-               returnList.append(item)
+        if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment':
+            returnList.append(item)
+        elif item.objType == 'discussion':
+            if item['discType'] == 'general':
+                returnList.append(item)
 
     return returnList
 

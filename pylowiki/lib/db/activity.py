@@ -1,6 +1,5 @@
 from pylowiki.model import Thing, Data, meta
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc 
-from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 from pylowiki.lib.db.discussion import getDiscussionByID
 from dbHelpers import commit
 from pylowiki.lib.utils import urlify
@@ -24,16 +23,12 @@ def getMemberPosts(user, activeOnly = 1):
 
 def isActiveWorkshop(thing):
     w = False
-    if thing.objType == 'suggestion':
-        w = getWorkshop(thing['workshopCode'], thing['workshopURL'])
-    elif thing.objType == 'resource':
-        w = getWorkshopByID(thing['workshop_id'])
-    elif thing.objType == 'discussion':
-        w = getWorkshop(thing['workshopCode'], thing['workshopURL'])
+    if thing.objType == 'suggestion' or thing.objType == 'discussion' or thing.objType == 'resource':
+        w = meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('urlCode', thing['workshopCode']))).one()
     elif thing.objType == 'comment':
         d = getDiscussionByID(thing['discussion_id'])
         if d:
-            w = getWorkshop(d['workshopCode'], d['workshopURL'])
+            w = meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('urlCode', d['workshopCode']))).one()
         else:
             w = False
 
@@ -41,5 +36,12 @@ def isActiveWorkshop(thing):
         return True
     else:
         return False
+        
+def getDiscussionCommentsSince(discussionID, memberDatetime):
+    try:
+       return meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
+    except:
+       return False  
+
 
 

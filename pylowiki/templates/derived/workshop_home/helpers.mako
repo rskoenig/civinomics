@@ -107,7 +107,7 @@
         <br /><br />
         </dd>
     % endif
-    % if c.w['public_private'] != 'personal':
+    % if c.w['type'] != 'personal':
         <% owner = getUserByID(c.w.owner) %>
         <dl>
         <dt>Hosted by:</dt><dd>

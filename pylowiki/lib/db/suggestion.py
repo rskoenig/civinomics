@@ -8,6 +8,7 @@ from revision import Revision
 from page import Page
 from time import time
 from rating import Rating
+import pylowiki.lib.db.generic as generic
 import logging
 log = logging.getLogger(__name__)
 
@@ -36,7 +37,7 @@ def getSuggestionsForWorkshop(code):
     except:
         return False
 
-def getActiveSuggestionsForWorkshop(code):
+def getActiveSuggestionsForWorkshop(code, url="deprecated"):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'suggestion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('adopted', '0'))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
     except:
@@ -109,8 +110,9 @@ class Suggestion(object):
         s['title'] = title
         s['url'] = urlify(title[:30])
         s['data'] = data
-        s['workshopCode'] = workshop['urlCode']
-        s['workshopURL'] = workshop['url']
+        #s['workshopCode'] = workshop['urlCode']
+        #s['workshopURL'] = workshop['url']
+        s = generic.linkChildToParent(s, workshop)
         s['allowComments'] = allowComments
         s['numComments'] = 0
         s['disabled'] = '0'

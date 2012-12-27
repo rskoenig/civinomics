@@ -5,7 +5,7 @@ from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
 from pylowiki.lib.db.user import getUserByID, getUserByEmail
 from pylowiki.lib.db.pmember import getPrivateMember, getPrivateMemberByCode
 from pylowiki.lib.db.geoInfo import getGeoScope
-from pylowiki.lib.db.comment import getDiscussionCommentsSince
+from pylowiki.lib.db.activity import getDiscussionCommentsSince
 from pylowiki.lib.db.discussion import getAllActiveDiscussionsForWorkshop, getDiscussionByID
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 from page import Page
@@ -57,7 +57,7 @@ def getWorkshopByID(id):
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter_by(id = id).one()
     except:
         return False
-
+        
 def getWorkshopByCode(urlCode):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('urlCode', urlCode))).one()
@@ -122,11 +122,11 @@ def getRecentMemberPosts(number, publicPrivate = 'public'):
         for item in postList:
            w = False
            if item.objType == 'suggestion':
-               w = getWorkshop(item['workshopCode'], item['workshopURL'])
+               w = getWorkshopByCode(item['workshopCode'])
            elif item.objType == 'resource':
-               w = getWorkshopByID(item['workshop_id'])
+               w = getWorkshopByCode(item['workshopCode'])
            elif item.objType == 'discussion':
-               w = getWorkshop(item['workshopCode'], item['workshopURL'])
+               w = getWorkshopByCode(item['workshopCode'])
                if item['discType'] != 'general':
                   continue
            elif item.objType == 'event':
@@ -327,10 +327,10 @@ class Workshop(object):
         slideshow['slideshow_order'] = s.s.id
         commit(slideshow)
         
-        d = Discussion(owner = owner, discType = 'background', attachedThing = w, title = 'background')
+        d = Discussion(owner = owner, discType = 'background', attachedThing = w, workshop = w, title = 'background')
         w['backgroundDiscussion_id'] = d.d.id
 
-        f = Discussion(owner = owner, discType = 'feedback', attachedThing = w, title = 'background')
+        f = Discussion(owner = owner, discType = 'feedback', attachedThing = w, workshop = w, title = 'background')
         w['feedbackDiscussion_id'] = f.d.id
 
         commit(w)

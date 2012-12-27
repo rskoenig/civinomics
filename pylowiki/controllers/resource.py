@@ -6,11 +6,12 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
+from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getResourceByID, getResource, getActiveResourcesByParentID
+from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getResourceByID, getResource, getActiveResourcesByParentID
 from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
 from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.comment import getCommentByCode
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags, clearFlags
 from pylowiki.lib.db.page import Page, getPageByID, get_page
@@ -39,7 +40,7 @@ class ResourceController(BaseController):
         revisionURL = id5
     
         
-        c.w = getWorkshop(workshopCode, workshopURL)
+        c.w = getWorkshopByCode(workshopCode)
         if c.w['public_private'] != 'public':
             if 'user' not in session or not isScoped(c.authuser, c.w):
                     return render('/derived/404.bootstrap')
@@ -103,7 +104,7 @@ class ResourceController(BaseController):
         if c.suggestion:
             c.resources = getActiveResourcesByParentID(c.suggestion.id)
         else:
-            c.resources = getActiveResourcesByWorkshopID(c.w.id)
+            c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
         for i in range(len(c.resources)):
             resource = c.resources[i]
             if resource.id == c.resource.id:
@@ -111,14 +112,88 @@ class ResourceController(BaseController):
                 break
         c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
         
-        return render('/derived/resource.bootstrap')
+        c.listingType = 'resource'
+        return render('/derived/6_item_in_listing.bootstrap')
+        #return render('/derived/resource.bootstrap')
+
+    def thread(self, id1, id2, id3, id4, id5 = ''):
+        workshopCode = id1
+        workshopURL = id2
+        resourceCode = id3
+        resourceURL = id4
+        commentCode = id5
+    
+        c.w = getWorkshop(workshopCode, workshopURL)
+        c.title = c.w['title']
+        c.resource = getResource(resourceCode, urlify(resourceURL))
+        if c.resource['parent_id'] != None and c.resource['parent_type'] != None:
+            if c.resource['parent_type'] == 'suggestion':
+                c.suggestion = getSuggestionByID(c.resource['parent_id'])
+    
+        c.events = getParentEvents(c.resource)
+        if c.resource['disabled'] == '1' or c.resource['allowComments'] == '0':
+            c.commentsDisabled = 1
+        else:
+            c.commentsDisabled = 0
+    
+        c.content = h.literal(h.reST2HTML(c.resource['comment']))
+        c.revision = False
+        c.lastmoduser = getUserByID(c.resource.owner)
+        if 'mainRevision_id' in c.resource:
+            r = get_revision(int(c.resource['mainRevision_id']))
+            c.lastmoddate = r.date
+        else:
+            c.lastmoddate = c.resource.date
+    
+        c.revisions = getParentRevisions(c.resource.id)
+    
+        c.flagged = False
+        if checkFlagged(c.resource):
+           c.flagged = True
+    
+        if 'user' in session:
+            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+            c.isAdmin = isAdmin(c.authuser.id)
+            c.isScoped = isScoped(c.authuser, c.w)
+            c.allowComments = c.resource['allowComments']
+    
+            if 'ratedThings_resource_overall' in c.authuser.keys():
+                """
+                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
+                    Check to see if the commentID as a string is in the Dictionary keys
+                    meaning it was already rated by this user
+                """
+                resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall']))
+                if c.resource.id in resRateDict.keys():
+                    c.rating = getRatingByID(resRateDict[c.resource.id])
+        else:            
+            c.isFacilitator = False
+            c.isAdmin = False
+            c.isScoped = False
+            c.allowComments = False
+    
+        c.poster = getUserByID(c.resource.owner)
+        
+        if c.suggestion:
+            c.resources = getActiveResourcesByParentID(c.suggestion.id)
+        else:
+            c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        for i in range(len(c.resources)):
+            resource = c.resources[i]
+            if resource.id == c.resource.id:
+                c.resources.pop(i)
+                break
+        c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
+        c.rootComment = getCommentByCode(commentCode)
+        c.listingType = 'resource'
+        return render('/derived/6_item_in_listing.bootstrap')
 
     @h.login_required
-    def newResource(self, id1, id2):
+    def addResource(self, id1, id2):
         code = id1
         url = id2
 
-        c.w = getWorkshop(code, urlify(url))
+        c.w = getWorkshopByCode(code)
 
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, c.w.id)
@@ -126,9 +201,11 @@ class ResourceController(BaseController):
         if (s and c.w['allowResources'] == '1') or a or f:
             c.r = False
             c.heading = "OTHER RESOURCES"
-            c.resources = getResourcesByWorkshopID(c.w.id)
+            c.resources = getResourcesByWorkshopCode(c.w['urlCode'])
 
-            return render('/derived/resource_edit.bootstrap')
+            #return render('/derived/resource_edit.bootstrap')
+            c.listingType = 'resource'
+            return render('/derived/6_add_to_listing.bootstrap')
         else:
             return redirect('/workshop/%s/%s'%(c.w['urlCode'], urlify(c.w['url'])))
 
@@ -138,7 +215,7 @@ class ResourceController(BaseController):
         url = id2
 
         c.s = getSuggestion(code, urlify(url))
-        c.w = getWorkshop(c.s['workshopCode'], urlify(c.s['workshopURL']))
+        c.w = getWorkshopByCode(c.s['workshopCode'])
 
         c.isAdmin = isAdmin(c.authuser.id)
         c.isFacilitator =  isFacilitator(c.authuser.id, c.w.id)
@@ -157,7 +234,7 @@ class ResourceController(BaseController):
         url = id2
 
         c.r = getResource(code, urlify(url))
-        c.w = getWorkshopByID(c.r['workshop_id'])
+        c.w = getWorkshopByCode(c.r['workshopCode'])
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, c.w.id)
         if (c.authuser.id == c.r.owner or (a or f) and c.r['deleted'] == '0') and c.r['deleted'] == '0':
@@ -212,7 +289,7 @@ class ResourceController(BaseController):
             rerrorMsg = 'Allow comments or not?'
 
         resource = getResource(code, urlify(url))
-        w = getWorkshopByID(resource['workshop_id'])
+        w = getWorkshopByCode(resource['workshopCode'])
 
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, w.id)
@@ -262,7 +339,7 @@ class ResourceController(BaseController):
         return redirect('/workshop/%s/%s/resource/%s/%s'%(w['urlCode'], urlify(w['url']), code, url))
 
     @h.login_required
-    def addResource(self, id1, id2):
+    def addResourceHandler(self, id1, id2):
         code = id1
         url = id2
         
@@ -315,15 +392,15 @@ class ResourceController(BaseController):
             c.resourceComment = comment
             c.resourceLink = link
             c.resourceAllowComments = allowComments
-            c.w = getWorkshop(code, urlify(url))
+            c.w = getWorkshopByCode(code)
             c.r = False
             c.heading = "OTHER RESOURCES"
-            c.resources = getResourcesByWorkshopID(c.w.id)
+            c.resources = getResourcesByWorkshopCode(c.w['urlCode'])
 
             return render('/derived/resource_edit.bootstrap')
 
         else:
-            w = getWorkshop(code, urlify(url))
+            w = getWorkshopByCode(code)
 
             # make sure link not already submitted
             if s:
@@ -381,7 +458,7 @@ class ResourceController(BaseController):
         resourceCode = id3
         resourceURL = id4
         
-        c.w = getWorkshop(workshopCode, workshopURL)
+        c.w = getWorkshopByCode(workshopCode)
         
         c.title = c.w['title']
         c.resource = getResource(resourceCode, urlify(resourceURL))
@@ -403,7 +480,7 @@ class ResourceController(BaseController):
         url = id2
         c.resource = getResource(code, urlify(url))
         c.author = getUserByID(c.resource.owner)
-        c.w = getWorkshopByID(c.resource['workshop_id'])
+        c.w = getWorkshopByCode(c.resource['workshopCode'])
         clearError = 0
         clearMessage = ""
 
@@ -455,7 +532,7 @@ class ResourceController(BaseController):
 
         workshopCode = request.params['workshopCode']
         workshopURL = request.params['workshopURL']
-        w = getWorkshop(workshopCode, workshopURL) 
+        w = getWorkshopByCode(workshopCode) 
 
         resourceCode = request.params['resourceCode']
         resourceURL = request.params['resourceURL']
@@ -511,7 +588,7 @@ class ResourceController(BaseController):
 
         workshopCode = request.params['workshopCode']
         workshopURL = request.params['workshopURL']
-        w = getWorkshop(workshopCode, workshopURL) 
+        w = getWorkshopByCode(workshopCode) 
         
         resourceCode = request.params['resourceCode']
         resourceURL = request.params['resourceURL']
@@ -544,7 +621,7 @@ class ResourceController(BaseController):
         comment = request.params['data']
         title = request.params['title']
         
-        w = getWorkshop(code, url)
+        w = getWorkshopByCode(code)
         a = getResourceByLink(linkURL, w)
 
         if a:

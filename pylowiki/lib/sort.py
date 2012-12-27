@@ -34,7 +34,6 @@ def sortBinaryByTopPop(objects):
     scores = d.keys()
     scores.sort()
     scores.reverse()
-    log.info(scores)
     for score in scores:
         objs = d.pop(score)
         if len(objs) > 1:

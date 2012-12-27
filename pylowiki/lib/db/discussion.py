@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic as wc
 from pylowiki.lib.utils import urlify, toBase62
 from time import time
+import pylowiki.lib.db.generic as generic
 
 log = logging.getLogger(__name__)
 
@@ -15,9 +16,9 @@ def getDiscussionByID(id):
     except:
         return False
 
-def getDiscussion(code, url):
+def getDiscussion(code):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('urlCode', code))).filter(Thing.data.any(wc('url', url))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('urlCode', code))).one()
     except:
         return False
 
@@ -29,7 +30,7 @@ def getDiscussions():
     
 def getActiveDiscussionsForWorkshop(code, discType = 'general'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
     except:
         return False
     
@@ -71,40 +72,27 @@ class Discussion(object):
         title = kwargs['title']
         discType = kwargs['discType']
         d['discType'] = discType # Used in determining the linkbacks
+        if 'workshop' in kwargs:
+            d = generic.linkChildToParent(d, kwargs['workshop'])
         if 'attachedThing' in kwargs.keys():
             attachedThing = kwargs['attachedThing']
-            d['attachedThing_id'] = attachedThing.id
+            
             if attachedThing.objType == 'workshop':
-                d['workshopCode'] = attachedThing['urlCode']
-                d['workshopURL'] = attachedThing['url']
+                workshop = attachedThing
+                d = generic.linkChildToParent(d, workshop)
                 if discType == 'general':
                     d['text'] = kwargs['text']
                     d['ups'] = '0'
                     d['downs'] = '0'
                     d['disabled'] = '0'
                     d['deleted'] = '0'
-            elif attachedThing.objType == 'suggestion':
-                d['workshopCode'] = kwargs['workshop']['urlCode']
-                d['workshopURL'] = kwargs['workshop']['url']
-                d['suggestionCode'] = attachedThing['urlCode']
-                d['suggestionURL'] = attachedThing['url']
-            elif attachedThing.objType == 'resource':
-                d['workshopCode'] = kwargs['workshop']['urlCode']
-                d['workshopURL'] = kwargs['workshop']['url']
-                d['resourceCode'] = attachedThing['urlCode']
-                d['resourceURL'] = attachedThing['url']
             elif attachedThing.objType == 'sresource':
-                d['workshopCode'] = kwargs['workshop']['urlCode']
-                d['workshopURL'] = kwargs['workshop']['url']
-                d['resourceCode'] = attachedThing['urlCode']
-                d['resourceURL'] = attachedThing['url']
+                d = generic.linkChildToParent(d, kwargs['workshop'])
                 sID = attachedThing['parent_id']
                 s = getThingByID(sID)
-                d['suggestionCode'] = s['urlCode']
-                d['suggestionURL'] = s['url']     
+                d = generic.linkChildToParent(d, s)
         else:
-            d['workshopCode'] = kwargs['workshop']['urlCode']
-            d['workshopURL'] = kwargs['workshop']['url']
+            d = generic.linkChildToParent(d, workshop)
             if discType == 'general':
                 d['text'] = kwargs['text']
                 d['ups'] = '0'

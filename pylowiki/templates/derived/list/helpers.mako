@@ -3,7 +3,8 @@
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
-   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
+   #from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
+   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByCode, getWorkshop
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.fuzzyTime import timeSince, timeUntil
 
@@ -128,7 +129,7 @@
           mname = muser['name']
           if mObj.objType == 'resource':
               linkTitle = "Click to view new resource"
-              w = getWorkshopByID(mObj['workshop_id'])
+              w = getWorkshopByCode(mObj['workshopCode'])
               oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url']
               wLink = "/workshop/" + w['urlCode'] + "/" + w['url']
               iType = "book"
@@ -146,23 +147,26 @@
           elif mObj.objType == 'suggestion':
               linkTitle = "Click to view new suggestion"
               iType = "pencil"
-              oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url']
-              wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL']
-              w = getWorkshop(mObj['workshopCode'], mObj['workshopURL'])
+              thisWorkshop = getWorkshopByCode(mObj['workshopCode'])
+              oLink = "/workshop/" + mObj['workshopCode'] + "/" + thisWorkshop['url'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url']
+              wLink = "/workshop/" + mObj['workshopCode'] + "/" + thisWorkshop['url']
+              w = getWorkshopByCode(mObj['workshopCode'])
           elif mObj.objType == 'event':
               iType = "heart"
               linkTitle = "Click to view adopted suggestion"
               s = getSuggestionByID(mObj['parent_id'])
               muser = getUserByID(s.owner)
-              oLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL'] + "/suggestion/" + s['urlCode'] + "/" + s['url']
-              wLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL']
-              w = getWorkshop(s['workshopCode'], s['workshopURL'])
+              thisWorkshop = getWorkshopByCode(s['workshopCode'])
+              oLink = "/workshop/" + s['workshopCode'] + "/" + thisWorkshop['url'] + "/suggestion/" + s['urlCode'] + "/" + s['url']
+              wLink = "/workshop/" + s['workshopCode'] + "/" + thisWorkshop['url']
+              w = getWorkshopByCode(s['workshopCode'])
           elif mObj.objType == 'discussion':
               linkTitle = "Click to view new discussion"
               iType = "folder-open"
-              oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url']
-              wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL']
-              w = getWorkshop(mObj['workshopCode'], mObj['workshopURL'])
+              thisWorkshop = getWorkshopByCode(mObj['workshopCode'])
+              oLink = "/workshop/" + mObj['workshopCode'] + "/" + thisWorkshop['url'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url']
+              wLink = "/workshop/" + mObj['workshopCode'] + "/" + thisWorkshop['url']
+              w = getWorkshopByCode(mObj['workshopCode'])
           else:
               iType = "comment"
               oLink = ""
@@ -187,7 +191,6 @@
          % endif
              </div><!-- span3 -->
              <div class="span9">
-             ${log.info(oTitle)}
             New <a href="${oLink}" title="${linkTitle}"><i class="icon-${iType}"></i> ${oTitle}</a><br />
             % if ooTitle:
                 in <a href="${ooLink}" title="${oolinkTitle}"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />

@@ -91,7 +91,7 @@ def getCountryInfo( country ):
     c.close()
     db.close()
     return rlist
-    
+
 def getGeoScope( postalCode, country ):
     db = getDB()
     c = db.cursor()

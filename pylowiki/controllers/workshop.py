@@ -1,6 +1,5 @@
 import logging, re, pickle, formencode
 import time, datetime
-import os
 import re
 
 from formencode import validators, htmlfill
@@ -18,7 +17,8 @@ from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
 from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID, getActiveDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop
-from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
+#from pylowiki.lib.db.resource import getResourcesByWorkshopID, getActiveResourcesByWorkshopID, getInactiveResourcesByWorkshopID, getDisabledResourcesByWorkshopID, getDeletedResourcesByWorkshopID
+from pylowiki.lib.db.resource import getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getInactiveResourcesByWorkshopCode, getDisabledResourcesByWorkshopCode, getDeletedResourcesByWorkshopCode
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
@@ -194,7 +194,7 @@ class WorkshopController(BaseController):
         else:
            werror = 1
            werrMsg += 'Goals '
-            
+
         ##log.info('Got wGoals %s' % wGoals)
         if 'allowSuggestions' in request.params:
            allowSuggestions = request.params['allowSuggestions']
@@ -248,8 +248,8 @@ class WorkshopController(BaseController):
                     session['confTab'] = "tab2"
                 session.save()
 
-        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
-        
+        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+
     @h.login_required
     def configureTagsWorkshopHandler(self, id1, id2):
         code = id1
@@ -789,9 +789,11 @@ class WorkshopController(BaseController):
             if s:
                 c.slides.append(s)
             
-        c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        #c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
         c.resources = sortBinaryByTopPop(c.resources)
-        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
+        #c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
+        c.dresources = getInactiveResourcesByWorkshopCode(c.w.id)
         # put disabled and deleted at the end
         if c.resources:
             if c.dresources:
@@ -863,8 +865,11 @@ class WorkshopController(BaseController):
         else:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
 
-
-        return render('/derived/workshop_home.bootstrap')
+        #return render('/derived/workshop_home.bootstrap')
+        
+        c.information = get_revision(int(c.w['mainRevision_id']))
+        
+        return render('/derived/6_workshop_home.bootstrap')
 
     def displayAllSuggestions(self, id1, id2):
         code = id1
@@ -933,9 +938,9 @@ class WorkshopController(BaseController):
         
         c.w = getWorkshop(code, url)
         c.title = c.w['title']
-        c.resources = getActiveResourcesByWorkshopID(c.w.id)
+        c.resources = getActiveResourcesByWorkshopCode(code)
         c.resources = sortBinaryByTopPop(c.resources)
-        c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
+        c.dresources = getInactiveResourcesByWorkshopCode(code)
         # put disabled and deleted at the end
         if c.resources:
             if c.dresources:
@@ -949,8 +954,13 @@ class WorkshopController(BaseController):
             c.resources, page=int(request.params.get('page', 1)),
             items_per_page = 15, item_count = c.count
         )
-
-        return render('/derived/workshop_resources.bootstrap')
+        c.listingType = 'resources'
+        if 'user' in session:
+           c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
+           c.isScoped = isScoped(c.authuser, c.w)
+           c.isAdmin = isAdmin(c.authuser.id)
+        return render('/derived/6_detailed_listing.bootstrap')
+        #return render('/derived/workshop_resources.bootstrap')
 
     def inactiveSuggestions(self, id1, id2):
         code = id1
