@@ -1,7 +1,7 @@
 <%inherit file = "/base/template.bootstrap"/>
 
-<%namespace file="/lib/mako_lib.mako" name="lib" />
-<%namespace name="helpers" file="/derived/profile_dashboard/helpers.mako" />
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="helpers" />
 
 <%
 
@@ -50,7 +50,7 @@
             </ul>
         </div> <!-- /.span3 -->
         <div class="span9">
-            ${lib.fields_alert()}
+            ${lib_6.fields_alert()}
             % if c.conf['read_only.value'] == 'true':
                 <!-- read only -->
             % else:
