@@ -1,0 +1,91 @@
+<%inherit file = "/base/template.bootstrap"/>
+
+<%namespace file="/lib/mako_lib.mako" name="lib" />
+<%namespace name="helpers" file="/derived/profile_dashboard/helpers.mako" />
+
+<%
+
+    tab1active = ""
+    tab2active = ""
+    tab3active = ""
+                
+    if c.tab == "tab1":
+        tab1active = "active"
+    elif c.tab == "tab2":
+        tab2active = "active"
+    elif c.tab == "tab3":
+        tab3active = "active"
+    else:
+        tab1active = "active"
+
+%>
+
+<div class="container-fluid">
+   <div class="well profile_header">
+       <h1><a href="/profile/${c.user['urlCode']}/${c.user['url']}">${c.user['name']}</a></h1>
+   </div><!-- well -->
+<div class="row-fluid">
+    % if c.conf['read_only.value'] == 'true':
+        <h1> Sorry, Civinomics is in read only mode right now </h1>
+    % else:
+        <div class="tabbable">
+        <div class="span3 well">
+            <h3>Member Dashboard</h3>
+            For the periodic upkeep of your Civinomics account.<br /><br />
+            <ul class="nav nav-pills nav-stacked">
+                % if c.authuser['memberType'] == 'individual':
+                    <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About you<br />
+                % else:
+                    <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About your organization<br />
+                    
+                % endif
+                Update your details.
+                </a></li>
+                <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Change password<br />
+                For extra security.</a></li>
+                % if c.admin:
+                    <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Administrate<br />
+                    Admin only - shhh!.</a></li>
+                % endif
+            </ul>
+        </div> <!-- /.span3 -->
+        <div class="span9">
+            ${lib.fields_alert()}
+            % if c.conf['read_only.value'] == 'true':
+                <!-- read only -->
+            % else:
+
+                <div class="tab-content">
+                    <div class="tab-pane ${tab1active}" id="tab1">
+                        ${helpers.profileInfo()}
+                    </div><!-- tab1 -->
+                    <div class="tab-pane ${tab2active}" id="tab2">
+                        ${helpers.changePassword()}
+                    </div><!-- tab2 -->
+                    % if c.admin:
+                        <div class="tab-pane ${tab3active}" id="tab3">
+                            <div class="well">
+                                ${helpers.memberAdmin()}
+                                ${helpers.memberEvents()}
+                            </div><!-- well -->
+                        </div><!-- tab3 -->
+                    % endif
+                </div><!-- tab-content -->
+            % endif
+        </div> <!-- /.span9 -->
+        </div><!-- tabbable -->
+    % endif
+</div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name="extraHTML()">
+
+</%def>
+
+<%def name="extraStyles()">
+
+</%def>
+
+<%def name="extraScripts()">
+
+</%def>
