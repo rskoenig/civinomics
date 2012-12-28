@@ -1,5 +1,4 @@
-<%inherit file = "/base/template.bootstrap"/>
-
+<%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="helpers" />
 
