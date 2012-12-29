@@ -3,21 +3,10 @@
     log = logging.getLogger(__name__)
 %>
 
-<%def name="showTitle(title)">
-    <h1 style="text-align:left;">${title}</h1>
-</%def>
-
-<%def name='spacer()'>
-    ## A spacer
-    <div class="row-fluid">
-        <br />
-    </div>
-</%def>
-
 <%def name="createWorkshop()">
     
     <div class="row-fluid">
-        <form id="create_issue" action = "/newWorkshop" class="form-vertical" method = "post">
+        <form id="CreateWorkshop" action = "/workshop/create/handler" class="form-vertical" method = "post">
         <div class="well">
             <h3>A Personal Workshop</h3>
             <ul>
@@ -41,8 +30,3 @@
     </div>
 </%def>
 
-<%def name='inlineSpacer(amount)'>
-    <div class="span${amount}">
-        <p></p>
-    </div>
-</%def>

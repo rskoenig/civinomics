@@ -75,9 +75,9 @@ def make_map():
     map.connect('/ipadListener/sendSurveyData/', controller = 'ipadListener', action = 'sendSurveyData')
 
     # Workshop 
-    map.connect('/newWorkshop', controller = 'workshop', action = 'newWorkshopHandler')
-    map.connect('/createWorkshop', controller = 'workshop', action = 'createWorkshopHandler')
-    map.connect('/workshopPayment', controller = 'workshop', action = 'paymentHandler')
+    map.connect('/workshop/create', controller = 'workshop', action = 'createWorkshopForm')
+    map.connect('/workshop/create/handler', controller = 'workshop', action = 'createWorkshopHandler')
+    map.connect('/workshop/create/payment', controller = 'workshop', action = 'paymentHandler')
     map.connect('/workshop/{id1}/{id2}/upgrade', controller = 'workshop', action = 'upgradeHandler', id1 = '{id1}', id2 = '{id2}')
     
     map.connect('/workshops/{id1}/{id2}', controller = 'workshop', action = 'display', id1 = '{id1}', id2 = '{id2}')

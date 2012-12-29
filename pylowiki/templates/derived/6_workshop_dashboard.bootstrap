@@ -63,14 +63,14 @@
     <div class="tabbable">
         <div class="row-fluid">
             <div class="span3 well">
-                <h3>Workshop Dashboard</h3><br>
+                <h3 style="text-align: center">Dashboard</h3><br>
                 <div class="accordion" id="accordion2">
                     % if c.w['startTime'] != '0000-00-00':
                         <div class="accordion-group">
                             <div class="accordion-heading">
                                 <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                                <h3 class="civ-col">Administrate Workshop</h3></a>
-                                Use these tools and lists in the daily administration of your workshop after it has been published.
+                                <h3 style="text-align: center">Administrate</h3></a>
+                                <div style="text-align: center">Administration tools & lists for your published workshop.</div>
                             </div>
                             <div id="collapseTwo" class="accordion-body collapse ${menu2active}">
                                 <div class="accordion-inner">
@@ -92,7 +92,7 @@
                     % endif
                     <div class="accordion-group">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne"><h3>Configure Workshop</h3></a>
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne"><h3 style="text-align: center">Configure</h3></a>
                             ${helpers.intro()}
                         </div><!-- accordian-heading -->
                         <div id="collapseOne" class="accordion-body collapse ${menu1active}">

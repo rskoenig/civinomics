@@ -592,7 +592,7 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
-    def createWorkshopHandler(self):
+    def createWorkshopForm(self):
         if 'user' in session and c.authuser:
             return render('/derived/6_workshop_create.bootstrap')
             
@@ -625,7 +625,7 @@ class WorkshopController(BaseController):
         return render('/derived/404.bootstrap')
         
     @h.login_required
-    def newWorkshopHandler(self):
+    def createWorkshopHandler(self):
         
         if 'user' in session and c.authuser:
             if 'createPersonal' in request.params:
@@ -635,7 +635,7 @@ class WorkshopController(BaseController):
                 if 'paymentToken' in request.params:
                     wType = 'professional'
                 else:
-                    return redirect('/workshopPayment')
+                    return redirect('/workshop/create/payment')
                     
            
             w = Workshop('replace with a real name!', c.authuser, 'private', wType)

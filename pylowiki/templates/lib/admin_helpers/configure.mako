@@ -19,10 +19,11 @@
 </%def>
 
 <%def name="intro()">
-    Use these forms to configure your workshop.<br />
+    <div style="text-align: center">Build your workshop!<br />
     % if c.w['startTime'] == '0000-00-00':
        <br />Checklist must be completed before the workshop can be published.<br />
     % endif
+    </div>
 </%def>
 
 

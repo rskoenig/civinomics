@@ -47,7 +47,7 @@
                     Admin only - shhh!.</a></li>
                 % endif
             </ul>
-        <form method="post" name="createWorkshop" id="createWorkshop" action="/createWorkshop">
+        <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/create">
         <br />
         <button type="submit" class="btn btn-warning">Create Workshop</button>
         <br /><br />

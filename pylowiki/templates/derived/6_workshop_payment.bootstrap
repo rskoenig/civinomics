@@ -16,11 +16,11 @@
         </div>
         <div class="span5">
             % if c.w:
-                <form name="payment" id="payment" action="/workshopUpgrade/${c.w['urlCode']}" method="POST">
+                <form name="payment" id="payment" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade" method="POST">
                 <input type="hidden" name="upgradeToken" value="hella">
                 <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
             % else:
-                <form name="payment" id="payment" action="/newWorkshop" method="POST">
+                <form name="payment" id="payment" action="/workshop/create/handler" method="POST">
                 <input type="hidden" name="paymentToken" value="hella">
             % endif
             <div class="control-group">
