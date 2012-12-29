@@ -28,27 +28,14 @@ def getDiscussions():
     except:
         return False
     
-def getActiveDiscussionsForWorkshop(code, discType = 'general'):
+def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
-    except:
-        return False
-    
-def getAllActiveDiscussionsForWorkshop(code):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
-    except:
-        return False
-    
-def getDisabledDiscussionsForWorkshop(code, discType = 'general'):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('disabled', '1'))).all()
-    except:
-        return False
-    
-def getDeletedDiscussionsForWorkshop(code, discType = 'general'):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('deleted', '1'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'discussion')\
+        .filter(Thing.data.any(wc('workshopCode', code)))\
+        .filter(Thing.data.any(wc('discType', discType)))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .all()
     except:
         return False
     

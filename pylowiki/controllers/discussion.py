@@ -8,7 +8,7 @@ from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped
-from pylowiki.lib.db.discussion import getActiveDiscussionsForWorkshop, getDeletedDiscussionsForWorkshop, getDisabledDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
+from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
 from pylowiki.lib.db.comment import getCommentByCode
 from pylowiki.lib.utils import urlify
 from pylowiki.lib.db.user import isAdmin, getUserByID
@@ -28,7 +28,6 @@ log = logging.getLogger(__name__)
 
 class DiscussionController(BaseController):
 
-    ##@h.login_required
     def index(self, id1, id2):
         workshopCode = id1
         workshopURL = id2
@@ -61,17 +60,10 @@ class DiscussionController(BaseController):
         c.title = c.w['title']
         c.code = c.w['urlCode']
         c.url = c.w['url']
-        c.discussions = getActiveDiscussionsForWorkshop(workshopCode, 'general')
+        c.discussions = getDiscussionsForWorkshop(workshopCode)
         c.discussions = sortBinaryByTopPop(c.discussions)
         if not c.discussions:
             c.discussions = []
-        disabledDiscussions = getDisabledDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
-        if disabledDiscussions:
-            c.discussions += disabledDiscussions
-        deletedDiscussions = getDeletedDiscussionsForWorkshop(workshopCode, urlify(workshopURL), 'general')
-        if deletedDiscussions:
-            c.discussions += deletedDiscussions
-        
 
         c.count = len(c.discussions)
         c.paginator = paginate.Page(
@@ -79,7 +71,6 @@ class DiscussionController(BaseController):
             items_per_page = 15, item_count = c.count
         )
 
-        #return render('/derived/discussion_landing.bootstrap')
         c.listingType = 'discussion'
         return render('/derived/6_detailed_listing.bootstrap')
 
