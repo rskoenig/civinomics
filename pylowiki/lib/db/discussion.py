@@ -63,7 +63,9 @@ class Discussion(object):
                     title                ->    The title of the discussion, in string format
                     attachedThing        ->    The Thing to which we are attaching this discussion
                     discType             ->    Used to determine special properties, like a background discussion or a feedback discussion in a workshop
-                    workshop             ->    Used for creating the 'workshopCode' and 'workshopURL' linkbacks if the discussion isn't tied directly to a workshop
+                    
+                    (optional)
+                    text                 ->    Some extra description, if provided
         """
         if 'owner' not in kwargs.keys():
             d = Thing('discussion')
@@ -71,43 +73,22 @@ class Discussion(object):
             d = Thing('discussion', kwargs['owner'].id)
         title = kwargs['title']
         discType = kwargs['discType']
-        d['discType'] = discType # Used in determining the linkbacks
-        if 'workshop' in kwargs:
-            d = generic.linkChildToParent(d, kwargs['workshop'])
-        if 'attachedThing' in kwargs.keys():
-            attachedThing = kwargs['attachedThing']
-            
-            if attachedThing.objType == 'workshop':
-                workshop = attachedThing
-                d = generic.linkChildToParent(d, workshop)
-                if discType == 'general':
-                    d['text'] = kwargs['text']
-                    d['ups'] = '0'
-                    d['downs'] = '0'
-                    d['disabled'] = '0'
-                    d['deleted'] = '0'
-            elif attachedThing.objType == 'sresource':
-                d = generic.linkChildToParent(d, kwargs['workshop'])
-                sID = attachedThing['parent_id']
-                s = getThingByID(sID)
-                d = generic.linkChildToParent(d, s)
-        else:
-            d = generic.linkChildToParent(d, workshop)
-            if discType == 'general':
-                d['text'] = kwargs['text']
-                d['ups'] = '0'
-                d['downs'] = '0'
-                d['disabled'] = '0'
-                d['deleted'] = '0'
+        d['discType'] = discType
+        d['disabled'] = '0'
+        d['deleted'] = '0'
+        d['ups'] = '0'
+        d['downs'] = '0'
         d['title'] = title
         d['url'] = urlify(title)
-        d['numComments'] = '0'
+        d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
+        
+        # Optional arguments
+        if 'text' in kwargs:
+            d['text'] = kwargs['text']
+        if 'attachedThing' in kwargs.keys():
+            d = generic.linkChildToParent(d, kwargs['attachedThing'])
         commit(d)
         d['urlCode'] = toBase62(d)
         commit(d)
-
-        if attachedThing.objType != 'workshop':
-            attachedThing['discussion_id'] = d.id
-            commit(attachedThing)
         
         self.d = d

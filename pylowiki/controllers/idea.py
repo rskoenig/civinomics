@@ -6,6 +6,7 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.db.user import isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped
+import pylowiki.lib.db.idea as idea
 from pylowiki.lib.utils import urlify
 import pylowiki.lib.helpers as h
 
@@ -22,7 +23,11 @@ class IdeaController(BaseController):
         c.w = getWorkshopByCode(code)
         c.title = c.w['title']
         
-        c.ideas = []
+        ideas = idea.getIdeasInWorkshop(code)
+        if not ideas:
+            c.ideas = []
+        else:
+            c.ideas = ideas
         
         c.listingType = 'ideas'
         if 'user' in session:
@@ -59,5 +64,5 @@ class IdeaController(BaseController):
         if 'submit' not in request.params or 'title' not in request.params:
             return redirect(session['return_to'])
         
-        log.info(request.params['title'])
+        newIdea = idea.Idea(c.authuser, request.params['title'], c.w)
         return redirect(session['return_to'])

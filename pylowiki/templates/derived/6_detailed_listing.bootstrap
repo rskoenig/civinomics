@@ -27,11 +27,13 @@
    %>
    <div class="row-fluid">
       <div class="span12">
+         <%doc>
          % if (itemList != '') and (len(itemList) != len(c.paginator)):
             <h3 class="pull-left">
                Showing ${len(c.paginator)} of ${len(itemList)} ${pluralType} | Page ${ c.paginator.pager('~3~')}
             </h3>
          % endif
+         </%doc>
          ${lib_6.createNew(listingType)}
       </div><!--/.span12-->
    </div><!--/.row-fluid-->

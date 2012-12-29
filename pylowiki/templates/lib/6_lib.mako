@@ -159,6 +159,16 @@
    ${resourceStr}
 </%def>
 
+<%def name="ideaLink(i, w, **kwargs)">
+   <%
+      ideaStr = 'href="/workshop/%s/%s/idea/%s/%s"' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
+      if 'embed' in kwargs:
+         if kwargs['embed'] == True:
+            return ideaStr
+   %>
+   ${resourceStr}
+</%def>
+
 <%def name="thingLinkRouter(thing, workshop, **kwargs)">
     <%
         if thing.objType == 'discussion':
