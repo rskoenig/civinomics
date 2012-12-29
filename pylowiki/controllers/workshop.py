@@ -248,7 +248,7 @@ class WorkshopController(BaseController):
                     session['confTab'] = "tab2"
                 session.save()
 
-        return redirect('/workshop/%s/%s/configure'%(c.w['urlCode'], c.w['url'])) 
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
     def configureTagsWorkshopHandler(self, id1, id2):
