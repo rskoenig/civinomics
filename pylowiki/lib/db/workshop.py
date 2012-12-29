@@ -1,12 +1,13 @@
 from pylons import tmpl_context as c, config, session
-from pylowiki.model import Thing, meta
+from pylowiki.model import Thing, meta, Data
+from sqlalchemy import and_
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
 from pylowiki.lib.db.user import getUserByID, getUserByEmail
 from pylowiki.lib.db.pmember import getPrivateMember, getPrivateMemberByCode
 from pylowiki.lib.db.geoInfo import getGeoScope
 from pylowiki.lib.db.activity import getDiscussionCommentsSince
-from pylowiki.lib.db.discussion import getAllActiveDiscussionsForWorkshop, getDiscussionByID
+from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussionByID
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 from page import Page
 from event import Event
@@ -118,10 +119,13 @@ def getParticipantsByID(id):
 def getRecentMemberPosts(number, publicPrivate = 'public'):
         counter = 0
         returnList = []
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion', 'event'])).order_by('-date').all()
+        postList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'event']))\
+            .filter(Thing.data.any(and_(Data.key == u'workshopCode')))\
+            .order_by('-date').all()
         for item in postList:
            w = False
-           if item.objType == 'suggestion':
+           if item.objType == 'idea':
                w = getWorkshopByCode(item['workshopCode'])
            elif item.objType == 'resource':
                w = getWorkshopByCode(item['workshopCode'])
@@ -146,7 +150,7 @@ def getRecentMemberPosts(number, publicPrivate = 'public'):
 
 def getWorkshopPostsSince(code, url, memberDatetime):
         postList = meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).order_by('-date').all()
-        discussionList = getAllActiveDiscussionsForWorkshop(code)
+        discussionList = getDiscussionsForWorkshop(code)
         commentList = []
         for d in discussionList:
             cList = getDiscussionCommentsSince(d.id, memberDatetime) 
