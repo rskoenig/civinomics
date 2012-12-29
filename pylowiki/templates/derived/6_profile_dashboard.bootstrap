@@ -47,6 +47,11 @@
                     Admin only - shhh!.</a></li>
                 % endif
             </ul>
+        <form method="post" name="createWorkshop" id="createWorkshop" action="/createWorkshop">
+        <br />
+        <button type="submit" class="btn btn-warning">Create Workshop</button>
+        <br /><br />
+        </form>
         </div> <!-- /.span3 -->
         <div class="span9">
             ${lib_6.fields_alert()}

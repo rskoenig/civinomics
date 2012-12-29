@@ -1,10 +1,12 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/derived/workshop_create/helpers.mako" />
 <%! 
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
 %>
 
-<%inherit file="/base/template.bootstrap"/>
-<%namespace name="helpers" file="/derived/workshop_create/helpers.mako" />
+
 
 <div class="container-fluid well">
     <h3>Create A New Workshop</h3><br />
