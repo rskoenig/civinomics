@@ -1,4 +1,4 @@
-<%inherit file="/base/template.bootstrap"/>
+<%inherit file="/base/base.bootstrap"/>
 
 <div class="container-fluid well">
     % if c.w:
@@ -117,16 +117,9 @@
     % endif
 </div><!-- container -->
 
-<%def name = 'extraStyles()'>
-
-</%def>
-<%def name = 'extraHTML()'>
-
-</%def>
-<%def name = 'extraScripts()'>
+<%def name="extraScripts()">
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript">
         $('.icon-question-sign').tooltip();
     </script>
-
 </%def>

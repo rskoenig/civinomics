@@ -1,5 +1,6 @@
-<%inherit file = "/base/template.bootstrap"/>
-<%namespace name="lib_helpers" file="/lib/mako_lib.mako" />
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
 <%namespace name="helpers" file="/lib/admin_helpers/configure.mako" />
 <%namespace name="admin_helpers" file="/lib/admin_helpers/workshop.mako" />
 <%namespace name="slide_helpers" file="/lib/admin_helpers/slideshow.mako" />
@@ -59,10 +60,6 @@
 %>
 
 <div class="container-fluid"><!-- header -->
-    <div class="well workshop_header">
-        ${lib_helpers.displayWorkshopHeader('dashboard')}
-    </div><!-- well -->
-
     <div class="tabbable">
         <div class="row-fluid">
             <div class="span3 well">
