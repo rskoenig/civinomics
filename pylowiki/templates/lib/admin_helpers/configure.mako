@@ -206,12 +206,12 @@
 <%def name="private()">
     <ul>
     % if c.w['type'] == 'personal':
-        <li>Personal workshops are private and limited to 10 participants.</p>
+        <li>Personal workshops are private and limited to 10 participants.</li>
     % endif
     <li>Private workshops are not visible to the public.</li>
     <li>Private workshops are invitation only.</li>
     </ul>
-    <form name="private" id="private" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <form name="private" id="private" class="left form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     <br /><strong>Manage Workshop Participants List</strong><br />
     % if c.pmembers:        
         <br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
