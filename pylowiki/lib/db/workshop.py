@@ -298,11 +298,14 @@ class Workshop(object):
         w['deleted'] = '0'
         w['facilitators'] = c.authuser.id
         w['goals'] = 'No goals set'
+        w['description'] = ''
+        w['pictureHash'] = 'flash' # default picture
         w['numResources'] = 1
         w['public_private'] = publicPrivate
         w['type'] = type
         w['categoryTags'] = ''
         w['geoTags'] = ''
+        w['allowIdeas'] = 1
         w['allowSuggestions'] = 1
         w['allowResources'] = 1
         commit(w)

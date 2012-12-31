@@ -46,8 +46,12 @@
             <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
             <strong>Workshop Name:</strong> <span class="label label-important">Required</span>
             <br />
-            The name should act as a short description of the workshop topic. It is displayed in listings and the workshop home page. (70 char max)<br />
             <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>
+            <br />
+            <br />
+            <strong>Workshop Description:</strong> <span class="label label-important">Required</span>
+            <br />
+            <input type="text" name="description" size="50" maxlength="70" value = "${c.w['description']}"/>
             <br />
             <br />
             <strong>Workshop Goals:</strong> <span class="label label-important">Required</span>
