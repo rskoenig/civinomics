@@ -29,15 +29,11 @@
     % else:
         <div class="tabbable">
         <div class="span3 well">
-            <h3>Member Dashboard</h3>
-            For the periodic upkeep of your Civinomics account.<br /><br />
+            <div style="text-align: center">
+            <h3>Dashboard</h3>
+            For the periodic upkeep of your Civinomics account.<br /><br /></div><!-- center -->
             <ul class="nav nav-pills nav-stacked">
-                % if c.authuser['memberType'] == 'individual':
-                    <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About you<br />
-                % else:
-                    <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About your organization<br />
-                    
-                % endif
+                <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About you<br />
                 Update your details.
                 </a></li>
                 <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Change password<br />
@@ -47,11 +43,13 @@
                     Admin only - shhh!.</a></li>
                 % endif
             </ul>
-        <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/create">
-        <br />
-        <button type="submit" class="btn btn-warning">Create Workshop</button>
-        <br /><br />
-        </form>
+            <div style="text-align: center">
+                <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/create">
+                    <br />
+                    <button type="submit" class="btn btn-warning">Create Workshop</button>
+                    <br /><br />
+                    </form>
+            </div><!-- center -->
         </div> <!-- /.span3 -->
         <div class="span9">
             ${lib_6.fields_alert()}
