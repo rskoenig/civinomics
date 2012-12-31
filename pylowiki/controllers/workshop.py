@@ -170,8 +170,7 @@ class WorkshopController(BaseController):
 
         if 'title' in request.params:
             wTitle = request.params['title']
-            wTitle = wTitle.lstrip()
-            wTitle = wTitle.rstrip()
+            wTitle = wTitle.strip()
             if wTitle and wTitle != c.w['title']:
                 c.w['title'] = wTitle
                 oldTitle = c.w['url']
@@ -180,6 +179,17 @@ class WorkshopController(BaseController):
                 weventMsg += "Updated name. "
         else:
             werrMsg += 'Name '
+            werror = 1
+
+        if 'description' in request.params:
+            wDescription = request.params['description']
+            wDescription = wDescription.strip()
+            if wDescription and wDescription != c.w['description']:
+                c.w['description'] = wDescription
+                wchanges = 1
+                weventMsg += "Updated description. "
+        else:
+            werrMsg += 'Description '
             werror = 1
 
         if 'goals' in request.params:
