@@ -11,7 +11,7 @@ import webhelpers.paginate as paginate
 from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped, sendPMemberInvite, isGuest
+from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped, sendPMemberInvite, isGuest, setWorkshopPrivs
 from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles, getStateList, getCountyList, getCityList
 from pylowiki.lib.db.revision import get_revision
 from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
@@ -19,8 +19,8 @@ from pylowiki.lib.db.slide import getSlide
 from pylowiki.lib.db.discussion import getDiscussionByID, getDiscussionsForWorkshop
 from pylowiki.lib.db.resource import getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getInactiveResourcesByWorkshopCode, getDisabledResourcesByWorkshopCode, getDeletedResourcesByWorkshopCode
 from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
-from pylowiki.lib.db.user import getUserByID, isAdmin
-from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
+from pylowiki.lib.db.user import getUserByID
+from pylowiki.lib.db.facilitator import getFacilitatorsByWorkshop
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
 from pylowiki.lib.db.motd import MOTD, getMessage
@@ -147,9 +147,8 @@ class WorkshopController(BaseController):
         session.save()
 
         c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""        
-        else:
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
 
         slideshow = getSlideshow(c.w['mainSlideshow_id'])
@@ -162,11 +161,6 @@ class WorkshopController(BaseController):
         wstarted = 0
         if c.w['startTime'] != '0000-00-00':
            wstarted = 1
-
-        ##log.info('wstarted is %s' % wstarted)
-
-        # Is there anything more painful than form validation?
-        # I don't think so...
 
         if 'title' in request.params:
             wTitle = request.params['title']
@@ -194,8 +188,7 @@ class WorkshopController(BaseController):
 
         if 'goals' in request.params:
            wGoals = str(request.params['goals'])
-           wGoals = wGoals.lstrip()
-           wGoals = wGoals.rstrip()
+           wGoals = wGoals.strip()
            if wGoals and wGoals != c.w['goals']:
                c.w['goals'] = wGoals
                wchanges = 1
@@ -234,7 +227,7 @@ class WorkshopController(BaseController):
                     c.w['public_private'] = publicPrivate
                 
         # save successful changes
-        if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
+        if wchanges:
             commit(c.w)
             Event('Workshop Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
         else:
@@ -247,15 +240,14 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
         else:
-            if isFacilitator(c.authuser.id, c.w.id):
-                commit(c.w)
-                alert = {'type':'success'}
-                alert['title'] = weventMsg
-                session['alert'] = alert
-                # to reload at the next tab
-                if c.w['startTime'] == '0000-00-00':
-                    session['confTab'] = "tab2"
-                session.save()
+            commit(c.w)
+            alert = {'type':'success'}
+            alert['title'] = weventMsg
+            session['alert'] = alert
+            # to reload at the next tab
+            if c.w['startTime'] == '0000-00-00':
+                session['confTab'] = "tab2"
+            session.save()
 
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
@@ -268,9 +260,8 @@ class WorkshopController(BaseController):
         session.save()
 
         c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""        
-        else:
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
             
         werror = 0
@@ -293,7 +284,7 @@ class WorkshopController(BaseController):
             werrMsg += 'Category Tags '
    
         # save successful changes
-        if wchanges and (isFacilitator(c.authuser.id, c.w.id) or isAdmin(c.authuser.id)):
+        if wchanges:
             commit(c.w)
             Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
         else:
@@ -306,8 +297,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
         else:
-            if isFacilitator(c.authuser.id, c.w.id):
-                commit(c.w)
+            commit(c.w)
             alert = {'type':'success'}
             alert['title'] = weventMsg
             session['alert'] = alert
@@ -325,9 +315,8 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab2"
         session.save()
         c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
-        else:
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
         
         if c.w['type'] == 'personal':
@@ -396,9 +385,8 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab2"
         session.save()
         c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
-        else:
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
             
         werror = 0
@@ -495,9 +483,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
-        else:
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
             
         c.privateMembers = getPrivateMembers(c.w['urlCode'])
@@ -509,10 +496,10 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Private Workshop"
         c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
-        else:
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
+
         c.facilitator = c.authuser['name']
         c.workshopName = c.w['title']
         c.inviteMsg = 'Your Invitation Message Will Appear Here'
@@ -527,9 +514,8 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Configure Workshop"
         c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
-        else:
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
 
         c.title = "Configure Workshop"
@@ -562,26 +548,14 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Configure Workshop"
         c.w = getWorkshop(code, urlify(url))
-        if 'user' in session and c.authuser and (isAdmin(c.authuser.id) or isFacilitator(c.authuser.id, c.w.id)):
-            ""
-        else:
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
 
         werror = 0
         wstarted = 0
         if c.w['startTime'] != '0000-00-00':
            wstarted = 1
-
-        ##log.info('wstarted is %s' % wstarted)
-
-        # Is there anything more painful than form validation?
-        # I don't think so...
-        if not isFacilitator(c.authuser.id, c.w.id) and not isAdmin(c.authuser.id):
-            alert = {'type':'error'}
-            alert['title'] = 'You are not authorized'
-            session['alert'] = alert
-            session.save()
-            return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
 
         if 'startWorkshop' in request.params:
             # Set workshop start and end time
@@ -674,9 +648,9 @@ class WorkshopController(BaseController):
         c.title = "Administrate Workshop"
 
         w = getWorkshop(code, urlify(url))
-        if not isFacilitator(c.authuser.id, w.id) and not isAdmin(c.authuser.id):
-           h.flash("You are not authorized", "warning")
-           return redirect('/')
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
+            return(redirect("/"))
 
         m = getMessage(w.id)
          
@@ -713,7 +687,6 @@ class WorkshopController(BaseController):
         if 'verifyEnableWorkshop' in request.params:
            veW = 1
 
-        #log.info('Enable is %s and Verify is %s' % (eW, veW))
         if eW != veW:
            ##log.info('not equal')
            werror = 1
@@ -723,15 +696,12 @@ class WorkshopController(BaseController):
               eAction = 'disabled'
            werrMsg += 'Action must be verified before workshop can be ' + eAction + '.'
         elif eW == 1 and veW == 1:
-           ##log.info('equal and deleted is %s' % w['deleted'])
            if w['deleted'] == '1':
               w['deleted'] = '0'
               eAction = 'published'
-              ##log.info('doing undelete')
            else:
               w['deleted'] = '1'
               eAction = 'unpublished'
-              ##log.info('doing delete')
 
            setWorkshopTagEnable(w, w['deleted'])
            eMsg = 'Workshop ' + eAction
@@ -749,8 +719,6 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
-
-            
         commit(m)
         return redirect('/workshop/%s/%s/dashboard'%(w['urlCode'], w['url']))
     
@@ -759,22 +727,13 @@ class WorkshopController(BaseController):
         url = id2
         
         c.w = getWorkshop(code, urlify(url))
+        setWorkshopPrivs(c.w)
         c.title = c.w['title']
-        c.isGuest = isGuest(c.w)
-        
-        if 'user' in session:
-            if not c.isGuest and c.authuser:
-                c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-                c.isScoped = isScoped(c.authuser, c.w)
-                c.isFollowing = isFollowing(c.authuser.id, c.w.id)
-                c.isAdmin = isAdmin(c.authuser.id)
             
         if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
-            if 'user' in session or c.isGuest:
-                if not c.isFacilitator and not c.isScoped and not c.isAdmin and not c.isGuest:
+            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                     return render('/derived/404.bootstrap')            
-            else:
-                return render('/derived/404.bootstrap')
+
         
         fList = []
         for f in (getFacilitatorsByWorkshop(c.w.id)):
@@ -798,10 +757,8 @@ class WorkshopController(BaseController):
             if s:
                 c.slides.append(s)
             
-        #c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
         c.resources = sortBinaryByTopPop(c.resources)
-        #c.dresources = getInactiveResourcesByWorkshopID(c.w.id)
         c.dresources = getInactiveResourcesByWorkshopCode(c.w.id)
         # put disabled and deleted at the end
         if c.resources:
@@ -824,7 +781,7 @@ class WorkshopController(BaseController):
 
         c.asuggestions = getAdoptedSuggestionsForWorkshop(code)
         
-        if 'user' in session and not c.isGuest:
+        if 'user' in session:
             ratedSuggestionIDs = []
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
                 """
@@ -843,7 +800,7 @@ class WorkshopController(BaseController):
                 item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
                 ##item['suggestionSummary'] = h.literal(h.reST2HTML(item['data'][:250] + '...'))
         
-            if 'user' in session and not c.isGuest:    
+            if 'user' in session:    
                 """ Grab the associated rating, if it exists """
                 found = False
                 try:
@@ -873,8 +830,6 @@ class WorkshopController(BaseController):
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         else:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
-
-        #return render('/derived/workshop_home.bootstrap')
         
         c.information = get_revision(int(c.w['mainRevision_id']))
         
@@ -946,6 +901,7 @@ class WorkshopController(BaseController):
         url = id2
         
         c.w = getWorkshop(code, url)
+        setWorkshopPrivs(c.w)
         c.title = c.w['title']
         c.resources = getActiveResourcesByWorkshopCode(code)
         c.resources = sortBinaryByTopPop(c.resources)
@@ -964,12 +920,8 @@ class WorkshopController(BaseController):
             items_per_page = 15, item_count = c.count
         )
         c.listingType = 'resources'
-        if 'user' in session:
-           c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-           c.isScoped = isScoped(c.authuser, c.w)
-           c.isAdmin = isAdmin(c.authuser.id)
+
         return render('/derived/6_detailed_listing.bootstrap')
-        #return render('/derived/workshop_resources.bootstrap')
 
     def inactiveSuggestions(self, id1, id2):
         code = id1
@@ -998,6 +950,7 @@ class WorkshopController(BaseController):
         url = id2
         
         c.w = getWorkshop(code, url)
+        setWorkshopPrivs(c,w)
         c.title = c.w['title']
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
         c.resources = sortBinaryByTopPop(c.resources)
@@ -1018,10 +971,6 @@ class WorkshopController(BaseController):
         
         r = get_revision(int(c.w['mainRevision_id']))
         if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)
-            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-            c.facilitators = getFacilitatorsByWorkshop(c.w.id)
-            
             reST = r['data']
             reSTlist = self.get_reSTlist(reST)
             HTMLlist = self.get_HTMLlist(reST)
@@ -1044,6 +993,10 @@ class WorkshopController(BaseController):
         url = id2
 
         c.w = getWorkshopByCode(code)
+        setWorkshopPrivs(c.w)
+        if not c.privs['admin'] and not c.privs['facilitator']:
+            return(redirect("/"))
+            
         if (c.w['goals'] != '' and c.w['goals'] != 'No goals set'):
             c.basicConfig = 1
         else:
@@ -1061,10 +1014,7 @@ class WorkshopController(BaseController):
         # hack for continue button in tab4 of configure
         if 'continueToNext' in request.params:
             c.tab = 'tab5'
-        
-        if not isFacilitator(c.authuser.id, c.w.id) and not(isAdmin(c.authuser.id)):
-            return render('/')
-
+            
         slideshow = getSlideshow(c.w['mainSlideshow_id'])
         c.slideshow = getAllSlides(slideshow.id)
         c.published_slides = []
@@ -1079,7 +1029,6 @@ class WorkshopController(BaseController):
         else:
             c.slideConfig = 0
             
-        c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
         c.facilitators = getFacilitatorsByWorkshop(c.w.id)
 
         if c.w['public_private'] != 'public':

@@ -49,7 +49,7 @@
          readOnlyMessage(thing)
          return False
       printStr = ''
-      if c.isScoped or c.isFacilitator or c.isAdmin:
+      if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin']:
          if thing == 'discussion':
             printStr = '<a href="/workshop/%s/%s/add/discussion" title="Click to add a general discussion topic to this workshop" class="pull-right">Add Discussion Topic</a>' %(c.w['urlCode'], c.w['url'])
          elif thing == 'resources':

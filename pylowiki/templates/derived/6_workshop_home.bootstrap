@@ -35,7 +35,7 @@
                <h3 class="section-header"> 
                   Overview 
                   <%
-                     if c.isAdmin or c.isFacilitator:
+                     if c.privs['admin'] or c.privs['facilitator']:
                         helpers.configButton(c.w)
                   %>
                </h3>

@@ -6,7 +6,7 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped
+from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped, setWorkshopPrivs
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getResourceByID, getResource, getActiveResourcesByParentID
 from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
@@ -41,6 +41,7 @@ class ResourceController(BaseController):
     
         
         c.w = getWorkshopByCode(workshopCode)
+        setWorkshopPrivs(c.w)
         if c.w['public_private'] != 'public':
             if 'user' not in session or not isScoped(c.authuser, c.w):
                     return render('/derived/404.bootstrap')
@@ -124,6 +125,7 @@ class ResourceController(BaseController):
         commentCode = id5
     
         c.w = getWorkshop(workshopCode, workshopURL)
+        setWorkshopPrivs(c.w)
         c.title = c.w['title']
         c.resource = getResource(resourceCode, urlify(resourceURL))
         if c.resource['parent_id'] != None and c.resource['parent_type'] != None:
@@ -194,6 +196,7 @@ class ResourceController(BaseController):
         url = id2
 
         c.w = getWorkshopByCode(code)
+        setWorkshopPrivs(c.w)
 
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, c.w.id)
@@ -216,6 +219,7 @@ class ResourceController(BaseController):
 
         c.s = getSuggestion(code, urlify(url))
         c.w = getWorkshopByCode(c.s['workshopCode'])
+        setWorkshopPrivs(c.w)
 
         c.isAdmin = isAdmin(c.authuser.id)
         c.isFacilitator =  isFacilitator(c.authuser.id, c.w.id)
@@ -235,6 +239,7 @@ class ResourceController(BaseController):
 
         c.r = getResource(code, urlify(url))
         c.w = getWorkshopByCode(c.r['workshopCode'])
+        setWorkshopPrivs(c.w)
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, c.w.id)
         if (c.authuser.id == c.r.owner or (a or f) and c.r['deleted'] == '0') and c.r['deleted'] == '0':
@@ -290,6 +295,7 @@ class ResourceController(BaseController):
 
         resource = getResource(code, urlify(url))
         w = getWorkshopByCode(resource['workshopCode'])
+        setWorkshopPrivs(w)
 
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, w.id)
@@ -459,6 +465,7 @@ class ResourceController(BaseController):
         resourceURL = id4
         
         c.w = getWorkshopByCode(workshopCode)
+        setWorkshopPrivs(c.w)
         
         c.title = c.w['title']
         c.resource = getResource(resourceCode, urlify(resourceURL))
@@ -481,6 +488,7 @@ class ResourceController(BaseController):
         c.resource = getResource(code, urlify(url))
         c.author = getUserByID(c.resource.owner)
         c.w = getWorkshopByCode(c.resource['workshopCode'])
+        setWorkshopPrivs(c.w)
         clearError = 0
         clearMessage = ""
 
@@ -532,7 +540,8 @@ class ResourceController(BaseController):
 
         workshopCode = request.params['workshopCode']
         workshopURL = request.params['workshopURL']
-        w = getWorkshopByCode(workshopCode) 
+        w = getWorkshopByCode(workshopCode)
+        setWorkshopPrivs(w)
 
         resourceCode = request.params['resourceCode']
         resourceURL = request.params['resourceURL']
@@ -588,7 +597,8 @@ class ResourceController(BaseController):
 
         workshopCode = request.params['workshopCode']
         workshopURL = request.params['workshopURL']
-        w = getWorkshopByCode(workshopCode) 
+        w = getWorkshopByCode(workshopCode)
+        setWorkshopPrivs(w)
         
         resourceCode = request.params['resourceCode']
         resourceURL = request.params['resourceURL']
