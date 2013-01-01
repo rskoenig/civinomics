@@ -11,7 +11,7 @@
 <%def name="upDownVote(thing)">
    <div class="voteWrapper">
       <% rating = int(thing['ups']) - int(thing['downs']) %>
-      % if 'user' in session and c.isScoped and not self.isReadOnly():
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          % if thing.objType != 'comment':
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="vote upVote">
          % else:

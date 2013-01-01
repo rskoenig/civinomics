@@ -43,7 +43,7 @@ class ResourceController(BaseController):
         c.w = getWorkshopByCode(workshopCode)
         setWorkshopPrivs(c.w)
         if c.w['public_private'] != 'public':
-            if 'user' not in session or not isScoped(c.authuser, c.w):
+            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                     return render('/derived/404.bootstrap')
 
         c.title = c.w['title']
@@ -80,9 +80,6 @@ class ResourceController(BaseController):
            c.flagged = True
 
         if 'user' in session:
-            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-            c.isAdmin = isAdmin(c.authuser.id)
-            c.isScoped = isScoped(c.authuser, c.w)
             c.allowComments = c.resource['allowComments']
 
             if 'ratedThings_resource_overall' in c.authuser.keys():
@@ -94,10 +91,7 @@ class ResourceController(BaseController):
                 resRateDict = pickle.loads(str(c.authuser['ratedThings_resource_overall']))
                 if c.resource.id in resRateDict.keys():
                     c.rating = getRatingByID(resRateDict[c.resource.id])
-        else:            
-            c.isFacilitator = False
-            c.isAdmin = False
-            c.isScoped = False
+        else:
             c.allowComments = False
 
         c.poster = getUserByID(c.resource.owner)
@@ -115,7 +109,6 @@ class ResourceController(BaseController):
         
         c.listingType = 'resource'
         return render('/derived/6_item_in_listing.bootstrap')
-        #return render('/derived/resource.bootstrap')
 
     def thread(self, id1, id2, id3, id4, id5 = ''):
         workshopCode = id1
@@ -154,9 +147,6 @@ class ResourceController(BaseController):
            c.flagged = True
     
         if 'user' in session:
-            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-            c.isAdmin = isAdmin(c.authuser.id)
-            c.isScoped = isScoped(c.authuser, c.w)
             c.allowComments = c.resource['allowComments']
     
             if 'ratedThings_resource_overall' in c.authuser.keys():
@@ -169,9 +159,6 @@ class ResourceController(BaseController):
                 if c.resource.id in resRateDict.keys():
                     c.rating = getRatingByID(resRateDict[c.resource.id])
         else:            
-            c.isFacilitator = False
-            c.isAdmin = False
-            c.isScoped = False
             c.allowComments = False
     
         c.poster = getUserByID(c.resource.owner)
