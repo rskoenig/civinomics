@@ -91,10 +91,23 @@
 </%def>
 
 <%def name="followButton(user)">
-   <a class="btn round pull-right followButton" href="#">
-      <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
-      <span> Follow </span>
-   </a>
+    % if c.conf['read_only.value'] == 'true':
+          <% pass %>
+    % else:
+        <span class="button_container">
+        % if c.isFollowing:
+            <button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton following">
+            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
+            <span> Unfollow </span>
+            </button>
+        % else:
+            <button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton unfollow">
+            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
+            <span> Follow </span>
+            </button>
+        % endif
+        </span>
+    % endif
 </%def>
 
 <%def name="profileDashboard()">

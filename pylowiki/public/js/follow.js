@@ -14,8 +14,8 @@ $('button.followButton').live('click', function(e){
         
         $button.removeClass('following');
         $button.removeClass('unfollow');
-        var bText = '+Follow';
-        $button.text(bText);
+        var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Follow </span>';
+        $button.html(bText);
     } else {
         
         urlString = urlString + '/follow/';
@@ -26,21 +26,21 @@ $('button.followButton').live('click', function(e){
         });
                    
         $button.addClass('following');
-        var bText = '-Unfollow';
-        $button.text(bText);
+        var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unfollow </span>';
+        $button.html(bText);
     }
 });
 
-$('button.followButton').hover(function(){
+$('button.followButtonFoo').hover(function(){
      $button = $(this);
     if($button.hasClass('following')){
         $button.removeClass('unfollow');
         $button.addClass('unfollow');
-        $button.text('-Unfollow');
+        $button.text('Unfollow');
     }
 }, function(){
     if($button.hasClass('following')){
         $button.removeClass('unfollow');
-        $button.text('+Following');
+        $button.text('Following');
     }
 });

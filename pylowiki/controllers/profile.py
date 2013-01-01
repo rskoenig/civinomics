@@ -47,10 +47,8 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = False
-        if 'user' in session and c.authuser:
+        if 'user' in session and c.authuser.id != c.user.id:
            c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
-        else:
-           c.isFollowing = False
 
         fList = getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
@@ -89,17 +87,17 @@ class ProfileController(BaseController):
 
         uList = getUserFollows(c.user.id)
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.followingUsers = []
+        c.following = []
         for u in uList:
            uID = u['thingID']
-           c.followingUsers.append(getUserByID(uID))
+           c.following.append(getUserByID(uID))
 
         uList = getUserFollowers(c.user.id)
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
-        c.userFollowers = []
+        c.followers = []
         for u in uList:
            uID = u.owner
-           c.userFollowers.append(getUserByID(uID))
+           c.followers.append(getUserByID(uID))
 
         if 'user' in session and (c.user.id == c.authuser.id or isAdmin(c.authuser.id)):
             pList = getMemberPosts(c.user, 0)
