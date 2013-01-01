@@ -7,7 +7,7 @@ import webhelpers.paginate as paginate
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped
+from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped, setWorkshopPrivs
 from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
 from pylowiki.lib.db.comment import getCommentByCode
 from pylowiki.lib.utils import urlify
@@ -32,8 +32,9 @@ class DiscussionController(BaseController):
         workshopCode = id1
         workshopURL = id2
         c.w = getWorkshopByCode(workshopCode)
+        setWorkshopPrivs(c.w)
         if c.w['public_private'] != 'public':
-            if 'user' not in session or not isScoped(c.authuser, c.w):
+            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                     return render('/derived/404.bootstrap')
 
         c.rating = False

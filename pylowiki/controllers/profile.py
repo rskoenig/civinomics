@@ -52,16 +52,6 @@ class ProfileController(BaseController):
         else:
            c.isFollowing = False
 
-        
-        if 'user' in session and c.user.id == c.authuser.id:
-            c.pworkshops = []
-            privList = getPrivateMemberWorkshops(c.user['email'])
-            for p in privList:
-                w = getWorkshopByID(p.owner)
-                c.pworkshops.append(w)
-        else:
-            c.pmembers = False
-
         fList = getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
         c.pendingFacilitators = []
@@ -85,6 +75,17 @@ class ProfileController(BaseController):
         for f in fList:
            wID = f['thingID']
            c.followingWorkshops.append(getWorkshopByID(wID))
+           
+        if 'user' in session and c.user.id == c.authuser.id:
+            #c.pworkshops = []
+            privList = getPrivateMemberWorkshops(c.user['email'])
+            for p in privList:
+                w = getWorkshopByID(p.owner)
+                #c.pworkshops.append(w)
+                c.followingWorkshops.append(w)
+        else:
+            c.pmembers = False
+
 
         uList = getUserFollows(c.user.id)
         ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))

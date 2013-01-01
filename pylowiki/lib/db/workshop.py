@@ -3,7 +3,7 @@ from pylowiki.model import Thing, meta, Data
 from sqlalchemy import and_
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
-from pylowiki.lib.db.user import getUserByID, getUserByEmail
+from pylowiki.lib.db.user import getUserByID, getUserByEmail, isAdmin
 from pylowiki.lib.db.pmember import getPrivateMember, getPrivateMemberByCode
 from pylowiki.lib.db.geoInfo import getGeoScope
 from pylowiki.lib.db.activity import getDiscussionCommentsSince
@@ -195,12 +195,33 @@ def isScoped(user, workshop):
     if workshop['public_private'] != 'public':
         pTest = getPrivateMember(workshop['urlCode'], user['email'])
         if pTest:
-           return True
-           
-    if isFacilitator(user.id, workshop.id):
-        return True        
+            return True
+        else:
+            return False
+    else:
+        return True       
        
     return False
+    
+def setWorkshopPrivs(workshop):
+    c.privs = {}
+    # Civinomics administrator
+    c.privs['admin'] = False
+    # Workshop facilitator
+    c.privs['facilitator'] = False
+    # Logged in member with privs to add objects
+    c.privs['participant'] = False
+    # Not logged in, privs to visit this specific workshop
+    c.privs['guest'] = isGuest(workshop)
+    # Not logged in, visitor privs in all public workshops
+    c.privs['visitor'] = True
+    
+    if 'user' in session:
+        c.privs['admin'] = isAdmin(c.authuser.id)
+        c.privs['facilitator'] = isFacilitator(c.authuser.id, workshop.id)
+        c.privs['participant'] = isScoped(c.authuser, workshop)
+        c.privs['guest'] = False
+        c.privs['visitor'] = False   
     
 def sendPMemberInvite(workshop, sender, recipient, message):
     workshopName = workshop['title']

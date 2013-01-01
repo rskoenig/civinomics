@@ -24,7 +24,7 @@
         %>
         <div class="media-body">
             <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading">${workshop['title']}</h5></a>
-            Short, one sentence description here
+            ${workshop['description']}
         </div>
     </div>
 </%def>
