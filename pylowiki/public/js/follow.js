@@ -14,7 +14,11 @@ $('button.followButton').live('click', function(e){
         
         $button.removeClass('following');
         $button.removeClass('unfollow');
-        var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Follow </span>';
+        if(urlList[0] == 'profile'){
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Follow </span>';
+        } else {
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Watch </span>';            
+        }
         $button.html(bText);
     } else {
         
@@ -26,7 +30,11 @@ $('button.followButton').live('click', function(e){
         });
                    
         $button.addClass('following');
-        var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unfollow </span>';
+        if(urlList[0] == 'profile'){
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unfollow </span>';
+        } else {
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unwatch </span>';
+        }
         $button.html(bText);
     }
 });

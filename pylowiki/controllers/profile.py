@@ -73,6 +73,8 @@ class ProfileController(BaseController):
         for f in fList:
            wID = f['thingID']
            c.followingWorkshops.append(getWorkshopByID(wID))
+        # kludge for now
+        c.watching = c.followingWorkshops
            
         if 'user' in session and c.user.id == c.authuser.id:
             #c.pworkshops = []

@@ -65,12 +65,13 @@
 </div><!--/.row-->
 
 <%def name="extraScripts2()">
-   <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
-   <script>
+    <script src="/js/follow.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
+    <script>
       var $doc = $(document);
       $(document).ready(function() {
          $.fn.foundationClearing         ? $doc.foundationClearing() : null;
          
       });
-   </script>
+    </script>
 </%def>

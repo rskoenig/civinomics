@@ -734,6 +734,9 @@ class WorkshopController(BaseController):
             if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                     return render('/derived/404.bootstrap')            
 
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = isFollowing(c.authuser.id, c.w.id)
         
         fList = []
         for f in (getFacilitatorsByWorkshop(c.w.id)):
