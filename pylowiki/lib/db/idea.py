@@ -14,7 +14,7 @@ log = logging.getLogger(__name__)
 
 def getIdea(urlCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'idea').filter(Thing.data.any(wc('urlCode', code))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'idea').filter(Thing.data.any(wc('urlCode', urlCode))).one()
     except:
         return False
 

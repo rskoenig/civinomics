@@ -7,7 +7,7 @@ ${lib.return_to()}
 
 <div class="spacer" style="height:20px;"></div>
 <%
-    d = {'discussion':'Topic', 'resource':'Resource'}
+    d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea'}
     showItem(d)
 %>
 
@@ -23,6 +23,8 @@ ${lib.return_to()}
                             thing = c.discussion
                         elif c.listingType == 'resource':
                             thing = c.resource
+                        elif c.listingType == 'idea':
+                            thing = c.idea
                         showItemTitle(thing)
                     %>
                 </div><!--/.row-fluid-->

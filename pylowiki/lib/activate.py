@@ -3,7 +3,6 @@ import logging
 
 from pylons.controllers.util import redirect
 from pylons import session, config, request, tmpl_context as c
-from decorator import decorator #easy_install decorator   http://pypi.python.org/pypi/decorator
 import helpers as h
 
 from pylowiki.model import get_user_by_email, commit

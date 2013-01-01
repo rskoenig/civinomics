@@ -28,6 +28,13 @@ def getDiscussions():
     except:
         return False
     
+def getDiscussionForThing(parent):
+    thisKey = '%sCode' % parent.objType
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
+    except:
+        return False
+
 def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'discussion')\

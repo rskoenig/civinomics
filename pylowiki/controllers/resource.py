@@ -23,8 +23,6 @@ from tldextract import extract
 from pylowiki.lib.base import BaseController, render
 import pickle
 
-#from pylowiki.lib.points import readThisPage
-
 import pylowiki.lib.helpers as h
 import simplejson as json
 
