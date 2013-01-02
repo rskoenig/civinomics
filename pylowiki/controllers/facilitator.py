@@ -35,7 +35,7 @@ class FacilitatorController(BaseController):
            wCode = iList[0]
            wURL = iList[1]
            w = getWorkshop(wCode, urlify(wURL))
-           Facilitator(c.user.id, w.id, 1)
+           Facilitator(c.user, w, 1)
            # Becasue the __init__ function doesn't return the object... sigh
            fList = getFacilitatorsByUserAndWorkshop(c.user.id, w.id)
            Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)

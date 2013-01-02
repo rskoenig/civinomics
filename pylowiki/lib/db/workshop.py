@@ -25,12 +25,6 @@ from email.mime.image import MIMEImage
 
 log = logging.getLogger(__name__)
 
-# Only support for one facilitator.  Otherwise we need to make a list and add/remove from it
-def changeFacilitator(workshop, facilitator):
-    workshop['facilitator'] = facilitator
-    commit(workshop)
-    return True
-
 def getWorkshops( deleted = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).all()
@@ -363,6 +357,6 @@ class Workshop(object):
 
         commit(w)
         
-        f = Facilitator( c.authuser.id, w.id ) 
+        f = Facilitator( c.authuser, w ) 
         
         
