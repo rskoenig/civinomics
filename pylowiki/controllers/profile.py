@@ -14,7 +14,7 @@ from pylons import config
 from pylowiki.lib.images import saveImage, resizeImage
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, checkPassword, getUserPosts, getUserByEmail
-from pylowiki.lib.db.activity import getMemberPosts
+from pylowiki.lib.db.activity import getMemberPosts, getAllMemberPosts
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
@@ -68,7 +68,6 @@ class ProfileController(BaseController):
                     c.facilitatorWorkshops.append(myW)
 
         fList = getWorkshopFollows(c.user.id)
-        ##log.info('fList is %s userID is %s'%(fList, c.user.id))
         c.followingWorkshops = []
         for f in fList:
            wID = f['thingID']
@@ -77,34 +76,32 @@ class ProfileController(BaseController):
         c.watching = c.followingWorkshops
            
         if 'user' in session and c.user.id == c.authuser.id:
-            #c.pworkshops = []
             privList = getPrivateMemberWorkshops(c.user['email'])
             for p in privList:
                 w = getWorkshopByID(p.owner)
-                #c.pworkshops.append(w)
                 c.followingWorkshops.append(w)
         else:
             c.pmembers = False
 
-
         uList = getUserFollows(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
         c.following = []
         for u in uList:
            uID = u['thingID']
            c.following.append(getUserByID(uID))
 
         uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
         c.followers = []
         for u in uList:
            uID = u.owner
            c.followers.append(getUserByID(uID))
 
-        if 'user' in session and (c.user.id == c.authuser.id or isAdmin(c.authuser.id)):
-            pList = getMemberPosts(c.user, 0)
+        if 'user' in session:
+            if isAdmin(c.authuser.id):
+                pList = getAllMemberPosts(c.user)
+            elif c.user.id == c.authuser.id:
+                pList = getMemberPosts(c.user, disabled = '1') + getMemberPosts(c.user, disabled = '0')
         else:
-            pList = getMemberPosts(c.user, 1)
+            pList = getMemberPosts(c.user)
         c.totalPoints = 0
         c.suggestions = []
         c.resources = []
@@ -179,10 +176,10 @@ class ProfileController(BaseController):
         else:
             c.comUpsPercent = 0
 
-        #return render("/derived/profile.bootstrap")
         return render("/derived/6_profile.bootstrap")
     
     def stats(self, id1, id2):
+        # Broken
         user = get_user(id1, id2)
         if not user:
             return json.dumps({"error":"user not found"})
@@ -201,6 +198,7 @@ class ProfileController(BaseController):
         return json.dumps(retObj)
     
     def statsCSV(self, id1, id2):
+        # Broken
         user = get_user(id1, id2)
         if not user:
             return json.dumps({"error":"user not found"})
