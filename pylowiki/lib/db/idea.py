@@ -39,7 +39,7 @@ def Idea(user, title, workshop):
     idea['url'] = urlify(title[:20])
     commit(idea)
     idea['urlCode'] = toBase62(idea)
-    d = Discussion(owner = user, discType = 'general', attachedThing = idea, title = title)
+    d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop)
     idea = generic.linkChildToParent(idea, workshop)
     commit(idea)
     return idea

@@ -10,7 +10,7 @@ from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped, setWorkshopPri
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getResourceByID, getResource, getActiveResourcesByParentID
 from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
-from pylowiki.lib.db.discussion import getDiscussionByID
+from pylowiki.lib.db.discussion import getDiscussionForThing
 from pylowiki.lib.db.comment import getCommentByCode
 from pylowiki.lib.db.rating import getRatingByID
 from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags, clearFlags
@@ -103,7 +103,8 @@ class ResourceController(BaseController):
             if resource.id == c.resource.id:
                 c.resources.pop(i)
                 break
-        c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
+        #c.discussion = getDiscussionByCode(c.resource['discussionCode'])
+        c.discussion = getDiscussionForThing(c.resource)
         
         c.listingType = 'resource'
         return render('/derived/6_item_in_listing.bootstrap')
@@ -170,7 +171,7 @@ class ResourceController(BaseController):
             if resource.id == c.resource.id:
                 c.resources.pop(i)
                 break
-        c.discussion = getDiscussionByID(int(c.resource['discussion_id']))
+        c.discussion = getDiscussionForThing(c.resource)
         c.rootComment = getCommentByCode(commentCode)
         c.listingType = 'resource'
         return render('/derived/6_item_in_listing.bootstrap')
@@ -368,10 +369,6 @@ class ResourceController(BaseController):
             rerror = 1
             rerrorMsg = rerrorMsg + ' Resource link required.'
 
-        if not comment or comment == '':
-            rerror = 1
-            rerrorMsg = rerrorMsg + ' Resource comment required.'
-
         if rerror:
             alert = {'type':'error'}
             alert['title'] = "Error."
@@ -388,7 +385,8 @@ class ResourceController(BaseController):
             c.heading = "OTHER RESOURCES"
             c.resources = getResourcesByWorkshopCode(c.w['urlCode'])
 
-            return render('/derived/resource_edit.bootstrap')
+            #return render('/derived/resource_edit.bootstrap')
+            return render('/derived/6_add_to_listing.bootstrap')
 
         else:
             w = getWorkshopByCode(code)
@@ -423,7 +421,8 @@ class ResourceController(BaseController):
                 session['alert'] = alert
                 session.save()
 
-                return redirect('/workshop/%s/%s/suggestion/%s/%s'%(code, url, suggestionCode, suggestionURL))
+                #return redirect('/workshop/%s/%s/suggestion/%s/%s'%(code, url, suggestionCode, suggestionURL))
+                return redirect(session['return_to'])
             else:
                 r = Resource(link, title, comment, c.authuser, allowComments, w)
                 alert = {'type':'success'}
@@ -438,9 +437,8 @@ class ResourceController(BaseController):
 
                 w['numResources'] = int(w['numResources']) + 1
                 commit(w)
-                return redirect('/workshop/%s/%s'%(code, url))
-
-        
+                #return redirect('/workshop/%s/%s'%(code, url))
+                return redirect(session['return_to'])
 
     @h.login_required
     def modResource(self, id1, id2, id3, id4):

@@ -144,7 +144,6 @@ class Resource(object):
         a['title'] = title
         a['comment'] = comment
         a['allowComments'] = allowComments
-        #a['workshopCode'] = workshop['urlCode']
         a = generic.linkChildToParent(a, workshop)
         if parent != None:
              a['parent_id'] = parent.id
@@ -166,7 +165,6 @@ class Resource(object):
                 d = Discussion(owner = owner, discType = 'sresource', attachedThing = a, workshop = workshop, title = title, suggestion = parent)
         else:
             d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
-        a['discussion_id'] = d.d.id
         self.a = a
         commit(a)
         data = a['comment']

@@ -228,7 +228,7 @@ class DiscussionController(BaseController):
             return redirect('/workshop/%s/%s/addDiscussion' % (code, url))
 
         else:
-            d = Discussion(owner = c.authuser, discType = 'general', attachedThing = w, title = title, text = text)
+            d = Discussion(owner = c.authuser, discType = 'general', attachedThing = w, title = title, text = text, workshop = w)
             r = Revision(c.authuser, text, d.d)
             commit(w)
         

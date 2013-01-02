@@ -123,43 +123,44 @@ class Comment(object):
     # parent is a Thing id
     def __init__(self, data, owner, discussion, parent = 0):
         w = getWorkshopByCode(discussion['workshopCode'])
-        c = Thing('comment', owner.id)
-        c = generic.linkChildToParent(c, w)
-        c['disabled'] = '0'
-        c['deleted'] = '0'
-        c['pending'] = '0'
-        c['parent'] = parent
-        c['children'] = '0'
-        c['data'] = data
+        thisComment = Thing('comment', owner.id)
+        thisComment = generic.linkChildToParent(thisComment, w)
+        thisComment = generic.linkChildToParent(thisComment, discussion)
+        thisComment['disabled'] = '0'
+        thisComment['deleted'] = '0'
+        thisComment['pending'] = '0'
+        thisComment['parent'] = parent
+        thisComment['children'] = '0'
+        thisComment['data'] = data
         if len(data) > 10:
            cData = data[:10]
         else:
            cData = data
 
-        c['discussion_id'] = discussion.id
-        c['pending'] = '0'
-        c['ups'] = '0'
-        c['downs'] = '0'
-        c['lastModified'] = datetime.now().ctime()
-        commit(c)
-        c['urlCode'] = toBase62(c)
-        commit(c)
+        thisComment['discussion_id'] = discussion.id
+        thisComment['pending'] = '0'
+        thisComment['ups'] = '0'
+        thisComment['downs'] = '0'
+        thisComment['lastModified'] = datetime.now().ctime()
+        commit(thisComment)
+        thisComment['urlCode'] = toBase62(thisComment)
+        commit(thisComment)
         
         if parent == 0:
-            c['isRoot'] = '1'
+            thisComment['isRoot'] = '1'
         else:
-            c['isRoot'] = '0'
+            thisComment['isRoot'] = '0'
             parentComment = getComment(parent)
             children = [int(item) for item in parentComment['children'].split(',')]
             if children[0] == 0:
-                parentComment['children'] = c.id
+                parentComment['children'] = thisComment.id
             else:
-                parentComment['children'] = parentComment['children'] + ',' + str(c.id)
+                parentComment['children'] = parentComment['children'] + ',' + str(thisComment.id)
             commit(parentComment)
         
-        r = Revision(owner, data, c)
-        self.setDiscussionProperties(c, discussion)
-        self.c = c
+        r = Revision(owner, data, thisComment)
+        self.setDiscussionProperties(thisComment, discussion)
+        self.c = thisComment
         
     def setDiscussionProperties(self, comment, discussion):
         if int(comment['isRoot']) == 1: 

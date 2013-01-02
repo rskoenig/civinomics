@@ -57,6 +57,8 @@ class Discussion(object):
                     title                ->    The title of the discussion, in string format
                     attachedThing        ->    The Thing to which we are attaching this discussion
                     discType             ->    Used to determine special properties, like a background discussion or a feedback discussion in a workshop
+                    workshop             ->    Links the discussion to the workshop.  The discussion type is used to differentiate between a discussion 
+                                               linked to, say, an idea, and a discussion linked directly to the workshop.
                     
                     (optional)
                     text                 ->    Some extra description, if provided
@@ -67,6 +69,7 @@ class Discussion(object):
             d = Thing('discussion', kwargs['owner'].id)
         title = kwargs['title']
         discType = kwargs['discType']
+        workshop = kwargs['workshop']
         d['discType'] = discType
         d['disabled'] = '0'
         d['deleted'] = '0'
@@ -75,6 +78,7 @@ class Discussion(object):
         d['title'] = title
         d['url'] = urlify(title)
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
+        d = generic.linkChildToParent(d, workshop)
         
         # Optional arguments
         if 'text' in kwargs:

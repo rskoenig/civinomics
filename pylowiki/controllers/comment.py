@@ -208,7 +208,7 @@ class CommentController(BaseController):
         return redirect(backlink)
     
     @h.login_required
-    def addComment(self):
+    def commentAddHandler(self):
         try:
             request.params['submit']
             parentCommentCode = request.params['parentCode']
@@ -229,7 +229,6 @@ class CommentController(BaseController):
                 discussion = getDiscussionByID(int(parentComment['discussion_id']))
             elif 'discussionCode' in request.params:
                 # Root level comment
-                log.info('root level comment')
                 discussion = getDiscussionByCode(request.params['discussionCode'])
                 parentCommentID = 0
             comment = Comment(data, c.authuser, discussion, parentCommentID)

@@ -4,7 +4,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop as workshopLib
-import pylowiki.lib.db.idea as idea
+import pylowiki.lib.db.idea as ideaLib
 import pylowiki.lib.db.discussion as discussionLib
 from pylowiki.lib.utils import urlify
 import pylowiki.lib.helpers as h
@@ -23,7 +23,7 @@ class IdeaController(BaseController):
 
     def listing(self, workshopCode, workshopURL):
         c.title = c.w['title']
-        ideas = idea.getIdeasInWorkshop(workshopCode)
+        ideas = ideaLib.getIdeasInWorkshop(workshopCode)
         if not ideas:
             c.ideas = []
         else:
@@ -47,11 +47,11 @@ class IdeaController(BaseController):
         if 'submit' not in request.params or 'title' not in request.params:
             return redirect(session['return_to'])
         
-        newIdea = idea.Idea(c.authuser, request.params['title'], c.w)
+        newIdea = ideaLib.Idea(c.authuser, request.params['title'], c.w)
         return redirect(session['return_to'])
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
-        c.idea = idea.getIdea(ideaCode)
+        c.idea = ideaLib.getIdea(ideaCode)
         c.discussion = discussionLib.getDiscussionForThing(c.idea)
         c.listingType = 'idea'
         return render('/derived/6_item_in_listing.bootstrap')

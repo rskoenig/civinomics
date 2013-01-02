@@ -18,13 +18,13 @@
 <%def name="comments(thing, discussion, **kwargs)">
     <%
         if 'user' in session and discussion.objType != 'comment':
-            addCommentToDiscussion(thing)
+            addCommentToDiscussion(thing, discussion)
         displayDiscussion(thing, discussion)
     %>
 </%def>
 
 
-<%def name="addCommentToDiscussion(thing)">
+<%def name="addCommentToDiscussion(thing, discussion)">
     ########################################################################
     ##
     ## Add a comment to the root of the discussion tree
@@ -32,9 +32,9 @@
     ########################################################################
     <div class="row-fluid">
         <div class="span12">
-            <form action="/addComment">
+            <form action="/comment/add/handler">
                 <input type="hidden" id="type" name="type" value="${thing.objType}" />
-                <input type="hidden" name="discussionCode" value="${thing['urlCode']}" />
+                <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
                 <input type="hidden" name="parentCode" value="0" />
                 <fieldset>
                     <legend>Add comment</legend>
@@ -220,7 +220,7 @@
     ## Reply
     <div class="row-fluid collapse" id="${replyID}">
         <div class="span11 offset1">
-            <form action="/addComment" method="post">
+            <form action="/comment/add/handler" method="post">
                 <label>reply</label>
                 <textarea name="comment-textarea" class="comment-reply span12"></textarea>
                 <input type="hidden" name="parentCode" value="${comment['urlCode']}" />
