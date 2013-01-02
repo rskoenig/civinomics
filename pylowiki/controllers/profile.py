@@ -95,6 +95,7 @@ class ProfileController(BaseController):
            uID = u.owner
            c.followers.append(getUserByID(uID))
 
+        pList = []
         if 'user' in session:
             if isAdmin(c.authuser.id):
                 pList = getAllMemberPosts(c.user)
