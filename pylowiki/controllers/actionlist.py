@@ -98,7 +98,7 @@ class ActionlistController(BaseController):
         return render('/derived/list_surveys.bootstrap')
 
     def help( self ):
-        return render('/derived/help.bootstrap')
+        return render('/derived/6_help.bootstrap')
 
     def searchWorkshops( self, id1, id2  ):
         log.info('searchWorkshops %s %s' % (id1, id2))

@@ -1,8 +1,5 @@
-<%inherit file = "/base/template.bootstrap"/>
-<%namespace name="lib" file="/lib/mako_lib.mako" />
-<%namespace name="helpers" file="/derived/help/helpers.mako" />
-
-${lib.return_to()}
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="helpers" file="/lib/derived/6_help.mako" />
 
 <div class="container-fluid">
     <div class="well">
@@ -38,16 +35,4 @@ ${lib.return_to()}
         </div><!-- span12 -->
     </div><!-- row-fluid -->
 </div><!-- container-fluid -->
-
-<%def name = 'extraHTML()'>
-
-</%def>
-
-<%def name = 'extraStyles()'>
-
-</%def>
-
-<%def name = 'extraScripts()'>
-
-</%def>
 
