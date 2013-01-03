@@ -71,7 +71,7 @@
                     noChecked = ''
             %>
             <strong>What can participants do in your workshop:</strong><br />
-            Participants can add ideas: <input type=radio name=allowSuggestions value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowSuggestions value=0 ${noChecked}> No<br /><br />
+            Participants can add ideas: <input type="radio" name="allowSuggestions" value="1" ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type="radio" name="allowSuggestions" value="0" ${noChecked}> No<br /><br />
             <% 
                 if 'allowResources' in c.w and c.w['allowResources'] == '1':
                     yesChecked = 'checked'
@@ -83,7 +83,7 @@
                     yesChecked = 'checked'
                     noChecked = ''
             %>
-            Participants can add information resource links: <input type=radio name=allowResources value=1 ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type=radio name=allowResources value=0 ${noChecked}> No<br />
+            Participants can add information resource links: <input type="radio" name="allowResources" value="1" ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type="radio" name="allowResources" value="0" ${noChecked}> No<br />
             <br />
             % if c.w['startTime'] == '0000-00-00':
                 <button type="submit" class="btn btn-warning">Save Settings and Continue</button>
@@ -227,7 +227,7 @@
                 <textarea rows=6 cols=50 name="newMember"/></textarea>
                 </div><!-- span6 -->
                 <div class="span6">
-                Click to email an invitation: <input type=checkbox name=sendInvite value=sendInvite><br />
+                Click to email an invitation: <input type="checkbox" name="sendInvite" value="sendInvite"><br />
                 Add optional message to invitation: <textarea rows=2 cols=50 name="inviteMsg"/></textarea><br />
                 <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
 
@@ -284,7 +284,7 @@
         <div class="span1"></div><div class="span2">Country:</div><!-- span2 -->
         <div class="span9"><select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
             <option value="0">Select a country</option>
-            <option ${countrySelected}>United States</option>
+            <option value="${countrySelected}">United States</option>
         </select>
         </div><!-- span9 -->
     </span>

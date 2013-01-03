@@ -18,7 +18,7 @@
         Message to Members:
         <br />
         <textarea name="motd" rows="5" cols="50">foo</textarea> &nbsp; &nbsp;
-        <input type=radio name="enable" value="1" > Publish&nbsp;&nbsp;&nbsp;<input type=radio name="enable" value="0" > Unpublish
+        <input type="radio" name="enable" value="1" > Publish&nbsp;&nbsp;&nbsp;<input type="radio" name="enable" value="0" > Unpublish
         <br /><br />
         <button type="submit" class="btn btn-warning">Save Changes</button>
         </form>

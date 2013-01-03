@@ -48,7 +48,7 @@
        	        <div class="control-group">
 				    <label for="orgLink" class="control-label">Enter the URL to your website:</label>
     			    <div class="controls">
-                        <input type=text name="websiteLink" value="${c.user['websiteLink']}">
+                        <input type="text" name="websiteLink" value="${c.user['websiteLink']}">
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
@@ -128,8 +128,8 @@
             <div class="control-group">
                 <label for="enable" class="control-label">Reason for ${eAction}</label>
                 <div class="controls">
-                    <input type=text name=enableUserReason>
-                    <input type=radio name="verifyEnableUser" value="0"> Verify ${eAction}
+                    <input type="text" name="enableUserReason">
+                    <input type="radio" name="verifyEnableUser" value="0"> Verify ${eAction}
                     &nbsp;&nbsp;<button type="submit" class="btn btn-warning">${eAction} Member</button>
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
@@ -152,8 +152,8 @@
             <div class="control-group">
                 <label for="setPrivs" class="control-label">Reason for Change</label>
                 <div class="controls">
-                        <input type=text name=accessChangeReason>
-                        <input type=radio name="accessChangeVerify" value="0"> Verify Change
+                        <input type="text" name="accessChangeReason">
+                        <input type="radio" name="accessChangeVerify" value="0"> Verify Change
                         &nbsp;&nbsp;<button type="submit" name="setPrivs" class="btn btn-warning">Change Access</button>
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->

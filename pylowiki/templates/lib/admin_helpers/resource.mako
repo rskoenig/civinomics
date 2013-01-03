@@ -55,7 +55,7 @@
         <strong>Clear Resource Flags</strong>
         <form name="note_resource" id="note_resource" class="left" action = "/clearResourceFlagsHandler/${c.resource['urlCode']}/${c.resource['url']}" enctype="multipart/form-data" method="post" >
             Reason for clearing flags: &nbsp;
-            <input type=text name=clearResourceFlagsReason>
+            <input type="text" name="clearResourceFlagsReason">
             <br /><br />
             <button type="submit" class="btn btn-warning">Clear Flags</button>
             <br /><br />
@@ -65,39 +65,39 @@
     <br /><br /><br />
     <strong>Post Event Note on Resource</strong>
     <form name="note_resource" id="note_resource" class="left" action = "/noteResourceHandler" enctype="multipart/form-data" method="post" >
-    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-    <input type=hidden name=workshopURL value="${c.w['url']}">
-    <input type=hidden name=resourceCode value="${c.resource['urlCode']}">
-    <input type=hidden name=resourceURL value="${c.resource['url']}">
+    <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+    <input type="hidden" name="workshopURL" value="${c.w['url']}">
+    <input type="hidden" name="resourceCode" value="${c.resource['urlCode']}">
+    <input type="hidden" name="resourceURL" value="${c.resource['url']}">
     <br />
     Note: &nbsp;
-    <input type=text name=noteResourceText><br /><br />
+    <input type="text" name="noteResourceText"><br /><br />
     <button type="submit" class="btn btn-warning">Save Note</button>
 </form>
     <br /><br /><br />
     <strong>Moderate Resource</strong>
 	% if c.resource['deleted'] == '0':
 		<form name="moderate_resource" id="moderate_resource" class="left" action = "/modResourceHandler" enctype="multipart/form-data" method="post" >
-	    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-	    <input type=hidden name=workshopURL value="${c.w['url']}">
-	    <input type=hidden name=resourceCode value="${c.resource['urlCode']}">
-	    <input type=hidden name=resourceURL value="${c.resource['url']}">
+	    <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+	    <input type="hidden" name="workshopURL" value="${c.w['url']}">
+	    <input type="hidden" name="resourceCode" value="${c.resource['urlCode']}">
+	    <input type="hidden" name="resourceURL" value="${c.resource['url']}">
 	    <br /><br />
 	    Reason for action: &nbsp;
-	    <input type=text name=modResourceReason><br /><br />
-	    Click to verify&nbsp;<input type=radio name=verifyModResource> &nbsp; &nbsp;
+	    <input type="text" name="modResourceReason"><br /><br />
+	    Click to verify&nbsp;<input type="radio" name="verifyModResource"> &nbsp; &nbsp;
 	    % if c.resource['disabled'] == '0':
-	       <button type="submit" name=modType value="disable" class="btn btn-warning">
+	       <button type="submit" name="modType" value="disable" class="btn btn-warning">
 	       		<i class="icon-ban-circle icon-white"></i> Disable Resource
 	       </button>
-	       <button type="submit" name=modType value="delete" class="btn btn-danger">
+	       <button type="submit" name="modType" value="delete" class="btn btn-danger">
 	       	   <i class="icon-trash icon-white"></i> Delete Resource
 	       </button>
 	    % else:
-	       <button type="submit" name=modType value="disable" class="btn btn-warning">
+	       <button type="submit" name="modType" value="disable" class="btn btn-warning">
 	           <i class="icon-ok icon-white"></i> Enable Resource
 	       </button>
-	       <button type="submit" name=modType value="delete" class="btn btn-danger">
+	       <button type="submit" name="modType" value="delete" class="btn btn-danger">
 	       	   <i class="icon-trash icon-white"></i> Delete Resource
 	       </button>
 	    % endif

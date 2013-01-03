@@ -27,7 +27,7 @@
         pChecked = ''
         uChecked = 'checked'
     %>
-    <input type=radio name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type=radio name="enableMOTD" value="0" ${uChecked}> Unpublish Message
+    <input type="radio" name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type="radio" name="enableMOTD" value="0" ${uChecked}> Unpublish Message
     <br /><br />
     % if c.w['startTime'] != '0000-00-00':
         % if c.w['deleted'] == '1':
@@ -39,8 +39,8 @@
            This unpublishes the workshop, removing it from lists of active workshops. It may be republished again later.<br />
            <% eAction = 'Unpublish' %>
         % endif
-        Reason: <input type=text name=eventReason id=eventReason> &nbsp; &nbsp;
-        <input type=radio name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type=radio name="verifyEnableWorkshop" value="0"> Verify ${eAction}
+        Reason: <input type="text" name="eventReason" id="eventReason"> &nbsp; &nbsp;
+        <input type="radio" name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type="radio" name="verifyEnableWorkshop" value="0"> Verify ${eAction}
     % endif
     <br /><br />
     <button type="submit" class="btn btn-warning">Save All Changes</button>
@@ -90,7 +90,7 @@
             % endif
             % if len(c.f) > 1 and fUser.id == c.authuser.id:
                 <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
-                    &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
+                    &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
                     <button type="submit" class="gold" value="Resign">Resign</button>
                     <br />
                 </form>
@@ -161,7 +161,7 @@
        % endif
        % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
            <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
-               &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
+               &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
                <button type="submit" class="gold" value="Resign">Resign</button>
            <br />
            </form>

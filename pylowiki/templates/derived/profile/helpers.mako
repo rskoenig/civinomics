@@ -850,8 +850,8 @@
         <li>
         <% workshop = getWorkshopByID(f['workshopID']) %>
         <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateHandler/">
-        <input type=hidden name=workshopCode value="${workshop['urlCode']}">
-        <input type=hidden name=workshopURL value="${workshop['url']}">
+        <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
+        <input type="hidden" name="workshopURL" value="${workshop['url']}">
         % if workshop['mainImage_hash'] == 'supDawg':
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
@@ -860,8 +860,8 @@
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
         % endif
         <br /> <br />
-        <button type="submit" name=acceptInvite class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
-        <button type="submit" name=declineInvite class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
+        <button type="submit" name="acceptInvite" class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
+        <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
         </form>
         <li>
         <% 
@@ -889,7 +889,7 @@
           <h2 class="civ-col">Invite This Member to Facilitate</h2>
           <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
           <br />
-          <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
+          <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name="inviteToFacilitate">
           % for myW in wList:
               <br />
               <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
