@@ -11,7 +11,8 @@ import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 
-from pylowiki.lib.images import saveImage, resizeImage
+from pylowiki.lib.images import saveImage, resizeImage, isImage, numImagesInDirectory
+from pylowiki.lib.db.imageIdentifier import getImageIdentifier
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, checkPassword, getUserPosts, getUserByEmail
 from pylowiki.lib.db.activity import getMemberPosts, getAllMemberPosts
@@ -25,6 +26,7 @@ from pylowiki.lib.db.flag import getFlags
 from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
 import simplejson as json
 import csv
+import os
 
 from hashlib import md5
 
@@ -696,6 +698,56 @@ class ProfileController(BaseController):
     
     def hashPicture(self, username, title):
         return md5(username + title).hexdigest()
+        
+    @h.login_required
+    def pictureHandler(self, id1, id2):
+        code = id1
+        url = id2
+        
+        c.user = get_user(code, url)
+        
+        session['confTab'] = "tab2"
+        session.save()
+        
+        if 'pictureFile' in request.params:
+            file = request.params['pictureFile']
+            imageFile = file.file
+            filename = file.filename
+            identifier = 'avatar'
+            hash = saveImage(imageFile, filename, c.user, 'avatar', c.user)
+            c.user['pictureHash'] = hash
+            resizeImage(identifier, hash, 200, 200, 'profile')
+            resizeImage(identifier, hash, 25, 25, 'thumbnail')
+            
+            alert = {'type':'success'}
+            alert['title'] = 'Upload complete. Profile picture updated.'
+            alert['content'] = ''
+            session['alert'] = alert
+            session.save()
+
+            i = getImageIdentifier(identifier)
+            directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
+            savename = hash + '.orig'
+            newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
+            st = os.stat(newPath)
+            l = []
+            d = {}
+            d['name'] = savename
+            d['size'] = st.st_size
+            if 'site_base_url' in config:
+                siteURL = config['site_base_url']
+            else:
+                siteURL = 'http://www.civinomics.com'
+            
+            d['url'] = '%s/images/%s/%s/orig/%s.orig' % (siteURL, identifier, directoryNumber, hash)
+            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.thumbnail' % (siteURL, identifier, directoryNumber, hash)
+            d['delete_url'] = ''
+            d['delete_type'] = "DELETE"
+            d['-'] = hash
+            d['type'] = 'image/png'
+            l.append(d)
+
+            return json.dumps(l)
 
     @h.login_required
     def followHandler(self, id1, id2):
@@ -741,7 +793,7 @@ class ProfileController(BaseController):
         if not isAdmin(c.authuser.id):
             return render("/derived/404.bootstrap")
 
-        session['confTab'] = "tab3"
+        session['confTab'] = "tab4"
         session.save()
         
         if 'verifyEnableUser' in request.params and 'enableUserReason' in request.params and len(request.params['enableUserReason']) > 0:
@@ -782,7 +834,7 @@ class ProfileController(BaseController):
         if not isAdmin(c.authuser.id):
             return render("/derived/404.bootstrap")
             
-        session['confTab'] = "tab3"
+        session['confTab'] = "tab4"
         session.save()
         if 'accessChangeReason' in request.params and request.params['accessChangeReason'] != '' and 'accessChangeVerify' in request.params:
             if c.user['accessLevel'] == '0':
