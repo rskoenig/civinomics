@@ -273,6 +273,7 @@ def make_map():
     map.connect('/profile/{editSubmit:editSubmit/?}', controller = 'profile', action = 'editSubmit')
     map.connect('/profile/{id1}/{id2}/{dashboard:dashboard/?}', controller = 'profile', action = 'dashboard', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{editHandler:editHandler/?}', controller = 'profile', action = 'editHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/picture/{handler:handler/?}', controller = 'profile', action = 'pictureHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{passwordHandler:passwordHandler/?}', controller = 'profile', action = 'passwordHandler', id1 = '{id1}', id2 = '{id2}')
     
     ################
