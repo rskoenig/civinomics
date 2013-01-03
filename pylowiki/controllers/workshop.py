@@ -675,7 +675,7 @@ class WorkshopController(BaseController):
                 c.resources = c.dresources 
 
         c.suggestions = suggestionLib.getActiveSuggestionsForWorkshop(workshopCode)
-        c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
+        c.suggestions = sort.sortContByAvgTop(c.suggestions, 'overall')
         c.dsuggestions = suggestionLib.getInactiveSuggestionsForWorkshop(workshopCode)
         # put disabled and deleted at the end
         if c.suggestions:
