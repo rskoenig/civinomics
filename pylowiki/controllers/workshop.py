@@ -11,32 +11,29 @@ import webhelpers.paginate as paginate
 from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-#from pylowiki.lib.db.workshop import Workshop, getWorkshop, getWorkshopByCode, isScoped, sendPMemberInvite, isGuest, setWorkshopPrivs
-import pylowiki.lib.db.workshop as workshopLib
-from pylowiki.lib.db.geoInfo import getScopeTitle, WorkshopScope, getGeoScope, getGeoTitles, getStateList, getCountyList, getCityList
-from pylowiki.lib.db.revision import get_revision
-from pylowiki.lib.db.slideshow import getSlideshow, getAllSlides
-from pylowiki.lib.db.slide import getSlide
-from pylowiki.lib.db.discussion import getDiscussionByID, getDiscussionsForWorkshop
-from pylowiki.lib.db.resource import getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getInactiveResourcesByWorkshopCode, getDisabledResourcesByWorkshopCode, getDeletedResourcesByWorkshopCode
-from pylowiki.lib.db.suggestion import getSuggestionsForWorkshop, getAdoptedSuggestionsForWorkshop, getActiveSuggestionsForWorkshop, getInactiveSuggestionsForWorkshop, getDisabledSuggestionsForWorkshop, getDeletedSuggestionsForWorkshop
-from pylowiki.lib.db.user import getUserByID
-from pylowiki.lib.db.facilitator import getFacilitatorsByWorkshop
-from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.tag import Tag, setWorkshopTagEnable
-from pylowiki.lib.db.motd import MOTD, getMessage
-from pylowiki.lib.db.pmember import PMember, getPrivateMembers, getPrivateMember, getPrivateMemberByCode
-from pylowiki.lib.db.follow import Follow, getFollow, isFollowing, getWorkshopFollowers
-from pylowiki.lib.db.event import Event
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.revision     as revisionLib
+import pylowiki.lib.db.slideshow    as slideshowLib
+import pylowiki.lib.db.slide        as slideLib
+import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.resource     as resourceLib
+import pylowiki.lib.db.suggestion   as suggestionLib
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.rating       as ratingLib
+import pylowiki.lib.db.tag          as tagLib
+import pylowiki.lib.db.motd         as motdLib
+import pylowiki.lib.db.pmember      as pMemberLib
+import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.db.event        as eventLib
 
-from pylowiki.lib.utils import urlify
-from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
+import pylowiki.lib.db.dbHelpers as dbHelpers
+import pylowiki.lib.utils as utils
+import pylowiki.lib.sort as sort
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
-from pylowiki.lib.db.dbHelpers import commit
-
-import re
 
 log = logging.getLogger(__name__)
 
@@ -110,8 +107,8 @@ class WorkshopController(BaseController):
     ###################################################
 
     def guest(self, guestCode, workshopCode):
-        pMember = getPrivateMemberByCode(guestCode)
-        workshop = getWorkshopByCode(workshopCode)
+        pMember = pMemberLib.getPrivateMemberByCode(guestCode)
+        workshop = workshopLib.getWorkshopByCode(workshopCode)
         session['guestCode'] = guestCode
         session['workshopCode'] = workshopCode
         session.save()
@@ -125,13 +122,13 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab1"
         session.save()
 
-        c.w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
 
-        slideshow = getSlideshow(c.w['mainSlideshow_id'])
-        c.slideshow = getAllSlides(slideshow.id)
+        slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = slideshowLib.getAllSlides(slideshow.id)
 
         werror = 0
         wchanges = 0
@@ -147,7 +144,7 @@ class WorkshopController(BaseController):
             if wTitle and wTitle != c.w['title']:
                 c.w['title'] = wTitle
                 oldTitle = c.w['url']
-                c.w['url'] = urlify(wTitle)
+                c.w['url'] = utils.urlify(wTitle)
                 wchanges = 1
                 weventMsg += "Updated name. "
         else:
@@ -207,8 +204,8 @@ class WorkshopController(BaseController):
                 
         # save successful changes
         if wchanges:
-            commit(c.w)
-            Event('Workshop Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+            dbHelpers.commit(c.w)
+            eventLib.Event('Workshop Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
         else:
             werror = 1
             werrMsg = "No changes submitted."
@@ -219,7 +216,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
         else:
-            commit(c.w)
+            dbHelpers.commit(c.w)
             alert = {'type':'success'}
             alert['title'] = weventMsg
             session['alert'] = alert
@@ -238,8 +235,8 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab3"
         session.save()
 
-        c.w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
             
@@ -264,8 +261,8 @@ class WorkshopController(BaseController):
    
         # save successful changes
         if wchanges:
-            commit(c.w)
-            Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+            dbHelpers.commit(c.w)
+            eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
         else:
             werror = 1
             werrMsg = "No changes submitted."
@@ -276,7 +273,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
         else:
-            commit(c.w)
+            dbHelpers.commit(c.w)
             alert = {'type':'success'}
             alert['title'] = weventMsg
             session['alert'] = alert
@@ -293,8 +290,8 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
         session['confTab'] = "tab2"
         session.save()
-        c.w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
         
@@ -336,10 +333,10 @@ class WorkshopController(BaseController):
         if geoTagString != c.w['geoTags']:
             c.w['geoTags'] = geoTagString
             c.w['public_private'] = 'public'
-            commit(c.w)
+            dbHelpers.commit(c.w)
             wchanges = 1
             weventMsg = weventMsg + "Updated workshop scope."
-            Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+            eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
             alert = {'type':'success'}
             alert['title'] = weventMsg
             session['alert'] = alert
@@ -363,8 +360,8 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
         session['confTab'] = "tab2"
         session.save()
-        c.w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
             
@@ -374,7 +371,7 @@ class WorkshopController(BaseController):
         werrMsg = ''
         
         if 'addMember' in request.params:
-            pList = getPrivateMembers(code, "0")
+            pList = pMemberLib.getPrivateMembers(code, "0")
             if 'newMember' in request.params and request.params['newMember'] != '':
                 if c.w['type'] == 'personal' and len(pList) >= 10:
                     werror = 1
@@ -394,21 +391,21 @@ class WorkshopController(BaseController):
                                 werror = 1
                                 werrMsg = werrMsg + 'Not valid email address: ' + mEmail
                             else:
-                                pTest = getPrivateMember(code, mEmail)
+                                pTest = pMemberLib.getPrivateMember(code, mEmail)
                                 if pTest:
                                     if pTest['deleted'] == '1':
                                         pTest['deleted'] = '0'
-                                        commit(pTest)
+                                        dbHelpers.commit(pTest)
                                     else:
                                         werror = 1
                                         werrMsg += mEmail + ' already a member.'
                                 else:
-                                    PMember(code, mEmail, 'A', c.w)
+                                    pMemberLib.PMember(code, mEmail, 'A', c.w)
                                     if 'sendInvite' in request.params:
                                         inviteMsg = ''
                                         if 'inviteMsg' in request.params:
                                             inviteMsg = request.params['inviteMsg']
-                                        sendPMemberInvite(c.w, c.authuser, mEmail, inviteMsg)
+                                        workshopLib.sendPMemberInvite(c.w, c.authuser, mEmail, inviteMsg)
                                     counter += 1
                 
                     if counter:
@@ -427,10 +424,10 @@ class WorkshopController(BaseController):
         if 'deleteMember' in request.params:
             if 'removeMember' in request.params and request.params['removeMember'] != '':
                 removeMember = request.params['removeMember']
-                pTest = getPrivateMember(code, removeMember)
+                pTest = pMemberLib.getPrivateMember(code, removeMember)
                 if pTest:
                     pTest['deleted'] = '1'
-                    commit(pTest)
+                    dbHelpers.commit(pTest)
                     weventMsg += 'Member removed: ' +  removeMember
                 else:
                     werror = 1
@@ -461,12 +458,12 @@ class WorkshopController(BaseController):
     def listPrivateMembersHandler(self, id1, id2):
         code = id1
         url = id2
-        c.w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
             
-        c.privateMembers = getPrivateMembers(c.w['urlCode'])
+        c.privateMembers = pMemberLib.getPrivateMembers(c.w['urlCode'])
         return render('/derived/6_list_pmembers.bootstrap')
 
     @h.login_required
@@ -474,8 +471,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Private Workshop"
-        c.w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
 
@@ -492,8 +489,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        c.w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
 
@@ -503,8 +500,8 @@ class WorkshopController(BaseController):
         
         if c.w['public_private'] == 'public' and 'changeScopeToPrivate' in request.params:
             c.w['public_private'] = 'private'
-            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Scope changed from public to private', c.w, c.authuser)
-            commit(c.w)
+            eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], 'Scope changed from public to private', c.w, c.authuser)
+            dbHelpers.commit(c.w)
             alert = {'type':'success'}
             alert['title'] = 'Workshop scope changed from public to private'
             session['alert'] = alert
@@ -512,8 +509,8 @@ class WorkshopController(BaseController):
 
         if c.w['public_private'] == 'private' and 'changeScopeToPublic' in request.params:
             c.w['public_private'] = 'public'
-            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Scope changed from private to public', c.w, c.authuser)
-            commit(c.w)
+            eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], 'Scope changed from private to public', c.w, c.authuser)
+            dbHelpers.commit(c.w)
             alert = {'type':'success'}
             alert['title'] = 'Workshop scope changed from private to public'
             session['alert'] = alert
@@ -526,8 +523,8 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
         c.title = "Configure Workshop"
-        c.w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
 
@@ -543,8 +540,8 @@ class WorkshopController(BaseController):
             endTime = datetime.datetime.now(None)
             endTime = endTime.replace(year = endTime.year + 1)
             c.w['endTime'] = endTime
-            Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
-            commit(c.w)
+            eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop started!', c.w, c.authuser)
+            dbHelpers.commit(c.w)
 
             alert = {'type':'success'}
             alert['title'] = 'Workshop Started!'
@@ -569,14 +566,14 @@ class WorkshopController(BaseController):
         
     def upgradeHandler(self, id1):
         code = id1
-        c.w = getWorkshopByCode(code)
+        c.w = workshopLib.getWorkshopByCode(code)
         if 'user' in session and c.authuser:
             if 'upgradeToken' in request.params:
                     if 'workshopCode' in request.params:
                         workshopCode = request.params['workshopCode']
-                        workshop = getWorkshopByCode(workshopCode)
+                        workshop = workshopLib.getWorkshopByCode(workshopCode)
                         workshop['type'] = 'professional'
-                        commit(workshop)
+                        dbHelpers.commit(workshop)
                         alert = {'type':'success'}
                         alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
                         session['alert'] = alert
@@ -604,7 +601,7 @@ class WorkshopController(BaseController):
             w = workshopLib.Workshop('replace with a real name!', c.authuser, 'private', wType)
             c.workshop_id = w.w.id # TEST
             c.title = 'Configure Workshop'
-            c.motd = MOTD('Welcome to the workshop!', w.w.id, w.w.id)
+            c.motd = motdLib.MOTD('Welcome to the workshop!', w.w.id, w.w.id)
             alert = {'type':'success'}
             alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
             session['alert'] = alert
@@ -626,12 +623,12 @@ class WorkshopController(BaseController):
         url = id2
         c.title = "Administrate Workshop"
 
-        w = workshopLib.getWorkshop(code, urlify(url))
-        setWorkshopPrivs(c.w)
+        w = workshopLib.getWorkshop(code, utils.urlify(url))
+        workshopLib.setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
 
-        m = getMessage(w.id)
+        m = motdLib.getMessage(w.id)
          
         werror = 0
         werrMsg = 'Incomplete information: '
@@ -682,10 +679,10 @@ class WorkshopController(BaseController):
               w['deleted'] = '1'
               eAction = 'unpublished'
 
-           setWorkshopTagEnable(w, w['deleted'])
+           tagLib.setWorkshopTagEnable(w, w['deleted'])
            eMsg = 'Workshop ' + eAction
-           Event('Workshop %s'%eAction, 'Workshop %s by %s Note: %s'%(eAction, c.authuser['name'], eventReason), w, c.authuser)
-           commit(w)
+           eventLib.Event('Workshop %s'%eAction, 'Workshop %s by %s Note: %s'%(eAction, c.authuser['name'], eventReason), w, c.authuser)
+           dbHelpers.commit(w)
            
         if werror:
             alert = {'type':'error'}
@@ -698,7 +695,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
-        commit(m)
+        dbHelpers.commit(m)
         return redirect('/workshop/%s/%s/dashboard'%(w['urlCode'], w['url']))
     
     def display(self, workshopCode, workshopURL):
@@ -712,15 +709,15 @@ class WorkshopController(BaseController):
 
         c.isFollowing = False
         if 'user' in session:
-            c.isFollowing = isFollowing(c.authuser.id, c.w.id)
+            c.isFollowing = followLib.isFollowing(c.authuser.id, c.w.id)
         
         fList = []
-        for f in (getFacilitatorsByWorkshop(c.w.id)):
+        for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w.id)):
            if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
               fList.append(f)
         
         c.facilitators = fList
-        c.followers = getWorkshopFollowers(c.w.id)
+        c.followers = followLib.getWorkshopFollowers(c.w.id)
 
         if c.w['startTime'] != '0000-00-00':
            c.wStarted = True
@@ -728,16 +725,16 @@ class WorkshopController(BaseController):
           c.wStarted = False
 
         c.slides = []
-        c.slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
         slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
         for id in slide_ids:
-            s = getSlide(id) # Don't grab deleted slides
+            s = slideLib.getSlide(id) # Don't grab deleted slides
             if s:
                 c.slides.append(s)
             
-        c.resources = getActiveResourcesByWorkshopCode(c.w['urlCode'])
-        c.resources = sortBinaryByTopPop(c.resources)
-        c.dresources = getInactiveResourcesByWorkshopCode(c.w.id)
+        c.resources = resourceLib.getActiveResourcesByWorkshopCode(c.w['urlCode'])
+        c.resources = sort.sortBinaryByTopPop(c.resources)
+        c.dresources = resourceLib.getInactiveResourcesByWorkshopCode(c.w.id)
         # put disabled and deleted at the end
         if c.resources:
             if c.dresources:
@@ -746,9 +743,9 @@ class WorkshopController(BaseController):
             if c.dresources:
                 c.resources = c.dresources 
 
-        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode)
+        c.suggestions = suggestionLib.getActiveSuggestionsForWorkshop(workshopCode)
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
-        c.dsuggestions = getInactiveSuggestionsForWorkshop(workshopCode)
+        c.dsuggestions = suggestionLib.getInactiveSuggestionsForWorkshop(workshopCode)
         # put disabled and deleted at the end
         if c.suggestions:
             if c.dsuggestions:
@@ -757,7 +754,7 @@ class WorkshopController(BaseController):
             if c.dsuggestions:
                 c.suggestions = c.dsuggestions
 
-        c.asuggestions = getAdoptedSuggestionsForWorkshop(workshopCode)
+        c.asuggestions = suggestionLib.getAdoptedSuggestionsForWorkshop(workshopCode)
         
         if 'user' in session:
             ratedSuggestionIDs = []
@@ -786,21 +783,21 @@ class WorkshopController(BaseController):
                 except:
                     pass
                 if found:
-                    item.rating = getRatingByID(sugRateDict[item.id])
+                    item.rating = ratingLib.getRatingByID(sugRateDict[item.id])
                 else:
                     item.rating = False
 
-        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+        c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
 
         if 'feedbackDiscussion_id' in c.w:
-           c.discussion = getDiscussionByID(c.w['feedbackDiscussion_id'])
+           c.discussion = discussionLib.getDiscussionByID(c.w['feedbackDiscussion_id'])
         else:
-           c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+           c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
 
-        c.motd = getMessage(c.w.id)
+        c.motd = motdLib.getMessage(c.w.id)
         # kludge for now
         if c.motd == False:
-           c.motd = MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+           c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
         """ Grab first 250 chars as a summary """
         if len(c.motd['data']) <= 140:
@@ -808,16 +805,16 @@ class WorkshopController(BaseController):
         else:
             c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
         
-        c.information = get_revision(int(c.w['mainRevision_id']))
+        c.information = revisionLib.get_revision(int(c.w['mainRevision_id']))
         
         return render('/derived/6_workshop_home.bootstrap')
         
     def displayAllResources(self, workshopCode, workshopURL):
         workshopLib.setWorkshopPrivs(c.w)
         c.title = c.w['title']
-        c.resources = getActiveResourcesByWorkshopCode(workshopCode)
-        c.resources = sortBinaryByTopPop(c.resources)
-        c.dresources = getInactiveResourcesByWorkshopCode(workshopCode)
+        c.resources = resourceLib.getActiveResourcesByWorkshopCode(workshopCode)
+        c.resources = sort.sortBinaryByTopPop(c.resources)
+        c.dresources = resourceLib.getInactiveResourcesByWorkshopCode(workshopCode)
         # put disabled and deleted at the end
         if c.resources:
             if c.dresources:
@@ -840,7 +837,7 @@ class WorkshopController(BaseController):
         code = id1
         url = id2
 
-        c.w = getWorkshopByCode(code)
+        c.w = workshopLib.getWorkshopByCode(code)
         setWorkshopPrivs(c.w)
         if not c.privs['admin'] and not c.privs['facilitator']:
             return(redirect("/"))
@@ -863,12 +860,12 @@ class WorkshopController(BaseController):
         if 'continueToNext' in request.params:
             c.tab = 'tab5'
             
-        slideshow = getSlideshow(c.w['mainSlideshow_id'])
-        c.slideshow = getAllSlides(slideshow.id)
+        slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = slideshowLib.getAllSlides(slideshow.id)
         c.published_slides = []
         slide_ids = [int(item) for item in slideshow['slideshow_order'].split(',')]
         for id in slide_ids:
-            s = getSlide(id) # Don't grab deleted slides
+            s = slideLib.getSlide(id) # Don't grab deleted slides
             if s:
                 c.published_slides.append(s)
         if len(c.slideshow) > 1 and len(c.published_slides) > 0:
@@ -876,12 +873,12 @@ class WorkshopController(BaseController):
         else:
             c.slideConfig = 0
             
-        c.facilitators = getFacilitatorsByWorkshop(c.w.id)
+        c.facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w.id)
 
         if c.w['public_private'] != 'public':
-            c.pmembers = getPrivateMembers(code)
+            c.pmembers = pMemberLib.getPrivateMembers(code)
             
-        c.revision = get_revision(int(c.w['mainRevision_id']))
+        c.revision = revisionLib.get_revision(int(c.w['mainRevision_id']))
         reST = c.revision['data']
         reSTlist = self.get_reSTlist(reST)
         HTMLlist = self.get_HTMLlist(reST)
@@ -891,12 +888,12 @@ class WorkshopController(BaseController):
             c.backConfig = 0
 
         c.wikilist = zip(HTMLlist, reSTlist)
-        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+        c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
 
         c.lastmoddate = c.revision.date
-        c.lastmoduser = getUserByID(c.revision.owner)
+        c.lastmoduser = userLib.getUserByID(c.revision.owner)
         
-        c.states = getStateList('United-States')
+        c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
         if c.w['geoTags'] and c.w['geoTags'] != '':
             geoTags = c.w['geoTags'].split('|')
@@ -910,20 +907,20 @@ class WorkshopController(BaseController):
             c.county = "0"
             c.city = "0"
             
-        c.motd = getMessage(c.w.id)
+        c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
 
-            c.s = getActiveSuggestionsForWorkshop(code)
-            c.disabledSug = getDisabledSuggestionsForWorkshop(code)
-            c.deletedSug = getDeletedSuggestionsForWorkshop(code)
-            c.r = getActiveResourcesByWorkshopCode(c.w['urlCode'])
-            c.disabledRes = getDisabledResourcesByWorkshopCode(c.w['urlCode'])
-            c.deletedRes = getDeletedResourcesByWorkshopCode(c.w['urlCode'])
+            c.s = suggestionLib.getActiveSuggestionsForWorkshop(code)
+            c.disabledSug = suggestionLib.getDisabledSuggestionsForWorkshop(code)
+            c.deletedSug = suggestionLib.getDeletedSuggestionsForWorkshop(code)
+            c.r = resourceLib.getActiveResourcesByWorkshopCode(c.w['urlCode'])
+            c.disabledRes = resourceLib.getDisabledResourcesByWorkshopCode(c.w['urlCode'])
+            c.deletedRes = resourceLib.getDeletedResourcesByWorkshopCode(c.w['urlCode'])
             c.d = getDiscussionsForWorkshop(c.w['urlCode'])
             c.disabledDisc = getDiscussionsForWorkshop(c.w['urlCode'], disabled = '1')
             c.deletedDisc = getDiscussionsForWorkshop(c.w['urlCode'], deleted = '1')
-            c.f = getFacilitatorsByWorkshop(c.w.id)
-            c.df = getFacilitatorsByWorkshop(c.w.id, 1)
+            c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w.id)
+            c.df = facilitatorLib.getFacilitatorsByWorkshop(c.w.id, 1)
             
         return render('/derived/6_workshop_dashboard.bootstrap')
 
@@ -939,15 +936,15 @@ class WorkshopController(BaseController):
     def followHandler(self, id1, id2):
         code = id1
         url = id2
-        w = workshopLib.getWorkshop(code, urlify(url))
-        f = getFollow(c.authuser.id, w.id)
+        w = workshopLib.getWorkshop(code, utils.urlify(url))
+        f = followLib.getFollow(c.authuser.id, w.id)
         if f:
            f['disabled'] = '0'
-           commit(f)
-        elif not isFollowing(c.authuser.id, w.id): 
-           f = Follow(c.authuser.id, w.id, 'workshop') 
+           dbHelpers.commit(f)
+        elif not followLib.isFollowing(c.authuser.id, w.id): 
+           f = followLib.Follow(c.authuser.id, w.id, 'workshop') 
         else:
-           f = Follow(c.authuser.id, w.id, 'workshop') 
+           f = followLib.Follow(c.authuser.id, w.id, 'workshop') 
            
         return "ok"
 
@@ -955,12 +952,12 @@ class WorkshopController(BaseController):
     def unfollowHandler(self, id1, id2):
         code = id1
         url = id2
-        w = workshopLib.getWorkshop(code, urlify(url))
-        f = getFollow(c.authuser.id, w.id)
+        w = workshopLib.getWorkshop(code, utils.urlify(url))
+        f = followLib.getFollow(c.authuser.id, w.id)
         if f:
            ##log.info('f is %s' % f)
            f['disabled'] = '1'
-           commit(f)
+           dbHelpers.commit(f)
            
         return "ok"
         
@@ -970,9 +967,9 @@ class WorkshopController(BaseController):
         
         c.w = workshopLib.getWorkshop(code, url)
         c.title = c.w['title']
-        c.suggestions = getActiveSuggestionsForWorkshop(code)
+        c.suggestions = suggestionLib.getActiveSuggestionsForWorkshop(code)
         c.suggestions = sortContByAvgTop(c.suggestions, 'overall')
-        c.dsuggestions = getInactiveSuggestionsForWorkshop(code)
+        c.dsuggestions = suggestionLib.getInactiveSuggestionsForWorkshop(code)
         # put disabled and deleted at the end
         if c.suggestions:
             if c.dsuggestions:
@@ -983,7 +980,7 @@ class WorkshopController(BaseController):
 
         c.isScoped = False
         if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)
+            c.isScoped = workshopLib.isScoped(c.authuser, c.w)
             ratedSuggestionIDs = []
             if 'ratedThings_suggestion_overall' in c.authuser.keys():
                 """
@@ -1012,7 +1009,7 @@ class WorkshopController(BaseController):
                 except:
                     pass
                 if found:
-                    item.rating = getRatingByID(sugRateDict[item.id])
+                    item.rating = ratingLib.getRatingByID(sugRateDict[item.id])
                 else:
                     item.rating = False
 
@@ -1029,8 +1026,8 @@ class WorkshopController(BaseController):
         
         c.w = workshopLib.getWorkshop(code, url)
         c.title = c.w['title']
-        c.suggestions = getActiveSuggestionsForWorkshop(code)
-        c.dsuggestions = getInactiveSuggestionsForWorkshop(code)
+        c.suggestions = suggestionLib.getActiveSuggestionsForWorkshop(code)
+        c.dsuggestions = suggestionLib.getInactiveSuggestionsForWorkshop(code)
 
         return render('/derived/suggestion_list.html')
 
@@ -1053,7 +1050,7 @@ class WorkshopController(BaseController):
         setWorkshopPrivs(c,w)
         c.title = c.w['title']
         c.resources = getActiveResourcesByWorkshopID(c.w.id)
-        c.resources = sortBinaryByTopPop(c.resources)
+        c.resources = sort.sortBinaryByTopPop(c.resources)
         # append the disabled and deleted resources
         resources = getInactiveResourcesByWorkshopID(c.w.id)
         if resources:
@@ -1062,14 +1059,14 @@ class WorkshopController(BaseController):
         c.commentsDisabled = 0
         
         c.slides = []
-        c.slideshow = getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
         slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
         for id in slide_ids:
-            s = getSlide(id) # Don't grab deleted slides
+            s = slideLib.getSlide(id) # Don't grab deleted slides
             if s:
                 c.slides.append(s)
         
-        r = get_revision(int(c.w['mainRevision_id']))
+        r = revisionLib.get_revision(int(c.w['mainRevision_id']))
         if 'user' in session:
             reST = r['data']
             reSTlist = self.get_reSTlist(reST)
@@ -1080,10 +1077,10 @@ class WorkshopController(BaseController):
         else:
             c.content = h.literal(h.reST2HTML(r['data']))
         
-        c.discussion = getDiscussionByID(c.w['backgroundDiscussion_id'])
+        c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
         
         c.lastmoddate = r.date
-        c.lastmoduser = getUserByID(r.owner)
+        c.lastmoduser = userLib.getUserByID(r.owner)
         
         return render('/derived/workshop_bg.bootstrap')
     
