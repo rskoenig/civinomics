@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 def getGoalsForWorkshop(workshop):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'goal').filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'goal').filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).all()
     except:
         return False
 
