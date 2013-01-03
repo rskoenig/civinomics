@@ -1,5 +1,5 @@
 import logging, re, pickle, formencode
-import time, datetime
+import datetime
 import re
 
 from formencode import validators, htmlfill
