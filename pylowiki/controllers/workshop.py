@@ -91,11 +91,31 @@ class addWorkshopForm(formencode.Schema):
 class WorkshopController(BaseController):
 
     def __before__(self, action, workshopCode = None):
-        if action == 'createWorkshopForm':
+        setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
+        ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'displayAllResources', 'dashboard']
+        
+        adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
+        ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'dashboard']
+        
+        scoped = ['display', 'displayAllResources']
+        dontGetWorkshop = ['createWorkshopForm', 'paymentHandler', 'createWorkshopHandler']
+        
+        if action in dontGetWorkshop:
             return
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
+        if action in setPrivs:
+            workshopLib.setWorkshopPrivs(c.w)
+            if action in adminOrFacilitator:
+                if not c.privs['admin'] and not c.privs['facilitator']:
+                    return(redirect("/"))
+            elif action in scoped:
+                if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
+                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                        abort(404)
 
 
     ###################################################
@@ -108,24 +128,16 @@ class WorkshopController(BaseController):
 
     def guest(self, guestCode, workshopCode):
         pMember = pMemberLib.getPrivateMemberByCode(guestCode)
-        workshop = workshopLib.getWorkshopByCode(workshopCode)
         session['guestCode'] = guestCode
         session['workshopCode'] = workshopCode
         session.save()
-        return redirect('/workshop/%s/%s'%(workshop['urlCode'], workshop['url'])) 
+        return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
-    def configureBasicWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
+    def configureBasicWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
         session['confTab'] = "tab1"
         session.save()
-
-        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
 
         slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
         c.slideshow = slideshowLib.getAllSlides(slideshow.id)
@@ -173,7 +185,6 @@ class WorkshopController(BaseController):
            werror = 1
            werrMsg += 'Goals '
 
-        ##log.info('Got wGoals %s' % wGoals)
         if 'allowSuggestions' in request.params:
            allowSuggestions = request.params['allowSuggestions']
            if (allowSuggestions == '1' or allowSuggestions == '0') and allowSuggestions != c.w['allowSuggestions']:
@@ -228,17 +239,10 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
-    def configureTagsWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
+    def configureTagsWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
         session['confTab'] = "tab3"
         session.save()
-
-        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
             
         werror = 0
         wchanges = 0
@@ -284,16 +288,10 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
-    def configurePublicWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
+    def configurePublicWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
         session['confTab'] = "tab2"
         session.save()
-        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
         
         if c.w['type'] == 'personal':
             alert = {'type':'error'}
@@ -354,16 +352,10 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
-    def configurePrivateWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
+    def configurePrivateWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
         session['confTab'] = "tab2"
         session.save()
-        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
             
         werror = 0
         wchanges = 0
@@ -371,7 +363,7 @@ class WorkshopController(BaseController):
         werrMsg = ''
         
         if 'addMember' in request.params:
-            pList = pMemberLib.getPrivateMembers(code, "0")
+            pList = pMemberLib.getPrivateMembers(workshopCode, "0")
             if 'newMember' in request.params and request.params['newMember'] != '':
                 if c.w['type'] == 'personal' and len(pList) >= 10:
                     werror = 1
@@ -391,7 +383,7 @@ class WorkshopController(BaseController):
                                 werror = 1
                                 werrMsg = werrMsg + 'Not valid email address: ' + mEmail
                             else:
-                                pTest = pMemberLib.getPrivateMember(code, mEmail)
+                                pTest = pMemberLib.getPrivateMember(workshopCode, mEmail)
                                 if pTest:
                                     if pTest['deleted'] == '1':
                                         pTest['deleted'] = '0'
@@ -400,7 +392,7 @@ class WorkshopController(BaseController):
                                         werror = 1
                                         werrMsg += mEmail + ' already a member.'
                                 else:
-                                    pMemberLib.PMember(code, mEmail, 'A', c.w)
+                                    pMemberLib.PMember(workshopCode, mEmail, 'A', c.w)
                                     if 'sendInvite' in request.params:
                                         inviteMsg = ''
                                         if 'inviteMsg' in request.params:
@@ -424,7 +416,7 @@ class WorkshopController(BaseController):
         if 'deleteMember' in request.params:
             if 'removeMember' in request.params and request.params['removeMember'] != '':
                 removeMember = request.params['removeMember']
-                pTest = pMemberLib.getPrivateMember(code, removeMember)
+                pTest = pMemberLib.getPrivateMember(workshopCode, removeMember)
                 if pTest:
                     pTest['deleted'] = '1'
                     dbHelpers.commit(pTest)
@@ -455,26 +447,13 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
         
     @h.login_required
-    def listPrivateMembersHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
-            
+    def listPrivateMembersHandler(self, workshopCode, workshopURL):
         c.privateMembers = pMemberLib.getPrivateMembers(c.w['urlCode'])
         return render('/derived/6_list_pmembers.bootstrap')
 
     @h.login_required
-    def previewInvitation(self, id1, id2):
-        code = id1
-        url = id2
+    def previewInvitation(self, workshopCode, workshopURL):
         c.title = "Private Workshop"
-        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
 
         c.facilitator = c.authuser['name']
         c.workshopName = c.w['title']
@@ -482,17 +461,10 @@ class WorkshopController(BaseController):
         c.imageSrc = "/images/logo_header8.1.png"
         
         return render('/derived/6_preview_invitation.bootstrap')
-
         
     @h.login_required
-    def configureScopeWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
+    def configureScopeWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
 
         c.title = "Configure Workshop"
         session['confTab'] = "tab2"
@@ -519,14 +491,8 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
-    def configureStartWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
+    def configureStartWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        c.w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
 
         werror = 0
         wstarted = 0
@@ -553,83 +519,55 @@ class WorkshopController(BaseController):
 
     @h.login_required
     def createWorkshopForm(self):
-        if 'user' in session and c.authuser:
-            return render('/derived/6_workshop_create.bootstrap')
-            
-        return render('/derived/404.bootstrap')
-        
+        return render('/derived/6_workshop_create.bootstrap')
+    
+    @h.login_required
     def paymentHandler(self):
-        if 'user' in session and c.authuser:
+        return render('/derived/6_workshop_payment.bootstrap')
+    
+    @h.login_required
+    def upgradeHandler(self, workshopCode):
+        if 'upgradeToken' in request.params:
+                if 'workshopCode' in request.params:
+                    workshopCode = request.params['workshopCode']
+                    workshop = workshopLib.getWorkshopByCode(workshopCode)
+                    workshop['type'] = 'professional'
+                    dbHelpers.commit(workshop)
+                    alert = {'type':'success'}
+                    alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
+                    session['alert'] = alert
+                    session.save()
+                    return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+                else:
+                    abort(404)
+        else:
             return render('/derived/6_workshop_payment.bootstrap')
-            
-        return render('/derived/404.bootstrap')
-        
-    def upgradeHandler(self, id1):
-        code = id1
-        c.w = workshopLib.getWorkshopByCode(code)
-        if 'user' in session and c.authuser:
-            if 'upgradeToken' in request.params:
-                    if 'workshopCode' in request.params:
-                        workshopCode = request.params['workshopCode']
-                        workshop = workshopLib.getWorkshopByCode(workshopCode)
-                        workshop['type'] = 'professional'
-                        dbHelpers.commit(workshop)
-                        alert = {'type':'success'}
-                        alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
-                        session['alert'] = alert
-                        session.save()
-                        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
-            else:
-                return render('/derived/6_workshop_payment.bootstrap')
-            
-        return render('/derived/404.bootstrap')
         
     @h.login_required
     def createWorkshopHandler(self):
-        
-        if 'user' in session and c.authuser:
-            if 'createPersonal' in request.params:
-                wType = 'personal'
-            else:
-
-                if 'paymentToken' in request.params:
-                    wType = 'professional'
-                else:
-                    return redirect('/workshop/create/payment')
-                    
-           
-            w = workshopLib.Workshop('replace with a real name!', c.authuser, 'private', wType)
-            c.workshop_id = w.w.id # TEST
-            c.title = 'Configure Workshop'
-            c.motd = motdLib.MOTD('Welcome to the workshop!', w.w.id, w.w.id)
-            alert = {'type':'success'}
-            alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
-            session['alert'] = alert
-            session.save()
-
-            return redirect('/workshop/%s/%s/dashboard'%(w.w['urlCode'], w.w['url']))   
-            
+        if 'createPersonal' in request.params:
+            wType = 'personal'
         else:
-            alert = {'type':'error'}
-            alert['title'] = 'You are not authorized'
-            session['alert'] = alert
-            session.save()
-            return redirect('/')    
+            if 'paymentToken' in request.params:
+                wType = 'professional'
+            else:
+                return redirect('/workshop/create/payment')
+                
+        w = workshopLib.Workshop('replace with a real name!', c.authuser, 'private', wType)
+        c.workshop_id = w.w.id # TEST
+        c.title = 'Configure Workshop'
+        c.motd = motdLib.MOTD('Welcome to the workshop!', w.w.id, w.w.id)
+        alert = {'type':'success'}
+        alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
+        session['alert'] = alert
+        session.save()
 
+        return redirect('/workshop/%s/%s/dashboard'%(w.w['urlCode'], w.w['url']))
     
     @h.login_required
-    def adminWorkshopHandler(self, id1, id2):
-        code = id1
-        url = id2
+    def adminWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Administrate Workshop"
-
-        w = workshopLib.getWorkshop(code, utils.urlify(url))
-        workshopLib.setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
-
         m = motdLib.getMessage(w.id)
-         
         werror = 0
         werrMsg = 'Incomplete information: '
 
@@ -664,7 +602,6 @@ class WorkshopController(BaseController):
            veW = 1
 
         if eW != veW:
-           ##log.info('not equal')
            werror = 1
            if w['deleted'] == 1:
               eAction = 'enabled'
@@ -699,13 +636,7 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/dashboard'%(w['urlCode'], w['url']))
     
     def display(self, workshopCode, workshopURL):
-        
-        workshopLib.setWorkshopPrivs(c.w)
         c.title = c.w['title']
-            
-        if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
-            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                    return render('/derived/404.bootstrap')            
 
         c.isFollowing = False
         if 'user' in session:
@@ -810,7 +741,6 @@ class WorkshopController(BaseController):
         return render('/derived/6_workshop_home.bootstrap')
         
     def displayAllResources(self, workshopCode, workshopURL):
-        workshopLib.setWorkshopPrivs(c.w)
         c.title = c.w['title']
         c.resources = resourceLib.getActiveResourcesByWorkshopCode(workshopCode)
         c.resources = sort.sortBinaryByTopPop(c.resources)
@@ -833,15 +763,7 @@ class WorkshopController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
     
     @h.login_required
-    def dashboard(self, id1, id2):
-        code = id1
-        url = id2
-
-        c.w = workshopLib.getWorkshopByCode(code)
-        setWorkshopPrivs(c.w)
-        if not c.privs['admin'] and not c.privs['facilitator']:
-            return(redirect("/"))
-            
+    def dashboard(self, workshopCode, workshopURL):
         if (c.w['goals'] != '' and c.w['goals'] != 'No goals set'):
             c.basicConfig = 1
         else:
@@ -876,7 +798,7 @@ class WorkshopController(BaseController):
         c.facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w.id)
 
         if c.w['public_private'] != 'public':
-            c.pmembers = pMemberLib.getPrivateMembers(code)
+            c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
             
         c.revision = revisionLib.get_revision(int(c.w['mainRevision_id']))
         reST = c.revision['data']
@@ -910,9 +832,9 @@ class WorkshopController(BaseController):
         c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
 
-            c.s = suggestionLib.getActiveSuggestionsForWorkshop(code)
-            c.disabledSug = suggestionLib.getDisabledSuggestionsForWorkshop(code)
-            c.deletedSug = suggestionLib.getDeletedSuggestionsForWorkshop(code)
+            c.s = suggestionLib.getActiveSuggestionsForWorkshop(workshopCode)
+            c.disabledSug = suggestionLib.getDisabledSuggestionsForWorkshop(workshopCode)
+            c.deletedSug = suggestionLib.getDeletedSuggestionsForWorkshop(workshopCode)
             c.r = resourceLib.getActiveResourcesByWorkshopCode(c.w['urlCode'])
             c.disabledRes = resourceLib.getDisabledResourcesByWorkshopCode(c.w['urlCode'])
             c.deletedRes = resourceLib.getDeletedResourcesByWorkshopCode(c.w['urlCode'])
