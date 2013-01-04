@@ -834,9 +834,9 @@ class WorkshopController(BaseController):
             c.r = resourceLib.getActiveResourcesByWorkshopCode(c.w['urlCode'])
             c.disabledRes = resourceLib.getDisabledResourcesByWorkshopCode(c.w['urlCode'])
             c.deletedRes = resourceLib.getDeletedResourcesByWorkshopCode(c.w['urlCode'])
-            c.d = getDiscussionsForWorkshop(c.w['urlCode'])
-            c.disabledDisc = getDiscussionsForWorkshop(c.w['urlCode'], disabled = '1')
-            c.deletedDisc = getDiscussionsForWorkshop(c.w['urlCode'], deleted = '1')
+            c.d = discussionLib.getDiscussionsForWorkshop(c.w['urlCode'])
+            c.disabledDisc = discussionLib.getDiscussionsForWorkshop(c.w['urlCode'], disabled = '1')
+            c.deletedDisc = discussionLib.getDiscussionsForWorkshop(c.w['urlCode'], deleted = '1')
             c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w.id)
             c.df = facilitatorLib.getFacilitatorsByWorkshop(c.w.id, 1)
             
