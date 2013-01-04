@@ -34,12 +34,16 @@ log = logging.getLogger(__name__)
 
 class ProfileController(BaseController):
     
+    def __before__(self, action, id1 = None, id2 = None):
+        if action != 'hashPicture':
+            if id1 is not None and id2 is not None:
+                c.user = get_user(id1, id2)
+            else:
+                abort(404)
+    
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
-        code = id1
-        url = id2
         rev = id3
-        c.user = get_user(code, url)
         if id3 != '':
             c.revision = getRevisionByCode(id3)
         else:
@@ -182,10 +186,6 @@ class ProfileController(BaseController):
         return render("/derived/6_profile.bootstrap")
     
     def stats(self, id1, id2):
-        # Broken
-        user = get_user(id1, id2)
-        if not user:
-            return json.dumps({"error":"user not found"})
         if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
             posts = getMemberPosts(user, 0)
         else:
@@ -201,10 +201,6 @@ class ProfileController(BaseController):
         return json.dumps(retObj)
     
     def statsCSV(self, id1, id2):
-        # Broken
-        user = get_user(id1, id2)
-        if not user:
-            return json.dumps({"error":"user not found"})
         if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
             posts = getMemberPosts(user, 0)
         else:
@@ -233,9 +229,6 @@ class ProfileController(BaseController):
     
     def showUserSuggestions(self, id1, id2):
         # Called when visiting /profile/urlCode/url/suggestions
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = False
@@ -251,7 +244,6 @@ class ProfileController(BaseController):
         c.flags = 0
 
         uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
         c.userFollowers = []
         for u in uList:
            uID = u.owner
@@ -305,9 +297,6 @@ class ProfileController(BaseController):
     
     def showUserComments(self, id1, id2):
         # Called when visiting /profile/urlCode/url/comments
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = False
@@ -317,14 +306,12 @@ class ProfileController(BaseController):
            c.isFollowing = False
 
         uList = getUserFollows(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
         c.followingUsers = []
         for u in uList:
            uID = u['thingID']
            c.followingUsers.append(getUserByID(uID))
 
         uList = getUserFollowers(c.user.id)
-        ##log.info('uList is %s c.user.id is %s'%(uList, c.user.id))
         c.userFollowers = []
         for u in uList:
            uID = u.owner
@@ -377,7 +364,7 @@ class ProfileController(BaseController):
         return render("/derived/6_profile_list.bootstrap")
     
     def _basicSetup(self, code, url, page):
-        c.user = get_user(code, url)
+        # code and url are now unused here, now that __before__ is defined
         c.title = c.user['name']
         c.geoInfo = getGeoInfo(c.user.id)
         c.isFollowing = False
@@ -435,6 +422,7 @@ class ProfileController(BaseController):
     
     @h.login_required
     def index( self ):
+        abort(404)
         c.list = get_all_users()
 
         c.count = len( c.list )
@@ -447,9 +435,6 @@ class ProfileController(BaseController):
 
     @h.login_required
     def dashboard(self, id1, id2):
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
         c.events = getParentEvents(c.user)
         if isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
             c.title = 'Member Dashboard'
@@ -467,10 +452,6 @@ class ProfileController(BaseController):
 
     @h.login_required
     def editHandler(self,id1, id2):
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        
         perror = 0
         perrorMsg = ""
         changeMsg = ""
@@ -553,7 +534,6 @@ class ProfileController(BaseController):
 
         if picture != False:
            identifier = 'avatar'
-           ##log.info('doing new picture for %s'%c.authuser['name'])
            imageFile = picture.file
            filename = picture.filename
            hash = saveImage(imageFile, filename, c.user, 'avatar', c.user)
@@ -601,10 +581,6 @@ class ProfileController(BaseController):
         
     @h.login_required
     def passwordHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        
         perror = 0
         perrorMsg = ""
         changeMsg = ""
@@ -701,11 +677,6 @@ class ProfileController(BaseController):
         
     @h.login_required
     def pictureHandler(self, id1, id2):
-        code = id1
-        url = id2
-        
-        c.user = get_user(code, url)
-        
         session['confTab'] = "tab2"
         session.save()
         
@@ -751,10 +722,6 @@ class ProfileController(BaseController):
 
     @h.login_required
     def followHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        ##log.info('followHandler %s %s' % (code, url))
         # this gets a follow which has been unfollowed
         f = getFollow(c.authuser.id, c.user.id)
         if f:
@@ -763,35 +730,23 @@ class ProfileController(BaseController):
            commit(f)
         # this only gets follows which are not disabled
         elif not isFollowing(c.authuser.id, c.user.id):
-           ##log.info('not isFollowing')
            f = Follow(c.authuser.id, c.user.id, 'user')
         else:
-           ##log.info('else')
            f = Follow(c.authuser.id, c.user.id, 'user')
-
         return "ok"
 
     @h.login_required
     def unfollowHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
-        log.info('unfollowHandler %s %s' % (code, url))
         f = getFollow(c.authuser.id, c.user.id)
         if f:
-           log.info('f is %s' % f)
            f['disabled'] = '1'
            commit(f)
-
         return "ok"
 
     @h.login_required
     def enableHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
         if not isAdmin(c.authuser.id):
-            return render("/derived/404.bootstrap")
+            abort(404)
 
         session['confTab'] = "tab4"
         session.save()
@@ -824,15 +779,12 @@ class ProfileController(BaseController):
            session['alert'] = alert
            session.save()
 
-        return redirect("/profile/" + code + "/" + url + "/dashboard" )
+        return redirect("/profile/" + id1 + "/" + id2 + "/dashboard" )
 
     @h.login_required
     def privsHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.user = get_user(code, url)
         if not isAdmin(c.authuser.id):
-            return render("/derived/404.bootstrap")
+            abort(404)
             
         session['confTab'] = "tab4"
         session.save()
@@ -863,6 +815,6 @@ class ProfileController(BaseController):
             session['alert'] = alert
             session.save()
 
-        return redirect("/profile/" + code + "/" + url + "/dashboard" )
+        return redirect("/profile/" + id1 + "/" + id2 + "/dashboard" )
 
 
