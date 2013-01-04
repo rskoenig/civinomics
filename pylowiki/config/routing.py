@@ -137,7 +137,7 @@ def make_map():
     
     # discussions
     map.connect('/{workshop:workshops?}/{id1}/{id2}/{discussion:discussions?/?}', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/add/discussions?/?', controller = 'discussion', action = 'addDiscussion', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/{workshop:workshops?}/{id1}/{id2}/add/{discussion:discussions?/?}', controller = 'discussion', action = 'addDiscussion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{id1}/{id2}/add/discussion/{handler:handler/?}', controller = 'discussion', action = 'addDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/editDiscussionHandler/{id1}/{id2}{end:/?}', controller = 'discussion', action = 'editDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/adminDiscussionHandler{end:/?}', controller = 'discussion', action = 'adminDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
