@@ -119,6 +119,9 @@
             <h3 class="section-header">${c.user['name']}</h3>
             <p>${lib_6.userGeoLink(c.user)}</p>
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
+            % if c.user['websiteLink'] != '':
+                <p><a href="${c.user['websiteLink']}">${lib_6.ellipsisIZE(c.user['websiteLink'], 25)}</a></p>
+            % endif
             <hr>
             <div class="row-fluid">
                 <div class="span4">
