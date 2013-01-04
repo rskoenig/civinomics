@@ -2,6 +2,7 @@
     from pylowiki.lib.db.flag import checkFlagged, getFlags
     from pylowiki.lib.db.event import getParentEvents
     from pylowiki.lib.db.user import getUserByID
+    import pylowiki.lib.db.discussion              as discussionLib
     from pylowiki.lib.db.comment import getPureFlaggedDiscussionComments, getComment, getDisabledComments, getDeletedComments
 %>  
 
@@ -199,15 +200,19 @@
     <tr><th>Flagged Background Comments</th</tr>
     </thead>
     <tbody>
-    <% cList = getPureFlaggedDiscussionComments(c.w['backgroundDiscussion_id']) %>
+    <% 
+        discussion = discussionLib.getDiscussionForThing(c.w)
+        cList = []
+        if discussion:
+            cList = getPureFlaggedDiscussionComments(discussion.id)
+    %>
     % if cList:
-        <% 
-          cFlagCount = len(cList)
-          if cFlagCount > 1:
-              cString = 'Comments'
-          else:
-              cString = 'Comment'
-        %>
+        <% cFlagCount = len(cList) %>
+        % if cFlagCount > 1:
+            <% cString = 'Comments' %>
+        % else:
+            <% cString = 'Comment' %>
+        % endif
         <tr><td>${cString} In <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></br>
         % for comID in cList:
             <% com = getComment(comID) %>
@@ -247,14 +252,20 @@
              <a class="btn btn-mini" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modResource/"> Admin Resource </a><br />
               </td></tr>
           % endif
-          <% cList = getPureFlaggedDiscussionComments(r['discussion_id']) %>
-          % if cList:
-             <% cFlagCount = len(cList) %>
-             % if cFlagCount > 1:
-                <% cString = 'Comments' %> 
-             % else:
-                <% cString = 'Comment' %> 
-             % endif
+          <% 
+                discussion = discussionLib.getDiscussionForThing(r)
+                cList = []
+                if discussion:
+                    cList = getPureFlaggedDiscussionComments(discussion.id)
+           %>
+            % if cList:
+                <% cFlagCount = len(cList) %>
+                % if cFlagCount > 1:
+                    <% cString = 'Comments' %>
+                %else:
+                    <% cString = 'Comment' %>
+                % endif
+
              <tr><td>${cString} In Resource <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r["title"]}</a></br>
 		 	 % for comID in cList:
 			      <% com = getComment(comID) %>
@@ -272,7 +283,7 @@
 	             <br />
           	 % endfor
                 </td></tr>
-          % endif
+           % endif
        % endfor
     % endif
     </tbody>
@@ -295,14 +306,19 @@
           <a class="btn btn-mini" href="/modSuggestion/${s['urlCode']}/${s['url']}/">Admin Suggestion </a><br />
           </td></tr>
        % endif
-       <% cList = getPureFlaggedDiscussionComments(s['discussion_id']) %>
-       % if cList:
-          <% cFlagCount = len(cList) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
+        <% 
+            discussion = discussionLib.getDiscussionForThing(s)
+            cList = []
+            if discussion:
+                cList = getPureFlaggedDiscussionComments(discussion.id)
+        %>
+        % if cList:
+            <% cFlagCount = len(cList) %>
+            % if cFlagCount > 1:
+                <% cString = 'Comments' %>
+            % else:
+                <% cString = 'Comment' %>
+            % endif
           <tr><td>${cString} In Suggestion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a></br>
 		  % for comID in cList:
 		      <% com = getComment(comID) %>
@@ -320,7 +336,7 @@
              <br />
           % endfor
           </td></tr>
-       % endif
+        % endif
     % endfor
     </tbody>
     </table>
@@ -342,16 +358,19 @@
           <a class="btn btn-mini" href="/adminDiscussion/${d['urlCode']}/${d['url']}/">Admin Discussion </a><br />
           </td></tr>
        % endif
-       <% cList = getPureFlaggedDiscussionComments(d.id) %>
-       % if cList:
-          <% cFlagCount = len(cList) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>
-		  % for comID in cList:
+        <% 
+            cList = []
+            cList = getPureFlaggedDiscussionComments(d.id)
+        %>
+        % if cList:
+            <% cFlagCount = len(cList) %>
+            % if cFagCount > 1:
+                <% cString = 'Comments' %>
+            % else:
+                <% cString = 'Comment' %>
+            % endif
+            <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>
+		    % for comID in cList:
 		      <% com = getComment(comID) %>
 		      &nbsp&nbsp&nbsp&nbsp&nbsp
 		      % if int(com['numFlags']) == 1:
@@ -365,9 +384,9 @@
 				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
 		      % endif
              <br />
-          % endfor
-          </td></tr>
-       % endif
+            % endfor
+            </td></tr>
+        % endif
     % endfor
     </tbody>
     </table>
@@ -383,7 +402,12 @@
     <tr><th>Disabled Background Comments</tr></th>
     </thead>
     <tbody>
-    <% disabledComments = getDisabledComments(c.w['backgroundDiscussion_id']) %>
+    <%  
+            discussion = discussionLib.getDiscussionForThing(c.w)
+            disabledComments = []
+            if discussion:
+                disabledComments = getDisabledComments(discussion.id) 
+    %>
     % if disabledComments:
         <% cFlagCount = len(disabledComments) %>
         % if cFlagCount > 1:
@@ -437,7 +461,12 @@
        % endfor
     % endif
 	% for r in c.r:
-    	<% disabledComments = getDisabledComments(r['discussion_id']) %>
+    	<%  
+            discussion = discussionLib.getDiscussionForThing(r)
+            disabledComments = []
+            if discussion:
+                disabledComments = getDisabledComments(discussion) 
+        %>
     	% if disabledComments:
           <% cFlagCount = len(disabledComments) %>
           % if cFlagCount > 1:
@@ -492,7 +521,12 @@
        % endfor
     % endif
     % for s in c.s:
-    	<% disabledComments = getDisabledComments(s['discussion_id']) %>
+        <%  
+            discussion = discussionLib.getDiscussionForThing(s)
+            disabledComments = []
+            if discussion:
+                disabledComments = getDisabledComments(discussion) 
+        %>
     	% if disabledComments:
           <% cFlagCount = len(disabledComments) %>
           % if cFlagCount > 1:
@@ -593,7 +627,12 @@
     <tr><th>Deleted Background Comments</tr></th>
     </thead>
     <tbody>
-    <% deletedComments = getDeletedComments(c.w['backgroundDiscussion_id']) %>
+    <% 
+        discussion = discussionLib.getDiscussionForThing(c.w)
+        deletedComments = []
+        if discussion:
+            deletedComments = getDeletedComments(discussion.id) 
+    %>
     % if deletedComments:
         <% cFlagCount = len(deletedComments) %>
         % if cFlagCount > 1:
@@ -647,8 +686,12 @@
        % endfor
     % endif
 	% for r in c.r:
-     
-    	<% deletedComments = getDeletedComments(r['discussion_id']) %>
+        <% 
+            discussion = discussionLib.getDiscussionForThing(r)
+            deletedComments = []
+            if discussion:
+                deletedComments = getDeletedComments(discussion.id) 
+        %>
     	% if deletedComments:
           <% cFlagCount = len(deletedComments) %>
           % if cFlagCount > 1:
@@ -703,7 +746,12 @@
        % endfor
     % endif
     % for s in c.s:
-    	<% deletedComments = getDeletedComments(s['discussion_id']) %>
+        <% 
+            discussion = discussionLib.getDiscussionForThing(s)
+            deletedComments = []
+            if discussion:
+                deletedComments = getDeletedComments(discussion.id) 
+        %>
     	% if deletedComments:
           <% cFlagCount = len(deletedComments) %>
           % if cFlagCount > 1:
