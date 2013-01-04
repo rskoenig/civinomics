@@ -20,13 +20,7 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab-activity">
-                    <ul>
-                        <li> Something ${c.user['name']} did </li>
-                        <li> Something ${c.user['name']} did </li>
-                        <li> Something ${c.user['name']} did </li>
-                        <li> Something ${c.user['name']} did </li>
-                        <li> Something ${c.user['name']} did </li>
-                    </ul>
+                    ${helpers.showActivity(c.activity)}
                 </div>
                 <div class="tab-pane" id="tab-workshops">
                     <div class="section-wrapper">

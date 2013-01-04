@@ -6,12 +6,20 @@ from pylowiki.lib.utils import urlify
 
 def getMemberPosts(user, disabled = '0', deleted = '0'):
     activityTypes = ['suggestion', 'resource', 'comment', 'discussion', 'idea']
+    finalActivityList = []
     try:
-        return meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
+        initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
             .filter_by(owner = user.id)\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .order_by('-date').all()
+        # Messy
+        for activity in initialActivityList:
+            if activity.objType == 'discussion' and activity['discType'] != 'general':
+                continue
+            else:
+                finalActivityList.append(activity)
+        return finalActivityList
     except:
         return False
 

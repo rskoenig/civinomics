@@ -15,7 +15,7 @@ from pylowiki.lib.images import saveImage, resizeImage, isImage, numImagesInDire
 from pylowiki.lib.db.imageIdentifier import getImageIdentifier
 from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, checkPassword, getUserPosts, getUserByEmail
-from pylowiki.lib.db.activity import getMemberPosts, getAllMemberPosts
+import pylowiki.lib.db.activity as activityLib
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.facilitator import getFacilitatorsByUser
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
@@ -102,13 +102,15 @@ class ProfileController(BaseController):
            c.followers.append(getUserByID(uID))
 
         pList = []
-        if 'user' in session:
-            if isAdmin(c.authuser.id):
-                pList = getAllMemberPosts(c.user)
-            elif c.user.id == c.authuser.id:
-                pList = getMemberPosts(c.user, disabled = '1') + getMemberPosts(c.user, disabled = '0')
-        else:
-            pList = getMemberPosts(c.user)
+        #if 'user' in session:
+        #    if isAdmin(c.authuser.id):
+        #        pList = activityLib.getAllMemberPosts(c.user)
+        #    elif c.user.id == c.authuser.id:
+        #        pList = activityLib.getMemberPosts(c.user, disabled = '1') + activityLib.getMemberPosts(c.user, disabled = '0')
+        #else:
+        #    pList = activityLib.getMemberPosts(c.user)
+        pList = activityLib.getMemberPosts(c.user)
+        c.activity = pList
         c.totalPoints = 0
         c.suggestions = []
         c.resources = []
@@ -187,9 +189,9 @@ class ProfileController(BaseController):
     
     def stats(self, id1, id2):
         if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
-            posts = getMemberPosts(user, 0)
+            posts = activityLib.getMemberPosts(user, 0)
         else:
-            posts = getMemberPosts(user, 1)
+            posts = activityLib.getMemberPosts(user, 1)
         
         types = ['discussion', 'comment', 'resource']
         counts = {}
@@ -202,9 +204,9 @@ class ProfileController(BaseController):
     
     def statsCSV(self, id1, id2):
         if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
-            posts = getMemberPosts(user, 0)
+            posts = activityLib.getMemberPosts(user, 0)
         else:
-            posts = getMemberPosts(user, 1)
+            posts = activityLib.getMemberPosts(user, 1)
         
         headers = ['objType', 'time']
         data = []

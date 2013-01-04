@@ -1,5 +1,5 @@
 <%!
-    from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopByCode
+    import pylowiki.lib.db.workshop as workshopLib
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -43,7 +43,7 @@
                             <tr> <td>
                         % endif
                             <%
-                                workshop = getWorkshopByCode(thing['workshopCode'])
+                                workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
                                 thingLink = lib_6.thingLinkRouter(thing, workshop, raw=True, embed=True)
                                 workshopLink = lib_6.workshopLink(workshop, embed=True)
                                 descriptionText = 'No description'
@@ -147,4 +147,35 @@
             Placeholder for listing organizations
         </div><!--/.browse-->
     </div><!--/.section-wrapper-->
+</%def>
+
+<%def name="showActivity(activity)">
+    <ul>
+        % for item in activity:
+            <%
+                workshop = workshopLib.getWorkshopByCode(item['workshopCode'])
+                if item.objType == 'comment':
+                    activityStr = 'Commented on a'
+                    if 'ideaCode' in item.keys():
+                        activityStr += 'n'
+                else:
+                    activityStr = 'Added a'
+                if item.objType == 'idea':
+                    activityStr += 'n'
+                activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True) + '>'
+                if item.objType != 'comment':
+                    activityStr += item.objType + "</a>"
+                else:
+                    if 'ideaCode' in item.keys():
+                        activityStr += 'idea </a>'
+                    elif 'resourceCode' in item.keys():
+                        activityStr += 'resource </a>'
+                    else:
+                        activityStr += 'discussion </a>'
+                activityStr += ' in the workshop <a ' + lib_6.workshopLink(workshop, embed = True) + '>'
+                activityStr += lib_6.ellipsisIZE(workshop['title'], 25) + '</a>'
+            %>
+            <li> ${activityStr | n} </li>
+        % endfor
+    </ul>
 </%def>
