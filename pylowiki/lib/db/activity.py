@@ -46,3 +46,23 @@ def getDiscussionCommentsSince(discussionID, memberDatetime):
     except:
        return False  
 
+def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
+    objTypes = ['resource', 'discussion', 'idea', 'comment']
+    finalActivityList = []
+    try:
+        initialActivityList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(objTypes))\
+            .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .order_by('-date')\
+            .all()
+        # Messy
+        for activity in initialActivityList:
+            if activity.objType == 'discussion' and activity['discType'] != 'general':
+                continue
+            else:
+                finalActivityList.append(activity)
+        return finalActivityList
+    except:
+        return False

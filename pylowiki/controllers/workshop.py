@@ -27,6 +27,7 @@ import pylowiki.lib.db.motd         as motdLib
 import pylowiki.lib.db.pmember      as pMemberLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.activity     as activityLib
 
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
@@ -648,7 +649,7 @@ class WorkshopController(BaseController):
               fList.append(f)
         
         c.facilitators = fList
-        c.followers = followLib.getWorkshopFollowers(c.w.id)
+        #c.followers = followLib.getWorkshopFollowers(c.w.id)
 
         if c.w['startTime'] != '0000-00-00':
            c.wStarted = True
@@ -663,81 +664,76 @@ class WorkshopController(BaseController):
             if s:
                 c.slides.append(s)
             
-        c.resources = resourceLib.getActiveResourcesByWorkshopCode(c.w['urlCode'])
-        c.resources = sort.sortBinaryByTopPop(c.resources)
-        c.dresources = resourceLib.getInactiveResourcesByWorkshopCode(c.w.id)
+        #c.resources = resourceLib.getActiveResourcesByWorkshopCode(c.w['urlCode'])
+        #c.resources = sort.sortBinaryByTopPop(c.resources)
+        #c.dresources = resourceLib.getInactiveResourcesByWorkshopCode(c.w.id)
         # put disabled and deleted at the end
-        if c.resources:
-            if c.dresources:
-                c.resources += c.dresources 
-        else:
-            if c.dresources:
-                c.resources = c.dresources 
+        #if c.resources:
+        #    if c.dresources:
+        #        c.resources += c.dresources 
+        #else:
+        #    if c.dresources:
+        #        c.resources = c.dresources 
 
-        c.suggestions = suggestionLib.getActiveSuggestionsForWorkshop(workshopCode)
-        c.suggestions = sort.sortContByAvgTop(c.suggestions, 'overall')
-        c.dsuggestions = suggestionLib.getInactiveSuggestionsForWorkshop(workshopCode)
+        #c.suggestions = suggestionLib.getActiveSuggestionsForWorkshop(workshopCode)
+        #c.suggestions = sort.sortContByAvgTop(c.suggestions, 'overall')
+        #c.dsuggestions = suggestionLib.getInactiveSuggestionsForWorkshop(workshopCode)
         # put disabled and deleted at the end
-        if c.suggestions:
-            if c.dsuggestions:
-                c.suggestions += c.dsuggestions
-        else:
-            if c.dsuggestions:
-                c.suggestions = c.dsuggestions
+        #if c.suggestions:
+        #    if c.dsuggestions:
+        #        c.suggestions += c.dsuggestions
+        #else:
+        #    if c.dsuggestions:
+        #        c.suggestions = c.dsuggestions
 
-        c.asuggestions = suggestionLib.getAdoptedSuggestionsForWorkshop(workshopCode)
+        #c.asuggestions = suggestionLib.getAdoptedSuggestionsForWorkshop(workshopCode)
         
-        if 'user' in session:
-            ratedSuggestionIDs = []
-            if 'ratedThings_suggestion_overall' in c.authuser.keys():
-                """
-                    Here we get a Dictionary with the commentID as the key and the ratingID as the value
-                    Check to see if the commentID as a string is in the Dictionary keys
-                    meaning it was already rated by this user
-                """
-                sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
-                ratedSuggestionIDs = sugRateDict.keys()
+        #if 'user' in session:
+        #    ratedSuggestionIDs = []
+        #    if 'ratedThings_suggestion_overall' in c.authuser.keys():
+        #        """
+        #            Here we get a Dictionary with the commentID as the key and the ratingID as the value
+        #            Check to see if the commentID as a string is in the Dictionary keys
+        #            meaning it was already rated by this user
+        #        """
+        #        sugRateDict = pickle.loads(str(c.authuser['ratedThings_suggestion_overall']))
+        #        ratedSuggestionIDs = sugRateDict.keys()
         
-        for item in c.suggestions:
-            """ Grab first 250 chars as a summary """
-            if len(item['data']) <= 250:
-                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
-            else:
-                item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
+        #for item in c.suggestions:
+        #    """ Grab first 250 chars as a summary """
+        #    if len(item['data']) <= 250:
+        #        item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
+        #    else:
+        #        item['suggestionSummary'] = h.literal(h.reST2HTML(item['data']))
         
-            if 'user' in session:    
-                """ Grab the associated rating, if it exists """
-                found = False
-                try:
-                    index = ratedSuggestionIDs.index(item.id)
-                    found = True
-                except:
-                    pass
-                if found:
-                    item.rating = ratingLib.getRatingByID(sugRateDict[item.id])
-                else:
-                    item.rating = False
+        #    if 'user' in session:    
+        #        """ Grab the associated rating, if it exists """
+        #        found = False
+        #        try:
+        #            index = ratedSuggestionIDs.index(item.id)
+        #            found = True
+        #        except:
+        #            pass
+        #        if found:
+        #            item.rating = ratingLib.getRatingByID(sugRateDict[item.id])
+        #        else:
+        #            item.rating = False
 
-        c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
+        #c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
 
-        if 'feedbackDiscussion_id' in c.w:
-           c.discussion = discussionLib.getDiscussionByID(c.w['feedbackDiscussion_id'])
-        else:
-           c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
+        #if 'feedbackDiscussion_id' in c.w:
+        #   c.discussion = discussionLib.getDiscussionByID(c.w['feedbackDiscussion_id'])
+        #else:
+        #   c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
 
         c.motd = motdLib.getMessage(c.w.id)
         # kludge for now
         if c.motd == False:
            c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        """ Grab first 250 chars as a summary """
-        if len(c.motd['data']) <= 140:
-            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
-        else:
-            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data'][:140] + '...'))
-        
+        c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         c.information = revisionLib.get_revision(int(c.w['mainRevision_id']))
-        
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         return render('/derived/6_workshop_home.bootstrap')
         
     def displayAllResources(self, workshopCode, workshopURL):
