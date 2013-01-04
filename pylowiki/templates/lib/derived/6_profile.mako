@@ -1,5 +1,6 @@
 <%!
     import pylowiki.lib.db.workshop as workshopLib
+    import pylowiki.lib.db.facilitator as facilitatorLib
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -181,4 +182,32 @@
             <li> ${activityStr | n} </li>
         % endfor
     </ul>
+</%def>
+
+<%def name="inviteCoFacilitate()">
+  %if 'user' in session and c.authuser:
+      <% 
+          fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id)
+          wList = []
+          for f in fList:
+              w = workshopLib.getWorkshopByID(f['workshopID'])
+              if w['deleted'] == '0' and w['public_private'] != 'personal':
+                  if not facilitatorLib.isFacilitator(c.user.id, w.id) and not facilitatorLib.isPendingFacilitator(c.user.id, w.id):
+                      wList.append(w)
+      %>
+      % if c.authuser.id != c.user.id and wList:
+            <div class="row">
+                <div class="centered">
+                <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
+                    <br />
+                    <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop">Invite</button> to co-facilitate <select name="inviteToFacilitate">
+                    % for myW in wList:
+                        <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
+                    % endfor                       
+                    </select>
+                </form>
+                </div>
+            </div><!-- row -->
+      % endif
+  %endif
 </%def>

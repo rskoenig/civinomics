@@ -448,6 +448,12 @@ class ProfileController(BaseController):
                 c.admin = True
             else:
                 c.admin = False
+            c.pendingFacilitators = []
+            fList = facilitatorLib.getFacilitatorsByUser(c.user.id)
+            for f in fList:
+                if 'pending' in f and f['pending'] == '1':
+                    c.pendingFacilitators.append(f)
+
             return render('/derived/6_profile_dashboard.bootstrap')
         else:
             return render('/derived/404.bootstrap')
@@ -472,13 +478,6 @@ class ProfileController(BaseController):
             
         session['confTab'] = "tab1"
         session.save()
-        
-        if 'pictureFile' in request.POST:
-            picture = request.POST['pictureFile']
-            if picture == "":
-                picture = False
-
-
 
         if 'member_name' in request.params:
             name = request.params['member_name']
@@ -534,17 +533,6 @@ class ProfileController(BaseController):
             changeMsg = changeMsg + "Website description updated. "
             c.user['websiteDesc'] = websiteDesc
 
-        if picture != False:
-           identifier = 'avatar'
-           imageFile = picture.file
-           filename = picture.filename
-           hash = imageLib.saveImage(imageFile, filename, c.user, 'avatar', c.user)
-           c.user['pictureHash'] = hash
-           imageLib.resizeImage(identifier, hash, 200, 200, 'profile')
-           imageLib.resizeImage(identifier, hash, 25, 25, 'thumbnail')
-           anyChange = True
-           changeMsg = changeMsg + "Picture updated. "
-
         if nameChange:
             c.user['url'] = urlify(c.user['name'])
             if c.user.id == c.authuser.id:
@@ -588,7 +576,10 @@ class ProfileController(BaseController):
         changeMsg = ""
         # make sure they are authorized to do this
         if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
-            return render('/derived/404.bootstrap')
+            return render('/derived/404.bootstrap')      
+                    
+        session['confTab'] = "tab4"
+        session.save()
             
         
         if 'password' in request.params:
@@ -750,7 +741,7 @@ class ProfileController(BaseController):
         if not userLib.isAdmin(c.authuser.id):
             abort(404)
 
-        session['confTab'] = "tab4"
+        session['confTab'] = "tab5"
         session.save()
         
         if 'verifyEnableUser' in request.params and 'enableUserReason' in request.params and len(request.params['enableUserReason']) > 0:
@@ -788,7 +779,7 @@ class ProfileController(BaseController):
         if not userLib.isAdmin(c.authuser.id):
             abort(404)
             
-        session['confTab'] = "tab4"
+        session['confTab'] = "tab5"
         session.save()
         if 'accessChangeReason' in request.params and request.params['accessChangeReason'] != '' and 'accessChangeVerify' in request.params:
             if c.user['accessLevel'] == '0':

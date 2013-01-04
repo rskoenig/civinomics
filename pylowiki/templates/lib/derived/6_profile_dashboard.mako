@@ -1,5 +1,7 @@
 <%!
-    from pylowiki.lib.db.user import getUserByID
+    import pylowiki.lib.db.user             as userLib
+    import pylowiki.lib.db.facilitator      as facilitatorLib
+    import pylowiki.lib.db.workshop         as workshopLib
 %> 
 
 <%def name="profileInfo()">
@@ -164,6 +166,15 @@
     </script>
 </%def>
 
+<%def name="profileMessages()">
+    <div class="container-fluid">
+        <h3>Messages & Invitations</h3>
+        % if c.pendingFacilitators and c.authuser.id == c.user.id:
+            ${pendingFacilitateInvitations()}
+        % endif
+    </div><!-- container-fluid -->
+</%def>
+
 <%def name="changePassword()">
     <div class="well">
     <form action="/profile/${c.user['urlCode']}/${c.user['url']}/passwordHandler" enctype="multipart/form-data" method="post" class="form-horizontal">
@@ -203,7 +214,7 @@
        <strong>${numEvents} ${eString}:</strong>
        <br /><br />
        % for event in c.events:
-          <% user = getUserByID(event.owner) %>
+          <% user = userLib.getUserByID(event.owner) %>
           ${event['title']} ${event.date}
           % if user:
               by ${user['name']}
@@ -260,5 +271,44 @@
         </fieldset>
      </form>
     <br /><br />
+</%def>
+
+<%def name="pendingFacilitateInvitations()">
+    <div class="well">
+        <strong>Invitations to CoFacilitate Workshops</strong><br />
+        <% fNum = len(c.pendingFacilitators) %>
+        <% wNum = 0 %>
+        % for f in c.pendingFacilitators:
+            % if wNum % 6 == 0 or wNum == 0: ## begin a new row
+                <ul class="unstyled civ-block-list">
+            % elif wNum % 6 == 5: ## end a row
+                </ul>
+                <ul class="unstyled civ-block-list">
+            % endif
+            <li>
+            <% workshop = workshopLib.getWorkshopByID(f['workshopID']) %>
+            <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateHandler/">
+            <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
+            <input type="hidden" name="workshopURL" value="${workshop['url']}">
+            % if workshop['mainImage_hash'] == 'supDawg':
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+            % else:
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+            % endif
+            <br /> <br />
+            <button type="submit" name="acceptInvite" class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
+            <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
+            </form>
+            <li>
+            <% 
+            wNum = wNum + 1
+            if wNum == 6:
+              wNum = 0
+            %>
+        % endfor
+        </ul>
+    </div><!-- well -->
 </%def>
 

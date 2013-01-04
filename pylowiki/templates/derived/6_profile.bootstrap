@@ -23,6 +23,7 @@
                     ${helpers.showActivity(c.activity)}
                 </div>
                 <div class="tab-pane" id="tab-workshops">
+                    ${helpers.inviteCoFacilitate()}
                     <div class="section-wrapper">
                         <div class="browse">
                             <h3 class="centered section-header">

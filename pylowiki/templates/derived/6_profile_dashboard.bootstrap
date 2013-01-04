@@ -8,6 +8,7 @@
     tab2active = ""
     tab3active = ""
     tab4active = ""
+    tab5active = ""
                 
     if c.tab == "tab1":
         tab1active = "active"
@@ -17,6 +18,8 @@
         tab3active = "active"
     elif c.tab == "tab4":
         tab4active = "active"
+    elif c.tab == "tab5":
+        tab5active = "active"
     else:
         tab1active = "active"
 
@@ -39,13 +42,16 @@
                 <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About you<br />
                 Update your details.
                 </a></li>
-                <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Your photo<br />
+                <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Your smiling face<br />
                 Upload a picture.
                 </a></li>
-                <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Change password<br />
+                <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Messages & Invites<br />
+                Upload a picture.
+                </a></li>
+                <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Change your password<br />
                 Stay secure.</a></li>
                 % if c.admin:
-                    <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Administrate<br />
+                    <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Administrate<br />
                     Admin only - shhh!.</a></li>
                 % endif
             </ul>
@@ -69,17 +75,20 @@
                     </div><!-- tab1 -->
                     <div class="tab-pane ${tab2active}" id="tab2">
                         ${helpers.profilePhoto()}
-                    </div><!-- tab1 -->
-                    <div class="tab-pane ${tab3active}" id="tab3">
-                        ${helpers.changePassword()}
                     </div><!-- tab2 -->
+                    <div class="tab-pane ${tab3active}" id="tab3">
+                        ${helpers.profileMessages()}
+                    </div><!-- tab3 -->
+                    <div class="tab-pane ${tab4active}" id="tab4">
+                        ${helpers.changePassword()}
+                    </div><!-- tab4 -->
                     % if c.admin:
-                        <div class="tab-pane ${tab4active}" id="tab4">
+                        <div class="tab-pane ${tab5active}" id="tab5">
                             <div class="well">
                                 ${helpers.memberAdmin()}
                                 ${helpers.memberEvents()}
                             </div><!-- well -->
-                        </div><!-- tab3 -->
+                        </div><!-- tab5 -->
                     % endif
                 </div><!-- tab-content -->
             % endif

@@ -14,7 +14,6 @@ from pylowiki.lib.db.facilitator import Facilitator, getFacilitatorsByUser, getF
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.account import Account, getUserAccount
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.utils import urlify
 
