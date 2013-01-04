@@ -11,19 +11,19 @@ import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 
-from pylowiki.lib.images import saveImage, resizeImage, isImage, numImagesInDirectory
-from pylowiki.lib.db.imageIdentifier import getImageIdentifier
-from pylowiki.lib.db.geoInfo import GeoInfo, getGeoInfo
-from pylowiki.lib.db.user import get_user, getUserByID, isAdmin, changePassword, checkPassword, getUserPosts, getUserByEmail
-import pylowiki.lib.db.activity as activityLib
-from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.facilitator import getFacilitatorsByUser
-from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.pmember import getPrivateMemberWorkshops
-from pylowiki.lib.db.follow import getUserFollowers, getWorkshopFollows, getUserFollows, isFollowing, getFollow, Follow
-from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.flag import getFlags
-from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
+import pylowiki.lib.images              as imageLib
+import pylowiki.lib.db.activity         as activityLib
+import pylowiki.lib.db.imageIdentifier  as imageIdentifierLib
+import pylowiki.lib.db.geoInfo          as geoInfoLib
+import pylowiki.lib.db.user             as userLib
+import pylowiki.lib.db.dbHelpers        as dbHelpers
+import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.workshop         as workshopLib
+import pylowiki.lib.db.pmember          as pMemberLib
+import pylowiki.lib.db.follow           as followLib
+import pylowiki.lib.db.event            as eventLib
+import pylowiki.lib.db.flag             as flagLib
+import pylowiki.lib.db.revision         as revisionLib
 import simplejson as json
 import csv
 import os
@@ -37,7 +37,7 @@ class ProfileController(BaseController):
     def __before__(self, action, id1 = None, id2 = None):
         if action != 'hashPicture':
             if id1 is not None and id2 is not None:
-                c.user = get_user(id1, id2)
+                c.user = userLib.get_user(id1, id2)
             else:
                 abort(404)
     
@@ -45,18 +45,18 @@ class ProfileController(BaseController):
         # Called when visiting /profile/urlCode/url
         rev = id3
         if id3 != '':
-            c.revision = getRevisionByCode(id3)
+            c.revision = revisionLib.getRevisionByCode(id3)
         else:
             c.revision = False
 
-        c.revisions = getParentRevisions(c.user.id)
+        c.revisions = revisionLib.getParentRevisions(c.user.id)
         c.title = c.user['name']
-        c.geoInfo = getGeoInfo(c.user.id)
+        c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         if 'user' in session and c.authuser.id != c.user.id:
-           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+           c.isFollowing = followLib.isFollowing(c.authuser.id, c.user.id) 
 
-        fList = getFacilitatorsByUser(c.user.id)
+        fList = facilitatorLib.getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
         c.pendingFacilitators = []
         for f in fList:
@@ -64,46 +64,46 @@ class ProfileController(BaseController):
               c.pendingFacilitators.append(f)
            elif f['disabled'] == '0':
               wID = f['workshopID']
-              myW = getWorkshopByID(wID)
+              myW = workshopLib.getWorkshopByID(wID)
               if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1' or myW['public_private'] != 'public':
                  # show to the workshop owner, show to the facilitator owner, show to admin
                  if 'user' in session: 
-                     if c.authuser.id == f.owner or isAdmin(c.authuser.id):
+                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
 
-        fList = getWorkshopFollows(c.user.id)
+        fList = followLib.getWorkshopFollows(c.user.id)
         c.followingWorkshops = []
         for f in fList:
            wID = f['thingID']
-           c.followingWorkshops.append(getWorkshopByID(wID))
+           c.followingWorkshops.append(workshopLib.getWorkshopByID(wID))
         # kludge for now
         c.watching = c.followingWorkshops
            
         if 'user' in session and c.user.id == c.authuser.id:
-            privList = getPrivateMemberWorkshops(c.user['email'])
+            privList = pMemberLib.getPrivateMemberWorkshops(c.user['email'])
             for p in privList:
-                w = getWorkshopByID(p.owner)
+                w = workshopLib.getWorkshopByID(p.owner)
                 c.followingWorkshops.append(w)
         else:
             c.pmembers = False
 
-        uList = getUserFollows(c.user.id)
+        uList = followLib.getUserFollows(c.user.id)
         c.following = []
         for u in uList:
            uID = u['thingID']
-           c.following.append(getUserByID(uID))
+           c.following.append(userLib.getUserByID(uID))
 
-        uList = getUserFollowers(c.user.id)
+        uList = followLib.getUserFollowers(c.user.id)
         c.followers = []
         for u in uList:
            uID = u.owner
-           c.followers.append(getUserByID(uID))
+           c.followers.append(userLib.getUserByID(uID))
 
         pList = []
         #if 'user' in session:
-        #    if isAdmin(c.authuser.id):
+        #    if userLib.isAdmin(c.authuser.id):
         #        pList = activityLib.getAllMemberPosts(c.user)
         #    elif c.user.id == c.authuser.id:
         #        pList = activityLib.getMemberPosts(c.user, disabled = '1') + activityLib.getMemberPosts(c.user, disabled = '0')
@@ -143,7 +143,7 @@ class ProfileController(BaseController):
                    comUpVotes += int(p['ups'])
                    c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
 
-           fList = getFlags(p)
+           fList = flagLib.getFlags(p)
            if fList:
               c.flags += len(fList)
            if 'ups' in p and 'downs' in p:
@@ -188,7 +188,7 @@ class ProfileController(BaseController):
         return render("/derived/6_profile.bootstrap")
     
     def stats(self, id1, id2):
-        if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
+        if 'user' in session and (user.id == c.authuser.id or userLib.isAdmin(c.authuser.id)):
             posts = activityLib.getMemberPosts(user, 0)
         else:
             posts = activityLib.getMemberPosts(user, 1)
@@ -203,7 +203,7 @@ class ProfileController(BaseController):
         return json.dumps(retObj)
     
     def statsCSV(self, id1, id2):
-        if 'user' in session and (user.id == c.authuser.id or isAdmin(c.authuser.id)):
+        if 'user' in session and (user.id == c.authuser.id or userLib.isAdmin(c.authuser.id)):
             posts = activityLib.getMemberPosts(user, 0)
         else:
             posts = activityLib.getMemberPosts(user, 1)
@@ -232,24 +232,24 @@ class ProfileController(BaseController):
     def showUserSuggestions(self, id1, id2):
         # Called when visiting /profile/urlCode/url/suggestions
         c.title = c.user['name']
-        c.geoInfo = getGeoInfo(c.user.id)
+        c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         if 'user' in session and c.authuser:
-           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+           c.isFollowing = followLib.isFollowing(c.authuser.id, c.user.id) 
         else:
            c.isFollowing = False
 
-        pList = getUserPosts(c.user)
+        pList = userLib.getUserPosts(c.user)
         c.totalPoints = 0
         c.suggestions = []
         c.userFollowers = []
         c.flags = 0
 
-        uList = getUserFollowers(c.user.id)
+        uList = followLib.getUserFollowers(c.user.id)
         c.userFollowers = []
         for u in uList:
            uID = u.owner
-           c.userFollowers.append(getUserByID(uID))
+           c.userFollowers.append(userLib.getUserByID(uID))
 
 
         c.posts = len(pList)
@@ -258,7 +258,7 @@ class ProfileController(BaseController):
                if p.objType == 'suggestion':
                    c.suggestions.append(p)
 
-           fList = getFlags(p)
+           fList = flagLib.getFlags(p)
            if fList:
               c.flags += len(fList)
 
@@ -300,26 +300,26 @@ class ProfileController(BaseController):
     def showUserComments(self, id1, id2):
         # Called when visiting /profile/urlCode/url/comments
         c.title = c.user['name']
-        c.geoInfo = getGeoInfo(c.user.id)
+        c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         if 'user' in session and c.authuser:
-           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+           c.isFollowing = followLib.isFollowing(c.authuser.id, c.user.id) 
         else:
            c.isFollowing = False
 
-        uList = getUserFollows(c.user.id)
+        uList = followLib.getUserFollows(c.user.id)
         c.followingUsers = []
         for u in uList:
            uID = u['thingID']
-           c.followingUsers.append(getUserByID(uID))
+           c.followingUsers.append(userLib.getUserByID(uID))
 
-        uList = getUserFollowers(c.user.id)
+        uList = followLib.getUserFollowers(c.user.id)
         c.userFollowers = []
         for u in uList:
            uID = u.owner
-           c.userFollowers.append(getUserByID(uID))
+           c.userFollowers.append(userLib.getUserByID(uID))
 
-        pList = getUserPosts(c.user)
+        pList = userLib.getUserPosts(c.user)
         c.totalPoints = 0
         c.comments = []
         c.flags = 0
@@ -334,7 +334,7 @@ class ProfileController(BaseController):
                    comUpVotes += int(p['ups'])
                    c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
 
-           fList = getFlags(p)
+           fList = flagLib.getFlags(p)
            if fList:
               c.flags += len(fList)
            if 'ups' in p and 'downs' in p:
@@ -368,10 +368,10 @@ class ProfileController(BaseController):
     def _basicSetup(self, code, url, page):
         # code and url are now unused here, now that __before__ is defined
         c.title = c.user['name']
-        c.geoInfo = getGeoInfo(c.user.id)
+        c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         if 'user' in session and c.authuser:
-           c.isFollowing = isFollowing(c.authuser.id, c.user.id) 
+           c.isFollowing = followLib.isFollowing(c.authuser.id, c.user.id) 
         else:
            c.isFollowing = False
 
@@ -393,24 +393,24 @@ class ProfileController(BaseController):
         # or user-interested (e.g. followers, following, watching) objects
         items = {}
         
-        following = getUserFollows(user.id)
+        following = followLib.getUserFollows(user.id)
         items['following'] = []
         for item in following:
-            items['following'].append(getUserByID(item['thingID']))
+            items['following'].append(userLib.getUserByID(item['thingID']))
         
-        followers = getUserFollowers(user.id)
+        followers = followLib.getUserFollowers(user.id)
         items['followers'] = []
         for item in followers:
-            items['followers'].append(getUserByID(item.owner))
+            items['followers'].append(userLib.getUserByID(item.owner))
             
-        watching = getWorkshopFollows(user.id)
+        watching = followLib.getWorkshopFollows(user.id)
         items['watching'] = []
         for item in watching:
-            items['watching'].append(getWorkshopByID(item['thingID']))
+            items['watching'].append(workshopLib.getWorkshopByID(item['thingID']))
         
         # Already checks for disabled/deleted by default
         # The following section feels like a good candidate for map/reduce
-        createdThings = getUserPosts(user)
+        createdThings = userLib.getUserPosts(user)
         items['resources'] = []
         items['discussions'] = []
         items['ideas'] = [] # TODO
@@ -437,14 +437,14 @@ class ProfileController(BaseController):
 
     @h.login_required
     def dashboard(self, id1, id2):
-        c.events = getParentEvents(c.user)
-        if isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
+        c.events = eventLib.getParentEvents(c.user)
+        if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
             c.title = 'Member Dashboard'
             if 'confTab' in session:
                 c.tab = session['confTab']
                 session.pop('confTab')
                 session.save()
-            if isAdmin(c.authuser.id):
+            if userLib.isAdmin(c.authuser.id):
                 c.admin = True
             else:
                 c.admin = False
@@ -467,7 +467,7 @@ class ProfileController(BaseController):
         websiteDesc = False
 
         # make sure they are authorized to do this
-        if c.user.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
             return render('/derived/404.bootstrap')
             
         session['confTab'] = "tab1"
@@ -493,7 +493,7 @@ class ProfileController(BaseController):
             if email == '':
                 email = False
             elif email != c.user['email']:
-                checkUser = getUserByEmail(email)
+                checkUser = userLib.getUserByEmail(email)
                 if checkUser:
                     perror = 1
                     perrorMsg = perrorMsg + ' Email address ' + email + ' is already in use by other member!'
@@ -538,10 +538,10 @@ class ProfileController(BaseController):
            identifier = 'avatar'
            imageFile = picture.file
            filename = picture.filename
-           hash = saveImage(imageFile, filename, c.user, 'avatar', c.user)
+           hash = imageLib.saveImage(imageFile, filename, c.user, 'avatar', c.user)
            c.user['pictureHash'] = hash
-           resizeImage(identifier, hash, 200, 200, 'profile')
-           resizeImage(identifier, hash, 25, 25, 'thumbnail')
+           imageLib.resizeImage(identifier, hash, 200, 200, 'profile')
+           imageLib.resizeImage(identifier, hash, 25, 25, 'thumbnail')
            anyChange = True
            changeMsg = changeMsg + "Picture updated. "
 
@@ -553,9 +553,9 @@ class ProfileController(BaseController):
                 c.authuser = c.user
             log.info('Changed name')
         if anyChange and perror == 0:
-            commit(c.user)
-            Event('Profile updated.', changeMsg, c.user, c.authuser)
-            Revision(c.user, c.user['name'], c.user)
+            dbHelpers.commit(c.user)
+            eventLib.Event('Profile updated.', changeMsg, c.user, c.authuser)
+            revisionLib.Revision(c.user, c.user['name'], c.user)
             alert = {'type':'success'}
             alert['title'] = changeMsg
             alert['content'] = ''
@@ -587,7 +587,7 @@ class ProfileController(BaseController):
         perrorMsg = ""
         changeMsg = ""
         # make sure they are authorized to do this
-        if c.user.id != c.authuser.id and isAdmin(c.authuser.id) != 1:
+        if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
             return render('/derived/404.bootstrap')
             
         
@@ -602,7 +602,7 @@ class ProfileController(BaseController):
             verify_password = False 
 
         if password and verify_password and password == verify_password:
-            changePassword(c.user, password)
+            userLib.changePassword(c.user, password)
             changeMsg = changeMsg + "Password updated. "
         if password and verify_password and password != verify_password:
             perror = 1
@@ -614,7 +614,7 @@ class ProfileController(BaseController):
         " FOR CHANGING USE PASSWORD"
         pass_error = 4
         if 'oldPassword' in request.params:
-            old_password = checkPassword(c.authuser, request.params['oldPassword'])
+            old_password = userLib.checkPassword(c.authuser, request.params['oldPassword'])
             pass_error = 0
             
             if not old_password:
@@ -643,8 +643,8 @@ class ProfileController(BaseController):
                 pass_error = 4
             
         if pass_error == 0:
-            changePassword(c.user, newPassword)
-            Event('Profile updated.', 'Password changed', c.user, c.authuser)
+            userLib.changePassword(c.user, newPassword)
+            eventLib.Event('Profile updated.', 'Password changed', c.user, c.authuser)
             log.info('changed password for  %s'%c.authuser['name'])
             alert = {'type':'success'}
             alert['title'] = 'Password Change Successful'
@@ -687,10 +687,10 @@ class ProfileController(BaseController):
             imageFile = file.file
             filename = file.filename
             identifier = 'avatar'
-            hash = saveImage(imageFile, filename, c.user, 'avatar', c.user)
+            hash = imageLib.saveImage(imageFile, filename, c.user, 'avatar', c.user)
             c.user['pictureHash'] = hash
-            resizeImage(identifier, hash, 200, 200, 'profile')
-            resizeImage(identifier, hash, 25, 25, 'thumbnail')
+            imageLib.resizeImage(identifier, hash, 200, 200, 'profile')
+            imageLib.resizeImage(identifier, hash, 25, 25, 'thumbnail')
             
             alert = {'type':'success'}
             alert['title'] = 'Upload complete. Profile picture updated.'
@@ -698,8 +698,8 @@ class ProfileController(BaseController):
             session['alert'] = alert
             session.save()
 
-            i = getImageIdentifier(identifier)
-            directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
+            i = imageIdentifierLib.getImageIdentifier(identifier)
+            directoryNumber = str(int(i['numImages']) / imageLib.numImagesInDirectory)
             savename = hash + '.orig'
             newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
             st = os.stat(newPath)
@@ -725,29 +725,29 @@ class ProfileController(BaseController):
     @h.login_required
     def followHandler(self, id1, id2):
         # this gets a follow which has been unfollowed
-        f = getFollow(c.authuser.id, c.user.id)
+        f = followLib.getFollow(c.authuser.id, c.user.id)
         if f:
            log.info('f is %s' % f)
            f['disabled'] = '0'
-           commit(f)
+           dbHelpers.commit(f)
         # this only gets follows which are not disabled
-        elif not isFollowing(c.authuser.id, c.user.id):
-           f = Follow(c.authuser.id, c.user.id, 'user')
+        elif not followLib.isFollowing(c.authuser.id, c.user.id):
+           f = followLib.Follow(c.authuser.id, c.user.id, 'user')
         else:
-           f = Follow(c.authuser.id, c.user.id, 'user')
+           f = followLib.Follow(c.authuser.id, c.user.id, 'user')
         return "ok"
 
     @h.login_required
     def unfollowHandler(self, id1, id2):
-        f = getFollow(c.authuser.id, c.user.id)
+        f = followLib.getFollow(c.authuser.id, c.user.id)
         if f:
            f['disabled'] = '1'
-           commit(f)
+           dbHelpers.commit(f)
         return "ok"
 
     @h.login_required
     def enableHandler(self, id1, id2):
-        if not isAdmin(c.authuser.id):
+        if not userLib.isAdmin(c.authuser.id):
             abort(404)
 
         session['confTab'] = "tab4"
@@ -770,8 +770,8 @@ class ProfileController(BaseController):
               alert['title'] = 'Disabled:'
               alert['content'] = 'Member Disabled'
               
-           e = Event(eAction, enableUserReason, c.user, c.authuser)
-           commit(c.user)
+           e = eventLib.Event(eAction, enableUserReason, c.user, c.authuser)
+           dbHelpers.commit(c.user)
            session['alert'] = alert
            session.save()
         else:
@@ -785,7 +785,7 @@ class ProfileController(BaseController):
 
     @h.login_required
     def privsHandler(self, id1, id2):
-        if not isAdmin(c.authuser.id):
+        if not userLib.isAdmin(c.authuser.id):
             abort(404)
             
         session['confTab'] = "tab4"
@@ -803,8 +803,8 @@ class ProfileController(BaseController):
             eAction = 'Access Level Changed from ' + oldAccessTitle + ' to ' + newAccessTitle
             c.user['accessLevel'] = '200'
             accessChangeReason = request.params['accessChangeReason']
-            e = Event(eAction, accessChangeReason, c.user, c.authuser)
-            commit(c.user)
+            e = eventLib.Event(eAction, accessChangeReason, c.user, c.authuser)
+            dbHelpers.commit(c.user)
             alert = {'type':'success'}
             alert['title'] = 'Success:'
             alert['content'] = 'New Access Level Set'
