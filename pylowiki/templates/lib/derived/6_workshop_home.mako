@@ -23,14 +23,42 @@
    </ul>
 </%def>
 
-<%def name="showActivity(c)">
-   
-   <%
-      #resources = c.resources
-      #suggestions = c.suggestions
-      #discussions = c.discussion
-   %>
-   ${lib_6.userImage(getUserByID(1), className="avatar small-avatar inline")}
+<%def name="showActivity(activity)">
+    <%
+        numItems = 5
+        if len(activity) > numItems:
+            showMore = True
+            activity = activity[0:numItems]
+        else:
+            showMore = False
+    %>
+    % for item in activity:
+        <div class="row-fluid">
+            ${lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")}
+            ${lib_6.userLink(item.owner)}
+            <%
+                if item.objType == 'comment':
+                    activityStr = 'Commented on a'
+                    if 'ideaCode' in item.keys():
+                        activityStr += 'n'
+                else:
+                    activityStr = 'Added a'
+                if item.objType == 'idea':
+                    activityStr += 'n'
+                activityStr += ' <a ' + lib_6.thingLinkRouter(item, c.w, embed = True) + '>'
+                if item.objType != 'comment':
+                    activityStr += item.objType + "</a>"
+                else:
+                    if 'ideaCode' in item.keys():
+                        activityStr += 'idea </a>'
+                    elif 'resourceCode' in item.keys():
+                        activityStr += 'resource </a>'
+                    else:
+                        activityStr += 'discussion </a>'
+            %>
+            ${activityStr | n}
+        </div>
+    % endfor
 </%def>
 
 <%def name="watchButton()">

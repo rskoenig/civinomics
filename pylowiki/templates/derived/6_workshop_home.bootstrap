@@ -21,11 +21,7 @@
       <div class="section-wrapper activityStream">
          <div class="browse">
             <h3 class="section-header"> Activity </h3>
-               % for item in range(5):
-                  <div class="row-fluid">
-                     ${helpers.showActivity(c)}
-                  </div>
-               % endfor
+            ${helpers.showActivity(c.activity)}
          </div> <!-- /.browse -->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span7 -->
@@ -47,7 +43,7 @@
                <li> Goal number 4 </li>
                <li> Goal number 5 </li>
             </ul> <!-- /goals -->
-            <h5> Gallery </h5>
+            <h5> Slideshow </h5>
             ${helpers.slideshow(c.w)}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->

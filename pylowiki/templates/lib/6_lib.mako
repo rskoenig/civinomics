@@ -1,8 +1,10 @@
 <%!
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.db.geoInfo import getGeoInfo
-   from pylowiki.lib.db.discussion import getDiscussionByID
-   from pylowiki.lib.db.resource import getResourceByCode
+   
+   import pylowiki.lib.db.discussion    as discussionLib
+   import pylowiki.lib.db.idea          as ideaLib
+   import pylowiki.lib.db.resource      as resourceLib
    
    import logging
    log = logging.getLogger(__name__)
@@ -146,7 +148,7 @@
          if kwargs['embed'] == True:
             return resourceStr
    %>
-   ${resourceStr}
+   ${resourceStr | n}
 </%def>
 
 <%def name="suggestionLink(s, w, **kwargs)">
@@ -156,7 +158,7 @@
          if kwargs['embed'] == True:
             return resourceStr
    %>
-   ${resourceStr}
+   ${resourceStr | n}
 </%def>
 
 <%def name="ideaLink(i, w, **kwargs)">
@@ -166,7 +168,25 @@
          if kwargs['embed'] == True:
             return ideaStr
    %>
-   ${resourceStr}
+   ${ideaStr | n}
+</%def>
+
+<%def name="threadLink(comment, w, thingType = None, **kwargs)">
+   <% 
+      if thingType == None:
+         if 'ideaCode' in comment.keys():
+            thingType = 'idea'
+         elif 'resourceCode' in comment.keys():
+            thingType = 'resource'
+      d = discussionLib.getDiscussion(comment['discussionCode'])
+      if d['discType'] == 'resource':
+         d = resourceLib.getResourceByCode(d['resourceCode'])
+      linkStr = 'href="/workshop/%s/%s/%s/%s/%s/thread/%s"' %(w["urlCode"], w["url"], thingType, d["urlCode"], d["url"], comment['urlCode'])
+      if 'embed' in kwargs:
+         if kwargs['embed'] == True:
+            return linkStr
+   %>
+   ${linkStr | n}
 </%def>
 
 <%def name="thingLinkRouter(thing, workshop, **kwargs)">
@@ -179,6 +199,14 @@
             return resourceLink(thing, workshop, **kwargs)
         elif thing.objType == 'idea':
             return ideaLink(thing, workshop, **kwargs)
+        elif thing.objType == 'comment':
+            #return threadLink(thing, workshop, **kwargs)
+            if 'ideaCode' in thing.keys():
+                return ideaLink(ideaLib.getIdea(thing['ideaCode']), workshop, **kwargs)
+            elif 'resourceCode' in thing.keys():
+                return resourceLink(resourceLib.getResourceByCode(thing['resourceCode']), workshop, **kwargs)
+            else:
+                return discussionLink(discussionLib.getDiscussion(thing['discussionCode']), workshop, **kwargs)
     %>
 </%def>
 
@@ -260,19 +288,6 @@
             return resourceStr
    %>
    ${resourceStr}
-</%def>
-
-<%def name="threadLink(comment, w, thingType, **kwargs)">
-   <%      
-      d = getDiscussionByID(comment['discussion_id'])
-      if d['discType'] == 'resource':
-         d = getResourceByCode(d['resourceCode'])
-      linkStr = 'href="/workshop/%s/%s/%s/%s/%s/thread/%s"' %(w["urlCode"], w["url"], thingType, d["urlCode"], d["url"], comment['urlCode'])
-      if 'embed' in kwargs:
-         if kwargs['embed'] == True:
-            return linkStr
-   %>
-   ${linkStr}
 </%def>
 
 <%def name="disableThing(thing, **kwargs)">

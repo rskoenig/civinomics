@@ -7,6 +7,8 @@ from pylowiki.lib.utils import toBase62
 from pylowiki.model import Thing, Data, meta
 from pylowiki.lib.db.flag import checkFlagged
 from pylowiki.lib.db.workshop import getWorkshopByCode
+import pylowiki.lib.db.idea as ideaLib
+import pylowiki.lib.db.resource as resourceLib
 import sqlalchemy as sa
 from time import time
 from dbHelpers import commit, with_characteristic as wc
@@ -123,21 +125,23 @@ class Comment(object):
     # parent is a Thing id
     def __init__(self, data, owner, discussion, parent = 0):
         w = getWorkshopByCode(discussion['workshopCode'])
+        if discussion['discType'] == 'idea':
+            attachedThing = ideaLib.getIdea(discussion['ideaCode'])
+        elif discussion['discType'] == 'resource':
+            attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+        else:
+            attachedThing = None
         thisComment = Thing('comment', owner.id)
         thisComment = generic.linkChildToParent(thisComment, w)
         thisComment = generic.linkChildToParent(thisComment, discussion)
+        if attachedThing is not None:
+            thisComment = generic.linkChildToParent(thisComment, attachedThing)
         thisComment['disabled'] = '0'
         thisComment['deleted'] = '0'
         thisComment['pending'] = '0'
         thisComment['parent'] = parent
         thisComment['children'] = '0'
         thisComment['data'] = data
-        if len(data) > 10:
-           cData = data[:10]
-        else:
-           cData = data
-
-        thisComment['discussion_id'] = discussion.id
         thisComment['pending'] = '0'
         thisComment['ups'] = '0'
         thisComment['downs'] = '0'
