@@ -14,13 +14,19 @@ log = logging.getLogger(__name__)
 
 def getIdea(urlCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'idea').filter(Thing.data.any(wc('urlCode', urlCode))).one()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wc('urlCode', urlCode))).one()
     except:
         return False
 
 def getIdeasInWorkshop(workshopCode, deleted = '0', disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'idea').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wc('disabled', disabled))).all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
 

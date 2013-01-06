@@ -842,6 +842,26 @@ class WorkshopController(BaseController):
             
         return render('/derived/6_workshop_dashboard.bootstrap')
 
+    @h.login_required
+    def followHandler(self, workshopCode, workshopURL):
+        f = followLib.getFollow(c.authuser.id, c.w.id)
+        if f:
+           f['disabled'] = '0'
+           dbHelpers.commit(f)
+        elif not followLib.isFollowing(c.authuser.id, c.w.id): 
+           f = followLib.Follow(c.authuser.id, c.w.id, 'workshop') 
+        else:
+           f = followLib.Follow(c.authuser.id, c.w.id, 'workshop') 
+        return "ok"
+
+    @h.login_required
+    def unfollowHandler(self, workshopCode, workshopURL):
+        f = followLib.getFollow(c.authuser.id, c.w.id)
+        if f:
+           f['disabled'] = '1'
+           dbHelpers.commit(f)
+        return "ok"
+
     ###################################################
     # 
     # 
@@ -849,36 +869,6 @@ class WorkshopController(BaseController):
     # 
     # 
     ###################################################
-
-    @h.login_required
-    def followHandler(self, id1, id2):
-        code = id1
-        url = id2
-        w = workshopLib.getWorkshop(code, utils.urlify(url))
-        f = followLib.getFollow(c.authuser.id, w.id)
-        if f:
-           f['disabled'] = '0'
-           dbHelpers.commit(f)
-        elif not followLib.isFollowing(c.authuser.id, w.id): 
-           f = followLib.Follow(c.authuser.id, w.id, 'workshop') 
-        else:
-           f = followLib.Follow(c.authuser.id, w.id, 'workshop') 
-           
-        return "ok"
-
-    @h.login_required
-    def unfollowHandler(self, id1, id2):
-        code = id1
-        url = id2
-        w = workshopLib.getWorkshop(code, utils.urlify(url))
-        f = followLib.getFollow(c.authuser.id, w.id)
-        if f:
-           ##log.info('f is %s' % f)
-           f['disabled'] = '1'
-           dbHelpers.commit(f)
-           
-        return "ok"
-        
     def displayAllSuggestions(self, id1, id2):
         code = id1
         url = id2

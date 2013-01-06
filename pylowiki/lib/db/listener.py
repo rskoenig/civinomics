@@ -29,7 +29,7 @@ def getListenersForUser(user, deleted = 0):
         return False
 
 def Listener(user, workshop, pending = 1):
-    listener = Thing('listener', workshop.id)
+    listener = Thing('listener')
     listener['userCode'] = user['urlCode']
     listener['pending'] = pending
     listener['deleted'] = '0'

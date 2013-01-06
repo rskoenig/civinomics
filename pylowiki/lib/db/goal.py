@@ -17,7 +17,7 @@ def getGoalsForWorkshop(workshop):
         return False
 
 def Goal(title, status, workshop):
-    goal = Thing('goal', workshop.id)
+    goal = Thing('goal')
     goal['title'] = title
     goal['status'] = status
     goal['deleted'] = '0'
