@@ -39,6 +39,12 @@ def getUserByEmail(email):
     except:
         return False
 
+def getUserByCode(urlCode):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('urlCode', urlCode))).one()
+    except:
+        return False
+
 def getUserByID(id):
     try:
         return meta.Session.query(Thing).filter_by(id = id).one()

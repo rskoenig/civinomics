@@ -78,8 +78,8 @@ class ProfileController(BaseController):
         uList = followLib.getUserFollows(c.user)
         c.following = []
         for u in uList:
-           uID = u['thingID']
-           c.following.append(userLib.getUserByID(uID))
+           uCode = u['userCode']
+           c.following.append(userLib.getUserByCode(uCode))
 
         uList = followLib.getUserFollowers(c.user)
         c.followers = []
@@ -233,8 +233,8 @@ class ProfileController(BaseController):
         uList = followLib.getUserFollows(c.user)
         c.followingUsers = []
         for u in uList:
-           uID = u['thingID']
-           c.followingUsers.append(userLib.getUserByID(uID))
+           uCode = u['userCode']
+           c.followingUsers.append(userLib.getUserByCode(userCode))
 
         uList = followLib.getUserFollowers(c.user)
         c.userFollowers = []
@@ -319,7 +319,7 @@ class ProfileController(BaseController):
         following = followLib.getUserFollows(user)
         items['following'] = []
         for item in following:
-            items['following'].append(userLib.getUserByID(item['thingID']))
+            items['following'].append(userLib.getUserByCode(item['userCode']))
         
         followers = followLib.getUserFollowers(user)
         items['followers'] = []
