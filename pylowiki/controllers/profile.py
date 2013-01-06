@@ -380,7 +380,7 @@ class ProfileController(BaseController):
 
             return render('/derived/6_profile_dashboard.bootstrap')
         else:
-            return render('/derived/404.bootstrap')
+            abort(404)
 
     @h.login_required
     def editHandler(self,id1, id2):
@@ -398,7 +398,7 @@ class ProfileController(BaseController):
 
         # make sure they are authorized to do this
         if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
-            return render('/derived/404.bootstrap')
+            abort(404)
             
         session['confTab'] = "tab1"
         session.save()
@@ -500,7 +500,7 @@ class ProfileController(BaseController):
         changeMsg = ""
         # make sure they are authorized to do this
         if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
-            return render('/derived/404.bootstrap')      
+            abort(404)      
                     
         session['confTab'] = "tab4"
         session.save()
