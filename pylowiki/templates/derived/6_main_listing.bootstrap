@@ -58,12 +58,16 @@
       <div class="section-wrapper">
          <div class="activity">
             <h3 class="section-header"> Activity </h3>
+            <% numItems = 10 %>
             % for i in range(len(c.activity)):
                <% thisActivity = c.activity[i] %>
                <div class="row-fluid">
                   ${helpers.showActivity(thisActivity)}
                % if i < len(c.activity) - 1:
                   <hr>
+               % endif
+               % if i > numItems:
+                <% break %>
                % endif
                </div>
             % endfor

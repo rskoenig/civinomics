@@ -56,6 +56,9 @@
             elif item.objType == 'discussion':
                activityStr += 'started the discussion '
                activityStr += '<a %s>%s</a>' %(lib_6.discussionLink(item, w, embed=True), title)
+            elif item.objType == 'idea':
+                activityStr += 'posed the idea '
+                activityStr += '<a %s>%s</a>' %(lib_6.ideaLink(item, w, embed=True), title)
             else:
                activityStr += 'fucked up'
          %>
