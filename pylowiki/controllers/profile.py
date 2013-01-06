@@ -54,7 +54,7 @@ class ProfileController(BaseController):
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         if 'user' in session and c.authuser.id != c.user.id:
-           c.isFollowing = followLib.isFollowing(c.authuser.id, c.user.id) 
+           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
 
         fList = facilitatorLib.getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
@@ -73,118 +73,42 @@ class ProfileController(BaseController):
               else:
                     c.facilitatorWorkshops.append(myW)
 
-        fList = followLib.getWorkshopFollows(c.user.id)
-        c.followingWorkshops = []
-        for f in fList:
-           wID = f['thingID']
-           c.followingWorkshops.append(workshopLib.getWorkshopByID(wID))
-        # kludge for now
-        c.watching = c.followingWorkshops
-           
-        if 'user' in session and c.user.id == c.authuser.id:
-            privList = pMemberLib.getPrivateMemberWorkshops(c.user['email'])
-            for p in privList:
-                w = workshopLib.getWorkshopByID(p.owner)
-                c.followingWorkshops.append(w)
-        else:
-            c.pmembers = False
+        c.watching = followLib.getWorkshopFollows(c.user)
+        log.info(c.watching)
 
-        uList = followLib.getUserFollows(c.user.id)
+        uList = followLib.getUserFollows(c.user)
         c.following = []
         for u in uList:
            uID = u['thingID']
            c.following.append(userLib.getUserByID(uID))
 
-        uList = followLib.getUserFollowers(c.user.id)
+        uList = followLib.getUserFollowers(c.user)
         c.followers = []
         for u in uList:
            uID = u.owner
            c.followers.append(userLib.getUserByID(uID))
-
-        pList = []
-        #if 'user' in session:
-        #    if userLib.isAdmin(c.authuser.id):
-        #        pList = activityLib.getAllMemberPosts(c.user)
-        #    elif c.user.id == c.authuser.id:
-        #        pList = activityLib.getMemberPosts(c.user, disabled = '1') + activityLib.getMemberPosts(c.user, disabled = '0')
-        #else:
-        #    pList = activityLib.getMemberPosts(c.user)
-        pList = activityLib.getMemberPosts(c.user)
-        c.activity = pList
-        c.totalPoints = 0
+          
+        c.activity = activityLib.getMemberPosts(c.user)
         c.suggestions = []
         c.resources = []
         c.discussions = []
         c.comments = []
         c.ideas = []
-        c.flags = 0
-        resUpVotes = 0
-        c.resVotes = 0
-        comUpVotes = 0
-        c.comVotes = 0
-        disUpVotes = 0
-        c.disVotes = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           if p['deleted'] == '0' and p['disabled'] == '0':
-               if p.objType == 'suggestion':
-                   c.suggestions.append(p)
-               elif p.objType == 'resource':
-                   c.resources.append(p)
-                   resUpVotes += int(p['ups'])
-                   c.resVotes = c.resVotes + int(p['ups']) + int(p['downs'])
-               elif p.objType == 'discussion':
-                   c.discussions.append(p)
-                   disUpVotes += int(p['ups'])
-                   c.disVotes = c.disVotes + int(p['ups']) + int(p['downs'])
-               elif p.objType == 'comment':
-                   c.comments.append(p)
-                   comUpVotes += int(p['ups'])
-                   c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
-
-           fList = flagLib.getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        if c.suggestions and len(c.suggestions) > 0:
-            totalRateAvg = 0
-            for s in c.suggestions:
-                totalRateAvg += float(s['ratingAvg_overall'])
-
-            totalRateAvg = totalRateAvg/len(c.suggestions)
-            c.sugRateAvg = int(totalRateAvg)
-            c.sugUpperRateAvg = totalRateAvg+(5-totalRateAvg%5)
-            c.sugLowerRateAvg = totalRateAvg-(totalRateAvg%5)
-            c.sugRateAvgfuzz = c.sugLowerRateAvg+2.5
-        else:
-            totalRateAvg = 0
-            c.sugRateAvg = totalRateAvg
-            c.sugUpperRateAvg = 0
-            c.sugLowerRateAvg = 0
-            c.sugRateAvgfuzz = 0
-
-        c.numRes = len(c.resources)
-        if c.resVotes > 0:
-            c.resUpsPercent = 100*float(resUpVotes)/float(c.resVotes)
-        else:
-            c.resUpsPercent = 0
-
-        c.numDis = len(c.discussions)
-        if c.disVotes > 0:
-            c.disUpsPercent = 100*float(disUpVotes)/float(c.disVotes)
-        else:
-            c.disUpsPercent = 0
-
-        c.numComs = len(c.comments)
-        if c.comVotes > 0:
-            c.comUpsPercent = 100*float(comUpVotes)/float(c.comVotes)
-        else:
-            c.comUpsPercent = 0
-
+        
+        posts = activityLib.getMemberPosts(c.user)
+        for p in posts:
+            if p['deleted'] == '0' and p['disabled'] == '0':
+                if p.objType == 'suggestion':
+                    c.suggestions.append(p)
+                elif p.objType == 'resource':
+                    c.resources.append(p)
+                elif p.objType == 'discussion':
+                    c.discussions.append(p)
+                elif p.objType == 'idea':
+                    c.ideas.append(p)
+                elif p.objType == 'comment':
+                    c.comments.append(p)
+        
         return render("/derived/6_profile.bootstrap")
     
     def stats(self, id1, id2):
@@ -235,7 +159,7 @@ class ProfileController(BaseController):
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser.id, c.user.id) 
+           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
         else:
            c.isFollowing = False
 
@@ -245,7 +169,7 @@ class ProfileController(BaseController):
         c.userFollowers = []
         c.flags = 0
 
-        uList = followLib.getUserFollowers(c.user.id)
+        uList = followLib.getUserFollowers(c.user)
         c.userFollowers = []
         for u in uList:
            uID = u.owner
@@ -303,17 +227,17 @@ class ProfileController(BaseController):
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser.id, c.user.id) 
+           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
         else:
            c.isFollowing = False
 
-        uList = followLib.getUserFollows(c.user.id)
+        uList = followLib.getUserFollows(c.user)
         c.followingUsers = []
         for u in uList:
            uID = u['thingID']
            c.followingUsers.append(userLib.getUserByID(uID))
 
-        uList = followLib.getUserFollowers(c.user.id)
+        uList = followLib.getUserFollowers(c.user)
         c.userFollowers = []
         for u in uList:
            uID = u.owner
@@ -371,7 +295,7 @@ class ProfileController(BaseController):
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser.id, c.user.id) 
+           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
         else:
            c.isFollowing = False
 
@@ -393,17 +317,17 @@ class ProfileController(BaseController):
         # or user-interested (e.g. followers, following, watching) objects
         items = {}
         
-        following = followLib.getUserFollows(user.id)
+        following = followLib.getUserFollows(user)
         items['following'] = []
         for item in following:
             items['following'].append(userLib.getUserByID(item['thingID']))
         
-        followers = followLib.getUserFollowers(user.id)
+        followers = followLib.getUserFollowers(user)
         items['followers'] = []
         for item in followers:
             items['followers'].append(userLib.getUserByID(item.owner))
             
-        watching = followLib.getWorkshopFollows(user.id)
+        watching = followLib.getWorkshopFollows(user)
         items['watching'] = []
         for item in watching:
             items['watching'].append(workshopLib.getWorkshopByID(item['thingID']))
@@ -712,29 +636,6 @@ class ProfileController(BaseController):
             l.append(d)
 
             return json.dumps(l)
-
-    @h.login_required
-    def followHandler(self, id1, id2):
-        # this gets a follow which has been unfollowed
-        f = followLib.getFollow(c.authuser.id, c.user.id)
-        if f:
-           log.info('f is %s' % f)
-           f['disabled'] = '0'
-           dbHelpers.commit(f)
-        # this only gets follows which are not disabled
-        elif not followLib.isFollowing(c.authuser.id, c.user.id):
-           f = followLib.Follow(c.authuser.id, c.user.id, 'user')
-        else:
-           f = followLib.Follow(c.authuser.id, c.user.id, 'user')
-        return "ok"
-
-    @h.login_required
-    def unfollowHandler(self, id1, id2):
-        f = followLib.getFollow(c.authuser.id, c.user.id)
-        if f:
-           f['disabled'] = '1'
-           dbHelpers.commit(f)
-        return "ok"
 
     @h.login_required
     def enableHandler(self, id1, id2):

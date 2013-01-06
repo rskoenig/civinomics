@@ -2,7 +2,7 @@
 import logging
 
 from sqlalchemy import and_
-from pylowiki.model import Thing, meta
+from pylowiki.model import Thing, Data, meta
 import pylowiki.lib.db.generic as generic
 from dbHelpers import commit, with_characteristic as wc
 
