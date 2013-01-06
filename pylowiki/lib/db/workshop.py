@@ -163,6 +163,7 @@ def getCategoryTagList():
     cTagList.append('Community')
     cTagList.append('Economy')
     cTagList.append('Education')
+    cTagList.append('Entertainment')
     cTagList.append('Environment')
     cTagList.append('Family')
     cTagList.append('Government')
@@ -175,6 +176,7 @@ def getCategoryTagList():
     cTagList.append('Policy')
     cTagList.append('Safety')
     cTagList.append('Transportation')
+    cTagList.append('Other')
     return cTagList
 
 def isGuest(workshop):
@@ -329,8 +331,6 @@ class Workshop(object):
         background = 'No wiki background set yet'
         
         p = Page(title, owner, w, background)
-        #r = Revision(owner, background, p.p.id)
-        
         e = Event('Create workshop', 'User %s created a workshop'%(c.authuser.id), w)
         
         slideshow = Slideshow(owner, w)
@@ -348,13 +348,6 @@ class Workshop(object):
         w['mainImage_id'] = s.s.id
         slideshow['slideshow_order'] = s.s.id
         commit(slideshow)
-        
-        d = Discussion(owner = owner, discType = 'background', attachedThing = w, workshop = w, title = 'background')
-        w['backgroundDiscussion_id'] = d.d.id
-
-        f = Discussion(owner = owner, discType = 'feedback', attachedThing = w, workshop = w, title = 'background')
-        w['feedbackDiscussion_id'] = f.d.id
-
         commit(w)
         
         f = Facilitator( c.authuser, w ) 

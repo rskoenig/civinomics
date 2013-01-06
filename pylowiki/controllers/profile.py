@@ -74,7 +74,6 @@ class ProfileController(BaseController):
                     c.facilitatorWorkshops.append(myW)
 
         c.watching = followLib.getWorkshopFollows(c.user)
-        log.info(c.watching)
 
         uList = followLib.getUserFollows(c.user)
         c.following = []
