@@ -47,10 +47,10 @@
                                     % endif
                                 </div>
                                 <div class="span6">
-                                    % if len(c.followingWorkshops) == 0:
+                                    % if len(c.watching) == 0:
                                         There doesn't seem to be anything here!
                                     % else:
-                                        % for item in c.followingWorkshops:
+                                        % for item in c.watching:
                                             ${helpers.showWorkshop(item)}
                                         % endfor
                                     % endif

@@ -73,7 +73,11 @@ class ProfileController(BaseController):
               else:
                     c.facilitatorWorkshops.append(myW)
 
-        c.watching = followLib.getWorkshopFollows(c.user)
+        wList = followLib.getWorkshopFollows(c.user)
+        c.watching = []
+        for w in wList:
+           wCode = w['workshopCode']
+           c.watching.append(workshopLib.getWorkshopByCode(wCode))
 
         uList = followLib.getUserFollows(c.user)
         c.following = []
@@ -329,7 +333,7 @@ class ProfileController(BaseController):
         watching = followLib.getWorkshopFollows(user)
         items['watching'] = []
         for item in watching:
-            items['watching'].append(workshopLib.getWorkshopByID(item['thingID']))
+            items['watching'].append(workshopLib.getWorkshopByCode(item['workshopCode']))
         
         # Already checks for disabled/deleted by default
         # The following section feels like a good candidate for map/reduce
