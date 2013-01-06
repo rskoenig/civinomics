@@ -641,7 +641,7 @@ class WorkshopController(BaseController):
 
         c.isFollowing = False
         if 'user' in session:
-            c.isFollowing = followLib.isFollowing(c.authuser.id, c.w.id)
+            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
         
         fList = []
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w.id)):
@@ -841,27 +841,7 @@ class WorkshopController(BaseController):
             c.df = facilitatorLib.getFacilitatorsByWorkshop(c.w.id, 1)
             
         return render('/derived/6_workshop_dashboard.bootstrap')
-
-    @h.login_required
-    def followHandler(self, workshopCode, workshopURL):
-        f = followLib.getFollow(c.authuser.id, c.w.id)
-        if f:
-           f['disabled'] = '0'
-           dbHelpers.commit(f)
-        elif not followLib.isFollowing(c.authuser.id, c.w.id): 
-           f = followLib.Follow(c.authuser.id, c.w.id, 'workshop') 
-        else:
-           f = followLib.Follow(c.authuser.id, c.w.id, 'workshop') 
-        return "ok"
-
-    @h.login_required
-    def unfollowHandler(self, workshopCode, workshopURL):
-        f = followLib.getFollow(c.authuser.id, c.w.id)
-        if f:
-           f['disabled'] = '1'
-           dbHelpers.commit(f)
-        return "ok"
-
+    
     ###################################################
     # 
     # 

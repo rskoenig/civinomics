@@ -3,9 +3,9 @@ $('button.followButton').live('click', function(e){
     e.preventDefault();
     $button = $(this);
     var urlList = $button.attr('rel').split(/_/);
-    var urlString = '/' + urlList[0] + '/' + urlList[1] + '/' + urlList[2];
+    var urlString = '/' + urlList[0] + '/' + urlList[1] + '/' + urlList[2] + '/follow/handler';
     if($button.hasClass('following')){
-        urlString = urlString + '/unfollow/';
+        //urlString = urlString + '/unfollow/';
         $.ajax({
            type : 'POST',
            async : false,
@@ -22,7 +22,7 @@ $('button.followButton').live('click', function(e){
         $button.html(bText);
     } else {
         
-        urlString = urlString + '/follow/';
+        //urlString = urlString + '/follow/';
         $.ajax({
            type : 'POST',
            async : false,
