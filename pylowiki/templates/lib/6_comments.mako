@@ -32,7 +32,7 @@
     ########################################################################
     <div class="row-fluid">
         <div class="span12">
-            <form action="/comment/add/handler">
+            <form action="/comment/add/handler" id="commentAddHandler_root">
                 <input type="hidden" id="type" name="type" value="${thing.objType}" />
                 <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
                 <input type="hidden" name="parentCode" value="0" />
@@ -220,7 +220,7 @@
     ## Reply
     <div class="row-fluid collapse" id="${replyID}">
         <div class="span11 offset1">
-            <form action="/comment/add/handler" method="post">
+            <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
                 <label>reply</label>
                 <textarea name="comment-textarea" class="comment-reply span12"></textarea>
                 <input type="hidden" name="parentCode" value="${comment['urlCode']}" />

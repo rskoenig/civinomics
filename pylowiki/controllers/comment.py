@@ -122,8 +122,6 @@ class CommentController(BaseController):
         returnURL = "/adminComment/" + code
         return redirect(returnURL)
 
-     
-
     @h.login_required
     def modCommentHandler(self, id1):
         code = id1
@@ -221,12 +219,11 @@ class CommentController(BaseController):
                 session['alert'] = alert
                 session.save()
                 return redirect(session['return_to'])
-            
             if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                 # Reply to an existing comment
                 parentComment = getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
-                discussion = getDiscussionByID(int(parentComment['discussion_id']))
+                discussion = getDiscussionByCode(parentComment['discussionCode'])
             elif 'discussionCode' in request.params:
                 # Root level comment
                 discussion = getDiscussionByCode(request.params['discussionCode'])
