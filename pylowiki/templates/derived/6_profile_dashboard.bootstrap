@@ -23,6 +23,9 @@
     else:
         tab1active = "active"
 
+    msgString = ''
+    if c.messages:
+        msgString = ' (' + str(c.messages) + ')'
 %>
 
 <div class="container-fluid">
@@ -45,8 +48,8 @@
                 <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Your smiling face<br />
                 Upload a picture.
                 </a></li>
-                <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Messages & Invites<br />
-                Upload a picture.
+                <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Notices${msgString}<br />
+                Messages & Invitations.
                 </a></li>
                 <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Change your password<br />
                 Stay secure.</a></li>

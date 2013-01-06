@@ -283,7 +283,7 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     # create a MIME email object, initialize the header info
     email = MIMEMultipart(_subtype='related')
     email['Subject'] = subject
-    email['From'] = senderEmail
+    email['From'] = 'registration@civinomics.com'
     email['To'] = recipient
     
     # now attatch the text and html and picture parts

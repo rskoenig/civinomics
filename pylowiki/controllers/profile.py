@@ -111,6 +111,8 @@ class ProfileController(BaseController):
                     c.ideas.append(p)
                 elif p.objType == 'comment':
                     c.comments.append(p)
+                    
+        c.messages = len(c.pendingFacilitators)
         
         return render("/derived/6_profile.bootstrap")
     
@@ -380,6 +382,8 @@ class ProfileController(BaseController):
             for f in fList:
                 if 'pending' in f and f['pending'] == '1':
                     c.pendingFacilitators.append(f)
+                    
+            c.messages = len(c.pendingFacilitators)
 
             return render('/derived/6_profile_dashboard.bootstrap')
         else:

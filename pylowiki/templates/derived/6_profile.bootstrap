@@ -12,7 +12,12 @@
                 <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">Workshops</a></li>
                 % if 'user' in session:
                     % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
-                        <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/dashboard">Member Dashboard</a></li>
+                        <% 
+                            msgString = ''
+                            if c.messages:
+                                msgString = ' (' + str(c.messages) + ')'
+                        %>   
+                        <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/dashboard">Member Dashboard${msgString}</a></li>
                     % else:
                         ${helpers.followButton(c.user)}
                     % endif
