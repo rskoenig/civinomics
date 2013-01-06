@@ -1,3 +1,6 @@
+#-*- coding: utf-8 -*-
+import logging
+
 from pylons import tmpl_context as c, config, session
 from pylowiki.model import Thing, meta, Data
 from pylowiki.lib.utils import urlify, toBase62
@@ -30,7 +33,7 @@ def getSearchTags(tag, disabled = '0'):
 
 def getWorkshopTagCategories():
     workshopTags = []
-    workshpTags.append('Arts')
+    workshopTags.append('Arts')
     workshopTags.append('Business')
     workshopTags.append('Civil Rights')
     workshopTags.append('Community')

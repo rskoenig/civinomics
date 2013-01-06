@@ -22,7 +22,7 @@ import pylowiki.lib.db.suggestion   as suggestionLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.rating       as ratingLib
-import pylowiki.lib.db.tag          as tagLib
+import pylowiki.lib.db.tags         as tagLib
 import pylowiki.lib.db.motd         as motdLib
 import pylowiki.lib.db.pmember      as pMemberLib
 import pylowiki.lib.db.follow       as followLib
@@ -568,13 +568,14 @@ class WorkshopController(BaseController):
     @h.login_required
     def adminWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Administrate Workshop"
-        m = motdLib.getMessage(w.id)
+        m = motdLib.getMessage(c.w.id)
         werror = 0
         werrMsg = 'Incomplete information: '
 
         if 'motd' in request.params:
            motd = request.params['motd']
            m['data'] = motd
+           eAction = ' facilitator message updated.'
         else:
            werror = 1
            werrMsg += 'Message text '
@@ -604,23 +605,23 @@ class WorkshopController(BaseController):
 
         if eW != veW:
            werror = 1
-           if w['deleted'] == 1:
+           if c.w['deleted'] == 1:
               eAction = 'enabled'
            else:
               eAction = 'disabled'
            werrMsg += 'Action must be verified before workshop can be ' + eAction + '.'
         elif eW == 1 and veW == 1:
-           if w['deleted'] == '1':
-              w['deleted'] = '0'
+           if c.w['deleted'] == '1':
+              c.w['deleted'] = '0'
               eAction = 'published'
            else:
-              w['deleted'] = '1'
+              c.w['deleted'] = '1'
               eAction = 'unpublished'
 
-           tagLib.setWorkshopTagEnable(w, w['deleted'])
-           eMsg = 'Workshop ' + eAction
+           #tagLib.setWorkshopTagEnable(w, w['deleted'])
+           tagLib.setTagsEnable(c.w, c.w['deleted'])
            eventLib.Event('Workshop %s'%eAction, 'Workshop %s by %s Note: %s'%(eAction, c.authuser['name'], eventReason), w, c.authuser)
-           dbHelpers.commit(w)
+           dbHelpers.commit(c.w)
            
         if werror:
             alert = {'type':'error'}
@@ -628,13 +629,14 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
         else:
+            eMsg = 'Workshop ' + eAction
             alert = {'type':'success'}
             alert['title'] = eMsg
             session['alert'] = alert
             session.save()
             
         dbHelpers.commit(m)
-        return redirect('/workshop/%s/%s/dashboard'%(w['urlCode'], w['url']))
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
     
     def display(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -764,7 +766,9 @@ class WorkshopController(BaseController):
             c.basicConfig = 1
         else:
             c.basicConfig = 0
-            
+        
+        c.tags = tagLib.getParentTags(c.w)
+        
         if c.w['categoryTags'] != '':
             c.tagConfig = 1
         else:

@@ -2,6 +2,7 @@
     from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList
     from pylowiki.lib.db.user import getUserByEmail
     from pylowiki.lib.db.workshop import getCategoryTagList
+    from pylowiki.lib.db.tags import getWorkshopTagCategories
 %>
 
 <%def name="fields_alert()">
@@ -132,9 +133,11 @@
         </div><!-- span1 -->
 
         <div class="span5">
-            <% tagList = getCategoryTagList() %>
-            <% tags = c.w['categoryTags'] %>
-            <% workshopTags = tags.split('|') %>
+            <% 
+                tagList = getWorkshopTagCategories()
+                tags = c.w['categoryTags']
+                workshopTags = tags.split('|') 
+            %>
             <br />
             Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />
             % for tag in tagList:
