@@ -4,7 +4,7 @@ import logging
 from pylons import tmpl_context as c, config, session
 from pylowiki.model import Thing, meta, Data
 from pylowiki.lib.utils import urlify, toBase62
-from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, commit
 import generic
 
 
@@ -17,6 +17,17 @@ def getParentTags(parent):
                 .filter_by(objType = 'tags')\
                 .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
                 .all()
+    except:
+        return False
+        
+def getParentTagsByType(parent, type):
+    parentCode = parent.objType + 'Code'
+    try:
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'tags')\
+                .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
+                .filter(Thing.data.any(wc('type', type)))\
+                .one()
     except:
         return False
         
@@ -90,6 +101,7 @@ def setTagsEnable(parent, disabled):
             
 def Tags(tagsType, tagsString, parent, owner):
     tags = Thing('tags', owner.id)
+    # one of: category, geo
     tags['type'] = tagsType
     tags['tagsString'] = tagsString
     tags['disabled'] = '0'

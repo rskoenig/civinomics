@@ -135,8 +135,9 @@
         <div class="span5">
             <% 
                 tagList = getWorkshopTagCategories()
-                tags = c.w['categoryTags']
-                workshopTags = tags.split('|') 
+                workshopTags = []
+                if c.categories:
+                    workshopTags = c.categories['tagsString'].split('|') 
             %>
             <br />
             Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />

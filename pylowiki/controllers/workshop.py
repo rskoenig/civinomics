@@ -22,7 +22,7 @@ import pylowiki.lib.db.suggestion   as suggestionLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.rating       as ratingLib
-import pylowiki.lib.db.tags         as tagLib
+import pylowiki.lib.db.tags         as tagsLib
 import pylowiki.lib.db.motd         as motdLib
 import pylowiki.lib.db.pmember      as pMemberLib
 import pylowiki.lib.db.follow       as followLib
@@ -242,6 +242,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configureTagsWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
+        c.categories = tagsLib.getParentTagsByType(c.w, 'category')
         session['confTab'] = "tab3"
         session.save()
             
@@ -256,10 +257,19 @@ class WorkshopController(BaseController):
         if 'categoryTags' in request.params:
             categoryTags = request.params.getall('categoryTags')
             cTags = '|'.join(categoryTags)
-            if cTags and cTags != c.w['categoryTags']:
-                wchanges = 1
-                weventMsg = weventMsg + "Updated category tags."
-                c.w['categoryTags'] = cTags
+            if cTags:
+                # prepend and append with | for SQL searches later
+                cTags = '|' + cTags + '|'
+                if c.categories:
+                    if cTags != c.categories['tagsString']:
+                        c.categories['tagsString'] = cTags
+                        dbHelpers.commit(c.categories)
+                        wchanges = 1
+                        weventMsg = weventMsg + "Updated category tags."
+                else:
+                    tagsLib.Tags('category', cTags, c.w, c.authuser)
+                    wchanges = 1
+                    weventMsg = weventMsg + "Updated category tags."
         else:
             werror = 1
             werrMsg += 'Category Tags '
@@ -618,8 +628,7 @@ class WorkshopController(BaseController):
               c.w['deleted'] = '1'
               eAction = 'unpublished'
 
-           #tagLib.setWorkshopTagEnable(w, w['deleted'])
-           tagLib.setTagsEnable(c.w, c.w['deleted'])
+           tagsLib.setTagsEnable(c.w, c.w['deleted'])
            eventLib.Event('Workshop %s'%eAction, 'Workshop %s by %s Note: %s'%(eAction, c.authuser['name'], eventReason), w, c.authuser)
            dbHelpers.commit(c.w)
            
@@ -767,9 +776,9 @@ class WorkshopController(BaseController):
         else:
             c.basicConfig = 0
         
-        c.tags = tagLib.getParentTags(c.w)
+        c.categories = tagsLib.getParentTagsByType(c.w, 'category')
         
-        if c.w['categoryTags'] != '':
+        if c.categories and c.categories['tagsString'] != '':
             c.tagConfig = 1
         else:
             c.tagConfig = 0
