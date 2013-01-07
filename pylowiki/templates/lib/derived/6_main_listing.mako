@@ -1,6 +1,8 @@
 <%! 
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopByCode
+   import pylowiki.lib.db.follow as followLib
+   import pylowiki.lib.db.activity as activityLib
 %>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
@@ -21,11 +23,11 @@
       </p>
       <p class="pull-right orange workshop-listing-info"> 
          <a ${lib_6.workshopLink(w)}> <!-- Num watchers -->
-            42 
+            ${len(followLib.getWorkshopFollowers(w))}
             <img class="small-eye" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
          </a> <!-- /Num watchers -->
          <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
-            303 
+            ${len(activityLib.getActivityForWorkshop(w['urlCode']))}
             <img class="small-bulb" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png">
          </a> <!-- /Num inputs -->
       </p>

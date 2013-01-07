@@ -29,30 +29,30 @@ class ActionlistController(BaseController):
     def index( self, id ): # id is the action
         """Create a list of pages with the given action/option """
         """Valid actions: edit, revision, delete, restore, sitemap """
-        c.action = id
-        if c.action == "sitemap":
-            c.title = c.heading = c.action
-            c.action = ""
-            c.list = get_all_pages()
-        elif c.action == 'sitemapIssues':
-            c.title = c.heading = 'All Workshops'
-            c.list = getActiveWorkshops()
+        #c.action = id
+        #if c.action == "sitemap":
+        #    c.title = c.heading = c.action
+        #    c.action = ""
+        #    c.list = get_all_pages()
+        #elif c.action == 'sitemapIssues':
+        #    c.title = c.heading = 'All Workshops'
+        #    c.list = getActiveWorkshops()
 
-            c.count = len( c.list )
-            c.paginator = paginate.Page(
-                c.list, page=int(request.params.get('page', 1)),
-                items_per_page = 15, item_count = c.count
-            )
-
-            #return render('/derived/list_workshops.bootstrap')
-            #c.activity = range(12)
-            c.activity = getRecentMemberPosts(10)
-            return render('derived/6_main_listing.bootstrap')
-        elif c.action == 'surveys':
-            c.title = c.heading = 'Surveys'
-            c.list = getActiveSurveys()
-        else:
-            c.title = c.heading = "Which " + c.action + "?"
+        #    c.count = len( c.list )
+        #    c.paginator = paginate.Page(
+        #        c.list, page=int(request.params.get('page', 1)),
+        #        items_per_page = 15, item_count = c.count
+        #    )
+        c.title = c.heading = 'All Workshops'
+        c.list = getActiveWorkshops()
+        c.activity = getRecentMemberPosts(10)
+        return render('derived/6_main_listing.bootstrap')
+            
+        #elif c.action == 'surveys':
+        #    c.title = c.heading = 'Surveys'
+        #    c.list = getActiveSurveys()
+        #else:
+        #    c.title = c.heading = "Which " + c.action + "?"
 
         if c.action == "restore":
             c.list = get_all_pages(1)
@@ -146,7 +146,6 @@ class ActionlistController(BaseController):
         scopeLevel = id1
         geoInfo = getGeoInfo(c.authuser.id)
         searchScope = geoInfo[0]['scope']
-        ##log.info('geoInfo is %s'%geoInfo)
         c.list = []
 
         scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
@@ -165,10 +164,8 @@ class ActionlistController(BaseController):
         return render('/derived/list_users.bootstrap')
 
     def searchGeoWorkshops( self ):
-        #log.info('searchGeoWorkshops')
         geoInfo = getGeoInfo(c.authuser.id)
         searchScope = geoInfo[0]['scope']
-        #log.info('geoInfo is %s'%geoInfo)
         c.list = []
         if 'scopeLevel' in request.params:
            scopeLevel = request.params['scopeLevel']
@@ -199,21 +196,17 @@ class ActionlistController(BaseController):
                      c.list, page=int(request.params.get('page', 1)),
                      items_per_page = 15, item_count = c.count
                  )
-
            return render('/derived/list_workshops.bootstrap')
         else:
            return redirect('/')
 
 
     def searchTags( self, id1 ):
-        ##log.info('searchTags %s' % id1)
         id1 = id1.replace("_", " ")
         c.title = c.heading = 'Search Workshops by Tag: ' + id1
         tList = searchTags(id1)
-        ##log.info('tList %s' % tList)
         c.list = []
         for t in tList:
-           ##log.info('t %s' % t)
            w = getWorkshopByID(t['thingID'])
            if w['deleted'] == '0' and w['startTime'] != '0000-00-00':
                c.list.append(getWorkshopByID(t['thingID']))
@@ -223,7 +216,6 @@ class ActionlistController(BaseController):
             c.list, page=int(request.params.get('page', 1)),
             items_per_page = 15, item_count = c.count
         )
-
         return render('/derived/list_workshops.bootstrap')
 
     def searchUsers( self, id1, id2  ):
@@ -236,6 +228,5 @@ class ActionlistController(BaseController):
             c.list, page=int(request.params.get('page', 1)),
             items_per_page = 15, item_count = c.count
         )
-
         return render('/derived/list_users.bootstrap')
 
