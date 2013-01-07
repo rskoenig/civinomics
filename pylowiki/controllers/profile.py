@@ -73,23 +73,14 @@ class ProfileController(BaseController):
               else:
                     c.facilitatorWorkshops.append(myW)
 
-        wList = followLib.getWorkshopFollows(c.user)
-        c.watching = []
-        for w in wList:
-           wCode = w['workshopCode']
-           c.watching.append(workshopLib.getWorkshopByCode(wCode))
+        watching = followLib.getWorkshopFollows(c.user)
+        c.watching = [workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching]
 
-        uList = followLib.getUserFollows(c.user)
-        c.following = []
-        for u in uList:
-           uCode = u['userCode']
-           c.following.append(userLib.getUserByCode(uCode))
+        following = followLib.getUserFollows(c.user) # list of follow objects
+        c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
 
-        uList = followLib.getUserFollowers(c.user)
-        c.followers = []
-        for u in uList:
-           uID = u.owner
-           c.followers.append(userLib.getUserByID(uID))
+        followers = followLib.getUserFollowers(c.user)
+        c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
           
         c.activity = activityLib.getMemberPosts(c.user)
         c.suggestions = []
@@ -322,20 +313,14 @@ class ProfileController(BaseController):
         # or user-interested (e.g. followers, following, watching) objects
         items = {}
         
-        following = followLib.getUserFollows(user)
-        items['following'] = []
-        for item in following:
-            items['following'].append(userLib.getUserByCode(item['userCode']))
+        following = followLib.getUserFollows(c.user) # list of follow objects
+        items['following'] = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
+
+        followers = followLib.getUserFollowers(c.user)
+        items['followers'] = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
         
-        followers = followLib.getUserFollowers(user)
-        items['followers'] = []
-        for item in followers:
-            items['followers'].append(userLib.getUserByID(item.owner))
-            
         watching = followLib.getWorkshopFollows(user)
-        items['watching'] = []
-        for item in watching:
-            items['watching'].append(workshopLib.getWorkshopByCode(item['workshopCode']))
+        items['watching'] = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
         
         # Already checks for disabled/deleted by default
         # The following section feels like a good candidate for map/reduce
@@ -348,6 +333,8 @@ class ProfileController(BaseController):
                 items['resources'].append(thing)
             elif thing.objType == 'discussion':
                 items['discussions'].append(thing)
+            elif thing.objType == 'idea':
+                items['ideas'].append(thing)
         
         return items
     

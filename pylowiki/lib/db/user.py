@@ -28,6 +28,12 @@ def get_user(hash, url):
     except sa.orm.exc.NoResultFound:
         return False
     
+def getUserByCode(code):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('urlCode', code))).one()
+    except sa.orm.exc.NoResultFound:
+        return False
+    
 def getActiveUsers(disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('disabled', disabled))).all()
@@ -37,12 +43,6 @@ def getActiveUsers(disabled = '0'):
 def getUserByEmail(email):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('email', email))).one()
-    except:
-        return False
-
-def getUserByCode(urlCode):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('urlCode', urlCode))).one()
     except:
         return False
 
