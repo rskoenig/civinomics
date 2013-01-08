@@ -111,8 +111,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('.expandable').expander({
-                slicePoint: 40,
-                widow: 0,
+                slicePoint: 35,
+                widow: 2,
                 expandText: ' ...->',
                 expandPrefix: '',
                 userCollapseText: ' <-',
