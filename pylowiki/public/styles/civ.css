@@ -309,6 +309,10 @@ ul.listeners > li {
 .no-border{
     border: none;
 }
+.no-bottom{
+    padding-bottom:0;
+    margin-bottom:0;
+}
 .table.user-thing-listing{
     margin-bottom:0;
 }

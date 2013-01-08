@@ -121,7 +121,10 @@
             <p>${lib_6.userGeoLink(c.user)}</p>
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
             % if c.user['websiteLink'] != '':
-                <p><a href="${c.user['websiteLink']}">${lib_6.ellipsisIZE(c.user['websiteLink'], 25)}</a></p>
+                <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}">${c.user['websiteLink']}</a></p>
+                % if c.user['websiteDesc'] != '':
+                    <small class="muted expandable">${c.user['websiteDesc']}</small>
+                % endif
             % endif
             <hr>
             <div class="row-fluid">
