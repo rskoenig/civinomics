@@ -2,7 +2,9 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace file="/lib/6_comments.mako" import="comments" />
-
+<%!
+   import misaka as misaka
+%>
 ${lib.return_to()}
 
 <div class="spacer" style="height:20px;"></div>
@@ -57,14 +59,14 @@ ${lib.return_to()}
     % if thing.objType == 'discussion':
         <div class="row-fluid">
             <div class="span11 offset1">
-                ${thing['text']}
+                ${misaka.html(thing['text']) | n}
             </div>
         </div><!--/.row-fluid-->
     % endif
     % if thing.objType == 'resource':
         <div class="row-fluid">
             <div class="span11 offset1">
-                ${thing['comment']}
+                ${misaka.html(thing['comment']) | n}
             </div>
         </div><!--/.row-fluid-->
     % endif
