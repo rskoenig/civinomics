@@ -819,7 +819,6 @@ class WorkshopController(BaseController):
             c.backConfig = 0
 
         c.wikilist = zip(HTMLlist, reSTlist)
-        c.discussion = discussionLib.getDiscussionByID(c.w['backgroundDiscussion_id'])
 
         c.lastmoddate = c.revision.date
         c.lastmoduser = userLib.getUserByID(c.revision.owner)
