@@ -9,7 +9,7 @@
 <%def name="show_workshop(w)">
    <div class="viewport">
       <a ${lib_6.workshopLink(w)}>
-         <span class="dark-background"> ${w['mainImage_caption']} </span>
+         <span class="dark-background"> ${lib_6.ellipsisIZE(w['description'], 150)} </span>
          % if w['mainImage_hash'] == 'supDawg':
             <img src="/images/${w['mainImage_identifier']}/slideshow/${w['mainImage_hash']}.slideshow" alt="${w['title']}" title="${w['title']}">
          % else:

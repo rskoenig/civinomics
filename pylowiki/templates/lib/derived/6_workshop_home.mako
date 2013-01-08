@@ -62,7 +62,7 @@
 </%def>
 
 <%def name="watchButton()">
-    % if 'user' in session and not c.privs['facilitator']:
+    % if 'user' in session:
         % if c.isFollowing:
             <button class="btn round followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}"> 
             <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
