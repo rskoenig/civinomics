@@ -1,6 +1,7 @@
 <%!
    from pylowiki.lib.db.slideshow import getAllSlides
    from pylowiki.lib.db.user import getUserByID
+   import misaka as misaka
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -190,5 +191,5 @@
 </%def>
 
 <%def name="showInfo(workshop)">
-    ${c.information['data']}
+    ${misaka.html(c.information['data']) | n}
 </%def>
