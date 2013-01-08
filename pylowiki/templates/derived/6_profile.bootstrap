@@ -12,6 +12,9 @@
                 <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">Workshops</a></li>
                 % if 'user' in session:
                     % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
+                        % if isAdmin(c.authuser.id) and c.user.id != c.authuser.id:
+                        ${helpers.followButton(c.user)}
+                        % endif
                         <% 
                             msgString = ''
                             if c.messages:
