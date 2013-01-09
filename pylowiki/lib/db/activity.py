@@ -74,3 +74,4 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
         return finalActivityList
     except:
         return False
+        

@@ -260,11 +260,12 @@ img.watch{
 }
 
 .btn-group.four-up a.btn {
-width: 25%;
-padding-left:0px;
-padding-right:0px;
-padding-top:10px;
-padding-bottom:10px;
+   /*width: 25%;*/
+   width: 33%;
+   padding-left:0px;
+   padding-right:0px;
+   padding-top:10px;
+   padding-bottom:10px;
 }
 .btn-group.four-up a.btn.selected-nav{
    color:#075D00;
