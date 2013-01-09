@@ -1,0 +1,55 @@
+body {
+
+    background-color: #2e3436;
+    color: #aaaaaa;
+
+}
+
+h1, h2, h3, h4, h5 {
+    color: #7AB9FF;
+}
+
+.codeblock {
+    background-color: #aaaaaa;
+   -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+
+
+a, a:link, a:visited {
+    color: #7AB9FF;
+}
+
+
+#editbar-left a {
+    background-color: #aaaaaa;
+    color: #444444;
+}
+
+#editbar-left a.on {
+    background-color: #2e3436;
+    color: #aaaaaa;
+    border-bottom: solid 1px #2e3436;
+}
+
+textarea{
+    background-color: #aaaaaa;
+    color: #333333;
+   -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+.text {
+    background-color: #aaaaaa;
+    color: #333333;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+#flash {
+    filter:alpha(opacity=80);
+    -moz-opacity:0.8;
+    -khtml-opacity: 0.8;
+    opacity: 0.8;
+}

@@ -1,0 +1,101 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+<%!
+   import misaka as misaka
+%>
+${lib.return_to()}
+
+<div class="spacer" style="height:20px;"></div>
+<%
+    d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea'}
+    showItem(d)
+%>
+
+<%def name="showItem(d)">
+    <div class="row-fluid">
+      <div class="span12">
+         <div class="section-wrapper">
+            <div class="browse">
+                <h3 class="section-header"> ${d[c.listingType]} </h3>
+                <div class="row-fluid">
+                    <%
+                        if c.listingType == 'discussion':
+                            thing = c.discussion
+                        elif c.listingType == 'resource':
+                            thing = c.resource
+                        elif c.listingType == 'idea':
+                            thing = c.idea
+                        showItemTitle(thing)
+                    %>
+                </div><!--/.row-fluid-->
+                <div class="row-fluid">
+                    ${self.showItemOwner(thing)}
+                </div><!--/.row-fluid-->
+                ${extraText(thing)}
+                <div class="row-fluid">
+                    <div class="span12">
+                        ##<h4 class="centered">Comments</h4>
+                        <div class="row-fluid">
+                            <div class="span11 offset1">
+                                <%
+                                    if c.rootComment != '':
+                                        comments(thing, c.rootComment)
+                                    else:
+                                        comments(thing, c.discussion)
+                                %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!--/.browse-->
+         </div><!--/.section-wrapper-->
+      </div><!--/.span12-->
+   </div><!--/.row-fluid-->
+</%def>
+
+<%def name="extraText(thing)">
+    % if thing.objType == 'discussion':
+        <div class="row-fluid">
+            <div class="span11 offset1">
+                ${misaka.html(thing['text']) | n}
+            </div>
+        </div><!--/.row-fluid-->
+    % endif
+    % if thing.objType == 'resource':
+        <div class="row-fluid">
+            <div class="span11 offset1">
+                ${misaka.html(thing['comment']) | n}
+            </div>
+        </div><!--/.row-fluid-->
+    % endif
+</%def>
+
+<%def name="showItemTitle(thing)">
+    <div class="span1">
+        ${lib_6.upDownVote(thing)}
+    </div>
+    <div class="span11">
+        <h4>
+            <% 
+                if thing.objType == 'resource':
+                    link = '<a href="%s" class="listed-item-title">%s</a>' %(thing['link'], thing['title'])
+                else:
+                    link = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+            %>
+            ${link | n}
+        </h4>
+    </div>
+</%def>
+
+<%def name="showItemOwner(thing)">
+    <div class="span11 offset1">
+        ${lib_6.userImage(thing.owner, className="avatar")}
+        Posted by ${lib_6.userLink(thing.owner)} from ${lib_6.userGeoLink(thing.owner)}
+    </div>
+</%def>
+
+<%def name="extraScripts2()">
+   <script src="/js/flag.js" type="text/javascript"></script>
+</%def>

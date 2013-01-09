@@ -1,0 +1,4 @@
+How to get pygment Cascading Stylesheets
+===========================================
+
+pygmentize -S tango -f html > pygments-tango.css

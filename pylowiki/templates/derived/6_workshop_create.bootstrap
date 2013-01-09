@@ -1,0 +1,30 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_create.mako" />
+<%! 
+   from pylowiki.lib.db.geoInfo import getGeoInfo
+   from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
+%>
+
+
+
+<div class="container-fluid well">
+    <h3>Create A New Workshop</h3><br />
+    <strong>Choose which kind of workshop to create:</strong><br /><br />
+    % if c.conf['read_only.value'] == 'true':
+        <!-- read only -->
+    % else:
+        ${helpers.createWorkshop()}
+    % endif
+</div><!-- container -->
+
+<%def name = 'extraStyles()'>
+
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+
+</%def>
+
