@@ -135,17 +135,17 @@ def make_map():
     map.connect('/flagResource/{id1}/{id2}{end:/?}', controller = 'resource', action = 'flagResource', id1 = '{id1}', id2 = '{id2}')
     
     # discussions
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{discussion:discussions?/?}', controller = 'discussion', action = 'index', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/add/{discussion:discussions?/?}', controller = 'discussion', action = 'addDiscussion', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/add/discussion/{handler:handler/?}', controller = 'discussion', action = 'addDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/editDiscussionHandler/{id1}/{id2}{end:/?}', controller = 'discussion', action = 'editDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/adminDiscussionHandler{end:/?}', controller = 'discussion', action = 'adminDiscussionHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/flagDiscussion/{id1}/{id2}{end:/?}', controller = 'discussion', action = 'flagDiscussion', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/clearDiscussionFlagsHandler/{id1}/{id2}{end:/?}', controller = 'discussion', action = 'clearDiscussionFlagsHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/editDiscussion/{id1}/{id2}{end:/?}', controller = 'discussion', action = 'editDiscussion', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/adminDiscussion/{id1}/{id2}{end:/?}', controller = 'discussion', action = 'adminDiscussion', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{discussion:discussions?}/{id3}/{id4}{end:/?}', controller = 'discussion', action = 'topic', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{discussion:discussions?}/{id3}/{id4}/thread/{id5}{end:/?}', controller = 'discussion', action = 'thread', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?/?}', controller = 'discussion', action = 'index', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{discussion:discussions?/?}', controller = 'discussion', action = 'addDiscussion', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/discussion/{handler:handler/?}', controller = 'discussion', action = 'addDiscussionHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/editDiscussionHandler/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'editDiscussionHandler', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}')
+    map.connect('/adminDiscussionHandler{end:/?}', controller = 'discussion', action = 'adminDiscussionHandler', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}')
+    map.connect('/flagDiscussion/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'flagDiscussion', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}')
+    map.connect('/clearDiscussionFlagsHandler/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'clearDiscussionFlagsHandler', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}')
+    map.connect('/editDiscussion/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'editDiscussion', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}')
+    map.connect('/adminDiscussion/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'adminDiscussion', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?}/{discussionCode}/{discussionURL}{end:/?}', controller = 'discussion', action = 'topic', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}', revisionCode = '')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?}/{discussionCode}/{discussionURL}/thread/{revisionCode}{end:/?}', controller = 'discussion', action = 'thread', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}', revisionCode = '{revisionCode}')
 
     # Ideas
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{ideas:ideas?/?}', controller = 'idea', action = 'listing', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')

@@ -2,6 +2,8 @@ import logging, string
 
 from urllib import quote
 from zlib import adler32
+from pylons import session, tmpl_context as c
+import pylowiki.lib.db.follow as followLib
 
 log = logging.getLogger(__name__)
 
@@ -49,3 +51,8 @@ def base_encode(integer, base=BASE_LIST):
         ret = base[integer % length] + ret
         integer /= length
     return ret
+
+def isWatching(user, workshop):
+   # Even though the functions use the verb 'following', the mechanism is the same...we just display 
+   # object follows as 'watching'.
+   c.isFollowing = followLib.isFollowing(user, workshop)

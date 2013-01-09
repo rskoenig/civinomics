@@ -8,9 +8,10 @@ from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped, setWorkshopPrivs
-from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID
+import pylowiki.lib.db.workshop as workshopLib
+from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID, getDiscussion
 from pylowiki.lib.db.comment import getCommentByCode
-from pylowiki.lib.utils import urlify
+import pylowiki.lib.utils as utils
 from pylowiki.lib.db.user import isAdmin, getUserByID
 from pylowiki.lib.db.event import getParentEvents
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
@@ -28,15 +29,30 @@ log = logging.getLogger(__name__)
 
 class DiscussionController(BaseController):
 
-    def index(self, id1, id2):
-        workshopCode = id1
-        workshopURL = id2
-        c.w = getWorkshopByCode(workshopCode)
-        setWorkshopPrivs(c.w)
-        if c.w['public_private'] != 'public':
-            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                    return render('/derived/404.bootstrap')
+    def __before__(self, action, workshopCode = None):
+        setPrivs = ['index', 'topic', 'thread', 'addDiscussion', 'clearDiscussionFlagsHandler', 'addDiscussionHandler',\
+        'editDiscussion', 'flagDiscussion', 'adminDiscussion', 'adminDiscussionHandler']
+        
+        noWorkshopCode = ['editDiscussion', 'clearDiscussionFlagsHandler', 'editDiscussionHandler', 'flagDiscussion', 'adminDiscussion'\
+        'adminDiscussionHandler']
+        
+        publicOrPrivate = ['index', 'topic', 'thread']
+        
+        if action not in noWorkshopCode:
+            if workshopCode is None:
+                abort(404)
+            c.w = workshopLib.getWorkshopByCode(workshopCode)
+            if action in publicOrPrivate:
+                if c.w['public_private'] != 'public':
+                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                        abort(404)
+            if 'user' in session:
+                utils.isWatching(c.authuser, c.w)
+                
+        if action in setPrivs:
+            workshopLib.setWorkshopPrivs(c.w)
 
+    def index(self, workshopCode, workshopURL):
         c.rating = False
         if 'user' in session:
             c.isScoped = isScoped(c.authuser, c.w)
@@ -75,32 +91,15 @@ class DiscussionController(BaseController):
         c.listingType = 'discussion'
         return render('/derived/6_detailed_listing.bootstrap')
 
-    def topic(self, id1, id2, id3, id4, id5 = ''):
-        workshopCode = id1
-        workshopUrl = id2
-        discussionCode = id3
-        discussionUrl = id4
-        revisionURL = id5
-        
-        c.w = getWorkshopByCode(workshopCode)
-        setWorkshopPrivs(c.w)
-        if c.w['public_private'] != 'public':
-            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                    return render('/derived/404.bootstrap')
-
+    def topic(self, workshopCode, workshopURL, discussionCode, discussionURL, revisionCode = ''):
         c.discussion = getDiscussion(discussionCode)
         c.flags = getFlags(c.discussion)
         c.events = getParentEvents(c.discussion)
-        #c.otherDiscussions = getActiveDiscussionsForWorkshop(workshopCode, urlify(workshopUrl))
-        #if 'disabled' in c.discussion and 'deleted' in c.discussion:
-        #    if c.discussion['disabled'] == '0' and c.discussion['deleted'] == '0':
-        #        if len(c.otherDiscussions) > 0:
-        #            c.otherDiscussions.remove(c.discussion)
 
         c.title = c.w['title']
 
-        if revisionURL != '':
-            r = getRevisionByCode(revisionURL)
+        if revisionCode != '':
+            r = getRevisionByCode(revisionCode)
             c.content = h.literal(h.reST2HTML(r['data']))
             c.lastmoduser = getUserByID(r.owner)
             c.lastmoddate = r.date
@@ -120,19 +119,7 @@ class DiscussionController(BaseController):
         c.listingType = 'discussion'
         return render('/derived/6_item_in_listing.bootstrap')
 
-    def thread(self, id1, id2, id3, id4, id5):
-        workshopCode = id1
-        workshopUrl = id2
-        discussionCode = id3
-        discussionUrl = id4
-        commentCode = id5
-        
-        c.w = getWorkshop(workshopCode, urlify(workshopUrl))
-        setWorkshopPrivs(c.w)
-        if c.w['public_private'] != 'public':
-            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                    return render('/derived/404.bootstrap')
-       
+    def thread(self, workshopCode, workshopURL, discussionCode, discussionURL, commentCode):
         c.rootComment = getCommentByCode(commentCode)
         c.discussion = getDiscussionByID(c.rootComment['discussion_id'])
         c.title = c.w['title']
@@ -141,13 +128,7 @@ class DiscussionController(BaseController):
         return render('/derived/6_item_in_listing.bootstrap')
 
     @h.login_required
-    def addDiscussion(self, id1, id2):
-        code = id1
-        url = id2
-
-        c.w = getWorkshopByCode(code)
-        setWorkshopPrivs(c.w)
-        
+    def addDiscussion(self, workshopCode, workshopURL):
         if c.privs['participant'] or c.privs['admin'] or c.privs['facilitator']:
             c.title = c.w['title']
             c.listingType = 'discussion'
@@ -156,16 +137,11 @@ class DiscussionController(BaseController):
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
 
     @h.login_required
-    def clearDiscussionFlagsHandler(self, id1, id2):
-        code = id1
-        url = id2
-
-
+    def clearDiscussionFlagsHandler(self, discussionCode, discussionURL):
         clearError = 0
         clearMessage = ""
-        c.discussion = getDiscussion(code, urlify(url))
+        c.discussion = getDiscussion(discussionCode)
         c.w = getWorkshopByCode(c.discussion['workshopCode'])
-        setWorkshopPrivs(c.w)
 
         if not c.privs['admin'] and not c.privs['facilitator']:
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
@@ -197,18 +173,12 @@ class DiscussionController(BaseController):
             session['alert'] = alert
             session.save()
 
-        returnURL = "/adminDiscussion/" + code + "/" + url
-        return redirect(returnURL)
+        return redirect(session['return_to'])
 
     @h.login_required
-    def addDiscussionHandler(self, id1, id2):
-        code = id1
-        url = id2
-        w = getWorkshopByCode(code)
-        setWorkshopPrivs(w)
-        
+    def addDiscussionHandler(self, workshopCode, workshopURL):
         if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
-            return redirect('/workshop/%s/%s' % (w['urlCode'], w['url']))
+            return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
        
         if 'title' in request.params:
             title = request.params['title']
@@ -225,22 +195,19 @@ class DiscussionController(BaseController):
             alert['content'] = ''
             session['alert'] = alert
             session.save()
-            return redirect('/workshop/%s/%s/addDiscussion' % (code, url))
+            return redirect(session['return_to'])
 
         else:
-            d = Discussion(owner = c.authuser, discType = 'general', attachedThing = w, title = title, text = text, workshop = w)
+            d = Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w, title = title, text = text, workshop = c.w)
             r = Revision(c.authuser, text, d.d)
-            commit(w)
+            commit(c.w)
         
-        return redirect('/workshop/%s/%s/discussion/%s/%s' % (code, url, d.d['urlCode'], d.d['url']))
+        return redirect('/workshop/%s/%s/discussion/%s/%s' % (workshopCode, workshopURL, d.d['urlCode'], d.d['url']))
     
     @h.login_required
-    def editDiscussion(self, id1, id2):
-        code = id1
-        url = id2
-        c.discussion = getDiscussion(code, urlify(url))
+    def editDiscussion(self, discussionCode, discussionURL):
+        c.discussion = getDiscussion(discussionCode)
         c.w = getWorkshopByCode(c.discussion['workshopCode'])
-        setWorkshopPrivs(c.w)
 
         if (c.discussion.owner != c.authuser.id)  and not c.privs['admin'] and not c.privs['facilitator']:
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
@@ -248,10 +215,8 @@ class DiscussionController(BaseController):
         return render('/derived/discussion_edit.bootstrap')
         
     @h.login_required
-    def editDiscussionHandler(self, id1, id2):
-        code = id1
-        url = id2
-        discussion = getDiscussion(code, urlify(url))
+    def editDiscussionHandler(self, discussionCode, discussionURL):
+        discussion = getDiscussion(discussionCode)
         w = getWorkshopByCode(discussion['workshopCode'])
         if 'user' in session:
             c.isAdmin = isAdmin(c.authuser.id)
@@ -278,7 +243,7 @@ class DiscussionController(BaseController):
             alert['content'] = ''
             session['alert'] = alert
             session.save()
-            return redirect('/editDiscussion/%s/%s' % (code, url))
+            return redirect(session['return_to'])
 
         else:
             dMsg = ''
@@ -297,12 +262,9 @@ class DiscussionController(BaseController):
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (w['urlCode'], w['url'], discussion['urlCode'], discussion['url']))
     
     @h.login_required
-    def flagDiscussion(self, id1, id2):
-        code = id1
-        url = id2
-        discussion = getDiscussion(code, urlify(url))
+    def flagDiscussion(self, discussionCode, discussionURL):
+        discussion = getDiscussion(discussionCode)
         c.w = getWorkshopByCode(discussion['workshopCode'])
-        setWorkshopPrivs(c.w)
 
         if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
             return redirect('/workshop/%s/%s/discussion/%s/%s' % (c.w['urlCode'], c.w['url'], discussion['urlCode'], discussion['url']))
@@ -316,12 +278,9 @@ class DiscussionController(BaseController):
             return json.dumps({'id':discussion.id, 'result':"Already flagged!"})
 
     @h.login_required
-    def adminDiscussion(self, id1, id2):
-        code = id1
-        url = id2
-        c.discussion = getDiscussion(code, urlify(url))
+    def adminDiscussion(self, discussionCode, discussionURL):
+        c.discussion = getDiscussion(discussionCode)
         c.w = getWorkshopByCode(c.discussion['workshopCode'])
-        setWorkshopPrivs(c.w)
 
         if not c.privs['admin'] and not c.privs['facilitator']:
             return redirect('/workshop/%s/%s/discussion/%s/%s' % (c.w['urlCode'], c.w['url'], c.discussion['urlCode'], c.discussion['url']))
@@ -330,29 +289,18 @@ class DiscussionController(BaseController):
 
     @h.login_required
     def adminDiscussionHandler(self):
-        
         workshopCode = request.params['workshopCode']
-        workshopURL = request.params['workshopURL']
-        w = getWorkshopByCode(workshopCode)
-        setWorkshopPrivs(c.w)
+        c.w = getWorkshopByCode(workshopCode)
 
         discussionCode = request.params['discussionCode']
-        discussionURL = request.params['discussionURL']
         d = getDiscussion(discussionCode)
-        ##log.info("BEFORE")
                 
         try:
-
            if not c.privs['admin'] and not c.privs['facilitator']:
                return redirect('/workshop/%s/%s/discussion/%s/%s'%(w['urlCode'], w['url'], d['urlCode'], d['url']))
-           ##log.info("HMMMM")
            modType = request.params['modType']
-           ##log.info("1")
            verifyModDiscussion = request.params['verifyModDiscussion']
-           ##log.info("2")
            modDiscussionReason = request.params['modDiscussionReason']
-           ##log.info("3")
-           ##log.info("HERE")
         except:
            alert = {'type':'error'}
            alert['title'] = 'All Fields Required BLAH'

@@ -117,7 +117,7 @@ class WorkshopController(BaseController):
                 if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
                     if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                         abort(404)
-
+        utils.isWatching(c.authuser, c.w)
 
     ###################################################
     # 
@@ -649,10 +649,6 @@ class WorkshopController(BaseController):
     
     def display(self, workshopCode, workshopURL):
         c.title = c.w['title']
-
-        c.isFollowing = False
-        if 'user' in session:
-            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
         
         fList = []
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w.id)):

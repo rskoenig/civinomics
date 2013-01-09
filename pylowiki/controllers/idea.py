@@ -3,10 +3,10 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
-import pylowiki.lib.db.workshop as workshopLib
-import pylowiki.lib.db.idea as ideaLib
-import pylowiki.lib.db.discussion as discussionLib
-from pylowiki.lib.utils import urlify
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.idea         as ideaLib
+import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render
@@ -20,6 +20,8 @@ class IdeaController(BaseController):
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         workshopLib.setWorkshopPrivs(c.w)
+        if 'user' in session:
+            utils.isWatching(c.authuser, c.w)
 
     def listing(self, workshopCode, workshopURL):
         c.title = c.w['title']
