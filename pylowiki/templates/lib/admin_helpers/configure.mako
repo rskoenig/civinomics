@@ -170,7 +170,7 @@
     <h3>Summarize Your Workshop</h3>
     Use the wiki editor below to provide introductory background information about your workshop topic and goals. What do participants need to know about the topic? What do you hope to accomplish in this workshop? This information will appear on the workshop home page with the slideshow.  
     <br /><br />
-    ${h.form(url(controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']),method="put")}
+    ${h.form(url(controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']),method="put",id="wikiBackground")}
     <% counter = 0 %>
     % for row in c.wikilist:
         <div id="wiki-section-break">
