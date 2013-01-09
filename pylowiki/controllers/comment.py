@@ -308,25 +308,11 @@ class CommentController(BaseController):
             cError = 1
 
         comment = getCommentByCode(commentCode)
-        discussionID = comment['discussion_id']
-        d = getDiscussionByID(discussionID)
-        if d['discType'] == 'suggestion':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL']
-        elif d['discType'] == 'resource':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL']
-        elif d['discType'] == 'sresource':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] + "/resource/" + "/resource/" + d['resourceCode'] + "/" + d['resourceURL']
-        elif d['discType'] == 'general':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/discussion/" + d['urlCode'] + "/" + d['url']
-        elif d['discType'] == 'background':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/background"
-
-        if 'discType' in request.params:
-          if request.params['discType'] == 'thread':
-            backlink = session['return_to']
+        discussionCode = comment['discussionCode']
+        d = getDiscussionByCode(discussionCode)
 
         if cError == 0:
-           comment = editComment(commentCode, discussionID, data)
+           comment = editComment(commentCode, data)
            if not comment:
                alert = {'type':'error'}
                alert['title'] = 'Edit Comment failed.'
@@ -339,11 +325,9 @@ class CommentController(BaseController):
                alert['content'] = 'Edit comment successful.'
                session['alert'] = alert
                session.save()
-               #eMsg = "Comment data updated. " + remark
-               #Event('Comment edited by %s'%c.authuser['name'], eMsg, comment, c.authuser)
                Event('Comment edited by %s'%c.authuser['name'], comment, c.authuser)
 
-        return redirect(backlink)
+        return redirect(session['return_to'])
 
 
     def permalink(self, id1, id2, id3):
