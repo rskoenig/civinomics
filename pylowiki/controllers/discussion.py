@@ -3,24 +3,21 @@ import logging, pickle
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to, redirect
 import webhelpers.paginate as paginate
+from pylowiki.lib.base import BaseController, render
 
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.base import BaseController, render
-from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped, setWorkshopPrivs
-import pylowiki.lib.db.workshop as workshopLib
-from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussions, getDiscussion, getDiscussionByID, getDiscussion
-from pylowiki.lib.db.comment import getCommentByCode
 import pylowiki.lib.utils as utils
-from pylowiki.lib.db.user import isAdmin, getUserByID
-from pylowiki.lib.db.event import getParentEvents
-from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
-from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
-from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.revision import Revision, getRevisionByCode, getParentRevisions
-from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
+import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.flag         as flagLib
+import pylowiki.lib.db.rating       as ratingLib
+import pylowiki.lib.db.revision     as revisionLib
 
-from pylowiki.lib.db.discussion import Discussion
+from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
 import pylowiki.lib.helpers as h
 import simplejson as json
@@ -55,20 +52,20 @@ class DiscussionController(BaseController):
     def index(self, workshopCode, workshopURL):
         c.rating = False
         if 'user' in session:
-            c.isScoped = isScoped(c.authuser, c.w)
-            c.isFacilitator = isFacilitator(c.authuser.id, c.w.id)
-            c.isAdmin = isAdmin(c.authuser.id)
+            c.isScoped = workshopLib.isScoped(c.authuser, c.w)
+            c.isFacilitator = facilitatorLib.isFacilitator(c.authuser.id, c.w.id)
+            c.isAdmin = userLib.isAdmin(c.authuser.id)
             if 'ratedThings_workshop_overall' in c.authuser.keys():
                 workRateDict = pickle.loads(str(c.authuser['ratedThings_workshop_overall']))
                 if c.w.id in workRateDict.keys():
-                    c.rating = getRatingByID(workRateDict[c.w.id])
+                    c.rating = ratingLib.getRatingByID(workRateDict[c.w.id])
         else:
             c.isScoped = False
             c.isFacilitator = False
             c.isAdmin = False
 
         fList = []
-        for f in (getFacilitatorsByWorkshop(c.w.id)):
+        for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w.id)):
            if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
               fList.append(f)
 
@@ -77,7 +74,7 @@ class DiscussionController(BaseController):
         c.title = c.w['title']
         c.code = c.w['urlCode']
         c.url = c.w['url']
-        c.discussions = getDiscussionsForWorkshop(workshopCode)
+        c.discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
         c.discussions = sortBinaryByTopPop(c.discussions)
         if not c.discussions:
             c.discussions = []
@@ -92,36 +89,36 @@ class DiscussionController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def topic(self, workshopCode, workshopURL, discussionCode, discussionURL, revisionCode = ''):
-        c.discussion = getDiscussion(discussionCode)
-        c.flags = getFlags(c.discussion)
-        c.events = getParentEvents(c.discussion)
+        c.discussion = discussionLib.getDiscussion(discussionCode)
+        c.flags = flagLib.getFlags(c.discussion)
+        c.events = eventLib.getParentEvents(c.discussion)
 
         c.title = c.w['title']
 
         if revisionCode != '':
-            r = getRevisionByCode(revisionCode)
+            r = revisionLib.getRevisionByCode(revisionCode)
             c.content = h.literal(h.reST2HTML(r['data']))
-            c.lastmoduser = getUserByID(r.owner)
+            c.lastmoduser = userLib.getUserByID(r.owner)
             c.lastmoddate = r.date
             c.revision = r
         else:
             c.content = h.literal(h.reST2HTML(c.discussion['text']))
             c.revision = False
-            c.lastmoduser = getUserByID(c.discussion.owner)
+            c.lastmoduser = userLib.getUserByID(c.discussion.owner)
             if 'mainRevision_id' in c.discussion:
                 r = get_revision(int(c.discussion['mainRevision_id']))
                 c.lastmoddate = r.date
             else:
                 c.lastmoddate = c.discussion.date
 
-        c.revisions = getParentRevisions(c.discussion.id)
+        c.revisions = revisionLib.getParentRevisions(c.discussion.id)
         
         c.listingType = 'discussion'
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, discussionCode, discussionURL, commentCode):
-        c.rootComment = getCommentByCode(commentCode)
-        c.discussion = getDiscussionByID(c.rootComment['discussion_id'])
+        c.rootComment = commentLib.getCommentByCode(commentCode)
+        c.discussion = discussionLib.getDiscussionByID(c.rootComment['discussion_id'])
         c.title = c.w['title']
         c.content = h.literal(h.reST2HTML(c.discussion['text']))
         c.listingType = 'discussion'
@@ -140,8 +137,8 @@ class DiscussionController(BaseController):
     def clearDiscussionFlagsHandler(self, discussionCode, discussionURL):
         clearError = 0
         clearMessage = ""
-        c.discussion = getDiscussion(discussionCode)
-        c.w = getWorkshopByCode(c.discussion['workshopCode'])
+        c.discussion = discussionLib.getDiscussion(discussionCode)
+        c.w = workshopLib.getWorkshopByCode(c.discussion['workshopCode'])
 
         if not c.privs['admin'] and not c.privs['facilitator']:
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
@@ -149,9 +146,9 @@ class DiscussionController(BaseController):
         if 'clearDiscussionFlagsReason' in request.params:
             clearReason = request.params['clearDiscussionFlagsReason']
             if clearReason != '':
-                clearFlags(c.discussion)
+                flagLib.clearFlags(c.discussion)
                 clearTitle = "Flags cleared"
-                e = Event(clearTitle, clearReason, c.discussion, c.authuser)
+                e = eventLib.Event(clearTitle, clearReason, c.discussion, c.authuser)
             else:
                 clearError = 1
                 clearMessage = "Please include a reason for your action"
@@ -198,16 +195,16 @@ class DiscussionController(BaseController):
             return redirect(session['return_to'])
 
         else:
-            d = Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w, title = title, text = text, workshop = c.w)
-            r = Revision(c.authuser, text, d.d)
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w, title = title, text = text, workshop = c.w)
+            r = revisionLib.Revision(c.authuser, text, d.d)
             commit(c.w)
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (workshopCode, workshopURL, d.d['urlCode'], d.d['url']))
     
     @h.login_required
     def editDiscussion(self, discussionCode, discussionURL):
-        c.discussion = getDiscussion(discussionCode)
-        c.w = getWorkshopByCode(c.discussion['workshopCode'])
+        c.discussion = discussionLib.getDiscussion(discussionCode)
+        c.w = workshopLib.getWorkshopByCode(c.discussion['workshopCode'])
 
         if (c.discussion.owner != c.authuser.id)  and not c.privs['admin'] and not c.privs['facilitator']:
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
@@ -216,11 +213,11 @@ class DiscussionController(BaseController):
         
     @h.login_required
     def editDiscussionHandler(self, discussionCode, discussionURL):
-        discussion = getDiscussion(discussionCode)
-        w = getWorkshopByCode(discussion['workshopCode'])
+        discussion = discussionLib.getDiscussion(discussionCode)
+        w = workshopLib.getWorkshopByCode(discussion['workshopCode'])
         if 'user' in session:
-            c.isAdmin = isAdmin(c.authuser.id)
-            c.isFacilitator = isFacilitator(c.authuser.id, w.id)
+            c.isAdmin = userLib.isAdmin(c.authuser.id)
+            c.isFacilitator = facilitatorLib.isFacilitator(c.authuser.id, w.id)
         else:
             c.isAdmin = False
             c.isFacilitator = False
@@ -254,33 +251,33 @@ class DiscussionController(BaseController):
             if discussion['text'] != text:
                 discussion['text'] = text
                 dMsg = dMsg + "Text updated. "
-                r = Revision(c.authuser, text, discussion)
+                r = revisionLib.Revision(c.authuser, text, discussion)
 
-            Event('Discussion Edited', dMsg, discussion, c.authuser)
+            eventLib.Event('Discussion Edited', dMsg, discussion, c.authuser)
             commit(discussion)
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (w['urlCode'], w['url'], discussion['urlCode'], discussion['url']))
     
     @h.login_required
     def flagDiscussion(self, discussionCode, discussionURL):
-        discussion = getDiscussion(discussionCode)
-        c.w = getWorkshopByCode(discussion['workshopCode'])
+        discussion = discussionLib.getDiscussion(discussionCode)
+        c.w = workshopLib.getWorkshopByCode(discussion['workshopCode'])
 
         if not c.privs['participant'] and not c.privs['admin'] and not c.privs['facilitator']:
             return redirect('/workshop/%s/%s/discussion/%s/%s' % (c.w['urlCode'], c.w['url'], discussion['urlCode'], discussion['url']))
 
         if not discussion:
             return json.dumps({'id':discussion.id, 'result':'ERROR'})
-        if not isFlagged(discussion, c.authuser):
-            f = Flag(discussion, c.authuser)
+        if not flagLib.isFlagged(discussion, c.authuser):
+            f = flagLib.Flag(discussion, c.authuser)
             return json.dumps({'id':discussion.id, 'result':"Successfully flagged!"})
         else:
             return json.dumps({'id':discussion.id, 'result':"Already flagged!"})
 
     @h.login_required
     def adminDiscussion(self, discussionCode, discussionURL):
-        c.discussion = getDiscussion(discussionCode)
-        c.w = getWorkshopByCode(c.discussion['workshopCode'])
+        c.discussion = discussionLib.getDiscussion(discussionCode)
+        c.w = workshopLib.getWorkshopByCode(c.discussion['workshopCode'])
 
         if not c.privs['admin'] and not c.privs['facilitator']:
             return redirect('/workshop/%s/%s/discussion/%s/%s' % (c.w['urlCode'], c.w['url'], c.discussion['urlCode'], c.discussion['url']))
@@ -290,10 +287,10 @@ class DiscussionController(BaseController):
     @h.login_required
     def adminDiscussionHandler(self):
         workshopCode = request.params['workshopCode']
-        c.w = getWorkshopByCode(workshopCode)
+        c.w = workshopLib.getWorkshopByCode(workshopCode)
 
         discussionCode = request.params['discussionCode']
-        d = getDiscussion(discussionCode)
+        d = discussionLib.getDiscussion(discussionCode)
                 
         try:
            if not c.privs['admin'] and not c.privs['facilitator']:
@@ -327,7 +324,7 @@ class DiscussionController(BaseController):
         commit(d)
         if modDiscussionReason == "":
             modDiscussionReason = "No Reason Given"
-        e = Event(modTitle, modDiscussionReason, d, c.authuser)
+        e = eventLib.Event(modTitle, modDiscussionReason, d, c.authuser)
 
         alert = {'type':'success'}
         alert['title'] = modTitle
