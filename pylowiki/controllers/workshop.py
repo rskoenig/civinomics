@@ -17,6 +17,7 @@ import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.slideshow    as slideshowLib
 import pylowiki.lib.db.slide        as slideLib
 import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.suggestion   as suggestionLib
 import pylowiki.lib.db.user         as userLib
@@ -117,7 +118,7 @@ class WorkshopController(BaseController):
                 if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
                     if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                         abort(404)
-        utils.isWatching(c.authuser, c.w)
+
 
     ###################################################
     # 
@@ -649,6 +650,10 @@ class WorkshopController(BaseController):
     
     def display(self, workshopCode, workshopURL):
         c.title = c.w['title']
+
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
         
         fList = []
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w.id)):
@@ -773,9 +778,9 @@ class WorkshopController(BaseController):
         c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
 
-            c.s = suggestionLib.getActiveSuggestionsForWorkshop(workshopCode)
-            c.disabledSug = suggestionLib.getDisabledSuggestionsForWorkshop(workshopCode)
-            c.deletedSug = suggestionLib.getDeletedSuggestionsForWorkshop(workshopCode)
+            c.i = ideaLib.getIdeasInWorkshop(workshopCode)
+            c.disabledIdeas = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
+            c.deletedIdeas = ideaLib.getIdeasInWorkshop(workshopCode, deleted = '1')
             c.r = resourceLib.getActiveResourcesByWorkshopCode(c.w['urlCode'])
             c.disabledRes = resourceLib.getDisabledResourcesByWorkshopCode(c.w['urlCode'])
             c.deletedRes = resourceLib.getDeletedResourcesByWorkshopCode(c.w['urlCode'])

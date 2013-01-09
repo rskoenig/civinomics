@@ -56,14 +56,14 @@ def getFlaggedDiscussionComments( id ):
     except sa.orm.exc.NoResultFound:
         return False
 
-def getDisabledComments(discussionID):
+def getCommentsInDiscussion(discussion, deleted = '0', disabled = '0'):
     try:
-       cList = meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
-       comDisabledList = []
-       for c in cList:
-           if c['disabled'] == '1':
-               comDisabledList.append(c.id)
-       return comDisabledList
+       return meta.Session.query(Thing)\
+            .filter_by(objType = 'comment')\
+            .filter(Thing.data.any(wc('discussionCode', discussion['urlCode'])))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
     except:
        return False  
 
@@ -87,6 +87,22 @@ def getPureFlaggedDiscussionComments( id ):
             if checkFlagged(c) and c.id not in fList:
                if c['disabled'] == '0' and c['deleted'] == '0':
                    fList.append(c.id)
+        return fList
+    except sa.orm.exc.NoResultFound:
+        return False
+        
+# Pure meaning they are not disabled or deleted yet
+def getFlaggedCommentsInDiscussion( discussion, deleted = '0', disabled = '0' ):
+    try:
+        cList =  meta.Session.query(Thing).filter_by(objType = 'comment')\
+                .filter(Thing.data.any(wc('discussionCode', discussion['urlCode'])))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .all()
+        fList = []
+        for c in cList:
+            if checkFlagged(c) and c not in fList:
+                fList.append(c)
         return fList
     except sa.orm.exc.NoResultFound:
         return False
