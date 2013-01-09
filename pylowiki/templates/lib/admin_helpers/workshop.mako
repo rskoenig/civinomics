@@ -226,7 +226,7 @@
                 % endif
 
              <tr><td>${cString} In Resource <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r["title"]}</a></br>
-		 	 % for comm in cList:
+		 	 % for com in cList:
 			      &nbsp&nbsp&nbsp&nbsp&nbsp
 			      % if int(com['numFlags']) is 1:
 				      ${com['numFlags']} flag:
