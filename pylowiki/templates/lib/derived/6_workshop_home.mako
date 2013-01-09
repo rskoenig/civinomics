@@ -1,5 +1,5 @@
 <%!
-   from pylowiki.lib.db.slideshow import getAllSlides
+   import pylowiki.lib.db.slideshow as slideshowLib
    from pylowiki.lib.db.user import getUserByID
    import misaka as misaka
 %>
@@ -159,7 +159,7 @@
 
 <%def name="slideshow(w)">
    <% 
-      slides = getAllSlides(w['mainSlideshow_id']) 
+      slides = slideshowLib.getSlidesInOrder(w['mainSlideshow_id']) 
       slideNum = 0
    %>
    <ul class="block-grid gallery" data-clearing>

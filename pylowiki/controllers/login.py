@@ -7,7 +7,6 @@ from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 
-#Fox imported these modules
 import pylowiki.lib.helpers as h
 from pylowiki.lib.auth import login_required
 from pylowiki.lib.db.user import get_user, changePassword, checkPassword, generatePassword
@@ -21,7 +20,6 @@ log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
 
-    #def index(self):
     def loginHandler(self):
         """ Display and Handle Login """
         c.title = c.heading = "Login"  
@@ -83,21 +81,15 @@ class LoginController(BaseController):
             if "user" in session:
                 return redirect( "/" )
             else:
-                #return render( "/derived/login.mako" )
                 return redirect('/')
 
     @login_required
     def logout(self):
         """ Action will logout the user. """
-        try:
-            #return_url = session['return_to']
-            return_url = '/'
-        except:
-            return_url = '/'
+        return_url = '/'
         username = session['user']
         log.info( "Successful logout by - " + username )
         session.delete()
-        #h.flash( "Goodbye " + username +" !", "success" )
         return redirect( return_url )
 
     def forgot(self):

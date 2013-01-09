@@ -32,3 +32,11 @@ def getThing(code):
     except Exception as e:
         log.info(e)
         return False
+        
+def getThingByID(thingID):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(id = thingID)\
+            .one()
+    except:
+        return False

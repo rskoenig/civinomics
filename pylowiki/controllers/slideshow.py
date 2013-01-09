@@ -223,7 +223,6 @@ class SlideshowController(BaseController):
         
         value = value.split('_')
         order = '&' + value[0]
-        log.info('order = %s' % order)
         state = value[1] # published or unpublished
         
         order = [item for item in order.split('&portlet[]=')][1:]
