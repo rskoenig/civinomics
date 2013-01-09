@@ -12,15 +12,16 @@
    <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
          <div class="browse">
-            <h3 class="section-header"> Browse </h3>
+            <h3 class="section-header"> Workshops </h3>
             <div class="row-fluid"><!--navigation row-->
+               <%doc>
                <div class="span12"> <!-- object navigation -->
                   <ul class="nav nav-pills">
                      <li class="active"> <a href="#">workshops</a></li>
                      <li> <a href="#">suggestions</a></li>
                   </ul>
                </div> <!-- /object navigation -->
-               
+               </%doc>
             </div><!--/navigation row-->
             <%
                if len(c.list) % 2 == 0:
