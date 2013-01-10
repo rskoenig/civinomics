@@ -36,7 +36,7 @@
             <h3 class="centered section-header"> ${title} </h3>
             <table class="table table-condensed table-hover user-thing-listing">
                 <tbody>
-                <% counter = 0 %>
+                    <% counter = 0 %>
                     % for thing in things:
                         % if counter == 0:
                             <tr> <td class="no-border">
@@ -75,17 +75,34 @@
             % if len(things) == 0:
                 There doesn't seem to be anything here!
             % else:
-                <% 
-                    objType = things[0].objType
-                    counter = 0
-                %>
-                <ul class="thumbnails">
-                    % for thing in things:
-                        <li class="follow">
-                            ${lib_6.userImage(thing, className="avatar hoverTip", rel="tooltip", placement="bottom")}
-                        </li>
-                    % endfor
-                </ul>
+                % if c.listingType == 'watching':
+                    <table class="table table-condensed table-hover user-thing-listing">
+                        <tbody>
+                            <% counter = 0 %>
+                            % for thing in things:
+                                % if counter == 0:
+                                    <tr> <td class="no-border">
+                                % else:
+                                    <tr> <td>
+                                % endif
+                                
+                                ${showWorkshop(thing, imageOnly = True)}
+                                <a ${lib_6.workshopLink(thing, embed=True) | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a>
+                                <br />
+                                Description: ${lib_6.ellipsisIZE(thing['description'], 135)}
+                            % endfor
+                        </tbody>
+                    </table>
+                % else:
+                    <% objType = things[0].objType %>
+                    <ul class="thumbnails">
+                        % for thing in things:
+                            <li class="follow">
+                                ${lib_6.userImage(thing, className="avatar hoverTip", rel="tooltip", placement="bottom")}
+                            </li>
+                        % endfor
+                    </ul>
+                % endif
             % endif
         </div>
     </div>

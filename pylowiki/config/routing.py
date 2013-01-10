@@ -259,6 +259,7 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/{resources:resources/?}', controller = 'profile', action = 'showUserResources', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{discussions:discussions/?}', controller = 'profile', action = 'showUserDiscussions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{ideas:ideas/?}', controller = 'profile', action = 'showUserIdeas', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/{watching:watching/?}', controller = 'profile', action = 'showUserWatching', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{comments:comments/?}', controller = 'profile', action = 'showUserComments', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{followers:followers/?}', controller = 'profile', action = 'showUserFollowers', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{following:following/?}', controller = 'profile', action = 'showUserFollows', id1 = '{id1}', id2 = '{id2}')

@@ -289,6 +289,11 @@ class ProfileController(BaseController):
         # Called when visiting /profile/urlCode/url/following
         self._basicSetup(id1, id2, 'following')
         return render("/derived/6_profile_list.bootstrap")
+        
+    def showUserWatching(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/watching
+        self._basicSetup(id1, id2, 'watching')
+        return render("/derived/6_profile_list.bootstrap")
     
     def _basicSetup(self, code, url, page):
         # code and url are now unused here, now that __before__ is defined
