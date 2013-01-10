@@ -190,9 +190,9 @@ class User(object):
                 request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
 
         subject = "Civinomics Account Activation"
-        message = 'Greetings from Civinomics!\n\nOnly one more step to complete your Civinomics member registration!\n'
-        message = message + 'Please click on the following link to activate your account:\n\n%s' % url
-        message = message + '\n\nThis will log you into your Civinomics member dashboard, where you can update\nyour member profile with a picture and other details.' 
+        message = 'Greetings from Civinomics!\n\nOnly one more step till your Civinomics member registration is complete. Please click on the following link to activate your account:\n\n%s' % url
+        message = message + '\n\nThis will log you into your Civinomics member dashboard, where you can update your member profile with a picture and other details. To find workshops in your area, click on the green Civinomics icon in the top corner.\n\n' 
+        message = message + 'See you soon!\n\nThe Civinomics Team'
         send(toEmail, frEmail, subject, message)
         
         u['activationHash'] = hash
