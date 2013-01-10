@@ -71,12 +71,12 @@ def searchUsers( uKey, uValue):
 def getUserPosts(user, active = 1):
     returnList = []
     if active == 1:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
     else:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).order_by('-date').all()
 
     for item in postList:
-        if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment':
+        if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment' or item.objType == 'idea':
             returnList.append(item)
         elif item.objType == 'discussion':
             if item['discType'] == 'general':

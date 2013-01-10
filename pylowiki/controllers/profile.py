@@ -217,6 +217,11 @@ class ProfileController(BaseController):
         self._basicSetup(id1, id2, 'discussions')
         return render("/derived/6_profile_list.bootstrap")
     
+    def showUserIdeas(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/ideas
+        self._basicSetup(id1, id2, 'ideas')
+        return render("/derived/6_profile_list.bootstrap")
+    
     def showUserComments(self, id1, id2):
         # Called when visiting /profile/urlCode/url/comments
         c.title = c.user['name']
@@ -294,7 +299,6 @@ class ProfileController(BaseController):
            c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
         else:
            c.isFollowing = False
-
         
         items = self._userItems(c.user)
         c.listingType = page
@@ -327,7 +331,7 @@ class ProfileController(BaseController):
         createdThings = userLib.getUserPosts(user)
         items['resources'] = []
         items['discussions'] = []
-        items['ideas'] = [] # TODO
+        items['ideas'] = []
         for thing in createdThings:
             if thing.objType == 'resource':
                 items['resources'].append(thing)

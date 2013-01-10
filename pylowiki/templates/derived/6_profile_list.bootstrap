@@ -18,7 +18,6 @@
 
 <%def name="extraScripts()">
    <script type="text/javascript">
-      //$('a[rel="tooltip"]').tooltip();
       $('.hoverTip').tooltip();
    </script>
 </%def>
