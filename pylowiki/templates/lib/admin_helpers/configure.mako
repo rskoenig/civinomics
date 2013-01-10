@@ -2,7 +2,7 @@
     from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList
     from pylowiki.lib.db.user import getUserByEmail
     from pylowiki.lib.db.workshop import getCategoryTagList
-    from pylowiki.lib.db.tags import getWorkshopTagCategories
+    from pylowiki.lib.db.tag import getWorkshopTagCategories
 %>
 
 <%def name="fields_alert()">
@@ -137,14 +137,12 @@
         <div class="span5">
             <% 
                 tagList = getWorkshopTagCategories()
-                workshopTags = []
-                if c.categories:
-                    workshopTags = c.categories['tagsString'].split('|') 
+
             %>
             <br />
             Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />
             % for tag in tagList:
-                % if tag in workshopTags:
+                % if tag in c.categories:
                     <% checked = 'checked' %>
                 % else:
                     <% checked = 'unchecked' %>
