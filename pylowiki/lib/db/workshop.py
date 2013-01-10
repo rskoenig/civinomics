@@ -320,7 +320,6 @@ class Workshop(object):
         w['numResources'] = 1
         w['public_private'] = publicPrivate
         w['type'] = type
-        w['categoryTags'] = ''
         w['allowIdeas'] = 1
         w['allowSuggestions'] = 1
         w['allowResources'] = 1
