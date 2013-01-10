@@ -163,7 +163,11 @@
 
 <%def name="ideaLink(i, w, **kwargs)">
    <%
-      ideaStr = 'href="/workshop/%s/%s/idea/%s/%s"' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
+      ideaStr = 'href="/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
+      if 'id' in kwargs:
+         ideaStr += '#%s' % kwargs['id']
+      ideaStr += '"'
+      log.info(ideaStr)
       if 'embed' in kwargs:
          if kwargs['embed'] == True:
             return ideaStr

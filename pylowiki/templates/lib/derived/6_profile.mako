@@ -186,7 +186,10 @@
                     activityStr = 'Added a'
                 if item.objType == 'idea':
                     activityStr += 'n'
-                activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True) + '>'
+                if item.objType == 'comment':
+                    activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True, id='accordion-%s'%item['urlCode']) + '>'
+                else:
+                    activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True) + '>'
                 if item.objType != 'comment':
                     activityStr += item.objType + "</a>"
                 else:
