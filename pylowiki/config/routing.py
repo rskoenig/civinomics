@@ -174,11 +174,12 @@ def make_map():
     map.connect('/clearCommentFlagsHandler/{id1}{end:/?}', controller = 'comment', action = 'clearCommentFlagsHandler', id1 = '{id1}')
 
     # Ratings
-    map.connect('/rate/suggestion/{id1}/{id2}/{id3}{end:/?}', controller = 'rating', action = 'rateSuggestion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rateFacilitation/{id1}/{id2}/{id3}{end:/?}', controller = 'rating', action = 'rateFacilitation', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rate/resource/{id1}/{id2}/{id3}{end:/?}', controller = 'rating', action = 'rateResource', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rate/discussion/{id1}/{id2}/{id3}{end:/?}', controller = 'rating', action = 'rateDiscussion', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/rate/comment/{id1}/{id2}{end:/?}', controller = 'rating', action = 'rateComment', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/rate/suggestion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateSuggestion', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rateFacilitation/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateFacilitation', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/resource/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateResource', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/discussion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateDiscussion', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/comment/{code}/{amount}{end:/?}', controller = 'rating', action = 'rateComment', code = '{code}', amount = '{amount}')
+    map.connect('/rate/idea/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateIdea', code = '{code}', url = '{url}', amount = '{amount}')
 
     # Geo stuff
     map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')
