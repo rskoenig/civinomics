@@ -7,7 +7,7 @@ from discussion import Discussion
 from revision import Revision
 from page import Page
 from time import time
-from rating import Rating
+#from rating import Rating
 import pylowiki.lib.db.generic as generic
 import logging
 log = logging.getLogger(__name__)
