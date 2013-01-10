@@ -291,7 +291,7 @@
         <div class="span1"></div><div class="span2">Country:</div><!-- span2 -->
         <div class="span9"><select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
             <option value="0">Select a country</option>
-            <option value="${countrySelected}">United States</option>
+            <option value="United States" ${countrySelected}>United States</option>
         </select>
         </div><!-- span9 -->
     </span>

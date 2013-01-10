@@ -340,8 +340,13 @@ class WorkshopController(BaseController):
         # assemble a workshop scope string 
         # ||country||state||county||city|zip
         geoTagString = "||" + geoTagCountry + "||" + geoTagState + "||" + geoTagCounty + "||" + geoTagCity + "|0"
-        if geoTagString != c.w['geoTags']:
-            c.w['geoTags'] = geoTagString
+        wscope = geoInfoLib.getWScopeByWorkshop(c.w)
+        if not wscope:
+            geoInfoLib.WorkshopScope(c.w, geoTagString)
+            
+        if wscope and wscope['scope'] != geoTagString:
+            wscope['scope'] = geoTagString
+            dbHelpers.commit(wscope)
             c.w['public_private'] = 'public'
             dbHelpers.commit(c.w)
             wchanges = 1
@@ -763,8 +768,9 @@ class WorkshopController(BaseController):
         
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
-        if c.w['geoTags'] and c.w['geoTags'] != '':
-            geoTags = c.w['geoTags'].split('|')
+        c.wscope = geoInfoLib.getWScopeByWorkshop(c.w)
+        if c.wscope:
+            geoTags = c.wscope['scope'].split('|')
             c.country = geoTags[2]
             c.state = geoTags[4]
             c.county = geoTags[6]
