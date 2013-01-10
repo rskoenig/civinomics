@@ -17,7 +17,20 @@
 </div>
 
 <%def name="extraScripts()">
-   <script type="text/javascript">
-      $('.hoverTip').tooltip();
-   </script>
+    <script type="text/javascript">
+        $('.hoverTip').tooltip();
+    </script>
+    <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: ''
+            });
+        });
+    </script>
 </%def>
