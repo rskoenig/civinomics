@@ -139,11 +139,14 @@
    <%
       if 'directLink' in kwargs:
          if kwargs['directLink'] == True:
-            resourceStr = 'href="%s"' %(r['link'])
+            resourceStr = 'href="%s' %(r['link'])
          else:
-            resourceStr = 'href="/workshop/%s/%s/resource/%s/%s"' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+            resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
       else:
-         resourceStr = 'href="/workshop/%s/%s/resource/%s/%s"' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+         resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+      if 'id' in kwargs:
+         resourceStr += '#%s' % kwargs['id']
+      resourceStr += '"'
       if 'embed' in kwargs:
          if kwargs['embed'] == True:
             return resourceStr
@@ -153,7 +156,10 @@
 
 <%def name="suggestionLink(s, w, **kwargs)">
    <%
-      resourceStr = 'href="/workshop/%s/%s/suggestion/%s/%s"' %(w["urlCode"], w["url"], s["urlCode"], s["url"])
+      resourceStr = 'href="/workshop/%s/%s/suggestion/%s/%s' %(w["urlCode"], w["url"], s["urlCode"], s["url"])
+      if 'id' in kwargs:
+         resourceStr += '#%s' % kwargs['id']
+      resourceStr += '"'
       if 'embed' in kwargs:
          if kwargs['embed'] == True:
             return resourceStr
@@ -285,7 +291,10 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
    <%
-      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s"' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+      if 'id' in kwargs:
+         resourceStr += '#%s' % kwargs['id']
+      resourceStr += '"'
       if 'embed' in kwargs:
          if kwargs['embed'] == True:
             return resourceStr
