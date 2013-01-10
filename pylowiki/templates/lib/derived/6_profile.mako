@@ -199,8 +199,10 @@
                         activityStr += 'resource </a>'
                     else:
                         activityStr += 'discussion </a>'
-                activityStr += ' in the workshop <a ' + lib_6.workshopLink(workshop, embed = True) + '>'
+                activityStr += ' in <a ' + lib_6.workshopLink(workshop, embed = True) + '>'
                 activityStr += lib_6.ellipsisIZE(workshop['title'], 25) + '</a>'
+                if item.objType == 'comment':
+                    activityStr += ' : %s' % lib_6.ellipsisIZE(item['data'], 40)
             %>
             <li> ${activityStr | n} </li>
         % endfor

@@ -167,7 +167,6 @@
       if 'id' in kwargs:
          ideaStr += '#%s' % kwargs['id']
       ideaStr += '"'
-      log.info(ideaStr)
       if 'embed' in kwargs:
          if kwargs['embed'] == True:
             return ideaStr
