@@ -216,7 +216,7 @@
           wList = []
           for f in fList:
               w = workshopLib.getWorkshopByID(f['workshopID'])
-              if w['deleted'] == '0' and w['public_private'] != 'personal':
+              if w['deleted'] == '0' and w['type'] != 'personal':
                   if not facilitatorLib.isFacilitator(c.user.id, w.id) and not facilitatorLib.isPendingFacilitator(c.user.id, w.id):
                       wList.append(w)
       %>
