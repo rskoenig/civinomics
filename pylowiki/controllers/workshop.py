@@ -341,8 +341,10 @@ class WorkshopController(BaseController):
         # ||country||state||county||city|zip
         geoTagString = "||" + geoTagCountry + "||" + geoTagState + "||" + geoTagCounty + "||" + geoTagCity + "|0"
         wscope = geoInfoLib.getWScopeByWorkshop(c.w)
+        update = 0
         if not wscope:
             geoInfoLib.WorkshopScope(c.w, geoTagString)
+            wchanges = 1
             
         if wscope and wscope['scope'] != geoTagString:
             wscope['scope'] = geoTagString
@@ -350,6 +352,8 @@ class WorkshopController(BaseController):
             c.w['public_private'] = 'public'
             dbHelpers.commit(c.w)
             wchanges = 1
+            
+        if wchanges:
             weventMsg = weventMsg + "Updated workshop scope."
             eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
             alert = {'type':'success'}
