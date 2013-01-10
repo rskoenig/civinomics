@@ -189,6 +189,48 @@
     <br /><br />
 </%def>
 
+<%def name="admin_items(itemlist, type, action)">
+    % if itemlist:
+        % for item in itemlist:
+            % if action == 'flagged':
+                % if checkFlagged(item) and item['disabled'] == '0' and item['deleted'] == '0': 
+    		        <tr><td>(${r['numFlags']})
+                    ${type.title()}: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${type}/${item['urlCode']}/${item['url']}">${item['title']}</a>
+                    </td></tr>
+                % endif
+            % endif
+            <% 
+                if type != 'discussion':
+                    discussion = discussionLib.getDiscussionForThing(item)
+                else:
+                    discussion = item
+                cList = []
+                if discussion:
+                    if action == 'flagged':
+                        cList = commentLib.getFlaggedCommentsInDiscussion(discussion)
+            %>
+            % if cList:
+                <% numcomments = len(cList) %>
+                % if numcomments > 1:
+                    <% cString = 'Comments' %>
+                %else:
+                    <% cString = 'Comment' %>
+                % endif
+
+                <tr><td>${cString} In ${type.title()} <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${type}/${item['urlCode']}/${item['url']}">${item["title"]}</a></br>
+		 	    % for com in cList:
+                    + 
+                    % if action == 'flagged':
+				        (${com['numFlags']}) 
+				    % endif
+					<a href="/workshop/${c.w['urlCode']}/${c.w['url']}/${type}/${item['urlCode']}/${item['url']}#accordion-${com['urlCode']}">${com['data'][:20]}</a><br />
+          	    % endfor
+                </td></tr>
+            % endif
+        % endfor
+    % endif
+</%def>
+
 <%def name="admin_flagged()">
     <h3>Flagged Items</h3>
     These are items in the workshop which have been flagged by members. Each flagged item needs to be examined by the facilitator and some action taken, even if it is only clearing the flags.<br />
@@ -198,52 +240,7 @@
     <tr><th>Flagged Resources and Comments</th</tr>
     </thead>
     <tbody>
-    % if c.r:
-       % for r in c.r:
-          % if checkFlagged(r) and r['disabled'] == '0' and r['deleted'] == '0': 
-			  <tr><td>${r['numFlags']}
-	          % if int(r['numFlags']) > 1:
-	          	 Flags:
-	          % else:
-	             Flag:
-	          % endif
-             Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a>
-             <a class="btn btn-mini" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modResource/"> Admin Resource </a><br />
-              </td></tr>
-          % endif
-          <% 
-                discussion = discussionLib.getDiscussionForThing(r)
-                cList = []
-                if discussion:
-                    cList = commentLib.getFlaggedCommentsInDiscussion(discussion)
-           %>
-            % if cList:
-                <% cFlagCount = len(cList) %>
-                % if cFlagCount > 1:
-                    <% cString = 'Comments' %>
-                %else:
-                    <% cString = 'Comment' %>
-                % endif
-
-             <tr><td>${cString} In Resource <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r["title"]}</a></br>
-		 	 % for com in cList:
-			      &nbsp&nbsp&nbsp&nbsp&nbsp
-			      % if int(com['numFlags']) is 1:
-				      ${com['numFlags']} flag:
-				  % else:
-				      ${com['numFlags']} flags:
-				  % endif
-			      % if len(com['data']) > 20:
-					  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-				  % else:
-					  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-			      % endif
-	             <br />
-          	 % endfor
-                </td></tr>
-           % endif
-       % endfor
-    % endif
+    ${admin_items(c.r, 'resource', 'flagged')}
     </tbody>
     </table>
     <br /><br />
@@ -252,48 +249,7 @@
     <tr><th>Flagged Ideas and Comments:</td><tr>
     </thead>
     <tbody>
-    % for i in c.i:
-       % if checkFlagged(i) and i['disabled'] == '0' and i['deleted'] == '0': 
-		 <tr><td>${i['numFlags']}
-          % if int(i['numFlags']) > 1:
-          	 Flags:
-          % else:
-             Flag:
-          % endif
-          Idea <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/idea/${i['urlCode']}/${i['url']}">${i["title"]}</a>
-          </td></tr>
-       % endif
-        <% 
-            discussion = discussionLib.getDiscussionForThing(i)
-            cList = []
-            if discussion:
-                cList = commentLib.getFlaggedCommentsInDiscussion(discussion)
-        %>
-        % if cList:
-            <% cFlagCount = len(cList) %>
-            % if cFlagCount > 1:
-                <% cString = 'Comments' %>
-            % else:
-                <% cString = 'Comment' %>
-            % endif
-          <tr><td>${cString} In Idea <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/idea/${i['urlCode']}/${i['url']}">${i["title"]}</a></br>
-		  % for com in cList:
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-		      % if int(com['numFlags']) is 1:
-			      ${com['numFlags']} Flag:
-			  % else:
-			      ${com['numFlags']} Flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-             <br />
-          % endfor
-          </td></tr>
-        % endif
-    % endfor
+    ${admin_items(c.i, 'idea', 'flagged')}
     </tbody>
     </table>
     <br /><br />
@@ -302,47 +258,7 @@
     <tr><th>Flagged Discussions and Comments:</td><tr>
     </thead>
     <tbody>
-    % for d in c.d:
-       % if d and checkFlagged(d): 
-          <tr><td>${len(getFlags(d))}
-          % if int(len(getFlags(d))) > 1:
-          	 Flags:
-          % else:
-             Flag:
-          % endif
-          Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a>
-          <a class="btn btn-mini" href="/adminDiscussion/${d['urlCode']}/${d['url']}/">Admin Discussion </a><br />
-          </td></tr>
-       % endif
-        <% 
-            cList = []
-            cList = commentLib.getFlaggedCommentsInDiscussion(discussion)
-        %>
-        % if cList:
-            <% cFlagCount = len(cList) %>
-            % if cFagCount > 1:
-                <% cString = 'Comments' %>
-            % else:
-                <% cString = 'Comment' %>
-            % endif
-            <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>
-		    % for com in cList:
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-		      % if int(com['numFlags']) == 1:
-			      ${com['numFlags']} Flag:
-			  % else:
-			      ${com['numFlags']} Flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-             <br />
-            % endfor
-            </td></tr>
-        % endif
-    % endfor
+    ${admin_items(c.d, 'discussion', 'flagged')}
     </tbody>
     </table>
 </%def>
