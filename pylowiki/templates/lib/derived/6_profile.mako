@@ -174,7 +174,8 @@
 </%def>
 
 <%def name="showActivity(activity)">
-    <ul>
+    <table class="table table-hover table-condensed">
+        <tbody>
         % for item in activity:
             <%
                 workshop = workshopLib.getWorkshopByCode(item['workshopCode'])
@@ -204,9 +205,10 @@
                 if item.objType == 'comment':
                     activityStr += ' : <span class="expandable">%s</span>' % item['data']
             %>
-            <li> ${activityStr | n} </li>
+            <tr> <td>${activityStr | n} </td></tr>
         % endfor
-    </ul>
+        </tbody>
+    </table>
 </%def>
 
 <%def name="inviteCoFacilitate()">
