@@ -202,7 +202,7 @@
                 activityStr += ' in <a ' + lib_6.workshopLink(workshop, embed = True) + '>'
                 activityStr += lib_6.ellipsisIZE(workshop['title'], 25) + '</a>'
                 if item.objType == 'comment':
-                    activityStr += ' : %s' % lib_6.ellipsisIZE(item['data'], 40)
+                    activityStr += ' : <span class="expandable">%s</span>' % item['data']
             %>
             <li> ${activityStr | n} </li>
         % endfor
@@ -216,7 +216,7 @@
           wList = []
           for f in fList:
               w = workshopLib.getWorkshopByID(f['workshopID'])
-              if w['deleted'] == '0' and w['type'] != 'personal':
+              if w['deleted'] == '0' and w['public_private'] != 'personal':
                   if not facilitatorLib.isFacilitator(c.user.id, w.id) and not facilitatorLib.isPendingFacilitator(c.user.id, w.id):
                       wList.append(w)
       %>
