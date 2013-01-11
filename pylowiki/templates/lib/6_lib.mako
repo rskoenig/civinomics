@@ -94,7 +94,7 @@
    ${thisLink | n}
 </%def>
 
-<%def name="workshopLink(w, **kwargs)">
+<%def name="workshopLink(w, **kwargs)" buffered="True">
    <%
    if 'embed' in kwargs:
       if kwargs['embed'] == True:
