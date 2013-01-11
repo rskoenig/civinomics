@@ -29,6 +29,8 @@ def getDiscussions():
         return False
     
 def getDiscussionForThing(parent):
+    if parent.objType == 'discussion':
+        return parent
     thisKey = '%sCode' % parent.objType
     try:
         return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()

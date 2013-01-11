@@ -1,5 +1,6 @@
 <%!
    from pylowiki.lib.db.user import getUserByID
+   import pylowiki.lib.db.discussion as discussionLib
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -31,11 +32,12 @@
                   <% itemTitle = '<h5><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['title'], 150)) %>
                   ${itemTitle | n}
                   Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
-                  % if thing == 'resources':
                      <br />
-                     <% comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') %>
-                     See ${comments | n}
-                  % endif
+                     <% 
+                        comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
+                        numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                     %>
+                     See ${comments | n} (${numComments})
                </div><!--/.span9-->
             </div><!--/.row-fluid-->
          </li>
