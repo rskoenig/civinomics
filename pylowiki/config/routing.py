@@ -154,9 +154,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{idea:ideas?}/{ideaCode}/{ideaURL}{end:/?}', controller = 'idea', action = 'showIdea', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', ideaCode = '{ideaCode}', ideaURL = '{ideaURL}')    
 
     # Cofacilitation invitation and response
-    map.connect('/profile/{id1}/{id2}/{coFacilitateInvite:coFacilitateInvite/?}', controller = 'facilitator', action = 'coFacilitateInvite', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/{coFacilitateHandler:coFacilitateHandler/?}', controller = 'facilitator', action = 'coFacilitateHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{resignFacilitator:resignFacilitator/?}', controller = 'facilitator', action = 'resignFacilitatorHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'facilitateInviteHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/facilitate/response/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResponseHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/{workshop:workshops?}/{id1}/{id2}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResignHandler', id1 = '{id1}', id2 = '{id2}')
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')

@@ -24,7 +24,7 @@ log = logging.getLogger(__name__)
 class FacilitatorController(BaseController):
 
     @h.login_required
-    def coFacilitateInvite(self, id1, id2):
+    def facilitateInviteHandler(self, id1, id2):
         code = id1
         url = id2
         c.user = get_user(code, url)
@@ -35,17 +35,15 @@ class FacilitatorController(BaseController):
            wURL = iList[1]
            w = getWorkshop(wCode, urlify(wURL))
            Facilitator(c.user, w, 1)
-           # Becasue the __init__ function doesn't return the object... sigh
            fList = getFacilitatorsByUserAndWorkshop(c.user.id, w.id)
            Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
-           h.flash('CoFacilitation Invitation Issued', 'success')
            return redirect("/profile/%s/%s"%(code, url))
         else:
            h.flash('Error: You are not authorized', 'error')
            return redirect("/" )
 
     @h.login_required
-    def coFacilitateHandler(self, id1, id2):
+    def facilitateResponseHandler(self, id1, id2):
         code = id1
         url = id2
         c.user = get_user(code, urlify(url))
@@ -81,10 +79,9 @@ class FacilitatorController(BaseController):
         return redirect("/" )
 
     @h.login_required
-    def resignFacilitatorHandler(self, id1, id2):
+    def facilitateResignHandler(self, id1, id2):
         code = id1
         url = id2
-        log.info('in resignFacilitatorHandler')
         w = getWorkshop(code, urlify(url))
         fList = getFacilitatorsByUser(c.authuser.id, 0)
         doF = False

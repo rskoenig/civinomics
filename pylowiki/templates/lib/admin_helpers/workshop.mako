@@ -88,7 +88,7 @@
                 % endfor
             % endif
             % if len(c.f) > 1 and fUser.id == c.authuser.id:
-                <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
+                <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
                     &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
                     <button type="submit" class="gold" value="Resign">Resign</button>
                     <br />

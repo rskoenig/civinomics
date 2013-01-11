@@ -12,19 +12,31 @@ log = logging.getLogger(__name__)
 
 def getListener(user, workshop):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'listener').filter(Thing.data.any(wc('userCode', user['urlCode']))).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).one()
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'listener')\
+                .filter(Thing.data.any(wc('userCode', user['urlCode'])))\
+                .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+                .one()
     except:
         return False
 
 def getListenersForWorkshop(workshop, deleted = 0):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'listener').filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).filter(Thing.data.any(wc('deleted', deleted))).all()
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'listener')\
+                .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .all()
     except:
         return False
 
 def getListenersForUser(user, deleted = 0):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'listener').filter(Thing.data.any(wc('userCode', user['urlCode']))).filter(Thing.data.any(wc('deleted', deleted))).all()
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'listener')\
+                .filter(Thing.data.any(wc('userCode', user['urlCode'])))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .all()
     except:
         return False
 

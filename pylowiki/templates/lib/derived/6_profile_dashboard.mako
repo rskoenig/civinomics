@@ -287,7 +287,7 @@
             % endif
             <li>
             <% workshop = workshopLib.getWorkshopByID(f['workshopID']) %>
-            <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateHandler/">
+            <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/facilitate/response/handler/">
             <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
             <input type="hidden" name="workshopURL" value="${workshop['url']}">
             % if workshop['mainImage_hash'] == 'supDawg':

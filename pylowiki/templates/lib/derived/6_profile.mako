@@ -1,6 +1,7 @@
 <%!
     import pylowiki.lib.db.workshop as workshopLib
     import pylowiki.lib.db.facilitator as facilitatorLib
+    import pylowiki.lib.db.listener as listenerLib
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -212,29 +213,50 @@
 </%def>
 
 <%def name="inviteCoFacilitate()">
-  %if 'user' in session and c.authuser:
-      <% 
-          fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id)
-          wList = []
-          for f in fList:
-              w = workshopLib.getWorkshopByID(f['workshopID'])
-              if w['deleted'] == '0' and w['public_private'] != 'personal':
-                  if not facilitatorLib.isFacilitator(c.user.id, w.id) and not facilitatorLib.isPendingFacilitator(c.user.id, w.id):
-                      wList.append(w)
-      %>
-      % if c.authuser.id != c.user.id and wList:
+    %if 'user' in session and c.authuser:
+        <% 
+            fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id)
+            wListF = []
+            wListL = []
+            for f in fList:
+                w = workshopLib.getWorkshopByID(f['workshopID'])
+                if w['deleted'] == '0' and w['type'] != 'personal':
+                    wlisten = listenerLib.getListener(c.user, c.w)
+                    if not facilitatorLib.isFacilitator(c.user.id, w.id) and not facilitatorLib.isPendingFacilitator(c.user.id, w.id):
+                        wListF.append(w)
+                    if not wlisten:
+                        wListL.append(w)
+                        
+        %>
+        % if c.authuser.id != c.user.id and wListF:
             <div class="row">
                 <div class="centered">
-                <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
+                <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/facilitate/invite/handler/" class="form-inline">
                     <br />
                     <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop">Invite</button> to co-facilitate <select name="inviteToFacilitate">
-                    % for myW in wList:
+                    % for myW in wListF:
                         <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
                     % endfor                       
                     </select>
                 </form>
                 </div>
             </div><!-- row -->
-      % endif
-  %endif
+        % endif
+        % if c.authuser.id != c.user.id and wListL:
+            <div class="row">
+                <div class="centered">
+                <form method="post" name="inviteListen" id="inviteListen" action="/profile/${c.user['urlCode']}/${c.user['url']}/listen/invite/handler" class="form-inline">
+                    <br />
+                    <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to be a listener of the selected workshop">Invite</button> to be a listener <select name="inviteListen">
+                    % for myW in wListL:
+                        <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
+                    % endfor                       
+                    </select>
+                </form>
+                </div>
+            </div><!-- row -->
+        % endif
+    %endif
 </%def>
+
+
