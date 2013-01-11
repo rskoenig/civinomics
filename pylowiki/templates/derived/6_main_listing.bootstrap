@@ -7,7 +7,6 @@
       ${lib_6.geoBreadcrumbs()}
    </div><!--/.span12-->
 </div><!-- /.row-->
-
 <div class="row">
    <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
