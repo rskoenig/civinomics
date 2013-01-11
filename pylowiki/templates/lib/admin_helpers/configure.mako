@@ -112,6 +112,7 @@
     <div class="well">
         <h3>Workshop Scope</h3>
         Specifiy if the workshop is public or private, and who may participate.<br /><br />
+        ${change_scope()}
         <div class="tabbable">
             <ul class="nav nav-tabs" id="scopeTab">
             <li class="${privateActive}"><a href="#private" data-toggle="tab">Private Workshop</a></li>
@@ -206,6 +207,21 @@
     <br /><br />
 </%def>
 
+<%def name="change_scope()">
+    % if c.w['type'] == 'professional':
+        <%
+            if c.w['public_private'] == 'public':
+                currentScope = 'Public'
+                newScope = 'Private'
+            else:
+                currentScope = 'Private'
+                newScope = 'Public'
+        %>
+        <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configure${newScope}WorkshopHandler" enctype="multipart/form-data" method="post" >
+        Current scope: ${currentScope}  <button type="submit" class="btn btn-mini btn-warning" name="changeScope">Change to ${newScope}</button>     
+        </form>
+    % endif
+</%def>
 
 <%def name="private()">
     <ul>

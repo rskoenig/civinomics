@@ -6,6 +6,7 @@
     import pylowiki.lib.db.idea             as ideaLib
     import pylowiki.lib.db.comment          as commentLib
 %>  
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="admin_show()">
 	<div class="left well">

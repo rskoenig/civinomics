@@ -206,14 +206,6 @@ class WorkshopController(BaseController):
         else:
            werror = 1
            werrMsg += 'Allow Resources '
-
-        if not wstarted:
-            if 'publicPrivate' in request.params:
-                publicPrivate = request.params['publicPrivate']
-                if (publicPrivate == 'public' or publicPrivate == 'private') and publicPrivate != c.w['public_private']:
-                    wchanges = 1
-                    weventMsg = weventMsg + "Changed workshop type from " + c.w['public_private'] + " to " + publicPrivate + "."
-                    c.w['public_private'] = publicPrivate
                 
         # save successful changes
         if wchanges:
@@ -311,6 +303,11 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab2"
         session.save()
         
+        werror = 0
+        wchanges = 0
+        weventMsg = ''
+        werrMsg = ''
+           
         if c.w['type'] == 'personal':
             alert = {'type':'error'}
             alert['title'] = 'Personal workshops are limited to being private invitation only with a maximum of 10 participants.'
@@ -318,11 +315,19 @@ class WorkshopController(BaseController):
             session.save()
             return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
             
-        werror = 0
-        wchanges = 0
-        weventMsg = ''
-        werrMsg = ''
-        
+        if c.w['public_private'] == 'private' and 'changeScope' in request.params:
+            weventMsg = 'Workshop scope changed from private to public.'
+            c.w['public_private'] = 'public'
+            dbHelpers.commit(c.w)
+            alert = {'type':'success'}
+            alert['title'] = weventMsg
+            session['alert'] = alert
+            session.save()
+            eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
+            return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+            
+            
+
         if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
             geoTagCountry = request.params['geoTagCountry']
         else:
@@ -355,8 +360,6 @@ class WorkshopController(BaseController):
         if wscope and wscope['scope'] != geoTagString:
             wscope['scope'] = geoTagString
             dbHelpers.commit(wscope)
-            c.w['public_private'] = 'public'
-            dbHelpers.commit(c.w)
             wchanges = 1
             
         if wchanges:
@@ -455,7 +458,12 @@ class WorkshopController(BaseController):
             else:
                 werror = 1
                 werrMsg += 'No email address entered.'
-    
+
+        if c.w['public_private'] == 'public' and 'changeScope' in request.params:
+            weventMsg = 'Workshop scope changed from public to private.'
+            c.w['public_private'] = 'private'
+            dbHelpers.commit(c.w)
+            
         if 'continueToNext' in request.params:
             session['confTab'] = "tab3"
             session.save()
@@ -466,6 +474,7 @@ class WorkshopController(BaseController):
                 session['alert'] = alert
                 session.save()
             else:
+                eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
                 alert = {'type':'success'}
                 alert['title'] = weventMsg
                 session['alert'] = alert
