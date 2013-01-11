@@ -1,6 +1,6 @@
 from pylons import tmpl_context as c, config, session
 from pylowiki.model import Thing, meta, Data
-from sqlalchemy import and_
+from sqlalchemy import and_, not_
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
 from pylowiki.lib.db.user import getUserByID, getUserByEmail, isAdmin
@@ -59,6 +59,15 @@ def getWorkshopByCode(urlCode):
     except:
         return False
 
+def getActiveWorkshopByCode(code):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'workshop')\
+            .filter(Thing.data.any(wc('urlCode', code)))\
+            .filter(Thing.data.any(wc('deleted', '0')))\
+            .filter(Thing.data.any(wo('startTime', u'0000-00-00'))).one()
+    except:
+        return False
 
 def getWorkshopsByOwner(userID):
     try:

@@ -20,10 +20,10 @@ def geoDeurlify( something ):
     deurl = something.replace('-', ' ')
     return deurl 
 
-def getPostalInfo( postal, country ):
+def getPostalInfo( postal ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s""",(postal,))
+    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s""",(postal))
     rlist = c.fetchone()
     c.close()
     db.close()
@@ -174,6 +174,7 @@ def getWorkshopScopes(searchScope, scopeLevel):
         sList = sList[:int(scopeLevel)]
         searchScope = "|".join(sList)
         searchScope = searchScope + '%'
+        log.info(searchScope)
         return meta.Session.query(Thing)\
                 .filter_by(objType = 'wscope')\
                 .filter(Thing.data.any(wc('deleted', '0')))\

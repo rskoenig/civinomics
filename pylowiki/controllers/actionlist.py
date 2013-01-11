@@ -46,6 +46,7 @@ class ActionlistController(BaseController):
         c.title = c.heading = 'All Workshops'
         c.list = getActiveWorkshops()
         c.activity = getRecentMemberPosts(10)
+        c.scope = 'earth'
         return render('derived/6_main_listing.bootstrap')
             
         #elif c.action == 'surveys':

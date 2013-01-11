@@ -6,7 +6,9 @@
    <div class="span12 well workshop-panel">
       <div class="row-fluid">
          <div class="span10"> <!-- geographic breadcrumbs -->
-            ${lib_6.geoBreadcrumbs()}
+            % if c.w['public_private'] == 'public':
+                ${lib_6.geoBreadcrumbs()}
+            % endif
          </div><!-- /geographic breadcrumbs -->
          <div class="span2"> <!-- watch button -->
             ${helpers.watchButton()}

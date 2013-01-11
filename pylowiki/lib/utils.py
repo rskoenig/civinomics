@@ -22,6 +22,10 @@ def urlify(url):
     url = quote(url)
     return url
 
+def geoDeurlify( something ):
+    deurl = something.replace('-', ' ')
+    return deurl 
+
 """
     Takes in a string 's', returns a base-62 representation of a hash of that string.
     Used for generating short-form codes within URLs.  If a collision occurs, a secondary
@@ -56,3 +60,29 @@ def isWatching(user, workshop):
    # Even though the functions use the verb 'following', the mechanism is the same...we just display 
    # object follows as 'watching'.
    c.isFollowing = followLib.isFollowing(user, workshop)
+  
+def constructGeoScope(**kwargs):
+    # scope = '||' + urlify(c.country) + '||LaLa||LaLaLa||LaLaLa|00000'
+    country = ''
+    state = 'LaLa'
+    county = 'LaLaLa'
+    city = 'LaLaLa'
+    postalCode = '00000'
+    if 'country' in kwargs:
+        if kwargs['country'] is not None:
+            country = string.capwords(geoDeurlify(kwargs['country']))
+    if 'state' in kwargs:
+        if kwargs['state'] is not None:
+            state = string.capwords(geoDeurlify(kwargs['state']))
+    if 'county' in kwargs:
+        if kwargs['county'] is not None:
+            county = string.capwords(geoDeurlify(kwargs['county']))
+    if 'city' in kwargs:
+        if kwargs['city'] is not None:
+            city = string.capwords(geoDeurlify(kwargs['city']))
+    if 'postalCode' in kwargs:
+        if kwargs['postalCode'] is not None:
+            postalCode = kwargs['postalCode']
+    
+    return '||' + '||'.join([country, state, county, city]) + '|' + postalCode
+    
