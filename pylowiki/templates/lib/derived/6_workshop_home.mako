@@ -3,6 +3,9 @@
    from pylowiki.lib.db.user import getUserByID
    import pylowiki.lib.db.activity as activityLib
    import misaka as misaka
+   
+   import logging
+   log = logging.getLogger(__name__)
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -107,65 +110,65 @@
       ##<a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/discussion">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
       </a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/ideas">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/ideas"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
       </a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/resources">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
       </a>
    % elif listingType == 'discussion':
       ##<a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
-      <a class="btn selected-nav" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/discussion">
+      <a class="btn selected-nav" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
       </a>
       <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/ideas">
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
       </a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/resources">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
       </a>
    % elif listingType == 'wiki':
       ##<a class="btn selected-nav" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/discussion">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
       </a>
       <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/ideas">
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
       </a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/resources">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
       </a>
    % elif listingType == 'ideas' or listingType == 'idea':
       ##<a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/discussion">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
       </a>
-      <a class="btn selected-nav" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/ideas">
+      <a class="btn selected-nav" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/ideas"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
       </a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/resources">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
       </a>
    % elif listingType == 'resources' or listingType == 'resource':
       ##<a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/discussion">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
       </a>
-      <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/ideas">
+      <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/ideas"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
       </a>
-      <a class="btn selected-nav" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/resources">
+      <a class="btn selected-nav" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
          <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
       </a>
    % endif
