@@ -39,15 +39,14 @@ class DiscussionController(BaseController):
             if workshopCode is None:
                 abort(404)
             c.w = workshopLib.getWorkshopByCode(workshopCode)
+            if action in setPrivs:
+                workshopLib.setWorkshopPrivs(c.w)
             if action in publicOrPrivate:
                 if c.w['public_private'] != 'public':
                     if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                         abort(404)
             if 'user' in session:
                 utils.isWatching(c.authuser, c.w)
-                
-        if action in setPrivs:
-            workshopLib.setWorkshopPrivs(c.w)
 
     def index(self, workshopCode, workshopURL):
         c.rating = False
