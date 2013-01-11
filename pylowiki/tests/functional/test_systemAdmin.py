@@ -4,7 +4,7 @@ from routes import url_for
 from urlparse import urlparse
 
 from pylowiki.tests.helpers.authorization import login_and_set_user_auth_level, logout
-from pylowiki.tests.helpers.registration import create_and_activate_user, create_user, activate_user, login_user
+from pylowiki.tests.helpers.registration import create_and_activate_user, activate_user, login_user
 
 class TestSystemAdminController(TestController):
 

@@ -7,6 +7,9 @@ from pylowiki.tests.helpers.registration import create_and_activate_user, login_
 # need to parse a url
 import re
 
+import logging
+log = logging.getLogger(__name__)
+
 class TestAccountController(TestController): 
 
     user1 = 'test1@civinomics.org'
@@ -67,6 +70,7 @@ class TestAccountController(TestController):
             TestAccountController.first1, 
             TestAccountController.last1
         )
+        log.info("1 pass 1")
         # login as an admin, find this new user and look at their admin page
         user_admin_page = login_and_view_user_admin_page(
             self, 
@@ -75,15 +79,20 @@ class TestAccountController(TestController):
             TestAccountController.first1, 
             TestAccountController.last1
         )
+        
         # obtain the form for changing # of hosted accounts for the user
         admin_page_forms = user_admin_page.forms
+        
         admin_page_account_form = admin_page_forms[TestAccountController.find_account_info_form]
+        
         # change this number and submit the form
         admin_page_account_form.set(
             TestAccountController.select_num_objects_name, 
             TestAccountController.num_objects_to_host
         )
+        
         hosted_accounts_updated = admin_page_account_form.submit().follow()
+        
         # we should see success by noting the page now states this many hosted accounts are now hosted.
         assert "Total hosting for account: " + TestAccountController.num_objects_to_host in hosted_accounts_updated
         assert "Number of objects which may be hosted:" not in hosted_accounts_updated
