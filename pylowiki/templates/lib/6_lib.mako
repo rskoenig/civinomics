@@ -372,7 +372,14 @@
 
 <%def name="fields_alert()">
     % if 'alert' in session:
-        <% alert = session['alert'] %> 
+        <% 
+            alert = session['alert']
+            if 'type' not in alert.keys() or 'title' not in alert.keys() or 'content' not in alert.keys():
+                # Something went wrong...clear and ignore the alert
+                session.pop('alert')
+                session.save()
+                return
+        %> 
         <div class="alert alert-${alert['type']}">
             <button data-dismiss="alert" class="close">x</button>
             <strong>${alert['title']}</strong>
