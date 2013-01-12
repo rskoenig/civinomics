@@ -454,6 +454,8 @@ class ProfileController(BaseController):
         if websiteLink and websiteLink != '' and websiteLink != c.user['websiteLink']:
             anyChange = True
             changeMsg = changeMsg + "Website link updated. "
+            if not websiteLink.startswith('http://'):
+                websiteLink = u'http://' + websiteLink
             c.user['websiteLink'] = websiteLink
         if websiteDesc and websiteDesc != ''and websiteDesc != c.user['websiteDesc']:
             anyChange = True
