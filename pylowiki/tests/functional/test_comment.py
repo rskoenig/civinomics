@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from pylowiki.tests import *
 
+import pylowiki.tests.helpers.content as content
 import pylowiki.tests.helpers.form_definitions as formDefs
 import pylowiki.tests.helpers.link_definitions as linkDefs
 from pylowiki.tests.helpers.registration import create_and_activate_a_user
@@ -21,32 +22,41 @@ class TestCommentController(TestController):
             allowIdeas=formDefs.workshopSettings_allowIdeas(True),
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
-        ideaPage = newWorkshop.click(description=linkDefs.ideas_page(), index=0)
+        ideasPage = newWorkshop.click(description=linkDefs.ideas_page(), index=0)
 
-        addIdea = ideaPage.click(description=linkDefs.addIdea(), index=0)
+        addIdea = ideasPage.click(description=linkDefs.addIdea(), index=0)
 
         addForm = addIdea.forms[formDefs.addIdea()]
-
         # this form does not include submit as a parameter, but it must be included in the postdata
-        #NOTE either find a way to add this to the submit fields, or create a post that includes this in the postdata
-
         ideaAdded = self.app.post(
             url=str(addForm.action), 
             content_type=addForm.enctype,
-            params={ formDefs.addIdea_ideaText() : 'this is a test idea',
-                formDefs.addIdea_ideaSubmit() : ''
+            params={ formDefs.addIdea_text() : content.oneLine(),
+                formDefs.parameter_submit() : content.noChars()
             }
         ).follow()
         
+        assert content.oneLine() in ideaAdded
+        # visit this idea's page
+        ideaPage = ideaAdded.click(description=content.oneLine(), index=0, verbose=True)
+        # comment on this idea
+        addCommentForm = ideaPage.forms[formDefs.addComment()]
+        addCommentForm.set(formDefs.addComment_text(), content.oneLine(1))
+        #URL=http://todd.civinomics.org/comment/add/handler?
+        #type=idea
+        #&discussionCode=4ICP
+        #&parentCode=0
+        #&comment-textarea=something+to+say%3F
+        #&submit=reply
+        params = {}
+        for key, value in addCommentForm.submit_fields():
+            params[key] = value
+        
+        params[formDefs.parameter_submit()] = formDefs.addComment_submit()
 
+        commentAdded = self.app.get(
+            url = str(addCommentForm.action),
+            params=params
+        ).follow()
 
-        assert newWorkshop == 404
-         # login as john
-         # create workshop page:
-            # - name, fill out next page's form1, submit, fill out form 2, submit, check both boxes, submit
-            # confirm success message
-        # create discussion
-
-        # comment on discussion
-
-        # at this point we have a comment on a discussion. we can begin testing various role's abilities
+        assert content.oneLine(1) in commentAdded

@@ -2,12 +2,21 @@
 from pylowiki.tests import *
 
 def addIdea():
-	return u'addIdea'
+	return 'addIdea'
 
-def addIdea_ideaSubmit():
-	return u'submit'
+def addIdea_submit():
+	return ''
 
-def addIdea_ideaText():
+def addComment():
+	return 'commentAddHandler_root'
+
+def addComment_text():
+	return 'comment-textarea'
+
+def addComment_submit():
+	return 'reply'
+
+def addIdea_text():
 	return 'title'
 
 def createWorkshop():
@@ -54,6 +63,9 @@ def createWorkshopForm5_wikiBackground():
 
 def createWorkshopForm5_wikiBackground_text():
 	return 'textarea0'
+
+def parameter_submit():
+	return 'submit'
 
 def personal_workshop_button_search():
 	return 'Pers'
