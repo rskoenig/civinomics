@@ -59,95 +59,87 @@
             menu2active = "in"
 %>
 
-<div class="container-fluid"><!-- header -->
+<div class="row-fluid">
+    <div class="span12">
+        <div class="summary">
+            <h4 style="text-align: center">Dashboard</h4>
+        </div><!-- summary -->
+    </div><!-- span12 -->
+</div><!-- row-fluid -->
+<div class="row-fluid">
     <div class="tabbable">
-        <div class="row-fluid">
-            <div class="span3 well">
-                <h3 style="text-align: center">Dashboard</h3><br>
-                <div class="accordion" id="accordion2">
-                    % if c.w['startTime'] != '0000-00-00':
-                        <div class="accordion-group">
-                            <div class="accordion-heading">
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">
-                                <h3 style="text-align: center">Administrate</h3></a>
-                                <div style="text-align: center">Administration tools & lists for your published workshop.</div>
-                            </div>
-                            <div id="collapseTwo" class="accordion-body collapse ${menu2active}">
-                                <div class="accordion-inner">
-                                    <ul class="nav nav-pills nav-stacked">
-                                        <li class="${tab6active}"><a href="#tab6" data-toggle="tab">1. Workshop Management<br />
-                                        For periodic upkeep.</a></li>
-                                        <li class="${tab7active}"><a href="#tab7" data-toggle="tab">2. Flagged Items<br />
-                                        Check this list daily.</a></li>
-                                        <li class="${tab8active}"><a href="#tab8" data-toggle="tab">3. Disabled Items<br />
-                                        Dupes, off-topic, nasty...</a></li>
-                                        <li class="${tab9active}"><a href="#tab9" data-toggle="tab">4. Deleted Items<br />
-                                        Illegal, spam, porn...</a></li>
-                                        <li class="${tab10active}"><a href="#tab10" data-toggle="tab">5. Event Log<br />
-                                        A record of facilitator actions.</a></li>
-                                    </ul>
-                                </div><!-- accordion-inner -->
-                            </div><!-- accordion-body -->
-                        </div><!-- accordion-group -->
-                    % endif
-                    <div class="accordion-group">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne"><h3 style="text-align: center">Configure</h3></a>
-                            ${helpers.intro()}
-                        </div><!-- accordian-heading -->
-                        <div id="collapseOne" class="accordion-body collapse ${menu1active}">
-                            <div class="accordion-inner">
-                                <ul class="nav nav-pills nav-stacked">
-                                    <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Set it up
-                                    % if c.basicConfig:
-                                        <i class="icon-ok"></i>
-                                    % endif
-                                    <br />
-                                    What's your workshop?
-                                    </a></li>
-                                    <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Scope it
-                                    % if c.w['public_private'] == 'personal' or c.w['public_private'] == 'private' or (c.w['public_private'] == 'public'):
-                                        <i class="icon-ok"></i>
-                                    % endif
-                                    <br />
-                                    Who can participate?
-                                    </a></li>
-                                    <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Tag it
-                                    % if c.tagConfig:
-                                        <i class="icon-ok"></i>
-                                    % endif
-                                    <br />
-                                    Make it easy to find.
-                                    </a></li>
-                                    <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Add an image 
-                                    % if c.slideConfig:
-                                        <i class="icon-ok"></i>
-                                    % endif
-                                    <br />
-                                    Or better yet, a whole slideshow.
-                                    </a></li>
-                                    <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Summarize, Summarize 
-                                    % if c.backConfig:
-                                        <i class="icon-ok"></i>
-                                    % endif
-                                    <br />
-                                    Briefly, what's the point?
-                                    </a></li>
-                                    % if c.w['type'] == 'personal':
-                                        <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade" method="POST">
-                                        <li><button type="submit" class="btn btn-warning">Upgrade to Professional</button></li>
-                                        </form>
-                                    % endif
-                                </ul>
-                            </div><!-- accordion-inner -->
-                        </div><!-- accordion-body -->
-                    </div><!-- accordion-group -->
-                </div><!-- accordion -->
+        <div class="span3">
+            % if c.w['startTime'] != '0000-00-00':
+                <div class="section-wrapper">
+                    <div class="browse">
+                        <h4 class="section-header" style="text-align: center"><br />Administrate</h4>
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="${tab6active}"><a href="#tab6" data-toggle="tab">1. Facilitator Tools<br />
+                            Periodic maintenance.</a></li>
+                            <li class="${tab7active}"><a href="#tab7" data-toggle="tab">2. Flagged Items<br />
+                            Check this list daily.</a></li>
+                            <li class="${tab8active}"><a href="#tab8" data-toggle="tab">3. Disabled Items<br />
+                            Dupes, off-topic, nasty...</a></li>
+                            <li class="${tab9active}"><a href="#tab9" data-toggle="tab">4. Deleted Items<br />
+                            Illegal, spam, porn...</a></li>
+                            <li class="${tab10active}"><a href="#tab10" data-toggle="tab">5. Event Log<br />
+                            Facilitator actions.</a></li>
+                        </ul>
+                    </div><!-- browse -->
+                </div><!-- section-wrapper -->
+            % endif       
+            <div class="section-wrapper">
+                <div class="browse">
+                    <h4 class="section-header" style="text-align: center"><br />Configure</h4>
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Set it up
+                        % if c.basicConfig:
+                            <i class="icon-ok"></i>
+                        % endif
+                        <br />
+                        What's your workshop?
+                        </a></li>
+                        <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Scope it
+                        % if c.w['public_private'] == 'personal' or c.w['public_private'] == 'private' or (c.w['public_private'] == 'public'):
+                            <i class="icon-ok"></i>
+                        % endif
+                        <br />
+                        Who can participate?
+                        </a></li>
+                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Tag it
+                        % if c.tagConfig:
+                            <i class="icon-ok"></i>
+                        % endif
+                        <br />
+                        Make it easy to find.
+                        </a></li>
+                        <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Add an image 
+                        % if c.slideConfig:
+                            <i class="icon-ok"></i>
+                        % endif
+                        <br />
+                        Or a whole slideshow.
+                        </a></li>
+                        <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Summary 
+                        % if c.backConfig:
+                            <i class="icon-ok"></i>
+                        % endif
+                        <br />
+                        Workshop information.
+                        </a></li>
+                        % if c.w['type'] == 'personal':
+                            <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade" method="POST">
+                            <li><button type="submit" class="btn btn-warning">Upgrade to Professional</button></li>
+                            </form>
+                        % endif
+                    </ul>
+                </div><!-- browse -->
+            </div><!-- section-wrapper -->
         </div><!-- span3 -->
-        <div class="span9"> 
-        % if c.conf['read_only.value'] == 'true':
-            <!-- read only -->
-        % else:
+        <div class="span8">
+            % if c.conf['read_only.value'] == 'true':
+                <!-- read only -->
+            % else:
             ${helpers.publish()}
             ${helpers.fields_alert()}
             <div class="tab-content">
@@ -161,8 +153,7 @@
                     ${helpers.tags()}
                 </div><!-- tab-pane template tab3 -->
                 <div class="tab-pane ${tab4active}" id="tab4">
-                     ${slide_helpers.add_slides()}
-                     ${slide_helpers.edit_slideshow()}
+                     ${slide_helpers.admin_slideshow()}
                 </div><!-- tab-pane template tab4 -->
                 <div class="tab-pane ${tab5active}" id="tab5">
                 ${helpers.edit_background()}
@@ -186,9 +177,10 @@
             </div><!-- tab-content -->
         % endif
         </div><!-- span9 -->
-        </div><!-- row-fluid -->
-    </div><!-- tabbable template -->    
-</div><!-- container-fluid -->
+    </div><!-- tabbable template -->
+</div><!-- row-fluid -->
+    
+
             
 <%def name = 'extraStyles()'>
     <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">
@@ -202,7 +194,7 @@
    <link rel="stylesheet" href="/styles/ui-lightness/jquery-ui-1.8.18.custom.css">
 </%def>
 
-<%def name = 'extraScripts()'>
+<%def name = 'extraScripts2()'>
     <script src="/js/jquery-ui-1.8.22.custom.min.js" type="text/javascript"></script>
     <script src="/js/jquery.jeditable.mini.js" type="text/javascript"></script>
     <script src="${h.url_for('/js/h2banner.js')}" type="text/javascript"></script>
@@ -294,6 +286,14 @@
         });
 
     });
+    </script>
+    <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
+    <script>
+      var $doc = $(document);
+      $(document).ready(function() {
+         $.fn.foundationClearing         ? $doc.foundationClearing() : null;
+         
+      });
     </script>
     
 </%def>

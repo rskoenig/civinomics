@@ -364,6 +364,8 @@ class WorkshopController(BaseController):
             wchanges = 1
             
         if wchanges:
+            c.w['public_private'] = 'public'
+            dbHelpers.commit(c.w)
             weventMsg = weventMsg + "Updated workshop scope."
             eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
             alert = {'type':'success'}
@@ -771,6 +773,8 @@ class WorkshopController(BaseController):
             c.slideConfig = 1
         else:
             c.slideConfig = 0
+            
+        c.slides = c.published_slides
             
         c.facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w.id)
 

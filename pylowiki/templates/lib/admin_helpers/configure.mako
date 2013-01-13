@@ -38,65 +38,67 @@
       else:
         wstarted = 1
     %>
-    <div class="well">
-    <h3>Setup Your Workshop</h3>
-    Describe your workshop topic and goals here, and configure how members can participate.
-    <br /><br />
-    <div class="row">
-        <div class="span1">
-        </div><!-- span1 -->
-        <div class="span10">
-            <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
-            <strong>Workshop Name:</strong> <span class="label label-important">Required</span>
-            <br />
-            <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>
-            <br />
-            <br />
-            <strong>Workshop Description:</strong> <span class="label label-important">Required</span>
-            <br />
-            <input type="text" name="description" size="50" maxlength="70" value = "${c.w['description']}"/>
-            <br />
-            <br />
-            <strong>Workshop Goals:</strong> <span class="label label-important">Required</span>
-            <br />
-            The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
-            <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Setup Your Workshop</h4>
+            Describe your workshop topic and goals here, and configure how members can participate.
             <br /><br />
-            <%
-                if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
-                    yesChecked = 'checked'
-                    noChecked = ''
-                elif 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '0':
-                    yesChecked = ''
-                    noChecked = 'checked'
-                else:
-                    yesChecked = 'checked'
-                    noChecked = ''
-            %>
-            <strong>What can participants do in your workshop:</strong><br />
-            Participants can add ideas: <input type="radio" name="allowSuggestions" value="1" ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type="radio" name="allowSuggestions" value="0" ${noChecked}> No<br /><br />
-            <% 
-                if 'allowResources' in c.w and c.w['allowResources'] == '1':
-                    yesChecked = 'checked'
-                    noChecked = ''
-                elif 'allowResources' in c.w and c.w['allowResources'] == '0':
-                    yesChecked = ''
-                    noChecked = 'checked'
-                else:
-                    yesChecked = 'checked'
-                    noChecked = ''
-            %>
-            Participants can add information resource links: <input type="radio" name="allowResources" value="1" ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type="radio" name="allowResources" value="0" ${noChecked}> No<br />
-            <br />
-            % if c.w['startTime'] == '0000-00-00':
-                <button type="submit" class="btn btn-warning">Save Settings and Continue</button>
-            % else:
-                <button type="submit" class="btn btn-warning">Save Settings</button>
-            % endif
-            </form>
-        </div><!-- span10 -->
-    </div><!-- row -->
-    </div><!-- well -->
+            <div class="row-fluid">
+                <div class="span1">
+                </div><!-- span1 -->
+                <div class="span11">
+                    <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
+                    <strong>Workshop Name:</strong> <span class="label label-important">Required</span>
+                    <br />
+                    <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>
+                    <br />
+                    <br />
+                    <strong>Workshop Description:</strong> <span class="label label-important">Required</span>
+                    <br />
+                    <input type="text" name="description" size="50" maxlength="70" value = "${c.w['description']}"/>
+                    <br />
+                    <br />
+                    <strong>Workshop Goals:</strong> <span class="label label-important">Required</span>
+                    <br />
+                    The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
+                    <textarea name="goals" rows="5" cols="50">${c.w['goals']}</textarea>
+                    <br /><br />
+                    <%
+                        if 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '1':
+                            yesChecked = 'checked'
+                            noChecked = ''
+                        elif 'allowSuggestions' in c.w and c.w['allowSuggestions'] == '0':
+                            yesChecked = ''
+                            noChecked = 'checked'
+                        else:
+                            yesChecked = 'checked'
+                            noChecked = ''
+                    %>
+                    <strong>What can participants do in your workshop:</strong><br />
+                    Participants can add ideas: <input type="radio" name="allowSuggestions" value="1" ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type="radio" name="allowSuggestions" value="0" ${noChecked}> No<br /><br />
+                    <% 
+                        if 'allowResources' in c.w and c.w['allowResources'] == '1':
+                            yesChecked = 'checked'
+                            noChecked = ''
+                        elif 'allowResources' in c.w and c.w['allowResources'] == '0':
+                            yesChecked = ''
+                            noChecked = 'checked'
+                        else:
+                            yesChecked = 'checked'
+                            noChecked = ''
+                    %>
+                    Participants can add information resource links: <input type="radio" name="allowResources" value="1" ${yesChecked}> Yes &nbsp;&nbsp;&nbsp;<input type="radio" name="allowResources" value="0" ${noChecked}> No<br />
+                    <br />
+                    % if c.w['startTime'] == '0000-00-00':
+                        <button type="submit" class="btn btn-warning">Save Settings and Continue</button>
+                    % else:
+                        <button type="submit" class="btn btn-warning">Save Settings</button>
+                    % endif
+                    </form>
+                </div><!-- span10 -->
+            </div><!-- row -->
+        </div><!-- browse -->
+    </div><!-- section wrapper -->
 </%def>
 
 <%def name="scope()">
@@ -109,102 +111,105 @@
             publicActive="active"
     %>
         
-    <div class="well">
-        <h3>Workshop Scope</h3>
-        Specifiy if the workshop is public or private, and who may participate.<br /><br />
-        ${change_scope()}
-        <div class="tabbable">
-            <ul class="nav nav-tabs" id="scopeTab">
-            <li class="${privateActive}"><a href="#private" data-toggle="tab">Private Workshop</a></li>
-            <li class="${publicActive}"><a href="#public" data-toggle="tab">Public Workhop</a></li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane ${privateActive}" id="private">${private()}</div>
-                <div class="tab-pane ${publicActive}" id="public">${public()}</div>
-            </div><!-- tab-content -->
-        </div><!-- tabbable -->
-    </div><!-- well -->               
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Workshop Scope</h4>
+            Specifiy if the workshop is public or private, and who may participate.<br /><br />
+             ${change_scope()}
+            <div class="tabbable">
+                <ul class="nav nav-tabs" id="scopeTab">
+                <li class="${privateActive}"><a href="#private" data-toggle="tab">Private Workshop</a></li>
+                <li class="${publicActive}"><a href="#public" data-toggle="tab">Public Workhop</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane ${privateActive}" id="private">${private()}</div>
+                    <div class="tab-pane ${publicActive}" id="public">${public()}</div>
+                </div><!-- tab-content -->
+            </div><!-- tabbable -->
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->              
 </%def>
 
 <%def name="tags()">
-    <div class="well">
-    <h3>Category Tags </h3>
-    Tags are descriptive key words used to categorize your workshop.<br />
-    <form name="workshop_tags" id="workshop_tags" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureTagsWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <div class="row">
-        <div class="span1">
-        </div><!-- span1 -->
-
-        <div class="span5">
-            <% 
-                tagList = getWorkshopTagCategories()
-
-            %>
-            <br />
-            Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />
-            % for tag in tagList:
-                % if tag in c.categories:
-                    <% checked = 'checked' %>
-                % else:
-                    <% checked = 'unchecked' %>
-                % endif
-                <input type="checkbox" name="categoryTags" value="${tag}" ${checked} /> ${tag}<br />
-            % endfor
-            <br />
-            % if c.w['startTime'] == '0000-00-00':
-                <button type="submit" class="btn btn-warning">Save Tags and Continue</button>
-            % else:
-                <button type="submit" class="btn btn-warning">Save Tags</button>
-            % endif
-        </div><!-- span5 -->
-    </div><!-- row -->
-    </form>
-    </div><!-- well -->
-
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Category Tags</h4>
+            Tags are descriptive key words used to categorize your workshop.<br />
+            <form name="workshop_tags" id="workshop_tags" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureTagsWorkshopHandler" enctype="multipart/form-data" method="post" >
+            <div class="row-fluid">
+                <div class="span1">
+                </div><!-- span1 -->
+                <div class="span5">
+                    <% 
+                        tagList = getWorkshopTagCategories()
+                    %>
+                    <br />
+                    Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />
+                    <fieldset>
+                    % for tag in tagList:
+                        % if tag in c.categories:
+                            <% checked = 'checked' %>
+                        % else:
+                            <% checked = 'unchecked' %>
+                        % endif
+                        <label class="checkbox">
+                        <input type="checkbox" name="categoryTags" value="${tag}" ${checked} /> ${tag}
+                        </label><br />
+                    % endfor
+                    </fieldset>
+                    <br />
+                    % if c.w['startTime'] == '0000-00-00':
+                        <button type="submit" class="btn btn-warning">Save Tags and Continue</button>
+                    % else:
+                        <button type="submit" class="btn btn-warning">Save Tags</button>
+                    % endif
+                </div><!-- span5 -->
+            </div><!-- row -->
+            </form>
+        </div><!-- browse -->
+    </div><!-- section-header -->
 </%def>
 
 
 
 <%def name="edit_background()">
-    <h3>Summarize Your Workshop</h3>
-    Use the wiki editor below to provide introductory background information about your workshop topic and goals. What do participants need to know about the topic? What do you hope to accomplish in this workshop? This information will appear on the workshop home page with the slideshow.  
-    <br /><br />
-    ${h.form(url(controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']),method="put",id="wikiBackground")}
-    <% counter = 0 %>
-    % for row in c.wikilist:
-        <div id="wiki-section-break">
-            <% numrows = 10 %>
-            <strong>Preview your edits for this section here:</strong><br />
-            <div class="well">
-            % if c.authuser.id == c.w.owner or int(c.authuser['accessLevel']) >= 200:
-                <table><tr><td>
-                    <div id = "section${counter}" ondblclick="toggle('textareadiv${counter}', 'edit${counter}', 'edit')">${row[0]}</div>
-                </td></tr></table>
-            % else:
-                <table><tr><td>
-                    <div id = "section${counter}" >${row[0]}</div>
-                </td></tr></table>
-            % endif
-            </div><!-- well -->
-
-            <strong>Make edits for this section here:</strong><br />
-            <div class="well" id="textareadiv${counter}">
-                <textarea rows="${numrows}" id="textarea${counter}" name="textarea${counter}" onkeyup="previewAjax( 'textarea${counter}', 'section${counter}' )" class="markitup">${row[1]}</textarea>
-                <div style="text-align:right; padding-right:35px;">
-                    <!--
-                    <input type="text" id="remark${counter}"  name="remark${counter}" class="text tiny" placeholder="Optional remark"/>
-                    ${h.submit('submit', 'Save')}
-                    -->
-                    <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
-                </div>
-            </div>
-        </div> <!-- /#wiki-section-break -->
-        <% counter += 1 %>
-    % endfor
-    ${h.hidden("count",counter)}
-    ${h.hidden("dashboard","dashboard")}
-    ${h.end_form()}
-    <br /><br />
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Workshop Information Summary</h4>
+            Enter introductory background information about your workshop topic and goals. What do participants need to know about the topic? What do you hope to accomplish in this workshop? This information will appear on the workshop home page with the slideshow.  
+            <br /><br />
+            ${h.form(url(controller = "wiki", action ="handler", id1 = c.w['urlCode'], id2 = c.w['url']),method="put",id="wikiBackground")}
+            <% counter = 0 %>
+            % for row in c.wikilist:
+                <div id="wiki-section-break">
+                    <% numrows = 10 %>
+                    <strong>Preview your edits for this section here:</strong><br />
+                    <div class="well">
+                        % if c.authuser.id == c.w.owner or int(c.authuser['accessLevel']) >= 200:
+                            <table><tr><td>
+                            <div id = "section${counter}" ondblclick="toggle('textareadiv${counter}', 'edit${counter}', 'edit')">${row[0]}</div>
+                            </td></tr></table>
+                        % else:
+                            <table><tr><td>
+                                <div id = "section${counter}" >${row[0]}</div>
+                            </td></tr></table>
+                        % endif
+                    </div><!-- well -->
+                    <strong>Make edits for this section here:</strong><br />
+                    <div class="well" id="textareadiv${counter}">
+                        <textarea rows="${numrows}" id="textarea${counter}" name="textarea${counter}" onkeyup="previewAjax( 'textarea${counter}', 'section${counter}' )" class="markitup">${row[1]}</textarea>
+                        <div style="text-align:right; padding-right:35px;">
+                            <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+                        </div><!-- text-align -->
+                    </div><!-- well -->
+                </div> <!-- /#wiki-section-break -->
+                <% counter += 1 %>
+            % endfor
+            ${h.hidden("count",counter)}
+            ${h.hidden("dashboard","dashboard")}
+            ${h.end_form()}
+        </div><!-- browse -->
+    </div><!-- sectio-wrapper -->
 </%def>
 
 <%def name="change_scope()">
