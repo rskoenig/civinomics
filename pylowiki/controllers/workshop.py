@@ -22,6 +22,7 @@ import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.suggestion   as suggestionLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.listener     as listenerLib
 import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.tag          as tagLib
 import pylowiki.lib.db.motd         as motdLib
@@ -678,12 +679,15 @@ class WorkshopController(BaseController):
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
         
-        fList = []
+        c.facilitators = []
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w.id)):
            if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
-              fList.append(f)
-        
-        c.facilitators = fList
+              c.facilitators.append(f)
+              
+        c.listeners = []
+        for l in (listenerLib.getListenersForWorkshop(c.w)):
+           if 'pending' in l and l['pending'] == '0' and l['deleted'] == '0':
+              c.listeners.append(l)
 
         if c.w['startTime'] != '0000-00-00':
            c.wStarted = True

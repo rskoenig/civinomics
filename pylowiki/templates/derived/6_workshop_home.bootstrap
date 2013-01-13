@@ -15,7 +15,12 @@
       <div class="section-wrapper listening">
          <div class="browse">
             <h3 class="section-header"> Who's listening? </h3>
-            ${helpers.whoListening(c.facilitators)}
+            <% 
+                if c.listeners:
+                    helpers.whoListening(c.listeners)
+                else:
+                    helpers.whoListening(c.facilitators)
+            %>
          </div> <!-- /.browse -->
       </div> <!-- /.section-wrapper -->
       <div class="section-wrapper activityStream">

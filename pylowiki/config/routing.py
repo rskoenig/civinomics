@@ -157,6 +157,11 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'facilitateInviteHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/facilitate/response/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResponseHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{id1}/{id2}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResignHandler', id1 = '{id1}', id2 = '{id2}')
+
+    # Listener invitation and response
+    map.connect('/profile/{id1}/{id2}/listener/invite/{handler:handler/?}', controller = 'listener', action = 'listenerInviteHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/listener/response/{handler:handler/?}', controller = 'listener', action = 'listenerResponseHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/{workshop:workshops?}/{id1}/{id2}/listener/resign/{handler:handler/?}', controller = 'listener', action = 'listenerResignHandler', id1 = '{id1}', id2 = '{id2}')
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')

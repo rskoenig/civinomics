@@ -221,7 +221,7 @@
             for f in fList:
                 w = workshopLib.getWorkshopByID(f['workshopID'])
                 if w['deleted'] == '0' and w['type'] != 'personal':
-                    wlisten = listenerLib.getListener(c.user, c.w)
+                    wlisten = listenerLib.getListener(c.user, w)
                     if not facilitatorLib.isFacilitator(c.user.id, w.id) and not facilitatorLib.isPendingFacilitator(c.user.id, w.id):
                         wListF.append(w)
                     if not wlisten:
@@ -245,9 +245,9 @@
         % if c.authuser.id != c.user.id and wListL:
             <div class="row">
                 <div class="centered">
-                <form method="post" name="inviteListen" id="inviteListen" action="/profile/${c.user['urlCode']}/${c.user['url']}/listen/invite/handler" class="form-inline">
+                <form method="post" name="inviteListen" id="inviteListen" action="/profile/${c.user['urlCode']}/${c.user['url']}/listener/invite/handler" class="form-inline">
                     <br />
-                    <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to be a listener of the selected workshop">Invite</button> to be a listener <select name="inviteListen">
+                    <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to be a listener of the selected workshop">Invite</button> to be a listener <select name="inviteToListen">
                     % for myW in wListL:
                         <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>
                     % endfor                       

@@ -1,10 +1,10 @@
 <%!
-   from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.db.geoInfo import getGeoInfo
    
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
    import pylowiki.lib.db.resource      as resourceLib
+   import pylowiki.lib.db.user          as userLib
    
    import logging
    log = logging.getLogger(__name__)
@@ -69,9 +69,11 @@
 <%def name="userLink(user, **kwargs)">
    <%
       if type(user) == type(1L):
-         user = getUserByID(user)
+         user = userLib.getUserByID(user)
       if user.objType == 'facilitator':
-         user = getUserByID(user.owner)
+         user = userLib.getUserByID(user.owner)
+      if user.objType == 'listener':
+         user = userLib.getUserByCode(user['userCode'])
       if 'raw' in kwargs:
          if kwargs['raw']:
             return '/profile/%s/%s/' %(user['urlCode'], user['url'])
@@ -222,10 +224,12 @@
 <%def name="userImage(user, **kwargs)">
    <%
       if type(user) == type(1L):
-         user = getUserByID(user)
+         user = userLib.getUserByID(user)
       imgStr = ''
       if user.objType == 'facilitator':
-         user = getUserByID(user.owner)
+         user = userLib.getUserByID(user.owner)
+      if user.objType == 'listener':
+         user = userLib.getUserByCode(user['userCode'])
       imgStr += '<a href="'
       imgStr += userLink(user, raw=True)
       imgStr += '"'
@@ -304,7 +308,7 @@
 <%def name="userGeoLink(user, **kwargs)">
     <%
         if type(user) == type(1L):
-            user = getUserByID(user)
+            user = userLib.getUserByID(user)
         userGeo = getGeoInfo(user.id)[0]
         geoLinkStr = ''
         

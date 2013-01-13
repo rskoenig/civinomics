@@ -1,6 +1,7 @@
 <%!
     import pylowiki.lib.db.user             as userLib
     import pylowiki.lib.db.facilitator      as facilitatorLib
+    import pylowiki.lib.db.listener         as listenerLib
     import pylowiki.lib.db.workshop         as workshopLib
 %> 
 
@@ -172,6 +173,9 @@
         % if c.pendingFacilitators and c.authuser.id == c.user.id:
             ${pendingFacilitateInvitations()}
         % endif
+        % if c.pendingListeners and c.authuser.id == c.user.id:
+            ${pendingListenerInvitations()}
+        % endif
     </div><!-- container-fluid -->
 </%def>
 
@@ -300,6 +304,45 @@
             <br /> <br />
             <button type="submit" name="acceptInvite" class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
             <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
+            </form>
+            <li>
+            <% 
+            wNum = wNum + 1
+            if wNum == 6:
+              wNum = 0
+            %>
+        % endfor
+        </ul>
+    </div><!-- well -->
+</%def>
+
+<%def name="pendingListenerInvitations()">
+    <div class="well">
+        <strong>Invitations to be a Workshop Listener</strong><br />
+        <% fNum = len(c.pendingListeners) %>
+        <% wNum = 0 %>
+        % for l in c.pendingListeners:
+            % if wNum % 6 == 0 or wNum == 0: ## begin a new row
+                <ul class="unstyled civ-block-list">
+            % elif wNum % 6 == 5: ## end a row
+                </ul>
+                <ul class="unstyled civ-block-list">
+            % endif
+            <li>
+            <% workshop = workshopLib.getWorkshopByCode(l['workshopCode']) %>
+            <form method="post" name="inviteListener" id="inviteListener" action="/profile/${c.user['urlCode']}/${c.user['url']}/listener/response/handler/">
+            <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
+            <input type="hidden" name="workshopURL" value="${workshop['url']}">
+            % if workshop['mainImage_hash'] == 'supDawg':
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+            % else:
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
+            % endif
+            <br /> <br />
+            <button type="submit" name="acceptInvite" class="btn btn-mini btn-success" title="Accept the invitation to be a listener of this workshop">Accept</button>
+            <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to be a listener of this workshop">Decline</button>
             </form>
             <li>
             <% 

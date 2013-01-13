@@ -18,6 +18,7 @@ import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.facilitator      as facilitatorLib
+import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.workshop         as workshopLib
 import pylowiki.lib.db.pmember          as pMemberLib
 import pylowiki.lib.db.follow           as followLib
@@ -56,10 +57,10 @@ class ProfileController(BaseController):
         if 'user' in session and c.authuser.id != c.user.id:
            c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
 
-        fList = facilitatorLib.getFacilitatorsByUser(c.user.id)
+        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
         c.pendingFacilitators = []
-        for f in fList:
+        for f in facilitatorList:
            if 'pending' in f and f['pending'] == '1':
               c.pendingFacilitators.append(f)
            elif f['disabled'] == '0':
@@ -72,6 +73,12 @@ class ProfileController(BaseController):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
+                    
+        listenerList = listenerLib.getListenersForUser(c.user)
+        c.pendingListeners = []
+        for l in listenerList:
+            if 'pending' in l and l['pending'] == '1':
+                c.pendingListeners.append(l)
 
         watching = followLib.getWorkshopFollows(c.user)
         c.watching = [workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching]
@@ -103,7 +110,7 @@ class ProfileController(BaseController):
                 elif p.objType == 'comment':
                     c.comments.append(p)
                     
-        c.messages = len(c.pendingFacilitators)
+        c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
         
         return render("/derived/6_profile.bootstrap")
     
@@ -378,8 +385,14 @@ class ProfileController(BaseController):
             for f in fList:
                 if 'pending' in f and f['pending'] == '1':
                     c.pendingFacilitators.append(f)
+
+            listenerList = listenerLib.getListenersForUser(c.user)
+            c.pendingListeners = []
+            for l in listenerList:
+                if 'pending' in l and l['pending'] == '1':
+                    c.pendingListeners.append(l)
                     
-            c.messages = len(c.pendingFacilitators)
+            c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
 
             return render('/derived/6_profile_dashboard.bootstrap')
         else:
