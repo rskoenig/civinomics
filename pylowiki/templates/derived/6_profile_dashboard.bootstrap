@@ -89,10 +89,8 @@
                         </div><!-- tab4 -->
                         % if c.admin:
                             <div class="tab-pane ${tab5active}" id="tab5">
-                                <div class="well">
-                                    ${helpers.memberAdmin()}
-                                    ${helpers.memberEvents()}
-                                </div><!-- well -->
+                                ${helpers.memberAdmin()}
+                                ${helpers.memberEvents()}
                             </div><!-- tab5 -->
                         % endif
                     </div><!-- tab-content -->
