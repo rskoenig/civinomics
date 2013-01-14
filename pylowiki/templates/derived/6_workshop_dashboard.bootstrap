@@ -16,47 +16,33 @@
     tab8active = ""
     tab9active = ""
     tab10active = ""
-    menu1active = ""
-    menu2active = ""
 
 
     if c.tab == "tab1":
         tab1active = "active"
-        menu1active = "in"
     elif c.tab == "tab2":
         tab2active = "active"
-        menu1active = "in"
     elif c.tab == "tab3":
         tab3active = "active"
-        menu1active = "in"
     elif c.tab == "tab4":
         tab4active = "active"
-        menu1active = "in"
     elif c.tab == "tab5":
         tab5active = "active"
-        menu1active = "in"
     elif c.tab == "tab6":
         tab6active = "active"
-        menu2active = "in"
     elif c.tab == "tab7":
         tab7active = "active"
-        menu2active = "in"
     elif c.tab == "tab8":
         tab8active = "active"
-        menu2active = "in"
     elif c.tab == "tab9":
         tab9active = "active"
-        menu2active = "in"
     elif c.tab == "tab10":
         tab10active = "active"
-        menu2active = "in"
     else:
         if c.w['startTime'] == '0000-00-00':
             tab1active = "active"
-            menu1active = "in"
         else:
             tab6active = "active"
-            menu2active = "in"
 %>
 
 <div class="row-fluid">
