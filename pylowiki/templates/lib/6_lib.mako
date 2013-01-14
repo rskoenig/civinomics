@@ -244,7 +244,13 @@
          title = revision['data']
       else:
          title = user['name']
-      imgStr += '<img src="http://www.gravatar.com/avatar/%s?r=pg&d=identicon" alt="%s" title="%s"' %(md5(user['email']).hexdigest(), title, title)
+      if 'className' in kwargs:
+         if 'avatar-large' in kwargs['className']:
+            imgStr += '<img src="http://www.gravatar.com/avatar/%s?r=pg&d=identicon&s=200" alt="%s" title="%s"' %(md5(user['email']).hexdigest(), title, title)
+         else:
+            imgStr += '<img src="http://www.gravatar.com/avatar/%s?r=pg&d=identicon" alt="%s" title="%s"' %(md5(user['email']).hexdigest(), title, title)
+      else:   
+         imgStr += '<img src="http://www.gravatar.com/avatar/%s?r=pg&d=identicon" alt="%s" title="%s"' %(md5(user['email']).hexdigest(), title, title)
          
       if 'className' in kwargs:
          imgStr += ' class="%s"' % kwargs['className']
