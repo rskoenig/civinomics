@@ -37,65 +37,69 @@
         <h1> Sorry, Civinomics is in read only mode right now </h1>
     % else:
         <div class="tabbable">
-        <div class="span3 well">
-            <div style="text-align: center">
-            <h3>Dashboard</h3>
-            For the periodic upkeep of your Civinomics account.<br /><br /></div><!-- center -->
-            <ul class="nav nav-pills nav-stacked">
-                <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About you<br />
-                Update your details.
-                </a></li>
-                <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Your smiling face<br />
-                Upload a picture.
-                </a></li>
-                <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Notices${msgString}<br />
-                Messages & Invitations.
-                </a></li>
-                <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Change your password<br />
-                Stay secure.</a></li>
-                % if c.admin:
-                    <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Administrate<br />
-                    Admin only - shhh!.</a></li>
+            <div class="span3">
+                <div class="section-wrapper">
+                    <div class="browse">
+                        <div style="text-align: center">
+                            <h4 class="section-header"><br />Dashboard</h4>
+                            For the periodic upkeep of your Civinomics account.<br /><br />
+                        </div><!-- center -->
+                        <ul class="nav nav-pills nav-stacked">
+                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About you<br />
+                        Update your details.
+                        </a></li>
+                        <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Your smiling face<br />
+                        Upload a picture.
+                        </a></li>
+                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Notices${msgString}<br />
+                        Messages & Invitations.
+                        </a></li>
+                        <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Change your password<br />
+                        Stay secure.</a></li>
+                        % if c.admin:
+                        <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Administrate<br />
+                        Admin only - shhh!.</a></li>
+                        % endif
+                        </ul>
+                        <div style="text-align: center">
+                            <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/create">
+                            <br />
+                            <button type="submit" class="btn btn-warning">Create a Workshop!</button>
+                            <br /><br />
+                            </form>
+                        </div><!-- center -->
+                    </div><!-- browse -->
+                </div><!-- section-wrapper -->
+            </div> <!-- /.span3 -->
+            <div class="span9">
+                ${lib_6.fields_alert()}
+                % if c.conf['read_only.value'] == 'true':
+                    <!-- read only -->
+                % else:
+                    <div class="tab-content">
+                        <div class="tab-pane ${tab1active}" id="tab1">
+                            ${helpers.profileInfo()}
+                        </div><!-- tab1 -->
+                        <div class="tab-pane ${tab2active}" id="tab2">
+                            ${helpers.profilePhoto()}
+                        </div><!-- tab2 -->
+                        <div class="tab-pane ${tab3active}" id="tab3">
+                            ${helpers.profileMessages()}
+                        </div><!-- tab3 -->
+                        <div class="tab-pane ${tab4active}" id="tab4">
+                            ${helpers.changePassword()}
+                        </div><!-- tab4 -->
+                        % if c.admin:
+                            <div class="tab-pane ${tab5active}" id="tab5">
+                                <div class="well">
+                                    ${helpers.memberAdmin()}
+                                    ${helpers.memberEvents()}
+                                </div><!-- well -->
+                            </div><!-- tab5 -->
+                        % endif
+                    </div><!-- tab-content -->
                 % endif
-            </ul>
-            <div style="text-align: center">
-                <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/create">
-                    <br />
-                    <button type="submit" class="btn btn-warning">Create Workshop</button>
-                    <br /><br />
-                    </form>
-            </div><!-- center -->
-        </div> <!-- /.span3 -->
-        <div class="span9">
-            ${lib_6.fields_alert()}
-            % if c.conf['read_only.value'] == 'true':
-                <!-- read only -->
-            % else:
-
-                <div class="tab-content">
-                    <div class="tab-pane ${tab1active}" id="tab1">
-                        ${helpers.profileInfo()}
-                    </div><!-- tab1 -->
-                    <div class="tab-pane ${tab2active}" id="tab2">
-                        ${helpers.profilePhoto()}
-                    </div><!-- tab2 -->
-                    <div class="tab-pane ${tab3active}" id="tab3">
-                        ${helpers.profileMessages()}
-                    </div><!-- tab3 -->
-                    <div class="tab-pane ${tab4active}" id="tab4">
-                        ${helpers.changePassword()}
-                    </div><!-- tab4 -->
-                    % if c.admin:
-                        <div class="tab-pane ${tab5active}" id="tab5">
-                            <div class="well">
-                                ${helpers.memberAdmin()}
-                                ${helpers.memberEvents()}
-                            </div><!-- well -->
-                        </div><!-- tab5 -->
-                    % endif
-                </div><!-- tab-content -->
-            % endif
-        </div> <!-- /.span9 -->
+            </div> <!-- /.span9 -->
         </div><!-- tabbable -->
     % endif
 </div> <!-- /.row-fluid -->

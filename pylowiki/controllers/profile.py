@@ -399,7 +399,7 @@ class ProfileController(BaseController):
             abort(404)
 
     @h.login_required
-    def editHandler(self,id1, id2):
+    def infoEditHandler(self,id1, id2):
         perror = 0
         perrorMsg = ""
         changeMsg = ""
@@ -512,7 +512,7 @@ class ProfileController(BaseController):
         return redirect(returnURL)
         
     @h.login_required
-    def passwordHandler(self, id1, id2):
+    def passwordUpdateHandler(self, id1, id2):
         perror = 0
         perrorMsg = ""
         changeMsg = ""
@@ -611,7 +611,7 @@ class ProfileController(BaseController):
         return md5(username + title).hexdigest()
         
     @h.login_required
-    def pictureHandler(self, id1, id2):
+    def pictureUploadHandler(self, id1, id2):
         session['confTab'] = "tab2"
         session.save()
         

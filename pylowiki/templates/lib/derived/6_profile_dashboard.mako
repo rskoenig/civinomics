@@ -6,31 +6,31 @@
 %> 
 
 <%def name="profileInfo()">
-    <div class="well">
-	<form action="/profile/${c.user['urlCode']}/${c.user['url']}/editHandler" enctype="multipart/form-data" method="post" class="form-horizontal">
-		<fieldset>
-			<h3>Update Your Member Information</h3><br />
-			<div class="control-group">
-				<label for="member-name" class="control-label">Name:</label>
-				<div class="controls">
-					<input type="text" id="member-name" name="member_name" value="${c.user['name']}">
-					<span class="help-inline"><span class="label label-important">Required</span></span>
-				</div> <!-- /.controls -->
-			</div> <!-- /.control-group -->
-			<div class="control-group">
-				<label for="email" class="control-label">Email:</label>
-				<div class="controls">
-					<input type="text" id="email" name="email" value="${c.user['email']}">
-					<span class="help-inline"><span class="label label-important">Required</span> (not displayed)</span>
-				</div> <!-- /.controls -->
-			</div> <!-- /.control-group -->
-        	<div class="control-group">
-				<label for="greetingMsg" class="control-label">Enter a greeting message for visitors to your profile:</label>
-				<div class="controls">
-                    <textarea name="greetingMsg" rows=4 cols=50>${c.user['greetingMsg']}</textarea>
-				</div> <!-- /.controls -->
-			</div> <!-- /.control-group -->
-            % if c.user['memberType'] == 'professional':
+    <div class="section-wrapper">
+        <div class="browse">
+	        <form action="/profile/${c.user['urlCode']}/${c.user['url']}/info/edit/handler" id="infoEdit" enctype="multipart/form-data" method="post" class="form-horizontal">
+    		    <h4 class="section-header" style="text-align: center"><br />Update Your Profile Information</h4><br />
+                <fieldset>
+			    <div class="control-group">
+				    <label for="member-name" class="control-label">Name:</label>
+				    <div class="controls">
+					    <input type="text" id="member-name" name="member_name" value="${c.user['name']}">
+					    <span class="help-inline"><span class="label label-important">Required</span></span>
+				    </div> <!-- /.controls -->
+			    </div> <!-- /.control-group -->
+			    <div class="control-group">
+				    <label for="email" class="control-label">Email:</label>
+				    <div class="controls">
+					    <input type="text" id="email" name="email" value="${c.user['email']}">
+					    <span class="help-inline"><span class="label label-important">Required</span> (not displayed)</span>
+				    </div> <!-- /.controls -->
+			    </div> <!-- /.control-group -->
+        	    <div class="control-group">
+				    <label for="greetingMsg" class="control-label">Enter a greeting message for visitors to your profile:</label>
+				    <div class="controls">
+                        <textarea name="greetingMsg" rows=4 cols=50>${c.user['greetingMsg']}</textarea>
+				    </div> <!-- /.controls -->
+			    </div> <!-- /.control-group -->
        	        <div class="control-group">
 				    <label for="orgLink" class="control-label">Enter the URL to your website:</label>
     			    <div class="controls">
@@ -43,43 +43,44 @@
                         <textarea name="websiteDesc" rows=4 cols=50>${c.user['websiteDesc']}</textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-            % endif
-		</fieldset>
-        <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
-	</form>
-    </div><!-- well -->
+		        </fieldset>
+                <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+	        </form>
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
 </%def>
 
 <%def name="profilePhoto()">
-    <div class="container-fluid clr left">
-    <form id="fileupload" action="/profile/${c.user['urlCode']}/${c.user['url']}/picture/handler" enctype="multipart/form-data" method="post" class="well form-horizontal">
-		<h3>Update Your Profile Picture</h3><br />
-        % if c.user['pictureHash'] != 'flash':
-            Current profile photo:
-            <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}" width="120px">
-            <br /><br />            
-        % endif
-        <div class="row fileupload-buttonbar">
-            <div class="span1">
-            </div>
-            <div class="span10">
-                <!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-success fileinput-button">
-                    <i class="icon-plus icon-white"></i>
-                        <span>Upload new picture</span>
-                    <input type="file" name="pictureFile">
-                </span>
-
-                </button>
-            </div><!-- span10 -->
-        </div><!-- file upload button bar -->
-        <!-- The loading indicator is shown during image processing -->
-        <div class="fileupload-loading"></div>
-        <br>
-        <!-- The table listing the files available for upload/download -->
-        <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
-	</form>
-    </div><!-- container-fluid -->
+    <div class="section-wrapper">
+        <div class="browse">
+    	    <h4 style="text-align: center" class="section-header"><br />Update Your Profile Picture</h4>
+            <form id="fileupload" action="/profile/${c.user['urlCode']}/${c.user['url']}/picture/upload/handler" enctype="multipart/form-data" method="post" class="form-horizontal">
+                % if c.user['pictureHash'] != 'flash':
+                    Current profile photo:
+                    <img src="/images/avatar/${c.user['directoryNumber']}/profile/${c.user['pictureHash']}.profile" alt="${c.user['name']}" title="${c.user['name']}" width="120px">
+                    <br /><br />            
+                % endif
+                <div class="row fileupload-buttonbar">
+                    <div class="span1">
+                    </div>
+                    <div class="span10">
+                        <!-- The fileinput-button span is used to style the file input field as button -->
+                        <span class="btn btn-success fileinput-button">
+                            <i class="icon-plus icon-white"></i>
+                            <span>Upload new picture</span>
+                            <input type="file" name="pictureFile">
+                        </span>
+                        </button>
+                    </div><!-- span10 -->
+                </div><!-- file upload button bar -->
+                <!-- The loading indicator is shown during image processing -->
+                <div class="fileupload-loading"></div>
+                <br>
+                <!-- The table listing the files available for upload/download -->
+                <table class="table"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+	        </form>
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
     <!-- modal-gallery is the modal dialog used for the image gallery -->
     <div id="modal-gallery" class="modal modal-gallery hide fade">
         <div class="modal-header">
@@ -168,22 +169,26 @@
 </%def>
 
 <%def name="profileMessages()">
-    <div class="container-fluid">
-        <h3>Messages & Invitations</h3>
-        % if c.pendingFacilitators and c.authuser.id == c.user.id:
-            ${pendingFacilitateInvitations()}
-        % endif
-        % if c.pendingListeners and c.authuser.id == c.user.id:
-            ${pendingListenerInvitations()}
-        % endif
-    </div><!-- container-fluid -->
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Notifications & Invitations</h4>
+            % if c.pendingFacilitators and c.authuser.id == c.user.id:
+                ${pendingFacilitateInvitations()}
+            % elif c.pendingListeners and c.authuser.id == c.user.id:
+                ${pendingListenerInvitations()}
+            % else:
+                No messages today!
+            % endif
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
 </%def>
 
 <%def name="changePassword()">
-    <div class="well">
-    <form action="/profile/${c.user['urlCode']}/${c.user['url']}/passwordHandler" enctype="multipart/form-data" method="post" class="form-horizontal">
-		<fieldset>
-            <h3>Change Your Password</h3><br />
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Change Your Password</h4><br />
+            <form action="/profile/${c.user['urlCode']}/${c.user['url']}/password/update/handler" enctype="multipart/form-data" method="post" class="form-horizontal">
+		    <fieldset>
             <div class="control-group">
                 <label for="oldPassword" class="control-label">Old Password:</label>
                 <div class="controls">
@@ -202,10 +207,11 @@
                     <input type="password" id="reNewPassword" name="reNewPassword">
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
-        </fieldset>
-        <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
-    </form>
-    </div><!-- well-->
+            </fieldset>
+            <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+            </form>
+        </div><!-- browse -->
+    </div><!-- section-wrapper-->
 </%def>
 
 <%def name="memberEvents()">
