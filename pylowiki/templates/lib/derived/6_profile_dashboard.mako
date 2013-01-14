@@ -237,50 +237,54 @@
 </%def>
 
 <%def name="memberAdmin()">
-    <h3>Administrate Member</h3><br />
-    % if c.user['disabled'] == '1':
-       <% eAction = 'Enable' %>
-    % else:
-       <% eAction = 'Disable' %>
-    % endif
-    <form method="post" name="enableUser" id="enableUser" class="form-horizontal" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/">
-        <strong>${eAction} Member</strong><br />
-        <fieldset>
-            <div class="control-group">
-                <label for="enable" class="control-label">Reason for ${eAction}</label>
-                <div class="controls">
-                    <input type="text" name="enableUserReason">
-                    <input type="radio" name="verifyEnableUser" value="0"> Verify ${eAction}
-                    &nbsp;&nbsp;<button type="submit" class="btn btn-warning">${eAction} Member</button>
-                </div> <!-- /.controls -->
-            </div> <!-- /.control-group -->
-        </fieldset>
-    </form>
-    <br /><br />
-    <% 
-        if c.user['accessLevel'] == '0':
-            newAccess = "200"
-            newTitle = "Admin"
-            oldTitle = "User"
-        else:
-            newAccess = "0"
-            newTitle = "User"
-            oldTitle = "Admin"
-    %>
-    <form method="post" name="userPrivs" id="userPrivs" class="form-horizontal" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/">
-        <strong>Change Access Level From ${oldTitle} To ${newTitle}</strong><br />
-        <fieldset>
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Administrate Member</h3><br />
+            % if c.user['disabled'] == '1':
+                <% eAction = 'Enable' %>
+            % else:
+                <% eAction = 'Disable' %>
+            % endif
+            <form method="post" name="enableUser" id="enableUser" class="form-horizontal" action="/profile/${c.user['urlCode']}/${c.user['url']}/enable/handler">
+            <strong>${eAction} Member</strong><br />
+            <fieldset>
+                <div class="control-group">
+                    <label for="enable" class="control-label">Reason for ${eAction}</label>
+                    <div class="controls">
+                        <input type="text" name="enableUserReason">
+                        <input type="radio" name="verifyEnableUser" value="0"> Verify ${eAction}
+                        &nbsp;&nbsp;<button type="submit" class="btn btn-warning">${eAction} Member</button>
+                    </div> <!-- /.controls -->
+                </div> <!-- /.control-group -->
+            </fieldset>
+            </form>
+            <br /><br />
+            <% 
+                if c.user['accessLevel'] == '0':
+                    newAccess = "200"
+                    newTitle = "Admin"
+                    oldTitle = "User"
+                else:
+                    newAccess = "0"
+                    newTitle = "User"
+                    oldTitle = "Admin"
+            %>
+            <form method="post" name="userPrivs" id="userPrivs" class="form-horizontal" action="/profile/${c.user['urlCode']}/${c.user['url']}/privs/handler">
+            <strong>Change Access Level From ${oldTitle} To ${newTitle}</strong><br />
+            <fieldset>
             <div class="control-group">
                 <label for="setPrivs" class="control-label">Reason for Change</label>
                 <div class="controls">
-                        <input type="text" name="accessChangeReason">
-                        <input type="radio" name="accessChangeVerify" value="0"> Verify Change
-                        &nbsp;&nbsp;<button type="submit" name="setPrivs" class="btn btn-warning">Change Access</button>
+                    <input type="text" name="accessChangeReason">
+                    <input type="radio" name="accessChangeVerify" value="0"> Verify Change
+                    &nbsp;&nbsp;<button type="submit" name="setPrivs" class="btn btn-warning">Change Access</button>
                 </div> <!-- /.controls -->
             </div> <!-- /.control-group -->
-        </fieldset>
-     </form>
-    <br /><br />
+            </fieldset>
+            </form>
+            <br /><br />
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
 </%def>
 
 <%def name="pendingFacilitateInvitations()">
