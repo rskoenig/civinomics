@@ -30,6 +30,16 @@ def getIdeasInWorkshop(workshopCode, deleted = '0', disabled = '0'):
     except:
         return False
 
+def getAllIdeas(deleted = '0', disabled = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
+    except:
+        return False
+
 def Idea(user, title, workshop):
     """
         user    ->  The user Thing creating the idea

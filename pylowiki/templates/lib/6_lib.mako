@@ -118,15 +118,15 @@
             else:
                return "/images/%s/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
                
-      imgStr += '<a href="'
+      imgStr = '<a href="'
       imgStr += workshopLink(w, embed=True, raw=True)
       if 'linkClass' in kwargs:
          imgStr += '" class="%s"' %(kwargs['linkClass'])
       imgStr += '">'
-      if workshop['mainImage_hash'] == 'supDawg':
-         picturePath = "/images/${w['mainImage_identifier']}/thumbnail/${w['mainImage_hash']}.thumbnail"
+      if w['mainImage_hash'] == 'supDawg':
+         picturePath = "/images/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_hash'])
       else:
-         picturePath = "/images/${w['mainImage_identifier']}/${w['mainImage_directoryNum']}/thumbnail/${w['mainImage_hash']}.thumbnail"
+         picturePath = "/images/%s/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
       title = w['title']
       imgStr += '<img src="%s" alt="%s" title="%s"' %(picturePath, title, title)
          
@@ -331,7 +331,7 @@
          if kwargs['embed'] == True:
             return resourceStr
    %>
-   ${resourceStr}
+   ${resourceStr | n}
 </%def>
 
 <%def name="disableThing(thing, **kwargs)">

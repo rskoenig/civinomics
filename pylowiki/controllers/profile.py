@@ -36,10 +36,7 @@ log = logging.getLogger(__name__)
 class ProfileController(BaseController):
     
     def __before__(self, action, id1 = None, id2 = None):
-        if action == 'index':
-            if not userLib.isAdmin(c.authuser.id):
-                abort(404)
-        if action not in ['hashPicture', 'index']:
+        if action not in ['hashPicture']:
             if id1 is not None and id2 is not None:
                 c.user = userLib.get_user(id1, id2)
             else:
@@ -356,12 +353,6 @@ class ProfileController(BaseController):
                 items['ideas'].append(thing)
         
         return items
-    
-    @h.login_required
-    def index( self ):
-        c.list = userLib.getAllUsers()
-        c.itemType = 'user'
-        return render( "/derived/6_list_all_items.bootstrap" )
 
     @h.login_required
     def dashboard(self, id1, id2):

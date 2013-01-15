@@ -123,9 +123,13 @@ def getResourceByTitle(title, workshopCode):
     except:
         return False
 
-def getAllResources():
+def getAllResources(deleted = '0', disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'resource')\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
     except:
         return False
 

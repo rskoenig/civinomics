@@ -22,9 +22,14 @@ def getDiscussion(code):
     except:
         return False
 
-def getDiscussions():
+def getDiscussions(disabled = '0', deleted = '0', discType = 'general'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'discussion')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('discType', discType)))\
+            .all()
     except:
         return False
     
