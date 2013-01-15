@@ -16,18 +16,34 @@ import pylowiki.lib.db.workshop         as workshopLib
 import pylowiki.lib.db.idea             as ideaLib
 import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.resource         as resourceLib
+import pylowiki.lib.db.comment          as commentLib
 import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.flag             as flagLib
+import pylowiki.lib.db.dbHelpers        as dbHelpers
+import pylowiki.lib.db.generic          as generic
 
+import simplejson as json
 log = logging.getLogger(__name__)
 
 class AdminController(BaseController):
 
-    def __before__(self, action):
+    def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if not userLib.isAdmin(c.authuser.id):
-            abort(404)
+        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources']:
+            if not userLib.isAdmin(c.authuser.id):
+                abort(404)
+        if action in ['edit', 'enable', 'disable', 'delete']:
+            if thingCode is None:
+                abort(404)
+            c.thing = generic.getThing(thingCode)
+            if not c.thing:
+                return json.dumps({'code':thingCode, 'result':'ERROR'})
+            workshop = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
+            if not workshop:
+                return json.dumps({'code':thingCode, 'result':'ERROR'})
+            if c.thing.owner != c.authuser.id or not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
+                abort(404)
     
     def users(self):
         c.list = userLib.getAllUsers()
@@ -48,3 +64,54 @@ class AdminController(BaseController):
     def resources(self):
         c.list = resourceLib.getAllResources()
         return render( "/derived/6_list_all_items.bootstrap" )
+        
+    
+    def edit(self, thingCode):
+        # A bit more complicated than enable/disable/delete
+        if c.thing.objType == 'comment':
+            data = request.params['textarea' + thingCode]
+            data = data.strip()
+            
+            c.thing = commentLib.editComment(c.thing, data)
+            if not c.thing:
+                alert = {'type':'error'}
+                alert['title'] = 'Edit Comment failed.'
+                alert['content'] = 'Failed to edit comment.'
+            else:
+                alert = {'type':'success'}
+                alert['title'] = 'Edit Comment.'
+                alert['content'] = 'Edit comment successful.'
+                eventLib.Event('Comment edited by %s'%c.authuser['name'], c.thing, c.authuser)
+        session['alert'] = alert
+        session.save()
+        return redirect(session['return_to'])
+        
+    def enable(self, thingCode):
+        result = 'Successfully enabled!'
+        if c.thing['disabled'] == '0':
+            result = 'Already enabled!'
+            # Return immediately to avoid the unnecessary set + commit
+            return json.dumps({'code':thingCode, 'result':result})
+        c.thing['disabled'] = '0'
+        dbHelpers.commit(c.thing)
+        return json.dumps({'code':thingCode, 'result':result})
+        
+    def disable(self, thingCode):
+        result = 'Successfully disabled!'
+        if c.thing['disabled'] == '1':
+            result = 'Already disabled!'
+            # Return immediately to avoid the unnecessary set + commit
+            return json.dumps({'code':thingCode, 'result':result})
+        c.thing['disabled'] = '1'
+        dbHelpers.commit(c.thing)
+        return json.dumps({'code':thingCode, 'result':result})
+        
+    def delete(self, thingCode):
+        result = 'Successfully deleted!'
+        if c.thing['deleted'] == '1':
+            result = 'Object not found.'
+            return json.dumps({'code':thingCode, 'result':result})
+        c.thing['deleted'] = '1'
+        dbHelpers.commit(c.thing)
+        return json.dumps({'code':thingCode, 'result':result})
+        

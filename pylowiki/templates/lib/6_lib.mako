@@ -364,6 +364,27 @@
     ${deleteStr | n}
 </%def>
 
+<%def name="flagThing(thing, **kwargs)">
+    <%
+        flagStr = 'href = "/flag/%s/%s"' %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return flagStr
+    %>
+    ${flagStr | n}
+</%def>
+
+<%def name="editThing(thing, **kwargs)">
+    <%
+        editStr = "/edit/%s/%s" %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return editStr
+        editStr = 'href = ' + editStr
+    %>
+    ${editStr | n}
+</%def>
+
 <%def name="ellipsisIZE(string, numChars, **kwargs)">
     <%
         if numChars > len(string):

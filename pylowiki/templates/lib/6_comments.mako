@@ -234,9 +234,9 @@
         <div class="span11 offset1 alert">
             <strong>Are you sure you want to flag this comment?</strong>
             <br />
-            <a href="/flagComment/${comment['urlCode']}" class="btn btn-danger flagCommentButton">Yes</a>
+            <a ${lib_6.flagThing(comment)} class="btn btn-danger flagCommentButton">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${flagID}">No</a>
-            <span id = 'flagged_${comment['urlCode']}'></span>
+            <span id = "flagged_${comment['urlCode']}"></span>
         </div>
     </div>
     
@@ -244,7 +244,7 @@
     % if int(c.authuser['accessLevel']) >= 200 or c.authuser.id == comment.owner:
         <div class="row-fluid collapse" id="${editID}">
             <div class="span11 offset1">
-                <form action="/comment/edit/${comment['urlCode']}" method="post" class="form form-horizontal">
+                <form action="${lib_6.editThing(comment, embed=True)}" method="post" class="form form-horizontal">
                     <label>edit</label>
                     <textarea class="comment-reply span12" name="textarea${comment['urlCode']}">${comment['data']}</textarea>
                     <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>

@@ -30,7 +30,7 @@ def make_map():
     # System Administration
     map.connect('/{systemAdmin:systemAdmin/?}', controller = 'systemAdmin', action = 'index')
     map.connect('/systemAdmin/{handler:handler/?}', controller = 'systemAdmin', action = 'handler')
-    map.connect('/admin/show/{objectType}{end:s/?}', controller = 'admin')
+    map.connect('/admin/show/{objectType}{end:s/?}', controller = 'admin', action = 'showAllItems')
     
     ########################################################################################################
     # 
@@ -198,10 +198,11 @@ def make_map():
     map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     
-    # Disable/enable/delete Things
-    map.connect('/disable/comment/{id}{end:/?}', controller = 'comment', action = 'disable', id = '{id}')
-    map.connect('/enable/comment/{id}{end:/?}', controller = 'comment', action = 'enable', id = '{id}')
-    map.connect('/delete/comment/{id}{end:/?}', controller = 'comment', action = 'delete', id = '{id}')
+    # Disable/enable/delete/edit Things
+    map.connect('/disable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'disable')
+    map.connect('/enable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'enable')
+    map.connect('/delete/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'delete')
+    map.connect('/edit/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'edit')
     
     ########################################################################################################
     # 
