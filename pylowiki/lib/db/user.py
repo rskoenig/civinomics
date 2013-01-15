@@ -40,6 +40,16 @@ def getActiveUsers(disabled = '0'):
     except:
         return False
 
+def getAllUsers(disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'user')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
+            #.filter(Thing.data.any(wc('deleted', deleted)))\
+    except:
+        return False
+
 def getUserByEmail(email):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('email', email))).one()
@@ -152,6 +162,7 @@ class User(object):
         u['name'] = name
         u['activated'] = '0'
         u['disabled'] = '0'
+        u['deleted'] = '0'
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
         u['country'] =  country

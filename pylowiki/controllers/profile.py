@@ -36,7 +36,10 @@ log = logging.getLogger(__name__)
 class ProfileController(BaseController):
     
     def __before__(self, action, id1 = None, id2 = None):
-        if action != 'hashPicture':
+        if action == 'index':
+            if not userLib.isAdmin(c.authuser.id):
+                abort(404)
+        if action not in ['hashPicture', 'index']:
             if id1 is not None and id2 is not None:
                 c.user = userLib.get_user(id1, id2)
             else:
@@ -356,16 +359,9 @@ class ProfileController(BaseController):
     
     @h.login_required
     def index( self ):
-        abort(404)
-        c.list = get_all_users()
-
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-        c.title = c.heading = "User Accounts"
-        return render( "/derived/AccountList.mako" )
+        c.list = userLib.getAllUsers()
+        c.itemType = 'user'
+        return render( "/derived/6_list_all_items.bootstrap" )
 
     @h.login_required
     def dashboard(self, id1, id2):
