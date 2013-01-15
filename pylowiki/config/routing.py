@@ -30,7 +30,7 @@ def make_map():
     # System Administration
     map.connect('/{systemAdmin:systemAdmin/?}', controller = 'systemAdmin', action = 'index')
     map.connect('/systemAdmin/{handler:handler/?}', controller = 'systemAdmin', action = 'handler')
-    map.connect('/admin/show/{objectType}{end:s/?}', controller = 'admin', action = 'showAllItems')
+    map.connect('/admin/show/{objectType}{end:s/?}', controller = 'admin')
     
     ########################################################################################################
     # 
