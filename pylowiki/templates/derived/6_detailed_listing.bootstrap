@@ -7,16 +7,20 @@
 
 <% 
    lib.return_to()
+   helperText = ''
    if c.listingType == 'discussion':
       itemList = c.discussions
+      helperText = 'Ask a question or join a general conversation about the workshop.'
    elif c.listingType == 'resources':
       itemList = c.resources
+      helperText = 'Link to helpful materials like articles and reports.'
    elif c.listingType == 'ideas':
       itemList = c.ideas
-   self.showListing(c.listingType, itemList)
+      helperText = 'Have an idea on meeting the workshop goals? Submit it here.'
+   self.showListing(c.listingType, itemList, helperText)
 %>
 
-<%def name="showListing(listingType, itemList)">
+<%def name="showListing(listingType, itemList, helperText)">
    <%
       if listingType == 'discussion':
          pluralType = 'topics'
@@ -34,6 +38,9 @@
             </h3>
          % endif
          </%doc>
+         <span class = "muted">
+            ${helperText}
+         </span>
          ${lib_6.createNew(listingType)}
       </div><!--/.span12-->
    </div><!--/.row-fluid-->
