@@ -1,4 +1,5 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%! import pylowiki.lib.db.user as userLib %>
 
 <!DOCTYPE HTML>
 <html lang="en-US">
@@ -35,6 +36,18 @@
                             ${lib_6.userImage(c.authuser, className="avatar topbar-avatar")}
                             <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">profile</a>
                         </li>
+                        % if userLib.isAdmin(c.authuser.id):
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">objects<b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                    <li><a tabindex="-1" href="/admin/users">Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                                    <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                                    <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                                    <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                                </ul>
+                            </li>
+                        % endif
                      % endif
                      <li><a href="/help">help</a></li>
                      % if 'user' in session:
