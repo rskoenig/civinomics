@@ -68,4 +68,12 @@
             </div>
         </div>
     </div>
+    
+    <%
+        lib_6.flagThing(thing)
+        if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id):
+            lib_6.editThing(thing)
+        if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id):
+            lib_6.adminThing(thing)
+    %>
 </%def>
