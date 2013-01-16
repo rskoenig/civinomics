@@ -59,10 +59,10 @@
         <div class="span11 offset1">
             <div class="btn-group">
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-                % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id):
+                % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
                 % endif
-                % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id):
+                % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                 % endif
             </div>
