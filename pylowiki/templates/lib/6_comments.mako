@@ -235,12 +235,12 @@
     ${lib_6.flagThing(comment)}
     
     ## Edit
-    % if userLib.isAdmin(c.authuser.id) or c.authuser.id == comment.owner or facilitatorLib.isFacilitator(c.authuser.id):
+    % if userLib.isAdmin(c.authuser.id) or c.authuser.id == comment.owner or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
         ${lib_6.editThing(comment)}
     % endif
     
     ## Admin
-    % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id):
+    % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
         ${lib_6.adminThing(comment)}
     % endif
 </%def>
