@@ -7,6 +7,7 @@ from dbHelpers import commit, with_characteristic as wc
 from pylowiki.lib.utils import urlify, toBase62
 from time import time
 import pylowiki.lib.db.generic as generic
+import pylowiki.lib.db.revision as revisionLib
 
 log = logging.getLogger(__name__)
 
@@ -52,7 +53,18 @@ def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', delete
         .all()
     except:
         return False
-    
+
+def editDiscussion(discussion, title, text, owner):
+    try:
+        revisionLib.Revision(owner, discussion)
+        discussion['title'] = title
+        discussion['text'] = text
+        commit(discussion)
+        return True
+    except:
+        log.error('ERROR: Failed to edit discussion')
+        return False
+        
 class Discussion(object):
     # If the owner is None, the discussion is a system generated discussion, like the comments in the background wiki.
     # If the owner is not None, then the discussion was actively created by some user.

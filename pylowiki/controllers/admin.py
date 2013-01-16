@@ -101,7 +101,16 @@ class AdminController(BaseController):
             text = request.params['text']
             if title.strip() == '':
                 title = blankText
-            
+            if discussionLib.editDiscussion(c.thing, title, text, c.authuser):
+                alert = {'type':'success'}
+                alert['title'] = 'Discussion edit.'
+                alert['content'] = 'Discussion edit successful.'
+                eventLib.Event('Discussion edited by %s'%c.authuser['name'], c.thing, c.authuser)
+            else:
+                alert = {'type':'error'}
+                alert['title'] = 'Discussion edit failed.'
+                alert['content'] = 'Failed to edit discussion.'
+        
         session['alert'] = alert
         session.save()
         return redirect(session['return_to'])
