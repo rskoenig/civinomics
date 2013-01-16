@@ -86,14 +86,15 @@ def create_new_workshop(self, thisUser, **kwargs):
 
     startCreateWorkshop2 = createWorkshopForm1.submit().follow()
 
-    #complete workshop form part 2 - invite people
-    createWorkshopForm2 = startCreateWorkshop2.forms[formDefs.createWorkshopForm2()]
-    #formFields2 = createWorkshopForm2.fields
-    # add invite list, create custom email message, click box to email an invitation
-    #for key in formFields2:
-    #NOTE for now, not adding any invitees, just proceeding to next page
-    
-    #NOTE looks like form scope is getting skipped in the ui - probably just for paid workshops
+    #complete workshop form part 2
+    if 'private' in kwargs:
+        createWorkshopForm2 = startCreateWorkshop2.forms[formDefs.createWorkshopForm2(kwargs['private'])]
+    else:
+        createWorkshopForm2_submit = startCreateWorkshop2.forms[formDefs.createWorkshopForm2()]
+    #: private form id="private": (optional) can invite people and include invite message
+    #: NOTE for now, nothing happens in this case
+    #: public form id="scope": need to set the scope
+    #: NOTE creating a public workshop also requires paying for a professional workshop, need to set this up still
 
     # there are two fields that act as submit buttons:
     # addMember and continueToNext

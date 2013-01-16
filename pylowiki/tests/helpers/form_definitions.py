@@ -46,8 +46,11 @@ def createWorkshopForm1_suggestions():
 def createWorkshopForm1_title():
 	return 'title'
 
-def createWorkshopForm2():
-	return 'private'
+def createWorkshopForm2(private=True):
+	if private:
+		return 'private'
+	else:
+		return 'scope'
 
 def createWorkshopForm2_submit():
 	return 'continueToNext'

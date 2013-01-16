@@ -12,3 +12,6 @@ def ideas_page():
 
 def addIdea():
     return 'Add Idea'
+
+def login():
+	return 'login'

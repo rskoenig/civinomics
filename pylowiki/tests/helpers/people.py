@@ -19,7 +19,7 @@ def generateHash(*length):
     from random import choice
     pool, size = letters + digits, length or 10
     hash =  ''.join([choice(pool) for i in range(size)])
-    return hash
+    return hash.lower()
 
 def give_me_user(**kwargs):
     if 'email' in kwargs:
