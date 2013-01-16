@@ -33,7 +33,7 @@ class AdminController(BaseController):
         if action in ['users', 'workshops', 'ideas', 'discussions', 'resources']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
-        if action in ['edit', 'enable', 'disable', 'delete']:
+        if action in ['edit', 'enable', 'disable', 'delete', 'flag']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
@@ -114,4 +114,12 @@ class AdminController(BaseController):
         c.thing['deleted'] = '1'
         dbHelpers.commit(c.thing)
         return json.dumps({'code':thingCode, 'result':result})
+        
+    def flag(self, thingCode):
+        result = 'Successfully flagged!'
+        if flagLib.isFlagged(c.thing, c.authuser):
+            result = 'Already flagged!'
+            return json.dumps({'id':thingCode, 'result':result})
+        flagLib.Flag(c.thing, c.authuser)
+        return json.dumps({'id':thingCode, 'result':result})
         

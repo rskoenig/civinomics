@@ -27,18 +27,6 @@ import pylowiki.lib.helpers as h
 class CommentController(BaseController):
 
     @h.login_required
-    def flagComment(self, id1):
-        commentCode = id1
-        comment = getCommentByCode(commentCode)
-        if not comment:
-            return json.dumps({'id':commentCode, 'result':'ERROR'})
-        if not isFlagged(comment, c.authuser):
-            f = Flag(comment, c.authuser)
-            return json.dumps({'id':commentCode, 'result':"Successfully flagged!"})
-        else:
-            return json.dumps({'id':commentCode, 'result':"Already flagged!"})
-
-    @h.login_required
     def adminComment(self, id1):
         code = id1
         c.comment = getCommentByCode(code)

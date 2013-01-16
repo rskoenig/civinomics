@@ -198,11 +198,12 @@ def make_map():
     map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     
-    # Disable/enable/delete/edit Things
+    # Disable/enable/delete/edit/flag Things
     map.connect('/disable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'disable')
     map.connect('/enable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'enable')
     map.connect('/delete/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'delete')
     map.connect('/edit/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'edit')
+    map.connect('/flag/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'flag')
     
     ########################################################################################################
     # 
