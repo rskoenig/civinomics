@@ -334,7 +334,7 @@
    ${resourceStr | n}
 </%def>
 
-<%def name="disableThing(thing, **kwargs)">
+<%def name="disableThingLink(thing, **kwargs)">
     <%
         disableStr = 'href = "/disable/%s/%s"' %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
@@ -344,7 +344,7 @@
     ${disableStr | n}
 </%def>
 
-<%def name="enableThing(thing, **kwargs)">
+<%def name="enableThingLink(thing, **kwargs)">
     <%
         enableStr = 'href = "/enable/%s/%s"' %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
@@ -354,7 +354,7 @@
     ${enableStr | n}
 </%def>
 
-<%def name="deleteThing(thing, **kwargs)">
+<%def name="deleteThingLink(thing, **kwargs)">
     <%
         deleteStr = 'href = "/delete/%s/%s"' %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
@@ -364,7 +364,7 @@
     ${deleteStr | n}
 </%def>
 
-<%def name="flagThing(thing, **kwargs)">
+<%def name="flagThingLink(thing, **kwargs)">
     <%
         flagStr = 'href = "/flag/%s/%s"' %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
@@ -374,7 +374,7 @@
     ${flagStr | n}
 </%def>
 
-<%def name="editThing(thing, **kwargs)">
+<%def name="editThingLink(thing, **kwargs)">
     <%
         editStr = "/edit/%s/%s" %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
@@ -383,6 +383,79 @@
         editStr = 'href = ' + editStr
     %>
     ${editStr | n}
+</%def>
+
+<%def name="flagThing(thing, **kwargs)">
+    <% flagID = 'flag-%s' % thing['urlCode'] %>
+    <div class="row-fluid collapse" id="${flagID}">
+        <div class="span11 offset1 alert">
+            <strong>Are you sure you want to flag this ${thing.objType}?</strong>
+            <br />
+            <a ${flagThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
+            <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${flagID}">No</a>
+            <span id = "flagged_${thing['urlCode']}"></span>
+        </div>
+    </div>
+</%def>
+
+<%def name="editThing(thing, **kwargs)">
+    <% editID = 'edit-%s' % thing['urlCode'] %>
+    <div class="row-fluid collapse" id="${editID}">
+        <div class="span11 offset1">
+            <form action="${editThingLink(thing, embed=True)}" method="post" class="form form-horizontal">
+                <label>edit</label>
+                <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
+                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
+            </form>
+        </div>
+    </div>
+</%def>
+
+<%def name="adminThing(thing, **kwargs)">
+    <% adminID = 'admin-%s' % thing['urlCode'] %>
+    <div class="row-fluid collapse" id="${adminID}">
+        <div class="span11 offset1 alert">
+            <div class="tabbable"> <!-- Only required for left/right tabs -->
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
+                    <li><a href="#enable-${adminID}" data-toggle="tab">Enable</a></li>
+                    <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="disable-${adminID}">
+                        <form class="form-inline">
+                            <fieldset>
+                                <label>Reason:</label>
+                                <input type="text" name="disableReason" class="span8">
+                                <a ${disableThingLink(thing, embed=True) | n} class="btn disableButton">Submit</a>
+                            </fieldset>
+                        </form>
+                        <span id="disableResponse-${thing['urlCode']}"></span>
+                    </div>
+                    <div class="tab-pane" id="enable-${adminID}">
+                        <form class="form-inline">
+                            <fieldset>
+                                <label>Reason:</label>
+                                <input type="text" name="enableReason" class="span8">
+                                <a ${enableThingLink(thing, embed=True) | n} class="btn enableButton">Submit</a>
+                            </fieldset>
+                        </form>
+                        <span id="enableResponse-${thing['urlCode']}"></span>
+                    </div>
+                    <div class="tab-pane" id="delete-${adminID}">
+                        <form class="form-inline">
+                            <fieldset>
+                                <label>Reason:</label>
+                                <input type="text" name="deleteReason" class="span8">
+                                <a ${deleteThingLink(thing, embed=True) | n} class="btn deleteButton">Submit</a>
+                            </fieldset>
+                        </form>
+                        <span id="deleteResponse-${thing['urlCode']}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </%def>
 
 <%def name="ellipsisIZE(string, numChars, **kwargs)">

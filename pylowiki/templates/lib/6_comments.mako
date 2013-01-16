@@ -1,5 +1,7 @@
 <%!
     from pylowiki.lib.db.user import getUserByID, isAdmin
+    import pylowiki.lib.db.user as userLib
+    import pylowiki.lib.db.facilitator as facilitatorLib
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment
     import logging, random
@@ -230,74 +232,16 @@
     </div>
     
     ## Flag
-    <div class="row-fluid collapse" id="${flagID}">
-        <div class="span11 offset1 alert">
-            <strong>Are you sure you want to flag this comment?</strong>
-            <br />
-            <a ${lib_6.flagThing(comment)} class="btn btn-danger flagCommentButton">Yes</a>
-            <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${flagID}">No</a>
-            <span id = "flagged_${comment['urlCode']}"></span>
-        </div>
-    </div>
+    ${lib_6.flagThing(comment)}
     
     ## Edit
-    % if int(c.authuser['accessLevel']) >= 200 or c.authuser.id == comment.owner:
-        <div class="row-fluid collapse" id="${editID}">
-            <div class="span11 offset1">
-                <form action="${lib_6.editThing(comment, embed=True)}" method="post" class="form form-horizontal">
-                    <label>edit</label>
-                    <textarea class="comment-reply span12" name="textarea${comment['urlCode']}">${comment['data']}</textarea>
-                    <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
-                </form>
-            </div>
-        </div>
+    % if userLib.isAdmin(c.authuser.id) or c.authuser.id == comment.owner or facilitatorLib.isFacilitator(c.authuser.id):
+        ${lib_6.editThing(comment)}
     % endif
     
     ## Admin
-    % if int(c.authuser['accessLevel']) >= 200:
-        <div class="row-fluid collapse" id="${adminID}">
-            <div class="span11 offset1 alert">
-                <div class="tabbable"> <!-- Only required for left/right tabs -->
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
-                        <li><a href="#enable-${adminID}" data-toggle="tab">Enable</a></li>
-                        <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="disable-${adminID}">
-                            <form class="form-inline">
-                                <fieldset>
-                                    <label>Reason:</label>
-                                    <input type="text" name="disableReason" class="span8">
-                                    <a ${lib_6.disableThing(comment, embed=True) | n} class="btn disableButton">Submit</a>
-                                </fieldset>
-                            </form>
-                            <span id="disableResponse-${comment['urlCode']}"></span>
-                        </div>
-                        <div class="tab-pane" id="enable-${adminID}">
-                            <form class="form-inline">
-                                <fieldset>
-                                    <label>Reason:</label>
-                                    <input type="text" name="enableReason" class="span8">
-                                    <a ${lib_6.enableThing(comment, embed=True) | n} class="btn enableButton">Submit</a>
-                                </fieldset>
-                            </form>
-                            <span id="enableResponse-${comment['urlCode']}"></span>
-                        </div>
-                        <div class="tab-pane" id="delete-${adminID}">
-                            <form class="form-inline">
-                                <fieldset>
-                                    <label>Reason:</label>
-                                    <input type="text" name="deleteReason" class="span8">
-                                    <a ${lib_6.deleteThing(comment, embed=True) | n} class="btn deleteButton">Submit</a>
-                                </fieldset>
-                            </form>
-                            <span id="deleteResponse-${comment['urlCode']}"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id):
+        ${lib_6.adminThing(comment)}
     % endif
 </%def>
 
