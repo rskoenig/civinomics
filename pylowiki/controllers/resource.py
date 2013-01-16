@@ -318,7 +318,7 @@ class ResourceController(BaseController):
               else:
                  cMsg = cMsg + 'Comments enabled. '
            resource['allowComments'] = allowComments
-           rev = Revision(c.authuser, comment, resource)
+           rev = Revision(c.authuser, resource)
            resource['mainRevision_id'] = rev.r.id
            p = Page(title, c.authuser, resource, comment)
            commit(resource)

@@ -42,7 +42,11 @@ class AdminController(BaseController):
             workshop = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
             if not workshop:
                 return json.dumps({'code':thingCode, 'result':'ERROR'})
-            if c.thing.owner != c.authuser.id or not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
+        if action in ['enable', 'disable', 'delete']:
+            if not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
+                abort(404)
+        if action in ['edit']:
+            if c.thing.owner != c.authuser.id and (not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, workshop.id)):
                 abort(404)
     
     def users(self):

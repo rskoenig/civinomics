@@ -195,7 +195,7 @@ class DiscussionController(BaseController):
 
         else:
             d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w, title = title, text = text, workshop = c.w)
-            r = revisionLib.Revision(c.authuser, text, d.d)
+            r = revisionLib.Revision(c.authuser, d.d)
             commit(c.w)
         
         return redirect('/workshop/%s/%s/discussion/%s/%s' % (workshopCode, workshopURL, d.d['urlCode'], d.d['url']))
