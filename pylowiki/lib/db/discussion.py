@@ -59,6 +59,7 @@ def editDiscussion(discussion, title, text, owner):
         revisionLib.Revision(owner, discussion)
         discussion['title'] = title
         discussion['text'] = text
+        discussion['url'] = urlify(title)
         commit(discussion)
         return True
     except:

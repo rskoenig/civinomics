@@ -9,6 +9,7 @@ from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.workshop import getWorkshopByCode, isScoped, setWorkshopPrivs
 from pylowiki.lib.db.event import Event, getParentEvents
 from pylowiki.lib.db.resource import Resource, getResource, getResourceByLink, getResourcesByWorkshopCode, getActiveResourcesByWorkshopCode, getResourceByID, getResource, getActiveResourcesByParentID
+import pylowiki.lib.db.resource as resourceLib
 from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
 from pylowiki.lib.db.discussion import getDiscussionForThing
 from pylowiki.lib.db.comment import getCommentByCode
@@ -31,6 +32,7 @@ log = logging.getLogger(__name__)
 class ResourceController(BaseController):
 
     def index(self, id1, id2, id3, id4, id5 = ''):
+        log.info('hi')
         workshopCode = id1
         workshopURL = id2
         resourceCode = id3
@@ -45,7 +47,7 @@ class ResourceController(BaseController):
                     return render('/derived/404.bootstrap')
 
         c.title = c.w['title']
-        c.resource = getResource(resourceCode, urlify(resourceURL))
+        c.resource = resourceLib.getResourceByCode(resourceCode)
         if c.resource['parent_id'] != None and c.resource['parent_type'] != None:
             if c.resource['parent_type'] == 'suggestion':
                 c.suggestion = getSuggestionByID(c.resource['parent_id'])

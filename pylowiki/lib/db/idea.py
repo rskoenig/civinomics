@@ -45,6 +45,7 @@ def editIdea(idea, title, owner):
     try:
         r = revisionLib.Revision(owner, idea)
         idea['title'] = title
+        idea['url'] = urlify(title)
         commit(idea)
         return True
     except:

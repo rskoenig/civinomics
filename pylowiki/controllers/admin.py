@@ -110,7 +110,21 @@ class AdminController(BaseController):
                 alert = {'type':'error'}
                 alert['title'] = 'Discussion edit failed.'
                 alert['content'] = 'Failed to edit discussion.'
-        
+        elif c.thing.objType == 'resource':
+            title = request.params['title']
+            link = request.params['link']
+            comment = request.params['comment']
+            if title.strip() == '':
+                title = blankText
+            if resourceLib.editResource(c.thing, title, comment, link, c.authuser):
+                alert = {'type':'success'}
+                alert['title'] = 'Resource edit.'
+                alert['content'] = 'Resource edit successful.'
+                eventLib.Event('Resource edited by %s'%c.authuser['name'], c.thing, c.authuser)
+            else:
+                alert = {'type':'error'}
+                alert['title'] = 'Resource edit failed.'
+                alert['content'] = 'Failed to edit resource.'
         session['alert'] = alert
         session.save()
         return redirect(session['return_to'])

@@ -12,6 +12,7 @@ from pylowiki.lib.db.flag import checkFlagged
 from pylons import config
 from time import time
 from revision import Revision
+import pylowiki.lib.db.revision as revisionLib
 from tldextract import extract
 import pylowiki.lib.db.generic as generic
 
@@ -131,6 +132,25 @@ def getAllResources(deleted = '0', disabled = '0'):
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .all()
     except:
+        return False
+
+# setters
+def editResource(resource, title, comment, url, owner):
+    try:
+        revisionLib.Revision(owner, resource)
+        resource['title'] = title
+        resource['comment'] = comment
+        if not url.startswith('http://'):
+            url = u'http://' + url
+        resource['link'] = url
+        resource['url'] = urlify(title)
+        tldResults = extract(url)
+        resource['tld'] = tldResults.tld
+        resource['domain'] = tldResults.domain
+        resource['subdomain'] = tldResults.subdomain
+        return True
+    except:
+        log.error('ERROR: unable to edit resource')
         return False
 
 # Object
