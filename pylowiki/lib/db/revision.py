@@ -5,6 +5,7 @@ from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic
 from pylowiki.lib.utils import toBase62
+import pylowiki.lib.db.generic as generic
 
 log = logging.getLogger(__name__)
 
@@ -33,56 +34,13 @@ def getParentRevisions(parent_id):
     except:
         return False
 
-# Every time a revision is made, we make a new revision Thing, and update the list of revisions with the Thing id
-class Revision(Thing):
-    def __init__(self, owner, data, thing):
-        r = Thing('revision', owner.id)
-        r['data'] = data
-        if thing.objType == 'user':
-            r['name'] = thing['name']
-            r['email'] = thing['email']
-            r['postalCode'] = thing['postalCode']
-            r['pictureHash'] = thing['pictureHash']
-            if 'directoryNumber' in thing:
-                r['directoryNumber'] = thing['directoryNumber']
-            else:
-                r['directoryNumber'] = ''
-
-            if 'greetingMsg' in thing:
-                r['greetingMsg'] = thing['greetingMsg']
-            else:
-                r['greetingMsg'] = ''
-            if 'websiteLink' in thing:
-                r['websiteLink'] = thing['websiteLink']
-            else:
-                r['websiteLink'] = ''
-            if 'websiteDesc' in thing:
-                r['websiteDesc'] = thing['websiteDesc']
-            else:
-                r['websiteDesc'] = ''
-
-        if thing.objType == 'resource':
-            r['title'] = thing['title']
-            r['link'] = thing['link']
-            r['tld'] = thing['tld']
-            r['domain'] = thing['domain']
-            r['subdomain'] = thing['subdomain']
-
-        if thing.objType == 'suggestion':
-            r['title'] = thing['title']
-
-        if thing.objType == 'discussion':
-            if thing['discType'] == 'general':
-                r['title'] = thing['title']
-
-        commit(r)
-        r['urlCode'] = toBase62(r)
-        r['parent_id'] = thing.id
-        commit(r)
-        self.r = r
-        
-        if 'revisionList' not in thing.keys():
-            thing['revisionList'] = r.id
-        else:
-            thing['revisionList'] = thing['revisionList'] + ',' + str(r.id)
-        commit(thing)
+def Revision(owner, thing):
+    # A revision represents a snapshot of the entire object.
+    r = Thing('revision', owner.id)
+    for key in thing.keys():
+        r[key] = thing[key]
+    commit(r)
+    r['urlCode'] = toBase62(r)
+    generic.linkChildToParent(r, thing)
+    commit(r)
+    return r

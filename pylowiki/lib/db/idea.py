@@ -8,6 +8,7 @@ from dbHelpers import commit
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 from pylowiki.lib.utils import urlify, toBase62
 from discussion import Discussion
+import pylowiki.lib.db.revision as revisionLib
 import generic
 
 log = logging.getLogger(__name__)
@@ -38,6 +39,16 @@ def getAllIdeas(deleted = '0', disabled = '0'):
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .all()
     except:
+        return False
+
+def editIdea(idea, title, owner):
+    try:
+        r = revisionLib.Revision(owner, idea)
+        idea['title'] = title
+        commit(idea)
+        return True
+    except:
+        log.error('ERROR: unable to edit idea')
         return False
 
 def Idea(user, title, workshop):

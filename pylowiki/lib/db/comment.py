@@ -129,9 +129,8 @@ def enableComment( comment ):
     commit(comment)
 
 def editComment(comment, data):
+    r = Revision(c.authuser, comment)
     comment['data'] = data
-    r = Revision(c.authuser, data, comment)
-    
     commit(comment)
     return comment
 

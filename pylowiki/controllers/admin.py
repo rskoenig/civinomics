@@ -68,6 +68,7 @@ class AdminController(BaseController):
     
     def edit(self, thingCode):
         # A bit more complicated than enable/disable/delete
+        blankText = '(blank)'
         if c.thing.objType == 'comment':
             data = request.params['textarea' + thingCode]
             data = data.strip()
@@ -75,13 +76,32 @@ class AdminController(BaseController):
             c.thing = commentLib.editComment(c.thing, data)
             if not c.thing:
                 alert = {'type':'error'}
-                alert['title'] = 'Edit Comment failed.'
+                alert['title'] = 'Comment edit failed.'
                 alert['content'] = 'Failed to edit comment.'
             else:
                 alert = {'type':'success'}
-                alert['title'] = 'Edit Comment.'
-                alert['content'] = 'Edit comment successful.'
+                alert['title'] = 'Comment edit.'
+                alert['content'] = 'Comment edit successful.'
                 eventLib.Event('Comment edited by %s'%c.authuser['name'], c.thing, c.authuser)
+        elif c.thing.objType == 'idea':
+            title = request.params['title']
+            if title.strip() == '':
+                title = blankText
+            if ideaLib.editIdea(c.thing, title, c.authuser):
+                alert = {'type':'success'}
+                alert['title'] = 'Idea edit.'
+                alert['content'] = 'Idea edit successful.'
+                eventLib.Event('Idea edited by %s'%c.authuser['name'], c.thing, c.authuser)
+            else:
+                alert = {'type':'error'}
+                alert['title'] = 'Idea edit failed.'
+                alert['content'] = 'Failed to edit idea.'
+        elif c.thing.objType == 'discussion':
+            title = request.params['title']
+            text = request.params['text']
+            if title.strip() == '':
+                title = blankText
+            
         session['alert'] = alert
         session.save()
         return redirect(session['return_to'])
