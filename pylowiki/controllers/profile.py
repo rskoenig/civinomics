@@ -472,7 +472,7 @@ class ProfileController(BaseController):
         if anyChange and perror == 0:
             dbHelpers.commit(c.user)
             eventLib.Event('Profile updated.', changeMsg, c.user, c.authuser)
-            revisionLib.Revision(c.user, c.user['name'], c.user)
+            revisionLib.Revision(c.authuser, c.user)
             alert = {'type':'success'}
             alert['title'] = changeMsg
             alert['content'] = ''
