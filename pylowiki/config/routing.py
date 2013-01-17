@@ -65,10 +65,10 @@ def make_map():
     map.connect('/slideshow/edit', controller = 'slideshow', action = 'edit')
 
     # Workshop Base
-    map.connect('/{workshop:workshops?}/{create:create/?}', controller = 'workshop', action = 'createWorkshopForm')
+    map.connect('/{workshop:workshops?}/display/create/{form:form/?}', controller = 'workshop', action = 'displayCreateForm')
     map.connect('/{workshop:workshops?}/create/{handler:handler/?}', controller = 'workshop', action = 'createWorkshopHandler')
-    map.connect('/{workshop:workshops?}/create/{payment:payment/?}', controller = 'workshop', action = 'paymentHandler')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{upgrade:upgrade/?}', controller = 'workshop', action = 'upgradeHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/display/payment/{form:form/?}', controller = 'workshop', action = 'displayPaymentForm')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/upgrade/{handler:handler/?}', controller = 'workshop', action = 'upgradeHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}{end:/|}', controller = 'workshop', action = 'display', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/guest/{guestCode}/{workshopCode}{end:/|}', controller = 'workshop', action = 'guest', guestCode = '{guestCode}', workshopCode = '{workshopCode}')
     map.connect('/{workshop:workshops?}/{code}/{workshopURL}/follow/{handler:handler/?}', controller = 'follow', action = 'followHandler', code = '{code}')

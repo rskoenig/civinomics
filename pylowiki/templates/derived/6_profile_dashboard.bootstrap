@@ -63,7 +63,7 @@
                         % endif
                         </ul>
                         <div style="text-align: center">
-                            <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/create">
+                            <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/display/create/form">
                             <br />
                             <button type="submit" class="btn btn-warning">Create a Workshop!</button>
                             <br /><br />

@@ -103,7 +103,7 @@ class WorkshopController(BaseController):
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'dashboard']
         
         scoped = ['display', 'displayAllResources']
-        dontGetWorkshop = ['createWorkshopForm', 'paymentHandler', 'createWorkshopHandler']
+        dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
             return
@@ -557,11 +557,11 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
-    def createWorkshopForm(self):
+    def displayCreateForm(self):
         return render('/derived/6_workshop_create.bootstrap')
     
     @h.login_required
-    def paymentHandler(self):
+    def displayPaymentForm(self):
         return render('/derived/6_workshop_payment.bootstrap')
     
     @h.login_required
@@ -590,7 +590,7 @@ class WorkshopController(BaseController):
             if 'paymentToken' in request.params:
                 wType = 'professional'
             else:
-                return redirect('/workshop/create/payment')
+                return redirect('/workshop/display/payment/form')
                 
         w = workshopLib.Workshop('replace with a real name!', c.authuser, 'private', wType)
         c.workshop_id = w.w.id # TEST

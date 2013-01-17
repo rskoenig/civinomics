@@ -3,13 +3,14 @@
 <%namespace name="helpers" file="/lib/derived/6_workshop_create.mako" />
 
 
-<div class="container-fluid well">
-    <h3>Create A New Workshop</h3><br />
-    <strong>Choose which kind of workshop to create:</strong><br /><br />
-    % if c.conf['read_only.value'] == 'true':
-        <!-- read only -->
-    % else:
-        ${helpers.createWorkshop()}
-    % endif
-</div><!-- container -->
+<div class="section-wrapper">
+    <div class="browse">
+        <h4 class="section-header" style="text-align: center"><br />Create A New Workshop</h4>
+        % if c.conf['read_only.value'] == 'true':
+            <!-- read only -->
+        % else:
+            ${helpers.createWorkshop()}
+        % endif
+    </div><!-- browse -->
+</div><!-- section-wrapper -->
 
