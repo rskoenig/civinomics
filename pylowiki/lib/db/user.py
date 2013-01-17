@@ -208,7 +208,7 @@ class User(object):
         
         u['activationHash'] = hash
         commit(u)
-        Revision(u, u['name'], u)
+        Revision(u, u)
         
         log.info("Successful account creation (deactivated) for %s" %toEmail)
 
