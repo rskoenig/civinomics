@@ -192,5 +192,5 @@ class Resource(object):
         self.a = a
         commit(a)
         data = a['comment']
-        r = Revision(c.authuser, data, a)
+        r = revisionLib.Revision(c.authuser, a)
 

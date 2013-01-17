@@ -21,7 +21,7 @@
                     <input type="hidden" name="upgradeToken" value="hella">
                     <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
                 % else:
-                    <form action="/" method="post" id="paymentForm" style="display: none;">
+                    <form action="/workshop/create/handler" method="post" id="paymentForm" style="display: none;">
                     <input type="hidden" name="paymentToken" value="hella">
                 % endif
 

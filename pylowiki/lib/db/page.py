@@ -37,12 +37,13 @@ class Page(object):
         p['url'] = urlify(title)
         p['type'] = thing.objType
         p['deleted'] = '0'
+        p['data'] = data
         commit(p)
         self.p = p
         
-        r = Revision(owner, data, p)
+        r = Revision(owner, p)
         
-        self.setThingProperties(p, r.r, thing)
+        self.setThingProperties(p, r, thing)
         
     # thing in this case is the workshop Thing
     def setThingProperties(self, page, revision, thing):
