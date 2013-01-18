@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style type="text/css" media="screen">
+  .slides_container {
+    width:550;
+    height:460px;
+    display:none;
+  }
+  .slides_container div {
+    width:550px;
+    height:460px;
+    display:block;
+  }
+  .pagination {
+    list-style:none;
+    margin:0;
+    padding:0;
+    align: left;
+  }
+  html {
+    height: 100%;
+  }
+  body {
+    text-align:center;
+    height: 100%;
+    overflow:auto;
+  }
+  #wrap{
+    min-height: 100%;
+  }
+  #container{ 
+    width:1000px; 
+    margin: 0 auto;
+    text-align: left;
+    padding-bottom: 240px;
+    padding-top: 60px;
+    overflow: auto;
+  }
+  #footer{
+    margin:0;  
+    text-align:left;
+    background-color:#d9dad9;
+    margin-top: -240px;
+    height: 200px;
+    position:relative;    
+  }
+  .btn {
+    vertical-align: top;
+  }
+  .form-subtext{
+    font-size: 11px;
+  }
+</style>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Civinomics</title>
+    <!-- old styles -->
+    <!-- <link type="text/css" rel="stylesheet" href="/styles/global.css" /> -->
+    <!-- <link type="text/css" rel="stylesheet" href="/styles/page.css" /> -->
+    <!-- <link type="text/css" rel="stylesheet" href="/styles/corporate.css" /> -->
+    <!-- <link type="text/css" rel="stylesheet" href="/styles/splash.css" /> -->
+    <!-- end old styles -->
+    
+    <link href="/styles/bootstrap/civinomics_corp.css" rel="stylesheet">
+    <link href="/styles/bootstrap/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    
+
+    
+     
+</head>
+
+<body>
+    
+
+        
+    ${self.facebookID()}    
+        
+    <div id="wrap">
+    ${self.navbar()}
+        <div id="container">
+            <div class="row" style="padding-bottom:25px;"><!--main content-->
+                
+                <div class="span6" style="width:600px;">
+                    
+                    <!-- <div id="main" class="clr"> 
+                        <div class="left"> -->
+                            <div id="splash_slide">
+                                <div id="slides">
+                                  <div class="slides_container">
+                                      
+                                    <div class="slide">
+                                       <ul class="thumbnails">
+                                            <li> 
+                                                <div class="thumbnail" style="height:450px">
+                                                   <img src="/images/fluid1_images/cemex.jpg" alt="">
+                                                        <div class="span5" style="width:400px; margin-left: 0px;">
+                                                            <h3>CEMEX Redwoods Conservation</h3>
+                                                            <p>Public Sphere: Santa Cruz County </br>
+                                                            Starts: 06-30-2012</p>
+                                                        </div>
+                                                        <div style="padding-top: 5px;" align="right">
+                                                            <img src="/images/flags/sc_county.png"/>
+                                                        </div>
+                                                </div>
+                                             </li>
+                                         </ul>
+                                    </div>
+                                    
+                                     <div class="slide">
+                                       <ul class="thumbnails">
+                                            <li> 
+                                                <div class="thumbnail" style="height:450px">
+                                                   <img src="/images/fluid1_images/cap.jpg" alt="">
+                                                        <div class="span5" style="width:400px; margin-left: 0px;">
+                                                            <h3>Santa Cruz Climate Action Plan</h3>
+                                                            <p>Public Sphere: City of Santa Cruz</br>
+                                                            Starts: 06-30-2012</p>
+                                                        </div>
+                                                        <div style="padding-top: 5px;" align="right">
+                                                            <img src="/images/flags/santacruz.png"/>
+                                                        </div>
+                                                </div>
+                                             </li>
+                                         </ul>
+                                    </div>  
+                                   
+                                    <div class="slide">
+                                       <ul class="thumbnails">
+                                            <li> 
+                                                <div class="thumbnail" style="height:450px">
+                                                   <img src="/images/fluid1_images/eastside.png" alt="">
+                                                        <div class="span5" style="width:400px; margin-left: 0px;">
+                                                            <h3>Eastside Recycled Water Project</h3>
+                                                            <p>Public Sphere: City of San Francisco</br>
+                                                            Starts: 07-18-2012</p>
+                                                        </div>
+                                                        <div style="padding-top: 5px;" align="right">
+                                                            <img src="/images/flags/sf_flag.png"/>
+                                                        </div>
+                                                </div>
+                                             </li>
+                                         </ul>
+                                    </div>
+                                    
+                                    <div class="slide">
+                                       <ul class="thumbnails">
+                                            <li> 
+                                                <div class="thumbnail" style="height:450px">
+                                                   <img src="/images/fluid1_images/scwd3.png" alt="">
+                                                        <div class="span5" style="width:400px; margin-left: 0px;">
+                                                            <h3>Santa Cruz Water Planning</h3>
+                                                            <p>Public Sphere: City of Santa Cruz</br>
+                                                            Starts: 09-30-2012</p>
+                                                        </div>
+                                                        <div style="padding-top: 5px;" align="right">
+                                                            <img src="/images/flags/santacruz.png"/>
+                                                        </div>
+                                                </div>
+                                             </li>
+                                         </ul>
+                                    </div>
+                                    
+                                    <div class="slide">
+                                       <ul class="thumbnails">
+                                            <li> 
+                                                <div class="thumbnail" style="height:450px">
+                                                   <img src="/images/fluid1_images/uwf.jpg" alt="">
+                                                        <div class="span5" style="width:400px; margin-left: 0px;">
+                                                            <h3>Urban Watershed Framework</h3>
+                                                            <p>Public Sphere: City of San Francisco</br>
+                                                            Starts: 07-18-2012</p>
+                                                        </div>
+                                                        <div style="padding-top: 5px;" align="right">
+                                                            <img src="/images/flags/sf_flag.png"/>
+                                                        </div>
+                                                </div>
+                                             </li>
+                                         </ul>
+                                    </div>
+                                    
+                                    
+                                     
+                                    
+                                    
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+            
+            <div class="span3" style="width:270px;">
+                    <div class="well" style="background-color:#bcbcbb;height:300px;">
+                        <h2>Join Beta</h2>
+                        </br>
+                        <p style="font-size:16px; font-style:italic; font-weight:bold;">Build your community</p>
+                        <p>Enter your email for an invite to our Beta Launch</p>
+                        <form class="form" name="emailSubmit" method="post" action="landing/emailSubmit"> 
+                            <input name="email" type="text" placeholder="Email">
+                            <button value="Submit" data-toggle="modal" href="#windowTitleDialog" class="btn btn-primary pull-right" style="margin-right:10px">Submit</button>
+                        </br>
+                        </br>
+                        </form>
+                        <div class="modal hide fade" id="windowTitleDialog">
+                            <div class="modal-header">
+                                <a href="#" class="close" data-dismiss="modal">&times;</a>
+                                <h3>Success!</h3>
+                            </div>
+                            <div class="modal-body">
+                                <div class="divDialogElements">
+                                    We've added you to the BETA invite list. You'll receive an email invite when we launch. 
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a href="#" class="btn btn-primary" onclick="okClicked ();">OK</a>
+                                </div>
+                            </div>
+                        </div><!-- Close modal -->  
+                    </div> <!-- Close well -->
+                </div> <!-- Close span -->
+            
+            </div><!-- Close row -->
+        </div><!-- Close container -->
+    </div><!-- Close Wrap -->
+    
+         <footer id="footer" class="wellfooter">
+            <div class="row" style="width: 1000px; margin: 0 auto;">
+                <div class="span2">
+                    <ul class="unstyled">
+                        <li><h4>ORGANIZATION</h4></li>
+                        <li><a href="/corp/about">About Us</a></li>
+                        <li><a href="http://www.civinomics.wordpress.com" target="_blank"> Development Blog</li>
+                        <li><a href="/corp/careers">Careers</a></li>
+                        <li><a href="/corp/privacy">Privacy Policy</a></li>
+                        <li><a href="/corp/terms">Terms of Use</a></li>
+                    </ul>
+                </div>
+                <div class="span3">
+                    <ul class="unstyled">
+                        <li><h4>SERVICES</h4></li>
+                        <li><a href="/corp/outreach">Outreach</a></li>
+                        <li><a href="#">Create a workshop </a><span class="label label-warning">Coming Soon</span></li>
+                    </ul>
+                </div>
+                <div class="span3">
+                    <ul class="unstyled" style="color:#818180;">
+                    <li><div class="fb-like" data-href="http://www.facebook.com/civinomics" data-send="true" data-width="395" data-show-faces="true"></div> 
+                    </li>
+                    <li><a href="https://twitter.com/civinomics" class="twitter-follow-button" data-show-count="true" data-size="large">Follow @civinomics</a></li>
+                    <li><g:plusone annotation="inline"></g:plusone></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="row" style="width: 1000px; margin: 0 auto;">
+                <div class="span10 offset1" style="color:#818180;" align="right">
+                    </br>
+                    <p>
+                        © 2012 Civinomics Inc. All rights reserved.
+                    </p>
+                </div>
+            </div>
+      </footer>
+      
+        <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/bootstrap/jquery.js"></script>
+    <script src="/js/bootstrap/bootstrap-modal.js"></script>
+    
+    
+   
+
+    <script type="text/javascript">
+        function closeDialog () {
+            $('#windowTitleDialog').modal('hide'); 
+            };
+        function okClicked () {
+            closeDialog ();
+            };
+    </script>
+    
+    
+           <!-- slideshow related scripts -->
+    <script src="/js/slides.min.jquery.js" type="text/javascript"></script>
+<script>
+  $(function(){
+    $("#slides").slides({
+        container: 'slides_container',
+        preload: true,
+        play: 5000,
+        pause: 100,
+        effect: 'fade',
+        generateNextPrev: false,
+        generatePagination: false,
+        pagination: false,
+        hoverPause: true
+    });
+  });
+</script>
+
+    
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-27633393-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+    
+      
+      <!-- additional social media scripts -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    </script>
+
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+
+
+</body>
+
+</html>
+
+<%def name="navbar()">
+<div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container-fluid">
+              <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+
+                <div class="span2 offset">
+                    <a href="/"><img src="/images/fluid1_images/logo_header8.png"></a>
+                </div>
+
+              <div class="nav-collapse">
+              </div><!--/.nav-collapse -->
+            </div>
+          </div>
+        </div>
+</%def>
+
+<%def name="facebookID()">
+    <!-- Facebook Like Button -->
+        <div id="fb-root"></div>
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '421911304496726', // App ID
+              channelUrl : '//WWW.CIVINOMICS.COM/channel.html', // Channel File
+              status     : true, // check login status
+              cookie     : true, // enable cookies to allow the server to access the session
+              xfbml      : true  // parse XFBML
+            });
+
+            // Additional initialization code here
+          };
+
+          // Load the SDK Asynchronously
+          (function(d){
+             var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement('script'); js.id = id; js.async = true;
+             js.src = "//connect.facebook.net/en_US/all.js";
+             ref.parentNode.insertBefore(js, ref);
+           }(document));
+        </script>
+</%def>
+
+
+
+
