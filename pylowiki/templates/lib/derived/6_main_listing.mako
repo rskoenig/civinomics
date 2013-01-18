@@ -21,7 +21,7 @@
       <p class="centered orange">
          <a ${lib_6.workshopLink(w)}> ${w['title']} </a>
       </p>
-      <small>
+      <small class="workshop-description">
           ${lib_6.ellipsisIZE(w['description'], 100)}
       </small>
       <p class="pull-right orange workshop-listing-info"> 

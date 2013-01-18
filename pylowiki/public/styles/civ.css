@@ -42,11 +42,23 @@ hr.civ-topbar-hr{
   margin-left: -10px;
   margin-right: -10px;
   margin-top: -10px;
-  //padding-top: 10px;
-  //padding-bottom: 10px;
 }
 .section-wrapper .activity {
   padding: 10px;
+}
+
+.wrap-workshop{
+    border: 5px solid #075D00;
+    background-color: gainsboro;
+}
+
+.wrap-workshop:hover{
+    border: 5px solid #D15D00;
+    background-color: gainsboro;
+}
+
+.workshop-description{
+    margin-left:5px;
 }
 
 .section-wrapper.activityStream{
@@ -377,7 +389,7 @@ ul.listeners > li {
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
     float: left;
-    margin: 0 9px 9px 0;
+    margin: 0 0 9px 0;
     overflow: hidden;
     position: relative;
     max-height: 190px;
