@@ -1,4 +1,5 @@
 <%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <div class="section-wrapper">
     <div class="browse">
@@ -16,25 +17,24 @@
             <div class="span1">
             </div>
             <div class="span10">
+                ${lib_6.fields_alert()}
+                <span class="payment-errors"></span><br />
                 % if c.w:
-                    <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="post" id="paymentForm" style="display: none;">
-                    <input type="hidden" name="upgradeToken" value="hella">
+                    <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="post" id="paymentForm">
                     <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
                 % else:
-                    <form action="/workshop/create/handler" method="post" id="paymentForm" style="display: none;">
-                    <input type="hidden" name="paymentToken" value="hella">
+                    <form action="/workshop/create/handler" method="post" id="paymentForm">
                 % endif
-
                 <div class="form-row">
                     <label for="name" class="stripeLabel">Name as it appears on credit card</label>
-                    <input type="text" name="name" class="required" />
+                    <input type="text" name="name" value="${c.billingName}" class="required" />
                 </div><!-- form-row -->
                 <div class="form-row">
                     <label for="email">Billing E-mail Address</label>
-                    <input type="text" name="email" class="required" />
+                    <input type="text" name="email" value="${c.billingEmail}" class="required" />
                 </div><!-- form-row -->
                 <div class="form-row">
-                    <label>Credit Card Number</label>
+                    <label>Credit Card Number (use 4242424242424242 for testing)</label>
                     <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
                 </div><!-- form-row -->
                 <div class="form-row">
@@ -65,16 +65,7 @@
                     </div><!-- expiry-wrapper -->
                 </div><!-- form-row -->
                 <button type="submit" name="submit-button">Submit</button>
-                <span class="payment-errors"></span>
                 </form>
-                <!--
-                    The easiest way to indicate that the form requires JavaScript is to show
-                    the form with JavaScript (otherwise it will not render). You can add a
-                    helpful message in a noscript to indicate that users should enable JS.
-                -->
-
-                <script>if (window.Stripe) $("#paymentForm").show()</script>
-                <noscript><p>JavaScript is required for the registration form.</p></noscript>
             </div><!-- span10 -->
         % endif
     </div><!-- row-fluid -->
@@ -82,88 +73,41 @@
 </div><!-- section-wrapper -->
 
 <%def name="headScripts()">
-    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
-    <script type="text/javascript">
-        $('.icon-question-sign').tooltip();
-    </script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.8.1/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
     <script type="text/javascript">
         Stripe.setPublishableKey('pk_test_joaQ75q6dZ4Zr9q3q2VuThBu');
-        $(document).ready(function() {
-            function addInputNames() {
-                // Not ideal, but jQuery's validate plugin requires fields to have names
-                // so we add them at the last possible minute, in case any javascript
-                // exceptions have caused other parts of the script to fail.
-                $(".card-number").attr("name", "card-number")
-                $(".card-cvc").attr("name", "card-cvc")
-                $(".card-expiry-year").attr("name", "card-expiry-year")
+ 
+        function stripeResponseHandler(status, response) {
+            if (response.error) {
+                // Show the errors on the form
+                $('.payment-errors').html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Error: </strong> ' + response.error.message + '<div>');
+                $('.submit-button').prop('disabled', false);
+            } else {
+                var $form = $('#paymentForm');
+                // token contains id, last4, and card type
+                var token = response.id;
+                // Insert the token into the form so it gets submitted to the server
+                $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+                // and submit
+                $form.get(0).submit();
             }
+        }
+        $(function() {
+            $('#paymentForm').submit(function(event) {
+                // Disable the submit button to prevent repeated clicks
+                $('.submit-button').prop('disabled', true);
 
-            function removeInputNames() {
-                $(".card-number").removeAttr("name")
-                $(".card-cvc").removeAttr("name")
-                $(".card-expiry-year").removeAttr("name")
-            }
-
-            function submit(form) {
-                // remove the input field names for security
-                // we do this *before* anything else which might throw an exception
-                removeInputNames(); // THIS IS IMPORTANT!
-                // given a valid form, submit the payment details to stripe
-                $(form['submit-button']).attr("disabled", "disabled")
                 Stripe.createToken({
                     number: $('.card-number').val(),
                     cvc: $('.card-cvc').val(),
                     exp_month: $('.card-expiry-month').val(),
                     exp_year: $('.card-expiry-year').val()
-                    }, function(status, response) {
-                if (response.error) {
-                    // re-enable the submit button
-                    $(form['submit-button']).removeAttr("disabled")
-                    // show the error
-                    $(".payment-errors").html(response.error.message);
-                    // we add these names back in so we can revalidate properly
-                    addInputNames();
-                } else {
-                    // token contains id, last4, and card type
-                    var token = response['id'];
-                    // insert the stripe token
-                    var input = $("<input name='stripeToken' value='" + token + "' style='display:none;' />");
-                    form.appendChild(input[0])
-                    // and submit
-                    form.submit();
-                }
-            });
-            return false;
-        }
-        // add custom rules for credit card validating
-        jQuery.validator.addMethod("cardNumber", Stripe.validateCardNumber, "Please enter a valid card number");
-        jQuery.validator.addMethod("cardCVC", Stripe.validateCVC, "Please enter a valid security code");
-        jQuery.validator.addMethod("cardExpiry", function() {
-        return Stripe.validateExpiry($(".card-expiry-month").val(),
-            $(".card-expiry-year").val())
-    }, "Please enter a valid expiration");
+                }, stripeResponseHandler);
 
-    // We use the jQuery validate plugin to validate required params on submit
-    $("#paymentForm").validate({
-        submitHandler: submit,
-        rules: {
-            "card-cvc" : {
-                cardCVC: true,
-                required: true
-            },
-            "card-number" : {
-                cardNumber: true,
-                required: true
-            },
-            "card-expiry-year" : "cardExpiry" 
-            // we don't validate month separately
-        }
-    });
-    // adding the input field names is the last step, in case an earlier step errors
-    addInputNames();
-});
-</script>
+                // Prevent the form from submitting with the default action
+                return false;
+            });
+        });
+    </script>
 </%def>

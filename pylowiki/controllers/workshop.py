@@ -566,8 +566,42 @@ class WorkshopController(BaseController):
         return render('/derived/6_workshop_payment.bootstrap')
     
     @h.login_required
+    def validatePaymentForm(self):
+        
+        pError = 0
+        pErrorMsg = ''
+        
+        if 'name' in request.params and request.params['name'] != '':
+            c.billingName = request.params['name']
+        else:
+            pError = 1
+            pErrorMsg += 'Credit Card Name required. '
+            
+        if 'email' in request.params and request.params['email'] != '':
+            c.billingEmail = request.params['email']
+        else:
+            pError = 1
+            pErrorMsg += 'Billing email addresss required. '
+            
+        if 'stripeToken' in request.params and request.params['stripeToken'] != '':
+            c.stripeToken = request.params['stripeToken']
+        else:
+            pError = 1
+            pErrorMsg = 'Invalid credit card information.'
+            
+        if pError: 
+            alert = {'type':'error'}
+            alert['title'] = 'Error.' + pErrorMsg
+            session['alert'] = alert
+            session.save()
+            
+            return False
+            
+        return True
+  
+    @h.login_required
     def upgradeHandler(self, workshopCode):
-        if 'upgradeToken' in request.params:
+        if self.validatePaymentForm():
                 if 'workshopCode' in request.params:
                     workshopCode = request.params['workshopCode']
                     workshop = workshopLib.getWorkshopByCode(workshopCode)
@@ -588,10 +622,10 @@ class WorkshopController(BaseController):
         if 'createPersonal' in request.params:
             wType = 'personal'
         else:
-            if 'paymentToken' in request.params:
+            if self.validatePaymentForm():
                 wType = 'professional'
             else:
-                return redirect('/workshop/display/payment/form')
+                return render('/derived/6_workshop_payment.bootstrap')
                 
         w = workshopLib.Workshop('replace with a real name!', c.authuser, 'private', wType)
         c.workshop_id = w.w.id # TEST
