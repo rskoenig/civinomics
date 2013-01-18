@@ -64,7 +64,12 @@
                         </script>
                     </div><!-- expiry-wrapper -->
                 </div><!-- form-row -->
-                <button type="submit" name="submit-button">Submit</button>
+                <div class="form-row">
+                    <label for="name" class="stripeLabel">Coupon</label>
+                    <input type="text" name="coupon" value="${c.coupon}" class="required" />
+                </div><!-- form-row -->
+                <div class="form-row">
+                <button type="submit" name="submit-button" class="btn btn-warning">Submit</button>
                 </form>
             </div><!-- span10 -->
         % endif

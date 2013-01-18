@@ -1,6 +1,7 @@
 import logging, re, pickle, formencode
 import datetime
 import re
+import stripe
 
 from formencode import validators, htmlfill
 from formencode.compound import All
@@ -31,6 +32,7 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.page         as pageLib
+import pylowiki.lib.db.account      as accountLib
 
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
@@ -589,6 +591,11 @@ class WorkshopController(BaseController):
             pError = 1
             pErrorMsg = 'Invalid credit card information.'
             
+        if 'coupon' in request.params and request.params['coupon'] != '':
+            c.coupon = request.params['coupon']
+        else:
+            c.coupon = ''
+            
         if pError: 
             alert = {'type':'error'}
             alert['title'] = 'Error.' + pErrorMsg
@@ -598,6 +605,29 @@ class WorkshopController(BaseController):
             return False
             
         return True
+        
+    @h.login_required
+    def createAccount(self, workshop):  
+        # this needs to follow the validatePaymentForm function above but AFTER the workshop is created
+        stripe.api_key = "sk_test_h0WSlqS24hDrcVCYhaIV7eKC"
+        description = "Civinomics account for customer " + c.billingName + " " + c.billingEmail + " workshop code " + workshop['urlCode']
+        plan = "PRO"
+        
+        if c.coupon and c.coupon != '':
+            customer = stripe.Customer.create( 
+                    description = description, 
+                    card = c.stripeToken,
+                    plan = plan,
+                    coupon = c.coupon,
+                    email = c.billingEmail)
+        else:
+            customer = stripe.Customer.create( 
+                    description = description, 
+                    card = c.stripeToken,
+                    plan = plan,
+                    email = c.billingEmail)
+                    
+        account = accountLib.Account(c.billingName, c.billingEmail, customer['id'], workshop, plan, c.coupon)
   
     @h.login_required
     def upgradeHandler(self, workshopCode):
@@ -607,6 +637,7 @@ class WorkshopController(BaseController):
                     workshop = workshopLib.getWorkshopByCode(workshopCode)
                     workshop['type'] = 'professional'
                     dbHelpers.commit(workshop)
+                    self.createAccount(workshop)
                     alert = {'type':'success'}
                     alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
                     session['alert'] = alert
@@ -817,7 +848,7 @@ class WorkshopController(BaseController):
             c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
             
         c.page = pageLib.getInformation(c.w)
-        if c.page['data'] != "No wiki background set yet":
+        if c.page and 'data' in c.page and c.page['data'] != "No wiki background set yet":
             c.backConfig = 1
         else:
             c.backConfig = 0

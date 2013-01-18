@@ -209,5 +209,7 @@
 </%def>
 
 <%def name="showInfo(workshop)">
-    ${misaka.html(c.information['data']) | n}
+    % if c.information and 'data' in c.information:
+        ${misaka.html(c.information['data']) | n}
+    % endif
 </%def>

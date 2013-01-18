@@ -182,7 +182,7 @@
                 <div id="wiki-section-break">
                     <strong>Detailed workshop information</strong><br />
                     <div class="well">
-                        <textarea rows="10" id="data" name="data" >${c.page['data']}</textarea>
+                        <textarea rows="10" id="data" name="data" ></textarea>
                         <div style="text-align:right; padding-right:35px;">
                             <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
                         </div><!-- text-align -->
