@@ -662,6 +662,8 @@ class WorkshopController(BaseController):
         c.workshop_id = w.w.id # TEST
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.w.id, w.w.id)
+        if wType == 'professional':
+            self.createAccount(w.w)
         alert = {'type':'success'}
         alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
         session['alert'] = alert
