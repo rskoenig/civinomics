@@ -90,7 +90,8 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listPrivateMembersHandler{end:/?}', controller = 'workshop', action = 'listPrivateMembersHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configurePublicWorkshopHandler{end:/?}', controller = 'workshop', action = 'configurePublicWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureContinueHandler{end:/?}', controller = 'workshop', action = 'dashboard', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
-    
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/update/background/handler{end:/?}', controller = 'wiki', action = 'updateBackgroundHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+
     # Workshop slideshow
     map.connect('/{workshop:workshops?}/{id1}/{id2}/{image:addImages/?}', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{id1}/{id2}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
@@ -312,7 +313,5 @@ def make_map():
     map.connect('/{controller}/{action}', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/', controller='{controller}', action='{action}')
     map.connect('/{controller}/{action}/{id}')
-    
-    map.connect('/wiki/handler/{workshopCode}/{workshopURL}', controller = 'wiki', action = 'handler')
     
     return map
