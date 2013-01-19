@@ -566,6 +566,7 @@ class WorkshopController(BaseController):
     
     @h.login_required
     def displayPaymentForm(self):
+        c.stripeKey = config['app_conf']['stripePublicKey'].strip()
         return render('/derived/6_workshop_payment.bootstrap')
     
     @h.login_required
@@ -591,11 +592,11 @@ class WorkshopController(BaseController):
         else:
             pError = 1
             pErrorMsg = 'Invalid credit card information.'
-            
+
+        c.coupon = ''
         if 'coupon' in request.params and request.params['coupon'] != '':
-            c.coupon = request.params['coupon']
-        else:
-            c.coupon = ''
+            if request.params['coupon'] == 'CIVCOMP1':
+                c.coupon = request.params['coupon']
             
         if pError: 
             alert = {'type':'error'}
@@ -607,10 +608,10 @@ class WorkshopController(BaseController):
             
         return True
         
+    # this needs to follow the validatePaymentForm function above but AFTER the workshop is created
     @h.login_required
     def createAccount(self, workshop):  
-        # this needs to follow the validatePaymentForm function above but AFTER the workshop is created
-        stripe.api_key = "sk_test_h0WSlqS24hDrcVCYhaIV7eKC"
+        stripe.api_key = config['app_conf']['stripePrivateKey'].strip()
         description = "Civinomics account for customer " + c.billingName + " " + c.billingEmail + " workshop code " + workshop['urlCode']
         plan = "PRO"
         
@@ -647,6 +648,7 @@ class WorkshopController(BaseController):
                 else:
                     abort(404)
         else:
+            c.stripeKey = config['app_conf']['stripePublicKey'].strip()
             return render('/derived/6_workshop_payment.bootstrap')
         
     @h.login_required
@@ -657,12 +659,15 @@ class WorkshopController(BaseController):
             if self.validatePaymentForm():
                 wType = 'professional'
             else:
+                c.stripeKey = config['app_conf']['stripePublicKey'].strip()
                 return render('/derived/6_workshop_payment.bootstrap')
                 
         w = workshopLib.Workshop('replace with a real name!', c.authuser, 'private', wType)
         c.workshop_id = w.w.id # TEST
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.w.id, w.w.id)
+        if wType == 'professional':
+            self.createAccount(w.w)
         alert = {'type':'success'}
         alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
         session['alert'] = alert
@@ -847,6 +852,8 @@ class WorkshopController(BaseController):
 
         if c.w['public_private'] != 'public':
             c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
+            
+        c.accounts = accountLib.getAccountsForWorkshop(c.w)
             
         c.page = pageLib.getInformation(c.w)
         if c.page and 'data' in c.page and c.page['data'] != "No wiki background set yet":

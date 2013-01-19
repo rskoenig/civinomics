@@ -135,6 +135,7 @@ class RegisterController(BaseController):
                 if password == password2:
                     u = User(email, name, password, country, memberType, postalCode)
                     message = "The user '" + username + "' was created successfully!"
+                    c.success = True
                                 
                     log.info( message )
                     splashMsg['type'] = 'success'

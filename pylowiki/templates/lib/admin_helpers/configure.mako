@@ -178,18 +178,15 @@
             <h4 class="section-header" style="text-align: center"><br />Workshop Information Summary</h4>
             Enter introductory background information about your workshop topic and goals. What do participants need to know about the topic? What do you hope to accomplish in this workshop? This information will appear on the workshop home page with the slideshow.  
             <br /><br />
-            ${h.form(url(controller = "wiki", action ="handler", workshopCode = c.w['urlCode'], workshopURL = c.w['url']),method="put",id="wikiBackground")}
-                <div id="wiki-section-break">
-                    <strong>Detailed workshop information</strong><br />
-                    <div class="well">
-                        <textarea rows="10" id="data" name="data" ></textarea>
-                        <div style="text-align:right; padding-right:35px;">
-                            <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
-                        </div><!-- text-align -->
-                    </div><!-- well -->
-                </div> <!-- /#wiki-section-break -->
-            ${h.hidden("dashboard","dashboard")}
-            ${h.end_form()}
+            <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
+                <strong>Detailed workshop information</strong><br />
+                <div class="well">
+                    <textarea rows="10" id="data" name="data" >${c.page['data']}</textarea>
+                    <div style="text-align:right; padding-right:35px;">
+                        <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+                    </div><!-- text-align -->
+                </div><!-- well -->
+            </form>
         </div><!-- browse -->
     </div><!-- sectio-wrapper -->
 </%def>

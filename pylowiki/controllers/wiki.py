@@ -20,18 +20,17 @@ log = logging.getLogger(__name__)
 
 class WikiController(BaseController):
 
-    @h.login_required
-    def __before__(self, action, workshopCode = None, workshopURL = None):
+    @h.login_required 
+    def __before__(self, action, workshopCode = None):
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
-        if not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+        if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
             abort(404)
-    
-    def handler(self, workshopCode, workshopURL):
-        """ Handles wiki Submit """
+   
+    def updateBackgroundHandler(self, workshopCode, workshopURL):
         session['confTab'] = "tab5"
         
         try:

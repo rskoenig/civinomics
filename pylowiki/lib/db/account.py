@@ -4,11 +4,11 @@ from pylowiki.lib.utils import toBase62
 from pylowiki.lib.db.dbHelpers import commit
 import generic
 
-def getAccountsForWorkshop(workshopCode, deleted = '0', suspended = '0'):
+def getAccountsForWorkshop(workshop, deleted = '0', suspended = '0'):
     try:
         return meta.Session.query(Thing)\
             .filter_by(objType = 'account')\
-            .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .filter(Thing.data.any(wc('suspended', suspended)))\
             .all()

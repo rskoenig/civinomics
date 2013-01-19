@@ -4,7 +4,7 @@
 
 <div class="row">
    <div class = "span12">
-      ${lib_6.geoBreadcrumbs()}
+        ${lib_6.geoBreadcrumbs()}
    </div><!--/.span12-->
 </div><!-- /.row-->
 <div class="row">

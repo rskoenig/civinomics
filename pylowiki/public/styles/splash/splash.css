@@ -71,6 +71,33 @@ html, body {
     filter:alpha(opacity=90); /* For IE8 and earlier */
 }
 
+.success-well{
+    background-color:#DFF0D8;
+    border-color:#D6E9C6;
+    color:#468847;
+    background-repeat: repeat;
+    background-position: top left;
+    font-size:24px;
+    line-height:36px;
+
+    opacity:0.9;
+    filter:alpha(opacity=90);  /* For IE8 and earlier */
+
+    -webkit-box-shadow:rgba(0, 0, 0, 0.0470588) 0 1px 1px inset;
+    border:1px solid rgba(0, 0, 0, 0.0470588);
+    border-bottom-left-radius:4px;
+    border-bottom-right-radius:4px;
+    border-top-left-radius:4px;
+    border-top-right-radius:4px;
+    box-shadow:rgba(0, 0, 0, 0.0470588) 0 1px 1px inset;
+    margin-bottom:20px;
+    min-height:20px;
+    padding:19px;
+}
+
+
+}
+
 .photoCredits{
     margin-top: 475px;
     text-align: left;
@@ -178,7 +205,7 @@ html, body {
     color:#252f1e;
 }
 
-.login-top > h2{
+.login-top > h2,p{
     text-align:center;
 }
 
