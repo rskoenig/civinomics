@@ -1,0 +1,118 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
+<div class="section-wrapper">
+    <div class="browse">
+    % if c.w:
+        <h4 class="section-header" style="text-align: center"><br />Upgrade to Professional Workshop Payment</h4><br />
+    % else:
+        <h4 class="section-header" style="text-align: center"><br />New Professional Workshop Payment</h4><br />
+    % endif
+    $99 per month will be charged to your credit card. You may unpublish your workshop and cancel at any time.<br />
+    % if c.conf['read_only.value'] == 'true':
+        <!-- read only -->
+    % else:
+        <strong>Please complete all of the information below:</strong><br /><br />
+        <div class="row-fluid">
+            <div class="span1">
+            </div>
+            <div class="span10">
+                ${lib_6.fields_alert()}
+                <span class="payment-errors"></span><br />
+                % if c.w:
+                    <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="post" id="paymentForm">
+                    <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+                % else:
+                    <form action="/workshop/create/handler" method="post" id="paymentForm">
+                % endif
+                <div class="form-row">
+                    <label for="name" class="stripeLabel">Name as it appears on credit card</label>
+                    <input type="text" name="name" value="${c.billingName}" class="required" />
+                </div><!-- form-row -->
+                <div class="form-row">
+                    <label for="email">Billing E-mail Address</label>
+                    <input type="text" name="email" value="${c.billingEmail}" class="required" />
+                </div><!-- form-row -->
+                <div class="form-row">
+                    <label>Credit Card Number (use 4242424242424242 for testing)</label>
+                    <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
+                </div><!-- form-row -->
+                <div class="form-row">
+                    <label>CVC</label>
+                    <input type="text" maxlength="4" autocomplete="off" class="card-cvc stripe-sensitive required" />
+                </div><!-- form-row -->
+                <div class="form-row">
+                    <label>Expiration</label>
+                    <div class="expiry-wrapper">
+                        <select class="card-expiry-month stripe-sensitive required">
+                        </select>
+                        <script type="text/javascript">
+                            var select = $(".card-expiry-month"),
+                            month = new Date().getMonth() + 1;
+                            for (var i = 1; i <= 12; i++) {
+                                select.append($("<option value='"+i+"' "+(month === i ? "selected" : "")+">"+i+"</option>"))
+                            }
+                        </script>
+                        <span> / </span>
+                        <select class="card-expiry-year stripe-sensitive required"></select>
+                        <script type="text/javascript">
+                            var select = $(".card-expiry-year"),
+                            year = new Date().getFullYear();
+                            for (var i = 0; i < 12; i++) {
+                                select.append($("<option value='"+(i + year)+"' "+(i === 0 ? "selected" : "")+">"+(i + year)+"</option>"))
+                            }
+                        </script>
+                    </div><!-- expiry-wrapper -->
+                </div><!-- form-row -->
+                <div class="form-row">
+                    <label for="name" class="stripeLabel">Coupon</label>
+                    <input type="text" name="coupon" value="${c.coupon}" class="required" />
+                </div><!-- form-row -->
+                <div class="form-row">
+                <button type="submit" name="submit-button" class="btn btn-warning">Submit</button>
+                </form>
+            </div><!-- span10 -->
+        % endif
+    </div><!-- row-fluid -->
+    </div><!-- browse -->
+</div><!-- section-wrapper -->
+
+<%def name="headScripts()">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+    <script type="text/javascript">
+        Stripe.setPublishableKey('pk_test_joaQ75q6dZ4Zr9q3q2VuThBu');
+ 
+        function stripeResponseHandler(status, response) {
+            if (response.error) {
+                // Show the errors on the form
+                $('.payment-errors').html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Error: </strong> ' + response.error.message + '<div>');
+                $('.submit-button').prop('disabled', false);
+            } else {
+                var $form = $('#paymentForm');
+                // token contains id, last4, and card type
+                var token = response.id;
+                // Insert the token into the form so it gets submitted to the server
+                $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+                // and submit
+                $form.get(0).submit();
+            }
+        }
+        $(function() {
+            $('#paymentForm').submit(function(event) {
+                // Disable the submit button to prevent repeated clicks
+                $('.submit-button').prop('disabled', true);
+
+                Stripe.createToken({
+                    number: $('.card-number').val(),
+                    cvc: $('.card-cvc').val(),
+                    exp_month: $('.card-expiry-month').val(),
+                    exp_year: $('.card-expiry-year').val()
+                }, stripeResponseHandler);
+
+                // Prevent the form from submitting with the default action
+                return false;
+            });
+        });
+    </script>
+</%def>
