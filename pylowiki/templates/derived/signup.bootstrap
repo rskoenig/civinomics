@@ -69,33 +69,34 @@
                         <div class="login-body" style="border-bottom:none;">
                             <form id="sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
                                 <input type="hidden" name="country" value="United States">
-                                <input type="hidden" name="memberType" value="professional">                                
+                                <input type="hidden" name="memberType" value="professional">
+
                                 <div class="control-group">
-                                    <label class="control-label" for="name"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The full name of you or your organization. Visible to public."></i> Name: </label>
+                                    <label class="control-label" for="name"> Full name: </a></label>
                                     <div class="controls">
                                         <input type="text" name="name" id="name">
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="email"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="Used as your login. Never displayed."></i> Email: </label>
+                                    <label class="control-label" for="email"> Email: </label>
                                     <div class="controls">
                                         <input type="text" name="email" id="email">
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="passphrase"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="Just a password."></i> Passphrase: </label>
+                                    <label class="control-label" for="passphrase"> Password: </label>
                                     <div class="controls">
                                         <input type="password" name="password" id="passphrase">
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="passphrase2"> Passphrase (again): </label>
+                                    <label class="control-label" for="passphrase2"> Password (again): </label>
                                     <div class="controls">
                                         <input type="password" name="password2" id="passphrase2">
                                     </div>
                                 </div>
                                 <div class="control-group">
-                                    <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="For sorting geographically. Never displayed."></i>Postal Code: </label>
+                                    <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i>Postal Code: </label>
                                     <div class="controls">
                                         <input type="text" name="postalCode" id="postalCode">
                                     </div>
@@ -124,6 +125,7 @@
     <script src="/js/bootstrap/bootstrap.min.js"></script>
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript">
+        $('.signup-tooltip').tooltip();
         $('.icon-question-sign').tooltip();
     </script>
   </body>

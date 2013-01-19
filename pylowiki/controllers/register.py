@@ -142,7 +142,7 @@ class RegisterController(BaseController):
                     splashMsg['content'] = 'Check your email to finish setting up your account'
                     c.splashMsg = splashMsg
                       
-                    return render('/derived/signup.bootstrap')
+                    return render('/derived/signup_success.bootstrap')
                 else:
                     splashMsg['content'] = "The password and confirmation do not match"
                     c.splashMsg = splashMsg 
