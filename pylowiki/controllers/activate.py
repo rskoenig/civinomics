@@ -33,15 +33,11 @@ class ActivateController(BaseController):
                         session["userCode"] = user['urlCode']
                         session["userURL"] = user['url']
                         alert = {'type':'success'}
-                        alert['title'] = 'Member registration complete!'
-                        alert['content'] = 'Welcome to your member dashboard. Please upload a photo while you are here.'
+                        alert['title'] = 'Welcome to Civinomics! Please feel free to explore!'
                         session['alert'] = alert
                         session.save()
                         c.authuser = user
-                        #message['type'] = 'success'
-                        #message['title'] = 'Congratulations!  '
-                        #message['content'] = '%s, you are now registered!  Please login below.' % email
-                        returnURL = "/profile/" + c.authuser['urlCode'] + "/" + c.authuser['url'] + "/dashboard"
+                        returnURL = "/"
                         return redirect(returnURL)
                         
                     else:

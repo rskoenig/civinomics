@@ -565,6 +565,7 @@ class WorkshopController(BaseController):
     
     @h.login_required
     def displayPaymentForm(self):
+        c.stripeKey = config['app_conf']['stripePublicKey'].strip()
         return render('/derived/6_workshop_payment.bootstrap')
     
     @h.login_required
@@ -606,10 +607,10 @@ class WorkshopController(BaseController):
             
         return True
         
+    # this needs to follow the validatePaymentForm function above but AFTER the workshop is created
     @h.login_required
     def createAccount(self, workshop):  
-        # this needs to follow the validatePaymentForm function above but AFTER the workshop is created
-        stripe.api_key = "sk_test_h0WSlqS24hDrcVCYhaIV7eKC"
+        stripe.api_key = config['app_conf']['stripePrivateKey'].strip()
         description = "Civinomics account for customer " + c.billingName + " " + c.billingEmail + " workshop code " + workshop['urlCode']
         plan = "PRO"
         
@@ -646,6 +647,7 @@ class WorkshopController(BaseController):
                 else:
                     abort(404)
         else:
+            c.stripeKey = config['app_conf']['stripePublicKey'].strip()
             return render('/derived/6_workshop_payment.bootstrap')
         
     @h.login_required
@@ -656,6 +658,7 @@ class WorkshopController(BaseController):
             if self.validatePaymentForm():
                 wType = 'professional'
             else:
+                c.stripeKey = config['app_conf']['stripePublicKey'].strip()
                 return render('/derived/6_workshop_payment.bootstrap')
                 
         w = workshopLib.Workshop('replace with a real name!', c.authuser, 'private', wType)
