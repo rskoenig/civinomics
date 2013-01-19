@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 from pylowiki.tests import *
 
-def addIdea():
-	return 'addIdea'
-
-def addIdea_submit():
-	return ''
-
 def addComment():
 	return 'commentAddHandler_root'
 
@@ -15,6 +9,12 @@ def addComment_text():
 
 def addComment_submit():
 	return 'reply'
+
+def addIdea():
+	return 'addIdea'
+
+def addIdea_submit():
+	return ''
 
 def addIdea_text():
 	return 'title'
@@ -65,7 +65,10 @@ def createWorkshopForm5_wikiBackground():
 	return 'wikiBackground'
 
 def createWorkshopForm5_wikiBackground_text():
-	return 'textarea0'
+	return 'data'
+
+def createWorkshopForm5_wikiBackground_submit():
+    return ''
 
 def parameter_submit():
 	return 'submit'
