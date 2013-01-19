@@ -591,11 +591,11 @@ class WorkshopController(BaseController):
         else:
             pError = 1
             pErrorMsg = 'Invalid credit card information.'
-            
+
+        c.coupon = ''
         if 'coupon' in request.params and request.params['coupon'] != '':
-            c.coupon = request.params['coupon']
-        else:
-            c.coupon = ''
+            if request.params['coupon'] == 'CIVCOMP1':
+                c.coupon = request.params['coupon']
             
         if pError: 
             alert = {'type':'error'}
