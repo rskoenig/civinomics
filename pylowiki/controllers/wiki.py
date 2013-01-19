@@ -20,6 +20,7 @@ log = logging.getLogger(__name__)
 
 class WikiController(BaseController):
 
+    @h.login_required 
     def __before__(self, action, workshopCode = None):
         if workshopCode is None:
             abort(404)
@@ -28,8 +29,7 @@ class WikiController(BaseController):
             abort(404)
         if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
             abort(404)
-
-    @h.login_required    
+   
     def updateBackgroundHandler(self, workshopCode, workshopURL):
         session['confTab'] = "tab5"
         
