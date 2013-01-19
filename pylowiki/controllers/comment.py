@@ -12,10 +12,9 @@ from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.workshop import getWorkshop, isScoped
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
-from pylowiki.lib.db.page import get_page
 from pylowiki.lib.db.comment import Comment, getComment, isDisabled, disableComment, enableComment, getCommentByCode, editComment
 from pylowiki.lib.db.discussion import getDiscussionByID, getDiscussion as getDiscussionByCode
-from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
+from pylowiki.lib.db.flag import Flag, isFlagged, getFlags
 from pylowiki.lib.db.revision import getRevisionByCode
 
 import simplejson as json
@@ -69,6 +68,7 @@ class CommentController(BaseController):
 
         return render('/derived/comment_admin.bootstrap')
 
+    # Soon to be deprecated
     @h.login_required
     def clearCommentFlagsHandler(self, id1):
         code = id1
