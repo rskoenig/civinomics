@@ -30,7 +30,7 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources']:
+        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['edit', 'enable', 'disable', 'delete', 'flag']:
@@ -70,6 +70,9 @@ class AdminController(BaseController):
         c.list = resourceLib.getAllResources()
         return render( "/derived/6_list_all_items.bootstrap" )
         
+    def comments(self):
+        c.list = commentLib.getAllComments()
+        return render( "/derived/6_list_all_items.bootstrap" )
     
     def edit(self, thingCode):
         # A bit more complicated than enable/disable/delete

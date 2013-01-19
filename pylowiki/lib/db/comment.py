@@ -112,6 +112,16 @@ def isDisabled(comment):
         return True
     return False
 
+def getAllComments(disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'comment')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .all()
+    except:
+        return False
+
 # Setters
 def disableComment( comment ):
     """disable this comment"""

@@ -41,6 +41,12 @@
             % else:
                 <li><a href="/admin/discussions">Discussions</a></li>
             % endif
+            
+            % if itemType == 'comment':
+                <li class="active"><a href="/admin/comments">Comments</a></li>
+            % else:
+                <li><a href="/admin/comments">Comments</a></li>
+            % endif
         </ul>
     </div><!--/.span3-->
 
@@ -67,6 +73,9 @@
                         % elif itemType in ['idea', 'discussion', 'resource']:
                             <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
                             <td><a ${lib_6.thingLinkRouter(item, workshop)} class="expandable">${item['title']}</a></td>
+                        % elif itemType == 'comment':
+                            <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
+                            <td><a ${lib_6.thingLinkRouter(item, workshop, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a></td>
                         % endif
                     </tr>
                 % endfor

@@ -46,6 +46,7 @@
                                     <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
                                     <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
                                     <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                                    <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
                                 </ul>
                             </li>
                         % endif
