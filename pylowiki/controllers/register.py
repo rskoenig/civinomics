@@ -135,6 +135,7 @@ class RegisterController(BaseController):
                 if password == password2:
                     u = User(email, name, password, country, memberType, postalCode)
                     message = "The user '" + username + "' was created successfully!"
+                    c.success = True
                                 
                     log.info( message )
                     splashMsg['type'] = 'success'
@@ -142,7 +143,7 @@ class RegisterController(BaseController):
                     splashMsg['content'] = 'Check your email to finish setting up your account'
                     c.splashMsg = splashMsg
                       
-                    return render('/derived/signup_success.bootstrap')
+                    return render('/derived/signup.bootstrap')
                 else:
                     splashMsg['content'] = "The password and confirmation do not match"
                     c.splashMsg = splashMsg 
