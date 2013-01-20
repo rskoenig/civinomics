@@ -223,7 +223,6 @@
     
     <script language="javascript">
         $(document).ready(function()	{
-            $(".markitup").markItUp(mySettings);
             $('.edit').editable('/slideshow/edit', {
                 indicator : 'Saving...',
                 tooltip   : 'Click to edit...'
