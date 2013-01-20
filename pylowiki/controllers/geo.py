@@ -4,7 +4,7 @@ from pylons import request, response, session, tmpl_context as c
 from string import capwords
 from pylowiki.lib.utils import urlify
 import pylowiki.lib.utils as utils
-from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCityList, getCountyInfo, getCountyList, getStateInfo, getStateList, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getPostalList, getCityInfo, getCityList, getCountyInfo, getCountyList, getStateInfo, getStateList, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
 import pylowiki.lib.db.geoInfo as geoInfoLib
 from pylowiki.lib.db.workshop import getWorkshopByID
 import pylowiki.lib.db.workshop as workshopLib
@@ -389,4 +389,18 @@ class GeoController(BaseController):
             cList = cList + city['City'].title() + '|'
         return json.dumps({'result':cList})
 
+    def geoPostalHandler(self, id1, id2, id3, id4):
+        country = id1
+        state = geoDeurlify(id2)
+        state = state.title()
+        county = geoDeurlify(id3)
+        county = county.upper()
+        city = geoDeurlify(id4)
+        city = city.upper()
+
+        postalCodes = getPostalList(country, state, county, city)
+        pList = ""
+        for postal in postalList:
+            pList = pList + postal['ZipCode'] + '|'
+        return json.dumps({'result':pList})
 
