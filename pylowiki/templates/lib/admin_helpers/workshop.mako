@@ -1,10 +1,10 @@
 <%!
-    from pylowiki.lib.db.event import getParentEvents
-    from pylowiki.lib.db.user import getUserByID
     import pylowiki.lib.db.discussion       as discussionLib
     import pylowiki.lib.db.idea             as ideaLib
     import pylowiki.lib.db.comment          as commentLib
     import pylowiki.lib.db.flag             as flagLib
+    import pylowiki.lib.db.user             as userLib
+    import pylowiki.lib.db.event            as eventLib
 %>  
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
@@ -57,7 +57,7 @@
             <div class="browse">
                 <h4 class="section-header" style="text-align: center"><br />Event Log</h4>
                 A record of configuration and administrative changes to the workshop.<br />
-                <% wEvents = getParentEvents(c.w) %>
+                <% wEvents = eventLib.getParentEvents(c.w) %>
                 <table class="table table-bordered">
                 <thead>
                 <tr><th>Workshop Events</th></tr>
@@ -79,18 +79,20 @@
 
 <%def name="admin_facilitators()">
     % if c.w['public_private'] != 'trial':
+       <p>To invite a member to be a listener of, or co-facilitate this workshop, visit their Civinomics profile page and look for the "Invite ..." button!</p>
         <table class="table table-bordered">
         <thead>
         <tr><th>Current Facilitators</th></tr>
         </thead>
         <tbody>
         % for f in c.f:
-            <% fUser = getUserByID(f.owner) %>
-            <% fEvents = getParentEvents(f) %>
-            <% fPending = "" %>
-            % if pending in f and f['pending'] == '1':
-              <% fPending = "(Pending)" %>
-            % endif
+            <%
+                fUser = userLib.getUserByID(f.owner)
+                fEvents = eventLib.getParentEvents(f)
+                fPending = ""
+                if pending in f and f['pending'] == '1':
+                    fPending = "(Pending)"
+            %>
             <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
             % if fEvents:
                 % for fE in fEvents:
@@ -108,7 +110,6 @@
         % endfor
         </tbody>
         </table>
-        <p>To invite an active member to co-facilitate this workshop, visit their profile page and look for the "Invite to co-facilitate" button!</p>
         % if len(c.df) > 0:
             <table class="table table-bordered">
             <thead>
@@ -116,8 +117,10 @@
             </thead>
             <tbody>
             % for f in c.df:
-                <% fUser = getUserByID(f.owner) %>
-                <% fEvents = getParentEvents(f) %>
+                <% 
+                    fUser = userLib.getUserByID(f.owner)
+                    fEvents = eventLib.getParentEvents(f) 
+                %>
                 <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
                 % if fEvents:
                     % for fE in fEvents:
@@ -132,9 +135,64 @@
     % endif
 </%def>
 
+<%def name="admin_listeners()">
+    % if c.w['public_private'] != 'trial':
+        <table class="table table-bordered">
+        <thead>
+        <tr><th>Current Listeners</th></tr>
+        </thead>
+        <tbody>
+        % for listener in c.listeners:
+            <%
+                lUser = userLib.getUserByCode(listener['userCode'])
+                lEvents = eventLib.getParentEvents(listener)
+                lPending = ""
+                if listener['pending'] == '1':
+                    lPending = "(Pending)"
+            %>
+            <tr><td><a href="/profile/${lUser['urlCode']}/${lUser['url']}">${lUser['name']}</a> ${lPending}<br />
+            <form id="resignListener" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
+            &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+            <input type="hidden" name="userCode" value="${lUser['urlCode']}">
+            <button type="submit" class="gold" value="Resign">Disable</button>
+            <br />
+            </form>
+            % if lEvents:
+                % for lE in lEvents:
+                    &nbsp; &nbsp; &nbsp; <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
+                % endfor
+            % endif
+            </td></tr>
+        % endfor
+        </tbody>
+        </table>
+        % if len(c.disabledListeners) > 0:
+            <table class="table table-bordered">
+            <thead>
+            <tr><th>Disabled Listeners</th></tr>
+            </thead>
+            <tbody>
+            % for listener in c.disabledListeners:
+                <%
+                    lUser = userLib.getUserByCode(listener['userCode'])
+                    lEvents = eventLib.getParentEvents(listener)
+                %>
+                <tr><td><a href="/profile/${lUser['urlCode']}/${lUser['url']}">${lUser['name']}</a> (Disabled)<br />
+                % if lEvents:
+                    % for lE in lEvents:
+                        &nbsp; &nbsp; &nbsp; <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
+                    % endfor
+                % endif
+                </tr></td>
+            % endfor
+            </tbody>
+            </table>
+        % endif
+    % endif
+</%def>
 
 <%def name="admin_info()">
-    <% wEvents = getParentEvents(c.w) %>
+    <% wEvents = eventLib.getParentEvents(c.w) %>
     <table class="table table-bordered">
     <thead>
     <tr><th>Workshop Events</th></tr>
@@ -156,8 +214,8 @@
     </thead>
     <tbody>
     % for f in c.f:
-       <% fUser = getUserByID(f.owner) %>
-       <% fEvents = getParentEvents(f) %>
+       <% fUser = userLib.getUserByID(f.owner) %>
+       <% fEvents = eventLib.getParentEvents(f) %>
        <% fPending = "" %>
        % if pending in f and f['pending'] == '1':
           <% fPending = "(Pending)" %>
@@ -185,8 +243,8 @@
     </thead>
     <tbody>
     % for f in c.df:
-       <% fUser = getUserByID(f.owner) %>
-       <% fEvents = getParentEvents(f) %>
+       <% fUser = userLib.getUserByID(f.owner) %>
+       <% fEvents = eventLib.getParentEvents(f) %>
        <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
        % if fEvents:
           % for fE in fEvents:

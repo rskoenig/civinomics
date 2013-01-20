@@ -760,7 +760,7 @@ class WorkshopController(BaseController):
               
         c.listeners = []
         for l in (listenerLib.getListenersForWorkshop(c.w)):
-           if 'pending' in l and l['pending'] == '0' and l['deleted'] == '0':
+           if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
               c.listeners.append(l)
 
         if c.w['startTime'] != '0000-00-00':
@@ -849,6 +849,9 @@ class WorkshopController(BaseController):
         c.slides = c.published_slides
             
         c.facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w.id)
+        c.listeners = listenerLib.getListenersForWorkshop(c.w, disabled = '0')
+        c.disabledListeners = listenerLib.getListenersForWorkshop(c.w, disabled = '1')
+
 
         if c.w['public_private'] != 'public':
             c.pmembers = pMemberLib.getPrivateMembers(workshopCode)

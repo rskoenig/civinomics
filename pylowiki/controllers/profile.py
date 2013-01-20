@@ -74,7 +74,7 @@ class ProfileController(BaseController):
               else:
                     c.facilitatorWorkshops.append(myW)
                     
-        listenerList = listenerLib.getListenersForUser(c.user)
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
         c.pendingListeners = []
         for l in listenerList:
             if 'pending' in l and l['pending'] == '1':
@@ -373,7 +373,7 @@ class ProfileController(BaseController):
                 if 'pending' in f and f['pending'] == '1':
                     c.pendingFacilitators.append(f)
 
-            listenerList = listenerLib.getListenersForUser(c.user)
+            listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
             c.pendingListeners = []
             for l in listenerList:
                 if 'pending' in l and l['pending'] == '1':

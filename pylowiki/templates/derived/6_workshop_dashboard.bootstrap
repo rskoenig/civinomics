@@ -147,8 +147,13 @@
                 ${helpers.edit_background()}
                 </div><!-- tab-pane template tab5 -->
                 <div class="tab-pane ${tab6active}" id="tab6">
-                    ${admin_helpers.admin_show()}
-                    ${admin_helpers.admin_facilitators()}
+                    <div class="section-wrapper">
+                        <div class="browse">
+                            ${admin_helpers.admin_show()}
+                            ${admin_helpers.admin_facilitators()}
+                            ${admin_helpers.admin_listeners()}
+                        </div><!-- browse -->
+                    </div><!-- section-wrapper -->
                 </div><!-- tab6 -->
                 <div class="tab-pane ${tab7active}" id="tab7">
                     ${admin_helpers.admin_flagged()}

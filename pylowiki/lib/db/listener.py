@@ -20,33 +20,39 @@ def getListener(user, workshop):
     except:
         return False
 
-def getListenersForWorkshop(workshop, deleted = 0):
+def getListenersForWorkshop(workshop, disabled = 0):
     try:
         return meta.Session.query(Thing)\
                 .filter_by(objType = 'listener')\
                 .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
-                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
                 .all()
     except:
         return False
 
-def getListenersForUser(user, deleted = 0):
+def getListenersForUser(user, disabled = 0):
     try:
         return meta.Session.query(Thing)\
                 .filter_by(objType = 'listener')\
                 .filter(Thing.data.any(wc('userCode', user['urlCode'])))\
-                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
                 .all()
     except:
         return False
 
 def Listener(user, workshop, pending = 1):
-    listener = Thing('listener')
-    listener['userCode'] = user['urlCode']
-    listener['pending'] = pending
-    listener['deleted'] = '0'
-    commit(listener)
-    listener['urlCode'] = toBase62(listener)
-    listener = generic.linkChildToParent(listener, workshop)
-    commit(listener)
+    test = getListener(user, workshop)
+    if test and test['disabled'] == '1':
+        test['disabled'] = '0'
+        test['pending'] = pending
+        commit(listener)
+    else:
+        listener = Thing('listener')
+        listener['pending'] = pending
+        listener['disabled'] = '0'
+        commit(listener)
+        listener['urlCode'] = toBase62(listener)
+        listener = generic.linkChildToParent(listener, user)
+        listener = generic.linkChildToParent(listener, workshop)
+        commit(listener)  
     return listener

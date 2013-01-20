@@ -226,6 +226,8 @@
                         wListF.append(w)
                     if not wlisten:
                         wListL.append(w)
+                    elif wlisten['pending'] == '0':
+                        wListL.append(w)
                         
         %>
         % if c.authuser.id != c.user.id and wListF:
