@@ -353,9 +353,14 @@ class WorkshopController(BaseController):
         else:
             geoTagCity = "0"
             
+        if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
+            geoTagPostal = request.params['geoTagPostal']
+        else:
+            geoTagPostal = "0"
+            
         # assemble a workshop scope string 
         # ||country||state||county||city|zip
-        geoTagString = "||" + geoTagCountry + "||" + geoTagState + "||" + geoTagCounty + "||" + geoTagCity + "|0"
+        geoTagString = "||" + geoTagCountry + "||" + geoTagState + "||" + geoTagCounty + "||" + geoTagCity + "|" + geoTagPostal
         wscope = geoInfoLib.getWScopeByWorkshop(c.w)
         update = 0
         if not wscope:
@@ -873,11 +878,13 @@ class WorkshopController(BaseController):
             c.state = geoTags[4]
             c.county = geoTags[6]
             c.city = geoTags[8]
+            c.postal = geoTags[9]
         else:
             c.country = "0"
             c.state = "0"
             c.county = "0"
             c.city = "0"
+            c.postal = "0"
             
         c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':

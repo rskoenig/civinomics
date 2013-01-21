@@ -1,5 +1,5 @@
 <%!
-    from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList
+    from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList, getPostalList
     from pylowiki.lib.db.user import getUserByEmail
     from pylowiki.lib.db.workshop import getCategoryTagList
     from pylowiki.lib.db.tag import getWorkshopTagCategories
@@ -274,7 +274,8 @@
         countrySelected = ""
         countyMessage = ""
         cityMessage = ""
-        underCityMessage = ""
+        postalMessage = ""
+        underPostalMessage = ""
         if c.country!= "0":
             countrySelected = "selected"
             states = getStateList("united-states")
@@ -340,7 +341,7 @@
     <div class="row-fluid"><span id="citySelect">
         % if c.county != "0":
             <% cities = getCityList("united-states", c.state, c.county) %>
-            <% underCityMessage = "or leave blank if your workshop is specific to the entire county." %>
+            <% postalMessage = "or leave blank if your workshop is specific to the entire county." %>
             <div class="span1"></div><div class="span2">City:</div><div class="span9">
             <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
             <option value="0">Select a city</option>
@@ -355,11 +356,33 @@
             </select>
             </div><!-- span9 -->
         % else:
-            <% underCityMessage = "" %>
+            <% postalMessage = "" %>
             ${cityMessage}
         % endif
         </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="underCity">${underCityMessage}</span><br /></div><!-- row -->
+    <div class="row-fluid"><span id="postalSelect">
+        % if c.city != "0":
+            <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
+            <% underPostalMessage = "or leave blank if your workshop is specific to the entire city." %>
+            <div class="span1"></div><div class="span2">Postal Code:</div><div class="span9">
+            <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
+            <option value="0">Select a postal code</option>
+                % for pCode in postalCodes:
+                    % if c.postal == str(pCode['ZipCode']):
+                        <% postalSelected = "selected" %>
+                    % else:
+                        <% postalSelected = "" %>
+                    % endif
+                    <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
+                % endfor
+            </select>
+            </div><!-- span9 -->
+        % else:
+            <% underPostalMessage = "" %>
+            ${postalMessage}
+        % endif
+        </span></div><!-- row-fluid -->
+    <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
     <br />
     <% 
         if c.w['startTime'] == '0000-00-00':

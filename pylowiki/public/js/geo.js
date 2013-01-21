@@ -29,6 +29,46 @@ $('button.geoButton').live('click', function(e){
 });
 
 
+function geoTagCityChange(){
+    var citySelectIndex = document.getElementById("geoTagCity").selectedIndex;
+    var citySelect = document.getElementById("geoTagCity");
+    var cityName = citySelect.options[citySelectIndex].value;
+    var countySelectIndex = document.getElementById("geoTagCounty").selectedIndex;
+    var countySelect = document.getElementById("geoTagCounty");
+    var countyName = countySelect.options[countySelectIndex].value;
+    var stateSelectIndex = document.getElementById("geoTagState").selectedIndex;
+    var stateSelect = document.getElementById("geoTagState");
+    var stateName = stateSelect.options[stateSelectIndex].value;
+    document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
+    document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
+    if (citySelectIndex === 0) {
+        document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "or leave blank if your workshop is specific to the entire county."; 
+    } else {
+        document.getElementById("postalSelect").innerText = "";
+        var urlString = '/geo/postalList/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-") + "/" + cityName.replace(" ", "-");
+        var postalList = $.ajax({
+            type : 'POST',
+            async : false,
+            url  : urlString
+        }).responseText;
+        var gobj = jQuery.parseJSON(postalList);
+        if (gobj.result != "0") {
+            var postalCodes = gobj.result.split(/\|/);
+            var postalMenu = "<div class=\"span1\"></div><div class=\"span2\">Postal Code:</div><div class=\"span9\">  <select id=\"geoTagPost\" name=\"geoTagPostal\" class=\"geoTagPostal\" onChange=\"geoTagPostalChange(); return 1;\"><option value=\"0\">Select a postal code</option>";
+            for(var i = 0;i < postalCodes.length;i++){
+                if (postalCodes[i] !== "") {
+                    postalMenu = postalMenu + "<option value=\"" + postalCodes[i] + "\">" + postalCodes[i] + "</option>";
+                }
+            }
+            postalMenu = postalMenu + "</select></div>";
+            document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
+            document.getElementById("postalSelect").innerHTML = postalMenu;  
+            document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "or leave blank if your workshop is specific to the entire city.";
+        }
+    }
+}
+
+
 function geoTagCountyChange(){
     var selectIndex = document.getElementById("geoTagCounty").selectedIndex;
     var countySelect = document.getElementById("geoTagCounty");
@@ -36,7 +76,8 @@ function geoTagCountyChange(){
     var stateSelectIndex = document.getElementById("geoTagState").selectedIndex;
     var stateSelect = document.getElementById("geoTagState");
     var stateName = stateSelect.options[stateSelectIndex].value;
-    document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";
+    document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
+    document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
     document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
     if (selectIndex === 0) {
         document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if your workshop is specific to the entire state."; 
@@ -60,7 +101,7 @@ function geoTagCountyChange(){
             cityMenu = cityMenu + "</select></div>";
             document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
             document.getElementById("citySelect").innerHTML = cityMenu;  
-            document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "or leave blank if your workshop is specific to the entire county.";
+            document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "or leave blank if your workshop is specific to the entire county.";
         }
     }
 }
@@ -70,7 +111,9 @@ function geoTagStateChange(){
     var selectIndex = document.getElementById("geoTagState").selectedIndex;
     var stateSelect = document.getElementById("geoTagState");
     var stateName = stateSelect.options[selectIndex].value;
-    document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";
+    document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
+    document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
+    document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
     document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
     document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
     if (selectIndex === 0) {
@@ -104,12 +147,13 @@ function geoTagStateChange(){
 $('.geoTagCountry').change(function(e){
     e.preventDefault();
     var selectIndex = document.getElementById("geoTagCountry").selectedIndex;
+    document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
+    document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
+    document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
+    document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
+    document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
     if (selectIndex === 0) {
-        document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
         document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "or leave blank if your workshop is specific to the entire planet.";
-        document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
-        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
-        document.getElementById("underCity").innerText = document.getElementById("underCity").textContent = "";
     }
     if (selectIndex === 1) {
         var urlString = '/geo/stateList/united-states';

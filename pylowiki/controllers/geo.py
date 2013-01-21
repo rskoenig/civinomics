@@ -400,7 +400,7 @@ class GeoController(BaseController):
 
         postalCodes = getPostalList(country, state, county, city)
         pList = ""
-        for postal in postalList:
-            pList = pList + postal['ZipCode'] + '|'
+        for postal in postalCodes:
+            pList = pList + str(postal['ZipCode']) + '|'
         return json.dumps({'result':pList})
 

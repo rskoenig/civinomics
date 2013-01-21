@@ -32,7 +32,7 @@ def getPostalInfo( postal ):
 def getPostalList( country, state, county, city ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT City from US_Postal WHERE StateFullName = %s and County = %s and City = %s""",(state, county.upper(), city.upper()))
+    c.execute("""SELECT ZipCode from US_Postal WHERE StateFullName = %s and County = %s and City = %s""",(state, county.upper(), city.upper()))
     rlist = c.fetchall()
     c.close()
     db.close()
