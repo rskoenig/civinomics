@@ -14,8 +14,8 @@ from pylowiki.lib.db.suggestion import getSuggestion, getSuggestionByID
 from pylowiki.lib.db.discussion import getDiscussionForThing
 from pylowiki.lib.db.comment import getCommentByCode
 from pylowiki.lib.db.rating import getRatingByID
-from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags, clearFlags
-from pylowiki.lib.db.page import Page, getPageByID, get_page
+from pylowiki.lib.db.flag import Flag, isFlagged, checkFlagged, getFlags
+from pylowiki.lib.db.page import Page, getPageByID
 from pylowiki.lib.db.revision import Revision, get_revision, getRevisionByCode, getParentRevisions
 
 from pylowiki.lib.utils import urlify
@@ -478,7 +478,8 @@ class ResourceController(BaseController):
         if 'clearResourceFlagsReason' in request.params:
             clearReason = request.params['clearResourceFlagsReason']
             if clearReason != '':
-                clearFlags(c.resource)
+                # commented out for now
+                #clearFlags(c.resource)
                 clearTitle = "Flags cleared"
                 e = Event(clearTitle, clearReason, c.resource, c.authuser)
             else:
