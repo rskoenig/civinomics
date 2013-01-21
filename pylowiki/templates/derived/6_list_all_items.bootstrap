@@ -1,6 +1,9 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%! import pylowiki.lib.db.workshop as workshopLib %>
+<%! 
+    import pylowiki.lib.db.workshop     as workshopLib 
+    import pylowiki.lib.db.user         as userLib
+%>
 
 <% 
     itemType = None
@@ -64,10 +67,15 @@
                 % for item in c.list:
                     <tr>
                         <td>${item.id}</td>
-                        <td>${item.owner}</td>
+                        % if item.owner != 0:
+                            <% owner = userLib.getUserByID(item.owner) %>
+                            <td>${lib_6.userImage(owner, className = 'avatar small-avatar')} ${lib_6.userLink(owner)} (${owner.id})</td>
+                        % else:
+                            <td>None</td>
+                        % endif
                         <td>${item.date}</td>
                         % if itemType == 'user':
-                            <td>${lib_6.userImage(item)} ${lib_6.userLink(item)}</td>
+                            <td>${lib_6.userImage(item, className = 'avatar small-avatar')} ${lib_6.userLink(item)}</td>
                         % elif itemType == 'workshop':
                             <td>${lib_6.workshopImage(item)} <a ${lib_6.workshopLink(item)} class="expandable">${item['title']}</a></td>
                         % elif itemType in ['idea', 'discussion', 'resource']:
