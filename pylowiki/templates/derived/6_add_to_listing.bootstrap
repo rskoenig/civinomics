@@ -39,9 +39,7 @@
       </fieldset>
       <hr/>
       ${self.additionalInfo()}
-      <fieldset>
-         <button class="btn btn-large btn-civ pull-right" type="submit">Submit</button>
-      </fieldset>
+      ${self.submitButton()}
    </form>
 </%def>
 
@@ -58,10 +56,8 @@
          <input type="text" class="input-block-level" name="link">
       </fieldset>
       <hr/>
-      ${self.additionalInfo(name="comment")}
-      <fieldset>
-         <button class="btn btn-large btn-civ pull-right" type="submit">Submit</button>
-      </fieldset>
+      ${self.additionalInfo(name="text")}
+      ${self.submitButton()}
    </form>
 </%def>
 
@@ -72,10 +68,14 @@
          <input type="text" class="input-block-level" name="title">
          <span class="help-block"> (Try to keep your title informative, but concise.) </span>
       </fieldset>
-      <fieldset>
-         <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
-      </fieldset>
+      ${self.submitButton()}
    </form>
+</%def>
+
+<%def name="submitButton()">
+    <fieldset>
+        <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
+    </fieldset>
 </%def>
 
 <%def name="additionalInfo(name='text')">

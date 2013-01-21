@@ -402,7 +402,7 @@
     <% editID = 'edit-%s' % thing['urlCode'] %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
-            <form action="${editThingLink(thing, embed=True)}" method="post" class="form form-horizontal">
+            <form action="${editThingLink(thing, embed=True)}" method="post" class="form form-horizontal" id="edit-${thing.objType}">
                 <label>edit</label>
                 % if thing.objType == 'comment':
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
@@ -414,7 +414,7 @@
                 % elif thing.objType == 'resource':
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}">
                     <input type="text" class="input-block-level" name="link" value = "${thing['link']}">
-                    <textarea name="comment" rows="12" class="input-block-level">${thing['comment']}</textarea>
+                    <textarea name="text" rows="12" class="input-block-level">${thing['text']}</textarea>
                 % endif
                 <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
             </form>

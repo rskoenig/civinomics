@@ -30,9 +30,14 @@ def getResource(urlCode, url):
     except:
         return False
 
-def getResourceByCode(urlCode):
+def getResourceByCode(urlCode, disabled = '0', deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('urlCode', urlCode))).one()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'resource')\
+            .filter(Thing.data.any(wc('urlCode', urlCode)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .one()
     except:
         return False
 
@@ -68,15 +73,19 @@ def getActiveResourcesByParentID(parentID):
     except:
         return False
 
-def getResourcesByWorkshopCode(workshopCode):
+def getResourcesByWorkshopCode(workshopCode, disabled = '0', deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshopCode', workshopCode))).all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'resource')\
+            .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .all()
     except:
         return False
 
 def getActiveResourcesByWorkshopCode(workshopCode):
     try:
-        #return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wc('parent_type', None))).all()
         return meta.Session.query(Thing).filter_by(objType = 'resource').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
     except:
         return False
@@ -135,11 +144,11 @@ def getAllResources(deleted = '0', disabled = '0'):
         return False
 
 # setters
-def editResource(resource, title, comment, url, owner):
+def editResource(resource, title, text, url, owner):
     try:
         revisionLib.Revision(owner, resource)
         resource['title'] = title
-        resource['comment'] = comment
+        resource['text'] = text
         if not url.startswith('http://'):
             url = u'http://' + url
         resource['link'] = url
@@ -154,43 +163,32 @@ def editResource(resource, title, comment, url, owner):
         return False
 
 # Object
-class Resource(object):
-    def __init__( self, url, title, comment, owner, allowComments, workshop, parent = None):
-        a = Thing('resource', owner.id)
-        if not url.startswith('http://'):
-            url = u'http://' + url
-        a['link'] = url # The resource's URL
-        tldResults = extract(url)
-        a['tld'] = tldResults.tld
-        a['domain'] = tldResults.domain
-        a['subdomain'] = tldResults.subdomain
-        a['url'] = urlify(title[:30])
-        a['title'] = title
-        a['comment'] = comment
-        a['allowComments'] = allowComments
-        a = generic.linkChildToParent(a, workshop)
-        if parent != None:
-             a['parent_id'] = parent.id
-             a['parent_type'] = parent.objType
-        else:
-             a['parent_id'] = 0
-             a['parent_type'] = None
-        a['type'] = 'post'
-        a['pending'] = '0'
-        a['disabled'] = '0'
-        a['deleted'] = '0'
-        a['allowComments'] = '1'
-        a['ups'] = '0'
-        a['downs'] = '0'
-        commit(a)
-        a['urlCode'] = toBase62(a)
-        if parent != None:
-            if parent.objType == 'suggestion':
-                d = Discussion(owner = owner, discType = 'sresource', attachedThing = a, workshop = workshop, title = title, suggestion = parent)
-        else:
-            d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
-        self.a = a
-        commit(a)
-        data = a['comment']
-        r = revisionLib.Revision(c.authuser, a)
-
+def Resource(url, title, owner, workshop, text = None, parent = None):
+    a = Thing('resource', owner.id)
+    if not url.startswith('http://'):
+        url = u'http://' + url
+    a['link'] = url # The resource's URL
+    tldResults = extract(url)
+    a['tld'] = tldResults.tld
+    a['domain'] = tldResults.domain
+    a['subdomain'] = tldResults.subdomain
+    a['url'] = urlify(title[:30])
+    a['title'] = title
+    if text is None:
+        a['text'] = ''
+    else:
+        a['text'] = text
+    a = generic.linkChildToParent(a, workshop)
+    if parent is not None:
+        a = generic.linkChildToParent(a, parent)
+    a['type'] = 'general'
+    a['disabled'] = '0'
+    a['deleted'] = '0'
+    a['ups'] = '0'
+    a['downs'] = '0'
+    commit(a)
+    a['urlCode'] = toBase62(a)
+    commit(a)
+    d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
+    r = revisionLib.Revision(c.authuser, a)
+    return a

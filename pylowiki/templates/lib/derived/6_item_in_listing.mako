@@ -7,17 +7,10 @@
 %>
 
 <%def name="extraText(thing)">
-    % if thing.objType == 'discussion':
+    % if thing.objType in ['discussion', 'resource']:
         <div class="row-fluid">
             <div class="span11 offset1">
                 ${misaka.html(thing['text']) | n}
-            </div>
-        </div><!--/.row-fluid-->
-    % endif
-    % if thing.objType == 'resource':
-        <div class="row-fluid">
-            <div class="span11 offset1">
-                ${misaka.html(thing['comment']) | n}
             </div>
         </div><!--/.row-fluid-->
     % endif

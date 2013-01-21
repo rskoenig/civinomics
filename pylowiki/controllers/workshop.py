@@ -767,28 +767,6 @@ class WorkshopController(BaseController):
         c.information = pageLib.getInformation(c.w)
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         return render('/derived/6_workshop_home.bootstrap')
-        
-    def displayAllResources(self, workshopCode, workshopURL):
-        c.title = c.w['title']
-        c.resources = resourceLib.getActiveResourcesByWorkshopCode(workshopCode)
-        c.resources = sort.sortBinaryByTopPop(c.resources)
-        c.dresources = resourceLib.getInactiveResourcesByWorkshopCode(workshopCode)
-        # put disabled and deleted at the end
-        if c.resources:
-            if c.dresources:
-                c.resources += c.dresources
-        else:
-            if c.dresources:
-                c.resources = c.dresources
-
-        c.count = len(c.resources)
-        c.paginator = paginate.Page(
-            c.resources, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
-        c.listingType = 'resources'
-
-        return render('/derived/6_detailed_listing.bootstrap')
     
     @h.login_required
     def dashboard(self, workshopCode, workshopURL):

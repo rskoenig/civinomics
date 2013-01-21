@@ -48,7 +48,8 @@ class IdeaController(BaseController):
     def addIdeaHandler(self, workshopCode, workshopURL):
         if 'submit' not in request.params or 'title' not in request.params:
             return redirect(session['return_to'])
-        
+        if request.params['title'].strip() == '':
+            return redirect(session['return_to'])
         newIdea = ideaLib.Idea(c.authuser, request.params['title'], c.w)
         return redirect(session['return_to'])
     

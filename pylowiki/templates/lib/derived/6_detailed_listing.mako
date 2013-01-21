@@ -12,7 +12,7 @@
       else:
          if thing == 'discussion':
             renderList = c.discussions
-         elif thing == 'resource':
+         elif thing == 'resources':
             renderList = c.resources
          elif thing == 'ideas':
             renderList = c.ideas
