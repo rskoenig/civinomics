@@ -4,6 +4,7 @@ from pylowiki.lib.utils import toBase62
 from pylowiki.lib.db.dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 import generic
+import stripe
 
 def getAccountsForWorkshop(workshop, deleted = '0', suspended = '0'):
     try:
@@ -17,11 +18,83 @@ def getAccountsForWorkshop(workshop, deleted = '0', suspended = '0'):
         return False
 
 
-def Account(billingName, billingEmail, stripeID, workshop, plan, coupon = 'None'):
+def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'None'):
+    stripe.api_key = config['app_conf']['stripePrivateKey'].strip()
+    description = "Civinomics account for customer " + billingName + " " + billingEmail + " workshop code " + workshop['urlCode']
+    plan = "PRO"
+    error = 0
+    errorTitle = 'There was an processing your payment information.'
+    errorMsg = ''
+    try:
+        if coupon and coupon != '':
+            customer = stripe.Customer.create( 
+                    description = description, 
+                    card = stripeToken,
+                    plan = plan,
+                    coupon = c.coupon,
+                    email = billingEmail)
+        else:
+            customer = stripe.Customer.create( 
+                    description = description, 
+                    card = stripeToken,
+                    plan = plan,
+                    email = billingEmail)
+                        
+    except stripe.CardError, e:
+        # Since it's a decline, stripe.CardError will be caught
+        error = 1
+        body = e.json_body
+        err  = body['error']
+        errorMsg = err['message']
+
+        #print "Status is: #{e.http_status}\n"
+        #print "Type is: #{err['type']}\n"
+        #print "Code is: #{err['code']}\n"
+        # param is '' in this case
+        #print "Param is: #{err['param']}\n"
+        #print "Message is: #{err['message']}\n"
+    except stripe.InvalidRequestError, e:
+        # Invalid parameters were supplied to Stripe's API
+        error = 1
+        errorMsg = 'Invalid API parameters.'
+        pass
+    except stripe.AuthenticationError, e:
+        # Authentication with Stripe's API failed
+        # (maybe you changed API keys recently)
+        error = 1
+        errorMsg = 'Authentication error.'
+        pass
+    except stripe.APIConnectionError, e:
+        # Network communication with Stripe failed
+        error = 1
+        errorMessage = 'Communication to the payment gateway is down.'
+    except stripe.StripeError, e:
+        # Display a very generic error to the user, and maybe send
+        # yourself an email
+        error = 1
+        errorMsg = 'We cannot process your payment at this time.'
+        pass
+    except e:
+        # Something else happened, completely unrelated to Stripe
+        error = 1
+        errorMsg = 'A system error has occured.'
+        pass
+        
+    if error:
+        errorMsg += ' Please try upgrading your workshop when the issue has been resolved.'
+        alert = {'type':'error'}
+        alert['title'] = errorTitle
+        alert['content'] = errorMsg
+        session['alert'] = alert
+        session.save()
+        workshop['type'] = 'personal'
+        dbHelpers.commit(workshop)
+        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+  
     account = Thing('account')
     account['billingName'] = billingName
     account['billingEmail'] = billingEmail
-    account['stripeID'] = stripeID
+    account['stripeID'] = customer['id']
     account['plan'] = plan
     account['coupon'] = coupon
     account['suspended'] = '0'

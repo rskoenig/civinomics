@@ -614,82 +614,6 @@ class WorkshopController(BaseController):
         return True
 
     @h.login_required
-    def createAccount(self, workshop):  
-        stripe.api_key = config['app_conf']['stripePrivateKey'].strip()
-        description = "Civinomics account for customer " + c.billingName + " " + c.billingEmail + " workshop code " + workshop['urlCode']
-        plan = "PRO"
-        error = 0
-        errorTitle = 'There was an processing your payment information.'
-        errorMsg = ''
-        try:
-            if c.coupon and c.coupon != '':
-                customer = stripe.Customer.create( 
-                        description = description, 
-                        card = c.stripeToken,
-                        plan = plan,
-                        coupon = c.coupon,
-                        email = c.billingEmail)
-            else:
-                customer = stripe.Customer.create( 
-                        description = description, 
-                        card = c.stripeToken,
-                        plan = plan,
-                        email = c.billingEmail)
-                        
-        except stripe.CardError, e:
-            # Since it's a decline, stripe.CardError will be caught
-            error = 1
-            body = e.json_body
-            err  = body['error']
-            errorMsg = err['message']
-
-            #print "Status is: #{e.http_status}\n"
-            #print "Type is: #{err['type']}\n"
-            #print "Code is: #{err['code']}\n"
-            # param is '' in this case
-            #print "Param is: #{err['param']}\n"
-            #print "Message is: #{err['message']}\n"
-        except stripe.InvalidRequestError, e:
-            # Invalid parameters were supplied to Stripe's API
-            error = 1
-            errorMsg = 'Invalid API parameters.'
-            pass
-        except stripe.AuthenticationError, e:
-            # Authentication with Stripe's API failed
-            # (maybe you changed API keys recently)
-            error = 1
-            errorMsg = 'Authentication error.'
-            pass
-        except stripe.APIConnectionError, e:
-            # Network communication with Stripe failed
-            error = 1
-            errorMessage = 'Communication to the payment gateway is down.'
-        except stripe.StripeError, e:
-            # Display a very generic error to the user, and maybe send
-            # yourself an email
-            error = 1
-            errorMsg = 'We cannot process your payment at this time.'
-            pass
-        except e:
-            # Something else happened, completely unrelated to Stripe
-            error = 1
-            errorMsg = 'A system error has occured.'
-            pass
-        
-        if error:
-            errorMsg += ' Please try upgrading your workshop when the issue has been resolved.'
-            alert = {'type':'error'}
-            alert['title'] = errorTitle
-            alert['content'] = errorMsg
-            session['alert'] = alert
-            session.save()
-            workshop['type'] = 'personal'
-            dbHelpers.commit(workshop)
-            return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
-        else:
-            account = accountLib.Account(c.billingName, c.billingEmail, customer['id'], workshop, plan, c.coupon)
-  
-    @h.login_required
     def upgradeHandler(self, workshopCode):
         if self.validatePaymentForm():
                 if 'workshopCode' in request.params:
@@ -697,7 +621,7 @@ class WorkshopController(BaseController):
                     workshop = workshopLib.getWorkshopByCode(workshopCode)
                     workshop['type'] = 'professional'
                     dbHelpers.commit(workshop)
-                    self.createAccount(workshop)
+                    account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, workshop, 'PRO', c.coupon)
                     alert = {'type':'success'}
                     alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
                     session['alert'] = alert
@@ -725,7 +649,7 @@ class WorkshopController(BaseController):
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.w.id, w.w.id)
         if wType == 'professional':
-            self.createAccount(w.w)
+            account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, w.w, 'PRO', c.coupon)
         alert = {'type':'success'}
         alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
         session['alert'] = alert
