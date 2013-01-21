@@ -121,10 +121,10 @@ class AdminController(BaseController):
         elif c.thing.objType == 'resource':
             title = request.params['title']
             link = request.params['link']
-            comment = request.params['comment']
+            text = request.params['text']
             if title.strip() == '':
                 title = blankText
-            if resourceLib.editResource(c.thing, title, comment, link, c.authuser):
+            if resourceLib.editResource(c.thing, title, text, link, c.authuser):
                 alert = {'type':'success'}
                 alert['title'] = 'Resource edit.'
                 alert['content'] = 'Resource edit successful.'
