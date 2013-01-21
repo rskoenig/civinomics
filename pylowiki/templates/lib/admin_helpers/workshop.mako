@@ -10,44 +10,40 @@
 
 <%def name="admin_show()">
 	<div class="row-fluid">
-        <div class="section-wrapper">
-            <div class="browse">
-                <h4 class="section-header" style="text-align: center"><br />Facilitator Tools</h4>
-                <br />
-	            <form name="admin_issue" id="admin_issue" class="form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
-                <strong>Message to Participants:</strong>
-                <br />
-                This is displayed on the workshop landing page. Use this to welcome members to the workshop or to make announcements.<br />
-                <textarea name="motd" rows="2" cols="80">${c.motd['data']}</textarea>
-                &nbsp; &nbsp;
-                <% 
-                    if c.motd['enabled'] == '1':
-                        pChecked = 'checked'
-                        uChecked = ''
-                    else:
-                        pChecked = ''
-                        uChecked = 'checked'
-                %>
-                <input type="radio" name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type="radio" name="enableMOTD" value="0" ${uChecked}> Unpublish Message
-                <br /><br />
-                % if c.w['startTime'] != '0000-00-00':
-                    % if c.w['deleted'] == '1':
-                        <strong>Publish Workshop</strong><br />
-                        This republishes the workshop, displaying it in lists of active workshops. It may be unpublished again later.<br />
-                        <% eAction = 'Publish' %>
-                    % else:
-                        <strong>Unpublish Workshop</strong><br />
-                        This unpublishes the workshop, removing it from lists of active workshops. It may be republished again later.<br />
-                        <% eAction = 'Unpublish' %>
-                    % endif
-                    Reason: <input type="text" name="eventReason" id="eventReason"> &nbsp; &nbsp;
-                    <input type="radio" name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type="radio" name="verifyEnableWorkshop" value="0"> Verify ${eAction}
-                % endif
-                <br /><br />
-                <button type="submit" class="btn btn-warning">Save All Changes</button>
-                </form>
-            </div><!-- browse -->
-        </div><!-- browse -->
+        <h4 class="section-header" style="text-align: center"><br />Facilitator Tools</h4>
+        <br />
+	    <form name="admin_issue" id="admin_issue" class="form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
+        <strong>Message to Participants:</strong>
+        <br />
+        This is displayed on the workshop landing page. Use this to welcome members to the workshop or to make announcements.<br />
+        <textarea name="motd" rows="2" cols="80">${c.motd['data']}</textarea>
+        &nbsp; &nbsp;
+        <% 
+            if c.motd['enabled'] == '1':
+                pChecked = 'checked'
+                uChecked = ''
+            else:
+                pChecked = ''
+                uChecked = 'checked'
+        %>
+        <input type="radio" name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type="radio" name="enableMOTD" value="0" ${uChecked}> Unpublish Message
+        <br /><br />
+        % if c.w['startTime'] != '0000-00-00':
+            % if c.w['deleted'] == '1':
+                <strong>Publish Workshop</strong><br />
+                This republishes the workshop, displaying it in lists of active workshops. It may be unpublished again later.<br />
+                <% eAction = 'Publish' %>
+            % else:
+                <strong>Unpublish Workshop</strong><br />
+                This unpublishes the workshop, removing it from lists of active workshops. It may be republished again later.<br />
+                <% eAction = 'Unpublish' %>
+            % endif
+            Reason: <input type="text" name="eventReason" id="eventReason"> &nbsp; &nbsp;
+            <input type="radio" name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type="radio" name="verifyEnableWorkshop" value="0"> Verify ${eAction}
+        % endif
+        <br /><br />
+        <button type="submit" class="btn btn-warning">Save All Changes</button>
+        </form>
     </div><!-- row-fluid -->
 </%def>
 

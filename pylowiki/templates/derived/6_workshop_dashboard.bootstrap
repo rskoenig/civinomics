@@ -7,7 +7,8 @@
 
 <%
     lib.return_to()
-    
+
+    tabAactive = ""
     tab1active = ""
     tab2active = ""
     tab3active = ""
@@ -40,6 +41,8 @@
         tab9active = "active"
     elif c.tab == "tab10":
         tab10active = "active"
+    elif c.tab == "tabA":
+        tabAactive = "active"
     else:
         if c.w['startTime'] == '0000-00-00':
             tab1active = "active"
@@ -115,7 +118,9 @@
                         <br />
                         Workshop information.
                         </a></li>
-                        % if c.w['type'] == 'personal':
+                        % if c.w['type'] == 'professional':
+                            <li class="${tabAactive}"><a href="#tabA" data-toggle="tab">Account Management</a></li> 
+                        % else:
                             <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST">
                             <li><button type="submit" class="btn btn-warning">Upgrade to Professional</button></li>
                             </form>
@@ -146,6 +151,9 @@
                 <div class="tab-pane ${tab5active}" id="tab5">
                 ${helpers.edit_background()}
                 </div><!-- tab-pane template tab5 -->
+                <div class="tab-pane ${tabAactive}" id="tabA">
+                ${helpers.manage_account()}
+                </div><!-- tab-pane template tabA -->
                 <div class="tab-pane ${tab6active}" id="tab6">
                     <div class="section-wrapper">
                         <div class="browse">

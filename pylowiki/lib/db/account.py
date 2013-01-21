@@ -2,6 +2,7 @@ from pylons import tmpl_context as c, config, session
 from pylowiki.model import Thing, meta, Data
 from pylowiki.lib.utils import toBase62
 from pylowiki.lib.db.dbHelpers import commit
+from dbHelpers import with_characteristic as wc
 import generic
 
 def getAccountsForWorkshop(workshop, deleted = '0', suspended = '0'):
@@ -15,12 +16,13 @@ def getAccountsForWorkshop(workshop, deleted = '0', suspended = '0'):
     except:
         return False
 
+
 def Account(billingName, billingEmail, stripeID, workshop, plan, coupon = 'None'):
     account = Thing('account')
     account['billingName'] = billingName
     account['billingEmail'] = billingEmail
     account['stripeID'] = stripeID
-    account['planb'] = plan
+    account['plan'] = plan
     account['coupon'] = coupon
     account['suspended'] = '0'
     account['deleted'] = '0'

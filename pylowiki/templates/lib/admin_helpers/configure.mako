@@ -398,6 +398,19 @@
     </form>
 </%def>
 
+<%def name="manage_account()">
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Manage Your Professional Workshop Account</h4>
+            % for account in c.accounts:
+                Billing Name: ${account['billingName']}
+                Billing Email: ${account['billingEmail']}
+            % endfor
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
+</%def>
+
+
 <%def name="publish()">
     % if c.w['startTime'] == '0000-00-00' and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
         <div class="well">

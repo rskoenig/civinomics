@@ -861,7 +861,7 @@ class WorkshopController(BaseController):
         if c.w['public_private'] != 'public':
             c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
             
-        c.accounts = accountLib.getAccountsForWorkshop(c.w)
+        c.accounts = accountLib.getAccountsForWorkshop(c.w, deleted = '0')
             
         c.page = pageLib.getInformation(c.w)
         if c.page and 'data' in c.page and c.page['data'] != "No wiki background set yet":
