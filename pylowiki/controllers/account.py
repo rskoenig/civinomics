@@ -1,54 +1,53 @@
-# -*- coding: utf-8 -*-
 import logging
+import stripe
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.account      as accountLib
+
 from pylowiki.lib.base import BaseController, render
-
-import webhelpers.paginate as paginate
-import pylowiki.lib.helpers as h
-from pylons import config
-
-from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
-from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.account import Account, getUserAccount
-
-
-from hashlib import md5
 
 log = logging.getLogger(__name__)
 
 class AccountController(BaseController):
 
     @h.login_required
-    def accountAdminHandler(self, id1, id2):
-        code = id1
-        url = id2
-        if not isAdmin(c.authuser.id):
-           h.flash('Error: You are not authorized', 'error')
-           return redirect("/" )
+    def __before__(self, action, workshopCode = None):
+	c.stripePublicKey = config['app_conf']['stripePublicKey'].strip()
+	c.stripePrivateKey = config['app_conf']['stripePrivateKey'].strip()
+	c.workshop = workshopLib.getWorkshopByCode(workshopCode)
+	c.account = accountLib.getAccountsForWorkshop(workshop, deleted = '0')
+    c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID')
 
-        c.user = get_user(code, url)
-        c.account = getUserAccount(c.user.id)
-        if not c.account and 'numHost' in request.params:
-           log.info('accountAdminHandler %s %s' % (code, url))
-           numHost = request.params['numHost']
-           a = Account(c.user, numHost)
-           h.flash('Account Admin Created', 'success')
-        elif c.account and 'numHost' in request.params:
-           numHost = request.params['numHost']
-           if c.account['numHost'] != numHost:
-              c.account['numHost'] = numHost
-              w = getWorkshopsByOwner(c.user.id)
-              numWorkshops = len(w)
-              numRemaining = int(numHost) - numWorkshops
-              c.account['numRemaining'] = numRemaining
-              commit(c.account)
-              h.flash('Account hosting upgraded to %s'%numHost, 'success')
+    def updateBillingContactHandler(self):
+        stripe.api_key = c.stripePrivateKey
+        if 'billingName' in request.params:
+            billingName = request.params['billingName']
         else:
-              h.flash('No change to account', 'success')
+            billingName = ''
+            
+        if 'billingEmail' in request.params:
+            billingEmail = request.params['billingEmail']
+        else:
+            billingEmail = ''
+            
+        if not billingName and not billingEmail:
+            alert = {'type':'error'}
+            alert['title'] = 'No information submitted.'
+            session['alert'] = alert
+            session.save()
+            return redirect("/workshop/" + c.workshop['urlCode'] + "/" + c.workshop['url'] + "/dashboard")
 
-        return redirect("/profile/" + code + "/" + url + "/admin" )
-
+    def updatePaymentInfoHandler(self):
+        stripe.api_key = c.stripePrivateKey
+        if 'stripeToken' in request.params:
+            stripeToken = request.params['stripeToken']
+        else:
+            alert = {'type':'error'}
+            alert['title'] = 'No information submitted.'
+            session['alert'] = alert
+            session.save()
+            return redirect("/workshop/" + c.workshop['urlCode'] + "/" + c.workshop['url'] + "/dashboard")

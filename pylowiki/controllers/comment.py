@@ -10,13 +10,11 @@ from pylowiki.lib.comments import addDiscussion, addComment
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.facilitator import isFacilitator, getFacilitatorsByWorkshop
 from pylowiki.lib.db.workshop import getWorkshop, isScoped
-#from pylowiki.model import commit, Event, get_page
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.event import Event, getParentEvents, getCommentEvent
-from pylowiki.lib.db.page import get_page
-from pylowiki.lib.db.comment import Comment, getComment, disableComment, enableComment, getCommentByCode, editComment
-from pylowiki.lib.db.discussion import getDiscussionByID
-from pylowiki.lib.db.flag import Flag, isFlagged, getFlags, clearFlags
+from pylowiki.lib.db.comment import Comment, getComment, isDisabled, disableComment, enableComment, getCommentByCode, editComment
+from pylowiki.lib.db.discussion import getDiscussionByID, getDiscussion as getDiscussionByCode
+from pylowiki.lib.db.flag import Flag, isFlagged, getFlags
 from pylowiki.lib.db.revision import getRevisionByCode
 
 import simplejson as json
@@ -28,19 +26,6 @@ import pylowiki.lib.helpers as h
 class CommentController(BaseController):
 
     @h.login_required
-    def flagComment(self, id1):
-        commentID = id1
-        comment = getComment(commentID)
-        commentCode = comment['urlCode']
-        if not comment:
-            return json.dumps({'id':commentCode, 'result':'ERROR'})
-        if not isFlagged(comment, c.authuser):
-            f = Flag(comment, c.authuser)
-            return json.dumps({'id':commentCode, 'result':"Successfully flagged!"})
-        else:
-            return json.dumps({'id':commentCode, 'result':"Already flagged!"})
-
-    @h.login_required
     def adminComment(self, id1):
         code = id1
         c.comment = getCommentByCode(code)
@@ -48,7 +33,6 @@ class CommentController(BaseController):
         c.w = getWorkshop(c.discussion['workshopCode'], c.discussion['workshopURL'])
         c.commentType = c.discussion['discType']
         c.flags = getFlags(c.comment)
-        log.info('len of c.flags is %s'%len(c.flags))
         c.events = getParentEvents(c.comment)
         c.user = getUserByID(c.comment.owner)
 
@@ -84,6 +68,7 @@ class CommentController(BaseController):
 
         return render('/derived/comment_admin.bootstrap')
 
+    # Soon to be deprecated
     @h.login_required
     def clearCommentFlagsHandler(self, id1):
         code = id1
@@ -124,8 +109,6 @@ class CommentController(BaseController):
 
         returnURL = "/adminComment/" + code
         return redirect(returnURL)
-
-     
 
     @h.login_required
     def modCommentHandler(self, id1):
@@ -211,64 +194,36 @@ class CommentController(BaseController):
         return redirect(backlink)
     
     @h.login_required
-    def addComment(self):
-        cError = 0
+    def commentAddHandler(self):
         try:
             request.params['submit']
-            discussionID = request.params['discussionID']
-            parentCommentID = request.params['parentID']
-            comType = request.params['type']
+            parentCommentCode = request.params['parentCode']
             data = request.params['comment-textarea']
-            data = data.lstrip()
-            data = data.rstrip()
+            data = data.strip()
             if data == '':
                 alert = {'type':'error'}
                 alert['title'] = 'Add Comment failed.'
                 alert['content'] = 'No comment text entered.'
                 session['alert'] = alert
                 session.save()
-                cError = 1
-            
-            workshopCode = request.params['workshopCode']
-            workshopURL = request.params['workshopURL']
-            
-            discussion = getDiscussionByID(discussionID)
-
-            log.info('parent comment = %s' % parentCommentID)
-            if parentCommentID and parentCommentID != '0' and parentCommentID != '':
-                parentComment = getCommentByCode(parentCommentID)
+                return redirect(session['return_to'])
+            if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
+                # Reply to an existing comment
+                parentComment = getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
-
-            if cError == 0:
-                comment = Comment(data, c.authuser, discussion, int(parentCommentID))
+                discussion = getDiscussionByCode(parentComment['discussionCode'])
+            elif 'discussionCode' in request.params:
+                # Root level comment
+                discussion = getDiscussionByCode(request.params['discussionCode'])
+                parentCommentID = 0
+            comment = Comment(data, c.authuser, discussion, parentCommentID)
+            return redirect(session['return_to'])
+                
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
-            h.flash('Do not access a handler directly', 'error')
-        except:
-            raise
-            h.flash('Unknown error', 'error')
-        
-        if comType == 'background':
-            return redirect('/workshop/%s/%s/background' % (workshopCode, workshopURL) )
-        elif comType == 'feedback':
-            return redirect('/workshop/%s/%s/feedback' % (workshopCode, workshopURL) )
-        elif comType == 'resource':
-            resourceCode = request.params['resourceCode']
-            resourceURL = request.params['resourceURL']
-            return redirect('/workshop/%s/%s/resource/%s/%s/' % (workshopCode, workshopURL, resourceCode, resourceURL ) )
-        elif comType == 'suggestionMain':
-            suggestionCode = request.params['suggestionCode']
-            suggestionURL = request.params['suggestionURL']
-            return redirect('/workshop/%s/%s/suggestion/%s/%s'%(workshopCode, workshopURL, suggestionCode, suggestionURL))
-        elif comType == 'discussion':
-            discussionCode = discussion['urlCode']
-            discussionURL = discussion['url']
-            return redirect('/workshop/%s/%s/discussion/%s/%s'%(workshopCode, workshopURL, discussionCode, discussionURL))
-        elif comType == 'thread':
             return redirect(session['return_to'])
-        else:
-            return redirect('/')
-            
+        return redirect(session['return_to'])
+    
     """ id1: the issue's URL.
     """
     ##@h.login_required
@@ -292,86 +247,6 @@ class CommentController(BaseController):
            oLink = wLink + '/resource/' + d['resourceCode'] + '/' + d['resourceURL']
     
         return redirect( oLink )
-
-    @h.login_required   
-    def disable(self, id):
-        """disable a comment by id"""
-        comment = getComment( id )
-        if comment:
-            if session['user'] == comment.event.user.name:
-                comment.disable()
-                h.flash( "The comment was disabled!", "success" )
-            else:
-                h.flash( "The comment was NOT disabled!", "warning" )
-        else:
-            h.flash( "Invalid comment id", "error" )
-        return redirect( session['return_to'] )
-
-    def adminCommentDelete(self, id):
-        comment = getComment(id)
-        deleteComment(comment)
-        return redirect( session['return_to'] )  
-    
-    @h.login_required
-    def edit(self, id1):
-        """
-            Edits a comment by replacing the current revision with a new revision.  Just grabs relevant info
-            and then uses the editComment() function in the comments library.
-            
-            Inputs:
-                        id1    ->    The comment hash
-        """
-        commentCode = id1
-        cError = 0
-        data = request.params['textarea' + commentCode]
-        data = data.lstrip()
-        data = data.rstrip()
-        if data == '':
-            alert = {'type':'error'}
-            alert['title'] = 'Edit Comment failed.'
-            alert['content'] = 'No comment text entered.'
-            session['alert'] = alert
-            session.save()
-            cError = 1
-
-        comment = getCommentByCode(commentCode)
-        discussionID = comment['discussion_id']
-        d = getDiscussionByID(discussionID)
-        if d['discType'] == 'suggestion':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL']
-        elif d['discType'] == 'resource':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL']
-        elif d['discType'] == 'sresource':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] + "/resource/" + "/resource/" + d['resourceCode'] + "/" + d['resourceURL']
-        elif d['discType'] == 'general':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/discussion/" + d['urlCode'] + "/" + d['url']
-        elif d['discType'] == 'background':
-            backlink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/background"
-
-        if 'discType' in request.params:
-          if request.params['discType'] == 'thread':
-            backlink = session['return_to']
-
-        if cError == 0:
-           comment = editComment(commentCode, discussionID, data)
-           if not comment:
-               alert = {'type':'error'}
-               alert['title'] = 'Edit Comment failed.'
-               alert['content'] = 'Unknown error in editComment.'
-               session['alert'] = alert
-               session.save()
-           else:
-               alert = {'type':'success'}
-               alert['title'] = 'Edit Comment.'
-               alert['content'] = 'Edit comment successful.'
-               session['alert'] = alert
-               session.save()
-               #eMsg = "Comment data updated. " + remark
-               #Event('Comment edited by %s'%c.authuser['name'], eMsg, comment, c.authuser)
-               Event('Comment edited by %s'%c.authuser['name'], comment, c.authuser)
-
-        return redirect(backlink)
-
 
     def permalink(self, id1, id2, id3):
       workshopCode = id1

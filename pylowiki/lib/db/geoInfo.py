@@ -6,6 +6,7 @@ from sqlalchemy import orm
 from pylowiki.model import Thing, Data, meta
 from pylowiki.lib.utils import urlify
 from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+import generic
 
 import time, datetime
 import logging
@@ -19,11 +20,20 @@ def geoDeurlify( something ):
     deurl = something.replace('-', ' ')
     return deurl 
 
-def getPostalInfo( postal, country ):
+def getPostalInfo( postal ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s""",(postal,))
+    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s""",(postal))
     rlist = c.fetchone()
+    c.close()
+    db.close()
+    return rlist
+    
+def getPostalList( country, state, county, city ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT DISTINCT ZipCode from US_Postal WHERE StateFullName = %s and County = %s and City = %s""",(state, county.upper(), city.upper()))
+    rlist = c.fetchall()
     c.close()
     db.close()
     return rlist
@@ -36,6 +46,15 @@ def getCityInfo( city, state, country ):
     c.close()
     db.close()
     return rlist
+    
+def getCityList( country, state, county ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT City from US_City WHERE StateFullName = %s and County = %s""",(state, county))
+    rlist = c.fetchall()
+    c.close()
+    db.close()
+    return rlist
 
 def getCountyInfo( county, state, country ):
     db = getDB()
@@ -45,12 +64,31 @@ def getCountyInfo( county, state, country ):
     c.close()
     db.close()
     return rlist
+    
+def getCountyList( county, state ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT County from US_County WHERE StateFullName = %s""",(state))
+    rlist = c.fetchall()
+    c.close()
+    db.close()
+    return rlist
+
 
 def getStateInfo( state, country ):
     db = getDB()
     c = db.cursor()
     c.execute("""SELECT * from US_State WHERE StateFullName = %s""",(state,))
     rlist = c.fetchone()
+    c.close()
+    db.close()
+    return rlist
+    
+def getStateList( country ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT StateFullName from US_State""")
+    rlist = c.fetchall()
     c.close()
     db.close()
     return rlist
@@ -111,15 +149,27 @@ def getUserScopes(searchScope, scopeLevel):
     scopeLevel = int(scopeLevel) + 1
     try:
         sList = searchScope.split('|')
-        ##log.info('sList is %s' % len(sList))
         sList = sList[:int(scopeLevel)]
         searchScope = "|".join(sList)
         searchScope = searchScope + '%'
-        ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
-        return meta.Session.query(Thing).filter_by(objType = 'geo').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'geo')\
+                .filter(Thing.data.any(wc('deactivated', '0000-00-00')))\
+                .filter(Thing.data.any(wcl('scope', searchScope, 1)))\
+                .all()
     except sa.orm.exc.NoResultFound:
         return False
 
+def getWScopeByWorkshop(workshop, deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'wscope')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+                .one()
+    except sa.orm.exc.NoResultFound:
+        return False
+        
 def getWorkshopScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 3, state = 5, county = 7, city = 9, zip = 10
@@ -130,12 +180,15 @@ def getWorkshopScopes(searchScope, scopeLevel):
     scopeLevel = int(scopeLevel) + 0
     try:
         sList = searchScope.split('|')
-        ##log.info('sList is %s' % len(sList))
         sList = sList[:int(scopeLevel)]
         searchScope = "|".join(sList)
         searchScope = searchScope + '%'
-        ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
-        return meta.Session.query(Thing).filter_by(objType = 'wscope').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
+        log.info(searchScope)
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'wscope')\
+                .filter(Thing.data.any(wc('deleted', '0')))\
+                .filter(Thing.data.any(wcl('scope', searchScope, 1)))\
+                .all()
     except sa.orm.exc.NoResultFound:
         return False
 
@@ -172,14 +225,13 @@ def getScopeTitle(postalCode, country, scope):
        return 'hmmm, I dunno'
         
 class WorkshopScope(object):
-    def __init__(self, postalCode, country, workshopID, ownerID):
-        w = Thing('wscope', ownerID)
-        w['postalCode'] = postalCode
-        w['country'] = country
-        w['workshopID'] = workshopID
-        w['deactivated'] = '0000-00-00'
-        w['scope'] = getGeoScope(postalCode, country)
-        commit(w)
+    def __init__(self, workshop, scope):
+        wscope = Thing('wscope')
+        wscope['deleted'] = '0'
+        wscope['scope'] = scope
+        commit(wscope)
+        wscope = generic.linkChildToParent(wscope, workshop)
+        commit(wscope)
 
 class SurveyScope(object):
     def __init__(self, postalCode, country, survey, owner):

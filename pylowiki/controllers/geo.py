@@ -3,8 +3,11 @@ import logging
 from pylons import request, response, session, tmpl_context as c
 from string import capwords
 from pylowiki.lib.utils import urlify
-from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
+import pylowiki.lib.utils as utils
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getPostalList, getCityInfo, getCityList, getCountyInfo, getCountyList, getStateInfo, getStateList, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
+import pylowiki.lib.db.geoInfo as geoInfoLib
 from pylowiki.lib.db.workshop import getWorkshopByID
+import pylowiki.lib.db.workshop as workshopLib
 
 from pylowiki.lib.base import BaseController, render
 import webhelpers.paginate as paginate
@@ -18,13 +21,81 @@ log = logging.getLogger(__name__)
 
 class GeoController(BaseController):
 
+    def __before__(self, action, country = None, state = None, county = None, city = None, postalCode = None):
+        actionList = ['countryWorkshops', 'stateWorkshops', 'countyWorkshops', 'cityWorkshops', 'postalWorkshops']
+        if action not in actionList:
+            return
+        if country is None:
+            abort(404)
+        c.title = c.heading = 'Public workshops in '
+        if action == 'countryWorkshops':
+            c.title += capwords(geoInfoLib.geoDeurlify(country))
+            c.heading += capwords(geoInfoLib.geoDeurlify(country))
+            c.scope = 'country'
+            scopeLevel = "03"
+        elif action == 'stateWorkshops':
+            if state is None:
+                abort(404)
+            c.title += capwords(geoInfoLib.geoDeurlify(state))
+            c.heading += capwords(geoInfoLib.geoDeurlify(state))
+            c.scope = 'state'
+            scopeLevel = "05"
+        elif action == 'countyWorkshops':
+            if state is None or county is None:
+                abort(404)
+            c.title += capwords(geoInfoLib.geoDeurlify(county))
+            c.heading += capwords(geoInfoLib.geoDeurlify(county))
+            c.scope = 'county'
+            scopeLevel = "07"
+        elif action == 'cityWorkshops':
+            if state is None or city is None:
+                abort(404)
+            c.title += capwords(geoInfoLib.geoDeurlify(city))
+            c.heading += capwords(geoInfoLib.geoDeurlify(city))
+            c.scope = 'city'
+            scopeLevel = "09"
+            # The following is just one of many reasons not to save relative URLs in the DB
+            c.geoInfo = geoInfoLib.getCityInfo(geoInfoLib.geoDeurlify(city), geoInfoLib.geoDeurlify(state), geoInfoLib.geoDeurlify(country))
+            county = c.geoInfo['County']
+        elif action == 'postalWorkshops':
+            if postalCode is None:
+                abort(404)
+            c.title += postalCode
+            c.heading += postalCode
+            c.scope = 'postalCode'
+            scopeLevel = '10'
+            
+        scope = utils.constructGeoScope(country = country, state = state, county = county, city = city, postalCode = postalCode)
+        scopeObjects = geoInfoLib.getWorkshopScopes(scope, scopeLevel)
+        c.list = []
+        for scopeObj in scopeObjects:
+            workshop = workshopLib.getActiveWorkshopByCode(scopeObj['workshopCode'])
+            if workshop:
+                c.list.append(workshop)
+        c.activity = []
+
+    def countryWorkshops(self, country):
+        return render('derived/6_main_listing.bootstrap')
+    
+    def stateWorkshops(self, country, state):
+        return render('derived/6_main_listing.bootstrap')
+    
+    def countyWorkshops(self, country, state, county):
+        return render('derived/6_main_listing.bootstrap')
+    
+    def cityWorkshops(self, country, state, city):
+        return render('derived/6_main_listing.bootstrap')
+    
+    def postalWorkshops(self, country, postalCode):
+        return render('derived/6_main_listing.bootstrap')
+
     def showPostalInfo(self, id1, id2):
         c.country = geoDeurlify(id1)
         c.postal = id2
         
         c.heading = "Workshops in Postal Code " + c.postal
         c.geoType = 'postal'
-        c.geoInfo = getPostalInfo(c.postal, c.country)
+        c.geoInfo = getPostalInfo(c.postal)
         c.city = capwords(c.geoInfo['City'])
         c.cityFlag = '/images/flags/country/united-states/city_thumb.png'
         c.cityLink = '/geo/city/' + c.country + '/' + urlify(c.geoInfo['StateFullName']) + '/' + urlify(c.geoInfo['City']) 
@@ -225,8 +296,8 @@ class GeoController(BaseController):
 
         return render('/derived/list_geo.bootstrap')
 
-    def showCountryInfo(self, id1):
-        c.country = id1
+    def showCountryInfo(self, country):
+        c.country = country
         
         c.geoType = 'country'
         log.info('c.country is %s'%c.country)
@@ -282,4 +353,54 @@ class GeoController(BaseController):
         titles = getGeoTitles(postalCode, country)
         ##log.info('geoHandler titles %s' % titles)
         return json.dumps({'result':titles})
+        
+    def geoStateHandler(self, id1):
+        country = id1
+
+        states = getStateList(country)
+        sList = ""
+        for state in states:
+            if state['StateFullName'] != 'District of Columbia':
+                sList = sList + state['StateFullName'] + '|'
+        return json.dumps({'result':sList})
+
+    def geoCountyHandler(self, id1, id2):
+        country = id1
+        state = geoDeurlify(id2)
+        state = state.title()
+
+        counties = getCountyList(country, state)
+        cList = ""
+        for county in counties:
+            cList = cList + county['County'].title() + '|'
+        return json.dumps({'result':cList})
+
+
+    def geoCityHandler(self, id1, id2, id3):
+        country = id1
+        state = geoDeurlify(id2)
+        state = state.title()
+        county = geoDeurlify(id3)
+        county = county.upper()
+
+        cities = getCityList(country, state, county)
+        cList = ""
+        for city in cities:
+            cList = cList + city['City'].title() + '|'
+        return json.dumps({'result':cList})
+
+    def geoPostalHandler(self, id1, id2, id3, id4):
+        country = id1
+        state = geoDeurlify(id2)
+        state = state.title()
+        county = geoDeurlify(id3)
+        county = county.upper()
+        city = geoDeurlify(id4)
+        city = city.upper()
+
+        postalCodes = getPostalList(country, state, county, city)
+        pList = ""
+        for postal in postalCodes:
+            pList = pList + str(postal['ZipCode']) + '|'
+        return json.dumps({'result':pList})
 

@@ -3,9 +3,9 @@ $('button.followButton').live('click', function(e){
     e.preventDefault();
     $button = $(this);
     var urlList = $button.attr('rel').split(/_/);
-    var urlString = '/' + urlList[0] + '/' + urlList[1] + '/' + urlList[2];
+    var urlString = '/' + urlList[0] + '/' + urlList[1] + '/' + urlList[2] + '/follow/handler';
     if($button.hasClass('following')){
-        urlString = urlString + '/unfollow/';
+        //urlString = urlString + '/unfollow/';
         $.ajax({
            type : 'POST',
            async : false,
@@ -14,11 +14,15 @@ $('button.followButton').live('click', function(e){
         
         $button.removeClass('following');
         $button.removeClass('unfollow');
-        var bText = '+Follow';
-        $button.text(bText);
+        if(urlList[0] == 'profile'){
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Follow </span>';
+        } else {
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Watch </span>';            
+        }
+        $button.html(bText);
     } else {
         
-        urlString = urlString + '/follow/';
+        //urlString = urlString + '/follow/';
         $.ajax({
            type : 'POST',
            async : false,
@@ -26,21 +30,25 @@ $('button.followButton').live('click', function(e){
         });
                    
         $button.addClass('following');
-        var bText = '-Unfollow';
-        $button.text(bText);
+        if(urlList[0] == 'profile'){
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unfollow </span>';
+        } else {
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unwatch </span>';
+        }
+        $button.html(bText);
     }
 });
 
-$('button.followButton').hover(function(){
+$('button.followButtonFoo').hover(function(){
      $button = $(this);
     if($button.hasClass('following')){
         $button.removeClass('unfollow');
         $button.addClass('unfollow');
-        $button.text('-Unfollow');
+        $button.text('Unfollow');
     }
 }, function(){
     if($button.hasClass('following')){
         $button.removeClass('unfollow');
-        $button.text('+Following');
+        $button.text('Following');
     }
 });

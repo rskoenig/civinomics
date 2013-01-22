@@ -52,10 +52,10 @@ def enableFacilitator( facilitator ):
 
 # Object
 class Facilitator(object):
-    def __init__(self, userID, workshopID, pending = '0'):
+    def __init__(self, user, workshop, pending = '0'):
         # note - the userID of the facilitator is the f.owner
-        f = Thing('facilitator', userID)
-        f['workshopID'] = workshopID
+        f = Thing('facilitator', user.id)
+        f['workshopID'] = workshop.id
         f['disabled'] = '0'
         f['pending'] = pending
         commit(f)

@@ -2,97 +2,133 @@
 import logging
 log = logging.getLogger(__name__)
 
+from sqlalchemy import and_
 from pylowiki.model import Thing, Data, meta
-from dbHelpers import commit, with_characteristic as wc
+from dbHelpers import with_characteristic as wc
+import pylowiki.lib.db.dbHelpers    as dbHelpers
+import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.user         as userLib
 
-import pickle
-
-def Flag(thing, flagger, flagType = "overall"):
+def Flag(thing, flagger, flagType = "overall", workshop = None):
     """
         Any Thing object can be flagged.  The flagType parameter is optional,
         and can be used to specify a type of flag (e.g. off-topic, inflamatory,
         factually incorrect, etc...)
     """
+    if not getFlagMetaData(thing):
+        FlagMetaData(thing)
     # flag creation
     f = Thing('flag', flagger.id)
-    f['flaggedThing_id'] = thing.id
-    f['flaggedThing_owner'] = thing.owner
-    f['flaggedThing_objType'] = thing.objType
-    f['category'] = flagType
     f['deleted'] = '0'
-    commit(f)
+    f['disabled'] = '0'
+    f['flagType'] = flagType
+    dbHelpers.commit(f)
     
-    # thing commits
-    if 'numFlagsTotal' in thing.keys():
-        thing['numFlagsTotal'] = str(int(thing['numFlagsTotal']) + 1)
-        if ('numFlags_%s'%flagType) in thing.keys():
-            thing['numFlags_%s'%flagType] = str(int(thing['numFlags_%s'%flagType]) + 1)
-        else:
-            thing['numFlags_%s'%flagType] = u'1'
-        if ('flag_ids_%s'%flagType) in thing.keys():
-            thing['flag_ids_%s'%flagType] = thing['flag_ids_%s'%flagType] + ',' + str(f.id)
-        else:
-            thing['flag_ids_%s'%flagType] = str(f.id)
-    else:
-        thing['numFlags'] = u'1'
-        thing['numFlags_%s'%flagType] = u'1'
-        thing['flag_ids_%s'%flagType] = str(f.id)
-    commit(thing)
-    
-    # User commits
-    if 'numFlagsTotal' in flagger.keys():
-        flagger['numFlagsTotal'] = str( int(flagger['numFlagsTotal']) + 1 )
-        flagger['allFlag_ids'] = flagger['allFlag_ids'] + ',' + str(f.id)
-        flagger['allFlaggedThing_ids'] = flagger['allFlaggedThing_ids'] + ',' + str(thing.id)
-        if ('numFlags_%s'%flagType) in flagger.keys():
-            flagger['numFlags_%s'%flagType] = str( int(flagger['numFlags_%s'%flagType]) + 1 )
-        else:
-            flagger['numFlags_%s'%flagType] = u'1'
-        if ('flag_ids_%s'%flagType) in flagger.keys():
-            flagger['flag_ids_%s'%flagType] = flagger['flag_ids_%s'%flagType] + ',' + str(f.id)
-        else:
-            flagger['flag_ids_%s'%flagType] = str(f.id)
-    else:
-        flagger['numFlagsTotal'] = u'1'
-        flagger['numFlags_%s'%flagType] = u'1'
-        flagger['flag_ids_%s'%flagType] = str(f.id)
-        flagger['allFlag_ids'] = str(f.id)
-        flagger['allFlaggedThing_ids'] = str(thing.id)
-    commit(flagger)
+    # Now set up all the references
+    thingOwner = userLib.getUserByID(thing.owner)
+    generic.linkChildToParent(f, thingOwner)
+    generic.linkChildToParent(f, thing)
+    if workshop is not None:
+        generic.linkChildToParent(f, workshop)
+    dbHelpers.commit(f)
     
     return f
-    
-def getFlags(thing):
+
+def FlagMetaData(thing, immune = '0'):
+    # Instead of denormalizing the object getting flagged, we instead
+    # create a new object that dictates whether or not the flagged item
+    # is immune to flagging.
+    flagMetaData = Thing('flagMetaData')
+    flagMetaData['immune'] = immune
+    dbHelpers.commit(flagMetaData)
+    generic.linkChildToParent(flagMetaData, thing)
+    dbHelpers.commit(flagMetaData)
+
+def getFlagMetaData(thing):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'flag').filter(Thing.data.any(wc('flaggedThing_id', thing.id))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        thingKey = '%sCode' % thing.objType
+        thingCode = thing['urlCode']
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'flagMetaData')\
+            .filter(Thing.data.any(wc(thingKey, thingCode)))\
+            .one()
     except:
         return False
 
-def clearFlags(thing):
-        fList =  meta.Session.query(Thing).filter_by(objType = 'flag').filter(Thing.data.any(wc('flaggedThing_id', thing.id))).filter(Thing.data.any(wc('deleted', '0'))).all()
-        for f in fList:
-            f['deleted'] = 1
-            commit(f)
+def getFlaggedThings(objType, workshop = None):
+    try:
+        thingKey = u'%sCode' % objType
+        flaggedThings = []
+        if workshop is None:
+            rows = meta.Session.query(Thing)\
+                .filter_by(objType = 'flag')\
+                .filter(Thing.data.any(and_(Data.key == thingKey)))\
+                .all()
+        else:
+            rows =  meta.Session.query(Thing)\
+                .filter_by(objType = 'flag')\
+                .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+                .filter(Thing.data.any(and_(Data.key == thingKey)))\
+                .all()
+        if len(rows) == 0:
+            return False
+        for row in rows:
+            flaggedThings.append(generic.getThing(row[thingKey]))
+        return flaggedThings
+    except:
+        return False
 
-        if 'numFlags' in thing.keys() and int(thing['numFlags']) != 0:
-            thing['numFlags'] = 0
-            commit(thing)
+def getFlags(thing, deleted = '0', disabled = '0'):
+    try:
+        thingKey = '%sCode' % thing.objType
+        thingCode = thing['urlCode']
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'flag')\
+            .filter(Thing.data.any(wc(thingKey, thingCode)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
+    except:
+        return False
+
+def getNumFlags(thing, deleted = '0', disabled = '0'):
+    try:
+        thingKey = '%sCode' % thing.objType
+        thingCode = thing['urlCode']
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'flag')\
+            .filter(Thing.data.any(wc(thingKey, thingCode)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .count()
+    except:
+        return False
+
+def immunify(thing):
+    # Flips the 'immune' bit
+    flagMetaData = getFlagMetaData(thing)
+    if not flagMetaData:
+        FlagMetaData(thing, immune = '1')
+    else:
+        flagMetaData['immune'] = unicode(not int(flagMetaData['immune']))
+        dbHelpers.commit(flagMetaData)
 
 def checkFlagged(thing):
-    if len(getFlags(thing)) > 0:
-       return True
-    else:
-       return False
+    return len(getFlags(thing)) > 0
 
 def isFlagged(thing, flagger):
     """
         Check if a Thing object has already been flagged by the flagger.
         Returns True if so, False if not.
     """
-    if 'allFlaggedThing_ids' not in flagger.keys():
-        return False
-    thing_id = int(thing.id)
-    l = map(int, flagger['allFlaggedThing_ids'].split(','))
-    if thing_id in l:
-        return True
-    return False
+    try:
+        thingKey = '%sCode' % thing.objType
+        thingCode = thing['urlCode']
+        rows = meta.Session.query(Thing)\
+            .filter_by(objType = 'flag')\
+            .filter_by(owner = flagger.id)\
+            .filter(Thing.data.any(wc(thingKey, thingCode)))\
+            .all()
+        return len(rows) == 1
+    except:
+        return None

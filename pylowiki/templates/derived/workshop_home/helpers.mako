@@ -67,8 +67,7 @@
     <dl class="dl-horizontal" style="font-size:large;">
     <dt>Name:</dt><dd><strong>${c.w['title']}</strong><br /><br /></dd>
     <dt>Goals:</dt><dd>${c.w['goals']}<br /><br /></dd>
-    <dt>Tags:</dt><dd>${c.w['publicTags']}, ${c.w['memberTags']}<br /><br /></dd>
-    <dt>Public<br />Sphere:</dt><dd>${c.w['publicScopeTitle']}<br /><br /><br /></dd>
+    <dt>Tags:</dt><dd>${c.w['categoryTags']}<br /><br /></dd>
     % if c.w['startTime'] != '0000-00-00': 
         <dt>Started:</dt><dd><span class="recent">${timeSince(c.w['startTime'])}</span> ago</dd>
         <dt>Ends:</dt><dd><span class="old">${timeUntil(c.w['endTime'])}</span> from now<br /><br /></dd>
@@ -107,6 +106,18 @@
         <button class="btn btn-primary btn-mini followButton" rel="/" title="Sign Up or Log In to participate!">+Follow</button>
         <br /><br />
         </dd>
+    % endif
+    % if c.w['type'] != 'personal':
+        <% owner = getUserByID(c.w.owner) %>
+        <dl>
+        <dt>Hosted by:</dt><dd>
+            % if 'pictureHash' in owner and owner['pictureHash'] != 'flash':
+                <a href="/profile/${owner['urlCode']}/${owner['url']}"><img src="/images/avatar/${owner['directoryNumber']}/thumbnail/${owner['pictureHash']}.thumbnail" alt="${owner['name']}" title="${owner['name']}" class="thumbnail"></a> &nbsp; &nbsp;
+            % else:
+                <a href="/profile/${owner['urlCode']}/${owner['url']}"><img src="/images/avatars/flash.thumbnail" alt="${owner['name']}" title="${owner['name']}" class="thumbnail"></a> &nbsp; &nbsp;
+            % endif
+        </dd>
+        </dl>
     % endif
     % if len(c.facilitators) == 1:
         <% fTitle = "Facilitator" %>

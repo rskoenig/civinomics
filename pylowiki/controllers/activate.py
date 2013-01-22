@@ -29,9 +29,17 @@ class ActivateController(BaseController):
                     user['activated'] = '1'
                     user['laston'] = time.time()
                     if commit(user):
-                        message['type'] = 'success'
-                        message['title'] = 'Congratulations!  '
-                        message['content'] = '%s, you are now registered!  Please login below.' % email
+                        session["user"] = user['name']
+                        session["userCode"] = user['urlCode']
+                        session["userURL"] = user['url']
+                        alert = {'type':'success'}
+                        alert['title'] = 'Welcome to Civinomics! Please feel free to explore!'
+                        session['alert'] = alert
+                        session.save()
+                        c.authuser = user
+                        returnURL = "/"
+                        return redirect(returnURL)
+                        
                     else:
                         message['type'] = 'error'
                         message['title'] = 'Error: '

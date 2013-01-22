@@ -18,6 +18,7 @@
   </head>
 
   <body>
+    ${self.google_analytics()}
     <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
       <div class="navbar-inner" style="background-image: none; background-color: #FFFFFF;">
         <div class="container-fluid">
@@ -47,88 +48,114 @@
 
     <div class="container">
         <div class="row">
-            <div class="span6 offset3" style="padding-top:50px;">
-                <div class="well main-well">
-                    % if c.splashMsg:
-                        <% message = c.splashMsg %>
-                        <div class="alert alert-${message['type']}">
-                            <button data-dismiss="alert" class="close">x</button>
-                            <strong>${message['title']}</strong> ${message['content']}
+            % if c.success:
+                <div class="span6 offset3" style="padding-top:150px;">
+                    <div class="success-well">
+                        <div class="login-top">
+                            <h2>Success!</h2>
+                        <div>
+                        Check your email to finish setting up your account.
+                    </div>
+                </div>
+            % else: 
+                <div class="span6 offset3" style="padding-top:50px;">
+                    <div class="well main-well">
+                        % if c.splashMsg:
+                            <% message = c.splashMsg %>
+                            <div class="alert alert-${message['type']}">
+                                <button data-dismiss="alert" class="close">x</button>
+                                <strong>${message['title']}</strong> ${message['content']}
+                            </div>
+                        % endif
+                        <div class="login-top">
+                            <h2> Sign Up </h2><br />
+                            % if float(c.numAccounts - c.numUsers)/float(c.numAccounts) <= .25:
+                                <p> ${c.numAccounts - c.numUsers}/${c.numAccounts} accounts left </p>
+                            % endif
                         </div>
-                    % endif
-                    <div class="login-top">
-                        <h2> Sign Up </h2>
-                        % if float(c.numAccounts - c.numUsers)/float(c.numAccounts) <= .25:
-                            <p> ${c.numAccounts - c.numUsers}/${c.numAccounts} accounts left </p>
+                        % if c.conf['read_only.value'] == 'true':
+                            <h1> Sorry, Civinomics is in read only mode right now </h1>
+                        % else:
+                            <div class="login-body" style="border-bottom:none;">
+                                <form id="sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
+                                    <input type="hidden" name="country" value="United States">
+                                    <input type="hidden" name="memberType" value="professional">
+
+                                    <div class="control-group">
+                                        <label class="control-label" for="name"> Full name: </label>
+                                        <div class="controls">
+                                            <input type="text" name="name" id="name">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="email"> Email: </label>
+                                        <div class="controls">
+                                            <input type="text" name="email" id="email">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="passphrase"> Password: </label>
+                                        <div class="controls">
+                                            <input type="password" name="password" id="passphrase">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="passphrase2"> Password (again): </label>
+                                        <div class="controls">
+                                            <input type="password" name="password2" id="passphrase2">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i>Postal Code: </label>
+                                        <div class="controls">
+                                            <input type="text" name="postalCode" id="postalCode">
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <label class="checkbox">
+                                                <input type="checkbox" name="chkTOS" id="chkTOS"> I agree to the <a href="/corp/terms" style="color: #5f774b;">Terms Of Use</a>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <div class="controls">
+                                            <button type="submit" class="btn btn-success"> Sign up </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         % endif
                     </div>
-                    % if c.conf['read_only.value'] == 'true':
-                        <h1> Sorry, Civinomics is in read only mode right now </h1>
-                    % else:
-                        <div class="login-body" style="border-bottom:none;">
-                            <form id="sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
-                                <input type="hidden" name="country" value="United States">
-                                <input type="hidden" name="memberType" value="individual">
-                                <div class="control-group">
-                                    <label class="control-label" for="firstName"> First Name: </label>
-                                    <div class="controls">
-                                        <input type="text" name="firstName" id="firstName">
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="lastName"> Last Name: </label>
-                                    <div class="controls">
-                                        <input type="text" name="lastName" id="lastName">
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="email"> Email: </label>
-                                    <div class="controls">
-                                        <input type="text" name="email" id="email">
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="passphrase"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="Just a password"></i> Passphrase: </label>
-                                    <div class="controls">
-                                        <input type="password" name="password" id="passphrase">
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="passphrase2"> Passphrase (again): </label>
-                                    <div class="controls">
-                                        <input type="password" name="password2" id="passphrase2">
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="postalCode"> Postal Code: </label>
-                                    <div class="controls">
-                                        <input type="text" name="postalCode" id="postalCode">
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <div class="controls">
-                                        <label class="checkbox">
-                                            <input type="checkbox" name="chkTOS" id="chkTOS"> I agree to the <a href="/corp/terms" style="color: #5f774b;">Terms Of Use</a>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <div class="controls">
-                                        <button type="submit" class="btn btn-success"> Sign up </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    % endif
                 </div>
-            </div>
+            % endif
         </div>
     </div>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-    <script src="/bootstrap-2.1.0/js/bootstrap.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript">
+        $('.signup-tooltip').tooltip();
         $('.icon-question-sign').tooltip();
     </script>
   </body>
 </html>
+
+<%def name="google_analytics()">
+    % if c.conf['google.analytics']:
+      <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', "${c.conf['google.analytics']}"]);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+      </script>
+    % endif
+</%def>

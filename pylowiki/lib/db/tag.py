@@ -2,93 +2,83 @@
 import logging
 
 from pylowiki.model import Thing, Data, meta
-from pylowiki.lib.db.workshop import Workshop, isWorkshopDeleted
 import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+import generic
 
 log = logging.getLogger(__name__)
 
-def getWorkshopTags(workshopID):
+def getWorkshopTags(workshop, disabled = '0'):
+    return meta.Session.query(Thing)\
+            .filter_by(objType = 'tag')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .all()
+
+def searchTags(searchString, disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('thingID', workshopID))).all()
+        return meta.Session.query(Thing)\
+        .filter_by(objType = 'tag')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wcl('title', searchString)))\
+        .all()
+    except:
+        return False
+        
+def countTags(searchString, disabled = '0'):
+    try:
+        return meta.Session.query(Thing)\
+        .filter_by(objType = 'tag')\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wcl('title', searchString)))\
+        .count()
     except:
         return False
 
-def searchTags(searchString):
-    log.info('searchString %s' % searchString)
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wcl('tagName', searchString))).all()
-    except:
-        return False
+def getWorkshopTagCategories():
+    workshopTags = []
+    workshopTags.append('Arts')
+    workshopTags.append('Business')
+    workshopTags.append('Civil Rights')
+    workshopTags.append('Community')
+    workshopTags.append('Economy')
+    workshopTags.append('Education')
+    workshopTags.append('Employment')
+    workshopTags.append('Entertainment')
+    workshopTags.append('Environment')
+    workshopTags.append('Family')
+    workshopTags.append('Government')
+    workshopTags.append('Health')
+    workshopTags.append('Housing')
+    workshopTags.append('Infrastructure')
+    workshopTags.append('Justice')
+    workshopTags.append('Land Use')
+    workshopTags.append('Municipal Services')
+    workshopTags.append('NonProfit')
+    workshopTags.append('Policy')
+    workshopTags.append('Safety')
+    workshopTags.append('Sports')
+    workshopTags.append('Transportation')
+    workshopTags.append('Other')
+    return workshopTags
 
-def getPublicTagList():
-    pTagList = []
-    pTagList.append('Environment')
-    pTagList.append('Government')
-    pTagList.append('Municipal Services')
-    pTagList.append('Economy')
-    pTagList.append('Infrastructure')
-    pTagList.append('Civil Rights')
-    pTagList.append('Civic Response')
-    pTagList.append('Business')
-    return pTagList
-
-def getPublicTagCount():
+def getCategoryTagCount():
+    categories = getWorkshopTagCategories()
     tagDict = dict()
-    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'system'))).filter(Thing.data.any(wc('disabled', '0'))).all()
-    tagDict = dict()
-    for tL in tSearch:
-       t = tL['tagName']
-       t = t.lstrip()
-       t = t.rstrip()
-       if t in tagDict:
-           tagDict[t] += 1
-       else:
-           tagDict[t] = 1
+    for category in categories:
+        tagDict[category] = countTags(category)
 
     return tagDict
 
-def getMemberTagList():
-    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'member'))).all()
+def orphanTag(tag):
+        tag['workshopCode'] = 'orphan'
+        tag['disabled'] = '1'
+        commit(tag)
 
-    tagList = ()
-    for tL in tSearch:
-       if tL['tagName'] not in tagList:
-          tagList.append(tL['tagName'])
-
-    return tagList
-
-def getMemberTagCount():
-    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('tagType', 'member'))).filter(Thing.data.any(wc('disabled', '0'))).all()
-    tagDict = dict()
-    for tL in tSearch:
-       t = tL['tagName']
-       t = t.lstrip()
-       t = t.rstrip()
-       if t in tagDict:
-           tagDict[t] += 1
-       else:
-           tagDict[t] = 1
-
-    return tagDict
-
-def setWorkshopTagEnable(workshop, disabled):
-    tSearch =  meta.Session.query(Thing).filter_by(objType = 'tag').filter(Thing.data.any(wc('thingID', workshop.id))).all()
-    for tL in tSearch:
-       tL['disabled'] = disabled
-       commit(tL)
-
-class Tag(object):
-    def __init__(self, tagType, tagName, thingID, ownerID):
-        t = Thing('tag', ownerID)
-        # tagType, one of: system or member (tag from our list or their input)
-        t['tagType'] = tagType
-        tagName = tagName.lstrip()
-        tagName = tagName.rstrip()
-        t['tagName'] = tagName
-        t['disabled'] = '0'
-        # the id of the object described by the tag
-        t['thingID'] = thingID
-        commit(t)
-
+def Tag(workshop, title):
+        tag = Thing('tag')
+        tag['title'] = title
+        tag['disabled'] = '0'
+        tag = generic.linkChildToParent(tag, workshop)
+        commit(tag)
 

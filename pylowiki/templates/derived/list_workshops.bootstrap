@@ -1,4 +1,5 @@
-<%inherit file="/base/template.bootstrap"/>
+##<%inherit file="/base/template.bootstrap"/>
+<%inherit file="/base/base.bootstrap"/>
 <%namespace name="list_helpers" file="/derived/list/helpers.mako" />
 <%namespace name="helpers" file="/derived/list_workshops/helpers.mako" />
 <%namespace file="/lib/mako_lib.mako" import="civ_col_img" />
