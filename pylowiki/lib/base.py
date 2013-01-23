@@ -33,8 +33,8 @@ class BaseController(WSGIController):
             c.authuser = get_user( session['userCode'], session['userURL'] )
             if not c.authuser:
                session.delete()
-               return
-            c.authuser_geo = getGeoInfo(c.authuser.id)[0]
+            else:
+               c.authuser_geo = getGeoInfo(c.authuser.id)[0]
             
         try:
             spamremark = request.params['sremark']
