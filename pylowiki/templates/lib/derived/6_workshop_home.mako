@@ -104,6 +104,10 @@
             ideaCount += 1
          elif item.objType == 'resource':
             resourceCount += 1
+            
+      discussionTitle = 'Conversations'
+      ideaTitle = 'Ideas'
+      resourceTitle = 'Resources'
    %>
    <div class="btn-group four-up">
    % if listingType == None:
@@ -111,65 +115,65 @@
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> ${discussionTitle} (${discussionCount})
       </a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/ideas"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> ${ideaTitle} (${ideaCount})
       </a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> ${resourceTitle} (${resourceCount})
       </a>
    % elif listingType == 'discussion':
       ##<a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
       <a class="btn selected-nav" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> ${discussionTitle} (${discussionCount})
       </a>
       <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/ideas">
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> ${ideaTitle} (${ideaCount})
       </a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> ${resourceTitle} (${resourceCount})
       </a>
    % elif listingType == 'wiki':
       ##<a class="btn selected-nav" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> ${discussionTitle} (${discussionCount})
       </a>
       <a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/ideas">
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> ${ideaTitle} (${ideaCount})
       </a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> ${resourceTitle} (${resourceCount})
       </a>
    % elif listingType == 'ideas' or listingType == 'idea':
       ##<a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> ${discussionTitle} (${discussionCount})
       </a>
       <a class="btn selected-nav" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/ideas"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> ${ideaTitle} (${ideaCount})
       </a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> ${resourceTitle} (${resourceCount})
       </a>
    % elif listingType == 'resources' or listingType == 'resource':
       ##<a class="btn" href="${lib_6.workshopLink(w, embed = True, raw = True) | n}/wiki">
       ##   <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_351_book_open.png"> Wiki
       ##</a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/discussion"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussion (${discussionCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> ${discussionTitle} (${discussionCount})
       </a>
       <a class="btn" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/ideas"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas (${ideaCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> ${ideaTitle} (${ideaCount})
       </a>
       <a class="btn selected-nav" ${'href="' + lib_6.workshopLink(w, embed = True, raw = True) + '/resources"' | n}>
-         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources (${resourceCount})
+         <img class="workshop-nav-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> ${resourceTitle} (${resourceCount})
       </a>
    % endif
    </div>

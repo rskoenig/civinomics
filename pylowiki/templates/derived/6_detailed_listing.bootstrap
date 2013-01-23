@@ -16,7 +16,7 @@
       helperText = 'Link to helpful materials like articles and reports.'
    elif c.listingType == 'ideas':
       itemList = c.ideas
-      helperText = 'Have an idea on meeting the workshop goals? Submit it here.'
+      helperText = 'Vote existing ideas up(<i class="icon-chevron-up"></i>), down(<i class="icon-chevron-down"></i>), or add your own.'
    self.showListing(c.listingType, itemList, helperText)
 %>
 
@@ -31,15 +31,8 @@
    %>
    <div class="row-fluid">
       <div class="span12">
-         <%doc>
-         % if (itemList != '') and (len(itemList) != len(c.paginator)):
-            <h3 class="pull-left">
-               Showing ${len(c.paginator)} of ${len(itemList)} ${pluralType} | Page ${ c.paginator.pager('~3~')}
-            </h3>
-         % endif
-         </%doc>
          <span class = "muted">
-            ${helperText}
+            ${helperText | n}
          </span>
          ${lib_6.createNew(listingType)}
       </div><!--/.span12-->
