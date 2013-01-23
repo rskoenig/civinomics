@@ -19,6 +19,8 @@ class IdeaController(BaseController):
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
+        if not c.w:
+            abort(404)
         workshopLib.setWorkshopPrivs(c.w)
         if 'user' in session:
             utils.isWatching(c.authuser, c.w)
@@ -55,6 +57,8 @@ class IdeaController(BaseController):
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
         c.idea = ideaLib.getIdea(ideaCode)
+        if not c.idea:
+            abort(404)
         c.discussion = discussionLib.getDiscussionForThing(c.idea)
         c.listingType = 'idea'
         return render('/derived/6_item_in_listing.bootstrap')

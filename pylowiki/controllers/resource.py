@@ -27,6 +27,8 @@ class ResourceController(BaseController):
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
+        if not c.w:
+            abort(404)
         c.title = c.w['title']
         workshopLib.setWorkshopPrivs(c.w)
         
@@ -48,6 +50,8 @@ class ResourceController(BaseController):
 
     def showResource(self, workshopCode, workshopURL, resourceCode, resourceURL):
         c.resource = resourceLib.getResourceByCode(resourceCode)
+        if not c.resource:
+            abort(404)
         c.discussion = discussionLib.getDiscussionForThing(c.resource)
         c.listingType = 'resource'
         return render('/derived/6_item_in_listing.bootstrap')

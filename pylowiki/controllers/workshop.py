@@ -114,6 +114,8 @@ class WorkshopController(BaseController):
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
+        if not c.w:
+            abort(404)
         if action in setPrivs:
             workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
