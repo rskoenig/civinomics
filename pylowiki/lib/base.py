@@ -32,7 +32,7 @@ class BaseController(WSGIController):
         if "user" in session:
             c.authuser = get_user( session['userCode'], session['userURL'] )
             if not c.authuser:
-               session.destroy()
+               session.delete()
                return
             c.authuser_geo = getGeoInfo(c.authuser.id)[0]
             
