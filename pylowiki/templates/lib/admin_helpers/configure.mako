@@ -1,4 +1,5 @@
 <%!
+    import time
     from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList, getPostalList
     from pylowiki.lib.db.user import getUserByEmail
     from pylowiki.lib.db.workshop import getCategoryTagList
@@ -403,30 +404,87 @@
         <div class="browse">
             <h4 class="section-header" style="text-align: center"><br />Manage Your Professional Workshop Account</h4>
             % for account in c.accounts:
-                Billing Name: ${account['billingName']}<br />
-                Billing Email: ${account['billingEmail']}<br />
-                <%
-                    numInvoices = c.accountInvoices['count']
-                    invoiceList = c.accountInvoices['data']
-                %>
-                Invoices: ${numInvoices}<br />
-                <ul>
-                % for invoice in invoiceList:
-                    ${display_invoice(invoice)}
-                % endfor
-                </ul>
+                <div class="row-fluid">
+                    <div class="span1">
+                    </div>
+                    <div class="span11">
+                        <strong>Billing Contact Information</strong><br />
+                        <form name="updateBillingContact" id="updateBillingContact" class="left form-inline" action = "/account/${account['urlCode']}/update/billingContact/handler" enctype="multipart/form-data" method="post" >
+                            <strong>Billing Name:</strong> <input type="text" name="billingName" value="${account['billingName']}"><br />
+                            <strong>Billing Email:</strong> <input type="text" name="billingEmail" value="${account['billingEmail']}"><br />
+                            <button type="submit" class="btn btn-warning">Save Changes</button>
+                        </form>
+                        <strong>Update Credit Card Information</strong><br />
+                        <form action="/account/${account['urlCode']}/update/paymentInfo/handler" method="post" id="paymentForm">
+                            <div class="form-row">
+                                <label>Credit Card Number (use 4242424242424242 for testing)</label>
+                                <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
+                            </div><!-- form-row -->
+                            <div class="form-row">
+                                <label>CVC</label>
+                                <input type="text" maxlength="4" autocomplete="off" class="card-cvc stripe-sensitive required" />
+                            </div><!-- form-row -->
+                            <div class="form-row">
+                                <label>Expiration</label>
+                                <div class="expiry-wrapper">
+                                    <select class="card-expiry-month stripe-sensitive required">
+                                    </select>
+                                    <script type="text/javascript">
+                                        var select = $(".card-expiry-month"),
+                                        month = new Date().getMonth() + 1;
+                                        for (var i = 1; i <= 12; i++) {
+                                            select.append($("<option value='"+i+"' "+(month === i ? "selected" : "")+">"+i+"</option>"))
+                                        }
+                                    </script>
+                                    <span> / </span>
+                                    <select class="card-expiry-year stripe-sensitive required"></select>
+                                    <script type="text/javascript">
+                                        var select = $(".card-expiry-year"),
+                                        year = new Date().getFullYear();
+                                        for (var i = 0; i < 12; i++) {
+                                            select.append($("<option value='"+(i + year)+"' "+(i === 0 ? "selected" : "")+">"+(i + year)+"</option>"))
+                                        }
+                                    </script>
+                                </div><!-- expiry-wrapper -->
+                            </div><!-- form-row -->
+                            <div class="form-row">
+                                <label for="name" class="stripeLabel">Coupon</label>
+                                <input type="text" name="coupon" value="${c.coupon}" class="required" />
+                            </div><!-- form-row -->
+                            <div class="form-row">
+                                <button type="submit" name="submit-button" class="btn btn-warning">Submit</button>
+                            </div><!-- form-row -->
+                        </form>
+                        <%
+                            numInvoices = c.accountInvoices['count']
+                            invoiceList = c.accountInvoices['data']
+                        %>
+                        Invoices: ${numInvoices}<br />
+                        <ul>
+                        % for invoice in invoiceList:
+                            ${display_invoice(invoice)}
+                        % endfor
+                        </ul>
+                    </div><!-- span11 -->
+                </div><!-- row-fluid -->
             % endfor
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
 
 <%def name="display_invoice(invoice)">
-    <li><strong>Date: </strong> ${invoice['date']} ID: ${invoice['id']} Amount Due: ${invoice['amount_due']} Paid: 
+    <li><strong>Date: </strong> ${time.ctime(invoice['date'])} Amount Due: ${invoice['amount_due']/100} Paid: 
     % if invoice['ending_balance'] == 0:
-        Yes ChargeID: ${invoice['charge']}</li>
+        Yes
     % else:
-        No ${invoice}</li>
+        No ${invoice}
     % endif
+    <ol>
+    % for line in invoice['lines']['data']:
+        <li>${line['plan']['name']} for period of ${time.ctime(line['period']['start'])} through ${time.ctime(line['period']['end'])}</li>
+    % endfor
+    </ol>
+    </li>
 </%def>
 
 

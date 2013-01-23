@@ -293,3 +293,44 @@
     </script>
     
 </%def>
+
+<%def name="headScripts()">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://js.stripe.com/v1/"></script>
+    <script type="text/javascript">
+        Stripe.setPublishableKey('${c.stripeKey}');
+ 
+        function stripeResponseHandler(status, response) {
+            if (response.error) {
+                // Show the errors on the form
+                $('.payment-errors').html('<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>Error: </strong> ' + response.error.message + '<div>');
+                $('.submit-button').prop('disabled', false);
+            } else {
+                var $form = $('#paymentForm');
+                // token contains id, last4, and card type
+                var token = response.id;
+                // Insert the token into the form so it gets submitted to the server
+                $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+                // and submit
+                $form.get(0).submit();
+            }
+        }
+        $(function() {
+            $('#paymentForm').submit(function(event) {
+                // Disable the submit button to prevent repeated clicks
+                $('.submit-button').prop('disabled', true);
+
+                Stripe.createToken({
+                    number: $('.card-number').val(),
+                    cvc: $('.card-cvc').val(),
+                    exp_month: $('.card-expiry-month').val(),
+                    exp_year: $('.card-expiry-year').val()
+                }, stripeResponseHandler);
+
+                // Prevent the form from submitting with the default action
+                return false;
+            });
+        });
+    </script>
+</%def>
+

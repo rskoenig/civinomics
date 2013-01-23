@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 class AccountController(BaseController):
 
     @h.login_required
-    def __before__(self, action, workshopCode = None):
+    def __before__(self, action, workshopCode = None, accountCode = None):
 	    c.stripePublicKey = config['app_conf']['stripePublicKey'].strip()
 	    c.stripePrivateKey = config['app_conf']['stripePrivateKey'].strip()
 	    c.workshop = workshopLib.getWorkshopByCode(workshopCode)
