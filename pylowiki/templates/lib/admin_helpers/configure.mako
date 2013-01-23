@@ -411,7 +411,7 @@
                         <strong>Billing Contact Information</strong><br />
                         <form name="updateBillingContact" id="updateBillingContact" class="left form-inline" action = "/account/${account['urlCode']}/update/billingContact/handler" enctype="multipart/form-data" method="post" >
                             <strong>Billing Name:</strong> <input type="text" name="billingName" value="${account['billingName']}"><br />
-                            <strong>Billing Email:</strong> <input type="text" name="billingEmail" value="${account['billingEmail']}"><br />
+                            <strong>Billing Email:</strong> <input type="text" name="billingEmail" value="${account['billingEmail']}"><br /><br />
                             <button type="submit" class="btn btn-warning">Save Changes</button>
                         </form>
                         <strong>Update Credit Card Information</strong><br />
@@ -448,11 +448,7 @@
                                 </div><!-- expiry-wrapper -->
                             </div><!-- form-row -->
                             <div class="form-row">
-                                <label for="name" class="stripeLabel">Coupon</label>
-                                <input type="text" name="coupon" value="${c.coupon}" class="required" />
-                            </div><!-- form-row -->
-                            <div class="form-row">
-                                <button type="submit" name="submit-button" class="btn btn-warning">Submit</button>
+                                <button type="submit" name="submit-button" class="btn btn-warning">Save Changes</button>
                             </div><!-- form-row -->
                         </form>
                         <%

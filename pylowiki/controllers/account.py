@@ -1,12 +1,14 @@
 import logging
 import stripe
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.account      as accountLib
+import pylowiki.lib.helpers         as h
+import pylowiki.lib.db.dbHelpers    as dbHelpers
 
 from pylowiki.lib.base import BaseController, render
 
@@ -15,12 +17,15 @@ log = logging.getLogger(__name__)
 class AccountController(BaseController):
 
     @h.login_required
-    def __before__(self, action, workshopCode = None, accountCode = None):
-	    c.stripePublicKey = config['app_conf']['stripePublicKey'].strip()
-	    c.stripePrivateKey = config['app_conf']['stripePrivateKey'].strip()
-	    c.workshop = workshopLib.getWorkshopByCode(workshopCode)
-	    c.account = accountLib.getAccountsForWorkshop(workshop, deleted = '0')
-        c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID')
+    def __before__(self, action, accountCode = None):
+        if accountCode is None:
+            abort(404)
+        c.stripePublicKey = config['app_conf']['stripePublicKey'].strip()
+        c.stripePrivateKey = config['app_conf']['stripePrivateKey'].strip()
+        stripe.api_key = c.stripePrivateKey
+        c.account = accountLib.getAccountByCode(accountCode)
+        c.workshop = workshopLib.getWorkshopByCode(c.account['workshopCode'])
+        c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID'])
 
     def updateBillingContactHandler(self):
         stripe.api_key = c.stripePrivateKey
@@ -43,7 +48,7 @@ class AccountController(BaseController):
             
         c.account['billingName'] = billingName
         c.account['billingEmail'] = billingEmail
-        commit(c.account)
+        dbHelpers.commit(c.account)
         title = 'Account information updated.'
         data = 'Billing contact information updated by ' + c.authuser['name']
         eventLib.Event(title, data, c.account)
@@ -57,6 +62,15 @@ class AccountController(BaseController):
         stripe.api_key = c.stripePrivateKey
         if 'stripeToken' in request.params:
             stripeToken = request.params['stripeToken']
+            c.stripeCustomer.card = stripeToken
+            c.stripeCustomer.save()
+            alert = {'type':'success'}
+            title =  'Account Payment Information Updated.'
+            alert['title'] = title
+            session['alert'] = alert
+            session.save()
+            eventLib.Event(title, data, c.account)
+            return redirect("/workshop/" + c.workshop['urlCode'] + "/" + c.workshop['url'] + "/dashboard")
         else:
             alert = {'type':'error'}
             alert['title'] = 'No information submitted.'

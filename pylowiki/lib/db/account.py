@@ -6,6 +6,15 @@ from dbHelpers import with_characteristic as wc
 import generic
 import stripe
 
+def getAccountByCode(accountCode):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'account')\
+            .filter(Thing.data.any(wc('urlCode', accountCode)))\
+            .one()
+    except:
+        return False
+
 def getAccountsForWorkshop(workshop, deleted = '0', suspended = '0'):
     try:
         return meta.Session.query(Thing)\

@@ -96,7 +96,11 @@ def make_map():
     map.connect('/{workshop:workshops?}/{id1}/{id2}/{image:addImages/?}', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{id1}/{id2}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{id1}/{id2}/{editSlideshow:editSlideshow/?}', controller = 'slideshow', action = 'editSlideshowDisplay', id1 = '{id1}', id2 = '{id2}')
-    
+
+    # Account handler routines
+    map.connect('/account/{accountCode}/update/billingContact/{handler:handler/?}', controller = 'account', action = 'updateBillingContactHandler', accountCode = '{accountCode}')
+    map.connect('/account/{accountCode}/update/paymentInfo/{handler:handler/?}', controller = 'account', action = 'updatePaymentInfoHandler', accountCode = '{accountCode}')
+
     # suggestions
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{suggestions:suggestions?/?}', controller = 'workshop', action = 'displayAllSuggestions', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/addSuggestion/{id1}/{id2}{end:/?}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
