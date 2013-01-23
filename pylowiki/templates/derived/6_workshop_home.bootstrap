@@ -39,13 +39,17 @@
    <div class="span5">
       <div class="section-wrapper overview">
          <div class="browse">
-               <h3 class="section-header"> 
-                  Overview 
-                  <%
-                     if c.privs['admin'] or c.privs['facilitator']:
-                        helpers.configButton(c.w)
-                  %>
-               </h3>
+            <h3 class="section-header"> 
+               Overview 
+               <%
+                  if c.privs['admin'] or c.privs['facilitator']:
+                     helpers.configButton(c.w)
+               %>
+            </h3>
+            <div id="slideshow">
+               <h5> Slideshow </h5>
+               ${helpers.slideshow(c.w)}
+            </div>
             <h5> Goals </h5>
             <ul class="goals">
                <li class="finished"> Goal number 1 </li>
@@ -54,8 +58,6 @@
                <li> Goal number 4 </li>
                <li> Goal number 5 </li>
             </ul> <!-- /goals -->
-            <h5> Slideshow </h5>
-            ${helpers.slideshow(c.w)}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span5 -->
