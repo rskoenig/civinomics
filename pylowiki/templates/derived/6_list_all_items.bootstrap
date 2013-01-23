@@ -93,6 +93,7 @@
 </div> <!--/.row-fluid-->
 
 <%def name="extraScripts()">
+    <script src="/js/vendor/jquery.tablesorter.min.js" type="text/javascript"></script>
     <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -104,6 +105,7 @@
                 userCollapseText: ' <-',
                 userCollapsePrefix: ''
             });
+            $(".table").tablesorter(); 
         });
     </script>
 </%def>

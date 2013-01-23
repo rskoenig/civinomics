@@ -7,8 +7,8 @@ from pylowiki.lib.utils import toBase62
 from pylowiki.model import Thing, Data, meta
 from pylowiki.lib.db.flag import checkFlagged
 from pylowiki.lib.db.workshop import getWorkshopByCode
-import pylowiki.lib.db.idea as ideaLib
-import pylowiki.lib.db.resource as resourceLib
+import pylowiki.lib.db.idea         as ideaLib
+import pylowiki.lib.db.resource     as resourceLib
 import sqlalchemy as sa
 from time import time
 from dbHelpers import commit, with_characteristic as wc
@@ -16,7 +16,6 @@ from pylons import config
 from datetime import datetime
 from revision import Revision
 import pylowiki.lib.db.generic as generic
-
 
 log = logging.getLogger(__name__)
 
@@ -32,12 +31,6 @@ def getUserComments(user, disabled = 0):
        return meta.Session.query(Thing).filter_by(objType = 'comment').filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
        return False
-
-##def getDiscussionCommentsSince(discussionID, memberDatetime):
-##    try:
-##       return meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', discussionID))).all()
-##    except:
-##       return False  
 
 def getCommentByCode( code ):
     try:
@@ -123,21 +116,6 @@ def getAllComments(disabled = '0', deleted = '0'):
         return False
 
 # Setters
-def disableComment( comment ):
-    """disable this comment"""
-    comment['disabled'] = '1'
-    commit(comment)
-
-def deleteComment( comment ):
-    """disable this comment"""
-    comment['delete'] = '1'
-    commit(comment)
-
-def enableComment( comment ):
-    """enable the comment"""
-    comment['disabled'] = '0'
-    commit(comment)
-
 def editComment(comment, data):
     r = Revision(c.authuser, comment)
     comment['data'] = data
