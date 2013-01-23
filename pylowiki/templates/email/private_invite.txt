@@ -1,0 +1,22 @@
+
+Hello from ${c.sender},
+
+You're invited to participate in a private online workshop named:
+
+${c.workshopName}
+${c.inviteMessage}
+
+
+Civinomics workshops are online spaces where participants contribute ideas,
+information resources and discussion, collaboratingto meet the workshop goals.
+
+To browse the workshop, use this link:
+${c.browseLink}
+
+To register at Civinomics and participate in this workshop,
+use this link:
+${c.regLink}
+
+Best regards and hope to see you online soon,
+
+${c.sender}
