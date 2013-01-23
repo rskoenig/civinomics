@@ -27,16 +27,27 @@
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>
                </a>
-               <a class="brand" href="/">
+               <a class="brand civ-brand" href="/">
                   <img src="/images/logo_splash4.png" class="small-logo">
                </a>
                <div class="nav-collapse collapse">
                   <ul class="nav pull-right">
                      % if 'user' in session:
                         <li>
-                            ${lib_6.userImage(c.authuser, className="avatar topbar-avatar")}
+                            ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", linkClass="topbar-avatar-link")}
                             <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">profile</a>
                         </li>
+                        % if 'user' in session:
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">workshops<b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                    <li><a tabindex="-1" href="/workshops">show</a></li>
+                                    <li><a tabindex="-1" href="/workshop/display/create/form">create!</a></li>
+                                </ul>
+                            </li>
+                        % else:
+                            <li><a href="/workshops">workshops</a></li>
+                        % endif
                         % if userLib.isAdmin(c.authuser.id):
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">objects<b class="caret"></b></a>
