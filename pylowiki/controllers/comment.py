@@ -44,7 +44,7 @@ class CommentController(BaseController):
                 discussion = discussionLib.getDiscussion(parentComment['discussionCode'])
             elif 'discussionCode' in request.params:
                 # Root level comment
-                discussion = discussionLib.getDiscussionByCode(request.params['discussionCode'])
+                discussion = discussionLib.getDiscussion(request.params['discussionCode'])
                 parentCommentID = 0
             comment = commentLib.Comment(data, c.authuser, discussion, parentCommentID)
             return redirect(session['return_to'])
