@@ -146,18 +146,8 @@ def make_map():
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{comment:comments?}/{id3}{end:/?}', controller = 'comment', action = 'permalink')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/thread/{id3}{end:/?}', controller = 'comment', action = 'showThread')
-    map.connect('/flagComment/{id1}{end:/?}', controller = 'comment', action = 'flagComment', id1 = '{id1}')
-    map.connect('/{comment:comments?}/edit/{id1}{end:/?}', controller = 'comment', action = 'edit', id1 = '{id1}')
-    map.connect('/adminComment/{id1}{end:/?}', controller = 'comment', action = 'adminComment', id1 = '{id1}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{suggestion:suggestions?}/{id3}/{id4}/modComment/{id5}{end:/?}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'suggestion')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/resource/{id3}/{id4}/modComment/{id5}{end:/?}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'resource')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/background/modComment/{id3}{end:/?}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'background', id5 = 'background', id6 = 'background')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/feedback/modComment/{id3}{end:/?}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = 'feedback', id5 = 'feedback', id6 = 'feedback')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/discussion/{id3}/{id4}/modComment/{id5}{end:/?}', controller = 'comment', action = 'modComment', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}', id5 = '{id5}', id6 = 'discussion')
-    map.connect('/modCommentHandler/{id1}{end:/?}', controller = 'comment', action = 'modCommentHandler', id1 = '{id1}')
-    map.connect('/clearCommentFlagsHandler/{id1}{end:/?}', controller = 'comment', action = 'clearCommentFlagsHandler', id1 = '{id1}')
+    # map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
+    # map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/thread/{commentCode}{end:/?}', controller = 'comment', action = 'showThread')
 
     # Ratings
     map.connect('/rate/suggestion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateSuggestion', code = '{code}', url = '{url}', amount = '{amount}')
