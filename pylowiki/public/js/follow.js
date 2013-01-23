@@ -17,7 +17,7 @@ $('button.followButton').live('click', function(e){
         if(urlList[0] == 'profile'){
             var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Follow </span>';
         } else {
-            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Watch </span>';            
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png"> <span> Bookmark </span>';            
         }
         $button.html(bText);
     } else {
@@ -33,7 +33,7 @@ $('button.followButton').live('click', function(e){
         if(urlList[0] == 'profile'){
             var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unfollow </span>';
         } else {
-            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unwatch </span>';
+            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png"> <span> Un-bookmark </span>';
         }
         $button.html(bText);
     }
