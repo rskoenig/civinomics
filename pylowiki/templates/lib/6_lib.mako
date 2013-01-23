@@ -11,6 +11,14 @@
    log = logging.getLogger(__name__)
 %>
 
+<%def name="validateSession()">
+   <%
+      if 'user' in session:
+         if not c.authuser:
+            session.delete()
+   %>
+</%def>
+
 <%def name="upDownVote(thing)">
    <div class="voteWrapper">
       <% rating = int(thing['ups']) - int(thing['downs']) %>
