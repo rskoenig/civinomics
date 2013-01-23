@@ -29,7 +29,7 @@
                 <label for="image" class="control-label">Image:</label>
                 <div class="controls">
                     <span id="image" class="help-inline">
-                        Change and manage your profile picture at <a href="http://www.gravatar.com">Gravatar</a>
+                        Change and manage your profile picture at <a href="http://www.gravatar.com" target="_blank">Gravatar</a>
                     </span>
                 </div>
              </div>
