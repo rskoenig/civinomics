@@ -274,11 +274,12 @@
 
 <%def name="geoBreadcrumbs()">
     <%
-        county = c.authuser_geo['countyTitle']
-        city = c.authuser_geo['cityTitle']
-        if county == city:
-            county = 'County of ' + county
-            city = 'City of ' + city
+        if 'user' in session:
+            county = c.authuser_geo['countyTitle']
+            city = c.authuser_geo['cityTitle']
+            if county == city:
+                county = 'County of ' + county
+                city = 'City of ' + city
     %>
     % if 'user' in session:
     <ul class="nav nav-pills pull-left">
