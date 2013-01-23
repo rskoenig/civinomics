@@ -16,11 +16,11 @@ class AccountController(BaseController):
 
     @h.login_required
     def __before__(self, action, workshopCode = None):
-	c.stripePublicKey = config['app_conf']['stripePublicKey'].strip()
-	c.stripePrivateKey = config['app_conf']['stripePrivateKey'].strip()
-	c.workshop = workshopLib.getWorkshopByCode(workshopCode)
-	c.account = accountLib.getAccountsForWorkshop(workshop, deleted = '0')
-    c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID')
+	    c.stripePublicKey = config['app_conf']['stripePublicKey'].strip()
+	    c.stripePrivateKey = config['app_conf']['stripePrivateKey'].strip()
+	    c.workshop = workshopLib.getWorkshopByCode(workshopCode)
+	    c.account = accountLib.getAccountsForWorkshop(workshop, deleted = '0')
+        c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID')
 
     def updateBillingContactHandler(self):
         stripe.api_key = c.stripePrivateKey
@@ -40,6 +40,18 @@ class AccountController(BaseController):
             session['alert'] = alert
             session.save()
             return redirect("/workshop/" + c.workshop['urlCode'] + "/" + c.workshop['url'] + "/dashboard")
+            
+        c.account['billingName'] = billingName
+        c.account['billingEmail'] = billingEmail
+        commit(c.account)
+        title = 'Account information updated.'
+        data = 'Billing contact information updated by ' + c.authuser['name']
+        eventLib.Event(title, data, c.account)
+        alert = {'type':'success'}
+        alert['title'] = title
+        session['alert'] = alert
+        session.save()
+        return redirect("/workshop/" + c.workshop['urlCode'] + "/" + c.workshop['url'] + "/dashboard")
 
     def updatePaymentInfoHandler(self):
         stripe.api_key = c.stripePrivateKey

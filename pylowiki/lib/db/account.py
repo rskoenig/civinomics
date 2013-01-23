@@ -17,6 +17,11 @@ def getAccountsForWorkshop(workshop, deleted = '0', suspended = '0'):
     except:
         return False
 
+def getInvoicesForAccount(account):
+    stripe.api_key = config['app_conf']['stripePrivateKey'].strip()
+    stripeCustomer = stripe.Customer.retrieve(account['stripeID'])
+    return stripe.Invoice.all(customer = stripeCustomer['id'])
+
 
 def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'None'):
     stripe.api_key = config['app_conf']['stripePrivateKey'].strip()

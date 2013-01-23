@@ -403,11 +403,30 @@
         <div class="browse">
             <h4 class="section-header" style="text-align: center"><br />Manage Your Professional Workshop Account</h4>
             % for account in c.accounts:
-                Billing Name: ${account['billingName']}
-                Billing Email: ${account['billingEmail']}
+                Billing Name: ${account['billingName']}<br />
+                Billing Email: ${account['billingEmail']}<br />
+                <%
+                    numInvoices = c.accountInvoices['count']
+                    invoiceList = c.accountInvoices['data']
+                %>
+                Invoices: ${numInvoices}<br />
+                <ul>
+                % for invoice in invoiceList:
+                    ${display_invoice(invoice)}
+                % endfor
+                </ul>
             % endfor
         </div><!-- browse -->
     </div><!-- section-wrapper -->
+</%def>
+
+<%def name="display_invoice(invoice)">
+    <li><strong>Date: </strong> ${invoice['date']} ID: ${invoice['id']} Amount Due: ${invoice['amount_due']} Paid: 
+    % if invoice['ending_balance'] == 0:
+        Yes ChargeID: ${invoice['charge']}</li>
+    % else:
+        No ${invoice}</li>
+    % endif
 </%def>
 
 
