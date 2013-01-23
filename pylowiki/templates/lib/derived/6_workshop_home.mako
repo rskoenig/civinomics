@@ -70,13 +70,13 @@
     % if 'user' in session:
         % if c.isFollowing:
             <button class="btn round followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}"> 
-            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
-            <span> Unwatch </span>
+            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
+            <span> Un-bookmark </span>
             </button>
         % else:
             <button class="btn round followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}">
-            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
-            <span> Watch </span>
+            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
+            <span> Bookmark </span>
             </button>
         % endif
     % endif

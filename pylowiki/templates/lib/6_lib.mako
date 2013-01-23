@@ -263,6 +263,13 @@
 </%def>
 
 <%def name="geoBreadcrumbs()">
+    <%
+        county = c.authuser_geo['countyTitle']
+        city = c.authuser_geo['cityTitle']
+        if county == city:
+            county = 'County of ' + county
+            city = 'City of ' + city
+    %>
     % if 'user' in session:
     <ul class="nav nav-pills pull-left">
         % if c.scope == 'earth':
@@ -284,15 +291,15 @@
         % endif
         
         % if c.scope == 'county':
-            <li class="active"> <a href="${c.authuser_geo['countyURL']}">${c.authuser_geo['countyTitle']}</a> <span class="divider">/</span> </li>
+            <li class="active"> <a href="${c.authuser_geo['countyURL']}">${county}</a> <span class="divider">/</span> </li>
         % else:
-            <li> <a href="${c.authuser_geo['countyURL']}">${c.authuser_geo['countyTitle']}</a> <span class="divider">/</span> </li>
+            <li> <a href="${c.authuser_geo['countyURL']}">${county}</a> <span class="divider">/</span> </li>
         % endif
         
         % if c.scope == 'city':
-            <li class="active"> <a href="${c.authuser_geo['cityURL']}">${c.authuser_geo['cityTitle']}</a> <span class="divider">/</span> </li>
+            <li class="active"> <a href="${c.authuser_geo['cityURL']}">${city}</a> <span class="divider">/</span> </li>
         % else:
-            <li> <a href="${c.authuser_geo['cityURL']}">${c.authuser_geo['cityTitle']}</a> <span class="divider">/</span> </li>
+            <li> <a href="${c.authuser_geo['cityURL']}">${city}</a> <span class="divider">/</span> </li>
         % endif
         
         % if c.scope == 'postalCode':
