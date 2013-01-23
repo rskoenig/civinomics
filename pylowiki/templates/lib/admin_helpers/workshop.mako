@@ -53,21 +53,6 @@
             <div class="browse">
                 <h4 class="section-header" style="text-align: center"><br />Event Log</h4>
                 A record of configuration and administrative changes to the workshop.<br />
-                <% aEvents = eventLib.getParentEvents(c.accounts[0]) %>
-                <table class="table table-bordered">
-                <thead>
-                <tr><th>Accounts Events</th></tr>
-                </thead>
-                <tbody>
-                % if aEvents:
-                    <br /><br />
-                    % for aE in aEvents:
-                        <tr><td><strong>${aE.date} ${aE['title']}</strong> ${aE['data']}</td></tr>
-                    % endfor
-                % endif
-                </tbody>
-                </table>
-                <br />
                 <% wEvents = eventLib.getParentEvents(c.w) %>
                 <table class="table table-bordered">
                 <thead>
