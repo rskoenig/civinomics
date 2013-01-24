@@ -54,9 +54,10 @@ class AccountController(BaseController):
         if not billingName and not billingEmail:
             alert = {'type':'error'}
             alert['title'] = 'No information submitted.'
+            alert['content'] = ''
             session['alert'] = alert
             session.save()
-            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/dashboard")
+            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/manage/account")
             
         c.account['billingName'] = billingName
         c.account['billingEmail'] = billingEmail
@@ -66,9 +67,10 @@ class AccountController(BaseController):
         eventLib.Event(title, data, c.account)
         alert = {'type':'success'}
         alert['title'] = title
+        alert['content'] = ''
         session['alert'] = alert
         session.save()
-        return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/dashboard")
+        return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/manage/account")
 
     def updatePaymentInfoHandler(self):
         stripe.api_key = c.stripePrivateKey
@@ -79,13 +81,15 @@ class AccountController(BaseController):
             alert = {'type':'success'}
             title =  'Account Payment Information Updated.'
             alert['title'] = title
+            alert['content'] = ''
             session['alert'] = alert
             session.save()
             eventLib.Event(title, data, c.account)
-            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/dashboard")
+            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/manage/account")
         else:
             alert = {'type':'error'}
             alert['title'] = 'No information submitted.'
+            alert['content'] = ''
             session['alert'] = alert
             session.save()
-            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/dashboard")
+            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/manage/account")

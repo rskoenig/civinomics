@@ -58,18 +58,32 @@
                                 <button type="submit" name="submit-button" class="btn btn-warning">Save Changes</button>
                             </div><!-- form-row -->
                         </form>
-                        <%
-                            numInvoices = c.accountInvoices['count']
-                            invoiceList = c.accountInvoices['data']
-                        %>
-                        Invoices: ${numInvoices}<br />
-                        <ul>
-                        % for invoice in invoiceList:
-                            ${display_invoice(invoice)}
-                        % endfor
-                        </ul>
                     </div><!-- span11 -->
                 </div><!-- row-fluid -->
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
+</%def>
+
+<%def name="show_invoices()">
+    <%
+        numInvoices = c.accountInvoices['count']
+        invoiceList = c.accountInvoices['data']
+    %>
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header" style="text-align: center"><br />Account Invoices</h4>
+            <div class="row-fluid">
+                <div class="span1">
+                </div>
+                <div class="span11">
+                    Total Invoices: ${numInvoices}<br />
+                    <ul>
+                    % for invoice in invoiceList:
+                        ${display_invoice(invoice)}
+                    % endfor
+                    </ul>
+                </div><!-- span11 -->
+            </div><!-- row-fluid -->
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
@@ -81,6 +95,7 @@
     % else:
         No ${invoice}
     % endif
+    Line items:
     <ol>
     % for line in invoice['lines']['data']:
         <li>${line['plan']['name']} for period of ${time.ctime(line['period']['start'])} through ${time.ctime(line['period']['end'])}</li>
@@ -88,3 +103,29 @@
     </ol>
     </li>
 </%def>
+
+<%def name="show_events()">
+    <div class="row-fluid">
+        <div class="section-wrapper">
+            <div class="browse">
+                <h4 class="section-header" style="text-align: center"><br />Event Log</h4>
+                A record of configuration and administrative changes to the account.<br />
+                <% aEvents = eventLib.getParentEvents(c.account) %>
+                <table class="table table-bordered">
+                <thead>
+                <tr><th>Account Events</th></tr>
+                </thead>
+                <tbody>
+                % if aEvents:
+                    <br /><br />
+                    % for aE in aEvents:
+                        <tr><td><strong>${aE.date} ${aE['title']}</strong> ${aE['data']}</td></tr>
+                    % endfor
+                % endif
+                </tbody>
+                </table>
+            </div><!-- browse -->
+        </div><!-- section-wrapper -->
+    <div><!-- row-fluid -->
+</%def>
+
