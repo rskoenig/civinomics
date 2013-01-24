@@ -34,6 +34,7 @@ class AccountController(BaseController):
         c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID'])
 
     def manageAccount(self):
+        c.stripeKey = c.stripePublicKey
         if c.account:
             c.accountInvoices = accountLib.getInvoicesForAccount(c.account)
 
@@ -84,6 +85,7 @@ class AccountController(BaseController):
             alert['content'] = ''
             session['alert'] = alert
             session.save()
+            data = "Payment information updated by " + c.authuser['name']
             eventLib.Event(title, data, c.account)
             return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/manage/account")
         else:
