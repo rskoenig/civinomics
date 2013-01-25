@@ -23,7 +23,7 @@ class AccountController(BaseController):
         c.stripePublicKey = config['app_conf']['stripePublicKey'].strip()
         c.stripePrivateKey = config['app_conf']['stripePrivateKey'].strip()
         stripe.api_key = c.stripePrivateKey
-        if workshopCode:
+        if action == 'manageAccount':
             c.w = workshopLib.getWorkshopByCode(workshopCode)
             account = accountLib.getAccountsForWorkshop(c.w, deleted = '0')
             c.account = account[0] # kludge, ugh.
