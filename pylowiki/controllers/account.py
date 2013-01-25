@@ -1,5 +1,6 @@
 import logging
 import stripe
+import time
 
 from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -13,6 +14,9 @@ import pylowiki.lib.helpers         as h
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 
 from pylowiki.lib.base import BaseController, render
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
 
 log = logging.getLogger(__name__)
 
@@ -122,18 +126,30 @@ class AccountController(BaseController):
             session['alert'] = alert
             session.save()
             eventLib.Event(title, data, c.account)
+            self.emailInvoicesHandler(c.account['billingEmail'])
             return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/dashboard")     
         else:
             return(redirect("/"))
             
-    def emailInvoicesHandler(self):
+    def emailInvoicesHandler(self, recipient):
+        c.accountInvoices = accountLib.getInvoicesForAccount(c.account)
+        invoiceList = c.accountInvoices['data']
+        invoices = ''
+        for invoice in invoiceList:
+                invoices += "\nInvoice Date: " + time.ctime(invoice['date']) + " Amount Due: " + str(invoice['amount_due']/100) + " Paid: "
+                if invoice['ending_balance'] == 0:
+                    invoices += "Yes"
+                else:
+                    invoices += "No"
+
+                invoices += "\n   Line items:\n"
+                for line in invoice['lines']['data']:
+                    invoices += "   " + line['plan']['name'] + " for period of " + time.ctime(line['period']['start']) + " through " + time.ctime(line['period']['end']) + "\n"
+
         workshopName = c.w['title']
         senderName = 'Civinomics Accounts'
         senderEmail = 'billing@civinomics.com'
         subject = 'Account Summary for: ' + workshopName
-    
-        if message and message != '':
-            message = '\n' + message
     
         emailDir = config['app_conf']['emailDirectory']
         myURL = config['app_conf']['site_base_url']
@@ -164,5 +180,6 @@ class AccountController(BaseController):
         s = smtplib.SMTP('localhost')
         s.sendmail(senderEmail, recipient, email.as_string())
         s.quit()
-            
+        
+
         

@@ -119,7 +119,7 @@
     % else:
         No ${invoice}
     % endif
-    Line items:
+    <br />Line items:<br />
     <ol>
     % for line in invoice['lines']['data']:
         <li>${line['plan']['name']} for period of ${time.ctime(line['period']['start'])} through ${time.ctime(line['period']['end'])}</li>
