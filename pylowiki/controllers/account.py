@@ -5,6 +5,8 @@ from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.helpers         as h
@@ -30,6 +32,10 @@ class AccountController(BaseController):
         else:
             c.account = accountLib.getAccountByCode(accountCode)
             c.w = workshopLib.getWorkshopByCode(c.account['workshopCode'])
+        
+            workshopLib.setWorkshopPrivs(c.w)
+            if not c.privs['admin'] and not c.privs['facilitator']:
+                return(redirect("/"))
             
         c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID'])
 
@@ -95,3 +101,68 @@ class AccountController(BaseController):
             session['alert'] = alert
             session.save()
             return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/manage/account")
+
+    def closeHandler(self):
+        stripe.api_key = c.stripePrivateKey
+        if 'confirmCloseAccount' in request.params:
+            c.w['type'] = 'personal'
+            c.w['public_private'] = 'private'
+            title = "Workshop account closed."
+            data = "Workshop account closed by " + c.authuser['name'] + ". Workshop converted to a personal private workshop."
+            eventLib.Event(title, data, c.w)
+            dbHelpers.commit(c.w)
+            c.stripeCustomer.delete()
+            c.account['deleted'] = '1'
+            c.account['closedWorkshopCode'] = c.account['workshopCode']
+            c.account['workshopCode'] = '|CLOSED|'
+            dbHelpers.commit(c.account)
+            alert = {'type':'success'}
+            alert['title'] = title
+            alert['content'] = ''
+            session['alert'] = alert
+            session.save()
+            eventLib.Event(title, data, c.account)
+            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/dashboard")     
+        else:
+            return(redirect("/"))
+            
+    def emailInvoicesHandler(self):
+        workshopName = c.w['title']
+        senderName = 'Civinomics Accounts'
+        senderEmail = 'billing@civinomics.com'
+        subject = 'Account Summary for: ' + workshopName
+    
+        if message and message != '':
+            message = '\n' + message
+    
+        emailDir = config['app_conf']['emailDirectory']
+        myURL = config['app_conf']['site_base_url']
+        
+        txtFile = emailDir + "/invoices.txt"
+
+        # open and read the text file
+        fp = open(txtFile, 'r')
+        textMessage = fp.read()
+        fp.close()
+    
+        # do the substitutions
+        textMessage = textMessage.replace('${c.sender}', senderName)
+        textMessage = textMessage.replace('${c.workshopName}', workshopName)
+        textMessage = textMessage.replace('${c.invoices}', invoices)
+        
+        # create a MIME email object, initialize the header info
+        email = MIMEMultipart(_subtype='related')
+        email['Subject'] = subject
+        email['From'] = 'billing@civinomics.com'
+        email['To'] = recipient
+    
+        # now attatch the text and html and picture parts
+        part1 = MIMEText(textMessage, 'plain')
+        email.attach(part1)
+    
+        # send that email
+        s = smtplib.SMTP('localhost')
+        s.sendmail(senderEmail, recipient, email.as_string())
+        s.quit()
+            
+        

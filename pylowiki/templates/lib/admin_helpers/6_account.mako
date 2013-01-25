@@ -62,18 +62,18 @@
                                 </div><!-- form-row -->
                             </form>
                         </div><!-- well -->
-                            <form name="updateBillingContact" id="updateBillingContact" class="left form-inline" action = "/account/${c.account['urlCode']}/cancel/handler" enctype="multipart/form-data" method="post" >
+                            <form name="closeAccount" id="closeAccount" class="left form-inline" action = "/account/${c.account['urlCode']}/close/handler" enctype="multipart/form-data" method="post" >
                                 <div class="accordion well" id="accordion2">
                                     <div class="accordion-group">
                                         <div class="accordion-heading" style="text-align: center">
-                                            <button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#collapseOne">
+                                            <button type="button" class="btn btn-danger" data-toggle="collapse" name="closeAccount" data-target="#collapseOne">
                                                 Close Account
                                             </button>
                                         </div><!-- accordion-heading -->
                                         <div id="collapseOne" class="accordion-body collapse">
                                             <div class="accordion-inner" style="text-align: center">
                                             Are you sure? This will close your Civinomics account and remove your workshop from the system.<br /><br />
-                                            <button type="submit" name="confirmCancel" class="btn btn-danger">Confirm Account Close</button> &nbsp; &nbsp;
+                                            <button type="submit" name="confirmCloseAccount" class="btn btn-danger">Confirm Account Close</button> &nbsp; &nbsp;
                                             <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#collapseOne">
                                             Oops! Never mind!
                                             </button>

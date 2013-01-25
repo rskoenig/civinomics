@@ -101,6 +101,7 @@ def make_map():
     map.connect('/workshop/{workshopCode}/{workshopURL}/manage/{account:account/?}', controller = 'account', action = 'manageAccount', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/account/{accountCode}/update/billingContact/{handler:handler/?}', controller = 'account', action = 'updateBillingContactHandler', accountCode = '{accountCode}')
     map.connect('/account/{accountCode}/update/paymentInfo/{handler:handler/?}', controller = 'account', action = 'updatePaymentInfoHandler', accountCode = '{accountCode}')
+    map.connect('/account/{accountCode}/close/{handler:handler/?}', controller = 'account', action = 'closeHandler', accountCode = '{accountCode}')
 
     # suggestions
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{suggestions:suggestions?/?}', controller = 'workshop', action = 'displayAllSuggestions', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
