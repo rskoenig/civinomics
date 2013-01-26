@@ -291,40 +291,40 @@
     %>
     % if 'user' in session:
     <ul class="nav nav-pills pull-left">
-        % if c.scope == 'earth':
-            <li class="active"> <a href="/workshops/">Earth</a><span class="divider">/</span></li>
+        % if c.scope == 'planet':
+            <li class="active"> <a href="/workshops/geo/earth">Earth</a><span class="divider">/</span></li>
         % else:
-            <li> <a href="/workshops/">Earth</a><span class="divider">/</span></li>
+            <li> <a href="/workshops/geo/earth">Earth</a><span class="divider">/</span></li>
         % endif
         
         % if c.scope == 'country':
-            <li class="active"> <a href="${c.authuser_geo['countryURL']}">${c.authuser_geo['countryTitle']}</a> <span class="divider">/</span> </li>
+            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'country') | n}>${c.authuser_geo['countryTitle']}</a> <span class="divider">/</span> </li>
         % else:
-            <li> <a href="${c.authuser_geo['countryURL']}">${c.authuser_geo['countryTitle']}</a> <span class="divider">/</span> </li>
+            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'country') | n}>${c.authuser_geo['countryTitle']}</a> <span class="divider">/</span> </li>
         % endif
         
         % if c.scope == 'state':
-            <li class="active"> <a href="${c.authuser_geo['stateURL']}">${c.authuser_geo['stateTitle']}</a> <span class="divider">/</span> </li>
+            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'state') | n}>${c.authuser_geo['stateTitle']}</a> <span class="divider">/</span> </li>
         % else:
-            <li> <a href="${c.authuser_geo['stateURL']}">${c.authuser_geo['stateTitle']}</a> <span class="divider">/</span> </li>
+            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'state') | n}>${c.authuser_geo['stateTitle']}</a> <span class="divider">/</span> </li>
         % endif
         
         % if c.scope == 'county':
-            <li class="active"> <a href="${c.authuser_geo['countyURL']}">${county}</a> <span class="divider">/</span> </li>
+            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'county') | n}>${county}</a> <span class="divider">/</span> </li>
         % else:
-            <li> <a href="${c.authuser_geo['countyURL']}">${county}</a> <span class="divider">/</span> </li>
+            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'county') | n}>${county}</a> <span class="divider">/</span> </li>
         % endif
         
         % if c.scope == 'city':
-            <li class="active"> <a href="${c.authuser_geo['cityURL']}">${city}</a> <span class="divider">/</span> </li>
+            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'city') | n}>${city}</a> <span class="divider">/</span> </li>
         % else:
-            <li> <a href="${c.authuser_geo['cityURL']}">${city}</a> <span class="divider">/</span> </li>
+            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'city') | n}>${city}</a> <span class="divider">/</span> </li>
         % endif
         
         % if c.scope == 'postalCode':
-            <li class="active"> <a href="${c.authuser_geo['postalURL']}">${c.authuser_geo['postalCode']}</a></li>
+            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'postalCode') | n}>${c.authuser_geo['postalCode']}</a></li>
         % else:
-            <li> <a href="${c.authuser_geo['postalURL']}">${c.authuser_geo['postalCode']}</a></li>
+            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'postalCode') | n}>${c.authuser_geo['postalCode']}</a></li>
         % endif
     </ul>
    % endif
@@ -337,14 +337,33 @@
         userGeo = getGeoInfo(user.id)[0]
         geoLinkStr = ''
         
-        geoLinkStr += '<a href="%s" class="geoLink">%s</a>' %(userGeo['cityURL'], userGeo['cityTitle'])
+        geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'city'), userGeo['cityTitle'])
         geoLinkStr += ', '
-        geoLinkStr += '<a href="%s" class="geoLink">%s</a>' %(userGeo['stateURL'], userGeo['stateTitle'])
+        geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'state'), userGeo['stateTitle'])
         if 'comment' not in kwargs:
             geoLinkStr += ', '
-            geoLinkStr += '<a href="%s" class="geoLink">%s</a>' %(userGeo['countryURL'], userGeo['countryTitle'])
+            geoLinkStr += '<a %s class="geoLink">%s</a>' %(self._geoWorkshopLink(userGeo, depth = 'country'), userGeo['countryTitle'])
     %>
     ${geoLinkStr | n}
+</%def>
+
+<%def name="_geoWorkshopLink(geoInfo, depth = None, **kwargs)">
+    <%
+        link = 'href="/workshops/geo/earth/'
+        if depth is None:
+            link += '"'
+        elif depth == 'country':
+            link += '%s"' % geoInfo['countryURL']
+        elif depth == 'state':
+            link += '%s/%s"' % (geoInfo['countryURL'], geoInfo['stateURL'])
+        elif depth == 'county':
+            link += '%s/%s/%s"' % (geoInfo['countryURL'], geoInfo['stateURL'], geoInfo['countyURL'])
+        elif depth == 'city':
+            link += '%s/%s/%s/%s"' % (geoInfo['countryURL'], geoInfo['stateURL'], geoInfo['countyURL'], geoInfo['cityURL'])
+        elif depth == 'postalCode':
+            link += '%s/%s/%s/%s/%s"' % (geoInfo['countryURL'], geoInfo['stateURL'], geoInfo['countyURL'], geoInfo['cityURL'], geoInfo['postalURL'])
+        return link
+    %>
 </%def>
 
 <%def name="discussionLink(d, w, **kwargs)">

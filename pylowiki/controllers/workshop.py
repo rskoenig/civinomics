@@ -370,8 +370,9 @@ class WorkshopController(BaseController):
             wchanges = 1
             
         if wscope and wscope['scope'] != geoTagString:
-            wscope['scope'] = geoTagString
-            dbHelpers.commit(wscope)
+            geoInfoLib.editWorkshopScope(wscope, geoTagString)
+            # wscope['scope'] = geoTagString
+            # dbHelpers.commit(wscope)
             wchanges = 1
             
         if wchanges:

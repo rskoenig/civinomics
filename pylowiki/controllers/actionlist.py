@@ -29,21 +29,7 @@ class ActionlistController(BaseController):
     def index( self, id ): # id is the action
         """Create a list of pages with the given action/option """
         """Valid actions: edit, revision, delete, restore, sitemap """
-        #c.action = id
-        #if c.action == "sitemap":
-        #    c.title = c.heading = c.action
-        #    c.action = ""
-        #    c.list = get_all_pages()
-        #elif c.action == 'sitemapIssues':
-        #    c.title = c.heading = 'All Workshops'
-        #    c.list = getActiveWorkshops()
-
-        #    c.count = len( c.list )
-        #    c.paginator = paginate.Page(
-        #        c.list, page=int(request.params.get('page', 1)),
-        #        items_per_page = 15, item_count = c.count
-        #    )
-        c.title = c.heading = 'All Workshops'
+        c.title = c.heading = c.workshopTitlebar = 'All Workshops'
         c.list = getActiveWorkshops()
         c.activity = getRecentMemberPosts(10)
         c.scope = 'earth'
