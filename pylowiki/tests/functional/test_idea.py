@@ -29,7 +29,7 @@ class TestIdeaController(TestController):
         newWorkshop = create_new_workshop(
             self, 
             thisUser, 
-            private=True,
+            personal=True,
             allowIdeas=formDefs.workshopSettings_allowIdeas(True),
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
@@ -127,7 +127,7 @@ class TestIdeaController(TestController):
         newWorkshop = create_new_workshop(
             self, 
             thisUser, 
-            private=True,
+            personal=True,
             allowIdeas=formDefs.workshopSettings_allowIdeas(True),
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )

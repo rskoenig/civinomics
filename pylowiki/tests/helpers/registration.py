@@ -3,12 +3,10 @@ from routes import url_for
 from urlparse import urlparse
 
 from pylowiki.tests.helpers.people import make_user, createActivatedUser
+import pylowiki.tests.helpers.content as content
 
 import logging
 log = logging.getLogger(__name__)
-
-def activation_success():
-    return 'registration complete'
 
 def create_user(self, usern, passw, zipc, membert, name):
     # create a user with normal privs
@@ -43,8 +41,12 @@ def activate_user(self, hash_and_email):
     rAct = self.app.get(
         url=url_for(controller='activate', action='index', id=hash_and_email)
     )
+    # rACt is a 302 redirect from the home page
     rNext = rAct.follow()
-    assert activation_success() in rNext
+    # rNext is a 302 redirect from the workshops page
+    rThen = rNext.follow()
+    # rThen is the workshop listing page
+    assert content.activation_success() in rThen
     return rNext
 
 # is there a need

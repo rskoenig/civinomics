@@ -4,14 +4,14 @@ from pylowiki.tests import *
 def profile():
     return 'profile'
 
-def member_dashboard():
-    return 'Member Dashboard'
+def profile_edit():
+    return 'Edit'
 
 def ideas_page():
     return 'Ideas'
 
 def addIdea():
-    return 'Add Idea'
+    return 'Add an idea'
 
 def login():
 	return 'login'

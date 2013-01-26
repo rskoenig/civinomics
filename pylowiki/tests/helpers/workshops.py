@@ -22,7 +22,7 @@ def addCommentToIdeaPage(self, ideaPage, commentText):
     params = {}
     params = formHelpers.loadWithSubmitFields(addCommentForm)
     params[formDefs.parameter_submit()] = formDefs.addComment_submit()
-
+    log.info("addCommentToIdeaPage action: %s"%(str(addCommentForm.action)))
     commentAdded = self.app.get(
         url = str(addCommentForm.action),
         params=params
@@ -44,13 +44,14 @@ def addIdeaToWorkshop(self, workshop, ideaText):
     #for key, value in addForm.submit_fields():
     #    params[key] = value
     params[formDefs.parameter_submit()] = content.noChars()
-
+    log.info("addIdeaToWorkshop action: %s"%(str(addForm.action)))
     ideaAdded = self.app.post(
         url=str(addForm.action), 
         content_type=addForm.enctype,
         params=params
     ).follow()
-    return ideaAdded
+    ideaPage = ideaAdded.click(description=ideaText, index=0)
+    return ideaPage
 
 #def getIdeaPage():
 
@@ -58,12 +59,6 @@ def addIdeaToWorkshop(self, workshop, ideaText):
 def create_new_workshop(self, thisUser, **kwargs):
     """ Logs in as the specified user and creates a new workshop.
     Returns this workshop's main page. """
-    #: kwarg options:
-    #: allowIdeas = helpers/form_Definitions.workshopSettings_allowIdeas(True/False)
-    #:  - setting for allowing participants to add ideas 
-    #: allowResourceLinks = helpers/form_Definitions.workshopSettings_allowResourceLinks(True/False)
-    #:  - setting for allowing participants to add resource links
-
     login(self, thisUser)
     # start at the home page, which redirects to the workshops page
     rHome = self.app.get(url=url_for(controller='home', action='index'))
@@ -71,31 +66,41 @@ def create_new_workshop(self, thisUser, **kwargs):
     # click the profile link
     rProfile = rWorkshops.click(description=linkDefs.profile(), index=0)
     # click the member dashboard link
-    rDashboard = rProfile.click(description=linkDefs.member_dashboard(), index=0)
+    rDashboard = rProfile.click(description=linkDefs.profile_edit(), index=0)
     # click the create workshop button
     createWorkshopForm = rDashboard.forms[formDefs.createWorkshop_button()]
     createWorkshop = createWorkshopForm.submit()
-    
-    #NOTE we have a choice now for creating a personal or professional workshop
-    whichWorkshopForm = createWorkshop.forms[formDefs.createWorkshop()]
-    formFields = whichWorkshopForm.fields
-    # this form has two submit buttons. the javascript works to set a post field named after the buton
-    # that is pressed. this funcion mimics that action.
-    for key in formFields:
-        thisButton = re.search(formDefs.personal_workshop_button_search(), key)
-        #log.info("in form fields finder "+key)
-        if thisButton != None:
-            log.info("found button "+key)
-            # we have the value for the personal button, set it in the form as a post value
-            submittedWhichForm = whichWorkshopForm.submit(key)
-            startCreateWorkshop1 = submittedWhichForm.follow()
-            # we have entered either a personal or professional workshop creation now
-            break
-        #log.info("I am inside the for loop")
-    #log.info("I am outside the for loop")
+    #: we have a choice now for creating a personal or professional workshop
+    #: get the form that holds both choices
+    whichWorkshopForm = createWorkshop.forms[formDefs.createWorkshop_1_form()]
+    params = {}
+    #: it is expected that this form has one submit value, the name of the button and its value of ''
+    #: for robustness, the loadWithSubmitFields() function is used in case any other submit fields are placed in the future
+    params = formHelpers.loadWithSubmitFields(whichWorkshopForm)
+    params[formDefs.create_workshop_1_personal_professional(kwargs)] = content.noChars()
+    log.info("create_new_workshop action: %s"%(str(whichWorkshopForm.action)))
+    startCreateWorkshop1 = self.app.post(
+        url=str(whichWorkshopForm.action), 
+        content_type=whichWorkshopForm.enctype,
+        params=params
+    ).follow()
+    #: now we are either creating a personal or a professional workshop
+    #if 'personal' in kwargs:
+        #if kwargs['personal'] == True:
+            #: we've gone the personal workshop route, do nothing here
+        #else:
+            #: we've gone the professional workshop route
+            #: In webtest I'm pretty sure it's not possible to use javascript files for the payment handshake that takes place here.
+            #: It's possible that Selenium can handle this.
+            #: For now, I'll get us to the page past the payment gateway by pressing the 'personal workshop' button
+            #: then setting the workshop to be a professional one by calling the backend function.
+            #: The personal option has already been selected because for now it's a forced default in 
+            #: formDefs.create_workshop_1_personal_professional()
+            #: 'upgrade' this workshop to professional:
+            # NOTE - do this part            
 
     # start completing workshop form - basic fields
-    createWorkshopForm1 = startCreateWorkshop1.forms[formDefs.createWorkshopForm1()]
+    createWorkshopForm1 = startCreateWorkshop1.forms[formDefs.createWorkshop_2_Basics()]
     formFields1 = createWorkshopForm1.fields
     # fill out the first form for this workshop creation process
     for key in formFields1:
@@ -105,7 +110,7 @@ def create_new_workshop(self, thisUser, **kwargs):
         elif formDefs.createWorkshopForm1_description() == key:
             createWorkshopForm1[key] = 'test description'
         elif formDefs.createWorkshopForm1_goals() == key:
-            createWorkshopForm1[key] = 'goals'
+            createWorkshopForm1[key] = 'lots of goals'
         elif formDefs.createWorkshopForm1_suggestions() == key:
             if 'allowIdeas' in kwargs:
                 createWorkshopForm1.set(key, kwargs['allowIdeas'])
@@ -119,13 +124,14 @@ def create_new_workshop(self, thisUser, **kwargs):
                 # by default, allow workshop participants to add resources
                 createWorkshopForm1.set(key, formDefs.workshopSettings_allowResourceLinks(True))
 
+    log.info("startCreateWorkshop2 action: %s"%(str(createWorkshopForm1.action)))
     startCreateWorkshop2 = createWorkshopForm1.submit().follow()
 
     #complete workshop form part 2
     if 'private' in kwargs:
         createWorkshopForm2 = startCreateWorkshop2.forms[formDefs.createWorkshopForm2(kwargs['private'])]
     else:
-        createWorkshopForm2_submit = startCreateWorkshop2.forms[formDefs.createWorkshopForm2()]
+        createWorkshopForm2 = startCreateWorkshop2.forms[formDefs.createWorkshopForm2()]
     #: private form id="private": (optional) can invite people and include invite message
     #: NOTE for now, nothing happens in this case
     #: public form id="scope": need to set the scope

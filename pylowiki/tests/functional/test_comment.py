@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 from pylowiki.tests import *
+from webtest import TestResponse
+
+from pylons import config
 
 import pylowiki.tests.helpers.content as content
 import pylowiki.tests.helpers.form_definitions as formDefs
@@ -9,6 +12,9 @@ from pylowiki.tests.helpers.authorization import login, logout
 from pylowiki.tests.helpers.registration import create_and_activate_a_user
 from pylowiki.tests.helpers.workshops import create_new_workshop, addIdeaToWorkshop, addCommentToIdeaPage
 
+import logging
+log = logging.getLogger(__name__)
+
 class TestCommentController(TestController):
     """This class tests the various aspects of comments."""
     #: Can a comment be created?
@@ -16,7 +22,7 @@ class TestCommentController(TestController):
     #: Can a user who is not a participant in this workshop create a comment in it?
 	#: An admin, or a facilitor of a workshop can edit, delete, or make hidden a comment.
 
-    def test_create_a_comment(self, **kwargs):
+    def test_create_a_comment(self, thisUser=None, **kwargs):
         """This test creates a comment on a standard workshop object"""
         # set the identifying text to be used in creating the objects necessary for a comment
         if 'ideaText' in kwargs:
@@ -29,12 +35,13 @@ class TestCommentController(TestController):
             commentText = content.oneLine(1)
 
         # create a new user
-        thisUser = create_and_activate_a_user(self)
+        if thisUser == None:
+            thisUser = create_and_activate_a_user(self)
         # create_workshop as this new user
         newWorkshop = create_new_workshop(
             self, 
             thisUser, 
-            private=True,
+            personal=True,
             allowIdeas=formDefs.workshopSettings_allowIdeas(True),
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
@@ -60,6 +67,7 @@ class TestCommentController(TestController):
         commentText = content.oneLine(3)
         commentAdded = TestCommentController.test_create_a_comment(
             self,
+            None,
             ideaText=ideaText,
             commentText=commentText
         )
@@ -86,6 +94,7 @@ class TestCommentController(TestController):
         commentText = content.oneLine(4)
         commentAdded = TestCommentController.test_create_a_comment(
             self,
+            None,
             ideaText=ideaText,
             commentText=commentText
         )
@@ -113,6 +122,7 @@ class TestCommentController(TestController):
         commentText2 = content.oneLine(2)
         commentAdded = TestCommentController.test_create_a_comment(
             self,
+            None,
             ideaText=ideaText,
             commentText=commentText
         )
@@ -170,63 +180,138 @@ class TestCommentController(TestController):
             # bounced back to the splash page.
 
 
-        def test_create_comment_in_private_workshop_non_workshop_member(self):
-            """Can a member create a comment within a private workshop who is not a member of the workshop?"""
-            #: create workshop as one member, create new member, comment on workshop as new member
-            # create first user
-            thisUser = create_and_activate_a_user(self)
-            # create_workshop as this new user
-            newWorkshop = create_new_workshop(
-                self, 
-                thisUser, 
-                private=True,
-                allowIdeas=formDefs.workshopSettings_allowIdeas(True),
-                allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
-            )
-            # comments can exist on discussion, idea or resource objects.
-            # go to the ideas page
-            ideasPage = newWorkshop.click(description=linkDefs.ideas_page(), index=0)
-            # click the 'add idea' link
-            addIdea = ideasPage.click(description=linkDefs.addIdea(), index=0)
-            # obtain the form for this
-            addForm = addIdea.forms[formDefs.addIdea()]
-            addForm.set(formDefs.addIdea_text(), ideaText)
-            # this form does not include submit as a parameter, but it must be included in the postdata
-            params = {}
-            params = formHelpers.loadWithSubmitFields(addForm)
-            params[formDefs.parameter_submit()] = content.noChars()
-            ideaAdded = self.app.post(
-                url=str(addForm.action), 
-                content_type=addForm.enctype,
-                params=params
-            ).follow()
-            # after adding the idea, it should display on the following page.
-            assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
-            # visit this idea's page
-            ideaPage = ideaAdded.click(description=ideaText, index=0)
-            # comment on this idea, as a new user who is not a part of this private workshop
-            newUser = create_and_activate_a_user(self)
-            addCommentForm = ideaPage.forms[formDefs.addComment()]
-            addCommentForm.set(formDefs.addComment_text(), commentText)
-            # the form for submitting an idea has an extra parameter added to it as well.
-            # this is an easy way to add the extra parameter
-            params = {}
-            params = formHelpers.loadWithSubmitFields(addCommentForm)
-            params[formDefs.parameter_submit()] = formDefs.addComment_submit()
-            # before submitting this form - we need to login as the new user
-            logout(self)
-            login(self, newUser)
-            commentAdded = self.app.get(
-                url = str(addCommentForm.action),
-                params=params
-            ).follow()
+    def test_create_comment_in_private_workshop_non_workshop_member(self):
+        """Can a member create a comment within a private workshop who is not a member of the workshop?"""
+        #: create workshop as one member, create new member, comment on workshop as new member
+        ideaText = content.oneLine(5)
+        commentText = content.oneLine(1)
+        # create first user
+        thisUser = create_and_activate_a_user(self)
+        # create_workshop as this new user
+        newWorkshop = create_new_workshop(
+            self, 
+            thisUser, 
+            personal=True,
+            allowIdeas=formDefs.workshopSettings_allowIdeas(True),
+            allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
+        )
+        # comments can exist on discussion, idea or resource objects.
+        # go to the ideas page
+        ideasPage = newWorkshop.click(description=linkDefs.ideas_page(), index=0)
+        # click the 'add idea' link
+        addIdea = ideasPage.click(description=linkDefs.addIdea(), index=0)
+        # obtain the form for this
+        addForm = addIdea.forms[formDefs.addIdea()]
+        addForm.set(formDefs.addIdea_text(), ideaText)
+        # this form does not include submit as a parameter, but it must be included in the postdata
+        params = {}
+        params = formHelpers.loadWithSubmitFields(addForm)
+        params[formDefs.parameter_submit()] = content.noChars()
+        ideaAdded = self.app.post(
+            url=str(addForm.action), 
+            content_type=addForm.enctype,
+            params=params
+        ).follow()
+        # after adding the idea, it should display on the following page.
+        assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
+        # visit this idea's page
+        ideaPage = ideaAdded.click(description=ideaText, index=0)
+        # comment on this idea, as a new user who is not a part of this private workshop
+        newUser = create_and_activate_a_user(self)
+        addCommentForm = ideaPage.forms[formDefs.addComment()]
+        addCommentForm.set(formDefs.addComment_text(), commentText)
+        # the form for submitting an idea has an extra parameter added to it as well.
+        # this is an easy way to add the extra parameter
+        params = {}
+        params = formHelpers.loadWithSubmitFields(addCommentForm)
+        params[formDefs.parameter_submit()] = formDefs.addComment_submit()
+        # before submitting this form - we need to login as the new user
+        logout(self)
+        login(self, newUser)
+        commentAdded = self.app.get(
+            url = str(addCommentForm.action),
+            params=params
+        ).follow()
 
-            assert commentText not in commentAdded, "site member who is not a member of the private workshop, was able to make a comment in it"
-            return commentAdded
+        assert commentText not in commentAdded, "site member who is not a member of the private workshop, was able to make a comment in it"
+        return commentAdded
 
     # NEXT SECTION
     #An admin, or a facilitor of a workshop can edit, delete, or make hidden (on first display) an idea.
-    #def can_edit_comment_admin():
+    def can_edit_comment_admin(self):
+        #: create comment as random person
+        thisUser = create_and_activate_a_user(self)
+        ideaText = content.oneLine(2)
+        commentText = content.oneLine(3)
+        commentText2 = content.oneLine(4)
+        #: create_workshop as this new user
+        newWorkshop = create_new_workshop(
+            self, 
+            thisUser, 
+            personal=True,
+            allowIdeas=formDefs.workshopSettings_allowIdeas(True),
+            allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
+        )
+        #: add idea to workshop
+        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        #: add comment to idea
+        commentAdded = addCommentToIdeaPage(self, ideaAdded, commentText)
+        commentAdded2 = addCommentToIdeaPage(self, commentAdded, commentText2)
+        # assert that it's there
+        assert commentText in commentAdded, "error before test complete: not able to create comment in workshop"
+        # create another person, change to admin
+        # login as this new admin
+        # NOTE for now - login as super admin
+        admin = {}
+        # conf = config['app_conf']
+        # admin['email'] = conf['admin.email']
+        # NOTE - get these two lines working with the conf method
+        admin['email'] = 'username@civinomics.com'
+        # admin['password'] = conf['admin.pass']
+        admin['password'] = 'password'
+
+        loggedIn = login(self, admin)
+
+        #time to find the comment that we want to edit
+        for form in commentAdded2.forms:
+            log.info("form %s"%(form))
+            thisForm = commentAdded2.forms[form]
+            for field in thisForm.submit_fields():
+                # field is actually a tuple
+                log.info("field %s value %s"%(field[0], field[1]))
+                if commentText2 in field[1]:
+                    #edit comment and submit this form
+                    log.info("editing comment")
+                    thisForm.set(field[0], "COMMENT EDITED")
+                    params = {}
+                    params = formHelpers.loadWithSubmitFields(thisForm)
+                    params[formDefs.parameter_submit()] = formDefs.editComment_submit()
+                    log.info("commentAdded2 action: %s"%(str.strip(str(thisForm.action))))
+                    didWork = self.app.post(
+                        url = str.strip(str(thisForm.action)),
+                        params=params
+                    ).follow()
+
+        assert commentAdded == 404
+        # on the comment page, edit comment to read some new text
+        
+        # confirm comment is new text and old text not present
+
+    #def can_delete_comment_admin():
+        # create comment as random person
+        # create another person, change to admin
+        # login as this new admin
+        # visit the comment
+        # delete comment
+        # confirm comment not present anymore
+
+    #def can_make_hidden_comment_admin():
+        # create comment as random person
+        # create another person, change to admin
+        # login as this new admin
+        # visit the comment
+        # make it hidden
+        # reload page, confirm comment is hidden
 
 
 

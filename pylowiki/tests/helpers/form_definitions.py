@@ -19,8 +19,32 @@ def addIdea_submit():
 def addIdea_text():
 	return 'title'
 
-def createWorkshop():
+def createWorkshop_1_form():
 	return 'CreateWorkshop'
+
+def create_workshop_1_personal_professional(kwargs=None):
+	#: value of button for creating a personal or professional workshop
+	#: can return value for choosing personal or professional workshops
+	if 'personal' in kwargs:
+		if 'personal' == True:
+			return 'createPersonal'
+		else:
+			#: if we get selenium to drive this test,
+			#: we will be able to use the javascript for actually processing the payment form.
+			#: For now, we'll need to create a personal workshop but manually set it as professional
+			#: return 'createProfessional'
+			return 'createPersonal'
+	else:
+		return 'createPersonal'
+
+def createWorkshop_paymentForm():
+	return 'paymentForm'
+
+def create_workshop_paymentToken():
+	return 'stripeToken'
+
+def create_workshop_paymentToken_val():
+	return 'tok_19tVR0n1Mz7qua'
 
 def createWorkshop_button():
 	return 'CreateWorkshop'
@@ -28,7 +52,7 @@ def createWorkshop_button():
 def createWorkshop_FileUploadForm():
 	return 'fileupload'
 
-def createWorkshopForm1():
+def createWorkshop_2_Basics():
 	return 'edit_issue'
 
 def createWorkshopForm1_description():
@@ -62,7 +86,7 @@ def createWorkshopForm4_continueToNext():
 	return 'continueToNext'
 
 def createWorkshopForm5_wikiBackground():
-	return 'wikiBackground'
+	return 'workshop_background'
 
 def createWorkshopForm5_wikiBackground_text():
 	return 'data'
@@ -70,14 +94,11 @@ def createWorkshopForm5_wikiBackground_text():
 def createWorkshopForm5_wikiBackground_submit():
     return ''
 
+def editComment_submit():
+	return 'reply'
+
 def parameter_submit():
 	return 'submit'
-
-def personal_workshop_button_search():
-	return 'Pers'
-
-def professional_workshop_button_search():
-	return 'Prof'
 
 def submitNone():
 	return None
