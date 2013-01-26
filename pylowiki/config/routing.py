@@ -64,6 +64,19 @@ def make_map():
     map.connect('/suggestion/rate', controller = 'suggestion', action = 'rate')
     map.connect('/slideshow/edit', controller = 'slideshow', action = 'edit')
 
+    # Geo stuff
+    map.connect('/workshops/geo/earth{end:/?}', controller = 'geo', action = 'workshopSearch')
+    map.connect('/workshops/geo/earth/{country}{end:/?}', controller = 'geo', action = 'workshopSearch')
+    map.connect('/workshops/geo/earth/{country}/{state}{end:/?}', controller = 'geo', action = 'workshopSearch')
+    map.connect('/workshops/geo/earth/{country}/{state}/{county}{end:/?}', controller = 'geo', action = 'workshopSearch')
+    map.connect('/workshops/geo/earth/{country}/{state}/{county}/{city}{end:/?}', controller = 'geo', action = 'workshopSearch')
+    map.connect('/workshops/geo/earth/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'geo', action = 'workshopSearch')
+    map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/geo/stateList/{id1}', controller = 'geo', action = 'geoStateHandler', id1 = '{id1}')
+    map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/geo/postalList/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
+
     # Workshop Base
     map.connect('/{workshop:workshops?}/display/create/{form:form/?}', controller = 'workshop', action = 'displayCreateForm')
     map.connect('/{workshop:workshops?}/create/{handler:handler/?}', controller = 'workshop', action = 'createWorkshopHandler')
@@ -162,18 +175,6 @@ def make_map():
     map.connect('/rate/discussion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateDiscussion', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/comment/{code}/{amount}{end:/?}', controller = 'rating', action = 'rateComment', code = '{code}', amount = '{amount}')
     map.connect('/rate/idea/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateIdea', code = '{code}', url = '{url}', amount = '{amount}')
-
-    # Geo stuff
-    map.connect('/geo/postal/{country}/{postalCode}', controller = 'geo', action = 'postalWorkshops')
-    map.connect('/geo/city/{country}/{state}/{city}', controller = 'geo', action = 'cityWorkshops')
-    map.connect('/geo/county/{country}/{state}/{county}', controller = 'geo', action = 'countyWorkshops')
-    map.connect('/geo/state/{country}/{state}', controller = 'geo', action = 'stateWorkshops')
-    map.connect('/geo/country/{country}', controller = 'geo', action = 'countryWorkshops')
-    map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/geo/stateList/{id1}', controller = 'geo', action = 'geoStateHandler', id1 = '{id1}')
-    map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/geo/postalList/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     
     # Disable/enable/delete/edit/flag Things
     map.connect('/disable/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'disable')
@@ -181,6 +182,7 @@ def make_map():
     map.connect('/delete/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'delete')
     map.connect('/edit/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'edit')
     map.connect('/flag/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'flag')
+    # Flag reset/object immunity goes here
     
     ########################################################################################################
     # 

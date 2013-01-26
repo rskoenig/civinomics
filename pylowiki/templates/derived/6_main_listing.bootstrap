@@ -11,7 +11,7 @@
    <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
          <div class="browse">
-            <h3 class="section-header"> Workshops </h3>
+            <h3 class="section-header"> ${c.workshopTitlebar} </h3>
             <div class="row-fluid"><!--navigation row-->
                <%doc>
                <div class="span12"> <!-- object navigation -->
