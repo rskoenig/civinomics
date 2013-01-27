@@ -113,3 +113,14 @@ class ListenerController(BaseController):
             return redirect("/workshop/%s/%s"%(c.w['urlCode'], c.w['url']))
 
         return redirect("/workshop/%s/%s"%(c.w['urlCode'], c.w['url']))
+
+    def listenerTitleHandler(self):
+        listener = listenerLib.getListener(c.user, c.w)
+        if 'listenerTitle' in request.params:
+            title = request.params['listenerTitle']
+            listener['title'] = title
+            dbHelpers.commit(listener)
+            eventLib.Event('Listener Title Updated', '%s updated listener title to %s'%(c.authuser['name'], listener['title']), listener, c.authuser)
+            
+        return redirect("/workshop/%s/%s/dashboard"%(c.w['urlCode'], c.w['url']))
+            

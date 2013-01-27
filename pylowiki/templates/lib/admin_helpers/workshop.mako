@@ -147,12 +147,27 @@
                     lPending = "(Pending)"
             %>
             <tr><td><a href="/profile/${lUser['urlCode']}/${lUser['url']}">${lUser['name']}</a> ${lPending}<br />
-            <form id="resignListener" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
-            &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+            <form id="resignListener" class="well form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
+            Disable litener:<br />
+            &nbsp; &nbsp; &nbsp;Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
-            <button type="submit" class="gold" value="Resign">Disable</button>
+            <button type="submit" class="btn btn-warning" value="Resign">Disable</button>
             <br />
-            </form>
+            </form><br />
+            <form id="titleListener" class="well form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
+            Add a job title to listener (14 characters max):<br />
+            <% 
+                if 'title' in listener:
+                    ltitle = listener['title']
+                else:
+                    ltitle = ""
+            %>
+            &nbsp; &nbsp; &nbsp;Title: <input type="text" name="listenerTitle" value="${ltitle}" size="14" maxlength="14"> &nbsp;&nbsp;&nbsp;
+            <input type="hidden" name="userCode" value="${lUser['urlCode']}">
+            <button type="submit" class="btn btn-warning">Save Title</button>
+            <br />
+            </form><br />
+
             % if lEvents:
                 % for lE in lEvents:
                     &nbsp; &nbsp; &nbsp; <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
