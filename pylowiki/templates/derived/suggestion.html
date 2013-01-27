@@ -1,0 +1,166 @@
+<%!
+    from pylowiki.lib.db.user import getUserByID, isAdmin
+    from pylowiki.lib.db.facilitator import isFacilitator
+%>
+
+<%inherit file = "/base/template.html"/>
+<%namespace file="/derived/commentsCustom.mako" import="comments" />
+<%namespace file="/lib/mako_lib.mako" import="return_to" />
+
+${return_to()}
+
+        	<div class="left headline banner_div">
+	        	<h2 class="banner"><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h2> 
+                <br/>
+        	</div> <!-- left headline -->
+        	<div id="suggestion_main" class="left clr">
+                        <h3>Suggestion <span class="right">add new suggestion<a href="/newSuggestion/${c.w['urlCode']}/${c.w['url']}" class="plus">+</a></span></h3>
+        		<div class="left" id="suggestion_info">
+					<p class="left">
+						<strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${c.s['urlCode']}/${c.s['url']}">${c.s['title']}</a></strong>
+						<br />
+						Workshop: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a>
+						<br />
+					</p>
+					<p class="right">
+					    % if c.author['pictureHash'] == 'flash':
+                            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatars/flash.profile" alt="avatar" class="right" style="width:50px;}"/></a>
+                        % else:
+                            <a href="/profile/${c.author['urlCode']}/${c.author['url']}"><img src="/images/avatar/${c.author['directoryNumber']}/thumbnail/${c.author['pictureHash']}.thumbnail" alt="avatar" class="right"/></a>
+                        % endif
+					    <br />
+                                        % if isAdmin(c.author.id):
+                                           <% uTitle = ' (Admin)' %>
+                                        % elif isFacilitator(c.author.id, c.w.id):
+                                           <% uTitle = ' (Facilitator)' %>
+                                        % else:
+                                           <% uTitle = '' %>
+                                        % endif
+
+					    <span class="right">
+					        Author: <a href="/profile/${c.author['urlCode']}/${c.author['url']}">${c.author['name']}</a>${uTitle}
+				        </span>
+				    </p>
+		            <p class="clr suggestion_summary"></p>
+		                % if 'user' in session: 
+    		            	% if c.authuser.id == c.s.owner or c.isFacilitator or c.isAdmin:
+                                ${ h.form( url( controller = "suggestion", action ="handler", id = '%s_%s'%(c.w.id, c.s.id) ), method="put" ) }
+                                <table style="width: 100%; padding: 0px; border-spacing: 0px; border: 0px; margin: 0px;"><tr><td>
+                                <div id = "section0" ondblclick="toggle('textareadiv0', 'edit0')">${c.content}</div>
+                                </td></tr></table>
+                                
+                                <div style="display:none; text-align:center;" id="textareadiv0">
+                                <br />
+                                <textarea rows="5" id="textarea0" name="textarea0" onkeyup="previewAjax( 'textarea0', 'section0' )" class="markitup">${c.s['data']}</textarea>
+                                <div style="align:right;text-align:right;">
+                                    Optional remark: <input type="text" id="remark0"  name="remark0" class="text tiny" placeholder="optional remark"/> 
+    
+                                    ${h.submit('submit', 'Save')}
+                                    <input type="text" id="sremark"  name="sremark" class="text" />
+                                </div>
+                            </div>
+                            
+                            ##<div style="align:right;text-align:right;"><a href="javascript: toggle('textareadiv0', 'edit0', 'edit')" id="edit0" style="font-size: 12px;">edit</a></div>
+                            ${h.end_form()}
+                            % else:
+                            	${c.content}
+                            % endif
+                        % else:
+                            ${c.content}}
+                        % endif
+					<br />
+		            <br />
+                                % if c.authuser and (c.authuser.id == c.w.owner or c.isAdmin):
+                                  <div class="right">&nbsp; &nbsp;<a href="/modSuggestion/${c.s['urlCode']}/${c.s['url']}">admin suggestion</a></div>
+                                % endif
+                                % if c.authuser and (c.authuser.id == c.s.owner or c.isAdmin):
+                                  <div class="right"><a href="/editSuggestion/${c.s['urlCode']}/${c.s['url']}">edit suggestion</a></div>
+                                % endif
+                    
+                    % if "user" in session:
+                        % if c.rating:
+                            <div class = "gray rating wide">
+                                <div id="overall_slider" class="ui-slider-container">
+									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data1="0_${c.s['urlCode']}_${c.rating['rating']}_overall_true_rateSuggestion" data2="${c.s['url']}"></div>
+								</div>
+								<script type="text/javascript">
+                                	$(document).ready(function(){
+                                    	$(".normal_slider").jColorSlider();
+                                	});
+                                </script>
+                            </div>
+                        % else:
+                            <div class = "gray rating wide">
+                                <div id="overall_slider" class="ui-slider-container">
+									<div id="${c.s['urlCode']}_${c.s['url']}" class="normal_slider" data1="0_${c.s['urlCode']}_0_overall_false_rateSuggestion" data2="${c.s['url']}"></div>
+								</div>
+                                <script type="text/javascript">
+                                	$(document).ready(function(){
+                                    	$(".normal_slider").jColorSlider();
+                                	});
+                                </script>
+                            </div>
+                        % endif
+                    % endif
+                </div>
+                ${comments("suggestionMain")} 
+                </div>
+        	</div> <!-- suggestion_main -->
+        	
+        	<div id="suggestion_side" class="left">
+        		<h3>Other Suggestions</h3>
+        		<ul id="related_suggestion">
+        		    % if len(c.suggestions) == 0:
+        		    <li>
+        		        No other suggestions!
+        		    </li>
+        		    % else:
+        		      % for suggestion in c.suggestions:
+        		          <% author = getUserByID(suggestion.owner)%>
+        		          <li>
+                              <strong class="issue_name"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${suggestion['urlCode']}/${suggestion['url']}">${suggestion['title']}</a></strong>
+                              <br />
+                              <span class="gray">By <a href="/profile/${author['urlCode']}/${author['url']}">${author['name']}</a></span>
+                          </li>
+        		      % endfor
+        		    % endif
+        		</ul> <!-- related_suggestion -->
+                <ul class="share suggest invite">
+                    <li><img src="/images/handdove.png" /> <a href="#">Invite to Civinomics</a></li>
+                    <li><img src="/images/suggest_an_issue.png" /> <a href="#">Suggest a workshop</a></li>
+                </ul>
+        	</div>
+
+<%def name = 'extraHTML()'>
+</%def>
+
+<%def name = 'extraStyles()'>
+    <link type="text/css" rel="stylesheet" href="/styles/suggestion.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/comments.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/skins/simple/style.css" />
+    <link type="text/css" rel="stylesheet" href="/js/markitup/sets/rst/style.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquery-ui-1.8.22.custom.css" />
+    <link type="text/css" rel="stylesheet" href="/styles/jquerySlider.css" />
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src = "/js/slides.js" type="text/javascript"></script>
+    <script src = "/js/comment.js" type="text/javascript"></script>
+    ##<script src = "/js/rating.js" type="text/javascript"></script>
+    <script src = "/js/h2banner.js" type="text/javascript"></script>
+    <script src = "/js/javascript.js" type="text/javascript"></script>
+    <script src = "/js/markitup/jquery.markitup.js" type="text/javascript"></script>
+    <script src = "/js/markitup/sets/rst/set.js" type="text/javascript"></script>
+	<script src = "/js/jquery-ui-1.8.22.custom.min.js" type = "text/javascript"></script>
+	<script src = "/js/jqueryUiSlider.js" type="text/javascript"></script>
+    <script src = "/js/jquery.ui.touch-punch.min.js"></script>
+	##<script src = "/js/jqueryUiButtons.js" type="text/javascript"></script>
+
+    <script language="javascript">
+        $(document).ready(function()	{
+            $(".markitup").markItUp(mySettings);
+        });
+    </script>
+    
+    <script src = "/js/upDown.js" type="text/javascript"></script>
+</%def>
