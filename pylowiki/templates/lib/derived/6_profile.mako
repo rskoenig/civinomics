@@ -244,7 +244,7 @@
                 </div>
             </div><!-- row -->
         % endif
-        % if c.authuser.id != c.user.id and wListL:
+        % if wListL:
             <div class="row">
                 <div class="centered">
                 <form method="post" name="inviteListen" id="inviteListen" action="/profile/${c.user['urlCode']}/${c.user['url']}/listener/invite/handler" class="form-inline">
