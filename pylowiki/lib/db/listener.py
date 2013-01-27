@@ -49,6 +49,7 @@ def Listener(user, workshop, pending = 1):
         commit(listener)
     else:
         listener = Thing('listener')
+        listener['title'] = ''
         listener['pending'] = pending
         listener['disabled'] = '0'
         commit(listener)
