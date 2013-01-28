@@ -21,6 +21,7 @@ import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.generic          as generic
+import pylowiki.lib.db.event            as eventLib
 
 import simplejson as json
 log = logging.getLogger(__name__)
@@ -46,6 +47,13 @@ class AdminController(BaseController):
         if action in ['enable', 'disable', 'delete']:
             if not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
                 abort(404)
+            # Surely there must be a more elegant way to pass along this common variable
+            if 'reason' not in request.params:
+                c.reason = '(No reason given.)'
+            elif request.params['reason'].strip() == '':
+                c.reason = '(No reason given.)'
+            else:
+                c.reason = request.params['reason']
         if action in ['edit']:
             if c.thing.owner != c.authuser.id and (not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, workshop.id)):
                 abort(404)
@@ -136,7 +144,12 @@ class AdminController(BaseController):
         session['alert'] = alert
         session.save()
         return redirect(session['return_to'])
-        
+
+    def _enableDisableDeleteEvent(self, user, thing, reason, action):
+        eventTitle = '%s %s' % (action.title(), thing.objType)
+        eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
+        eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action)
+
     def enable(self, thingCode):
         result = 'Successfully enabled!'
         if c.thing['disabled'] == '0':
@@ -144,6 +157,8 @@ class AdminController(BaseController):
             # Return immediately to avoid the unnecessary set + commit
             return json.dumps({'code':thingCode, 'result':result})
         c.thing['disabled'] = '0'
+        action = 'enabled'
+        self._enableDisableDeleteEvent(c.authuser, c.thing, c.reason, action)
         dbHelpers.commit(c.thing)
         return json.dumps({'code':thingCode, 'result':result})
         
@@ -154,6 +169,8 @@ class AdminController(BaseController):
             # Return immediately to avoid the unnecessary set + commit
             return json.dumps({'code':thingCode, 'result':result})
         c.thing['disabled'] = '1'
+        action = 'disabled'
+        self._enableDisableDeleteEvent(c.authuser, c.thing, c.reason, action)
         dbHelpers.commit(c.thing)
         return json.dumps({'code':thingCode, 'result':result})
         
@@ -163,6 +180,8 @@ class AdminController(BaseController):
             result = 'Object not found.'
             return json.dumps({'code':thingCode, 'result':result})
         c.thing['deleted'] = '1'
+        action = 'deleted'
+        self._enableDisableDeleteEvent(c.authuser, c.thing, c.reason, action)
         dbHelpers.commit(c.thing)
         return json.dumps({'code':thingCode, 'result':result})
         

@@ -381,40 +381,60 @@
 
 <%def name="disableThingLink(thing, **kwargs)">
     <%
-        disableStr = 'href = "/disable/%s/%s"' %(thing.objType, thing['urlCode'])
+        disableStr = '"/disable/%s/%s"' %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
-                return disableStr
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return disableStr
+                    return 'href = ' + disableStr
+                return 'href = ' + disableStr
+        disableStr = 'href = ' + disableStr
     %>
     ${disableStr | n}
 </%def>
 
 <%def name="enableThingLink(thing, **kwargs)">
     <%
-        enableStr = 'href = "/enable/%s/%s"' %(thing.objType, thing['urlCode'])
+        enableStr = '"/enable/%s/%s"' %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
-                return enableStr
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return enableStr
+                    return 'href = ' + enableStr
+                return 'href = ' + enableStr
+        enableStr = 'href = ' + enableStr
     %>
     ${enableStr | n}
 </%def>
 
 <%def name="deleteThingLink(thing, **kwargs)">
     <%
-        deleteStr = 'href = "/delete/%s/%s"' %(thing.objType, thing['urlCode'])
+        deleteStr = '"/delete/%s/%s"' %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
-                return deleteStr
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return deleteStr
+                    return 'href = ' + deleteStr
+                return 'href = ' + deleteStr
+        deleteStr = 'href = ' + deleteStr
     %>
     ${deleteStr | n}
 </%def>
 
 <%def name="flagThingLink(thing, **kwargs)">
     <%
-        flagStr = 'href = "/flag/%s/%s"' %(thing.objType, thing['urlCode'])
+        flagStr = '"/flag/%s/%s"' %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
-                return flagStr
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return flagStr
+                    return 'href = ' + flagStr
+                return 'href = ' + flagStr
+        flagStr = 'href = ' + flagStr
     %>
     ${flagStr | n}
 </%def>
@@ -424,7 +444,11 @@
         editStr = "/edit/%s/%s" %(thing.objType, thing['urlCode'])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
-                return editStr
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return editStr
+                    return 'href = ' + editStr
+                return 'href = ' + editStr
         editStr = 'href = ' + editStr
     %>
     ${editStr | n}
@@ -447,7 +471,7 @@
     <% editID = 'edit-%s' % thing['urlCode'] %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
-            <form action="${editThingLink(thing, embed=True)}" method="post" class="form form-horizontal" id="edit-${thing.objType}">
+            <form action="${editThingLink(thing, embed=True, raw=True)}" method="post" class="form form-horizontal" id="edit-${thing.objType}">
                 <label>edit</label>
                 % if thing.objType == 'comment':
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
@@ -479,31 +503,31 @@
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="disable-${adminID}">
-                        <form class="form-inline">
+                        <form class="form-inline" action = ${disableThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
                                 <label>Reason:</label>
-                                <input type="text" name="disableReason" class="span8">
-                                <a ${disableThingLink(thing, embed=True) | n} class="btn disableButton">Submit</a>
+                                <input type="text" name="reason" class="span8">
+                                <a type="submit" name="submit" class="btn disableButton">Submit</a>
                             </fieldset>
                         </form>
                         <span id="disableResponse-${thing['urlCode']}"></span>
                     </div>
                     <div class="tab-pane" id="enable-${adminID}">
-                        <form class="form-inline">
+                        <form class="form-inline" action = ${enableThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
                                 <label>Reason:</label>
-                                <input type="text" name="enableReason" class="span8">
-                                <a ${enableThingLink(thing, embed=True) | n} class="btn enableButton">Submit</a>
+                                <input type="text" name="reason" class="span8">
+                                <a type="submit" name = "submit" class="btn enableButton">Submit</a>
                             </fieldset>
                         </form>
                         <span id="enableResponse-${thing['urlCode']}"></span>
                     </div>
                     <div class="tab-pane" id="delete-${adminID}">
-                        <form class="form-inline">
+                        <form class="form-inline" action = ${deleteThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
                                 <label>Reason:</label>
-                                <input type="text" name="deleteReason" class="span8">
-                                <a ${deleteThingLink(thing, embed=True) | n} class="btn deleteButton">Submit</a>
+                                <input type="text" name="reason" class="span8">
+                                <a class="btn deleteButton" type="submit" name="submit">Submit</a>
                             </fieldset>
                         </form>
                         <span id="deleteResponse-${thing['urlCode']}"></span>

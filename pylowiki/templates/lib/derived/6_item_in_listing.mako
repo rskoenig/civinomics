@@ -4,7 +4,22 @@
    import misaka as misaka
    import pylowiki.lib.db.facilitator   as facilitatorLib
    import pylowiki.lib.db.user          as userLib
+   import pylowiki.lib.db.event         as eventLib
 %>
+
+<%def name="showDisabledMessage(thing)">
+    <%
+        events = eventLib.getEventsWithAction(thing, 'disabled')
+    %>
+    <div class="row-fluid">
+        <div class="span11 offset1">
+            % for event in events:
+                <% eventOwner = userLib.getUserByID(event.owner) %>
+                <small>This ${thing.objType} has been disabled by ${lib_6.userLink(eventOwner)} because: ${event['reason']}</small> <br />
+            % endfor
+        </div>
+    </div>
+</%def>
 
 <%def name="extraText(thing)">
     % if thing.objType in ['discussion', 'resource']:

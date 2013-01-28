@@ -30,8 +30,12 @@
             <div class="row-fluid">
                 ${helpers.showItemOwner(thing)}
             </div><!--/.row-fluid-->
-            ${helpers.extraText(thing)}
-            ${helpers.moderationPanel(thing)}
+            <%
+                if thing['disabled'] == '1':
+                    helpers.showDisabledMessage(thing)
+                helpers.extraText(thing)
+                helpers.moderationPanel(thing)
+            %>
             <div class="row-fluid">
                 <div class="span12">
                     <div class="row-fluid">
