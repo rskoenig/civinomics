@@ -30,6 +30,14 @@ hr.civ-topbar-hr{
     border-right: 1px solid #DDDDDD;
 }
 
+.disabled{
+    background: #f2dede;
+    border-radius:10px;
+    margin-top:5px;
+    padding-top:5px;
+    margin-bottom:5px;
+}
+
 .section-wrapper {
   border: 1px solid #ddd;
   -webkit-border-radius: 5px;

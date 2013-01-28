@@ -7,6 +7,7 @@ import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.utils           as utils
+import pylowiki.lib.sort            as sortLib
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render
@@ -31,7 +32,10 @@ class IdeaController(BaseController):
         if not ideas:
             c.ideas = []
         else:
-            c.ideas = ideas
+            c.ideas = sortLib.sortBinaryByTopPop(ideas)
+        disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
+        if disabled:
+            c.ideas = c.ideas + disabled
         c.listingType = 'ideas'
         return render('/derived/6_detailed_listing.bootstrap')
     

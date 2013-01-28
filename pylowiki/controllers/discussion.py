@@ -53,10 +53,13 @@ class DiscussionController(BaseController):
     def index(self, workshopCode, workshopURL):
         c.title = c.w['title']
         c.discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
-        c.discussions = sortBinaryByTopPop(c.discussions)
         if not c.discussions:
             c.discussions = []
-        
+        else:
+            c.discussions = sortBinaryByTopPop(c.discussions)
+        disabled = discussionLib.getDiscussionsForWorkshop(workshopCode, disabled = '1')
+        if disabled:
+            c.discussions = c.discussions + disabled
         c.listingType = 'discussion'
         return render('/derived/6_detailed_listing.bootstrap')
 

@@ -45,6 +45,9 @@ class ResourceController(BaseController):
             c.resources = []
         else:
             c.resources = sort.sortBinaryByTopPop(resources)
+        disabled = resourceLib.getResourcesByWorkshopCode(workshopCode, disabled = '1')
+        if disabled:
+            c.resources = c.resources + disabled
         c.listingType = 'resources'
         return render('/derived/6_detailed_listing.bootstrap')
 

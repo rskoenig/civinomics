@@ -21,7 +21,11 @@
       % for item in renderList:
          <% author = getUserByID(item.owner) %>
          <li>
-            <div class="row-fluid list-item">
+            % if item['disabled'] == '1':
+                <div class="row-fluid list-item disabled">
+            % else:
+                <div class="row-fluid list-item">
+            % endif
                <div class="span1 voteBlock">
                   ${lib_6.upDownVote(item)}
                </div>
@@ -38,6 +42,9 @@
                         numComments = discussionLib.getDiscussionForThing(item)['numComments']
                      %>
                      See ${comments | n} (${numComments})
+                     % if item['disabled'] == '1':
+                        <small>(this has been disabled)</small>
+                     % endif
                </div><!--/.span9-->
             </div><!--/.row-fluid-->
          </li>
