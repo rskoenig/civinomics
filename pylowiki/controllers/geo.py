@@ -7,6 +7,7 @@ import pylowiki.lib.helpers as h
 
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.activity     as activityLib
 
 from string import capwords
 import simplejson as json
@@ -52,11 +53,13 @@ class GeoController(BaseController):
         postalCode = capwords(geoInfoLib.geoDeurlify(postalCode))
         scopeList = geoInfoLib.getWorkshopsInScope(country = country, state = state, county = county, city = city, postalCode = postalCode)
         c.list = []
+        workshopCodes = []
         for scopeObj in scopeList:
             workshop = workshopLib.getActiveWorkshopByCode(scopeObj['workshopCode'])
             if workshop:
                 c.list.append(workshop)
-        c.activity = []
+                workshopCodes.append(workshop['urlCode'])
+        c.activity = activityLib.getActivityForWorkshops(workshopCodes)
 
     def workshopSearch(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
         return render('derived/6_main_listing.bootstrap')

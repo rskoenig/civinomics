@@ -1,4 +1,5 @@
 from pylowiki.model import Thing, Data, meta
+from sqlalchemy import and_
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 from pylowiki.lib.db.discussion import getDiscussionByID
 from dbHelpers import commit
@@ -55,6 +56,9 @@ def getDiscussionCommentsSince(discussionID, memberDatetime):
        return False  
 
 def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
+    """
+        Activity inside a single workshop
+    """
     objTypes = ['resource', 'discussion', 'idea', 'comment']
     finalActivityList = []
     try:
@@ -75,3 +79,26 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
     except:
         return False
         
+def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
+    """
+        Activity inside multiple workshops, given a list of workshop codes
+    """
+    objTypes = ['resource', 'discussion', 'idea', 'comment']
+    finalActivityList = []
+    try:
+        initialActivityList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(objTypes))\
+            .filter(Thing.data.any(and_(Data.key == u'workshopCode', Data.value.in_(workshopCodes))))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .order_by('-date')\
+            .all()
+        # Messy
+        for activity in initialActivityList:
+            if activity.objType == 'discussion' and activity['discType'] != 'general':
+                continue
+            else:
+                finalActivityList.append(activity)
+        return finalActivityList
+    except:
+        return False
