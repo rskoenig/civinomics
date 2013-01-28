@@ -83,7 +83,7 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
     """
         Activity inside multiple workshops, given a list of workshop codes
     """
-    objTypes = ['resource', 'discussion', 'idea', 'comment']
+    objTypes = ['resource', 'discussion', 'idea']
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing)\
