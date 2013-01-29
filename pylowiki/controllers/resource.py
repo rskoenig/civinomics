@@ -52,10 +52,12 @@ class ResourceController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def showResource(self, workshopCode, workshopURL, resourceCode, resourceURL):
-        c.resource = resourceLib.getResourceByCode(resourceCode)
-        if not c.resource:
-            abort(404)
-        c.discussion = discussionLib.getDiscussionForThing(c.resource)
+        c.thing = resourceLib.getResourceByCode(resourceCode)
+        if not c.thing:
+            c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
+            if not c.thing:
+                abort(404)
+        c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'resource'
         return render('/derived/6_item_in_listing.bootstrap')
 

@@ -20,7 +20,8 @@
 <%def name="comments(thing, discussion, **kwargs)">
     <%
         if 'user' in session and discussion.objType != 'comment':
-            addCommentToDiscussion(thing, discussion)
+            if thing['disabled'] != '1':
+                addCommentToDiscussion(thing, discussion)
         displayDiscussion(thing, discussion)
     %>
 </%def>
@@ -171,7 +172,10 @@
         <div class="accordion-inner">
             <div class="row-fluid">
                 <div class="span1">
-                    ${lib_6.upDownVote(comment)}
+                    <%
+                        if c.thing['disabled'] == '0':
+                            lib_6.upDownVote(comment)
+                    %>
                 </div> <!--/.span1-->
                 <div class="span11">
                     ${comment['data']}
@@ -182,7 +186,8 @@
             </div> <!--/.row-fluid-->
             <%
                 if 'user' in session:
-                    commentFooter(comment, author)
+                    if c.thing['disabled'] == '0':
+                        commentFooter(comment, author)
             %>
             ${recurseCommentTree(comment, commentType, maxDepth, curDepth + 1)}
         </div><!--/.accordion-inner-->

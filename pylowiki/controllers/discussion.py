@@ -64,11 +64,13 @@ class DiscussionController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def topic(self, workshopCode, workshopURL, discussionCode, discussionURL, revisionCode = ''):
-        c.discussion = discussionLib.getDiscussion(discussionCode)
-        if not c.discussion:
-            abort(404)
-        c.flags = flagLib.getFlags(c.discussion)
-        c.events = eventLib.getParentEvents(c.discussion)
+        c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
+        if not c.thing:
+            c.thing = discussionLib.getDiscussion(dicussionCode, disabled = '1')
+            if not c.thing:
+                abort(404)
+        c.flags = flagLib.getFlags(c.thing)
+        c.events = eventLib.getParentEvents(c.thing)
 
         c.title = c.w['title']
 
@@ -79,16 +81,16 @@ class DiscussionController(BaseController):
             c.lastmoddate = r.date
             c.revision = r
         else:
-            c.content = h.literal(h.reST2HTML(c.discussion['text']))
+            c.content = h.literal(h.reST2HTML(c.thing['text']))
             c.revision = False
-            c.lastmoduser = userLib.getUserByID(c.discussion.owner)
-            if 'mainRevision_id' in c.discussion:
-                r = get_revision(int(c.discussion['mainRevision_id']))
+            c.lastmoduser = userLib.getUserByID(c.thing.owner)
+            if 'mainRevision_id' in c.thing:
+                r = get_revision(int(c.thing['mainRevision_id']))
                 c.lastmoddate = r.date
             else:
-                c.lastmoddate = c.discussion.date
+                c.lastmoddate = c.thing.date
 
-        c.revisions = revisionLib.getParentRevisions(c.discussion.id)
+        c.revisions = revisionLib.getParentRevisions(c.thing.id)
         
         c.listingType = 'discussion'
         return render('/derived/6_item_in_listing.bootstrap')

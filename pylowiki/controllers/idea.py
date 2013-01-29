@@ -60,9 +60,11 @@ class IdeaController(BaseController):
         return redirect(session['return_to'])
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
-        c.idea = ideaLib.getIdea(ideaCode)
-        if not c.idea:
-            abort(404)
-        c.discussion = discussionLib.getDiscussionForThing(c.idea)
+        c.thing = ideaLib.getIdea(ideaCode)
+        if not c.thing:
+            c.thing = ideaLib.getIdea(ideaCode, disabled = '1')
+            if not c.thing:
+                abort(404)
+        c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'idea'
         return render('/derived/6_item_in_listing.bootstrap')

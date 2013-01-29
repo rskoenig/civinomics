@@ -18,23 +18,17 @@
             <h3 class="section-header"> ${d[c.listingType]} </h3>
             <div class="row-fluid">
                 <%
-                    if c.listingType == 'discussion':
-                        thing = c.discussion
-                    elif c.listingType == 'resource':
-                        thing = c.resource
-                    elif c.listingType == 'idea':
-                        thing = c.idea
-                    helpers.showItemTitle(thing)
+                    helpers.showItemTitle(c.thing)
                 %>
             </div><!--/.row-fluid-->
             <div class="row-fluid">
-                ${helpers.showItemOwner(thing)}
+                ${helpers.showItemOwner(c.thing)}
             </div><!--/.row-fluid-->
             <%
-                if thing['disabled'] == '1':
-                    helpers.showDisabledMessage(thing)
-                helpers.extraText(thing)
-                helpers.moderationPanel(thing)
+                if c.thing['disabled'] == '1':
+                    helpers.showDisabledMessage(c.thing)
+                helpers.extraText(c.thing)
+                helpers.moderationPanel(c.thing)
             %>
             <div class="row-fluid">
                 <div class="span12">
@@ -42,9 +36,9 @@
                         <div class="span11 offset1">
                             <%
                                 if c.rootComment != '':
-                                    comments(thing, c.rootComment)
+                                    comments(c.thing, c.rootComment)
                                 else:
-                                    comments(thing, c.discussion)
+                                    comments(c.thing, c.discussion)
                             %>
                         </div>
                     </div>

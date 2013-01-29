@@ -21,6 +21,10 @@
 
 <%def name="upDownVote(thing)">
    <div class="voteWrapper">
+      % if thing['disabled'] == '1':
+         </div> <!-- /.voteWrapper -->
+         <% return %>
+      % endif
       <% rating = int(thing['ups']) - int(thing['downs']) %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          % if thing.objType != 'comment':
