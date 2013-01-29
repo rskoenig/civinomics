@@ -45,7 +45,7 @@ class AdminController(BaseController):
             if not workshop:
                 return json.dumps({'code':thingCode, 'result':'ERROR'})
         if action in ['enable', 'disable', 'delete']:
-            if not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
+            if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
                 abort(404)
             # Surely there must be a more elegant way to pass along this common variable
             if 'reason' not in request.params:
