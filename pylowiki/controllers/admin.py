@@ -55,7 +55,9 @@ class AdminController(BaseController):
             else:
                 c.reason = request.params['reason']
         if action in ['edit']:
-            if c.thing.owner != c.authuser.id and (not userLib.isAdmin(c.authuser.id) or not facilitatorLib.isFacilitator(c.authuser.id, workshop.id)):
+            if c.thing.owner == c.authuser.id:
+                pass
+            elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
                 abort(404)
     
     def users(self):
