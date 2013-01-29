@@ -507,7 +507,7 @@
                             <fieldset>
                                 <label>Reason:</label>
                                 <input type="text" name="reason" class="span8">
-                                <a type="submit" name="submit" class="btn disableButton">Submit</a>
+                                <button type="submit" name="submit" class="btn disableButton" ${disableThingLink(thing, embed=True) | n}>Submit</button>
                             </fieldset>
                         </form>
                         <span id="disableResponse-${thing['urlCode']}"></span>
@@ -517,7 +517,7 @@
                             <fieldset>
                                 <label>Reason:</label>
                                 <input type="text" name="reason" class="span8">
-                                <a type="submit" name = "submit" class="btn enableButton">Submit</a>
+                                <button type="submit" name = "submit" class="btn enableButton" ${enableThingLink(thing, embed=True) | n}>Submit</button>
                             </fieldset>
                         </form>
                         <span id="enableResponse-${thing['urlCode']}"></span>
@@ -527,7 +527,7 @@
                             <fieldset>
                                 <label>Reason:</label>
                                 <input type="text" name="reason" class="span8">
-                                <a class="btn deleteButton" type="submit" name="submit">Submit</a>
+                                <button class="btn deleteButton" type="submit" name="submit" ${deleteThingLink(thing, embed=True) | n}>Submit</button>
                             </fieldset>
                         </form>
                         <span id="deleteResponse-${thing['urlCode']}"></span>
