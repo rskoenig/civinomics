@@ -39,6 +39,7 @@
                 <input type="hidden" id="type" name="type" value="${thing.objType}" />
                 <input type="hidden" name="discussionCode" value="${discussion['urlCode']}" />
                 <input type="hidden" name="parentCode" value="0" />
+                <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
                 <fieldset>
                     <legend>Add comment</legend>
                     <textarea rows="4" class="span12" name="comment-textarea"></textarea>
@@ -231,6 +232,7 @@
                 <label>reply</label>
                 <textarea name="comment-textarea" class="comment-reply span12"></textarea>
                 <input type="hidden" name="parentCode" value="${comment['urlCode']}" />
+                <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
                 <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
             </form>
         </div>

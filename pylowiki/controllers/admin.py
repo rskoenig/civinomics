@@ -86,6 +86,9 @@ class AdminController(BaseController):
     
     def edit(self, thingCode):
         # A bit more complicated than enable/disable/delete
+        if c.thing['disabled'] == '1':
+            # Should only happen when someone posts directly to the server instead of through the UI.
+            return False
         blankText = '(blank)'
         if c.thing.objType == 'comment':
             data = request.params['textarea' + thingCode]
@@ -188,6 +191,9 @@ class AdminController(BaseController):
         return json.dumps({'code':thingCode, 'result':result})
         
     def flag(self, thingCode):
+        if c.thing['disabled'] == '1':
+            # Should only happen when someone posts directly to the server instead of through the UI.
+            return False
         result = 'Successfully flagged!'
         if flagLib.isFlagged(c.thing, c.authuser):
             result = 'Already flagged!'

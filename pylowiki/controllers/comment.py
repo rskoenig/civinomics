@@ -11,6 +11,7 @@ import pylowiki.lib.db.workshop     as  workshopLib
 import pylowiki.lib.db.comment      as  commentLib 
 import pylowiki.lib.db.discussion   as  discussionLib 
 import pylowiki.lib.db.revision     as  revisionLib
+import pylowiki.lib.db.generic      as  genericLib
 
 log = logging.getLogger(__name__)
 import pylowiki.lib.helpers as h
@@ -28,6 +29,12 @@ class CommentController(BaseController):
         try:
             request.params['submit']
             parentCommentCode = request.params['parentCode']
+            thingCode = request.params['thingCode']
+            thing = generic.getThing(thingCode)
+            if not thing:
+                return False
+            if thing['disabled'] == '1':
+                return False
             data = request.params['comment-textarea']
             data = data.strip()
             if data == '':

@@ -43,6 +43,10 @@ class RatingController(BaseController):
         elif action == 'rateIdea':
             thing = ideaLib.getIdea(code)
         
+        if thing['disabled'] == '1':
+            # Should only get triggered when the user posts directly and bypasses the UI
+            return False
+        
         ratingObj = ratingLib.makeOrChangeRating(thing, c.authuser, amount, ratingType)
 
     def index(self):
