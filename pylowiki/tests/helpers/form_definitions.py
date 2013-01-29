@@ -16,6 +16,9 @@ def addIdea():
 def addIdea_submit():
 	return ''
 
+def editIdea_submit():
+	return 'reply'
+
 def addIdea_text():
 	return 'title'
 

@@ -22,7 +22,6 @@ def addCommentToIdeaPage(self, ideaPage, commentText):
     params = {}
     params = formHelpers.loadWithSubmitFields(addCommentForm)
     params[formDefs.parameter_submit()] = formDefs.addComment_submit()
-    log.info("addCommentToIdeaPage action: %s"%(str(addCommentForm.action)))
     commentAdded = self.app.get(
         url = str(addCommentForm.action),
         params=params
@@ -44,7 +43,6 @@ def addIdeaToWorkshop(self, workshop, ideaText):
     #for key, value in addForm.submit_fields():
     #    params[key] = value
     params[formDefs.parameter_submit()] = content.noChars()
-    log.info("addIdeaToWorkshop action: %s"%(str(addForm.action)))
     ideaAdded = self.app.post(
         url=str(addForm.action), 
         content_type=addForm.enctype,
@@ -78,7 +76,6 @@ def create_new_workshop(self, thisUser, **kwargs):
     #: for robustness, the loadWithSubmitFields() function is used in case any other submit fields are placed in the future
     params = formHelpers.loadWithSubmitFields(whichWorkshopForm)
     params[formDefs.create_workshop_1_personal_professional(kwargs)] = content.noChars()
-    log.info("create_new_workshop action: %s"%(str(whichWorkshopForm.action)))
     startCreateWorkshop1 = self.app.post(
         url=str(whichWorkshopForm.action), 
         content_type=whichWorkshopForm.enctype,
@@ -104,13 +101,12 @@ def create_new_workshop(self, thisUser, **kwargs):
     formFields1 = createWorkshopForm1.fields
     # fill out the first form for this workshop creation process
     for key in formFields1:
-        log.info("createWorkshopForm1 key: %s"%key)
         if formDefs.createWorkshopForm1_title() == key:
-            createWorkshopForm1[key] = 'test title'
+            createWorkshopForm1[key] = 'NEW WORKSHOP TITLE'
         elif formDefs.createWorkshopForm1_description() == key:
-            createWorkshopForm1[key] = 'test description'
+            createWorkshopForm1[key] = 'NEW WORKSHOP DESCRIPTION'
         elif formDefs.createWorkshopForm1_goals() == key:
-            createWorkshopForm1[key] = 'lots of goals'
+            createWorkshopForm1[key] = 'NEW SET OF GOALS'
         elif formDefs.createWorkshopForm1_suggestions() == key:
             if 'allowIdeas' in kwargs:
                 createWorkshopForm1.set(key, kwargs['allowIdeas'])
@@ -124,7 +120,6 @@ def create_new_workshop(self, thisUser, **kwargs):
                 # by default, allow workshop participants to add resources
                 createWorkshopForm1.set(key, formDefs.workshopSettings_allowResourceLinks(True))
 
-    log.info("startCreateWorkshop2 action: %s"%(str(createWorkshopForm1.action)))
     startCreateWorkshop2 = createWorkshopForm1.submit().follow()
 
     #complete workshop form part 2
@@ -143,7 +138,7 @@ def create_new_workshop(self, thisUser, **kwargs):
     # add tags to the workshop
     createWorkshopForm3 = startCreateWorkshop3.forms[formDefs.createWorkshopForm3()]
     createWorkshopForm3.set('categoryTags', 'Arts', 0)
-    createWorkshopForm3.set('categoryTags', 'Civil Rights', 2)
+    #createWorkshopForm3.set('categoryTags', 'Civil Rights', 2)
     createWorkshopForm3.set('categoryTags', 'Economy', 4)
     startCreateWorkshop4 = createWorkshopForm3.submit().follow()
     # add slides: add photo, press upload button .. can't get this working in test yet

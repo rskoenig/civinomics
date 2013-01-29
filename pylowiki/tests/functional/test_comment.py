@@ -244,6 +244,7 @@ class TestCommentController(TestController):
         ideaText = content.oneLine(2)
         commentText = content.oneLine(3)
         commentText2 = content.oneLine(4)
+        commentText3 = content.oneLine(5)
         #: create_workshop as this new user
         newWorkshop = create_new_workshop(
             self, 
@@ -274,28 +275,25 @@ class TestCommentController(TestController):
 
         #time to find the comment that we want to edit
         for form in commentAdded2.forms:
-            log.info("form %s"%(form))
             thisForm = commentAdded2.forms[form]
             for field in thisForm.submit_fields():
                 # field is actually a tuple
-                log.info("field %s value %s"%(field[0], field[1]))
                 if commentText2 in field[1]:
                     #edit comment and submit this form
-                    log.info("editing comment")
-                    thisForm.set(field[0], "COMMENT EDITED")
+                    thisForm.set(field[0], commentText3)
                     params = {}
                     params = formHelpers.loadWithSubmitFields(thisForm)
                     params[formDefs.parameter_submit()] = formDefs.editComment_submit()
-                    log.info("commentAdded2 action: %s"%(str.strip(str(thisForm.action))))
                     didWork = self.app.post(
                         url = str.strip(str(thisForm.action)),
+                        content_type=thisForm.enctype,
                         params=params
                     ).follow()
 
-        assert commentAdded == 404
-        # on the comment page, edit comment to read some new text
-        
         # confirm comment is new text and old text not present
+        assert commentText3 in didWork, "admin not able to edit comment in workshop made by a user"
+        assert commentText2 not in didWork, "admin not able to edit comment in workshop made by a user"
+
 
     #def can_delete_comment_admin():
         # create comment as random person

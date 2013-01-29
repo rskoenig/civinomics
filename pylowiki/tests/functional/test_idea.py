@@ -9,6 +9,9 @@ from pylowiki.tests.helpers.authorization import login, logout
 from pylowiki.tests.helpers.registration import create_and_activate_a_user
 from pylowiki.tests.helpers.workshops import create_new_workshop, addIdeaToWorkshop
 
+import logging
+log = logging.getLogger(__name__)
+
 class TestIdeaController(TestController):
     """This class tests the various aspects of ideas."""
     #: Can an idea be created?
@@ -158,6 +161,118 @@ class TestIdeaController(TestController):
     # NEXT SECTION
     #An admin, or a facilitor of a workshop can edit, delete, or make hidden (on first display) an idea.
     #def can_edit_idea_admin():
+
+    def can_edit_idea_admin(self):
+        #: create comment as random person
+        thisUser = create_and_activate_a_user(self)
+        ideaText = content.oneLine(1)
+        ideaText2 = content.oneLine(2)
+        #: create_workshop as this new user
+        newWorkshop = create_new_workshop(
+            self, 
+            thisUser, 
+            personal=True,
+            allowIdeas=formDefs.workshopSettings_allowIdeas(True),
+            allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
+        )
+        #: add idea to workshop
+        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        # assert that it's there
+        assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
+        # NOTE for now, login as super admin. next, make a normal user an admin for this
+        admin = {}
+        # conf = config['app_conf']
+        # admin['email'] = conf['admin.email']
+        # NOTE - get these two lines working with the conf method
+        admin['email'] = 'username@civinomics.com'
+        # admin['password'] = conf['admin.pass']
+        admin['password'] = 'password'
+
+        loggedIn = login(self, admin)
+        #: find the idea that we want to edit
+        for form in ideaAdded.forms:
+            thisForm = ideaAdded.forms[form]
+            for field in thisForm.submit_fields():
+                # field is actually a tuple
+                log.info("field %s value %s"%(field[0], field[1]))
+                if ideaText in field[1]:
+                    #edit idea and submit this form
+                    thisForm.set(field[0], ideaText2)
+                    params = {}
+                    params = formHelpers.loadWithSubmitFields(thisForm)
+                    params[formDefs.parameter_submit()] = formDefs.editIdea_submit()
+                    didWork = self.app.put(
+                        url = str.strip(str(thisForm.action)),
+                        content_type=thisForm.enctype,
+                        params=params
+                    ).follow()
+
+        assert ideaText2 in didWork, "admin not able to edit idea in workshop made by a user"
+        assert ideaText not in didWork, "admin not able to edit idea in workshop made by a user"
+
+
+    def can_delete_idea_admin(self):
+        # create idea as random person
+        thisUser = create_and_activate_a_user(self)
+        ideaText = content.oneLine(1)
+        #: create_workshop as this new user
+        newWorkshop = create_new_workshop(
+            self, 
+            thisUser, 
+            personal=True,
+            allowIdeas=formDefs.workshopSettings_allowIdeas(True),
+            allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
+        )
+        #: add idea to workshop
+        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        # assert that it's there
+        assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
+        # NOTE for now, login as super admin. next, make a normal user an admin for this
+        admin = {}
+        # conf = config['app_conf']
+        # admin['email'] = conf['admin.email']
+        # NOTE - get these two lines working with the conf method
+        admin['email'] = 'username@civinomics.com'
+        # admin['password'] = conf['admin.pass']
+        admin['password'] = 'password'
+        # login as this new admin
+        loggedIn = login(self, admin)
+        #: find the idea that we want to delete
+        # we need the code of the idea
+        # find the idea text in a link, parse the link to get the idea object code
+        # we're using beautifulsoup4, which is what the response object's .html attribute returns:
+        soup = ideaAdded.html
+        theIdea = soup.find("a", text=ideaText)
+        ideaLink = theIdea['href']
+        # grab the idea code
+        ideaCode = content.ideaTitleLink_getCode(ideaLink)
+        # we're looking for this code in this form: <form action = 'delete/objectType/objectCode
+        deleteForm = content.deleteObjectForm_findByCode(soup, ideaCode)
+        # with the delete form in a beautifulsoup object, we can now get the values out and into action
+        formParts = content.getFormParts_soup(deleteForm)
+        # submit the delete form
+        didDelete = self.app.post(
+            url = str.strip(str(formParts['action']))
+        )
+        # reload the page by clicking the ideas menu and the idea should no longer be visible
+        confirmDelete = ideaAdded.click(description=linkDefs.ideas_page(), index=0)
+        #assert didDelete == 404
+        assert ideaText not in confirmDelete
+        
+        
+
+    #def can_make_hidden_idea_admin():
+        # create comment as random person
+        # create another person, change to admin
+        # login as this new admin
+        # visit the comment
+        # make it hidden
+        # reload page, confirm comment is hidden
+
+
+
+
+
 
 
 
