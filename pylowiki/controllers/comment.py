@@ -30,7 +30,7 @@ class CommentController(BaseController):
             request.params['submit']
             parentCommentCode = request.params['parentCode']
             thingCode = request.params['thingCode']
-            thing = generic.getThing(thingCode)
+            thing = genericLib.getThing(thingCode)
             if not thing:
                 return False
             if thing['disabled'] == '1':
