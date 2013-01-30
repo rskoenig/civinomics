@@ -215,10 +215,10 @@
             <div class="btn-group">
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${replyID}">reply</a>
                 <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-                % if int(c.authuser['accessLevel']) >= 200 or c.authuser.id == comment.owner:
+                % if c.privs['facilitator'] or c.privs['admin'] or c.authuser.id == comment.owner:
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
                 % endif
-                % if int(c.authuser['accessLevel']) >= 200:
+                % if c.privs['facilitator'] or c.privs['admin']:
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                 % endif
             </div>
@@ -242,12 +242,12 @@
     ${lib_6.flagThing(comment)}
     
     ## Edit
-    % if userLib.isAdmin(c.authuser.id) or c.authuser.id == comment.owner or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+    % if c.privs['admin'] or c.authuser.id == comment.owner or c.privs['facilitator']:
         ${lib_6.editThing(comment)}
     % endif
     
     ## Admin
-    % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+    % if c.privs['facilitator'] or c.privs['admin']:
         ${lib_6.adminThing(comment)}
     % endif
 </%def>

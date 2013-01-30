@@ -44,7 +44,10 @@ class AdminController(BaseController):
             workshop = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
             if not workshop:
                 return json.dumps({'code':thingCode, 'result':'ERROR'})
-        if action in ['enable', 'disable', 'delete']:
+        if action in ['delete']:
+            if not userLib.isAdmin(c.authuser.id):
+                abort(404)
+        if action in ['enable', 'disable']:
             if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
                 abort(404)
             # Surely there must be a more elegant way to pass along this common variable

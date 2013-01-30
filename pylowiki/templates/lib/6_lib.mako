@@ -503,7 +503,9 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
                     <li><a href="#enable-${adminID}" data-toggle="tab">Enable</a></li>
+                    % if c.privs['admin']:
                     <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
+                    % endif
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="disable-${adminID}">
@@ -526,6 +528,7 @@
                         </form>
                         <span id="enableResponse-${thing['urlCode']}"></span>
                     </div>
+                    % if c.privs['admin']:
                     <div class="tab-pane" id="delete-${adminID}">
                         <form class="form-inline" action = ${deleteThingLink(thing, embed=True, raw=True) | n}>
                             <fieldset>
@@ -536,6 +539,7 @@
                         </form>
                         <span id="deleteResponse-${thing['urlCode']}"></span>
                     </div>
+                    % endif
                 </div>
             </div>
         </div>
