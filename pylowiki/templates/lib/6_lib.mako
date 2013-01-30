@@ -37,6 +37,9 @@
                else:
                   commentClass = '"upVote"'
                   voteImg = '"/images/icons/glyphicons/upVote.png"'
+            else:
+               commentClass = '"upVote"'
+               voteImg = '"/images/icons/glyphicons/upVote.png"'
          %>
          % if thing.objType != 'comment':
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class=${commentClass}>
@@ -55,6 +58,9 @@
                else:
                   commentClass = '"downVote"'
                   voteImg = '"/images/icons/glyphicons/downVote.png"'
+            else:
+               commentClass = '"downVote"'
+               voteImg = '"/images/icons/glyphicons/downVote.png"'
          %>
          % if thing.objType != 'comment':
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class=${commentClass}>
