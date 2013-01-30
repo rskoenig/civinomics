@@ -32,19 +32,19 @@
             rated = ratingLib.getRatingForThing(c.authuser, thing) 
             if rated:
                if rated['amount'] == '1':
-                  commentClass = '"voted upVote"'
+                  commentClass = 'voted upVote'
                   voteImg = '"/images/icons/glyphicons/upVoted.png"'
                else:
-                  commentClass = '"upVote"'
+                  commentClass = 'upVote'
                   voteImg = '"/images/icons/glyphicons/upVote.png"'
             else:
-               commentClass = '"upVote"'
+               commentClass = 'upVote'
                voteImg = '"/images/icons/glyphicons/upVote.png"'
          %>
          % if thing.objType != 'comment':
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class=${commentClass}>
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
          % else:
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class=${commentClass}>
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${commentClass}">
          % endif
             <img src=${voteImg | n} class="vote-icon">
          </a>
@@ -53,19 +53,19 @@
          <%
             if rated:
                if rated['amount'] == '-1':
-                  commentClass = '"voted downVote"'
+                  commentClass = 'voted downVote'
                   voteImg = '"/images/icons/glyphicons/downVoted.png"'
                else:
-                  commentClass = '"downVote"'
+                  commentClass = 'downVote'
                   voteImg = '"/images/icons/glyphicons/downVote.png"'
             else:
-               commentClass = '"downVote"'
+               commentClass = 'downVote'
                voteImg = '"/images/icons/glyphicons/downVote.png"'
          %>
          % if thing.objType != 'comment':
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class=${commentClass}>
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
          % else:
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class=${commentClass}>
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
          % endif
             <img src=${voteImg | n} class="vote-icon">
          </a>
