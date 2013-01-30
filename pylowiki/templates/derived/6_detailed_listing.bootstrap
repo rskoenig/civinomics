@@ -7,16 +7,15 @@
 
 <% 
    lib.return_to()
-   helperText = ''
+   helperText = '<strong class="orange">Vote</strong> existing items <strong class="green">up</strong>(<i class="icon-chevron-up"></i>), <strong class="purple">down</strong>(<i class="icon-chevron-down"></i>), or add your own.'
    if c.listingType == 'discussion':
       itemList = c.discussions
-      helperText = 'Ask a question or join a general conversation about the workshop.'
+      helperText += '<br/> Ask a question or join a general conversation about the workshop.'
    elif c.listingType == 'resources':
       itemList = c.resources
-      helperText = 'Link to helpful materials like articles and reports.'
+      helperText += '<br/> Link to helpful materials like articles and reports.'
    elif c.listingType == 'ideas':
-      itemList = c.ideas
-      helperText = 'Vote existing ideas up(<i class="icon-chevron-up"></i>), down(<i class="icon-chevron-down"></i>), or add your own.'
+      itemList = c.ideas      
    self.showListing(c.listingType, itemList, helperText)
 %>
 
