@@ -135,6 +135,8 @@ class DiscussionController(BaseController):
             return redirect(session['return_to'])
 
         else:
+            if len(title) > 120:
+                title = title[:120]
             d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w, title = title, text = text, workshop = c.w)
             r = revisionLib.Revision(c.authuser, d.d)
             commit(c.w)

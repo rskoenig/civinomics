@@ -26,6 +26,10 @@ hr.civ-topbar-hr{
    margin-bottom: 20px;
 }
 
+.counter{
+   font-size:20px;
+}
+
 .right-border{
     border-right: 1px solid #DDDDDD;
 }

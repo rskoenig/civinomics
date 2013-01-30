@@ -81,13 +81,15 @@ class ResourceController(BaseController):
     def addResourceHandler(self, workshopCode, workshopURL):
         if 'submit' not in request.params or 'title' not in request.params or 'link' not in request.params:
             return redirect(session['return_to'])
-        if request.params['title'].strip() == '':
+        title = request.params['title'].strip()
+        if title == '':
             return redirect(session['return_to'])
         if resourceLib.getResourceByLink(request.params['link'], c.w):
             return redirect(session['return_to']) # Link already submitted
         text = ''
         if 'text' in request.params:
             text = request.params['text'] # Optional
-        
-        newResource = resourceLib.Resource(request.params['link'], request.params['title'], c.authuser, c.w, text = text)
+        if len(title) > 120:
+            title = title[:120]
+        newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, text = text)
         return redirect(session['return_to'])
