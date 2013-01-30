@@ -31,7 +31,7 @@
          </a> <!-- /Num watchers -->
          <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
             ${len(activityLib.getActivityForWorkshop(w['urlCode']))}
-            <img class="small-bulb" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png">
+            <img class="small-bulb" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
          </a> <!-- /Num inputs -->
       </p>
 </div>
