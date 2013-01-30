@@ -65,16 +65,16 @@
         </div>
     % endfor
 </%def>
-
+##<a href="#" rel="tooltip" data-placement="bottom" data-original-title="Tooltip on bottom">Tooltip on bottom</a>
 <%def name="watchButton()">
     % if 'user' in session:
         % if c.isFollowing:
-            <button class="btn round followButton following" rel="workshop_${c.w['urlCode']}_${c.w['url']}"> 
+            <button class="btn round followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="The entire workshop"> 
             <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             <span> Un-bookmark </span>
             </button>
         % else:
-            <button class="btn round followButton" rel="workshop_${c.w['urlCode']}_${c.w['url']}">
+            <button class="btn round followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="The entire workshop"> 
             <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             <span> Bookmark </span>
             </button>
