@@ -7,7 +7,12 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="thingCount(user, things, title)">
-    <% thingListingURL = "/profile/%s/%s/%s" %(user['urlCode'], user['url'], title) %>
+    <% 
+        thisTitle = title
+        if title == 'conversations':
+            thisTitle = 'discussions'
+        thingListingURL = "/profile/%s/%s/%s" %(user['urlCode'], user['url'], thisTitle)
+    %>
     <h3 class="profile-count centered">
         <a class="black" href="${thingListingURL}">${len(things)}</a>
     </h3>
@@ -153,7 +158,7 @@
                     ${thingCount(c.user, c.ideas, 'ideas')}
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.discussions, 'discussions')}
+                    ${thingCount(c.user, c.discussions, 'conversations')}
                 </div>
             </div> <!--/.row-fluid-->
             <hr>
@@ -165,7 +170,7 @@
                     ${thingCount(c.user, c.following, 'following')}
                 </div>
                 <div class="span4">
-                    ${thingCount(c.user, c.watching, 'watching')}
+                    ${thingCount(c.user, c.watching, 'bookmarks')}
                 </div>
             </div> <!--/.row-fluid-->
             <hr>
@@ -193,14 +198,17 @@
                 else:
                     activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True) + '>'
                 if item.objType != 'comment':
-                    activityStr += item.objType + "</a>"
+                    if item.objType == 'discussion':
+                        activityStr += "conversation </a>"
+                    else:
+                        activityStr += item.objType + "</a>"
                 else:
                     if 'ideaCode' in item.keys():
                         activityStr += 'idea </a>'
                     elif 'resourceCode' in item.keys():
                         activityStr += 'resource </a>'
                     else:
-                        activityStr += 'discussion </a>'
+                        activityStr += 'conversation </a>'
                 activityStr += ' in <a ' + lib_6.workshopLink(workshop, embed = True) + '>'
                 activityStr += lib_6.ellipsisIZE(workshop['title'], 25) + '</a>'
                 if item.objType == 'comment':
