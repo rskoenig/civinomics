@@ -7,9 +7,7 @@ from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
-#from pylowiki.lib.activate import activateCreate
 
-#from pylowiki.model import User, commit, Event, get_user, get_user_by_email, Points
 from pylowiki.lib.db.user import User, getUserByEmail, getActiveUsers
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
@@ -50,6 +48,11 @@ class RegisterController(BaseController):
             return render('/derived/signup.bootstrap')
 
         """ Handler for registration, validates """
+        name = False
+        password = False
+        password2 = False
+        postalCode = False
+        checkTOS = False
         c.title = c.heading = "Registration"
         c.splashMsg = False
         splashMsg = {}
@@ -79,42 +82,30 @@ class RegisterController(BaseController):
             log.info('memberType missing')
         else:
             memberType = request.params['memberType']
-        if  'firstName' not in request.params:
-            log.info('firstName missing')
+        if  'name' not in request.params:
+            log.info('name missing')
         else:
-            firstName = request.params['firstName']
-        if  'lastName' not in request.params:
-            log.info('lastName missing')
-        else:
-            lastName = request.params['lastName']
+            name = request.params['name']
         if  'chkTOS' not in request.params:
             log.info('chkTOS missing')
-            checkTOS = False
         else:
             checkTOS = request.params['chkTOS']
 
         schema = plaintextForm()
         try:
-            nameTst = schema.to_python(dict(username = firstName))
+            namecheck = name.replace(' ', '')
+            nameTst = schema.to_python(dict(username = namecheck))
         except formencode.Invalid, error:
             splashMsg['content'] = "Error: " + unicode(error)
             c.splashMsg = splashMsg 
             return render('/derived/signup.bootstrap')
-        try:
-            nameTst = schema.to_python(dict(username = lastName))
-        except formencode.Invalid, error:
-            splashMsg['content'] = "Error: " + unicode(error)
-            c.splashMsg = splashMsg 
-            return render('/derived/signup.bootstrap')
-        username = "%s %s" %(firstName, lastName)
+        username = name
         maxChars = 50;
         errorFound = False;
         # These warnings should all be collected onto the stack, then at the end we should render the page
-        if firstName and lastName and password and password2 and email and checkTOS:
-            if len(firstName) > maxChars:
-                firstName = firstName[:50]
-            if len(lastName) > maxChars:
-                lastName = lastName[:50]
+        if name and password and password2 and email and checkTOS:
+            if len(name) > maxChars:
+                name = name[:50]
             if len(email) > maxChars:
                 log.info("Error: Long email")
                 errorFound = True
@@ -126,7 +117,7 @@ class RegisterController(BaseController):
                 splashMsg['content'] = "Password can be " + unicode(maxChars) + " characters at most"
                 c.splashMsg = splashMsg 
             if postalCode:
-                pInfo = getPostalInfo(postalCode, 'United States')
+                pInfo = getPostalInfo(postalCode)
                 if pInfo == None:
                     log.info("Error: Bad Postal Code")
                     errorFound = True
@@ -139,11 +130,12 @@ class RegisterController(BaseController):
                 c.splashMsg = splashMsg 
             if errorFound:
                 return render('/derived/signup.bootstrap')
-            username = "%s %s" %(firstName, lastName)
+            username = name
             if getUserByEmail( email ) == False:
                 if password == password2:
-                    u = User(email, firstName, lastName, password, country, memberType, postalCode)
+                    u = User(email, name, password, country, memberType, postalCode)
                     message = "The user '" + username + "' was created successfully!"
+                    c.success = True
                                 
                     log.info( message )
                     splashMsg['type'] = 'success'

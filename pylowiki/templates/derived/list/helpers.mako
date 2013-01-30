@@ -3,7 +3,8 @@
    from pylowiki.lib.db.follow import getWorkshopFollowers
    from pylowiki.lib.db.geoInfo import getGeoInfo
    from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
-   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
+   #from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByID, getWorkshop
+   from pylowiki.lib.db.workshop import getRecentMemberPosts, getWorkshopByCode, getWorkshop
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.fuzzyTime import timeSince, timeUntil
 
@@ -22,99 +23,27 @@
 
 <%def name='list_public_spheres()'>
 	<% c.geoInfo = getGeoInfo(c.authuser.id) %>
-        <p class="zip">
-            <a 
-            % if c.geoType == "none":
-                    class ="active"
-            %endif 
-            href="/workshops">All </a>/
-            <a 
-            % if c.geoType == "planet":
-                class ="active"
-            %endif 
-            href="/geo/planet/earth">Earth </a>/
-            <a 
-            % if c.geoType == "country":
-                class ="active"
-            %endif
-            href="${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}  </a>/
-            <a 
-            % if c.geoType == "state":
-                class ="active"
-            %endif
-            href="${c.geoInfo[0]['stateURL']}">  ${c.geoInfo[0]['stateTitle']}  </a>/
-            <a 
-            % if c.geoType == "county":
-                class ="active"
-            %endif
-            href="${c.geoInfo[0]['countyURL']}">  ${c.geoInfo[0]['countyTitle']}, Co.  </a>/
-            <a 
-            % if c.geoType == "city":
-                class ="active"
-            %endif
-            href="${c.geoInfo[0]['cityURL']}">  ${c.geoInfo[0]['cityTitle']}, City  </a>/
-            <a 
-            % if c.geoType == "postal":
-                class ="active"
-            %endif
-            href="${c.geoInfo[0]['postalURL']}">  ${c.geoInfo[0]['postalCode']}</a>
-        </p>
-</%def>
-
-<%def name='list_public_spheres_suggestions()'>
-    <% c.geoInfo = getGeoInfo(c.authuser.id) %>
-        <p class="zip">
-            <a 
-            % if c.geoType == "none":
-                class ="active"
-            %endif
-            href="/suggestions">All </a>/
-            <a 
-            % if c.geoType == "planet":
-                class ="active"
-            %endif
-            href="/suggestions/geo/planet/earth">Earth </a>/
-            <a 
-            % if c.geoType == "country":
-                class ="active"
-            %endif
-            href="/suggestions${c.geoInfo[0]['countryURL']}">${c.geoInfo[0]['countryTitle']}  </a>/
-            <a 
-            % if c.geoType == "state":
-                class ="active"
-            %endif
-            href="/suggestions${c.geoInfo[0]['stateURL']}">  ${c.geoInfo[0]['stateTitle']}  </a>/
-            <a 
-            % if c.geoType == "county":
-                class ="active"
-            %endif
-            href="/suggestions${c.geoInfo[0]['countyURL']}">  ${c.geoInfo[0]['countyTitle']}, Co.  </a>/
-            <a 
-            % if c.geoType == "city":
-                class ="active"
-            %endif
-            href="/suggestions${c.geoInfo[0]['cityURL']}">  ${c.geoInfo[0]['cityTitle']}, City  </a>/
-            <a 
-            % if c.geoType == "postal":
-                class ="active"
-            %endif
-            href="/suggestions${c.geoInfo[0]['postalURL']}">  ${c.geoInfo[0]['postalCode']}</a>
-        </p>
-</%def>
-
-<%def name='ws_toggle()'>
-        <p class="zip">
-            <a 
-            % if c.objecttype == "workshop":
-                class ="active"
-            %endif
-            href="/workshops">Workshops</a>
-            <a 
-            % if c.objecttype == "suggestion":
-                class ="active"
-            %endif
-            href="/suggestions">Suggestions</a>
-        </p>
+        <table>
+        <thead>
+        <tr><td colspan=2>
+        <p>Click on a link below to view all workshops in the public sphere.</p>
+        </td></tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td><a href="${c.geoInfo[0]['cityURL']}" title="Click to view all workshops under the City of ${c.geoInfo[0]['cityTitle']} public sphere"><img src="${c.geoInfo[0]['cityFlagThumb']}" alt="${c.geoInfo[0]['cityTitle']}" class="thumbnail" style="max-width: 70px;"></a></td><td><a href="${c.geoInfo[0]['cityURL']}" title="Click to view all workshops under the City of ${c.geoInfo[0]['cityTitle']} public sphere">City of ${c.geoInfo[0]['cityTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><a href="${c.geoInfo[0]['countyURL']}" title="Click to view all workshops under the County of ${c.geoInfo[0]['countyTitle']} public sphere"><img src="${c.geoInfo[0]['countyFlagThumb']}" alt="${c.geoInfo[0]['countyTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['countyURL']}" title="Click to view all workshops under the County of ${c.geoInfo[0]['countyTitle']} public sphere">County of ${c.geoInfo[0]['countyTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><a href="${c.geoInfo[0]['stateURL']}" title="Click to view all workshops under the State of ${c.geoInfo[0]['stateTitle']} public sphere"><img src="${c.geoInfo[0]['stateFlagThumb']}" alt="${c.geoInfo[0]['stateTitle']}" class="thumbnail" style="max-width: 70px"></a></td><td><a href="${c.geoInfo[0]['stateURL']}" title="Click to view all workshops under the State of ${c.geoInfo[0]['stateTitle']} public sphere">State of ${c.geoInfo[0]['stateTitle']}</a></td>
+        </tr>
+        <tr>
+        <td><img src="${c.geoInfo[0]['countryFlagThumb']}" title="Click to view all workshops under the Country of ${c.geoInfo[0]['countryTitle']} public sphere" alt="${c.geoInfo[0]['countryTitle']}" class="thumbnail" style="max-width: 70px"></td><td><a href="${c.geoInfo[0]['countryURL']}" title="Click to view all workshops under the Country of ${c.geoInfo[0]['countryTitle']} public sphere">${c.geoInfo[0]['countryTitle']}</a></td>
+        </tr>
+        </tbody>
+        </table>
 </%def>
 
 <%def name="show_me()">
@@ -200,7 +129,7 @@
           mname = muser['name']
           if mObj.objType == 'resource':
               linkTitle = "Click to view new resource"
-              w = getWorkshopByID(mObj['workshop_id'])
+              w = getWorkshopByCode(mObj['workshopCode'])
               oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + mObj['urlCode'] + "/" + mObj['url']
               wLink = "/workshop/" + w['urlCode'] + "/" + w['url']
               iType = "book"
@@ -218,23 +147,26 @@
           elif mObj.objType == 'suggestion':
               linkTitle = "Click to view new suggestion"
               iType = "pencil"
-              oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url']
-              wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL']
-              w = getWorkshop(mObj['workshopCode'], mObj['workshopURL'])
+              thisWorkshop = getWorkshopByCode(mObj['workshopCode'])
+              oLink = "/workshop/" + mObj['workshopCode'] + "/" + thisWorkshop['url'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url']
+              wLink = "/workshop/" + mObj['workshopCode'] + "/" + thisWorkshop['url']
+              w = getWorkshopByCode(mObj['workshopCode'])
           elif mObj.objType == 'event':
               iType = "heart"
               linkTitle = "Click to view adopted suggestion"
               s = getSuggestionByID(mObj['parent_id'])
               muser = getUserByID(s.owner)
-              oLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL'] + "/suggestion/" + s['urlCode'] + "/" + s['url']
-              wLink = "/workshop/" + s['workshopCode'] + "/" + s['workshopURL']
-              w = getWorkshop(s['workshopCode'], s['workshopURL'])
+              thisWorkshop = getWorkshopByCode(s['workshopCode'])
+              oLink = "/workshop/" + s['workshopCode'] + "/" + thisWorkshop['url'] + "/suggestion/" + s['urlCode'] + "/" + s['url']
+              wLink = "/workshop/" + s['workshopCode'] + "/" + thisWorkshop['url']
+              w = getWorkshopByCode(s['workshopCode'])
           elif mObj.objType == 'discussion':
               linkTitle = "Click to view new discussion"
               iType = "folder-open"
-              oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url']
-              wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL']
-              w = getWorkshop(mObj['workshopCode'], mObj['workshopURL'])
+              thisWorkshop = getWorkshopByCode(mObj['workshopCode'])
+              oLink = "/workshop/" + mObj['workshopCode'] + "/" + thisWorkshop['url'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url']
+              wLink = "/workshop/" + mObj['workshopCode'] + "/" + thisWorkshop['url']
+              w = getWorkshopByCode(mObj['workshopCode'])
           else:
               iType = "comment"
               oLink = ""
@@ -259,7 +191,6 @@
          % endif
              </div><!-- span3 -->
              <div class="span9">
-             ${log.info(oTitle)}
             New <a href="${oLink}" title="${linkTitle}"><i class="icon-${iType}"></i> ${oTitle}</a><br />
             % if ooTitle:
                 in <a href="${ooLink}" title="${oolinkTitle}"><i class="icon-${ooiType}"></i> ${ooTitle}</a><br />

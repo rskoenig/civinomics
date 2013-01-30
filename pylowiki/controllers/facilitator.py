@@ -14,7 +14,6 @@ from pylowiki.lib.db.facilitator import Facilitator, getFacilitatorsByUser, getF
 from pylowiki.lib.db.event import Event
 from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
 from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.account import Account, getUserAccount
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.utils import urlify
 
@@ -25,7 +24,7 @@ log = logging.getLogger(__name__)
 class FacilitatorController(BaseController):
 
     @h.login_required
-    def coFacilitateInvite(self, id1, id2):
+    def facilitateInviteHandler(self, id1, id2):
         code = id1
         url = id2
         c.user = get_user(code, url)
@@ -35,18 +34,16 @@ class FacilitatorController(BaseController):
            wCode = iList[0]
            wURL = iList[1]
            w = getWorkshop(wCode, urlify(wURL))
-           Facilitator(c.user.id, w.id, 1)
-           # Becasue the __init__ function doesn't return the object... sigh
+           Facilitator(c.user, w, 1)
            fList = getFacilitatorsByUserAndWorkshop(c.user.id, w.id)
            Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
-           h.flash('CoFacilitation Invitation Issued', 'success')
            return redirect("/profile/%s/%s"%(code, url))
         else:
            h.flash('Error: You are not authorized', 'error')
            return redirect("/" )
 
     @h.login_required
-    def coFacilitateHandler(self, id1, id2):
+    def facilitateResponseHandler(self, id1, id2):
         code = id1
         url = id2
         c.user = get_user(code, urlify(url))
@@ -82,10 +79,9 @@ class FacilitatorController(BaseController):
         return redirect("/" )
 
     @h.login_required
-    def resignFacilitatorHandler(self, id1, id2):
+    def facilitateResignHandler(self, id1, id2):
         code = id1
         url = id2
-        log.info('in resignFacilitatorHandler')
         w = getWorkshop(code, urlify(url))
         fList = getFacilitatorsByUser(c.authuser.id, 0)
         doF = False

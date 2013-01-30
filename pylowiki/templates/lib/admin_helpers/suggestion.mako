@@ -60,7 +60,7 @@
         <strong>Clear Suggestion Flags</strong>
         <form name="note_suggestion" id="note_suggestion" class="left" action = "/clearSuggestionFlagsHandler/${c.s['urlCode']}/${c.s['url']}" enctype="multipart/form-data" method="post" >
         Reason for clearing flags: &nbsp;
-        <input type=text name="clearSuggestionFlagsReason"><br /><br />
+        <input type="text" name="clearSuggestionFlagsReason"><br /><br />
         <button type="submit" class="btn btn-warning">Clear Flags</button>
 
         </form>
@@ -68,13 +68,13 @@
     <br /><br /><br />
     <strong>Leave Note on Suggestion</strong>
     <form name="note_suggestion" id="note_suggestion" class="left" action = "/noteSuggestionHandler" enctype="multipart/form-data" method="post" >
-    <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-    <input type=hidden name=workshopURL value="${c.w['url']}">
-    <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-    <input type=hidden name=suggestionURL value="${c.s['url']}">
+    <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+    <input type="hidden" name="workshopURL" value="${c.w['url']}">
+    <input type="hidden" name="suggestionCode" value="${c.s['urlCode']}">
+    <input type="hidden" name="suggestionURL" value="${c.s['url']}">
     <br />
     Note text: &nbsp;
-    <input type=text name=noteSuggestionText><br /><br />
+    <input type="text" name="noteSuggestionText"><br /><br />
     <button type="submit" class="btn btn-warning">Save Note</button>
     </form>
     <br /><br />
@@ -86,39 +86,39 @@
         % endif
         <form name="adopt_suggestion" id="adopt_suggestion" class="left" action = "/adoptSuggestionHandler" enctype="multipart/form-data" method="post" >
         <strong>${adoptTitle}</strong>
-        <input type=hidden name=workshopCode value="${c.w['urlCode']}">
-        <input type=hidden name=workshopURL value="${c.w['url']}">
-        <input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-        <input type=hidden name=suggestionURL value="${c.s['url']}">
+        <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+        <input type="hidden" name="workshopURL" value="${c.w['url']}">
+        <input type="hidden" name="suggestionCode" value="${c.s['urlCode']}">
+        <input type="hidden" name="suggestionURL" value="${c.s['url']}">
         <br /><br />
         Reason for action: &nbsp;
-        <input type=text name=adoptSuggestionReason><br /><br />
+        <input type="text" name="adoptSuggestionReason"><br /><br />
         <button type="submit" class="btn btn-warning">${adoptTitle}</button>
         </form>
 	<br /><br />
 	<p>
 	<strong>Moderate Suggestion</strong>
 	<form name="moderate_suggestion" id="moderate_suggestion" class="left" action = "/modSuggestionHandler" enctype="multipart/form-data" method="post" >
-	<input type=hidden name=workshopCode value="${c.w['urlCode']}">
-	<input type=hidden name=workshopURL value="${c.w['url']}">
-	<input type=hidden name=suggestionCode value="${c.s['urlCode']}">
-	<input type=hidden name=suggestionURL value="${c.s['url']}">
+	<input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+	<input type="hidden" name="workshopURL" value="${c.w['url']}">
+	<input type="hidden" name="suggestionCode" value="${c.s['urlCode']}">
+	<input type="hidden" name="suggestionURL" value="${c.s['url']}">
 	<br />
 	Reason for action: &nbsp;
-	<input type=text name=modSuggestionReason><br /><br />
-	Click to verify&nbsp;<input type=radio name=verifyModSuggestion> &nbsp; &nbsp;
+	<input type="text" name="modSuggestionReason"><br /><br />
+	Click to verify&nbsp;<input type="radio" name="verifyModSuggestion"> &nbsp; &nbsp;
 	% if c.s['disabled'] == '0':
-	    <button type="submit" name=modType value="disable" class="btn btn-warning">
+	    <button type="submit" name="modType" value="disable" class="btn btn-warning">
             <i class="icon-ban-circle icon-white"></i> Disable Suggestion
 	    </button>
-	    <button type="submit" name=modType value="delete" class="btn btn-danger">
+	    <button type="submit" name="modType" value="delete" class="btn btn-danger">
             <i class="icon-trash icon-white"></i> Delete Suggestion
 	    </button>
         % else:
-            <button type="submit" name=modType value="disable" class="btn btn-warning">
+            <button type="submit" name="modType" value="disable" class="btn btn-warning">
             <i class="icon-ok icon-white"></i> Enable Suggestion
             </button>
-            <button type="submit" name=modType value="delete" class="btn btn-danger">
+            <button type="submit" name="modType" value="delete" class="btn btn-danger">
             <i class="icon-trash icon-white"></i> Delete Suggestion
             </button>
         % endif

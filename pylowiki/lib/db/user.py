@@ -2,6 +2,7 @@
 import logging
 
 from pylons import tmpl_context as c
+from pylons import request
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
@@ -27,9 +28,25 @@ def get_user(hash, url):
     except sa.orm.exc.NoResultFound:
         return False
     
+def getUserByCode(code):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('urlCode', code))).one()
+    except sa.orm.exc.NoResultFound:
+        return False
+    
 def getActiveUsers(disabled = '0'):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('disabled', disabled))).all()
+    except:
+        return False
+
+def getAllUsers(disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'user')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .all()
+            #.filter(Thing.data.any(wc('deleted', deleted)))\
     except:
         return False
 
@@ -64,16 +81,16 @@ def searchUsers( uKey, uValue):
 def getUserPosts(user, active = 1):
     returnList = []
     if active == 1:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).order_by('-date').all()
     else:
-        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion'])).filter_by(owner = user.id).order_by('-date').all()
+        postList = meta.Session.query(Thing).filter(Thing.objType.in_(['suggestion', 'resource', 'comment', 'discussion', 'idea'])).filter_by(owner = user.id).order_by('-date').all()
 
     for item in postList:
-       if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment':
-           returnList.append(item)
-       elif item.objType == 'discussion':
-           if item['discType'] == 'general':
-               returnList.append(item)
+        if item.objType == 'suggestion' or item.objType == 'resource' or item.objType == 'comment' or item.objType == 'idea':
+            returnList.append(item)
+        elif item.objType == 'discussion':
+            if item['discType'] == 'general':
+                returnList.append(item)
 
     return returnList
 
@@ -136,22 +153,23 @@ def hashPassword(password):
 
 
 class User(object):
-    def __init__(self, email, firstName, lastName, password, country, memberType, postalCode = '00000'):
+    def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
         u = Thing('user')
-        u['firstName'] = firstName
-        u['lastName'] = lastName
-        u['tagline'] = ''
+        u['greetingMsg'] = ''
+        u['websiteLink'] = ''
+        u['websiteDesc'] = ''
         u['email'] = email
-        u['name'] = '%s %s'%(firstName, lastName)
+        u['name'] = name
         u['activated'] = '0'
         u['disabled'] = '0'
+        u['deleted'] = '0'
         u['pictureHash'] = 'flash' # default picture
         u['postalCode'] =  postalCode
         u['country'] =  country
         u['memberType'] =  memberType
         u['password'] = self.hashPassword(password)
         u['totalPoints'] = 1
-        u['url'] = urlify('%s %s' %(firstName, lastName))
+        u['url'] = urlify('%s' %name)
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         u['accessLevel'] = 0
@@ -178,13 +196,19 @@ class User(object):
         frEmail = c.conf['activation.email']
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, hash, toEmail) 
+        # this next line is needed for functional testing to be able to use the generated hash
+        if 'paste.testing_variables' in request.environ:
+                request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
+
         subject = "Civinomics Account Activation"
-        message = 'Please click on the following link to activate your account:\n\n%s' % url
+        message = 'Greetings from Civinomics!\n\nOnly one more step till your Civinomics member registration is complete. Please click on the following link to activate your account:\n\n%s' % url
+        message = message + '\n\nThis will log you into your Civinomics member dashboard, where you can update your member profile with a picture and other details. To find workshops in your area, click on the green Civinomics icon in the top corner.\n\n' 
+        message = message + 'See you soon!\n\nThe Civinomics Team'
         send(toEmail, frEmail, subject, message)
         
         u['activationHash'] = hash
         commit(u)
-        Revision(u, u['name'], u)
+        Revision(u, u)
         
         log.info("Successful account creation (deactivated) for %s" %toEmail)
 

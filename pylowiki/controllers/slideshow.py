@@ -42,6 +42,7 @@ class SlideshowController(BaseController):
         
         w = getWorkshop(code, url)
         s = getSlideshow(w['mainSlideshow_id'])
+        allSlides = getAllSlides(s.id)
         if not w:
             h.flash('Could not find workshop!', 'error')
             return redirect('/')
@@ -62,12 +63,7 @@ class SlideshowController(BaseController):
                 imageFile.seek(0)
 
             slide = Slide(c.authuser, s, 'Sample title', 'Sample caption', filename, imageFile, '1')
-            
-            #hash = saveImage(imageFile, filename, c.authuser, identifier, s)
-            #resizeImage(identifier, hash, 120, 65, 'thumbnail')
-            #resizeImage(identifier, hash, 835, 550, 'slideshow')
-            
-            
+                      
             i = getImageIdentifier(identifier)
             directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
             hash = slide.s['pictureHash']
@@ -90,6 +86,25 @@ class SlideshowController(BaseController):
             d['-'] = hash
             d['type'] = 'image/png'
             l.append(d)
+            
+            if len(allSlides) == 1:
+                if allSlides[0]['filename'] == 'supDawg.png':
+                    s = allSlides[0]
+                    s['deleted'] = "1"
+                    commit(s)
+                    w['mainImage_hash'] = slide.s['pictureHash']
+                    w['mainImage_directoryNum'] = directoryNumber
+                    w['mainImage_postFix'] = 'orig'
+                    w['mainImage_identifier'] = identifier
+                    w['mainImage_id'] = slide.s.id
+                    s['slideshow_order'] = slide.s.id
+                    commit(s)       
+            session['confTab'] = "tab4"
+            alert = {'type':'success'}
+            alert['title'] = 'Upload complete. Please add a title and caption to new slideshow images below.'
+            session['alert'] = alert
+            session.save()
+            session.save() 
             return json.dumps(l)
         """
         Return a JSON-encoded string of the following format:
@@ -208,7 +223,6 @@ class SlideshowController(BaseController):
         
         value = value.split('_')
         order = '&' + value[0]
-        log.info('order = %s' % order)
         state = value[1] # published or unpublished
         
         order = [item for item in order.split('&portlet[]=')][1:]

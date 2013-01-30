@@ -4,6 +4,7 @@ import logging
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic
+import pylowiki.lib.db.generic as genericLib
 from pylons import config
 
 log = logging.getLogger(__name__)
@@ -36,6 +37,15 @@ def getAllSlides(slideshow_id):
     # Grabs all slides given a slideshow id, regardless of the slide's 'deleted' property
     try:
         return meta.Session.query(Thing).filter_by(objType = 'slide').filter(Thing.data.any(with_characteristic('slideshow_id', slideshow_id))).all()
+    except:
+        return False
+
+def getSlidesInOrder(slideshow):
+    try:
+        if type(slideshow) in [type(1L), type(1), type(u'a')]:
+            slideshow = getSlideshow(slideshow)
+        slideshowOrder = map(int, [item for item in slideshow['slideshow_order'].split(',')])
+        return [genericLib.getThingByID(slideID) for slideID in slideshowOrder] 
     except:
         return False
 

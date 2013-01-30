@@ -32,6 +32,6 @@ class TestController(TestCase):
             wsgiapp = pylons.test.pylonsapp
         else:
             wsgiapp = loadapp('config:%s' % config['__file__'])
-        self.app = TestApp(wsgiapp)
+        self.app = TestApp(wsgiapp, relative_to='/pics/')
         url._push_object(URLGenerator(config['routes.map'], environ))
         TestCase.__init__(self, *args, **kwargs)

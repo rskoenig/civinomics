@@ -3,16 +3,22 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit
+import pylowiki.lib.db.dbHelpers as dbHelpers
 from dbHelpers import with_characteristic as wc
-from pylowiki.lib.utils import urlify
-from revision import Revision
+import pylowiki.lib.utils as utils
+import pylowiki.lib.db.revision as revisionLib
+import pylowiki.lib.db.generic as generic
 
 log = logging.getLogger(__name__)
 
-def get_page(url, deleted = '0'):
+def getPage(code, disabled = '0', deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'page').filter(Thing.data.any(wc('url', url))).filter(Thing.data.any(wc('deleted', deleted))).one()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'page')\
+            .filter(Thing.data.any(wc('urlCode', code)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .one()
     except:
         return False
 
@@ -28,24 +34,37 @@ def get_all_pages(deleted = '0'):
     except:
         return False
 
+def getInformation(workshop):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'page')\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .one()
+    except:
+        return False
+
+def editInformation(page, data, owner):
+    try:
+        revisionLib.Revision(owner, page)
+        page['data'] = data
+        dbHelpers.commit(page)
+        return True
+    except:
+        log.error("Error: unable to edit information for page %s" % page.id)
+        return False
+
 # Assumes title has already been validated
 # Takes in a Thing object, sets its page property with the page's Thing id
-class Page(object):
-    def __init__(self, title, owner, thing, data):
-        p = Thing('page', owner.id)
-        p['title'] = title
-        p['url'] = urlify(title)
-        p['type'] = thing.objType
-        p['deleted'] = '0'
-        commit(p)
-        self.p = p
-        
-        r = Revision(owner, data, p)
-        
-        self.setThingProperties(p, r.r, thing)
-        
-    # thing in this case is the workshop Thing
-    def setThingProperties(self, page, revision, thing):
-        thing['page_id'] = page.id
-        thing['mainRevision_id'] = revision.id
-        commit(thing)
+def Page(title, owner, thing, data):
+    p = Thing('page', owner.id)
+    p['title'] = title
+    p['url'] = utils.urlify(title)
+    p['disabled'] = '0'
+    p['deleted'] = '0'
+    p['data'] = data
+    dbHelpers.commit(p)
+    p['urlCode'] = utils.toBase62(p)
+    p = generic.linkChildToParent(p, thing)
+    dbHelpers.commit(p)
+    r = revisionLib.Revision(owner, p)
+    return p

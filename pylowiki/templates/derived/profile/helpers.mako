@@ -1,8 +1,8 @@
 <%!
     from pylowiki.lib.db.suggestion import getSuggestionByID, getSuggestion
     from pylowiki.lib.db.resource import getResource
-    from pylowiki.lib.db.workshop import getWorkshop, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince
-    from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator
+    from pylowiki.lib.db.workshop import getWorkshopByCode, getWorkshopsByOwner, getWorkshopByID, getWorkshopPostsSince
+    from pylowiki.lib.db.facilitator import isFacilitator, isPendingFacilitator, getFacilitatorsByUser
     from pylowiki.lib.db.user import isAdmin, getUserPosts
     from pylowiki.lib.db.activity import getMemberPosts
     from pylowiki.lib.db.discussion import getDiscussionByID
@@ -74,34 +74,34 @@
                    <% oLink = "/comment/" + mObj['urlCode'] %>
                    <% oiType = "comment" %>
                    <% d = getDiscussionByID(mObj['discussion_id']) %>
-                   <% w = getWorkshop(d['workshopCode'], d['workshopURL']) %>
-                   <% wLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] %>
+                   <% w = getWorkshopByCode(d['workshopCode']) %>
+                   <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                    <% parentTitle = d['discType'] %>
                    <% ooLink = "foo" %>
                    <% ooiType = "comment" %>
 
                    % if d['discType'] == 'background':
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/background" %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/background" %>
                        <% ooTitle = "Workshop Background" %>
                        <% ooiType = "comment" %>
                    % elif d['discType'] == 'suggestion':
                        <% s = getSuggestion(d['suggestionCode'], d['suggestionURL']) %>
                        <% ooTitle = s['title'] %>
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + d['suggestionCode'] + "/" + d['suggestionURL'] %>
                        <% ooiType = "pencil" %>
                    % elif d['discType'] == 'general':
                        <% ooTitle = d['title'] %>
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/discussion/" + d['urlCode'] + "/" + d['url'] %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/discussion/" + d['urlCode'] + "/" + d['url'] %>
                        <% ooiType = "folder-open" %>
                    % elif d['discType'] == 'resource':
                        <% r = getResource(d['resourceCode'], d['resourceURL']) %>
                        <% ooTitle = r['title'] %>
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
                        <% ooiType = "book" %>
                    % elif d['discType'] == 'sresource':
                        <% r = getResource(d['resourceCode'], d['resourceURL']) %>
                        <% ooTitle = r['title'] %>
-                       <% ooLink = "/workshop/" + d['workshopCode'] + "/" + d['workshopURL'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
+                       <% ooLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/resource/" + d['resourceCode'] + "/" + d['resourceURL'] %>
 
                    % endif
                % elif mObj.objType == 'resource':
@@ -110,15 +110,15 @@
                    <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                    <% oiType = "book" %>
                % elif mObj.objType == 'suggestion':
+                   <% w = getWorkshopByCode(mObj['workshopCode']) %>
                    <% oiType = "pencil" %>
-                   <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
-                   <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
-                   <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+                   <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/suggestion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>
                % elif mObj.objType == 'discussion':
+                   <% w = getWorkshopByCode(mObj['workshopCode']) %>
                    <% oiType = "comment" %>
-                   <% oLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
-                   <% wLink = "/workshop/" + mObj['workshopCode'] + "/" + mObj['workshopURL'] %>
-                   <% w = getWorkshop(mObj['workshopCode'], mObj['workshopURL']) %>
+                   <% oLink = "/workshop/" + w['urlCode'] + "/" + w['url'] + "/discussion/" + mObj['urlCode'] + "/" + mObj['url'] %>
+                   <% wLink = "/workshop/" + w['urlCode'] + "/" + w['url'] %>   
                % endif
                %if len(w['title']) > maxlen:
                    <% wTitle = w['title'][0:(maxlen - 4)] + '...' %>
@@ -271,22 +271,27 @@
     <% 
         if c.revision:
             name = c.revision['data']
-            tagline = c.revision['tagline']
+            greetingMsg = c.revision['greetingMsg']
+            websiteLink = c.revision['websiteLink']
+            websiteDesc = c.revision['websiteDesc']
         else:
             name = c.user['name']
-            if 'tagline' in c.user.keys():
-                tagline = c.user['tagline']
-            else:
-                tagline = 'No tagline.'
+            greetingMsg = c.user['greetingMsg']
+            websiteLink = c.user['websiteLink']
+            websiteDesc = c.user['websiteDesc']
         endif
     %>
     <div class="civ-col-inner">
     <h1>${name}</h1>
     <p>
-      ${tagline}
-      <% mStart = c.user.date.strftime('%B %d, %Y') %>
-      <br /> <br />
-      Member since <span class="recent">${mStart}</span>
+        ${greetingMsg}
+        % if c.user['memberType'] == 'professional':
+            <p>${websiteDesc}</p><br />
+            <a href="${websiteLink}" target=_blank alt="$c.user['name']">${websiteLink}</a><br />
+        % endif
+        <% mStart = c.user.date.strftime('%B %d, %Y') %>
+        <br /> <br />
+        Member since <span class="recent">${mStart}</span>
     </p>
     % if c.revisions:
          <strong>Edit log:</strong><br />
@@ -303,14 +308,8 @@
   <span class="badge badge-success" title="Followers"><i class="icon-white icon-user"></i> ${len(c.userFollowers)}</span> <span class="badge badge-info" title="Total ups - downs of contributed resources, comments and discussions"><i class="icon-white icon-ok"></i> ${c.totalPoints}</span> <span class="badge badge-info" title="Resource and suggestion contributions"><i class="icon-white icon-file"></i> ${c.posts}</span> <span class="badge badge-inverse" title="Flags on contributions"><i class="icon-white icon-flag"></i> ${c.flags}</span>
                 </p>
                 <br />
-                % if 'user' in session and c.authuser.id == c.user.id:
-                   % if c.account and c.account['numRemaining'] != '0':
-                      <a href="/addWorkshop"><button class="btn btn-mini btn-primary" title="Click to create a new workshop"><i class="icon-cog icon-white"></i> New Workshop</button></a>
-                    % endif
-                    <a href="/profile/edit"><button class="btn btn-mini btn-primary" title="Click to edit profile information"><i class="icon-edit icon-white"></i> Edit Profile</button></a>
-                % endif
-                % if 'user' in session and isAdmin(c.authuser.id):
-                   <a href="/profile/${c.user['urlCode']}/${c.user['url']}/admin"><button class="btn btn-mini btn-warning" title="Click to administrate this member"><i class="icon-list-alt icon-white"></i> Admin</button></a>
+                % if 'user' in session and c.authuser.id == c.user.id or isAdmin(c.authuser.id):
+                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/dashboard"><button class="btn btn-mini btn-warning" title="Click to go to your profile dashboard">Member Dashboard</button></a>
                 % endif
     % if 'user' in session and c.authuser['email'] != c.user['email']:
       <span class="button_container">
@@ -405,12 +404,43 @@
     </ul>
 </%def>
 
+<%def name="accounts()">
+    % if 'user' in session and c.accounts and (c.authuser.id == c.user.id or isAdmin(c.authuser.id)):
+        <h2 class="civ-col"><i class="icon-list-alt"></i> Accounts I am Administrating</h2>
+        <div class="civ-col-inner">
+        <ul class="unstyled civ-block-list">
+        % for account in c.accounts:
+            <li>
+            <p><a href="/account/${account['urlCode']}">${account['orgName']}</a></p>
+            </li>
+        % endfor
+        </div> <!-- /.civ-col-inner -->
+    </ul>
+    % elif 'user' in session and c.authuser.id == c.user.id:
+        <h2 class="civ-col"><i class="icon-list-alt"></i> Create a Workshop!</h2>
+        % if c.authuser['memberType'] == 'personal':
+            Create a free Civinomics workshop. The workshop is private, and up to 10 other Civinomics members may participate.
+        % endif
+        <form method="post" name="createWorkshop" id="createWorkshop" action="/createWorkshop">
+        <br />
+        <button type="submit" class="btn btn-warning">Create Workshop</button>
+        <br /><br />
+        </form>
+  % endif
+</%def>
+
 <%def name="workshops()">
   % if c.facilitatorWorkshops:
     <h2 class="civ-col"><i class="icon-list-alt"></i> Workshops I am facilitating</h2>
     <div class="civ-col-inner">
       ${listWorkshops(c.facilitatorWorkshops)}
     </div> <!-- /.civ-col-inner -->
+  % endif
+  % if 'user' in session and c.pworkshops and (c.authuser.id == c.user.id or isAdmin(c.authuser.id)):
+    <h2 class="civ-col"><i class="icon-list-alt"></i> My Private Workshops</h2>
+    <div class="civ-col-inner">
+      ${listWorkshops(c.pworkshops)}
+    </div><!- civ-col-inner -->
   % endif
   % if c.followingWorkshops:
     <h2 class="civ-col"><i class="icon-cog"></i> Workshops I am following</h2>
@@ -470,7 +500,7 @@
         % for comment in cList:
             <%
                 d = getDiscussionByID(int(comment['discussion_id']))
-                w = getWorkshop(d['workshopCode'], d['workshopURL'])
+                w = getWorkshopByCode(d['workshopCode'])
             %>
             % if 'ups' in comment and 'downs' in comment:
                 <% cRating = int(comment['ups']) - int(comment['downs']) %>
@@ -591,7 +621,7 @@
                 % endif
             % endif
             <%
-                w = getWorkshop(s['workshopCode'], s['workshopURL'])
+                w = getWorkshopByCode(s['workshopCode'])
                 sFlags = getFlags(s)
                 if sFlags:
                     numFlags = len(sFlags)
@@ -767,7 +797,7 @@
                 % endif
             % endif
             <%
-                w = getWorkshop(d['workshopCode'], d['workshopURL'])
+                w = getWorkshopByCode(d['workshopCode'])
                 dFlags = getFlags(d)
                 if dFlags:
                     numFlags = len(dFlags)
@@ -820,8 +850,8 @@
         <li>
         <% workshop = getWorkshopByID(f['workshopID']) %>
         <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateHandler/">
-        <input type=hidden name=workshopCode value="${workshop['urlCode']}">
-        <input type=hidden name=workshopURL value="${workshop['url']}">
+        <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
+        <input type="hidden" name="workshopURL" value="${workshop['url']}">
         % if workshop['mainImage_hash'] == 'supDawg':
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
@@ -830,8 +860,8 @@
             <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
         % endif
         <br /> <br />
-        <button type="submit" name=acceptInvite class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
-        <button type="submit" name=declineInvite class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
+        <button type="submit" name="acceptInvite" class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
+        <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
         </form>
         <li>
         <% 
@@ -846,20 +876,20 @@
 
 <%def name="inviteCoFacilitate()">
   %if 'user' in session and c.authuser:
-      <% checkW = getWorkshopsByOwner(c.authuser.id) %>
-      <% wList = [] %>
-      % for w in checkW:
-          % if w['deleted'] == '0':
-              % if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
-                  <% wList.append(w) %>
-              % endif 
-          % endif
-      % endfor
+      <% 
+          fList = getFacilitatorsByUser(c.authuser.id)
+          wList = []
+          for f in fList:
+              w = getWorkshopByID(f['workshopID'])
+              if w['deleted'] == '0' and w['public_private'] != 'personal':
+                  if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
+                      wList.append(w)
+      %>
       % if c.authuser.id != c.user.id and wList:
           <h2 class="civ-col">Invite This Member to Facilitate</h2>
           <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateInvite/" class="form-inline">
           <br />
-          <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name=inviteToFacilitate>
+          <button type="submit" class="btn btn-mini btn-warning" title="Click to invite this member to cofacilitate the selected workshop"><i class="icon-envelope icon-white"></i> Invite</button> to co-facilitate <select name="inviteToFacilitate">
           % for myW in wList:
               <br />
               <option value="${myW['urlCode']}/${myW['url']}">${myW['title']}</option>

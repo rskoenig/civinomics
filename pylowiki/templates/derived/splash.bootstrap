@@ -19,6 +19,7 @@
 
   <body>
     ${facebookID()}
+    ${self.google_analytics()}
     
     <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
       <div class="navbar-inner" style="background-image: none; background-color: #FFFFFF;">
@@ -46,19 +47,29 @@
     ## Top Carousel
     ##
 
+    <div class="imageChanger imageChanger4">
+        <div class="span8">
+            <p class="photoCredits">need photo permissions</p>
+        </div>
+    </div>
+    <div class="imageChanger imageChanger3">
+        <div class="span8">
+            <p class="photoCredits">need photo permissions</p>
+        </div>
+    </div>
     <div class="imageChanger imageChanger2">
         <div class="span8">
-            <p class="photoCredits">Sage Ross/ Creative Commons</p>
+            <p class="photoCredits">need photo permissions</p>
         </div>
     </div>
     <div class="imageChanger imageChanger1" style="display:none;">
         <div class="span8">
-            <p class="photoCredits">Lauren Betesh/ The Brooklyn Ink</p>
+            <p class="photoCredits">need photo permissions</p>
         </div>
     </div>
     <div class="imageChanger imageChanger0" style="display:none;">
         <div class="span8">
-            <p class="photoCredits">Christian Mehlführer</p>
+            <p class="photoCredits">need photo permissions</p>
         </div>
     </div>
 
@@ -68,7 +79,7 @@
             <div class="span5 offset5" style="padding-top:65px;">
                 <div class="hero-unit main-well">
                     <div class="row-fluid">
-                            <p style="font-size: 24px;">Suggest, edit and vote on public policy in your community.</p>
+                            <p style="font-size: 24px;">Collaboration and voting tools for groups of all sizes.</p>
                             </br>
                             <div style="text-align:center;">
                                 <a href="/signup"><button class="btn btn-success btn-default btn-large" style="width: 110px;">Sign up</button></a>
@@ -90,121 +101,28 @@
             
             ##How it works
 
-            <div class="row">
-                <div class="span12" style="padding-top:20px; text-align:center;">
+            <div class="row marketing" style="padding-top:20px; text-align:center;">
                     <h1> How it Works </h1>
                     </br>
-                    <div class="span3">
-                       <img src="/images/splash/people.png"></image>
+                    <div class="span4">
+                       <img src="/images/splash/step1_group.png"></image>
                         </br>
-                        <p class="howitworks-number">1</p>
-                        <p>Find a topic you care about and suggest a way to make things better.</p>
+                        <h2>Assemble</h2>
+                        <p>Join a group of people to make things better. Build a knowledge base with a wiki, resource links and discussion.</p>
                     </div>                
-                    <div class="span3 offset1">
-                        <img src="/images/splash/laptop.png"></image>
+                    <div class="span4">
+                        <img src="/images/splash/step2_ideas.png"></image>
                         </br>
-                        <p class="howitworks-number">2</p>
-                        <p>Vote on the best suggestions.</p>
+                        <h2>Vote</h2>
+                        <p>Vote on the best ideas. Develop proposals so that they meet defined goals. No filibusters allowed.</p>
                     </div>
-                    <div class="span3 offset1">
-                       <img src="/images/splash/capitol.png"></image>
+                    <div class="span4">
+                       <img src="/images/splash/step3_profit.png"></image>
                         </br>
-                        <p class="howitworks-number">3</p>
-                        <p>Build support for winning ideas and implement them in the real world.</p>
+                        <h2>Solve</h2>
+                        <p>Implement ideas by getting the attention of key stakeholders and leveraging a network of experts.</p>
                     </div>
-                </div>
-            </div>
-
-            ##
-            ##Join a Workshop
-            ##
-
-            <div class="row">
-                <div class="span12 infoSection">
-                    <h1> Join a Civic Workshop </h1>  
-                    <div class="span5 offset1" style="margin-top:20px;">
-                        ## 
-                        ## A video
-                        ## 
-                        <iframe src="http://player.vimeo.com/video/45529198?title=0&amp;byline=0&amp;portrait=0" width="350" height="297" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> 
-                    </div>
-                    <div class="span5" style="margin-top:20px; text-align:left;">
-                        <p class="lead">
-                            <strong>Workshop</strong> [<strong>werk</strong>-shop]</br>
-                            </br>
-                            <em>(noun) </em><strong>1.</strong> An online forum for crowdsourcing public policy. <strong>2.</strong> An innovative distillation of the democratic process.</br>
-                            </br>
-                            <em>(verb)</em> <strong>3.</strong> To tinker with
-ideas, hammer out solutions, fix things that are broken and build a better world.
-                        </p>
-                        </br>
-                    </div>
-                    <div class="span5 offset6" style="text-align:center;">
-                        <a href="/workshops"><button class="btn btn-info btn-large" style="width: 170px;">Browse Workshops</button></a>
-                    </div>
-                </div>
-            </div>   
-
-            ##
-            ##Community Engagement
-            ##
-
-            <div class="row">
-                <div class="span12 infoSection">
-                    <h1> Community Engagement </h1>  
-                    <div class="span5 offset1" style="margin-top:20px;">
-
-                        ## 
-                        ## A quotation
-                        ##
-                        <blockquote style="padding-right:20px; text-align:center;">
-                            <p class="quote">I felt like I learned something about my community.</p>
-                            <small class="pull-left">Participant (anonymous)</small>
-                        </blockquote>
-                        <br />
-
-                        ## 
-                        ## Some photos
-                        ## 
-                        <ul class="thumbnails" style="padding-top:10px;">
-                            <% sizes = (71, 115) %>
-                            % for i in range(3, 6):
-                            <li class="span2">
-                                <a href="#inPerson-${i}" class="thumbnail-custom" data-toggle="modal" style="height:${sizes[0]}px;">
-                                    <img src="/images/splash/inPerson_${i}_thumb.jpg" height="${sizes[0]}" width="${sizes[1]}">
-                                    <div class="magnify"></div>
-                                </a>
-                            </li>
-                            % endfor
-                        </ul> 
-
-                    </div>
-
-                    ## 
-                    ## Section text
-                    ##
-                    <span class="span5" style="text-align:left; padding-top:30px;">
-                    </br>
-                        <p class="lead">Sometimes you have to take the workshop to the people. We specialize at doing just that - engaging the public in issues and collecting valuable feedback using our best-of-breed iPad app.</p>
-                    </span>
-                    <span class="span5" style="text-align:center;">
-                        </br>
-                        <a class="btn btn-info btn-large" href="/corp/contact" target="_blank">Contact Us</a>
-                    </span>
-                    <div class="span12">
-                        <h4>Case Studies</h4>
-                    </div>
-                    <div class="span12">
-                        <a href="corp/caseStudies/SSIP"><img class="casestudy" src="/images/splash/SFPUC_color.png"></a>
-                        <a href="corp/caseStudies/cap2"><img class="casestudy" src="/images/splash/cap_color.png"></a>
-                        <a href="/corp/caseStudies/scwd2"><img class="casestudy" src="/images/splash/scwd2_color.png"></a>
-                        <a href="/corp/caseStudies/landtrust"><img class="casestudy" src="/images/splash/landtrust_color.png"></a>
-                    </div>
-                </div>
-            </div>   
-                       
-            
-            </div> <!-- row -->
+            </div>                  
         </div> <!-- container -->
     </div> <!-- info -->
 
@@ -322,4 +240,22 @@ ideas, hammer out solutions, fix things that are broken and build a better world
              ref.parentNode.insertBefore(js, ref);
            }(document));
         </script>
+</%def>
+
+<%def name="google_analytics()">
+    % if c.conf['google.analytics']:
+      <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', "${c.conf['google.analytics']}"]);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+      </script>
+    % endif
 </%def>

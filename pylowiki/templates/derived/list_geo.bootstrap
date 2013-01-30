@@ -5,34 +5,24 @@
 <%namespace file="/lib/mako_lib.mako" import="civ_col_img" />
 
 <div class="row-fluid">
-    <div class="span8">
+    <div class="span3">
         % if 'user' in session:
-            ${list_helpers.list_public_spheres()}
+            <h2 class="civ-col">Welcome</h2>
+            <div class="civ-col-inner">
+                <div class="civ-col-inner well profile_header">
+                    ${list_helpers.draw_avatar()}
+                </div> <!-- civ-col-inner -->
+            </div> <!-- civ-col--inner -->
+        
+            <h2 class="civ-col">My Public Spheres</h2>
+            <div class="civ-col-inner">
+                <div class="civ-col-inner well profile_header">
+                    ${list_helpers.list_public_spheres()}
+                </div> <!-- civ-col-inner -->
+            </div> <!-- civ-col--inner -->
         % endif
-        ${list_helpers.ws_toggle()}
-        <div class="civ-col">
-            <h2 class="civ-col">${c.heading}</h2>
-            <div class="civ-col-inner">
-                ${workshop_helpers.list_workshops()}
-                % if len(c.list) == 0:
-                    <div class="alert alert-warning">There are no workshops for this region. Be the first to add one!</div>
-                % endif
-            </div> <!-- /.civ-col-inner -->
-            <div class="civ-col-inner">
-                ${workshop_helpers.list_total_workshops()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-    </div> <!-- /.span6 -->
-    <div class="span4">
-        ${helpers.show_geo()}
-        <div class="civ-col">
-            <h2 class="civ-col">New Contributions</h2>
-            <div class="civ-col-inner">
-                ${workshop_helpers.list_news()}
-                ${list_helpers.recent_posts()}
-            </div> <!-- /.civ-col-inner -->
-        </div> <!-- /.civ-col -->
-       <h2 class="civ-col">Show me ... </h2>
+
+        <h2 class="civ-col">Show me ... </h2>
         <div class="civ-col-inner">
             <div class="civ-col-inner well profile_header">
                 ${list_helpers.show_me()}
@@ -52,6 +42,32 @@
                     ${list_helpers.member_tags()}
                 </div> <!-- /.civ-col-inner -->
         </div> <!-- civ-col--inner -->
+        </div><!-- span3 -->
+    <div class="span6">
+        <div class="civ-col">
+            <h2 class="civ-col">${c.heading}</h2>
+            <div class="civ-col-inner">
+                ${helpers.show_geo()}
+                    </div> <!-- /.civ-col-inner -->
+            <div class="civ-col-inner">
+                ${workshop_helpers.list_workshops()}
+            </div> <!-- /.civ-col-inner -->
+            <div class="civ-col-inner">
+                ${workshop_helpers.list_total_workshops()}
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
+    </div> <!-- /.span6 -->
+    <div class="span3">
+        <div class="civ-col">
+                        % if 'user' in session:
+                            ${workshop_helpers.surveys()}
+                        % endif
+            <h2 class="civ-col">New Contributions</h2>
+            <div class="civ-col-inner">
+                ${workshop_helpers.list_news()}
+                ${list_helpers.recent_posts()}
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
     </div> <!-- /.span3 -->
 </div> <!-- /.row-fluid -->
 
