@@ -5,6 +5,7 @@
    import pylowiki.lib.db.idea          as ideaLib
    import pylowiki.lib.db.resource      as resourceLib
    import pylowiki.lib.db.user          as userLib
+   import pylowiki.lib.db.rating        as ratingLib
    
    from hashlib import md5
    import logging
@@ -27,24 +28,43 @@
       % endif
       <% rating = int(thing['ups']) - int(thing['downs']) %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+         <% 
+            rated = ratingLib.getRatingForThing(c.authuser, thing) 
+            if rated:
+               if rated['amount'] == '1':
+                  commentClass = '"voted upVote"'
+                  voteImg = '"/images/icons/glyphicons/upVoted.png"'
+               else:
+                  commentClass = '"upVote"'
+                  voteImg = '"/images/icons/glyphicons/upVote.png"'
+         %>
          % if thing.objType != 'comment':
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="vote upVote">
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class=${commentClass}>
          % else:
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="vote upVote">
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class=${commentClass}>
          % endif
-            <i class="icon-chevron-up"></i>
+            <img src=${voteImg | n} class="vote-icon">
          </a>
          <br />
-         <div class="centered">${rating}</div>
+         <div class="centered chevron-score">${rating}</div>
+         <%
+            if rated:
+               if rated['amount'] == '-1':
+                  commentClass = '"voted downVote"'
+                  voteImg = '"/images/icons/glyphicons/downVoted.png"'
+               else:
+                  commentClass = '"downVote"'
+                  voteImg = '"/images/icons/glyphicons/downVote.png"'
+         %>
          % if thing.objType != 'comment':
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="vote downVote">
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class=${commentClass}>
          % else:
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="vote downVote">
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class=${commentClass}>
          % endif
-            <i class="icon-chevron-down"></i>
+            <img src=${voteImg | n} class="vote-icon">
          </a>
       % else:
-         <div> ${rating} </div>
+         <div class="chevron-score"> ${rating} </div>
       % endif
    </div>
 </%def>

@@ -260,7 +260,9 @@ img.watch{
    margin-right:auto;
 }
 */
-
+.vote-icon{
+    height:12px;
+}
 .voteBlock{
    padding-top:8px;
 }

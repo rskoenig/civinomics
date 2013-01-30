@@ -9,19 +9,18 @@
 /*global $:true, jQuery:true */
 $(document).ready(function()
 {
-    var upURL = '/images/icons/glyphicons/glyphicons_343_thumbs_up.png';
-    var votedUpURL = '/images/icons/glyphicons/glyphicons_343_thumbs_up_green.png';
+    var upURL = '/images/icons/glyphicons/upVote.png';
+    var votedUpURL = '/images/icons/glyphicons/upVoted.png';
     
-    var downURL = '/images/icons/glyphicons/glyphicons_344_thumbs_down.png';
-    var votedDownURL = '/images/icons/glyphicons/glyphicons_344_thumbs_down_red.png';
+    var downURL = '/images/icons/glyphicons/downVote.png';
+    var votedDownURL = '/images/icons/glyphicons/downVoted.png';
     
     $(".downVote").click(function(event)
     {
         event.preventDefault();
         if ($(this).hasClass('voted'))
         {
-            // NOTE: this code does not work - no image change happening
-            // $(this).children('img').attr("src", downURL);
+            $(this).children('img').attr("src", downURL);
          
             // having already placed a downvote, we will bring the score back up one place
             // (assuming there has not previously been a vote on this comment by this person)   
@@ -32,10 +31,8 @@ $(document).ready(function()
         }
         else
         {
-            // NOTE: this code does not work - no image change happening
-            // $(this).children('img').attr("src", votedDownURL);
-            // NOTE: this code does not work - no image change happening
-            // $(this).siblings('.upVote').children('img').attr('src', upURL);
+            $(this).children('img').attr("src", votedDownURL);
+            $(this).siblings('.upVote').children('img').attr('src', upURL);
 
             $(this).attr("class", "downVote voted");
             if ($(this).siblings('.upVote').hasClass('voted')) {
@@ -61,8 +58,7 @@ $(document).ready(function()
         event.preventDefault();
         if ($(this).hasClass('voted'))
         {
-            // NOTE: this code does not work - no image change happening
-            // $(this).children('img').attr("src", upURL);
+            $(this).children('img').attr("src", upURL);
 
             // having already placed an upVote, we will bring the score back down one place
             // (assuming there has not previously been a vote on this comment by this person)
@@ -73,10 +69,8 @@ $(document).ready(function()
         }
         else
         {
-            // NOTE: this code does not work - no image change happening
-            // $(this).children('img').attr("src", votedUpURL);
-            // NOTE: this code does not work - no image change happening
-            // $(this).siblings('.downVote').children('img').attr('src', downURL);
+            $(this).children('img').attr("src", votedUpURL);
+            $(this).siblings('.downVote').children('img').attr('src', downURL);
 
             $(this).attr("class", "upVote voted");
             if ($(this).siblings('.downVote').hasClass('voted')) {

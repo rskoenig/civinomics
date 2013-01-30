@@ -33,7 +33,6 @@ class RatingController(BaseController):
         else:
             amount = 0
         ratingType = 'binary'
-        
         if action == 'rateDiscussion':
             thing = discussionLib.getDiscussion(code)
         elif action == 'rateResource':
