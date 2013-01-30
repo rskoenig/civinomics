@@ -11,6 +11,8 @@
         thisTitle = title
         if title == 'conversations':
             thisTitle = 'discussions'
+        elif title == 'bookmarks':
+            thisTitle = 'watching'
         thingListingURL = "/profile/%s/%s/%s" %(user['urlCode'], user['url'], thisTitle)
     %>
     <h3 class="profile-count centered">

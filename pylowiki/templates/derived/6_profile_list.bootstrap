@@ -11,7 +11,10 @@
             else:
                 helpers.listCreatedThings(c.user, c.things, c.thingsTitle)
         else:
-            helpers.listInterestedThings(c.user, c.things, c.thingsTitle)
+            if c.listingType == 'watching':
+                helpers.listInterestedThings(c.user, c.things, 'Bookmarks')
+            else:
+                helpers.listInterestedThings(c.user, c.things, c.thingsTitle)
     %>
     </div>
     <div class="span4">
