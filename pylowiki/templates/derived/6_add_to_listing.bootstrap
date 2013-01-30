@@ -33,7 +33,7 @@
 <%def name="addDiscussion()">
    <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/discussion/handler" id="addDiscussion" method="post">
       <fieldset>
-         <label>Discussion title</label>
+         <label>Conversation title</label>
          <input type="text" class="input-block-level" name="title">
          <span class="help-block"> (Try to keep your title informative, but concise.) </span>
       </fieldset>
@@ -65,8 +65,8 @@
    <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/idea/handler" id="addIdea" method="post">
       <fieldset>
          <label>Idea</label>
-         <input type="text" class="input-block-level" name="title">
-         <span class="help-block"> (Try to keep your title informative, but concise.) </span>
+         <input type="text" class="input-block-level" name="title" maxlength = "120">
+         <span class="help-block"> (Try to keep your idea informative, but concise.) </span>
       </fieldset>
       ${self.submitButton()}
    </form>
