@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 import logging
 
-from pylons import tmpl_context as c
+from pylons import tmpl_context as c, session
 from pylons import request
 
 from pylowiki.model import Thing, Data, meta
@@ -173,7 +173,7 @@ class User(object):
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         u['accessLevel'] = 0
-        if email != config['app_conf']['admin.email']:
+        if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
             self.generateActivationHash(u)
         commit(u)
         u['urlCode'] = toBase62(u)

@@ -91,25 +91,27 @@
          return False
       printStr = ''
       
-      if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin']:
-         printStr = '<a href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
-         if thing == 'discussion':
-            printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'
-         elif thing == 'resources':
-            printStr += 'resource" title="Click to add a resource to this workshop"'
-         elif thing == 'ideas':
-            printStr += 'idea" title="Click to add an idea to this workshop"'
-         printStr += ' class="pull-right btn btn-large btn-success" type="button">'
-         if thing == 'discussion':
-            printStr += 'Add conversation'
-         elif thing == 'ideas':
-            printStr += 'Add an idea'
-         elif thing == 'resources':
-            printStr += 'Add a resource'
-         printStr += '</a>'
+      
+      printStr = '<a href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
+      if thing == 'discussion':
+         printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'
+      elif thing == 'resources':
+         printStr += 'resource" title="Click to add a resource to this workshop"'
+      elif thing == 'ideas':
+         printStr += 'idea" title="Click to add an idea to this workshop"'
+      printStr += ' class="pull-right btn btn-large btn-success" type="button">'
+      if thing == 'discussion':
+         printStr += 'Add conversation'
+      elif thing == 'ideas':
+         printStr += 'Add an idea'
+      elif thing == 'resources':
+         printStr += 'Add a resource'
+      printStr += '</a>'
 
    %>
-   ${printStr | n}
+   % if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:
+       ${printStr | n}
+   % endif
 </%def>
 
 <%def name="readOnlyMessage(thing)">

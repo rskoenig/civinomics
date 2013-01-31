@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import logging, formencode
+import logging, formencode, time
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -9,6 +9,8 @@ from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.db.user import User, getUserByEmail, getActiveUsers
+from pylowiki.lib.db.pmember import getPrivateMemberByCode
+from pylowiki.lib.db.workshop import getWorkshopByCode
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 
@@ -48,6 +50,7 @@ class RegisterController(BaseController):
             return render('/derived/signup.bootstrap')
 
         """ Handler for registration, validates """
+        returnPage = "/derived/signup.bootstrap"
         name = False
         password = False
         password2 = False
@@ -66,10 +69,20 @@ class RegisterController(BaseController):
             log.info('password2 missing')
         else:
             password2 = request.params['password2']
-        if  'email' not in request.params:
-            log.info('email missing')
+        if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
+            workshopCode = request.params['workshopCode']
+            pmember = getPrivateMemberByCode(session['guestCode'])
+            if pmember and pmember['workshopCode'] == workshopCode:
+                email = pmember['email']
+                returnPage = "/derived/6_guest_signup.bootstrap"
+                c.w = getWorkshopByCode(workshopCode)
+                if 'addItem' in request.params:
+                    c.listingType = request.params['addItem']
         else:
-            email = request.params['email']
+            if  'email' not in request.params:
+                log.info('email missing')
+            else:
+                email = request.params['email']
         if  'postalCode' not in request.params:
             log.info('postalCode missing')
         else:
@@ -98,7 +111,7 @@ class RegisterController(BaseController):
         except formencode.Invalid, error:
             splashMsg['content'] = "Error: " + unicode(error)
             c.splashMsg = splashMsg 
-            return render('/derived/signup.bootstrap')
+            return render(returnPage)
         username = name
         maxChars = 50;
         errorFound = False;
@@ -129,7 +142,7 @@ class RegisterController(BaseController):
                 splashMsg['content'] = "Invalid postal code"
                 c.splashMsg = splashMsg 
             if errorFound:
-                return render('/derived/signup.bootstrap')
+                return render(returnPage)
             username = name
             if getUserByEmail( email ) == False:
                 if password == password2:
@@ -142,8 +155,31 @@ class RegisterController(BaseController):
                     splashMsg['title'] = 'Success'
                     splashMsg['content'] = 'Check your email to finish setting up your account'
                     c.splashMsg = splashMsg
+                    if c.w:
+                        user = u.u
+                        if 'laston' in user:
+                            t = time.localtime(float(user['laston']))
+                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                             
+                        user['laston'] = time.time()
+                        loginTime = time.localtime(float(user['laston']))
+                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                        commit(user)
+                        session["user"] = user['name']
+                        session["userCode"] = user['urlCode']
+                        session["userURL"] = user['url']
+                        session.save()
+                        log.info('session of user: %s' % session['user'])
+                        log.info('%s logged in %s' % (user['name'], loginTime))
+                        c.authuser = user
+                        
+                        log.info( "Successful login attempt with credentials - " + email )
+                        returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
+                        if c.listingType:
+                            returnPage += "/add/" + c.listingType
+                        return redirect(returnPage)
                       
-                    return render('/derived/signup.bootstrap')
+                    return render(returnPage)
                 else:
                     splashMsg['content'] = "The password and confirmation do not match"
                     c.splashMsg = splashMsg 

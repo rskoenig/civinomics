@@ -38,14 +38,16 @@ class IdeaController(BaseController):
             c.ideas = c.ideas + disabled
         c.listingType = 'ideas'
         return render('/derived/6_detailed_listing.bootstrap')
-    
-    @h.login_required
+
     def addIdea(self, workshopCode, workshopURL):
         c.title = c.w['title']
         if c.privs['participant'] or c.privs['admin'] or c.privs['facilitator']:
             c.listingType = 'idea'
             c.title = c.w['title']
             return render('/derived/6_add_to_listing.bootstrap')
+        elif c.privs['guest']:
+            c.listingType = 'idea'
+            return render('/derived/6_guest_signup.bootstrap')           
         else:
             c.listingType = 'ideas'
             return render('/derived/6_detailed_listing.bootstrap')

@@ -10,23 +10,18 @@
                     <h1> Sorry, Civinomics is in read only mode right now </h1>
                 % else:
                     <div class="login-body" style="border-bottom:none;">
+                        <strong>Sign up for your Civinomics account to participate in this workshop!</strong><br />
                         <form id="guest_sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
                             <input type="hidden" name="country" value="United States">
                             <input type="hidden" name="memberType" value="professional">
                             <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
-                            % if c.item:
-                                <input type="hidden" name="addItem" value="${c.item}">
+                            % if c.listingType:
+                                <input type="hidden" name="addItem" value="${c.listingType}">
                             % endif
                             <div class="control-group">
                                 <label class="control-label" for="name"> Full name: </label>
                                 <div class="controls">
                                     <input type="text" name="name" id="name">
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label" for="email"> Email: </label>
-                                <div class="controls">
-                                    <input type="text" name="email" id="email">
                                 </div>
                             </div>
                             <div class="control-group">
