@@ -68,11 +68,13 @@ class ResourceController(BaseController):
         c.listingType = 'resource'
         return render('/derived/6_item_in_listing.bootstrap')
 
-    @h.login_required
     def addResource(self, workshopCode, workshopURL):
         if (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin']) and c.w['allowResources'] == '1':
             c.listingType = 'resource'
             return render('/derived/6_add_to_listing.bootstrap')
+        elif c.privs['guest']:
+            c.listingType = 'resource'
+            return render('/derived/6_guest_signup.bootstrap')
         else:
             c.listingType = 'resources'
             return render('/derived/6_detailed_listing.bootstrap')
