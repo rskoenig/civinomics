@@ -99,7 +99,7 @@
             printStr += 'resource" title="Click to add a resource to this workshop"'
          elif thing == 'ideas':
             printStr += 'idea" title="Click to add an idea to this workshop"'
-         printStr += 'class="pull-right btn btn-large btn-success" type="button">'
+         printStr += ' class="pull-right btn btn-large btn-success" type="button">'
          if thing == 'discussion':
             printStr += 'Add conversation'
          elif thing == 'ideas':
@@ -128,7 +128,7 @@
             return '/profile/%s/%s/' %(user['urlCode'], user['url'])
       thisLink = "<a href='/profile/%s/%s/'" %(user['urlCode'], user['url'])
       if 'className' in kwargs:
-         thisLink += 'class = "' + kwargs['className'] + '"'
+         thisLink += ' class = "' + kwargs['className'] + '"'
       thisLink += '>'
       if 'title' in kwargs:
          thisTitle = kwargs['title']
