@@ -103,12 +103,14 @@ class DiscussionController(BaseController):
         c.listingType = 'discussion'
         return render('/derived/6_item_in_listing.bootstrap')
 
-    @h.login_required
     def addDiscussion(self, workshopCode, workshopURL):
         if c.privs['participant'] or c.privs['admin'] or c.privs['facilitator']:
             c.title = c.w['title']
             c.listingType = 'discussion'
             return render('/derived/6_add_to_listing.bootstrap')
+        elif c.privs['guest']:
+            c.listingType = 'discussion'
+            return render('/derived/6_guest_signup.bootstrap')
         else:
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
 
