@@ -1,0 +1,68 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+<div class="container-fluid">
+    <div class="row"> 
+        <div class="span6 offset3" style="padding-top:50px;">
+            <div class="well main-well">
+                % if c.conf['read_only.value'] == 'true':
+                    <h1> Sorry, Civinomics is in read only mode right now </h1>
+                % else:
+                    <div class="login-body" style="border-bottom:none;">
+                        <form id="guest_sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
+                            <input type="hidden" name="country" value="United States">
+                            <input type="hidden" name="memberType" value="professional">
+                            <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+                            % if c.item:
+                                <input type="hidden" name="addItem" value="${c.item}">
+                            % endif
+                            <div class="control-group">
+                                <label class="control-label" for="name"> Full name: </label>
+                                <div class="controls">
+                                    <input type="text" name="name" id="name">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="email"> Email: </label>
+                                <div class="controls">
+                                    <input type="text" name="email" id="email">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="passphrase"> Password: </label>
+                                <div class="controls">
+                                    <input type="password" name="password" id="passphrase">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="passphrase2"> Password (again): </label>
+                                <div class="controls">
+                                    <input type="password" name="password2" id="passphrase2">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i>Postal Code: </label>
+                                <div class="controls">
+                                    <input type="text" name="postalCode" id="postalCode">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <label class="checkbox">
+                                        <input type="checkbox" name="chkTOS" id="chkTOS"> I agree to the <a href="/corp/terms" style="color: #5f774b;">Terms Of Use</a>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <button type="submit" class="btn btn-success"> Sign up </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div><!-- login-body -->
+                % endif
+            </div><!-- main-well -->
+        </div><!-- span6 -->
+    </div><!-- row -->
+</div><!-- container-fluid -->

@@ -107,6 +107,7 @@
          elif thing == 'resources':
             printStr += 'Add a resource'
          printStr += '</a>'
+
    %>
    ${printStr | n}
 </%def>
