@@ -1,0 +1,53 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
+
+<div class="spacer" style="height:20px;"></div>
+
+<% 
+   lib.return_to()
+   helperText = '<strong class="orange">Vote</strong> existing items <strong class="green">up</strong>(<i class="icon-chevron-up"></i>), <strong class="purple">down</strong>(<i class="icon-chevron-down"></i>), or add your own.'
+   if c.listingType == 'discussion':
+      itemList = c.discussions
+      helperText += '<br/> Ask a question or join a general conversation about the workshop.'
+   elif c.listingType == 'resources':
+      itemList = c.resources
+      helperText += '<br/> Link to helpful materials like articles and reports.'
+   elif c.listingType == 'ideas':
+      itemList = c.ideas      
+   self.showListing(c.listingType, itemList, helperText)
+%>
+
+<%def name="showListing(listingType, itemList, helperText)">
+   <%
+      if listingType == 'discussion':
+         pluralType = 'topics'
+      elif listingType == 'resources':
+         pluralType = 'resources'
+      elif listingType == 'ideas':
+         pluralType = 'ideas'
+   %>
+   <div class="row-fluid">
+      <div class="span12">
+         <span class = "muted">
+            ${helperText | n}
+         </span>
+         ${lib_6.createNew(listingType)}
+      </div><!--/.span12-->
+   </div><!--/.row-fluid-->
+   <div class="row-fluid">
+      <div class="span12">
+         <div class="section-wrapper">
+            <div class="browse">
+               <h3 class="section-header"> ${pluralType.title()} </h3>
+               ${helpers.showListing(listingType)}
+            </div><!--/.browse-->
+         </div><!--/.section-wrapper-->
+      </div><!--/.span12-->
+   </div><!--/.row-fluid-->
+</%def>
+
+<%def name="extraScripts2()">
+    <script src="/js/upDown.js" type="text/javascript"></script>
+</%def>
