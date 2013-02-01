@@ -149,16 +149,16 @@
         <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
             Hide
         </button>
-        ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
-        ${lib_6.userLink(author, className="inline")}
-        % if 'addedAs' in comment.keys():
-            % if comment['addedAs'] == 'admin':
-                (admin)
-            % elif comment['addedAs'] == 'facilitator':
-                (facilitator)
-            % endif
-        % endif
-        from ${lib_6.userGeoLink(author, comment=True)}
+        <%
+            lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")
+            lib_6.userLink(author, className="inline")
+            role = ''
+            if 'addedAs' in comment.keys():
+                roles = ['admin', 'facilitator', 'listener']
+                if comment['addedAs'] in roles:
+                    role = '(%s)' % comment['addedAs']
+        %>
+        ${role} from ${lib_6.userGeoLink(author, comment=True)}
         
         % if comment['disabled'] == '1':
             <span class="pull-right tiny disabledComment-notice">(comment disabled)</span>
