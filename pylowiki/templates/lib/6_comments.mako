@@ -139,10 +139,11 @@
 <%def name="commentHeading(comment, author, accordionID, collapseID)">
     <%
         headerClass = "accordion-heading"
-        if int(author['accessLevel']) >= 200:
-            headerClass += " admin"
-        elif isFacilitator( author.id, c.w.id ):
-            headerClass += " facilitator"
+        if 'addedAs' in comment.keys():
+            if comment['addedAs'] == 'admin':
+                headerClass += " admin"
+            elif comment['addedAs'] == 'facilitator':
+                headerClass += " facilitator"
     %>
     <div class="${headerClass}">
         <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
@@ -150,10 +151,12 @@
         </button>
         ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
         ${lib_6.userLink(author, className="inline")}
-        % if int(author['accessLevel']) >= 200:
-            (admin)
-        % elif isFacilitator( author.id, c.w.id ):
-            (facilitator)
+        % if 'addedAs' in comment.keys():
+            % if comment['addedAs'] == 'admin':
+                (admin)
+            % elif comment['addedAs'] == 'facilitator':
+                (facilitator)
+            % endif
         % endif
         from ${lib_6.userGeoLink(author, comment=True)}
         

@@ -148,6 +148,7 @@ class Comment(object):
         thisComment['ups'] = '0'
         thisComment['downs'] = '0'
         thisComment['lastModified'] = datetime.now().ctime()
+        thisComment = generic.addedItemAs(thisComment, privs, role)
         commit(thisComment)
         thisComment['urlCode'] = toBase62(thisComment)
         commit(thisComment)
