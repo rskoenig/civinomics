@@ -35,6 +35,11 @@ class CommentController(BaseController):
                 return False
             if thing['disabled'] == '1':
                 return False
+            workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
+            if not workshop:
+                return False
+            else:
+                workshopLib.setWorkshopPrivs(workshop)
             data = request.params['comment-textarea']
             data = data.strip()
             if data == '':
@@ -53,7 +58,7 @@ class CommentController(BaseController):
                 # Root level comment
                 discussion = discussionLib.getDiscussion(request.params['discussionCode'])
                 parentCommentID = 0
-            comment = commentLib.Comment(data, c.authuser, discussion, parentCommentID, )
+            comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
             return redirect(session['return_to'])
                 
         except KeyError:
