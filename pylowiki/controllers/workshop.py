@@ -772,14 +772,6 @@ class WorkshopController(BaseController):
         if c.w['public_private'] == 'public':
             scope = geoInfoLib.getWScopeByWorkshop(c.w)
             scope = scope['scope'].split('|')
-            """
-            geoTags = geoTagString.split('|')
-            wscope['country'] = geoTags[2]
-            wscope['state'] = geoTags[4]
-            wscope['county'] = geoTags[6]
-            wscope['city'] = geoTags[8]
-            wscope['postal'] = geoTags[9]
-            """
             if scope[9] != '0':
                 c.scope = 'postal'
             elif scope[8] != '0':
@@ -792,7 +784,6 @@ class WorkshopController(BaseController):
                 c.scope = 'country'
             else:
                 c.scope = 'planet'
-            log.info(c.scope)
         return render('/derived/6_workshop_home.bootstrap')
     
     @h.login_required
