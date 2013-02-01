@@ -31,6 +31,15 @@ class LoginController(BaseController):
         try:
             email = request.params["email"].lower()
             password = request.params["password"]
+            if 'workshopCode' in request.params and 'workshopURL' in request.params and 'thing' in request.params:
+                workshopCode = request.params['workshopCode']
+                workshopURL = request.params['workshopURL']
+                thing = request.params['thing']
+            else:
+                workshopCode = None
+                workshopURL = None
+                thing = None
+                
             log.info('user %s attempting to log in' % email)
             if email and password:
                 user = get_user_by_email( email )
@@ -59,9 +68,16 @@ class LoginController(BaseController):
                         c.authuser = user
                         
                         log.info( "Successful login attempt with credentials - " + email )
+                        if workshopCode != 'None':
+                            log.info( "got workshopCode" )
+                            loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing
+                        else:
+                            loginURL = "/"
+                            
                         try:
-                            return redirect("/")
+                            return redirect(loginURL)
                         except:
+                            return redirect(loginURL)
                             return redirect(config['app_conf']['site_base_url'])
                     else:
                         log.warning("incorrect username or password - " + email )
@@ -189,7 +205,12 @@ class LoginController(BaseController):
             
         return render("/derived/changepass.mako" )
 
-    def loginDisplay(self):
+    def loginDisplay(self, workshopCode, workshopURL, thing):
+        if workshopCode is not None:
+            c.workshopCode = workshopCode
+            c.workshopURL = workshopURL
+            c.thing = thing
+            
         return render("/derived/login.bootstrap")
 
     def forgotPassword(self):

@@ -232,7 +232,8 @@ def make_map():
     ########################################################################################################
     
     # Login and signup
-    map.connect('/{login:login/?}', controller = 'login', action = 'loginDisplay')
+    map.connect('/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/login/{thing}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}')
     map.connect('/{loginHandler:loginHandler/?}', controller = 'login', action = 'loginHandler')
     map.connect('/{signup:signup/?}', controller = 'register', action = 'signupDisplay')
     map.connect('/{forgotPassword:forgotPassword/?}', controller = 'login', action = 'forgotPassword')
