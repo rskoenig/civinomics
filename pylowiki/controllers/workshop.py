@@ -769,6 +769,30 @@ class WorkshopController(BaseController):
         c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         c.information = pageLib.getInformation(c.w)
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        if c.w['public_private'] == 'public':
+            scope = geoInfoLib.getWScopeByWorkshop(c.w)
+            scope = scope['scope'].split('|')
+            """
+            geoTags = geoTagString.split('|')
+            wscope['country'] = geoTags[2]
+            wscope['state'] = geoTags[4]
+            wscope['county'] = geoTags[6]
+            wscope['city'] = geoTags[8]
+            wscope['postal'] = geoTags[9]
+            """
+            if scope[9] != '0':
+                c.scope = 'postal'
+            elif scope[8] != '0':
+                c.scope = 'city'
+            elif scope[6] != '0':
+                c.scope = 'county'
+            elif scope[4] != '0':
+                c.scope = 'state'
+            elif scope[2] != '0':
+                c.scope = 'country'
+            else:
+                c.scope = 'planet'
+            log.info(c.scope)
         return render('/derived/6_workshop_home.bootstrap')
     
     @h.login_required

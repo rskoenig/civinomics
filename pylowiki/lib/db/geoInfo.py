@@ -188,11 +188,6 @@ def getWorkshopScopes(searchScope, scopeLevel):
         return False
 
 def getWorkshopsInScope(country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
-    log.info('country = %s' % country)
-    log.info('state = %s' % state)
-    log.info('county = %s' % county)
-    log.info('city = %s' % city)
-    log.info('postalCode = %s' % postalCode)
     try:
         return meta.Session.query(Thing)\
             .filter_by(objType = 'wscope')\
