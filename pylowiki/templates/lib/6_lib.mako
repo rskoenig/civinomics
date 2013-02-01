@@ -509,12 +509,12 @@
                 % if thing.objType == 'comment':
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}">
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
                 % elif thing.objType == 'discussion':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}">
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
                     <textarea name="text" rows="12" class="input-block-level">${thing['text']}</textarea>
                 % elif thing.objType == 'resource':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}">
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
                     <input type="text" class="input-block-level" name="link" value = "${thing['link']}">
                     <textarea name="text" rows="12" class="input-block-level">${thing['text']}</textarea>
                 % endif

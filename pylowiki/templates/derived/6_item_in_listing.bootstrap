@@ -50,9 +50,22 @@
 </div><!--/.row-fluid-->
 
 <%def name="extraScripts2()">
-    <script src="/js/flag.js" type="text/javascript"></script>
-    % if c.privs['admin'] or c.privs['facilitator']:
-        <script src="/js/admin.js" type="text/javascript"></script>
-    % endif
     <script src="/js/upDown.js" type="text/javascript"></script>
+    % if 'user' in session:
+        <script src="/js/flag.js" type="text/javascript"></script>
+        % if c.privs['admin'] or c.privs['facilitator']:
+            <script src="/js/admin.js" type="text/javascript"></script>
+        % endif
+        % if c.privs['admin'] or c.privs['facilitator'] or c.authuser.id == c.thing.owner:
+            <script type="text/javascript" src="/js/vendor/charCount.js"></script>
+            <script>
+                $("#title").charCount({
+                    allowed:120,
+                    warning:20,
+                    css: 'counter green pull-right',
+                    counterElement: 'strong'
+                });
+            </script>
+        % endif
+    % endif
 </%def>
