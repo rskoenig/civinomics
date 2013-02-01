@@ -52,7 +52,7 @@ def editIdea(idea, title, owner):
         log.error('ERROR: unable to edit idea')
         return False
 
-def Idea(user, title, workshop):
+def Idea(user, title, workshop, privs, role = None):
     """
         user    ->  The user Thing creating the idea
         title   ->  The idea itself, in string format.
@@ -65,6 +65,7 @@ def Idea(user, title, workshop):
     idea['ups'] = '0'
     idea['downs'] = '0'
     idea['url'] = urlify(title[:20])
+    idea = generic.addedItemAs(idea, privs, role)
     commit(idea)
     idea['urlCode'] = toBase62(idea)
     d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop)

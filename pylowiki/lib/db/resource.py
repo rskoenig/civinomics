@@ -186,7 +186,7 @@ def Resource(url, title, owner, workshop, privs, role = None, text = None, paren
     a['deleted'] = '0'
     a['ups'] = '0'
     a['downs'] = '0'
-    generic.addedItemAs(a, privs, role)
+    a = generic.addedItemAs(a, privs, role)
     commit(a)
     a['urlCode'] = toBase62(a)
     commit(a)

@@ -61,7 +61,7 @@ class IdeaController(BaseController):
             return redirect(session['return_to'])
         if len(title) > 120:
             title = title[:120]
-        newIdea = ideaLib.Idea(c.authuser, title, c.w)
+        newIdea = ideaLib.Idea(c.authuser, title, c.w, c.privs)
         return redirect(session['return_to'])
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
