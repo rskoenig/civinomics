@@ -51,13 +51,17 @@ def addIdeaToWorkshop(self, workshop, ideaText):
     ideaPage = ideaAdded.click(description=ideaText, index=0)
     return ideaPage
 
-#def getIdeaPage():
-
 #: create_new_workshop is a helper function for creating a new workshop
 def create_new_workshop(self, thisUser, **kwargs):
-    """ Logs in as the specified user and creates a new workshop.
+    """Unless otherwise indicated, logs in as the specified user and creates a new workshop.
     Returns this workshop's main page. """
-    login(self, thisUser)
+    if 'login' in kwargs:
+        if kwargs['login'] == True:
+            log.info("logging in as %s"%(thisUser['name']))
+            login(self, thisUser)
+    else:
+        log.info("logging in as %s"%(thisUser['name']))
+        login(self, thisUser)
     # start at the home page, which redirects to the workshops page
     rHome = self.app.get(url=url_for(controller='home', action='index'))
     rWorkshops = rHome.follow()
@@ -102,11 +106,22 @@ def create_new_workshop(self, thisUser, **kwargs):
     # fill out the first form for this workshop creation process
     for key in formFields1:
         if formDefs.createWorkshopForm1_title() == key:
-            createWorkshopForm1[key] = 'NEW WORKSHOP TITLE'
+            if 'title' in kwargs:
+                createWorkshopForm1[key] = kwargs['title']
+                workshopTitle = kwargs['title']
+            else:
+                createWorkshopForm1[key] = 'NEW WORKSHOP TITLE'
+                workshopTitle = 'NEW WORKSHOP TITLE'
         elif formDefs.createWorkshopForm1_description() == key:
-            createWorkshopForm1[key] = 'NEW WORKSHOP DESCRIPTION'
+            if 'description' in kwargs:
+                createWorkshopForm1[key] = kwargs['description']
+            else:
+                createWorkshopForm1[key] = 'NEW WORKSHOP DESCRIPTION'
         elif formDefs.createWorkshopForm1_goals() == key:
-            createWorkshopForm1[key] = 'NEW SET OF GOALS'
+            if 'goals' in kwargs:
+                createWorkshopForm1[key] = kwargs['goals']
+            else:
+                createWorkshopForm1[key] = 'NEW SET OF GOALS'
         elif formDefs.createWorkshopForm1_suggestions() == key:
             if 'allowIdeas' in kwargs:
                 createWorkshopForm1.set(key, kwargs['allowIdeas'])
@@ -194,12 +209,8 @@ def create_new_workshop(self, thisUser, **kwargs):
         params={'name' : 'startWorkshop'}
     ).follow()
 
-    #assert startCreateWorkshop6 == 404
     assert assertions.not_in_new_workshop_1() not in workshopCreated
-    assert assertions.in_new_workshop_1() in workshopCreated
-    assert assertions.in_new_workshop_2() in workshopCreated
-
-    #return workshopCreated.response.url
+    assert workshopTitle in workshopCreated
     return workshopCreated
 
 

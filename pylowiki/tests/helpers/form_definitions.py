@@ -28,14 +28,17 @@ def createWorkshop_1_form():
 def create_workshop_1_personal_professional(kwargs=None):
 	#: value of button for creating a personal or professional workshop
 	#: can return value for choosing personal or professional workshops
-	if 'personal' in kwargs:
-		if 'personal' == True:
-			return 'createPersonal'
+	if kwargs != None:
+		if 'personal' in kwargs:
+			if 'personal' == True:
+				return 'createPersonal'
+			else:
+				#: if we get selenium to drive this test,
+				#: we will be able to use the javascript for actually processing the payment form.
+				#: For now, we'll need to create a personal workshop but manually set it as professional
+				#: return 'createProfessional'
+				return 'createPersonal'
 		else:
-			#: if we get selenium to drive this test,
-			#: we will be able to use the javascript for actually processing the payment form.
-			#: For now, we'll need to create a personal workshop but manually set it as professional
-			#: return 'createProfessional'
 			return 'createPersonal'
 	else:
 		return 'createPersonal'
@@ -103,8 +106,14 @@ def editComment_submit():
 def parameter_submit():
 	return 'submit'
 
+def paymentForm():
+	return 'paymentForm'
+
 def submitNone():
 	return None
+
+def upgradeWorkshop():
+	return 'workshopUpgrade'
 
 def workshopSettings_allowIdeas(choice=True):
 	"""Takes bool input and returns form-specific input value replacting the parameter's value."""
@@ -119,3 +128,6 @@ def workshopSettings_allowResourceLinks(choice=True):
 		return u'1'
 	else:
 		return u'0'
+
+def workshopSettings_privateForm():
+	return 'private'

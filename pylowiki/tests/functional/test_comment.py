@@ -303,13 +303,48 @@ class TestCommentController(TestController):
         # delete comment
         # confirm comment not present anymore
 
-    #def can_make_hidden_comment_admin():
+    def can_make_hidden_comment_admin(self):
+        """THIS TEST NOT YET COMPLETE Can an admin make a comment hidden so that it remains hidden on first view of the page?"""
         # create comment as random person
-        # create another person, change to admin
+        thisUser = create_and_activate_a_user(self)
+        ideaText = content.oneLine(3)
+        commentText = content.oneLine(2)
+        #: create_workshop as this new user
+        newWorkshop = create_new_workshop(
+            self, 
+            thisUser, 
+            personal=True,
+            allowIdeas=formDefs.workshopSettings_allowIdeas(True),
+            allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
+        )
+        #: add idea to workshop
+        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        # assert that it's there
+        assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
+        #: add comment to idea
+        commentAdded = addCommentToIdeaPage(self, ideaAdded, commentText)
+        # assert that it's there
+        assert commentText in commentAdded, "error before test complete: not able to create comment on idea"
+        # NOTE for now, login as super admin. next, make a normal user an admin for this
+        admin = {}
+        # conf = config['app_conf']
+        # admin['email'] = conf['admin.email']
+        # NOTE - get these two lines working with the conf method
+        admin['email'] = 'username@civinomics.com'
+        # admin['password'] = conf['admin.pass']
+        admin['password'] = 'password'
         # login as this new admin
-        # visit the comment
-        # make it hidden
+        loggedIn = login(self, admin)
+        # find the comment and make it hidden
+        # find the comment text
+        soup = commentAdded.html
+        commentFound = soup.find("div", text=commentText)
+        # search parents for first occurence of div id=comment-ObjectCode <- record this object code
+        # now click this href: href="#collapse-ObjectCode", using the webob response object of this comment page
+        assert commentAdded == 404
         # reload page, confirm comment is hidden
+
+
 
 
 

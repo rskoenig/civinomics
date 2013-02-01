@@ -257,22 +257,7 @@ class TestIdeaController(TestController):
         # reload the page by clicking the ideas menu and the idea should no longer be visible
         confirmDelete = ideaAdded.click(description=linkDefs.ideas_page(), index=0)
         #assert didDelete == 404
-        assert ideaText not in confirmDelete
-        
-        
+        assert ideaText not in confirmDelete, "admin not able to delete idea made by a user in their own workshop"
+          
 
-    #def can_make_hidden_idea_admin():
-        # create comment as random person
-        # create another person, change to admin
-        # login as this new admin
-        # visit the comment
-        # make it hidden
-        # reload page, confirm comment is hidden
-
-
-
-
-
-
-
-
+    

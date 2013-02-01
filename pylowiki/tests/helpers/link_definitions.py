@@ -15,3 +15,6 @@ def addIdea():
 
 def login():
 	return 'login'
+
+def workshopDashboard():
+	return 'dashboard'
