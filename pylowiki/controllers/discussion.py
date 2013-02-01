@@ -27,28 +27,20 @@ log = logging.getLogger(__name__)
 class DiscussionController(BaseController):
 
     def __before__(self, action, workshopCode = None):
-        setPrivs = ['index', 'topic', 'thread', 'addDiscussion', 'clearDiscussionFlagsHandler', 'addDiscussionHandler',\
-        'editDiscussion', 'flagDiscussion', 'adminDiscussion', 'adminDiscussionHandler']
-        
-        noWorkshopCode = ['editDiscussion', 'clearDiscussionFlagsHandler', 'editDiscussionHandler', 'flagDiscussion', 'adminDiscussion'\
-        'adminDiscussionHandler']
-        
         publicOrPrivate = ['index', 'topic', 'thread']
         
-        if action not in noWorkshopCode:
-            if workshopCode is None:
-                abort(404)
-            c.w = workshopLib.getWorkshopByCode(workshopCode)
-            if not c.w:
-                abort(404)
-            if action in setPrivs:
-                workshopLib.setWorkshopPrivs(c.w)
-            if action in publicOrPrivate:
-                if c.w['public_private'] != 'public':
-                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                        abort(404)
-            if 'user' in session:
-                utils.isWatching(c.authuser, c.w)
+        if workshopCode is None:
+            abort(404)
+        c.w = workshopLib.getWorkshopByCode(workshopCode)
+        if not c.w:
+            abort(404)
+        workshopLib.setWorkshopPrivs(c.w)
+        if action in publicOrPrivate:
+            if c.w['public_private'] != 'public':
+                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                    abort(404)
+        if 'user' in session:
+            utils.isWatching(c.authuser, c.w)
 
     def index(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -139,7 +131,8 @@ class DiscussionController(BaseController):
         else:
             if len(title) > 120:
                 title = title[:120]
-            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w, title = title, text = text, workshop = c.w)
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w,\
+                title = title, text = text, workshop = c.w, privs = c.privs, role = None)
             r = revisionLib.Revision(c.authuser, d.d)
             commit(c.w)
         

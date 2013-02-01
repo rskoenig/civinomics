@@ -79,14 +79,20 @@ class Discussion(object):
                     discType             ->    Used to determine special properties, like a background discussion or a feedback discussion in a workshop
                     workshop             ->    Links the discussion to the workshop.  The discussion type is used to differentiate between a discussion 
                                                linked to, say, an idea, and a discussion linked directly to the workshop.
-                    
+                    privs                ->    The c.privs object describing what the authuser's role is
                     (optional)
                     text                 ->    Some extra description, if provided
+                    role                 ->    The role used to indicate how the discussion was added (admin, facilitator, listener, etc...)  If not provided,
+                                               this is automatically set from the privs dict.
         """
         if 'owner' not in kwargs.keys():
             d = Thing('discussion')
         else:
             d = Thing('discussion', kwargs['owner'].id)
+        if 'role' not in kwargs.keys():
+            role = None
+        else:
+            role = kwargs['role']
         title = kwargs['title']
         discType = kwargs['discType']
         workshop = kwargs['workshop']
@@ -99,7 +105,7 @@ class Discussion(object):
         d['url'] = urlify(title)
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
         d = generic.linkChildToParent(d, workshop)
-        
+        d = generic.addedItemAs(d, kwargs['privs'], role)
         # Optional arguments
         if 'text' in kwargs:
             d['text'] = kwargs['text']

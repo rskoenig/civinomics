@@ -190,6 +190,6 @@ def Resource(url, title, owner, workshop, privs, role = None, text = None, paren
     commit(a)
     a['urlCode'] = toBase62(a)
     commit(a)
-    d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
+    d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
     r = revisionLib.Revision(c.authuser, a)
     return a
