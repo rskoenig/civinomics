@@ -16,6 +16,7 @@ import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.revision     as revisionLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
 
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
@@ -35,6 +36,8 @@ class DiscussionController(BaseController):
         if not c.w:
             abort(404)
         workshopLib.setWorkshopPrivs(c.w)
+        if c.w['public_private'] == 'public':
+            c.scope = geoInfoLib.getPublicScope(c.w)
         if action in publicOrPrivate:
             if c.w['public_private'] != 'public':
                 if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:

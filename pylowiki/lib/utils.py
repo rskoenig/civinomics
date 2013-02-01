@@ -3,7 +3,7 @@ import logging, string
 from urllib import quote
 from zlib import adler32
 from pylons import session, tmpl_context as c
-import pylowiki.lib.db.follow as followLib
+import pylowiki.lib.db.follow       as followLib
 
 log = logging.getLogger(__name__)
 
@@ -61,4 +61,3 @@ def isWatching(user, workshop):
    # object follows as 'watching'.
    c.isFollowing = followLib.isFollowing(user, workshop)
   
-    

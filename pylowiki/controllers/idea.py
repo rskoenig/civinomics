@@ -6,6 +6,7 @@ from pylons.controllers.util import abort, redirect
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.sort            as sortLib
 import pylowiki.lib.helpers as h
@@ -23,6 +24,8 @@ class IdeaController(BaseController):
         if not c.w:
             abort(404)
         workshopLib.setWorkshopPrivs(c.w)
+        if c.w['public_private'] == 'public':
+            c.scope = geoInfoLib.getPublicScope(c.w)
         if 'user' in session:
             utils.isWatching(c.authuser, c.w)
 

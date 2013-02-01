@@ -770,20 +770,7 @@ class WorkshopController(BaseController):
         c.information = pageLib.getInformation(c.w)
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         if c.w['public_private'] == 'public':
-            scope = geoInfoLib.getWScopeByWorkshop(c.w)
-            scope = scope['scope'].split('|')
-            if scope[9] != '0':
-                c.scope = 'postal'
-            elif scope[8] != '0':
-                c.scope = 'city'
-            elif scope[6] != '0':
-                c.scope = 'county'
-            elif scope[4] != '0':
-                c.scope = 'state'
-            elif scope[2] != '0':
-                c.scope = 'country'
-            else:
-                c.scope = 'planet'
+            c.scope = geoInfoLib.getPublicScope(c.w)
         return render('/derived/6_workshop_home.bootstrap')
     
     @h.login_required

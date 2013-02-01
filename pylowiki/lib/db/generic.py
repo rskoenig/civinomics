@@ -63,3 +63,4 @@ def addedItemAs(thing, privs, role = None):
         else:
             thing['addedAs'] = 'user'
     return thing
+    
