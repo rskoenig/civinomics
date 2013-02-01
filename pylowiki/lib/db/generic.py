@@ -40,3 +40,26 @@ def getThingByID(thingID):
             .one()
     except:
         return False
+
+def addedItemAs(thing, privs, role = None):
+    """
+        thing       ->  A Thing object
+        privs       ->  The c.privs dict that sets permissions within a workshop
+        role        ->  (Optional) The preferred role to use, in string format.
+        
+        This sets the addedAs attribute for a given Thing.  For example, if someone is
+        posting a comment as a facilitator, then that comment gets the 'addedAs' attribute
+        set to 'facilitator'.
+        
+        If the attribute already exists, it overwrites.  If the attribute does not exist, it creates.
+    """
+    if role is not None:
+        thing['addedAs'] = role
+    else:
+        if privs['admin']:
+            thing['addedAs'] = 'admin'
+        elif privs['facilitator']:
+            thing['addedAs'] = 'facilitator'
+        else:
+            thing['addedAs'] = 'user'
+    return thing

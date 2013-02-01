@@ -93,5 +93,5 @@ class ResourceController(BaseController):
             text = request.params['text'] # Optional
         if len(title) > 120:
             title = title[:120]
-        newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, text = text)
+        newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, c.privs, text = text)
         return redirect(session['return_to'])

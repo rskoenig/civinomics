@@ -125,7 +125,7 @@ def editComment(comment, data):
 # Object
 class Comment(object):
     # parent is a Thing id
-    def __init__(self, data, owner, discussion, parent = 0):
+    def __init__(self, data, owner, discussion, privs, role = None, parent = 0):
         w = getWorkshopByCode(discussion['workshopCode'])
         if discussion['discType'] == 'idea':
             attachedThing = ideaLib.getIdea(discussion['ideaCode'])
