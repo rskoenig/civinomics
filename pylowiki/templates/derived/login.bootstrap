@@ -89,6 +89,7 @@
                         <div class="login-bottom">
                             
                             <text class="form-subtext"><a href="/forgotPassword" style="color: #5f774b; padding-top:20px;"> Forgot password?</a></text>
+                            <text class="form-subtext pull-right"><a href="/signup" style="color: #5f774b; padding-top:20px;"> Don't have a Civinomics account yet?</a></text>
                             </label>
                             
                         </div>
