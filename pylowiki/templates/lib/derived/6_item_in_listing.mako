@@ -50,8 +50,15 @@
 
 <%def name="showItemOwner(thing)">
     <div class="span11 offset1">
-        ${lib_6.userImage(thing.owner, className="avatar")}
-        Posted by ${lib_6.userLink(thing.owner)} from ${lib_6.userGeoLink(thing.owner)}
+        <%
+            lib_6.userImage(thing.owner, className="avatar")
+            role = ''
+            if 'addedAs' in thing.keys():
+                roles = ['admin', 'facilitator', 'listener']
+                if thing['addedAs'] in roles:
+                    role = '(%s) ' % thing['addedAs']
+        %>
+        Posted by ${lib_6.userLink(thing.owner)} ${role}from ${lib_6.userGeoLink(thing.owner)}
     </div>
 </%def>
 
