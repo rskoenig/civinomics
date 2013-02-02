@@ -82,6 +82,12 @@ class ProfileController(BaseController):
 
         watching = followLib.getWorkshopFollows(c.user)
         c.watching = [workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching]
+        
+        c.privateWorkshops = []
+        if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+            privateList = pMemberLib.getPrivateMemberWorkshops(c.user['email'], deleted = '0')
+            if privateList:
+                c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]    
 
         following = followLib.getUserFollows(c.user) # list of follow objects
         c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
@@ -358,7 +364,7 @@ class ProfileController(BaseController):
     def dashboard(self, id1, id2):
         c.events = eventLib.getParentEvents(c.user)
         if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
-            c.title = 'Member Dashboard'
+            c.title = 'Edit Profile'
             if 'confTab' in session:
                 c.tab = session['confTab']
                 session.pop('confTab')
