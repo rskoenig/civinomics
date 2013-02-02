@@ -70,7 +70,14 @@
             <img src=${voteImg | n} class="vote-icon">
          </a>
       % else:
-         <div class="chevron-score"> ${rating} </div>
+         <a href="#" rel="tooltip" data-placement="top" data-trigger="click" title="Login to make your vote count" id="nulvote" class="nullvote">
+         <img src="/images/icons/glyphicons/upVote.png" class="vote-icon">
+         </a>
+         <br />
+         <div class="centered chevron-score"> ${rating} </div>
+         <a href="#" rel="tooltip" data-placement="bottom" data-trigger="click" title="Login to make your vote count" id="nullvote" class="nullvote">
+         <img src="/images/icons/glyphicons/downVote.png" class="vote-icon">
+         </a>
       % endif
    </div>
 </%def>
