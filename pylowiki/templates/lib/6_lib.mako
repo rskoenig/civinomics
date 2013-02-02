@@ -78,6 +78,7 @@
          <a href="#" rel="tooltip" data-placement="bottom" data-trigger="click" title="Login to make your vote count" id="nullvote" class="nullvote">
          <img src="/images/icons/glyphicons/downVote.png" class="vote-icon">
          </a>
+         <br />
       % endif
    </div>
 </%def>
