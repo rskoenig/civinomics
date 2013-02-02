@@ -20,7 +20,7 @@
                             if c.messages:
                                 msgString = ' (' + str(c.messages) + ')'
                         %>   
-                        <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/dashboard">Edit${msgString}</a></li>
+                        <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit${msgString}</a></li>
                     % else:
                         ${helpers.followButton(c.user)}
                     % endif

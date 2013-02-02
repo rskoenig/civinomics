@@ -145,6 +145,9 @@
             <h3 class="section-header">${c.user['name']}</h3>
             <p>${lib_6.userGeoLink(c.user)}</p>
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
+            % if c.user['greetingMsg'] != '':
+                <small class="muted expandable">${c.user['greetingMsg']}</small>
+            % endif
             % if c.user['websiteLink'] != '':
                 <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}">${c.user['websiteLink']}</a></p>
                 % if c.user['websiteDesc'] != '':

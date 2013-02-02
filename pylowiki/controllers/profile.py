@@ -361,7 +361,7 @@ class ProfileController(BaseController):
         return items
 
     @h.login_required
-    def dashboard(self, id1, id2):
+    def edit(self, id1, id2):
         c.events = eventLib.getParentEvents(c.user)
         if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
             c.title = 'Edit Profile'
@@ -387,7 +387,7 @@ class ProfileController(BaseController):
                     
             c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
 
-            return render('/derived/6_profile_dashboard.bootstrap')
+            return render('/derived/6_profile_edit.bootstrap')
         else:
             abort(404)
 
@@ -500,7 +500,7 @@ class ProfileController(BaseController):
                 session['alert'] = alert
                 session.save()
                 
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/dashboard"
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/edit"
                 
         return redirect(returnURL)
         
@@ -596,7 +596,7 @@ class ProfileController(BaseController):
             session['alert'] = alert
             session.save()
             
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/dashboard"
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/edit"
                 
         return redirect(returnURL)
     
@@ -684,7 +684,7 @@ class ProfileController(BaseController):
            session['alert'] = alert
            session.save()
 
-        return redirect("/profile/" + id1 + "/" + id2 + "/dashboard" )
+        return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
 
     @h.login_required
     def privsHandler(self, id1, id2):
@@ -720,6 +720,6 @@ class ProfileController(BaseController):
             session['alert'] = alert
             session.save()
 
-        return redirect("/profile/" + id1 + "/" + id2 + "/dashboard" )
+        return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
 
 
