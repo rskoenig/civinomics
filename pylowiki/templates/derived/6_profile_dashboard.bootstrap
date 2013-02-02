@@ -49,14 +49,12 @@
                             For the periodic upkeep of your Civinomics account.<br /><br />
                         </div><!-- center -->
                         <ul class="nav nav-pills nav-stacked">
-                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. About you<br />
-                        Update your details.
+                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Update your profile info
                         </a></li>
-                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">2. Notices${msgString}<br />
-                        Messages & Invitations.
+                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">2. Invitations & Notifications${msgString}
                         </a></li>
                         <li class="${tab4active}"><a href="#tab4" data-toggle="tab">3. Change your password<br />
-                        Stay secure.</a></li>
+                        </a></li>
                         % if c.admin:
                         <li class="${tab5active}"><a href="#tab5" data-toggle="tab">4. Administrate<br />
                         Admin only - shhh!.</a></li>
