@@ -22,10 +22,26 @@
         if 'user' in session and discussion.objType != 'comment':
             if thing['disabled'] != '1':
                 addCommentToDiscussion(thing, discussion)
+        else:
+                loginToAddComment(thing)
         displayDiscussion(thing, discussion)
     %>
 </%def>
 
+<%def name="loginToAddComment(thing)">
+    ########################################################################
+    ##
+    ## Display a button to login to add a comment
+    ##
+    ########################################################################
+    <% url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url'] %>
+    <div class="row-fluid">
+        <div class="span12">
+            <a href="${url}" title="Login to comment." class="pull-right btn btn-success" type="button">Login to Comment</a>
+            <br /><br />
+        </div><!- span12 -->
+    </div><!-- row-fluid -->
+</%def>
 
 <%def name="addCommentToDiscussion(thing, discussion)">
     ########################################################################

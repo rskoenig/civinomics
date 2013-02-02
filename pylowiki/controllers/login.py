@@ -35,10 +35,15 @@ class LoginController(BaseController):
                 workshopCode = request.params['workshopCode']
                 workshopURL = request.params['workshopURL']
                 thing = request.params['thing']
+                if 'thingCode' in request.params and 'thingURL' in request.params:
+                    thingCode = request.params['thingCode']
+                    thingURL = request.params['thingURL']
             else:
                 workshopCode = None
                 workshopURL = None
                 thing = None
+                thingCode = None
+                thingURL = None
                 
             log.info('user %s attempting to log in' % email)
             if email and password:
@@ -68,9 +73,11 @@ class LoginController(BaseController):
                         c.authuser = user
                         
                         log.info( "Successful login attempt with credentials - " + email )
-                        if workshopCode != 'None':
+                        if workshopCode != 'None' and thingCode == 'None':
                             log.info( "got workshopCode" )
                             loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing
+                        elif workshopCode != 'None' and thingCode != 'None':
+                            loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing + "/" + thingCode + "/" + thingURL
                         else:
                             loginURL = "/"
                             
@@ -205,11 +212,13 @@ class LoginController(BaseController):
             
         return render("/derived/changepass.mako" )
 
-    def loginDisplay(self, workshopCode, workshopURL, thing):
+    def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
         if workshopCode is not None:
             c.workshopCode = workshopCode
             c.workshopURL = workshopURL
             c.thing = thing
+            c.thingCode = thingCode
+            c.thingURL = thingURL
             
         return render("/derived/login.bootstrap")
 
