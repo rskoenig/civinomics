@@ -56,6 +56,11 @@ hr.civ-topbar-hr{
   margin-right: -10px;
   margin-top: -10px;
 }
+
+.section-wrapper .section-header.smaller{
+    min-height:30px;
+}
+
 .section-wrapper .activity {
   padding: 10px;
 }
@@ -89,8 +94,12 @@ hr.civ-topbar-hr{
   margin-top: 0px;
   margin-bottom: 10px;
 }
-.section-wrapper h3 {
+.section-header{
   text-align: center;
+}
+
+.section-wrapper h4.section-header{
+    padding-top:5px;
 }
 
 .tiny{

@@ -41,7 +41,7 @@
     %>
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Setup Your Workshop</h4>
+            <h4 class="section-header smaller">Setup Your Workshop</h4>
             Describe your workshop topic and goals here, and configure how members can participate.
             <br /><br />
             <div class="row-fluid">
@@ -114,7 +114,7 @@
         
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Workshop Scope</h4>
+            <h4 class="section-header smaller">Workshop Scope</h4>
             Specifiy if the workshop is public or private, and who may participate.<br /><br />
              ${change_scope()}
             <div class="tabbable">
@@ -134,7 +134,7 @@
 <%def name="tags()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Category Tags</h4>
+            <h4 class="section-header smaller">Category Tags</h4>
             Tags are descriptive key words used to categorize your workshop.<br />
             <form name="workshop_tags" id="workshop_tags" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureTagsWorkshopHandler" enctype="multipart/form-data" method="post" >
             <div class="row-fluid">
@@ -176,7 +176,7 @@
 <%def name="edit_background()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Workshop Information Summary</h4>
+            <h4 class="section-header smaller">Workshop Information Summary</h4>
             Enter introductory background information about your workshop topic and goals. What do participants need to know about the topic? What do you hope to accomplish in this workshop? This information will appear on the workshop home page with the slideshow.  
             <br /><br />
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >

@@ -10,12 +10,12 @@
 
 <%def name="admin_show()">
 	<div class="row-fluid">
-        <h4 class="section-header" style="text-align: center"><br />Facilitator Tools</h4>
-        <br />
+        <h4 class="section-header smaller">Facilitator Tools</h4>
+        <%doc>
+        ## MOTD isn't being displayed anywhere yet.
 	    <form name="admin_issue" id="admin_issue" class="form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
         <strong>Message to Participants:</strong>
-        <br />
-        This is displayed on the workshop landing page. Use this to welcome members to the workshop or to make announcements.<br />
+        <p>This is displayed on the workshop landing page. Use this to welcome members to the workshop or to make announcements.</p>
         <textarea name="motd" rows="2" cols="80">${c.motd['data']}</textarea>
         &nbsp; &nbsp;
         <% 
@@ -28,6 +28,7 @@
         %>
         <input type="radio" name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type="radio" name="enableMOTD" value="0" ${uChecked}> Unpublish Message
         <br /><br />
+        </%doc>
         % if c.w['startTime'] != '0000-00-00':
             % if c.w['deleted'] == '1':
                 <strong>Publish Workshop</strong><br />
@@ -51,7 +52,7 @@
     <div class="row-fluid">
         <div class="section-wrapper">
             <div class="browse">
-                <h4 class="section-header" style="text-align: center"><br />Event Log</h4>
+                <h4 class="section-header smaller">Event Log</h4>
                 A record of configuration and administrative changes to the workshop.<br />
                 <% wEvents = eventLib.getParentEvents(c.w) %>
                 <table class="table table-bordered">
@@ -269,37 +270,72 @@
     <br /><br />
 </%def>
 
-<%def name="admin_items(items, title)">
-    <table class="table table-bordered">
-        <thead>
-            <tr><th>${title}</th></tr>
-        </thead>
-        <tbody>
-            % for item in items:
-                % if item['deleted'] == '0': 
-                    <tr>
-                        <td>
-                            (${flagLib.getNumFlags(item)})
-                            <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
-                        </td>
-                    </tr>
-                % endif
-            % endfor
-        </tbody>
-    </table>
+<%def name="admin_items(items, title, listType, active = False)">
+    <%
+        thisClass = 'tab-pane'
+        if active == True:
+            thisClass += ' active'
+        thisID = '%s-%s' %(listType, title.lower())
+    %>
+    <div class="${thisClass}" id="${thisID}">
+        % if len(items) == 0:
+            <p class="centered">There doesn't appear to be anything here.  Hooray!</p>
+        % else:
+        <table class="table table-bordered table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>Flags</th>
+                    <th>Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% printedItems = [] %>
+                % for item in items:
+                    % if item['urlCode'] not in printedItems:
+                        <% printedItems.append(item['urlCode']) %>
+                        % if item['deleted'] == '0': 
+                            <tr>
+                                <td>
+                                    ${flagLib.getNumFlags(item)}
+                                </td>
+                                <td>
+                                    <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
+                                </td>
+                            </tr>
+                        % endif
+                    % endif
+                % endfor
+            </tbody>
+        </table>
+        % endif
+    </div>
 </%def>
 
 <%def name="admin_flagged()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Flagged Items</h4>
-            These are items in the workshop which have been flagged by members. Each flagged item needs to be examined by the facilitator and some action taken, even if it is only clearing the flags.<br />
-            <br /><br />
-            ${admin_items(c.flaggedItems['resources'], 'Flagged Resources and Comments')}
-            <br /><br />
-            ${admin_items(c.flaggedItems['ideas'], 'Flagged Ideas and Comments')}
-            <br /><br />
-            ${admin_items(c.flaggedItems['discussions'], 'Flagged Discussions and Comments')}
+            <h4 class="section-header smaller">Flagged Items</h4>
+            <p>These are items in the workshop which have been flagged by members.</p>
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#flagged-resources" data-toggle="tab">Resources</a>
+                    </li>
+                    <li>
+                        <a href="#flagged-ideas" data-toggle="tab">Ideas</a>
+                    </li>
+                    <li>
+                        <a href="#flagged-conversations" data-toggle="tab">Conversations</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <%
+                        admin_items(c.flaggedItems['resources'], 'Resources', 'flagged', active = True)
+                        admin_items(c.flaggedItems['ideas'], 'Ideas', 'flagged')
+                        admin_items(c.flaggedItems['discussions'], 'Conversations', 'flagged')
+                    %>
+                </div> <!-- /.tab-content -->
+            </div> <!-- /.tabbable -->
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
@@ -307,16 +343,32 @@
 <%def name="admin_disabled()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Disabled Items</h4>
+            <h4 class="section-header smaller">Disabled Items</h4>
+            <p>
             These are items in the workshop which have been disabled by a facilitator or admin. These items are 
-            filtered to the bottom of lists or not displayed by default. Items are often disabled for being off-topic, 
-            duplicates of existing items, or have been flagged as offensive or otherwise violating the terms of service. 
-            <br /><br />
-            ${admin_items(c.disabledItems['resources'], 'Disabled Resources and Comments')}
-            <br /><br />
-            ${admin_items(c.disabledItems['ideas'], 'Disabled Ideas and Comments')}
-            <br /><br />
-            ${admin_items(c.disabledItems['discussions'], 'Disabled Discussions and Comments')}
+            filtered to the bottom of lists. Items are often disabled for being off-topic, 
+            duplicates of existing items, or have been flagged as offensive or otherwise violating the terms of service.
+            </p>
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#disabled-resources" data-toggle="tab">Resources</a>
+                    </li>
+                    <li>
+                        <a href="#disabled-ideas" data-toggle="tab">Ideas</a>
+                    </li>
+                    <li>
+                        <a href="#disabled-conversations" data-toggle="tab">Conversations</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <%
+                        admin_items(c.disabledItems['resources'], 'Resources', 'disabled', active = True)
+                        admin_items(c.disabledItems['ideas'], 'Ideas', 'disabled')
+                        admin_items(c.disabledItems['discussions'], 'Discussions', 'disabled')
+                    %>
+                </div> <!-- /.tab-content -->
+            </div> <!-- /.tabbable -->
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
@@ -324,16 +376,32 @@
 <%def name="admin_deleted()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Deleted Items</h4>
-            These are items in the workshop which have been deleted by a facilitator or admin. These items are filtered to the bottom of lists 
-            and their content not displayed to anyone, including members and admins. Items are deleted when they are in violation of the law such 
-            as linking to pirated content or child porn or if they are serious breech of the terms of service such as displaying or linking to porn.
-            <br /><br />
-            ${admin_items(c.deletedItems['resources'], 'Deleted Resources and Comments')}
-            <br /><br />
-            ${admin_items(c.deletedItems['ideas'], 'Deletede Ideas and Comments')}
-            <br /><br />
-            ${admin_items(c.deletedItems['discussions'], 'Deleted Discussions and Comments')}
+            <h4 class="section-header smaller">Deleted Items</h4>
+            <p>
+            These are items in the workshop which have been deleted by a facilitator or admin. These items are not displayed to anyone, including members 
+            and admins. Items are deleted when they are in violation of the law such as linking to pirated content or child porn or if they are serious 
+            breach of the terms of service such as displaying or linking to porn.
+            </p>
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#deleted-resources" data-toggle="tab">Resources</a>
+                    </li>
+                    <li>
+                        <a href="#deleted-ideas" data-toggle="tab">Ideas</a>
+                    </li>
+                    <li>
+                        <a href="#deleted-conversations" data-toggle="tab">Conversations</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <%
+                        admin_items(c.deletedItems['resources'], 'Resources', 'deleted', active = True)
+                        admin_items(c.deletedItems['ideas'], 'Ideas', 'deleted')
+                        admin_items(c.deletedItems['discussions'], 'Discussions', 'deleted')
+                    %>
+                </div> <!-- /.tab-content -->
+            </div> <!-- /.tabbable -->
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>

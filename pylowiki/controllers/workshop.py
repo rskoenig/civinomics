@@ -856,16 +856,15 @@ class WorkshopController(BaseController):
             c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w.id)
             c.df = facilitatorLib.getFacilitatorsByWorkshop(c.w.id, 1)
             
-        c.flaggedItems = {'ideas':[], 'resources':[], 'discussions':[]}
-        c.disabledItems = {'ideas':[], 'resources':[], 'discussions':[]}
-        c.deletedItems = {'ideas':[], 'resources':[], 'discussions':[]}
+        c.flaggedItems = {'ideas':[], 'resources':[], 'discussions':[], 'comments':[]}
+        c.disabledItems = {'ideas':[], 'resources':[], 'discussions':[], 'comments':[]}
+        c.deletedItems = {'ideas':[], 'resources':[], 'discussions':[], 'comments':[]}
         
         for key in c.flaggedItems.keys():
             objType = key[:-1]
             flaggedItems = flagLib.getFlaggedThings(objType, workshop = c.w)
             if flaggedItems:
                 c.flaggedItems[key] = flaggedItems
-        log.info(c.flaggedItems)
         disabledIdeas = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
         disabledResources = resourceLib.getDisabledResourcesByWorkshopCode(c.w['urlCode'])
         disabledDiscussions = discussionLib.getDiscussionsForWorkshop(c.w['urlCode'], disabled = '1')
