@@ -82,12 +82,18 @@ class ProfileController(BaseController):
 
         watching = followLib.getWorkshopFollows(c.user)
         c.watching = [workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching]
+        c.interestedWorkshops = c.watching
+        interestedList = [workshop['urlCode'] for workshop in c.watching]
         
         c.privateWorkshops = []
         if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
             privateList = pMemberLib.getPrivateMemberWorkshops(c.user['email'], deleted = '0')
             if privateList:
-                c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]    
+                c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+                
+        for privateWorkshop in c.privateWorkshops:
+            if privateWorkshop['workshopCode'] not in interestedList:
+                c.interestedWorkshops.append(privateWorkshop)
 
         following = followLib.getUserFollows(c.user) # list of follow objects
         c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
