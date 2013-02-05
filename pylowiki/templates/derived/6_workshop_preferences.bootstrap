@@ -116,12 +116,12 @@
                         <br />
                         Or a whole slideshow.
                         </a></li>
-                        <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Summary 
+                        <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Introduction 
                         % if c.backConfig:
                             <i class="icon-ok"></i>
                         % endif
                         <br />
-                        Workshop information.
+                        Summarize the issue.
                         </a></li>
                         % if c.w['type'] == 'personal':
                             <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST">

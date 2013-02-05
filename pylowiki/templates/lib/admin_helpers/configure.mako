@@ -176,11 +176,10 @@
 <%def name="edit_background()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Workshop Information Summary</h4>
-            Enter introductory background information about your workshop topic and goals. What do participants need to know about the topic? What do you hope to accomplish in this workshop? This information will appear on the workshop home page with the slideshow.  
-            <br /><br />
+            <h4 class="section-header smaller">Workshop Introduction</h4>
+            Help your workshop guests get started with an introduction to the issues covered in your workshop.  Keep it short—2-4 paragraphs works best.<br />
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
-                <strong>Detailed workshop information</strong><br />
+                <br /><strong>Introduce visitors to your workshop:</strong><br />
                 <div class="well">
                     <textarea rows="10" id="data" name="data" >${c.page['data']}</textarea>
                     <div style="text-align:right; padding-right:35px;">
