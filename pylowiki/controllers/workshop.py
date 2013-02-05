@@ -101,11 +101,11 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'displayAllResources', 'dashboard']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'displayAllResources', 'preferences']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'dashboard']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
         scoped = ['display', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
@@ -238,7 +238,7 @@ class WorkshopController(BaseController):
                 session['confTab'] = "tab2"
             session.save()
 
-        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
+        return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
     def configureTagsWorkshopHandler(self, workshopCode, workshopURL):
@@ -303,7 +303,7 @@ class WorkshopController(BaseController):
                 session['confTab'] = "tab4"
             session.save()
 
-        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
+        return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
     def configurePublicWorkshopHandler(self, workshopCode, workshopURL):
@@ -321,7 +321,7 @@ class WorkshopController(BaseController):
             alert['title'] = 'Personal workshops are limited to being private invitation only with a maximum of 10 participants.'
             session['alert'] = alert
             session.save()
-            return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+            return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         if c.w['public_private'] == 'private' and 'changeScope' in request.params:
             weventMsg = 'Workshop scope changed from private to public.'
@@ -332,7 +332,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
-            return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+            return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
             
 
@@ -395,7 +395,7 @@ class WorkshopController(BaseController):
             session['confTab'] = "tab3"
             session.save()
             
-        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url'])) 
+        return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
 
     @h.login_required
     def configurePrivateWorkshopHandler(self, workshopCode, workshopURL):
@@ -496,7 +496,7 @@ class WorkshopController(BaseController):
                 session['alert'] = alert
                 session.save()
             
-        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+        return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
         
     @h.login_required
     def listPrivateMembersHandler(self, workshopCode, workshopURL):
@@ -540,7 +540,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()   
             
-        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+        return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
     def configureStartWorkshopHandler(self, workshopCode, workshopURL):
@@ -563,7 +563,7 @@ class WorkshopController(BaseController):
 
             alert = {'type':'success'}
             alert['title'] = 'Workshop Started!'
-            alert['content'] = ' You may return to the Dashboard by clicking on the Dashboard link on any page in the workshop. Have fun!'
+            alert['content'] = ' You may return to Workshop Preferences by clicking on the cog icon on the workshop front page. Have fun!'
             session['alert'] = alert
             session.save()
             
@@ -630,7 +630,7 @@ class WorkshopController(BaseController):
                     alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
                     session['alert'] = alert
                     session.save()
-                    return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+                    return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
                 else:
                     abort(404)
         else:
@@ -659,7 +659,7 @@ class WorkshopController(BaseController):
         session['alert'] = alert
         session.save()
 
-        return redirect('/workshop/%s/%s/dashboard'%(w.w['urlCode'], w.w['url']))
+        return redirect('/workshop/%s/%s/preferences'%(w.w['urlCode'], w.w['url']))
     
     @h.login_required
     def adminWorkshopHandler(self, workshopCode, workshopURL):
@@ -730,7 +730,7 @@ class WorkshopController(BaseController):
             session.save()
             
         dbHelpers.commit(m)
-        return redirect('/workshop/%s/%s/dashboard'%(c.w['urlCode'], c.w['url']))
+        return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
     
     def display(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -775,7 +775,7 @@ class WorkshopController(BaseController):
         return render('/derived/6_workshop_home.bootstrap')
     
     @h.login_required
-    def dashboard(self, workshopCode, workshopURL):
+    def preferences(self, workshopCode, workshopURL):
         if (c.w['goals'] != '' and c.w['goals'] != 'No goals set'):
             c.basicConfig = 1
         else:
@@ -830,7 +830,7 @@ class WorkshopController(BaseController):
             c.accounts = []
             
         c.page = pageLib.getInformation(c.w)
-        if c.page and 'data' in c.page and c.page['data'] != "No wiki background set yet":
+        if c.page and 'data' in c.page and c.page['data'] != "No workshop summary set yet":
             c.backConfig = 1
         else:
             c.backConfig = 0
@@ -896,7 +896,7 @@ class WorkshopController(BaseController):
             
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
-        return render('/derived/6_workshop_dashboard.bootstrap')
+        return render('/derived/6_workshop_preferences.bootstrap')
     
     ###################################################
     # 

@@ -334,7 +334,7 @@ class Workshop(object):
         commit(w)
         w['urlCode'] = toBase62(w)
         self.w = w
-        background = 'No wiki background set yet'
+        background = 'No workshop summary set yet'
         
         p = Page(title, owner, w, background)
         e = Event('Create workshop', 'User %s created a workshop'%(c.authuser.id), w)
