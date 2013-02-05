@@ -20,6 +20,7 @@ import pylowiki.lib.db.slide        as slideLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.resource     as resourceLib
+import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.suggestion   as suggestionLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
@@ -868,6 +869,7 @@ class WorkshopController(BaseController):
         disabledIdeas = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
         disabledResources = resourceLib.getDisabledResourcesByWorkshopCode(c.w['urlCode'])
         disabledDiscussions = discussionLib.getDiscussionsForWorkshop(c.w['urlCode'], disabled = '1')
+        disabledComments = commentLib.getCommentsInWorkshop(c.w, disabled = '1')
         
         if disabledIdeas:
             c.disabledItems['ideas'] = disabledIdeas
@@ -875,10 +877,13 @@ class WorkshopController(BaseController):
             c.disabledItems['resources'] = disabledResources
         if disabledDiscussions:
             c.disabledItems['discussions'] = disabledDiscussions
+        if disabledComments:
+            c.disabledItems['comments'] = disabledComments
         
         deletedResources = resourceLib.getDeletedResourcesByWorkshopCode(c.w['urlCode'])
         deletedDiscussions = discussionLib.getDiscussionsForWorkshop(c.w['urlCode'], deleted = '1')
         deletedIdeas = ideaLib.getIdeasInWorkshop(workshopCode, deleted = '1')
+        deletedComments = commentLib.getCommentsInWorkshop(c.w, deleted = '1')
         
         if deletedIdeas:
             c.deletedItems['ideas'] = deletedIdeas
@@ -886,7 +891,11 @@ class WorkshopController(BaseController):
             c.deletedItems['resources'] = deletedResources
         if deletedDiscussions:
             c.deletedItems['discussions'] = deletedDiscussions
+        if deletedComments:
+            c.deletedItems['comments'] = deletedComments    
             
+        if c.w['public_private'] == 'public':
+            c.scope = geoInfoLib.getPublicScope(c.w)
         return render('/derived/6_workshop_dashboard.bootstrap')
     
     ###################################################

@@ -285,7 +285,12 @@
             <thead>
                 <tr>
                     <th>Flags</th>
-                    <th>Title</th>
+                    <th>Submitter</th>
+                    % if title != 'Comments':
+                        <th>Title</th>
+                    % else:
+                        <th>Comment</th>
+                    % endif
                 </tr>
             </thead>
             <tbody>
@@ -298,8 +303,16 @@
                                 <td>
                                     ${flagLib.getNumFlags(item)}
                                 </td>
+                                % if item.owner != 0:
+                                    <% owner = userLib.getUserByID(item.owner) %>
+                                    <td>${lib_6.userImage(owner, className = 'avatar small-avatar')} ${lib_6.userLink(owner)}</td>
+                                % endif
                                 <td>
-                                    <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
+                                    % if title != 'Comments':
+                                        <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
+                                    % else:
+                                        <a ${lib_6.thingLinkRouter(item, c.w, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a>
+                                    % endif
                                 </td>
                             </tr>
                         % endif
@@ -327,12 +340,16 @@
                     <li>
                         <a href="#flagged-conversations" data-toggle="tab">Conversations</a>
                     </li>
+                    <li>
+                        <a href="#flagged-comments" data-toggle="tab">Comments</a>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <%
                         admin_items(c.flaggedItems['resources'], 'Resources', 'flagged', active = True)
                         admin_items(c.flaggedItems['ideas'], 'Ideas', 'flagged')
                         admin_items(c.flaggedItems['discussions'], 'Conversations', 'flagged')
+                        admin_items(c.flaggedItems['comments'], 'Comments', 'flagged')
                     %>
                 </div> <!-- /.tab-content -->
             </div> <!-- /.tabbable -->
@@ -360,12 +377,16 @@
                     <li>
                         <a href="#disabled-conversations" data-toggle="tab">Conversations</a>
                     </li>
+                    <li>
+                        <a href="#disabled-comments" data-toggle="tab">Comments</a>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <%
                         admin_items(c.disabledItems['resources'], 'Resources', 'disabled', active = True)
                         admin_items(c.disabledItems['ideas'], 'Ideas', 'disabled')
                         admin_items(c.disabledItems['discussions'], 'Discussions', 'disabled')
+                        admin_items(c.disabledItems['comments'], 'Comments', 'disabled')
                     %>
                 </div> <!-- /.tab-content -->
             </div> <!-- /.tabbable -->
@@ -393,12 +414,16 @@
                     <li>
                         <a href="#deleted-conversations" data-toggle="tab">Conversations</a>
                     </li>
+                    <li>
+                        <a href="#deleted-comments" data-toggle="tab">Comments</a>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <%
                         admin_items(c.deletedItems['resources'], 'Resources', 'deleted', active = True)
                         admin_items(c.deletedItems['ideas'], 'Ideas', 'deleted')
                         admin_items(c.deletedItems['discussions'], 'Discussions', 'deleted')
+                        admin_items(c.deletedItems['comments'], 'Comments', 'deleted')
                     %>
                 </div> <!-- /.tab-content -->
             </div> <!-- /.tabbable -->

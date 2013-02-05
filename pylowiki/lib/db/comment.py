@@ -38,17 +38,6 @@ def getCommentByCode( code ):
     except sa.orm.exc.NoResultFound:
         return False
 
-def getFlaggedDiscussionComments( id ):
-    try:
-        cList =  meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', id))).all()
-        fList = []
-        for c in cList:
-            if checkFlagged(c) and c.id not in fList:
-               fList.append(c.id)        
-        return fList
-    except sa.orm.exc.NoResultFound:
-        return False
-
 def getCommentsInDiscussion(discussion, deleted = '0', disabled = '0'):
     try:
        return meta.Session.query(Thing)\
@@ -111,6 +100,17 @@ def getAllComments(disabled = '0', deleted = '0'):
             .filter_by(objType = 'comment')\
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
+            .all()
+    except:
+        return False
+
+def getCommentsInWorkshop(workshop, disabled = '0', deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'comment')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
             .all()
     except:
         return False
