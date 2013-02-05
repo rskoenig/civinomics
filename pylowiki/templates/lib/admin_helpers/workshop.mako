@@ -302,7 +302,7 @@
                 % for item in items:
                     % if item['urlCode'] not in printedItems:
                         <% printedItems.append(item['urlCode']) %>
-                        % if item['deleted'] == '0': 
+                        % if item['deleted'] == '1': 
                             <tr>
                                 <td>
                                     ${flagLib.getNumFlags(item)}
