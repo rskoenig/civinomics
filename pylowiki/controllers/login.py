@@ -73,10 +73,10 @@ class LoginController(BaseController):
                         c.authuser = user
                         
                         log.info( "Successful login attempt with credentials - " + email )
-                        if workshopCode != 'None' and thingCode == 'None':
+                        if workshopCode != 'None' and workshopURL != 'None' and thing != 'None' and thingCode == 'None':
                             log.info( "got workshopCode" )
                             loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing
-                        elif workshopCode != 'None' and thingCode != 'None':
+                        elif workshopCode != 'None' and workshopURL != 'None' and thing != 'None' and thingCode != 'None' and thingURL != 'None':
                             loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing + "/" + thingCode + "/" + thingURL
                         else:
                             loginURL = "/"
