@@ -89,16 +89,16 @@ class LoginController(BaseController):
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
-                        c.splashMsg = splashMsg
                 else:
                     log.warning("incorrect username or password - " + email )
                     splashMsg['content'] = 'incorrect username or password'
-                    c.splashMsg = splashMsg
             else:
                 splashMsg['content'] = 'missing username or password'
-                c.splashMsg = splashMsg
             
-            return render("/derived/login.bootstrap")
+            session['splashMsg'] = splashMsg
+            session.save()
+            
+            return redirect("/login")
 
         except KeyError:
             if "user" in session:
@@ -219,6 +219,11 @@ class LoginController(BaseController):
             c.thing = thing
             c.thingCode = thingCode
             c.thingURL = thingURL
+        
+        if 'splashMsg' in session:
+            c.splashMsg = session['splashMsg']
+            session.pop('splashMsg')
+            session.save()
             
         return render("/derived/login.bootstrap")
 
