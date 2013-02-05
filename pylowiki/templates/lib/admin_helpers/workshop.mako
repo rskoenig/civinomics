@@ -291,6 +291,10 @@
                     % else:
                         <th>Comment</th>
                     % endif
+                    % if listType in ['disabled', 'deleted']:
+                        ## The person who disabled/deleted
+                        <th>${listType[:-1]}r</th> 
+                    % endif
                 </tr>
             </thead>
             <tbody>
@@ -314,6 +318,23 @@
                                         <a ${lib_6.thingLinkRouter(item, c.w, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a>
                                     % endif
                                 </td>
+                                % if listType in ['disabled', 'deleted']:
+                                    <td>
+                                        <% events = eventLib.getEventForThingWithAction(item, listType) %>
+                                        % if events:
+                                            % for event in events:
+                                                <p>
+                                                <%
+                                                    owner = userLib.getUserByID(event.owner)
+                                                    lib_6.userImage(owner, className = 'avatar small-avatar')
+                                                    lib_6.userLink(owner)
+                                                %>
+                                                : ${event['reason']}
+                                                </p>
+                                            % endfor
+                                        % endif
+                                    </td>
+                                % endif
                             </tr>
                         % endif
                     % endif
@@ -385,7 +406,7 @@
                     <%
                         admin_items(c.disabledItems['resources'], 'Resources', 'disabled', active = True)
                         admin_items(c.disabledItems['ideas'], 'Ideas', 'disabled')
-                        admin_items(c.disabledItems['discussions'], 'Discussions', 'disabled')
+                        admin_items(c.disabledItems['discussions'], 'Conversations', 'disabled')
                         admin_items(c.disabledItems['comments'], 'Comments', 'disabled')
                     %>
                 </div> <!-- /.tab-content -->
@@ -422,7 +443,7 @@
                     <%
                         admin_items(c.deletedItems['resources'], 'Resources', 'deleted', active = True)
                         admin_items(c.deletedItems['ideas'], 'Ideas', 'deleted')
-                        admin_items(c.deletedItems['discussions'], 'Discussions', 'deleted')
+                        admin_items(c.deletedItems['discussions'], 'Conversations', 'deleted')
                         admin_items(c.deletedItems['comments'], 'Comments', 'deleted')
                     %>
                 </div> <!-- /.tab-content -->
