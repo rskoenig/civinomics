@@ -219,8 +219,12 @@
                     activityStr += lib_6.ellipsisIZE(workshop['title'], 25) + '</a>'
                     if item.objType == 'comment':
                         activityStr += ' : <span class="expandable">%s</span>' % item['data']
+                else:
+                    activityStr = ''
             %>
-            <tr> <td>${activityStr | n} </td></tr>
+            % if activityStr != '':
+                <tr> <td>${activityStr | n} </td></tr>
+            % endif
         % endfor
         </tbody>
     </table>
