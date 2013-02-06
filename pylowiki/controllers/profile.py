@@ -82,14 +82,22 @@ class ProfileController(BaseController):
 
         watching = followLib.getWorkshopFollows(c.user)
         c.watching = [workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching]
-        c.interestedWorkshops = c.watching
-        interestedList = [workshop['urlCode'] for workshop in c.watching]
+        c.interestedWorkshops = []
+        for workshop in c.watching:
+            if workshop['public_private'] == 'public':
+                c.interestedWorkshops.append(workshop)
+            if workshop['public_private'] == 'private' and 'user' in session and c.authuser:
+                if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                    c.interestedWorkshops.append(workshop)
+ 
+        interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
         
         c.privateWorkshops = []
-        if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
-            privateList = pMemberLib.getPrivateMemberWorkshops(c.user['email'], deleted = '0')
-            if privateList:
-                c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+        if 'user' in session and c.authuser:
+            if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                privateList = pMemberLib.getPrivateMemberWorkshops(c.user['email'], deleted = '0')
+                if privateList:
+                    c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
                 
         for privateWorkshop in c.privateWorkshops:
             if privateWorkshop['workshopCode'] not in interestedList:
