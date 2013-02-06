@@ -133,7 +133,7 @@ class ProfileController(BaseController):
             if p['deleted'] == '0' and p['disabled'] == '0' and 'workshopCode' in p:
                 # only public objects unless author or admin
                 w = workshopLib.getWorkshopByCode(p['workshopCode'])
-                if workshopLib.isPublished(w) or c.isUser or c.isAdmin:
+                if workshopLib.isPublished(w) and w['public_private'] == 'public' or (c.isUser or c.isAdmin):
                     if p.objType == 'suggestion':
                         c.suggestions.append(p)
                     elif p.objType == 'resource':
