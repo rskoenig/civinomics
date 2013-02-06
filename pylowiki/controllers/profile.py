@@ -100,7 +100,7 @@ class ProfileController(BaseController):
                     c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
                 
         for privateWorkshop in c.privateWorkshops:
-            if privateWorkshop['workshopCode'] not in interestedList:
+            if privateWorkshop['urlCode'] not in interestedList:
                 c.interestedWorkshops.append(privateWorkshop)
 
         following = followLib.getUserFollows(c.user) # list of follow objects
