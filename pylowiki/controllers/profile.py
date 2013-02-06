@@ -54,8 +54,16 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
-        if 'user' in session and c.authuser.id != c.user.id:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
+        c.isAdmin = False
+        c.browse = False
+        if 'user' in session:
+            if c.authuser.id != c.user.id:
+                c.isFollowing = followLib.isFollowing(c.authuser, c.user)
+            if userLib.isAdmin(c.authuser.id):
+                c.isAdmin = True
+        else:
+            c.browse = True
+            
 
         facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
