@@ -1,8 +1,7 @@
 #-*- coding: utf-8 -*-
 import logging
 
-from pylons import tmpl_context as c, session
-from pylons import request
+from pylons import tmpl_context as c, session, config, request
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
@@ -17,6 +16,9 @@ from pylowiki.lib.mail import send
 from revision import Revision
 
 from time import time
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 log = logging.getLogger(__name__)
 
@@ -199,19 +201,45 @@ class User(object):
         # this next line is needed for functional testing to be able to use the generated hash
         if 'paste.testing_variables' in request.environ:
                 request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
-
-        # ugh need to move this to a template
-        subject = "Civinomics Account Activation"
-        message = 'Greetings from Civinomics!\n\nOnly one more step till your Civinomics member registration is complete. Please click on the following link to activate your account:\n\n%s' % url
-        message = message + '\n\nThis will log you into your Civinomics member dashboard, where you can update your member profile with a picture and other details. To find workshops in your area, click on the green Civinomics icon in the top corner.\n\n' 
-        message = message + 'See you soon!\n\nThe Civinomics Team'
-        send(toEmail, frEmail, subject, message)
-        
+       
         u['activationHash'] = hash
         commit(u)
         Revision(u, u)
         
+        # send the activation email
+        self.sendActivationMail(u, url)
+        
         log.info("Successful account creation (deactivated) for %s" %toEmail)
+    
+    def sendActivationMail(self, u, activationLink):
+        subject = 'Civinomics Account Activation'
+    
+        emailDir = config['app_conf']['emailDirectory']
+        txtFile = emailDir + "/activate.txt"
+
+        # open and read the text file
+        fp = open(txtFile, 'r')
+        textMessage = fp.read()
+        fp.close()
+    
+        # do the substitutions
+        textMessage = textMessage.replace('${c.activationLink}', activationLink)
+
+        # create a MIME email object, initialize the header info
+        email = MIMEMultipart(_subtype='related')
+        email['Subject'] = subject
+        email['From'] = c.conf['activation.email']
+        email['To'] = u['email']
+    
+        # now attatch the text and html and picture parts
+        part1 = MIMEText(textMessage, 'plain')
+        email.attach(part1)
+        
+        # send it
+        s = smtplib.SMTP('localhost')
+        s.sendmail(email['From'], u['email'], email.as_string())
+        s.quit()
+
 
     def changePassword(self, password):
         self['password'] = self.hashPassword(password)
