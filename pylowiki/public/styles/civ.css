@@ -258,6 +258,10 @@ img.watch{
    text-align:center;
 }
 
+.btn.workshopNav{
+    font-size:17px;
+}
+
 .btn-group.four-up{
    width: 100%;
 }

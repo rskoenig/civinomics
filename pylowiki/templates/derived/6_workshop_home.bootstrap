@@ -20,7 +20,7 @@
                 else:
                     listenOrFacilitate = "Facilitators"
             %>
-            <h3 class="section-header"> ${listenOrFacilitate} </h3>
+            <h4 class="section-header smaller"> ${listenOrFacilitate} </h3>
             <% 
                 if c.listeners:
                     helpers.whoListening(c.listeners)
@@ -31,7 +31,7 @@
       </div> <!-- /.section-wrapper -->
       <div class="section-wrapper activityStream">
          <div class="browse">
-            <h3 class="section-header"> Activity </h3>
+            <h4 class="section-header smaller"> Activity </h3>
             ${helpers.showActivity(c.activity)}
          </div> <!-- /.browse -->
       </div> <!-- /.section-wrapper -->
@@ -39,7 +39,7 @@
    <div class="span5">
       <div class="section-wrapper overview">
          <div class="browse">
-            <h3 class="section-header"> 
+            <h4 class="section-header smaller"> 
                Overview 
                <%
                   if c.privs['admin'] or c.privs['facilitator']:
@@ -66,7 +66,7 @@
    <div class = "span12">
       <div class="section-wrapper">
          <div class="browse">
-            <h3 class="section-header"> Information </h3>
+            <h4 class="section-header smaller"> Information </h3>
             ${helpers.showInfo(c.w)}
          </div>
       </div> <!--/.section-wrapper-->
