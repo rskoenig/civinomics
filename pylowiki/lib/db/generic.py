@@ -3,6 +3,7 @@ log = logging.getLogger(__name__)
 
 from pylowiki.model import Thing, Data, meta
 from dbHelpers import with_characteristic as wc
+from sqlalchemy import or_
 
 def linkChildToParent(child, parent):
     # Defines a standard for object linking.
@@ -63,4 +64,3 @@ def addedItemAs(thing, privs, role = None):
         else:
             thing['addedAs'] = 'user'
     return thing
-    

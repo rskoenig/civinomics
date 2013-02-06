@@ -42,19 +42,21 @@ def getCommentEvent(comID):
     except:
         return False
 
-def getEventForThingWithAction(thing, action):
+def getEventForThingWithAction(thing, action, allEvents = False):
     """
         Needs a shorter name.  This function was initially written to grab event logs when someone 
         enables/disables/deletes an object.
     """
     try:
         title = '%s %s' %(action.title(), thing.objType)
-        log.info(title)
-        return meta.Session.query(Thing)\
+        rows = meta.Session.query(Thing)\
             .filter_by(objType = 'event')\
             .filter(Thing.data.any(wc('title', title)))\
             .filter(Thing.data.any(wc('parent_id', u'%s' % thing.id)))\
-            .all()
+            .order_by('-date')
+        if allEvents:
+            return rows.all()
+        return rows.first()
     except:
         return False
 

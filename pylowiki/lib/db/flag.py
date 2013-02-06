@@ -102,7 +102,7 @@ def getNumFlags(thing, deleted = '0', disabled = '0'):
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .count()
     except:
-        return False
+        return 0
 
 def immunify(thing):
     # Flips the 'immune' bit
@@ -114,7 +114,7 @@ def immunify(thing):
         dbHelpers.commit(flagMetaData)
 
 def checkFlagged(thing):
-    return len(getFlags(thing)) > 0
+    return getNumFlags(thing) > 0
 
 def isFlagged(thing, flagger):
     """

@@ -44,7 +44,7 @@
         if c.w['startTime'] == '0000-00-00':
             tab1active = "active"
         else:
-            tab6active = "active"
+            tab7active = "active"
 %>
 
 <div class="row-fluid">
@@ -63,12 +63,13 @@
                         <h4 class="section-header smaller">Administrate</h4>
                         <ul class="nav nav-pills nav-stacked">
                         <% tabCount = 1 %>
+                            <li class="${tab7active}"><a href="#tab7" data-toggle="tab">${tabCount}. Marked Items<br />
+                            <% tabCount += 1 %>
+                            Flagged and disabled.</a></li>
                             <li class="${tab6active}"><a href="#tab6" data-toggle="tab">${tabCount}. Facilitator Tools<br />
                             <% tabCount += 1 %>
                             Periodic maintenance.</a></li>
-                            <li class="${tab7active}"><a href="#tab7" data-toggle="tab">${tabCount}. Flagged Items<br />
-                            <% tabCount += 1 %>
-                            Check this list daily.</a></li>
+                            <%doc>
                             <li class="${tab8active}"><a href="#tab8" data-toggle="tab">${tabCount}. Disabled Items<br />
                             <% tabCount += 1 %>
                             Dupes, off-topic, nasty...</a></li>
@@ -77,6 +78,7 @@
                                 <% tabCount += 1 %>
                                 Illegal, spam, porn...</a></li>
                             % endif
+                            </%doc>
                             <li class="${tab10active}"><a href="#tab10" data-toggle="tab">${tabCount}. Event Log<br />
                             <% tabCount += 1 %>
                             Facilitator actions.</a></li>
@@ -166,6 +168,7 @@
                         </div><!-- browse -->
                     </div><!-- section-wrapper -->
                 </div><!-- tab6 -->
+                <%doc>
                 <div class="tab-pane ${tab7active}" id="tab7">
                     ${admin_helpers.admin_flagged()}
                 </div><!-- tab7 -->
@@ -177,9 +180,14 @@
                     ${admin_helpers.admin_deleted()}
                 </div><!-- tab9 -->
                 % endif
+                </%doc>
+                <div class="tab-pane ${tab7active}" id="tab7">
+                    ${admin_helpers.marked_items()}
+                </div><!-- tab7 -->
                 <div class="tab-pane ${tab10active}" id="tab10">    
                     ${admin_helpers.admin_event_log()}
                 </div><!-- tab10 -->
+                
             </div><!-- tab-content -->
         % endif
         </div><!-- span9 -->

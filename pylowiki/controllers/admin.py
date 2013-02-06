@@ -157,6 +157,9 @@ class AdminController(BaseController):
         eventTitle = '%s %s' % (action.title(), thing.objType)
         eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
         eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action)
+        if action in ['disabled', 'deleted']:
+            if not flagLib.checkFlagged(thing):
+                flagLib.Flag(thing, user, workshop = c.w)
 
     def enable(self, thingCode):
         result = 'Successfully enabled!'

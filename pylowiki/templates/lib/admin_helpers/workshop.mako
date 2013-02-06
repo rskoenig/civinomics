@@ -5,6 +5,9 @@
     import pylowiki.lib.db.flag             as flagLib
     import pylowiki.lib.db.user             as userLib
     import pylowiki.lib.db.event            as eventLib
+    
+    import logging
+    log = logging.getLogger(__name__)
 %>  
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
@@ -291,58 +294,98 @@
                     % else:
                         <th>Comment</th>
                     % endif
-                    % if listType in ['disabled', 'deleted']:
-                        ## The person who disabled/deleted
-                        <th>${listType[:-1]}r</th> 
-                    % endif
+                    <th>Action</th> 
                 </tr>
             </thead>
             <tbody>
-                <% printedItems = [] %>
                 % for item in items:
-                    % if item['urlCode'] not in printedItems:
-                        <% printedItems.append(item['urlCode']) %>
-                        % if (item['deleted'] == '0') or (listType == 'deleted' and item['deleted'] == '1'): 
-                            <tr>
-                                <td>
-                                    ${flagLib.getNumFlags(item)}
-                                </td>
-                                % if item.owner != 0:
-                                    <% owner = userLib.getUserByID(item.owner) %>
-                                    <td>${lib_6.userImage(owner, className = 'avatar small-avatar')} ${lib_6.userLink(owner)}</td>
-                                % endif
-                                <td>
-                                    % if title != 'Comments':
-                                        <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
-                                    % else:
-                                        <a ${lib_6.thingLinkRouter(item, c.w, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a>
-                                    % endif
-                                </td>
-                                % if listType in ['disabled', 'deleted']:
-                                    <td>
-                                        <% events = eventLib.getEventForThingWithAction(item, listType) %>
-                                        % if events:
-                                            % for event in events:
-                                                <p>
-                                                <%
-                                                    owner = userLib.getUserByID(event.owner)
-                                                    lib_6.userImage(owner, className = 'avatar small-avatar')
-                                                    lib_6.userLink(owner)
-                                                %>
-                                                : ${event['reason']}
-                                                </p>
-                                            % endfor
-                                        % endif
-                                    </td>
-                                % endif
-                            </tr>
-                        % endif
+                    <%
+                        rowClass = None
+                        if item['deleted'] == '1' and not c.privs['admin']:
+                            continue
+                        elif item['deleted'] == '1' and c.privs['admin']:
+                            rowClass = 'error'
+                            action = 'deleted'
+                        elif item['disabled'] == '1':
+                            rowClass = 'warning'
+                            action = 'disabled'
+                        else:
+                            action = 'enabled'
+                        event = eventLib.getEventForThingWithAction(item, action)
+                        if action == 'enabled' and event:
+                            rowClass = 'success'
+                    %>
+                    % if rowClass is not None:
+                        <tr class="${rowClass}">
+                    % else:
+                        <tr>
                     % endif
+                        <td> ${flagLib.getNumFlags(item)} </td>
+                        <td>
+                            <% 
+                                owner = userLib.getUserByID(item.owner)
+                                lib_6.userImage(owner, className = 'avatar small-avatar')
+                                lib_6.userLink(owner)
+                            %>
+                        </td>
+                        <td>
+                            % if title != 'Comments':
+                                <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
+                            % else:
+                                <a ${lib_6.thingLinkRouter(item, c.w, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a>
+                            % endif
+                        </td>
+                        <td>
+                            % if event:
+                                <p>
+                                <%
+                                    owner = userLib.getUserByID(event.owner)
+                                    lib_6.userImage(owner, className = 'avatar small-avatar')
+                                    lib_6.userLink(owner)
+                                %>
+                                : ${event['reason']}
+                                </p>
+                            % endif
+                        </td>
+                    </tr>
                 % endfor
             </tbody>
         </table>
         % endif
     </div>
+</%def>
+
+<%def name="marked_items()">
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header smaller">Marked Items</h4>
+            <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#marked-resources" data-toggle="tab">Resources</a>
+                    </li>
+                    <li>
+                        <a href="#marked-ideas" data-toggle="tab">Ideas</a>
+                    </li>
+                    <li>
+                        <a href="#marked-conversations" data-toggle="tab">Conversations</a>
+                    </li>
+                    <li>
+                        <a href="#marked-comments" data-toggle="tab">Comments</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <%
+                        admin_items(c.flaggedItems['resources'], 'Resources', 'marked', active = True)
+                        admin_items(c.flaggedItems['ideas'], 'Ideas', 'marked')
+                        admin_items(c.flaggedItems['discussions'], 'Conversations', 'marked')
+                        admin_items(c.flaggedItems['comments'], 'Comments', 'marked')
+                    %>
+                </div> <!-- /.tab-content -->
+            </div> <!-- /.tabbable -->
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
 </%def>
 
 <%def name="admin_flagged()">
