@@ -19,7 +19,7 @@
       </a>
    </div>
       <p class="centered orange">
-         <a ${lib_6.workshopLink(w)}> ${w['title']} </a>
+         <a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 50)} </a>
       </p>
       <div class="workshop-listing-info">
          <span>
