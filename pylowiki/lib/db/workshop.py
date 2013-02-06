@@ -196,6 +196,12 @@ def isGuest(workshop):
 
     return False
     
+def isPublished(workshop):
+    if workshop['startTime'] != '0000-00-00' and workshop['deleted'] != '1':
+        return True
+
+    return False
+    
 def isScoped(user, workshop):   
     if workshop['public_private'] != 'public':
         pTest = getPrivateMember(workshop['urlCode'], user['email'])

@@ -55,10 +55,13 @@ class ProfileController(BaseController):
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
         c.isAdmin = False
+        c.isUser = False
         c.browse = False
         if 'user' in session:
             if c.authuser.id != c.user.id:
                 c.isFollowing = followLib.isFollowing(c.authuser, c.user)
+            else:
+                c.isUser = True
             if userLib.isAdmin(c.authuser.id):
                 c.isAdmin = True
         else:
@@ -74,7 +77,7 @@ class ProfileController(BaseController):
            elif f['disabled'] == '0':
               wID = f['workshopID']
               myW = workshopLib.getWorkshopByID(wID)
-              if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1' or myW['public_private'] != 'public':
+              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
                  # show to the workshop owner, show to the facilitator owner, show to admin
                  if 'user' in session: 
                      if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
@@ -126,17 +129,21 @@ class ProfileController(BaseController):
         
         posts = activityLib.getMemberPosts(c.user)
         for p in posts:
-            if p['deleted'] == '0' and p['disabled'] == '0':
-                if p.objType == 'suggestion':
-                    c.suggestions.append(p)
-                elif p.objType == 'resource':
-                    c.resources.append(p)
-                elif p.objType == 'discussion':
-                    c.discussions.append(p)
-                elif p.objType == 'idea':
-                    c.ideas.append(p)
-                elif p.objType == 'comment':
-                    c.comments.append(p)
+            # ony active objects
+            if p['deleted'] == '0' and p['disabled'] == '0' and 'workshopCode' in p:
+                # only public objects unless author or admin
+                w = workshopLib.getWorkshopByCode(p['workshopCode'])
+                if workshopLib.isPublished(w) or c.isUser or c.isAdmin:
+                    if p.objType == 'suggestion':
+                        c.suggestions.append(p)
+                    elif p.objType == 'resource':
+                        c.resources.append(p)
+                    elif p.objType == 'discussion':
+                        c.discussions.append(p)
+                    elif p.objType == 'idea':
+                        c.ideas.append(p)
+                    elif p.objType == 'comment':
+                        c.comments.append(p)
                     
         c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
         
