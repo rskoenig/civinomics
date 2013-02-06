@@ -342,8 +342,10 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
+        c.isUser = False
+        c.isAdmin = False
         if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
+           c.isFollowing = followLib.isFollowing(c.authuser, c.user)
         else:
            c.isFollowing = False
         
@@ -360,6 +362,14 @@ class ProfileController(BaseController):
         c.watching = items['watching']
     
     def _userItems(self, user):
+        isUser = False
+        isAdmin = False
+        if 'user' in session and c.authuser:
+            if user.id == c.authuser.id:
+               isUser = True
+            if userLib.isAdmin(c.authuser.id):
+               isAdmin = True
+
         # returns a dictionary of user-created (e.g. resources, discussions, ideas)
         # or user-interested (e.g. followers, following, watching) objects
         items = {}
@@ -380,13 +390,17 @@ class ProfileController(BaseController):
         items['discussions'] = []
         items['ideas'] = []
         for thing in createdThings:
-            if thing.objType == 'resource':
-                items['resources'].append(thing)
-            elif thing.objType == 'discussion':
-                items['discussions'].append(thing)
-            elif thing.objType == 'idea':
-                items['ideas'].append(thing)
-        
+            if 'workshopCode' in thing:
+                w = workshopLib.getWorkshopByCode(thing['workshopCode'])
+                if workshopLib.isPublished(w) or isAdmin:
+                    if w['public_private'] == 'public' and thing['disabled'] != '1' and thing['deleted'] != '1' or (isUser or isAdmin):
+                        if thing.objType == 'resource':
+                            items['resources'].append(thing)
+                        elif thing.objType == 'discussion':
+                            items['discussions'].append(thing)
+                        elif thing.objType == 'idea':
+                            items['ideas'].append(thing)
+
         return items
 
     @h.login_required
