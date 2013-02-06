@@ -180,6 +180,7 @@ class TestIdeaController(TestController):
         # assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # NOTE for now, login as super admin. next, make a normal user an admin for this
+        logout(self)
         admin = {}
         # conf = config['app_conf']
         # admin['email'] = conf['admin.email']
