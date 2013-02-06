@@ -7,7 +7,7 @@
 
 <% 
    lib.return_to()
-   helperText = '<strong class="orange">Vote</strong> existing items <strong class="green">up</strong>(<i class="icon-chevron-up"></i>), <strong class="purple">down</strong>(<i class="icon-chevron-down"></i>), or add your own.'
+   helperText = '<strong class="orange">Vote</strong> existing items <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">), or add your own.'
    if c.listingType == 'discussion':
       itemList = c.discussions
       helperText += '<br/> Ask a question or join a general conversation about the workshop.'
