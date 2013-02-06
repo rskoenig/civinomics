@@ -2,7 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
 
-<div class="row">
+<div class="row" ng-app>
    <div class="span12 well workshop-panel">
       <div class="row-fluid">
          <div class="span10"> <!-- geographic breadcrumbs -->
@@ -17,8 +17,8 @@
       <div class="row-fluid">
          <div class="span12">
             <h1 class="centered"> 
-               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" class="workshop-title">
-                  ${c.w['title']} 
+               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" class="workshop-title" ng-init=" workshopTitle='${c.w['title']}' ">
+                  {{workshopTitle}}
                </a>
             </h1>
          </div>
@@ -51,4 +51,5 @@
    <script type="text/javascript">
       $(".followButton").tooltip();
    </script>
+   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
 </%def>

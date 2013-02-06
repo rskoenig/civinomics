@@ -51,7 +51,7 @@
                     <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
                     <strong>Workshop Name:</strong> <span class="label label-important">Required</span>
                     <br />
-                    <input type="text" name="title" size="50" maxlength="70" value = "${c.w['title']}"/>
+                    <input type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle"/>
                     <br />
                     <br />
                     <strong>Workshop Description:</strong> <span class="label label-important">Required</span>
