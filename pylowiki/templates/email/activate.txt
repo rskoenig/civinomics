@@ -1,0 +1,19 @@
+
+Greetings from Civinomics!
+
+Your Civinomics registration is almost complete. Please click on the link blow to activate your account.
+
+${c.activationLink}
+
+Once on the Civinomics website, you can:
+
+-- Start browsing and clicking on workshops with wild abandon, knowing that the green Civinomics logo will always take you home
+
+-- Click on your city or county in the top navigation bar to find workshops in your area
+
+-- Check out the Help page for tips on getting started.
+
+We're happy to have you on board!  See you online soon.
+
+
+The Civinomics Team
