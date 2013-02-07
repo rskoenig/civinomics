@@ -329,11 +329,33 @@ img.watch{
    border-radius: 5px;
    padding:5px;
    margin-top:10px;
+   text-align: center;
+}
+
+.summary a{
+  color: #333333;
 }
 
 .well{
    background: white;
 }
+
+.well.help{
+   color: #468847;
+   background-color: #dff0d8;
+   border-color: #468847;
+   height: 200px;
+   padding-top: 5px;
+}
+
+.well.help:hover{
+   background-color: #b2dba1;
+}
+
+.well.help a{
+   color: #468847;
+}
+
 
 ul.goals{
    list-style-type: none;
