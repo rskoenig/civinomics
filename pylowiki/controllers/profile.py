@@ -92,7 +92,12 @@ class ProfileController(BaseController):
                 c.pendingListeners.append(l)
 
         watching = followLib.getWorkshopFollows(c.user)
-        c.watching = [workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching]
+        watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        c.watching = []
+        for workshop in watchList:
+            if workshop['public_private'] == 'public' or (c.isUser or c.isAdmin):
+                c.watching.append(workshop)
+                
         c.interestedWorkshops = []
         for workshop in c.watching:
             if workshop['public_private'] == 'public':
@@ -381,7 +386,11 @@ class ProfileController(BaseController):
         items['followers'] = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
         
         watching = followLib.getWorkshopFollows(user)
-        items['watching'] = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        items['watching'] = []
+        for workshop in watchList:
+            if workshop['public_private'] == 'public' or (isUser or isAdmin):
+                items['watching'].append(workshop)
         
         # Already checks for disabled/deleted by default
         # The following section feels like a good candidate for map/reduce
