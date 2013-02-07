@@ -1,0 +1,17 @@
+
+Hello from ${c.sender},
+
+This is a summary of your Civinomics account for your workshop named:
+
+${c.workshopName}
+
+Account summary:
+
+${c.invoices}
+
+If you have any questions about your Civinomics account, please
+email billing@civinomics.com
+
+Best regards and hope to see you online soon,
+
+${c.sender}

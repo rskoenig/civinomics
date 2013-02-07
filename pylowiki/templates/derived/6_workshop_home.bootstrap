@@ -1,0 +1,85 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+<div class="row-fluid">
+   <div class="span12">
+      <div class="summary">
+         ${c.w['description']}
+         <a href="#information"> Read more </a>
+      </div> 
+   </div> <!-- /.span12 -->
+</div> <!-- /.row-fluid -->
+<div class="row-fluid">
+   <div class="span7">
+      <div class="section-wrapper listening">
+         <div class="browse">
+            <%
+                if c.listeners:
+                    listenOrFacilitate = "Who's listening?"
+                else:
+                    listenOrFacilitate = "Facilitators"
+            %>
+            <h4 class="section-header smaller"> ${listenOrFacilitate} </h3>
+            <% 
+                if c.listeners:
+                    helpers.whoListening(c.listeners)
+                else:
+                    helpers.whoListening(c.facilitators)
+            %>
+         </div> <!-- /.browse -->
+      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper activityStream">
+         <div class="browse">
+            <h4 class="section-header smaller"> Activity </h3>
+            ${helpers.showActivity(c.activity)}
+         </div> <!-- /.browse -->
+      </div> <!-- /.section-wrapper -->
+   </div> <!-- /.span7 -->
+   <div class="span5">
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+               Overview 
+               <%
+                  if c.privs['admin'] or c.privs['facilitator']:
+                     helpers.configButton(c.w)
+               %>
+            </h3>
+            <div id="slideshow">
+               <h5> Slideshow </h5>
+               ${helpers.slideshow(c.w)}
+            </div>
+            <h5> Goals </h5>
+            <ul class="goals">
+               <li class="finished"> Goal number 1 </li>
+               <li class="finished"> Goal number 2 </li>
+               <li> Goal number 3 </li>
+               <li> Goal number 4 </li>
+               <li> Goal number 5 </li>
+            </ul> <!-- /goals -->
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+   </div> <!-- /.span5 -->
+</div> <!-- /.row -->
+<div class="row-fluid" id="information">
+   <div class = "span12">
+      <div class="section-wrapper">
+         <div class="browse">
+            <h4 class="section-header smaller"> Information </h3>
+            ${helpers.showInfo(c.w)}
+         </div>
+      </div> <!--/.section-wrapper-->
+   </div><!-- /.span12 -->
+</div><!--/.row-->
+
+<%def name="extraScripts2()">
+    <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
+    <script>
+      var $doc = $(document);
+      $(document).ready(function() {
+         $.fn.foundationClearing         ? $doc.foundationClearing() : null;
+         
+      });
+    </script>
+</%def>
