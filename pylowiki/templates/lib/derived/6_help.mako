@@ -66,352 +66,266 @@ We appreciate your use of the sliders to register more than just binary yes or n
 </%def>
 
 <%def name="faq()">
+    <h3>FAQ</h3>       
+        <div class="longText">
+            <div id="home">
+                <hr>
+                <h4>Homepage</h4>
+                <em>The homepage lists all of the workshops on Civinomics.</em>
+                </br>
+                </br>
+                <p><span class="faq">How do I vote?</span></p>
+                <p>You vote on specific ideas and proposals - the homepage displays workshops, which contain the objects to vote on. To vote, click into a workshop, go to the ideas tab and vote for an idea by clicking the up arrow, or against an idea, by clicking the down arrow.</p>
 
-<br /><br />
-<div>
-<p><span style="font-style:italic">Civinomics Homepage</span></p>
-<p><span style="font-weight:bold">How do I know which workshops I can participate in?</span></p>
-<p>The workshops available to you to participate in will 
-have a green “participate” prompt on the right hand side of where 
-each workshop listed. You may view all workshops. However, you may only 
-participate in those scoped for your region. For instance, if you lived 
-in Oregon then you would only be able to participate in Oregon workshops, 
-but you would still be able to view other workshops.</p>
-<p><span style="font-weight:bold">What does it mean to be a “featured workshop”?</span></p>
-<p><span style="font-weight:bold">What do the icons on the workshop home page mean?</span></p>
-<p>For each workshop listed, you should see the following 
-numbered icons: A pencil, signifying the number of suggestions submitted; 
-a book, signifying the number of resources contributed, a folder, signifying 
-the number of discussions topics; a person signifying the number of 
-participants; and a heart signifying the number of suggestions that 
-have been adopted (from left to right).</p>
-<p><span style="font-weight:bold">How can I change my profile picture?</span></p>
-<p>While on the workshop homepage, you can click on your 
-picture in the top left hand corner of the screen to access your profile. 
-Once here, click on the blue “edit profile” button next to 
-your picture in the top half of the page. You should now be able to 
-upload a new photo of yourself by clicking the “choose file” 
-button, located 3 rows from the top of the web page.</p>
-<p><span style="font-weight:bold">How come I can only participate in the workshops in my area?</span></p>
-<p>Since many of the workshops on Civinomics are region 
-specific, each workshop has what we call a “public sphere”, which 
-is where the workshop is taking place. The public sphere could be really 
-local, like a city-specific issue or, a workshop might deal with a national 
-issue, perhaps even a global one. You can view most workshops, but you 
-can only directly participate in the ones in your area. Each sphere 
-is represented by the flag icons found on the homepage in the left hand 
-column and on the top of your profile page.</p>
-<p><span style="font-weight:bold">What do the flags on the workshop homepage mean?</span></p>
-<p>The flag icons found in the left hand column of the 
-homepage and on the top of your profile page represent your geographic 
-scope, or the various regions where you live. Each flag represents your 
-city, county, state and country (top to bottom). You can click on these 
-icons to display the workshops scoped for these areas.</p>
-<p><span style="font-weight:bold">What can I search for on the homepage?</span></p>
-<p>In the left hand column of the workshop homepage, 
-below the flag icons, you will see the search options. In the top section, 
-you can search for workshops and other members, by name and by location. 
-Below, you can search through workshops by tagged keywords.</p>
-<p><span style="font-weight:bold">What is a tag?</span></p>
-<p>Tags are keywords associated with each workshop. They 
-can be topical in nature, like “taxes”, or simply associative, like 
-“feedback”. </p>
-<p><span style="font-weight:bold">What is the difference between public/member tags?</span></p>
-<p>Public tags are broad topical categories that Civinomics 
-has defined, these include the environment, government, municipal services, 
-economy, infrastructure, civil rights, civic response and business. 
-Private tags are member created keywords that help to categorize workshops 
-so that they can be found more easily.</p>
-<p><span style="font-weight:bold">What is a survey?</span></p>
-<p>In addition to workshops, Civinomics has surveys available 
-that serve to both educate and collect feedback from members. These 
-surveys include educational content to provide members with topical 
-context before answering questions. Civinomics will often report on 
-the findings of these surveys, but will never publish, or sell any personally 
-identifiable information.</p>
-<p><span style="font-weight:bold">What is the purpose of the “new contributions” column?</span></p>
-<p>The “new contributions” column, found on 
-the far right side of the homepage, documents the most recent activity 
-of other members on the site. Each listing shows a thumbnail of the 
-person who made the contribution, the type of the contribution, the 
-title of the workshop in which it was posted and how long ago the contribution 
-was made.</p>
-<p> </p>
-<p> </p>
-<p><span style="font-style:italic">Profile Page</span></p>
-<p><span style="font-weight:bold">How do I access my profile?</span></p>
-<p>The profile page can be accessed at anytime by clicking 
-on the icon labeled “profile” at the very top of the screen, 
-next to the to the homepage icon. It can also be accessed by clicking 
-on any one of the various thumbnails (small images), found on the homepage 
-and in the various workshops. You can view other member’s profiles 
-by clicking on their thumbnail, or by searching for them on the homepage.</p>
-<p><span style="font-weight:bold">How can I edit my profile?</span></p>
-<p>Edit your profile by clicking on the blue “edit 
-profile” button found in the top row of your profile page, below 
-the heading. It is to the right of your profile picture. From here you 
-can edit your basic information, request a new password, change your 
-profile picture and edit your tag line.</p>
-<p><span style="font-weight:bold">How can I change my profile picture?</span></p>
-<p>Click on the blue “edit profile” button next 
-to your picture in the top half of the page. You should now be able 
-to upload a new photo of yourself by clicking the “choose file” 
-button, located 3 rows from the top of the web page.</p>
-<p><span style="font-weight:bold">How can I change my tagline?</span></p>
-<p>Click on the blue “edit profile” button next 
-to your picture in the top half of the page. You can edit your tag line 
-by entering a new one into the field found 4 rows from the top of the 
-edit profile page.</p>
-<p><span style="font-weight:bold">How can I change my zip code?</span></p>
-<p><span style="font-weight:bold">How can I change my password?</span></p>
-<p>Click on the blue “edit profile” button next 
-to your picture in the top half of the page. You can change your password 
-by entering a new one into the field found 2 rows from the top of the 
-edit profile page.</p>
-<p><span style="font-weight:bold">What does it mean to facilitate a workshop?</span></p>
-<p>Workshop facilitators are charged with establishing 
-the workshop goals, drafting the initial slideshow content and background 
-information, and for continuous content moderation; both for quality 
-and Terms of Use violations. Civinomics facilitates all public workshops 
-for the purposes of neutrality and transparency. All public workshops 
-are facilitated according to a set of strict guidelines by Civinomics 
-appointed staff. All editorial content is subject to member feedback 
-and is meant to be neutral in providing facts and context. </p>
-<p> </p>
-<p>Private workshops, which are paid for and facilitated 
-by private parties, are still subject to Terms of Use violations and 
-member feedback. However, the content guidelines that govern Civinomics 
-facilitators do not apply to private workshops.</p>
-<p><span style="font-weight:bold">How do I facilitate a workshop of my own?</span></p>
-<p>Interested in hosting a workshop for your community? 
-Email us at <a href="mailto:info@civinomics.com" target="_blank"><span><span style="text-decoration:underline">info@civinomics.com</span></span></a> or feel free to visit our website 
-at <a href="http://civinomics.com/corp/contact" target="_blank">http://civinomics.com/corp/<WBR>contact</a></p>
-<p><span style="font-weight:bold">What are followers?</span></p>
-<p>Followers are other members who have selected to receive 
-updates about your actions on Civinomics and have a direct link to your 
-profile via their own.</p>
-<p><span style="font-weight:bold">How do I get followers?</span></p>
-<p>There is no right way to gain followers. However, 
-we encourage contributing a lot of really valuable and constructive 
-content.</p>
-<p><span style="font-weight:bold">How do I follow other people?</span></p>
-<p>To follow another member click on either their name 
-or their thumbnail to access their profile, then click the blue button 
-labeled “follow” in the top row on the profile page.</p>
-<p><span style="font-weight:bold">What does it mean to follow a workshop?</span></p>
-<p>Following a workshop will create a direct link to 
-that workshop on your profile page so that you can navigate to it more 
-easily.</p>
-<p><span style="font-weight:bold">How do I follow workshops?</span></p>
-<p>To follow a workshop click on the “blue” 
-follow button located on the workshop homepage in the right column next 
-to the heading “Participate:”</p>
-<p><span style="font-weight:bold">How can I see the workshops that I am following?</span></p>
-<p>All of the workshops that you are currently following 
-can be seen in your profile page in the third row from the top entitled 
-“Workshops I am following”.</p>
-<p><span style="font-weight:bold">What are suggestions?</span></p>
-<p>Workshop suggestions are member submitted ideas to 
-address the stated goals of the workshop. Every suggestion can be voted 
-on by other members who are scoped to participate in that workshop. 
-Suggestions can also be edited by their original creators. Other members 
-may comment on your suggestion if you allow it.</p>
-<p><span style="font-weight:bold">Can I add resources to my suggestion?</span></p>
-<p>Yes, and we very much encourage you to do so. To add 
-a resource to a suggestion click on the link “add a resource” 
-located in the suggestion heading, on the suggestion page.</p>
-<p><span style="font-weight:bold">Can I disable comments on my suggestion?</span></p>
-<p>Yes, to disable comments on a suggestion click the 
-green “edit” button on the suggestion page and click “no” 
-to the prompt “allow member comments:” found below the body text 
-box.</p>
-<p><span style="font-weight:bold">What do the icons near my suggestions on my profile page mean?</span></p>
-<p>Your profile will by default show your 3 most recent 
-suggestions. The blue check box icon above the suggestion title displays 
-its average rating, while the black flags indicate if the suggestion 
-has been flagged or not.</p>
-<p><span style="font-weight:bold">What does the green/red bar below the number of my suggestions mean?</span></p>
-<p>The green and red bar below your number of suggestions 
-indicates the average rating of all of your suggestions combined. Favorable 
-ratings are displayed in green as a percentage of the total bar to indicate 
-the percentage of your suggestions rated favorably.</p>
-<p><span style="font-weight:bold">What are resources?</span></p>
-<p>Resources are links to other online information to 
-provide context for new ideas and discussion. They can be articles, 
-pictures, videos, etc. Resources can be rated up and down with the arrows 
-on the left side of the resource heading. Resources can also be edited 
-by their original creators. Other members may comment on your resource 
-if you allow it.</p>
-<p><span style="font-weight:bold">Can I disable comments on my resources?</span></p>
-<p>Yes, to disable comments on a resource click the green 
-“edit” button on the resource page and click “no” 
-to the prompt “allow member comments:” found below the body 
-text box.</p>
-<p><span style="font-weight:bold">What do the icons near my resources mean?</span></p>
-<p>Your profile will by default show your 3 most recently 
-contributed resources. The blue check box icon above the resource title 
-displays its average rating, while the black flags indicate if the resource 
-has been flagged or not.</p>
-<p><span style="font-weight:bold">What does the green/red bar below the number of my resources mean?</span></p>
-<p>The green and red bar below your number of resources 
-contributed indicates the average rating of all of your resources combined. 
-Favorable ratings are displayed in green as a percentage of the total 
-bar to indicate the percentage of your resources rated favorably.</p>
-<p><span style="font-weight:bold">What are discussions?</span></p>
-<p>Discussions are member-initiated points of conversation, 
-much like a forum. Discussion topics can be in the form of questions, 
-op-eds, statements, pictures, etc. All discussion topics can be rated 
-up and down with the arrows on the left side of the discussion heading. 
-Discussions can also be edited by their original creators.</p>
-<p><span style="font-weight:bold">Can I disable comments on my discussions?</span></p>
-<p>No, it wouldn’t be much of a discussion then would 
-it?</p>
-<p><span style="font-weight:bold">What do the icons near my discussions mean?</span></p>
-<p>Your profile will by default show your 3 most recent 
-discussions. The blue check box icon above the discussion title displays 
-its average rating, while the black flags indicate if the discussion 
-has been flagged or not.</p>
-<p><span style="font-weight:bold">What does the green/red bar below the number of my discussions mean?</span></p>
-<p>The green and red bar below your number of discussions 
-indicates the average rating of all of your discussions combined. Favorable 
-ratings are displayed in green as a percentage of the total bar to indicate 
-the percentage of your discussions rated favorably.</p>
-<p><span style="font-weight:bold">What are comments?</span></p>
-<p>Comments are member responses to submitted suggestions, 
-contributed resources and discussion topics. All comments can be rated 
-up and down with the arrows on the left side of the comment title. Comments 
-can also be edited by their original creators.</p>
-<p><span style="font-weight:bold">What do the icons near my comments mean?</span></p>
-<p>Your profile will by default show your 3 most recent 
-comments. The blue check box icon above the comment title displays its 
-average rating, while the black flags indicate if the comment has been 
-flagged or not.</p>
-<p><span style="font-weight:bold">What does the green/red bar below the number of my comments mean?</span></p>
-<p>The green and red bar below your number of comments 
-indicates the average rating of all of your comments combined. Favorable 
-ratings are displayed in green as a percentage of the total bar to indicate 
-the percentage of your comments rated favorably.</p>
-<p> </p>
-<p> </p>
-<p> </p>
-<p><span style="font-style:italic">Workshop Pages</span></p>
-<p style="text-indent:36pt"><span style="font-style:italic">Workshop Homepage</span></p>
-<p style="text-indent:36pt"><span style="font-weight:bold">What are workshop goals?</span></p>
-<p style="margin-left:36pt">Workshop goals define 
-what ideas and points of discussion should be the focus of member contributions. 
-The goals articulate the purpose of the workshop.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">What is a public sphere?</span></p>
-<p style="margin-left:36pt">Public spheres denote 
-the region in which the workshop is taking place.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">Why do workshops have start and end dates?</span></p>
-<p style="margin-left:36pt">All workshops have the 
-option of having a start and ending date. Depending on the context of 
-the workshop, the start and ending dates may correspond to a real life 
-event. </p>
-<p style="text-indent:36pt"><span style="font-weight:bold">Why is there a big picture on the left side of every workshop?</span></p>
-<p style="margin-left:36pt">The big picture on the 
-left side of any workshop homepage is the slideshow. The slideshow serves 
-as a way to quickly get up to speed on the context of any workshop by 
-being able to navigate between a variety of educational slides and captions. 
-To navigate the slideshow, click the arrows on the left and right side 
-of the image to go backwards and forwards respectfully.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">What does the home link do?</span></p>
-<p style="margin-left:36pt">The “home” link 
-for any workshop will take you back to the workshop specific homepage. 
-Workshop homepages contain the workshop goals, slideshow, resources 
-and suggestions. The workshop homepage also documents what type and 
-how many contributions have been made.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">What does the background link do?</span></p>
-<p style="margin-left:36pt">The background section 
-of a workshop is meant to provide members with a more detailed amount 
-of information for use in developing new ideas. The background section 
-is initially drafted by the workshop facilitator, who may choose to 
-accept edits from members. All edits made will be visible to participating 
-members.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">What is a leaderboard?</span></p>
-<p style="margin-left:36pt">The leaderboard section 
-tracks the ratings and activity of member suggestions, resources, discussions 
-and comments within the workshop. Your personal leaderboard is visible 
-in the top row and displays your individual rank in terms of followers; 
-suggestion rating, popularity, and activity; resources rating, popularity 
-and activity; discussion rating, popularity and activity; and comment 
-rating, popularity and activity. Ratings track how favorably other members 
-have rated your contributions. Popularity tracks how many members have 
-interacted with your contributions at any one point in time, so what 
-is popular now. And activity tracks how many members have interacted 
-with your contributions over the course of the workshop.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">What does the discussion link do?</span></p>
-<p style="margin-left:36pt">The discussion section 
-is where members can submit discussion topics for other members to contribute 
-to. Discussions are member-initiated points of conversation, much like 
-a forum. Discussion topics can be in the form of questions, op-eds, 
-statements, pictures, etc. All discussion topics can be rated up and 
-down with the arrows on the left side of the discussion heading. Their 
-original creators can also edit discussions.<span style="font-weight:bold"> </span></p>
-<p style="text-indent:36pt"><span style="font-weight:bold">How can I add a resource?</span></p>
-<p style="margin-left:36pt">You can add a resource 
-to a workshop by clicking on the “add resource” prompt in the 
-far left column of the workshop homepage, above the other member submitted 
-resources. You can also click the green book icon entitled “add” 
-next to the “Participate:” prompt to the right of the slideshow. 
-Resources can also be added to individual suggestions by clicking on 
-the “add resource” link in the suggestion page heading.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">How can I see a resource?</span></p>
-<p style="margin-left:36pt">To view a resource click 
-on the resource name to access its page. Once on this page, click on 
-the bold heading of the resource name to bring up a separate window 
-that links you to the webpage where the resource is found. After you 
-have finished with the resource you may exit out of that window to easily 
-navigate back to Civinomics.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">How do I rate a resource?</span></p>
-<p style="margin-left:36pt">You can rate resources 
-by clicking either the up or down arrows to the left of the resource 
-title, inside the resource page. The numerical display in between the 
-arrows details the total number of up votes to down votes for that resource.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">How do I vote on a suggestion?</span></p>
-<p style="margin-left:36pt">You can vote on suggestions 
-by using the slider tool to rate each suggestion anywhere in between 
-1 (oppose) and 100 (support). The slider is featured to the right of 
-each suggestion under the heading “vote now”. The slider will change 
-color depending on how you vote, with green representing a more favorable 
-vote and red representing a more unfavorable vote. You can also vote 
-on a suggestion by clicking on the suggestion title in the workshop 
-homepage to access the individual suggestion page. Here, you will see 
-a much larger version of the slider that can be used in the same way 
-as on the workshop homepage.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">How do I submit my own suggestion?</span></p>
-<p style="margin-left:36pt">To submit a suggestion 
-on the workshop homepage, click the link entitled “add suggestion” 
-in the center column below the slideshow. You can also click the green 
-pencil icon entitled “add” next to the “Participate:” prompt, 
-to the right of the slideshow.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">What does it mean to flag a suggestion?</span></p>
-<p style="margin-left:36pt">Flagging a suggestion, 
-resource, discussion topic or comment signals a moderator to review 
-the object for content relevance and terms of use violations. If the 
-moderator decides to alter or remove the object, a clear record of what 
-and why they did so should be displayed.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">How do I flag a something?</span></p>
-<p style="margin-left:36pt">You can flag any user 
-submitted contribution by clicking the black flag icon inside the contribution’s 
-listing. All members can flag all suggestions, resources, discussion 
-topics and comments. Flagging will signal for a moderator to review 
-the contribution for content relevance and terms of use violations.</p>
-<p style="margin-left:36pt"><span style="font-weight:bold">How do I edit my contribution?</span></p>
-<p style="margin-left:36pt">You can edit all of your 
-member contributions by clicking the blue “edit” button inside 
-the contribution page. Members can edit all of the suggestions, resources, 
-discussion topics and comments that they have submitted.</p>
-<p style="text-indent:36pt"><span style="font-weight:bold">What is a facilitator message?</span></p>
-<p style="margin-left:36pt">In addition to the workshop 
-goals, the facilitator message is a comment left by the workshop facilitator 
-to help guide how and what members should contribute.</p>
-<p> </p>
-<p> </p>
-<p> </p>
-<p> </p>
-<a name="0.1__GoBack"></a>
-</div>
+                <p><span class="faq">How do I submit an idea to vote on?</span></p>
+                <p>To submit an idea, go to a workshop in the topic you would like to make a proposal for and submit create a new idea under the 'Ideas' tab.</p>
+
+                <p><span class="faq">What do the icons on the workshop home page mean?</span></p>
+                <p>For each workshop listed, you should see the following 
+                numbered icons: A pencil, signifying the number of suggestions submitted; 
+                a book, signifying the number of resources contributed, a folder, signifying 
+                the number of discussions topics; a person signifying the number of 
+                participants; and a heart signifying the number of suggestions that 
+                have been adopted (from left to right).</p>
+
+                <p><span class="faq">What are the geographic regions listed at the top of the page?</span></p>
+
+                <p>The workshops available to you to participate in will 
+                have a green “participate” prompt on the right hand side of where 
+                each workshop listed. You may view all workshops. However, you may only 
+                participate in those scoped for your region. For instance, if you lived 
+                in Oregon then you would only be able to participate in Oregon workshops, 
+                but you would still be able to view other workshops.</p>
+
+                <p><span class="faq">How can I participate in workshops outside of my area?</span></p>
+                <p>Since many of the workshops on Civinomics are region 
+                specific, each workshop has what we call a “public sphere”, which 
+                is where the workshop is taking place. The public sphere could be really 
+                local, like a city-specific issue or, a workshop might deal with a national 
+                issue, perhaps even a global one. You can view most workshops, but you 
+                can only directly participate in the ones in your area. Each sphere 
+                is represented by the flag icons found on the homepage in the left hand 
+                column and on the top of your profile page.</p>
+
+                <p><span class="faq"">Why won't my search on the homepage work?</span></p>
+                <p>In the left hand column of the workshop homepage, 
+                below the flag icons, you will see the search options. In the top section, 
+                you can search for workshops and other members, by name and by location. 
+                Below, you can search through workshops by tagged keywords.</p>
+
+                <p><span class="faq"">How do I look for different categories of workshops?</span></p>
+                <p>Tags are keywords associated with each workshop. They 
+                can be topical in nature, like “taxes”, or simply associative, like 
+                “feedback”. </p>
+
+                <p><span class="faq">What kind of activity is listed in the activity stream on the homepage?</span></p>
+                <p>The “new contributions” column, found on 
+                the far right side of the homepage, documents the most recent activity 
+                of other members on the site. Each listing shows a thumbnail of the 
+                person who made the contribution, the type of the contribution, the 
+                title of the workshop in which it was posted and how long ago the contribution 
+                was made.</p>
+            </div>
+
+            <div id="profile">
+                <hr>
+                <h4>Profile</h4>
+                <em>The profile page keeps a record of all of the objects (comments, ideas, resources, etc.) that you have authored.</em>
+                </br>
+                </br>
+                <p><span class="faq">How do I access my profile?</span></p>
+                <p>The profile page can be accessed at anytime by clicking 
+                on the icon labeled “profile” at the very top of the screen, 
+                next to the to the homepage icon. It can also be accessed by clicking 
+                on any one of the various thumbnails (small images), found on the homepage 
+                and in the various workshops. You can view other member’s profiles 
+                by clicking on their thumbnail, or by searching for them on the homepage.</p>
+
+                <p><span class="faq">Can I edit objects I authored?</span></p>
+                <p>You can edit all of your member contributions by clicking the blue “edit” button inside 
+                the contribution page. Members can edit all of the suggestions, resources, 
+                discussion topics and comments that they have submitted.</p>
+
+                <p><span class="faq">What does it mean to facilitate a workshop?</span></p>
+                <p>Workshop facilitators are charged with establishing 
+                the workshop goals, drafting the initial slideshow content and background 
+                information, and for continuous content moderation; both for quality 
+                and Terms of Use violations. Civinomics facilitates all public workshops 
+                for the purposes of neutrality and transparency. All public workshops 
+                are facilitated according to a set of strict guidelines by Civinomics 
+                appointed staff. All editorial content is subject to member feedback 
+                and is meant to be neutral in providing facts and context. </p>
+
+                <p><span class="faq">How do I facilitate a workshop of my own?</span></p>
+                <p>Interested in hosting a workshop for your community? 
+                Email us at <a href="mailto:info@civinomics.com" target="_blank"><span><span style="text-decoration:underline">info@civinomics.com</span></span></a> or feel free to visit our website 
+                at <a href="http://civinomics.com/corp/contact" target="_blank">http://civinomics.com/corp/<WBR>contact</a></p>
+
+                <p><span class="faq">What are followers?</span></p>
+                <p>Followers are other members who have selected to receive 
+                updates about your actions on Civinomics and have a direct link to your 
+                profile via their own.</p>
+
+                <p><span class="faq">How do I get followers?</span></p>
+                <p>There is no right way to gain followers. However, 
+                we encourage contributing a lot of really valuable and constructive 
+                content.</p>
+
+                <p><span class="faq">How do I follow other people?</span></p>
+                <p>To follow another member click on either their name 
+                or their thumbnail to access their profile, then click the blue button 
+                labeled “follow” in the top row on the profile page.</p>
+
+                <p><span class="faq">How do I bookmark workshops?</span></p>
+                <p>To follow a workshop click on the “blue” 
+                follow button located on the workshop homepage in the right column next 
+                to the heading “Participate:”</p>
+
+                <p><span class="faq">How do I access my messages?</span></p>
+                <p>Go into "Edit," messages are listed as the second item in the menu.</p>
+            </div>
+
+            <div id="editProfile">
+                <hr>
+                <h4>Edit Profile</h4>
+                <em>You can change your profile and update account settings from the Edit Profile page.</em>
+                </br>
+                </br>
+
+                <p><span class="faq">Where do I edit my profile?</span></p>
+                <p>Edit your profile by clicking on the blue “edit 
+                profile” button found in the top row of your profile page, below 
+                the heading. It is to the right of your profile picture. From here you 
+                can edit your basic information, request a new password, change your 
+                profile picture and edit your tag line.</p>
+
+                <p><span class="faq">How can I change my profile picture?</span></p>
+                <p>In the aplpha version, Civinomics uses your gravatar profile. Gravatar lets you set one profile picture that is used by lots of different sites, including Wordpress. To change your picture, click on the link to Gravatar in 'Edit Profile', create an account on the Gravatar site and upload a picture.
+                </p>
+
+                <p><span class="faq">What is a greeting message?</span></p>
+                <p>Click on the blue “edit profile” button next 
+                to your picture in the top half of the page. You can edit your tag line 
+                by entering a new one into the field found 4 rows from the top of the 
+                edit profile page.</p>
+
+                <p><span class="faq">How do I change my postal code?</span></p>
+                <p>This is not currently supported</p>
+
+                <p><span class="faq">How do I change my password?</span></p>
+                <p>Click on the blue “edit profile” button next 
+                to your picture in the top half of the page. You can change your password 
+                by entering a new one into the field found 2 rows from the top of the 
+                edit profile page.</p>
+            </div>
+
+            <div id="mgAccount">
+                <hr>
+                <h4>Manage Account</h4>
+                <em>The Manage Account page lets you handle payment information related to the facilitation of workshops.</em>
+                </br>
+                </br>
+                <p><span class="faq">Where do I find the manage account page?</span></p>
+                <p>Blah blah blah blah blah blah blah blah blah blah blah blah blah</p>
+
+                <p><span class="faq">How do I pay overdue invoices?</span></p>
+                <p>Blah blah blah blah blah blah blah blah blah blah blah blah blah</p>
+            </div>
+
+            <div id="workshops">
+                <hr>
+                <h4>Workshops</h4>
+                <em>Workshops are a space to develop solutions around a particular topic. The workshop page houses all of the objects (conversations, ideas, resources, and comments) for a particular topic.</em>
+                </br>
+                </br>
+                <p><span class="faq">How can I see the workshops that I have bookmarked?</span></p>
+                <p>All of the workshops that you are currently following can be seen in your profile page in the third row from the top entitled “Workshops I am following”.</p>
+
+                <p><span class="faq">What are workshop goals?</span></p>
+                <p>Workshop goals define what ideas and points of discussion should be the focus of member contributions. The goals articulate the purpose of the workshop.</p>
+
+                <p><span class="faq">Why do workshops have start and end dates?</span></p>
+                <p>All workshops have the option of having a start and ending date. Depending on the context of the workshop, the start and ending dates may correspond to a real life event. </p>
+
+                <p><span class="faq">What is the difference between a conversation and an idea?</span></p>
+                <p>Conversations are meant to answer questions or explore topics whereas ideas are the first step in a more concrete proposal.</p>
+            </div>
+
+            <div id="configWorkshop">
+                <hr>
+                <h4>Configure Workshop</h4>
+                <em>The configure workshop pages help you set up a new workshop or edit basic information for one of your existing workshops.</em>
+                </br>
+                </br>
+                <p><span class="faq">What is the difference beteewn a public and private workshop?</span></p>
+                <p>Public workshops can be viewed by anyone, private workshops can only be viewed by the people that you invite.</p>
+                <p><span class="faq">When are the invites for my workshop sent out?</span></p>
+                <p>As soon as you hit the invite button - this may be before you actually publish the workshop. The point of this is to allow you to invite people to view your workshop before you actually publish it and make it public.</p>
+            </div>
+
+            <div id="adminWorkshop">
+                <hr>
+                <h4>Administrate Workshop</h4>
+                <em>Use the Administrate Workshop pages to facilitate a workshop that has already started. This could include moderating content, posting daily messages, or updating the workshop goals.</em>
+                </br>
+                </br>
+                <p><span class="faq">What is a facilitator message?</span></p>
+                <p>In addition to the workshop goals, the facilitator message is a comment left by the workshop facilitator 
+                to help guide how and what members should contribute.</p>
+
+                <p><span class="faq">What is a flagged object?</span></p>
+                <p>Anyone can flag any user created object, including resources, ideas, conversations, comments and more. This allows the community to self-regulate to a large extent. A flagged object that shows up in your facilitator pane is an object that another user has flagged as inappririate or needing attention. You can choose to disable it or request that an admin delete it.</p>
+
+                <p><span class="faq">How do I flag something?</span></p>
+                <p>You can flag any user submitted contribution by clicking the black flag icon inside the contribution’s listing. All members can flag all suggestions, resources, discussion topics and comments. Flagging will signal for a moderator to review the contribution for content relevance and terms of use violations.</p>
+            </div>
+
+            <div id="conversations">
+                <hr>
+                <h4>Conversations</h4>
+                <em>Conversations are for answering questions and exploring topics.</em>
+                </br>
+                </br>
+                <p><span class="faq">What are conversations?</span></p>
+                <p>Conversations are member-initiated points of conversation, much like a forum. Discussion topics can be in the form of questions, op-eds, statements, pictures, etc. All discussion topics can be rated up and down with the arrows on the left side of the discussion heading. Discussions can also be edited by their original creators.</p>
+
+                <p><span style="font-weight:bold">Can I disable comments on conversations I start?</span></p>
+                <p>No, it wouldn’t be much of a discussion then would it? If someone is being inappropriate you can flag their comment for the workshop facilitator or an administrator to remove.</p>
+            </div> 
+
+            <div id="ideas">
+                <hr>
+                <h4>Ideas</h4>
+                <em>Ideas are the first step in developing a comprehensive way to meet the workshop goals.</em>
+                </br>
+                </br>
+                <p><span class="faq">Can I disable comments on my idea?</span></p>
+                <p>Maybe</p>
+            </div> 
+
+            <div id="resources">
+                <hr>
+                <h4>Resources</h4>
+                <em>Resouces are articles, videos, pdfs, or other items that help provide information on a workshop topic or suggest ways to meet the workshop goals.</em>
+                </br>
+                </br>
+                <p><span class="faq">Can I disable comments on my resources?</span></p>
+                <p>Yes, to disable comments on a resource click the green “edit” button on the resource page and click “no” 
+                to the prompt “allow member comments:” found below the body text box.</p>
+                
+                <p><span class="faq">What do the icons near my resources mean?</span></p>
+                <p>Your profile will by default show your 3 most recently contributed resources. The blue check box icon above the resource title displays its average rating, while the black flags indicate if the resource has been flagged or not.</p>
+
+                <p><span class="faq">How can I see a resource?</span></p>
+                <p>To view a resource click on the resource name to access its page. Once on this page, click on the bold heading of the resource name to bring up a separate window that links you to the webpage where the resource is found. After you have finished with the resource you may exit out of that window to easily navigate back to Civinomics.</p>
+
+                <p><span class="faq">How can I see a the comments on a resouce?</span></p>
+                <p>Click on the "comments" link underneath the resource title.</p>
+
+                <p><span class="faq">How do I rate a resource?</span></p>
+                <p>You can rate resources by clicking either the up or down arrows to the left of the resource title, inside the resource page. The numerical display in between the arrows details the total number of up votes to down votes for that resource.</p>
+            </div> 
+        </div>
 </%def>
 
 <%def name="introVideo()">

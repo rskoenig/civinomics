@@ -57,10 +57,8 @@ def create_new_workshop(self, thisUser, **kwargs):
     Returns this workshop's main page. """
     if 'login' in kwargs:
         if kwargs['login'] == True:
-            log.info("logging in as %s"%(thisUser['name']))
             login(self, thisUser)
     else:
-        log.info("logging in as %s"%(thisUser['name']))
         login(self, thisUser)
     # start at the home page, which redirects to the workshops page
     rHome = self.app.get(url=url_for(controller='home', action='index'))
@@ -203,18 +201,58 @@ def create_new_workshop(self, thisUser, **kwargs):
     urlCode_index = len(urlParts)-3
     this_urlCode = urlParts[urlCode_index]
     
-    workshopCreated = self.app.post(
-        url='/workshop/%s/%s/configureStartWorkshopHandler'%(this_urlCode,this_url), 
-        content_type='multipart/form-data',
-        params={'name' : 'startWorkshop'}
-    ).follow()
+    startUrl = '/workshop/%s/%s/configureStartWorkshopHandler'%(this_urlCode,this_url)
 
-    assert assertions.not_in_new_workshop_1() not in workshopCreated
-    assert workshopTitle in workshopCreated
-    return workshopCreated
+    if 'dontCreateWorkshop' in kwargs:
+        if kwargs['dontCreateWorkshop'] == True:
+            return startUrl
+        else:
+            workshopCreated = self.app.post(
+                url=startUrl, 
+                content_type='multipart/form-data',
+                params={'name' : 'startWorkshop'}
+            ).follow()
+            assert assertions.not_in_new_workshop_1() not in workshopCreated
+            assert workshopTitle in workshopCreated
+            return workshopCreated
+    else:
+        workshopCreated = self.app.post(
+            url=startUrl, 
+            content_type='multipart/form-data',
+            params={'name' : 'startWorkshop'}
+        ).follow()
+        assert assertions.not_in_new_workshop_1() not in workshopCreated
+        assert workshopTitle in workshopCreated
+        return workshopCreated
 
-
-
-
-
-
+def inviteGuest(self, workshop, **kwargs):
+    """Invite a guest to the workshop and return whatever is needed"""
+    #: go into the settings and invite a guest
+    dashboard = workshop.click(href=linkDefs.workshopDashboard())
+    privateForm = dashboard.forms[formDefs.workshopSettings_privateForm()]
+    #: add email of a non-member of this site or workshop, check the 'send invitation' box
+    if 'email' in kwargs:
+        guestEmail = kwargs['email']
+    else:
+        guestEmail = content.email_to_todd_1()
+    privateForm.set(formDefs.workshopSettings_privateForm_invite(), guestEmail)
+    #: check the invite email box
+    privateForm.set(formDefs.workshopSettings_privateForm_sendInviteMsg(), content.checkbox(True))
+    #: the guest invite link is recorded in /lib/db/workshop.py
+    params = {}
+    params = formHelpers.loadWithSubmitFields(privateForm)
+    #: add a field that the controller checks for when this invite is submitted
+    params[formDefs.workshopSettings_privateForm_addMemberField()] = formDefs.workshopSettings_privateForm_addMemberField()
+    #: submit the invite request
+    inviteSent = self.app.post(
+        url = str(privateForm.action),
+        params=params
+    )
+    inviteFollowed = inviteSent.follow()
+    if 'guestLink' in kwargs:
+        if kwargs['guestLink'] == True:
+            return inviteSent.browseUrl
+        else:
+            return guestEmail
+    else:
+        return guestEmail

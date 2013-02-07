@@ -263,6 +263,7 @@ class TestCommentController(TestController):
         # create another person, change to admin
         # login as this new admin
         # NOTE for now - login as super admin
+        logout(self)
         admin = {}
         # conf = config['app_conf']
         # admin['email'] = conf['admin.email']
@@ -326,6 +327,7 @@ class TestCommentController(TestController):
         # assert that it's there
         assert commentText in commentAdded, "error before test complete: not able to create comment on idea"
         # NOTE for now, login as super admin. next, make a normal user an admin for this
+        logout(self)
         admin = {}
         # conf = config['app_conf']
         # admin['email'] = conf['admin.email']

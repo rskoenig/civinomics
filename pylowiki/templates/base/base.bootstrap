@@ -18,7 +18,7 @@
          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
    </head>
-   <body>
+   <body ${self.bodyTag_extras()}>
       <div class="navbar civ-navbar">
          <div class="navbar-inner">
             <div class="container">
@@ -62,7 +62,19 @@
                             </li>
                         % endif
                      % endif
-                     <li><a href="/help">help</a></li>
+                     <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">help<b class="caret"></b></a>
+                      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                          <li><a href="/help">Help Center</a></li>
+                          <li class="divider"/>
+                          <li><a href="#">Tutorial 101</a></li>
+                          <li><a href="#">How to start a workshop</a></li>
+                          <li><a href="/help/faq">FAQ</a></li>
+                          <li><a href="#">Somethings not working</a></li>
+                          <li><a href="#">Report Abuse</a></li>
+                          <li><a href="#">Suggest New Features</a></li>
+                      </ul>
+                    </li>
                      % if 'user' in session:
                         <li><a href="/login/logout">logout</a></li>
                      % else:
@@ -87,6 +99,11 @@
    ${self.extraScripts2()}
    </body>
 </html>
+
+<%def name="bodyTag_extras()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
 
 <%def name="extraStyles()">
    ## do nothing by default.  Overwritten if the function is defined

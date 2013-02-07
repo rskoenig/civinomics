@@ -54,8 +54,19 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
-        if 'user' in session and c.authuser.id != c.user.id:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
+        c.isAdmin = False
+        c.isUser = False
+        c.browse = False
+        if 'user' in session:
+            if c.authuser.id != c.user.id:
+                c.isFollowing = followLib.isFollowing(c.authuser, c.user)
+            else:
+                c.isUser = True
+            if userLib.isAdmin(c.authuser.id):
+                c.isAdmin = True
+        else:
+            c.browse = True
+            
 
         facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user.id)
         c.facilitatorWorkshops = []
@@ -66,7 +77,7 @@ class ProfileController(BaseController):
            elif f['disabled'] == '0':
               wID = f['workshopID']
               myW = workshopLib.getWorkshopByID(wID)
-              if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1' or myW['public_private'] != 'public':
+              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
                  # show to the workshop owner, show to the facilitator owner, show to admin
                  if 'user' in session: 
                      if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
@@ -81,7 +92,12 @@ class ProfileController(BaseController):
                 c.pendingListeners.append(l)
 
         watching = followLib.getWorkshopFollows(c.user)
-        c.watching = [workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching]
+        watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        c.watching = []
+        for workshop in watchList:
+            if workshop['public_private'] == 'public' or (c.isUser or c.isAdmin):
+                c.watching.append(workshop)
+                
         c.interestedWorkshops = []
         for workshop in c.watching:
             if workshop['public_private'] == 'public':
@@ -118,17 +134,21 @@ class ProfileController(BaseController):
         
         posts = activityLib.getMemberPosts(c.user)
         for p in posts:
-            if p['deleted'] == '0' and p['disabled'] == '0':
-                if p.objType == 'suggestion':
-                    c.suggestions.append(p)
-                elif p.objType == 'resource':
-                    c.resources.append(p)
-                elif p.objType == 'discussion':
-                    c.discussions.append(p)
-                elif p.objType == 'idea':
-                    c.ideas.append(p)
-                elif p.objType == 'comment':
-                    c.comments.append(p)
+            # ony active objects
+            if p['deleted'] == '0' and p['disabled'] == '0' and 'workshopCode' in p:
+                # only public objects unless author or admin
+                w = workshopLib.getWorkshopByCode(p['workshopCode'])
+                if workshopLib.isPublished(w) and w['public_private'] == 'public' or (c.isUser or c.isAdmin):
+                    if p.objType == 'suggestion':
+                        c.suggestions.append(p)
+                    elif p.objType == 'resource':
+                        c.resources.append(p)
+                    elif p.objType == 'discussion':
+                        c.discussions.append(p)
+                    elif p.objType == 'idea':
+                        c.ideas.append(p)
+                    elif p.objType == 'comment':
+                        c.comments.append(p)
                     
         c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
         
@@ -327,8 +347,10 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
+        c.isUser = False
+        c.isAdmin = False
         if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
+           c.isFollowing = followLib.isFollowing(c.authuser, c.user)
         else:
            c.isFollowing = False
         
@@ -345,6 +367,14 @@ class ProfileController(BaseController):
         c.watching = items['watching']
     
     def _userItems(self, user):
+        isUser = False
+        isAdmin = False
+        if 'user' in session and c.authuser:
+            if user.id == c.authuser.id:
+               isUser = True
+            if userLib.isAdmin(c.authuser.id):
+               isAdmin = True
+
         # returns a dictionary of user-created (e.g. resources, discussions, ideas)
         # or user-interested (e.g. followers, following, watching) objects
         items = {}
@@ -356,7 +386,11 @@ class ProfileController(BaseController):
         items['followers'] = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
         
         watching = followLib.getWorkshopFollows(user)
-        items['watching'] = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        items['watching'] = []
+        for workshop in watchList:
+            if workshop['public_private'] == 'public' or (isUser or isAdmin):
+                items['watching'].append(workshop)
         
         # Already checks for disabled/deleted by default
         # The following section feels like a good candidate for map/reduce
@@ -365,13 +399,17 @@ class ProfileController(BaseController):
         items['discussions'] = []
         items['ideas'] = []
         for thing in createdThings:
-            if thing.objType == 'resource':
-                items['resources'].append(thing)
-            elif thing.objType == 'discussion':
-                items['discussions'].append(thing)
-            elif thing.objType == 'idea':
-                items['ideas'].append(thing)
-        
+            if 'workshopCode' in thing:
+                w = workshopLib.getWorkshopByCode(thing['workshopCode'])
+                if workshopLib.isPublished(w) or isAdmin:
+                    if w['public_private'] == 'public' and thing['disabled'] != '1' and thing['deleted'] != '1' or (isUser or isAdmin):
+                        if thing.objType == 'resource':
+                            items['resources'].append(thing)
+                        elif thing.objType == 'discussion':
+                            items['discussions'].append(thing)
+                        elif thing.objType == 'idea':
+                            items['ideas'].append(thing)
+
         return items
 
     @h.login_required

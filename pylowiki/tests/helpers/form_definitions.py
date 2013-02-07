@@ -130,4 +130,13 @@ def workshopSettings_allowResourceLinks(choice=True):
 		return u'0'
 
 def workshopSettings_privateForm():
-	return 'private'
+	return u'private'
+
+def workshopSettings_privateForm_addMemberField():
+	return u'addMember'
+
+def workshopSettings_privateForm_invite():
+	return u'newMember'
+
+def workshopSettings_privateForm_sendInviteMsg():
+	return u'sendInvite'

@@ -273,6 +273,7 @@ def make_map():
     ################
     
     map.connect('/{help:help/?}', controller = 'actionlist', action='help')
+    map.connect('/help/{faq:faq/?}', controller = 'actionlist', action='faq')
     map.connect('/{surveys:surveys/?}', controller = 'actionlist', action='index', id='surveys')
     map.connect('/{sitemap:sitemap/?}', controller='actionlist', action='index', id='sitemap')
     map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')

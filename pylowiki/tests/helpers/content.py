@@ -5,6 +5,12 @@ from pylowiki.tests import *
 def activation_success():
     return 'Workshops'
 
+def checkbox(choice=True):
+	if choice:
+		return u'sendInvite'
+	else:
+		return u''
+
 def deleteObjectForm_findByCode(soup, ideaCode):
 	"""expects a beautifulsoup page object, and the code of the idea to be deleted"""
 	# find the form with regex for how these actions are formatted
@@ -16,6 +22,9 @@ def deleteObjectForm_findByCode(soup, ideaCode):
 	# return soup.find_all("form", action=re.compile("/delete/"), limit=1)
 	return soup.find("form", action=re.compile("/delete/.*?/"+ideaCode))
 	# return soup.find_all("form", limit=1)
+
+def email_to_todd_1():
+		return 'andetodd@gmail.com'
 
 def getFormParts_soup(deleteForm):
     """expects a beautifulsoup form object, returns action, parameters"""

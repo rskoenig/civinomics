@@ -324,6 +324,9 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         if c.w['public_private'] == 'private' and 'changeScope' in request.params:
+            scopeTest = geoInfoLib.getWScopeByWorkshop(c.w)
+            if not scopeTest:
+                geoInfoLib.WorkshopScope(c.w, "||0|0|0|0|0|0|0|0")
             weventMsg = 'Workshop scope changed from private to public.'
             c.w['public_private'] = 'public'
             dbHelpers.commit(c.w)

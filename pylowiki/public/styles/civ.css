@@ -26,6 +26,36 @@ hr.civ-topbar-hr{
    margin-bottom: 20px;
 }
 
+.dropdown-menu li > a:hover,
+.dropdown-menu li > a:focus,
+.dropdown-submenu:hover > a {
+  color: #ffffff;
+  text-decoration: none;
+  background-color: #0b9000;
+  background-image: -moz-linear-gradient(top, #0b9000, #097700);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0b9000), to(#097700));
+  background-image: -webkit-linear-gradient(top, #0b9000, #097700);
+  background-image: -o-linear-gradient(top, #0b9000, #097700);
+  background-image: linear-gradient(to bottom, #0b9000, #097700);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
+}
+
+.dropdown-menu .active > a,
+.dropdown-menu .active > a:hover {
+  color: #333333;
+  text-decoration: none;
+  background-color: #0b9000;
+  background-image: -moz-linear-gradient(top, #0b9000, #097700);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0b9000), to(#097700));
+  background-image: -webkit-linear-gradient(top, #0b9000, #097700);
+  background-image: -o-linear-gradient(top, #0b9000, #097700);
+  background-image: linear-gradient(to bottom, #0b9000, #097700);
+  background-repeat: repeat-x;
+  outline: 0;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
+}
+
 .counter{
    font-size:20px;
 }
@@ -116,6 +146,14 @@ hr.civ-topbar-hr{
     font-size:8px;
 }
 
+.longText p{
+  padding: 5px 0px;
+}
+
+.faq{
+  font-weight: bold;
+}
+
 .disabledComment-notice{
     margin-top:8px;
     margin-right:5px;
@@ -143,6 +181,23 @@ hr.civ-topbar-hr{
    color:#075D00;
    padding-left:8px;
    padding-right:8px;
+}
+
+.nav.nav-tabs.nav-stacked > li > a{
+   display: block;
+   color: #0b9000;
+   padding-right: 10px;
+}
+
+.nav.nav-tabs.nav-stacked > li.active > a{
+   background-color: #0b9000;
+   color: #ffffff;
+}
+
+.nav.nav-tabs.nav-stacked.scroller{
+   margin-top: 10px;
+   margin-left: -20px;
+   width: 230px;
 }
 
 .nav .divider {
@@ -339,11 +394,33 @@ img.watch{
    border-radius: 5px;
    padding:5px;
    margin-top:10px;
+   text-align: center;
+}
+
+.summary a{
+  color: #333333;
 }
 
 .well{
    background: white;
 }
+
+.well.help{
+   color: #468847;
+   background-color: #dff0d8;
+   border-color: #468847;
+   height: 200px;
+   padding-top: 5px;
+}
+
+.well.help:hover{
+   background-color: #b2dba1;
+}
+
+.well.help a{
+   color: #468847;
+}
+
 
 ul.goals{
    list-style-type: none;

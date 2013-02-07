@@ -248,19 +248,23 @@ def getScopeTitle(postalCode, country, scope):
 
 def getPublicScope(workshop):
     scope = getWScopeByWorkshop(workshop)
-    scope = scope['scope'].split('|')
-    if scope[9] != '0':
-        scopeLevel = 'postal'
-    elif scope[8] != '0':
-        scopeLevel = 'city'
-    elif scope[6] != '0':
-        scopeLevel = 'county'
-    elif scope[4] != '0':
-        scopeLevel = 'state'
-    elif scope[2] != '0':
-        scopeLevel = 'country'
+    if scope:
+        scope = scope['scope'].split('|')
+        if scope[9] != '0':
+            scopeLevel = 'postal'
+        elif scope[8] != '0':
+            scopeLevel = 'city'
+        elif scope[6] != '0':
+            scopeLevel = 'county'
+        elif scope[4] != '0':
+            scopeLevel = 'state'
+        elif scope[2] != '0':
+            scopeLevel = 'country'
+        else:
+            scopeLevel = 'planet'
     else:
         scopeLevel = 'planet'
+        
     return scopeLevel
 
 class WorkshopScope(object):

@@ -1,4 +1,5 @@
 from pylons import tmpl_context as c, config, session
+from pylons import request
 from pylowiki.model import Thing, meta, Data
 from sqlalchemy import and_, not_
 from pylowiki.lib.utils import urlify, toBase62
@@ -195,6 +196,12 @@ def isGuest(workshop):
 
     return False
     
+def isPublished(workshop):
+    if workshop['startTime'] != '0000-00-00' and workshop['deleted'] != '1':
+        return True
+
+    return False
+    
 def isScoped(user, workshop):   
     if workshop['public_private'] != 'public':
         pTest = getPrivateMember(workshop['urlCode'], user['email'])
@@ -244,9 +251,13 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     uTest = getUserByEmail(recipient)
     if uTest:
         browseLink = 'Login to your Civinomics account, then visit the workshop here:\n' +  myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
+        if 'paste.testing_variables' in request.environ:
+            request.environ['paste.testing_variables']['browseUrl'] = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
     else:
         guest = getPrivateMember(workshop['urlCode'], recipient)
         browseLink = 'You can visit and browse the workshop here:\n' +  myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
+        if 'paste.testing_variables' in request.environ:
+            request.environ['paste.testing_variables']['browseUrl'] = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
         
     regLink = myURL + '/signup'
 

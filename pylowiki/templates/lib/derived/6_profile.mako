@@ -190,36 +190,41 @@
         % for item in activity:
             <%
                 workshop = workshopLib.getWorkshopByCode(item['workshopCode'])
-                if item.objType == 'comment':
-                    activityStr = 'Commented on a'
-                    if 'ideaCode' in item.keys():
+                if workshop['public_private'] == 'public' or (c.browser == False or c.isAdmin == True): 
+                    if item.objType == 'comment':
+                        activityStr = 'Commented on a'
+                        if 'ideaCode' in item.keys():
+                            activityStr += 'n'
+                    else:
+                        activityStr = 'Added a'
+                    if item.objType == 'idea':
                         activityStr += 'n'
-                else:
-                    activityStr = 'Added a'
-                if item.objType == 'idea':
-                    activityStr += 'n'
-                if item.objType == 'comment':
-                    activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True, id='accordion-%s'%item['urlCode']) + '>'
-                else:
-                    activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True) + '>'
-                if item.objType != 'comment':
-                    if item.objType == 'discussion':
-                        activityStr += "conversation </a>"
+                    if item.objType == 'comment':
+                        activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True, id='accordion-%s'%item['urlCode']) + '>'
                     else:
-                        activityStr += item.objType + "</a>"
-                else:
-                    if 'ideaCode' in item.keys():
-                        activityStr += 'idea </a>'
-                    elif 'resourceCode' in item.keys():
-                        activityStr += 'resource </a>'
+                        activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True) + '>'
+                    if item.objType != 'comment':
+                        if item.objType == 'discussion':
+                            activityStr += "conversation </a>"
+                        else:
+                            activityStr += item.objType + "</a>"
                     else:
-                        activityStr += 'conversation </a>'
-                activityStr += ' in <a ' + lib_6.workshopLink(workshop, embed = True) + '>'
-                activityStr += lib_6.ellipsisIZE(workshop['title'], 25) + '</a>'
-                if item.objType == 'comment':
-                    activityStr += ' : <span class="expandable">%s</span>' % item['data']
+                        if 'ideaCode' in item.keys():
+                            activityStr += 'idea </a>'
+                        elif 'resourceCode' in item.keys():
+                            activityStr += 'resource </a>'
+                        else:
+                            activityStr += 'conversation </a>'
+                    activityStr += ' in <a ' + lib_6.workshopLink(workshop, embed = True) + '>'
+                    activityStr += lib_6.ellipsisIZE(workshop['title'], 25) + '</a>'
+                    if item.objType == 'comment':
+                        activityStr += ' : <span class="expandable">%s</span>' % item['data']
+                else:
+                    activityStr = ''
             %>
-            <tr> <td>${activityStr | n} </td></tr>
+            % if activityStr != '':
+                <tr> <td>${activityStr | n} </td></tr>
+            % endif
         % endfor
         </tbody>
     </table>
