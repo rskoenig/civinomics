@@ -105,13 +105,13 @@
                             <li ng-repeat="goal in goals">
                                 <label class="checkbox">
                                     <input type="checkbox" ng-model="goal.done">
-                                    <span class="done-{{goal.done}}">{{goal.text}}</span>
+                                    <span class="done-{{goal.done}}">{{goal.title}}</span>
                                 </label>
                             </li>
                         </ul>
                         <form ng-submit="addGoal()">
                             <div class="input-append">
-                                <input type="text" ng-model="goalText" size="70" placeholder="New goal here">
+                                <input type="text" ng-model="goalTitle" size="70" placeholder="New goal here">
                                 <button class="btn btn-primary" type="submit" value="add">add</button>
                             </div>
                         </form>
