@@ -18,7 +18,7 @@
          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
       <![endif]-->
    </head>
-   <body>
+   <body ${self.bodyTag_extras()}>
       <div class="navbar civ-navbar">
          <div class="navbar-inner">
             <div class="container">
@@ -87,6 +87,11 @@
    ${self.extraScripts2()}
    </body>
 </html>
+
+<%def name="bodyTag_extras()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
 
 <%def name="extraStyles()">
    ## do nothing by default.  Overwritten if the function is defined

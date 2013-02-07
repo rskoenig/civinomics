@@ -106,6 +106,14 @@ hr.civ-topbar-hr{
     font-size:8px;
 }
 
+.longText p{
+  padding: 5px 0px;
+}
+
+.faq{
+  font-weight: bold;
+}
+
 .disabledComment-notice{
     margin-top:8px;
     margin-right:5px;
@@ -133,6 +141,23 @@ hr.civ-topbar-hr{
    color:#075D00;
    padding-left:8px;
    padding-right:8px;
+}
+
+.nav.nav-tabs.nav-stacked > li > a{
+   display: block;
+   color: #0b9000;
+   padding-right: 10px;
+}
+
+.nav.nav-tabs.nav-stacked > li.active > a{
+   background-color: #0b9000;
+   color: #ffffff;
+}
+
+.nav.nav-tabs.nav-stacked.scroller{
+   margin-top: 10px;
+   margin-left: -20px;
+   width: 230px;
 }
 
 .nav .divider {
