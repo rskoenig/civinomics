@@ -19,6 +19,15 @@ def getGoalsForWorkshop(workshop):
     except:
         return False
 
+def getGoal(goalCode):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'goal')\
+            .filter(Thing.data.any(wc('urlCode', goalCode)))\
+            .one()
+    except:
+        return False
+
 def Goal(title, status, workshop, owner):
     goal = Thing('goal', owner.id)
     goal['title'] = title

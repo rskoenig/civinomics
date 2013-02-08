@@ -12,6 +12,7 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
       ${self.extraStyles()}
       ${self.headScripts()}
+      ${self.headScripts2()}
       ${self.google_analytics()}
       <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
       <!--[if lt IE 9]>
@@ -111,6 +112,11 @@
 </%def>
 
 <%def name="headScripts()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
+
+<%def name="headScripts2()">
    ## do nothing by default.  Overwritten if the function is defined
    ## in a child template
 </%def>

@@ -210,7 +210,7 @@
         <ul>
         % for goal in goals:
             % if goal['status'] == '100':
-                <li class="finished">${goal['title']}</li>
+                <li class="done-true">${goal['title']}</li>
             % else:
                 <li>${goal['title']}</li>
             % endif

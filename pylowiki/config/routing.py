@@ -104,7 +104,11 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configurePublicWorkshopHandler{end:/?}', controller = 'workshop', action = 'configurePublicWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureContinueHandler{end:/?}', controller = 'workshop', action = 'preferences', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/update/background/handler{end:/?}', controller = 'wiki', action = 'updateBackgroundHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    
+    # Workshop goals
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/add{end:/?}', controller = 'goals', action = 'add')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/get{end:/?}', controller = 'goals', action = 'getGoals')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/update{end:/?}', controller = 'goals', action = 'update')
 
     # Workshop slideshow
     map.connect('/{workshop:workshops?}/{id1}/{id2}/{image:addImages/?}', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')

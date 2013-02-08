@@ -17,7 +17,7 @@
       <div class="row-fluid">
          <div class="span12">
             <h1 class="centered"> 
-               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" class="workshop-title" ng-init=" workshopTitle='${c.w['title']}' ">
+               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" class="workshop-title" ng-init=" workshopTitle='${c.w['title']}' " ng-cloak>
                   {{workshopTitle}}
                </a>
             </h1>
@@ -51,5 +51,8 @@
    <script type="text/javascript">
       $(".followButton").tooltip();
    </script>
-   <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+</%def>
+
+<%def name="headScripts2()">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
 </%def>

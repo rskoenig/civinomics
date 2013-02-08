@@ -99,12 +99,12 @@
                 <div class="span6">
                 <legend>Goals</legend>
                     ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
-                    <div ng-controller="GoalsCtrl" ng-init=" postURL='/workshop/${c.w['urlCode']}/${c.w['url']}/goals/add' ">
+                    <div ng-controller="GoalsCtrl">
                         <p> {{remaining()}} of {{goals.length}} remaining </p>
                         <ul class="unstyled">
                             <li ng-repeat="goal in goals">
                                 <label class="checkbox">
-                                    <input type="checkbox" ng-model="goal.done">
+                                    <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)">
                                     <span class="done-{{goal.done}}">{{goal.title}}</span>
                                 </label>
                             </li>
