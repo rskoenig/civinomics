@@ -57,8 +57,9 @@ class GeoController(BaseController):
         for scopeObj in scopeList:
             workshop = workshopLib.getActiveWorkshopByCode(scopeObj['workshopCode'])
             if workshop:
-                c.list.append(workshop)
-                workshopCodes.append(workshop['urlCode'])
+                if workshop['public_private'] == 'public':
+                    c.list.append(workshop)
+                    workshopCodes.append(workshop['urlCode'])
         c.activity = activityLib.getActivityForWorkshops(workshopCodes)
 
     def workshopSearch(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
