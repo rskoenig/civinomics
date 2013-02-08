@@ -126,7 +126,11 @@ class WorkshopController(BaseController):
             elif action in scoped:
                 if c.w['type'] == 'personal' or c.w['public_private'] == 'private':
                     if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                        abort(404)
+                        if c.privs['visitor']:
+                            return redirect('/workshop/%s/%s/login'%(c.w['urlCode'], c.w['url']))
+                        else:
+                            return redirect('/')
+                        #abort(404)
 
 
     ###################################################

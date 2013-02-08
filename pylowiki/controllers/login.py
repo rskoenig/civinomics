@@ -31,19 +31,19 @@ class LoginController(BaseController):
         try:
             email = request.params["email"].lower()
             password = request.params["password"]
-            if 'workshopCode' in request.params and 'workshopURL' in request.params and 'thing' in request.params:
+            workshopCode = 'None'
+            workshopURL = 'None'
+            thing = 'None'
+            thingCode = 'None'
+            thingURL = 'None'
+            if 'workshopCode' in request.params and 'workshopURL' in request.params:
                 workshopCode = request.params['workshopCode']
                 workshopURL = request.params['workshopURL']
-                thing = request.params['thing']
-                if 'thingCode' in request.params and 'thingURL' in request.params:
-                    thingCode = request.params['thingCode']
-                    thingURL = request.params['thingURL']
-            else:
-                workshopCode = None
-                workshopURL = None
-                thing = None
-                thingCode = None
-                thingURL = None
+                if 'thing' in request.params:
+                    thing = request.params['thing']
+                    if 'thingCode' in request.params and 'thingURL' in request.params:
+                        thingCode = request.params['thingCode']
+                        thingURL = request.params['thingURL']
                 
             log.info('user %s attempting to log in' % email)
             if email and password:
@@ -73,10 +73,16 @@ class LoginController(BaseController):
                         c.authuser = user
                         
                         log.info( "Successful login attempt with credentials - " + email )
-                        if workshopCode != 'None' and workshopURL != 'None' and thing != 'None' and thingCode == 'None':
-                            log.info( "got workshopCode" )
+                        
+                        # look for accelerator cases: workshop home, item listing, item home
+                        if workshopCode != 'None' and workshopURL != 'None' and thing == 'None':
+                            # workshop home
+                            loginURL = "/workshop/" + workshopCode + "/" + workshopURL
+                        elif workshopCode != 'None' and workshopURL != 'None' and thing != 'None' and thingCode == 'None':
+                            # item listing
                             loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing
                         elif workshopCode != 'None' and workshopURL != 'None' and thing != 'None' and thingCode != 'None' and thingURL != 'None':
+                            # item home
                             loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing + "/" + thingCode + "/" + thingURL
                         else:
                             loginURL = "/"
