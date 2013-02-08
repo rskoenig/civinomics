@@ -1,16 +1,32 @@
 <%! 
    from pylowiki.lib.db.user import getUserByID
    from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopByCode
-   import pylowiki.lib.db.follow as followLib
-   import pylowiki.lib.db.activity as activityLib
+   import pylowiki.lib.db.follow    as followLib
+   import pylowiki.lib.db.activity  as activityLib
+   import pylowiki.lib.db.goal      as goalLib
 %>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="show_workshop(w)">
+<% goals = goalLib.getGoalsForWorkshop(w) %>
 <div class="wrap-workshop">
    <div class="viewport">
       <a ${lib_6.workshopLink(w)}>
-         <span class="dark-background"> ${lib_6.ellipsisIZE(w['description'], 150)} </span>
+         <span class="dark-background">
+            % if not goals:
+               This workshop has no goals!
+            % else:
+               <ul>
+               % for goal in goals:
+                  % if goal['status'] == u'100':
+                     <li class="done-true">${goal['title']}</li>
+                  % else:
+                     <li>${goal['title']}</li>
+                  % endif
+               % endfor
+               </ul>
+            % endif
+         </span>
          % if w['mainImage_hash'] == 'supDawg':
             <img src="/images/${w['mainImage_identifier']}/slideshow/${w['mainImage_hash']}.slideshow" alt="${w['title']}" title="${w['title']}">
          % else:
