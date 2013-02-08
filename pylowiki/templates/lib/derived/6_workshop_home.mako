@@ -85,7 +85,7 @@
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
    <a class="pull-right" href="${workshopLink | n}">
-      <img class="config" src="/images/glyphicons_pro/glyphicons/png/glyphicons_019_cogwheel.png">
+      <img class="config" src="/images/glyphicons_pro/glyphicons/png/glyphicons_137_cogwheels.png">
    </a>
 </%def>
 
