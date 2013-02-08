@@ -432,6 +432,10 @@ ul.goals li.finished {
    text-decoration: line-through;
 }
 
+.addGoal, .editGoal, .editWorkshopName, .editWorkshopDescription{
+   width:80%;
+}
+
 ul.listeners{
    list-style-type: none;
    margin-bottom:0px;

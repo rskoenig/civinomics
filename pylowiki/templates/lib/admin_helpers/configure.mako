@@ -47,9 +47,9 @@
                     <form name="edit_issue" id="edit_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
                             <legend>Settings</legend>
                             <label>Name</label>
-                            <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle"/>
+                            <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="editWorkshopName"/>
                             <label>Description</label>
-                            <input id = "inputDescription" type="text" name="description" size="50" maxlength="70" value = "${c.w['description']}"/>
+                            <input id = "inputDescription" type="text" name="description" size="50" maxlength="70" value = "${c.w['description']}" class="editWorkshopDescription"/>
                             <%
                                 if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
                                     yesChecked = 'checked'
@@ -107,13 +107,13 @@
                                 <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
                                 <span class="done-{{goal.done}}" ng-dblclick="goalEdit(goal)" ng-hide="goal.editing">{{goal.title}}</span>
                                 <form ng-submit="goalEditDone(goal)" class="inline">
-                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle">
+                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditCancel(goal)">
                                 </form>
                             </li>
                         </ul>
                         <form ng-submit="addGoal()">
                             <div class="input-append">
-                                <input type="text" ng-model="goalTitle" size="70" placeholder="New goal here">
+                                <input type="text" ng-model="goalTitle" size="60" maxlength = "60" placeholder="New goal here" class="addGoal">
                                 <button class="btn btn-primary" type="submit" value="add">add</button>
                             </div>
                         </form>

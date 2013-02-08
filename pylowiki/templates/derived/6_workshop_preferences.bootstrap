@@ -285,7 +285,6 @@
       });
     </script>
     
-    <script src="/js/goals.js"></script>
 </%def>
 
 <%def name="headScripts()">
