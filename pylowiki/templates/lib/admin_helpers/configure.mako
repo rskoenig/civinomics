@@ -99,6 +99,7 @@
                 <div class="span6">
                 <legend>Goals</legend>
                     ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
+                    <p class="muted">Double-click on an existing goal to edit.</p>
                     <div ng-controller="GoalsCtrl">
                         <p> {{remaining()}} of {{goals.length}} remaining </p>
                         <ul class="unstyled">
