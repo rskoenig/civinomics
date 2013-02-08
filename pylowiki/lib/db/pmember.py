@@ -8,6 +8,7 @@ import sqlalchemy as sa
 from dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 from tldextract import extract
+import pylowiki.lib.db.generic      as genericLib
 
 log = logging.getLogger(__name__)
 
@@ -44,7 +45,7 @@ def getPrivateMemberWorkshops(email, deleted = '0'):
     return retlist
 
 class PMember(object):
-    def __init__( self, workshopCode, email, type, owner):
+    def __init__( self, workshopCode, email, type, owner, user = None):
         p = Thing('pmember', owner.id)
         p['workshopCode'] = workshopCode
         p['email'] = email
@@ -54,3 +55,5 @@ class PMember(object):
         commit(p)
         p['urlCode'] = toBase62(p)
         commit(p)
+        if user:
+            p = genericLib.linkChildToParent(p, user)

@@ -14,6 +14,8 @@ from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.geoInfo import GeoInfo
 from pylowiki.lib.mail import send
 from revision import Revision
+import pylowiki.lib.db.pmember      as pMemberLib
+import pylowiki.lib.db.generic      as genericLib
 
 from time import time
 import smtplib
@@ -182,6 +184,11 @@ class User(object):
         commit(u)
         self.u = u
         g = GeoInfo(postalCode, country, u.id)
+        
+        # update any pmembers
+        memberList = pMemberLib.getPrivateMemberWorkshops(u['email'])
+        for pMember in memberList:
+            pMember = genericLib.linkChildToParent(pMember, u)  
 
     # TODO: Should be encrypted instead of hashed
     def hashPassword(self, password):
