@@ -2,6 +2,9 @@ function GoalsCtrl($scope, $http, $location) {
   var getGoalsURL = $location.url() + 'goals/get'
   $http.get(getGoalsURL).success(function(data){
     $scope.goals = data;
+    angular.forEach($scope.goals, function(goal){
+        goal['editing'] = false;
+    })
     $scope.baseURL = $location.url()
   })
  
@@ -18,8 +21,24 @@ function GoalsCtrl($scope, $http, $location) {
   };
   
   $scope.goalStatus = function(goal) {
-    var goalStatusURL = $scope.baseURL + 'goals/' + goal.code + '/update';
-    $http.post(goalStatusURL, goal);
+    var goalUpdateURL = $scope.baseURL + 'goals/' + goal.code + '/update';
+    $http.post(goalUpdateURL, goal);
+  };
+  
+  $scope.goalEdit = function(goal) {
+    goal.editing = true;
+  };
+  
+  $scope.goalEditDone = function(goal) {
+    var goalUpdateURL = $scope.baseURL + 'goals/' + goal.code + '/update';
+    if (this.editTitle){
+      goal.title = this.editTitle;
+      $http.post(goalUpdateURL, goal).success(function(data){
+        goal.title = data.title;
+        goal.done = data.done;
+        goal.editing = false;
+      });
+    }
   };
   
   $scope.remaining = function() {

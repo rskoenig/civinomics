@@ -103,10 +103,11 @@
                         <p> {{remaining()}} of {{goals.length}} remaining </p>
                         <ul class="unstyled">
                             <li ng-repeat="goal in goals">
-                                <label class="checkbox">
-                                    <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)">
-                                    <span class="done-{{goal.done}}">{{goal.title}}</span>
-                                </label>
+                                <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
+                                <span class="done-{{goal.done}}" ng-dblclick="goalEdit(goal)" ng-hide="goal.editing">{{goal.title}}</span>
+                                <form ng-submit="goalEditDone(goal)" class="inline">
+                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle">
+                                </form>
                             </li>
                         </ul>
                         <form ng-submit="addGoal()">

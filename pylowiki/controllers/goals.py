@@ -58,6 +58,8 @@ class GoalsController(BaseController):
         c.goal['title'] = title
         c.goal['status'] = status
         dbHelpers.commit(c.goal)
-        return
+        print(payload)
+        print(c.goal)
+        return json.dumps({'title':c.goal['title'], 'done':c.goal['status'] == u'100'})
     
     

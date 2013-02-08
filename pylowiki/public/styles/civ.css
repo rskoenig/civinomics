@@ -60,6 +60,9 @@ hr.civ-topbar-hr{
    font-size:20px;
 }
 
+.ng-pristine.ng-valid{
+    margin:0;
+}
 .done-true{
     text-decoration: line-through;
     color: grey;
