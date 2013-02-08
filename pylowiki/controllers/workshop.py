@@ -474,6 +474,12 @@ class WorkshopController(BaseController):
                 if pTest:
                     pTest['deleted'] = '1'
                     dbHelpers.commit(pTest)
+                    # see if they have the workshop bookmarked
+                    user = userLib.getUserByEmail(pTest['email'])
+                    follow = followLib.getFollow(user, c.w)
+                    if follow:
+                        follow['disabled'] = '1'
+                        dbHelpers.commit(follow)
                     weventMsg += 'Member removed: ' +  removeMember
                 else:
                     werror = 1
