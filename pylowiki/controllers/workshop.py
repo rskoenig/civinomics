@@ -189,14 +189,8 @@ class WorkshopController(BaseController):
             werrMsg += 'Description '
             werror = 1
 
-        if 'goals' in request.params:
-           wGoals = str(request.params['goals'])
-           wGoals = wGoals.strip()
-           if wGoals and wGoals != c.w['goals']:
-               c.w['goals'] = wGoals
-               wchanges = 1
-               weventMsg += "Updated goals. "
-        else:
+        testGoals = goalLib.getGoalsForWorkshop(c.w)
+        if not testGoals:
            werror = 1
            werrMsg += 'Goals '
 
@@ -793,7 +787,8 @@ class WorkshopController(BaseController):
     
     @h.login_required
     def preferences(self, workshopCode, workshopURL):
-        if (c.w['goals'] != '' and c.w['goals'] != 'No goals set'):
+        testGoals = goalLib.getGoalsForWorkshop(c.w)
+        if testGoals:
             c.basicConfig = 1
         else:
             c.basicConfig = 0
