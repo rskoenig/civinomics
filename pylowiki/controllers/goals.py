@@ -5,6 +5,7 @@ from pylons.controllers.util import abort, redirect_to
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.goal         as goalLib
+import simplejson                   as json
 
 from pylowiki.lib.base import BaseController, render
 
@@ -25,4 +26,15 @@ class GoalsController(BaseController):
             abort(404)
 
     def add(self, workshopCode, workshopURL):
+        payload = json.loads(request.body)
+        if 'title' not in payload:
+            abort(404)
+        title = payload['title'].strip()
+        status = u'0' # as in 0 percent.  Binary at the moment...either 0 or 100.
+        goal = goalLib.Goal(title, status, c.w, c.authuser)
+        response.content_type = 'text/plain'
+        response.status_int = 200
+        return
+    
+    def edit(self, workshopCode, workshopURL, goalCode):
         return "hi"

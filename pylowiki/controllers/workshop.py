@@ -35,6 +35,7 @@ import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.page         as pageLib
 import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.db.flag         as flagLib
+import pylowiki.lib.db.goal         as goalLib
 
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
@@ -775,6 +776,9 @@ class WorkshopController(BaseController):
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
+        c.goals = goalLib.getGoalsForWorkshop(c.w)
+        if not c.goals:
+            c.goals = []
         return render('/derived/6_workshop_home.bootstrap')
     
     @h.login_required

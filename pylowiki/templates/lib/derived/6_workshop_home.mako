@@ -65,7 +65,7 @@
         </div>
     % endfor
 </%def>
-##<a href="#" rel="tooltip" data-placement="bottom" data-original-title="Tooltip on bottom">Tooltip on bottom</a>
+
 <%def name="watchButton()">
     % if 'user' in session:
         % if c.isFollowing:
@@ -200,5 +200,21 @@
 <%def name="showInfo(workshop)">
     % if c.information and 'data' in c.information:
         ${misaka.html(c.information['data']) | n}
+    % endif
+</%def>
+
+<%def name="showGoals(goals)">
+    % if len(goals) == 0:
+        <p>This workshop has no goals!</p>
+    % else:
+        <ul>
+        % for goal in goals:
+            % if goal['status'] == '100':
+                <li class="finished">${goal['title']}</li>
+            % else:
+                <li>${goal['title']}</li>
+            % endif
+        % endfor
+        </ul>
     % endif
 </%def>

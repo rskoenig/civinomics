@@ -12,12 +12,15 @@ log = logging.getLogger(__name__)
 
 def getGoalsForWorkshop(workshop):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'goal').filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'goal')\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .all()
     except:
         return False
 
-def Goal(title, status, workshop):
-    goal = Thing('goal')
+def Goal(title, status, workshop, owner):
+    goal = Thing('goal', owner.id)
     goal['title'] = title
     goal['status'] = status
     goal['deleted'] = '0'

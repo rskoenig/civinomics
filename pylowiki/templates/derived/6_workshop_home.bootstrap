@@ -52,11 +52,7 @@
             </div>
             <h5> Goals </h5>
             <ul class="goals">
-               <li class="finished"> Goal number 1 </li>
-               <li class="finished"> Goal number 2 </li>
-               <li> Goal number 3 </li>
-               <li> Goal number 4 </li>
-               <li> Goal number 5 </li>
+               ${helpers.showGoals(c.goals)}
             </ul> <!-- /goals -->
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
