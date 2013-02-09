@@ -8,6 +8,7 @@ from dbHelpers import with_characteristic as wc
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.event        as eventLib
 
 def Flag(thing, flagger, flagType = "overall", workshop = None):
     """
@@ -34,15 +35,20 @@ def Flag(thing, flagger, flagType = "overall", workshop = None):
     
     return f
 
-def FlagMetaData(thing, immune = '0'):
+def FlagMetaData(thing, user, reason, immune = u'1'):
     # Instead of denormalizing the object getting flagged, we instead
     # create a new object that dictates whether or not the flagged item
     # is immune to flagging.
-    flagMetaData = Thing('flagMetaData')
+    flagMetaData = Thing('flagMetaData', user.id)
     flagMetaData['immune'] = immune
     dbHelpers.commit(flagMetaData)
     generic.linkChildToParent(flagMetaData, thing)
     dbHelpers.commit(flagMetaData)
+    
+    action = 'immunified'
+    eventTitle = '%s %s' % (action.title(), thing.objType)
+    eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
+    eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action)
 
 def getFlagMetaData(thing):
     try:
@@ -54,6 +60,14 @@ def getFlagMetaData(thing):
             .one()
     except:
         return False
+
+def isImmune(thing):
+    metaData = getFlagMetaData(thing)
+    if not metaData:
+        return False
+    if metaData['immune'] == u'1':
+        return True
+    return False
 
 def getFlaggedThings(objType, workshop = None):
     try:

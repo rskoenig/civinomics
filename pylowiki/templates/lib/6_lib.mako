@@ -451,6 +451,21 @@
     ${enableStr | n}
 </%def>
 
+<%def name="immunifyThingLink(thing, **kwargs)">
+    <%
+        immunifyStr = '"/immunify/%s/%s"' %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return immunifyStr
+                    return 'href = ' + immunifyStr
+                return 'href = ' + immunifyStr
+        immunifyStr = 'href = ' + immunifyStr
+    %>
+    ${immunifyStr | n}
+</%def>
+
 <%def name="deleteThingLink(thing, **kwargs)">
     <%
         deleteStr = '"/delete/%s/%s"' %(thing.objType, thing['urlCode'])
@@ -541,6 +556,7 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
                     <li><a href="#enable-${adminID}" data-toggle="tab">Enable</a></li>
+                    <li><a href="#immunify-${adminID}" data-toggle="tab">Immunify</a></li>
                     % if c.privs['admin']:
                     <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
                     % endif
@@ -565,6 +581,16 @@
                             </fieldset>
                         </form>
                         <span id="enableResponse-${thing['urlCode']}"></span>
+                    </div>
+                    <div class="tab-pane" id="immunify-${adminID}">
+                        <form class="form-inline" action = ${immunifyThingLink(thing, embed=True, raw=True) | n}>
+                            <fieldset>
+                                <label>Reason:</label>
+                                <input type="text" name="reason" class="span8">
+                                <button type="submit" name = "submit" class="btn immunifyButton" ${immunifyThingLink(thing, embed=True) | n}>Submit</button>
+                            </fieldset>
+                        </form>
+                        <span id="immunifyResponse-${thing['urlCode']}"></span>
                     </div>
                     % if c.privs['admin']:
                     <div class="tab-pane" id="delete-${adminID}">

@@ -34,7 +34,7 @@ class AdminController(BaseController):
         if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
-        if action in ['edit', 'enable', 'disable', 'delete', 'flag']:
+        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
@@ -47,7 +47,7 @@ class AdminController(BaseController):
         if action in ['delete']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
-        if action in ['enable', 'disable']:
+        if action in ['enable', 'disable', 'immunify']:
             if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
                 abort(404)
             # Surely there must be a more elegant way to pass along this common variable
@@ -203,7 +203,22 @@ class AdminController(BaseController):
         result = 'Successfully flagged!'
         if flagLib.isFlagged(c.thing, c.authuser):
             result = 'Already flagged!'
-            return json.dumps({'id':thingCode, 'result':result})
+            return json.dumps({'code':thingCode, 'result':result})
+        if flagLib.isImmune(c.thing):
+            immunifyEvent = eventLib.getEventForThingWithAction(c.thing, 'immunified')
+            author = userLib.getUserByID(immunifyEvent.owner)
+            result = 'Marked immune to flagging by %s because %s' %(author['name'], immunifyEvent['reason'])
+            return json.dumps({'code':thingCode, 'result':result})
         flagLib.Flag(c.thing, c.authuser, workshop = c.w)
-        return json.dumps({'id':thingCode, 'result':result})
+        return json.dumps({'code':thingCode, 'result':result})
+        
+    def immunify(self, thingCode):
+        if flagLib.isImmune(c.thing):
+            immunifyEvent = eventLib.getEventForThingWithAction(c.thing, 'immunified')
+            author = userLib.getUserByID(immunifyEvent.owner)
+            result = 'Already marked immune to flagging by %s because %s' %(author['name'], immunifyEvent['reason'])
+            return json.dumps({'code':thingCode, 'result':result})
+        flagLib.FlagMetaData(c.thing, c.authuser, c.reason)
+        result = 'Marked immune!'
+        return json.dumps({'code':thingCode, 'result':result})
         

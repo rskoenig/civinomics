@@ -189,6 +189,7 @@ def make_map():
     map.connect('/delete/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'delete')
     map.connect('/edit/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'edit')
     map.connect('/flag/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'flag')
+    map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
     # Flag reset/object immunity goes here
     
     ########################################################################################################
