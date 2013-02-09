@@ -60,7 +60,7 @@ hr.civ-topbar-hr{
    font-size:20px;
 }
 
-.ng-pristine.ng-valid{
+form.addGoal{
     margin:0;
 }
 .done-true{
@@ -423,6 +423,9 @@ img.watch{
    color: #468847;
 }
 
+input[type="checkbox"].goal-checkbox, .goal-title{
+    margin:0;
+}
 
 ul.goals{
    list-style-type: none;
@@ -435,11 +438,14 @@ ul.goals li.finished {
 .addGoal, .editGoal, .editWorkshopName, .editWorkshopDescription{
    width:80%;
 }
-
+.goalList{
+    margin-top:-10px;
+}
 .goalList li .deleteGoal{
   display:none;
   width:15px;
   height:15px;
+  margin-top:5px;
 }
 .goalList li:hover .deleteGoal{
   display:block;

@@ -104,22 +104,21 @@
                         <p> {{remaining()}} of {{goals.length}} remaining </p>
                         <ul class="unstyled goalList">
                             <li ng-repeat="goal in goals">
-                                <div>
-                                    <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
-                                    <span class="done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
-                                    <form ng-submit="goalEditDone(goal)" class="inline">
-                                        <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
-                                    </form>
-                                    <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a>
-                                </div>
+                                <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
+                                <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
+                                <form ng-submit="goalEditDone(goal)" class="inline">
+                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
+                                </form>
+                                <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a>
                             </li>
                         </ul>
-                        <form ng-submit="addGoal()">
+                        <form ng-submit="addGoal()" class="addGoal">
                             <div class="input-append">
-                                <input type="text" ng-model="goalTitle" size="60" maxlength = "60" placeholder="New goal here" class="addGoal">
+                                <input type="text" ng-model="goalTitle" size="60" maxlength = "60" placeholder="New goal here" class="addGoal" id="addGoal">
                                 <button class="btn btn-primary" type="submit" value="add">add</button>
                             </div>
                         </form>
+                        <p class = "green">{{60 - goalTitle.length}}</p>
                     </div>
                 </div><!-- span6 -->
             </div><!-- row -->
