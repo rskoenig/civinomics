@@ -186,7 +186,7 @@ class User(object):
         g = GeoInfo(postalCode, country, u.id)
         
         # update any pmembers
-        memberList = pMemberLib.getPrivateMemberWorkshops(u)
+        memberList = pMemberLib.getPrivateMemberWorkshopsByEmail(u['email'])
         for pMember in memberList:
             pMember = genericLib.linkChildToParent(pMember, u)  
 
