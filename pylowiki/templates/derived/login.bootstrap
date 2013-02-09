@@ -61,13 +61,6 @@
                                 <h1> Sorry, Civinomics is in read only mode right now </h1>
                             % else:
                                 <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
-                                    % if c.workshopCode and c.workshopURL and c.thing:
-                                        <input type="hidden" name="workshopCode" value="${c.workshopCode}">
-                                        <input type="hidden" name="workshopURL" value="${c.workshopURL}">
-                                        <input type="hidden" name="thing" value="${c.thing}">
-                                        <input type="hidden" name="thingCode" value="${c.thingCode}">
-                                        <input type="hidden" name="thingURL" value="${c.thingURL}">
-                                    % endif
                                     <div class="control-group">
                                         <label class="control-label" for="email"> Email: </label>
                                         <div class="controls">

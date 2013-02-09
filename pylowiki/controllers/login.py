@@ -31,19 +31,6 @@ class LoginController(BaseController):
         try:
             email = request.params["email"].lower()
             password = request.params["password"]
-            workshopCode = 'None'
-            workshopURL = 'None'
-            thing = 'None'
-            thingCode = 'None'
-            thingURL = 'None'
-            if 'workshopCode' in request.params and 'workshopURL' in request.params:
-                workshopCode = request.params['workshopCode']
-                workshopURL = request.params['workshopURL']
-                if 'thing' in request.params:
-                    thing = request.params['thing']
-                    if 'thingCode' in request.params and 'thingURL' in request.params:
-                        thingCode = request.params['thingCode']
-                        thingURL = request.params['thingURL']
                 
             log.info('user %s attempting to log in' % email)
             if email and password:
@@ -75,23 +62,14 @@ class LoginController(BaseController):
                         log.info( "Successful login attempt with credentials - " + email )
                         
                         # look for accelerator cases: workshop home, item listing, item home
-                        if workshopCode != 'None' and workshopURL != 'None' and thing == 'None':
-                            # workshop home
-                            loginURL = "/workshop/" + workshopCode + "/" + workshopURL
-                        elif workshopCode != 'None' and workshopURL != 'None' and thing != 'None' and thingCode == 'None':
-                            # item listing
-                            loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing
-                        elif workshopCode != 'None' and workshopURL != 'None' and thing != 'None' and thingCode != 'None' and thingURL != 'None':
-                            # item home
-                            loginURL = "/workshop/" + workshopCode + "/" + workshopURL + "/" + thing + "/" + thingCode + "/" + thingURL
+                        if 'afterLoginURL' in session:
+                            loginURL = session['afterLoginURL']
+                            session.pop('afterLoginURL')
+                            session.save()
                         else:
                             loginURL = "/"
-                            
-                        try:
-                            return redirect(loginURL)
-                        except:
-                            return redirect(loginURL)
-                            return redirect(config['app_conf']['site_base_url'])
+                         
+                        return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
@@ -219,12 +197,14 @@ class LoginController(BaseController):
         return render("/derived/changepass.mako" )
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
-        if workshopCode is not None:
-            c.workshopCode = workshopCode
-            c.workshopURL = workshopURL
-            c.thing = thing
-            c.thingCode = thingCode
-            c.thingURL = thingURL
+        if workshopCode != 'None' and workshopURL != 'None':
+            afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
+            if thing != 'None':
+                afterLoginURL += "/" + thing
+                if thingCode != 'None' and thingURL != 'None':
+                    afterLoginURL += "/%s/%s"%(thingCode, thingURL)
+            session['afterLoginURL'] = afterLoginURL
+            session.save()
         
         if 'splashMsg' in session:
             c.splashMsg = session['splashMsg']
