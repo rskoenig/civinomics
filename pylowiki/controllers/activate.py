@@ -37,7 +37,13 @@ class ActivateController(BaseController):
                         session['alert'] = alert
                         session.save()
                         c.authuser = user
-                        returnURL = "/"
+                        if 'afterLoginURL' in session:
+                            returnURL = session['afterLoginURL']
+                            session.pop('afterLoginURL')
+                            session.save()
+                        else:
+                            returnURL = "/"
+                        log.info('activation returnURL is %s'%returnURL)
                         return redirect(returnURL)
                         
                     else:

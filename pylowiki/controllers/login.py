@@ -205,6 +205,7 @@ class LoginController(BaseController):
                     afterLoginURL += "/%s/%s"%(thingCode, thingURL)
             session['afterLoginURL'] = afterLoginURL
             session.save()
+            log.info('loginDisplay afterLoginURL is %s'%afterLoginURL)
         
         if 'splashMsg' in session:
             c.splashMsg = session['splashMsg']
