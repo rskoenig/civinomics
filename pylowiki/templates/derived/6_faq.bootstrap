@@ -1,0 +1,42 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="helpers" file="/lib/derived/6_help.mako" />
+
+<div class="container-fluid">
+        <div class="browse">
+            <h3 class="summary"><a href="/help">Help Center</a></h3>
+        </div><!-- browse -->
+        
+        <div id="sidebar" class="span3">
+            <div id="scroller-anchor"></div>
+            <ul id="scroller" class="nav nav-tabs nav-stacked scroller">
+                <li><a href="#home">Homepage<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#profile">Profile Page<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#editProfile">Edit Profile<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#mgAccount">Manage Account<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#workshops">Workshops<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#configWorkshop">Configure Workshop<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#adminWorkshop">Administrate Workshop<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#conversations">Conversations<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#ideas">Ideas<i class="icon-chevron-right pull-right"></i></a></li>
+                <li><a href="#resources">Resources<i class="icon-chevron-right pull-right"></i></a></li>
+            </ul>      
+        </div>
+        <div class="span9">
+            ${helpers.faq()}
+        </div>
+</div><!-- container-fluid -->
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-scrollspy.js"></script>
+    <script src="/js/moveScroller.js"></script>
+    <script type="text/javascript"> 
+      $(function() {
+        moveScroller();
+      });
+    </script> 
+</%def>
+
+<%def name="bodyTag_extras()">
+    data-spy="scroll" data-target="#sidebar"
+</%def>
+

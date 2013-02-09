@@ -1,0 +1,55 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="helpers" file="/lib/derived/6_help.mako" />
+
+<div class="container-fluid">
+    <div>
+        <div class="browse">
+            <h3 class="summary">Help Center</h3>
+        </div><!-- browse -->
+        <div class="row-fluid">
+            <div class="span4 well help">
+                <a href="#">
+                    <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_071_book.png">  Tutorial 101</h3>
+                    <p>Where to begin if you are entirely new to Civinomics and just don't get it.</p>
+                
+            </div>
+             <div class="span4 well help">
+                <a href="#">
+                    <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_043_group.png">  How to start a workshop</h3>
+                    <p>Ready to start a workshop of your own? Here are some things you'll need to keep in mind as a facilitator.</p>
+                </a>
+             </div>
+            <div class="span4 well help"> 
+                <a href="/help/faq">
+                    <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_194_circle_question_mark.png">  FAQ</h3>       
+                    <ul>
+                        <li>
+                            <a href="#">How do I vote?</a>
+                        </li>
+                        <li>
+                            <a href="#">How do I submit an idea to vote on?</a>
+                        </li>
+                        <li>
+                            <a href="#">What makes a good Idea?</a>
+                        </li>
+                    </ul>
+                </a>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4 well help"><a href="https://bitbucket.org/rskoenig/civinomics-help-center/issues?status=new&status=open">
+                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_360_bug.png">  Something's not working</h3>
+                <p>Can't login, missing objects, load failures, can't edit your workshop...</p></a>
+            </div>
+            <div class="span4 well help">
+                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_266_flag.png">  Report abuse or policy violoations</h3>
+                <p>Is someone misbehaving? Here's what you can do.</p>
+            </div>
+            <div class="span4 well help">
+                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_374_claw_hammer.png">  Suggest new features</h3>
+                <p>Help make Civinomics more effective.</p>
+            </div>
+        </div><!-- row-fluid -->
+    </div><!-- section-wrapper -->
+</div><!-- container-fluid -->
+
