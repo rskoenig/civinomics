@@ -105,9 +105,9 @@
                         <ul class="unstyled">
                             <li ng-repeat="goal in goals">
                                 <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
-                                <span class="done-{{goal.done}}" ng-dblclick="goalEdit(goal)" ng-hide="goal.editing">{{goal.title}}</span>
+                                <span class="done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
                                 <form ng-submit="goalEditDone(goal)" class="inline">
-                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditCancel(goal)">
+                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
                                 </form>
                             </li>
                         </ul>

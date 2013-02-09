@@ -25,12 +25,8 @@ function GoalsCtrl($scope, $http, $location) {
     $http.post(goalUpdateURL, goal);
   };
   
-  $scope.goalEdit = function(goal) {
-    goal.editing = true;
-  };
-  
-  $scope.goalEditCancel = function(goal) {
-    goal.editing = false;
+  $scope.goalEditState = function(goal) {
+    goal.editing = !goal.editing;
   };
   
   $scope.goalEditDone = function(goal) {
