@@ -109,6 +109,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/add{end:/?}', controller = 'goals', action = 'add')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/get{end:/?}', controller = 'goals', action = 'getGoals')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/update{end:/?}', controller = 'goals', action = 'update')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/delete{end:/?}', controller = 'goals', action = 'delete')
 
     # Workshop slideshow
     map.connect('/{workshop:workshops?}/{id1}/{id2}/{image:addImages/?}', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')

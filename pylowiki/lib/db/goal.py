@@ -10,11 +10,12 @@ import generic
 
 log = logging.getLogger(__name__)
 
-def getGoalsForWorkshop(workshop):
+def getGoalsForWorkshop(workshop, deleted = '0'):
     try:
         return meta.Session.query(Thing)\
             .filter_by(objType = 'goal')\
             .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
             .all()
     except:
         return False

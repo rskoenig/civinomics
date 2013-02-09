@@ -25,12 +25,18 @@ class GoalsController(BaseController):
             abort(404)
         workshopLib.setWorkshopPrivs(c.w)
         
-        if action in ['update']:
+        if action in ['update', 'delete']:
             c.goal = goalLib.getGoal(goalCode)
             if not c.goal:
                 abort(404)
         if not c.privs['admin'] and not c.privs['facilitator']:
             abort(404)
+
+    def _returnGoal(self, goal, done = None):
+        if done is None:
+            return json.dumps({'title':goal['title'], 'done':goal['status'] == u'100', 'code':goal['urlCode']})
+        else:
+            return json.dumps({'title':goal['title'], 'done':done, 'code':goal['urlCode']})
 
     def add(self, workshopCode, workshopURL):
         payload = json.loads(request.body)
@@ -39,7 +45,7 @@ class GoalsController(BaseController):
         title = payload['title'].strip()
         status = u'0' # as in 0 percent.  Binary at the moment...either 0 or 100.
         goal = goalLib.Goal(title, status, c.w, c.authuser)
-        return json.dumps({'title':goal['title'], 'done':False, 'code':goal['urlCode']})
+        return self._returnGoal(goal, done = False)
     
     def getGoals(self, workshopCode, workshopURL):
         goals = goalLib.getGoalsForWorkshop(c.w)
@@ -58,8 +64,10 @@ class GoalsController(BaseController):
         c.goal['title'] = title
         c.goal['status'] = status
         dbHelpers.commit(c.goal)
-        print(payload)
-        print(c.goal)
-        return json.dumps({'title':c.goal['title'], 'done':c.goal['status'] == u'100'})
+        return self._returnGoal(c.goal)
     
+    def delete(self, workshopCode, workshopURL, goalCode):
+        c.goal['deleted'] = u'1'
+        dbHelpers.commit(c.goal)
+        return self._returnGoal(c.goal)
     

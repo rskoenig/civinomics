@@ -41,10 +41,22 @@ function GoalsCtrl($scope, $http, $location) {
     }
   };
   
+  $scope.deleteGoal = function(goal) {
+    // javascript lacks a function to remove an item from an array other than pop()
+    var goalDeleteURL = $scope.baseURL + 'goals/' + goal.code + '/delete';
+    $http.post(goalDeleteURL, goal).success(function(data){
+      var oldGoals = $scope.goals;
+      $scope.goals = [];
+      angular.forEach(oldGoals, function(goal) {
+        if (goal.code != data.code) { $scope.goals.push(goal); }
+      });
+    });
+  };
+  
   $scope.remaining = function() {
     var count = 0;
-    angular.forEach($scope.goals, function(todo) {
-      count += todo.done ? 0 : 1;
+    angular.forEach($scope.goals, function(goal) {
+      count += goal.done ? 0 : 1;
     });
     return count;
   };
