@@ -238,45 +238,24 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     workshopName = workshop['title']
     senderName = sender['name']
     senderEmail = sender['email']
-    subject = senderName + ' invites you to a workshop.'
+    subject = 'An invitation from ' + senderName
     
     if message and message != '':
-        message = '\n' + message
+        message = "\nHere's a message from your friend:\n" + message
     
     emailDir = config['app_conf']['emailDirectory']
-    imageDir = config['app_conf']['imageDirectory']
     myURL = config['app_conf']['site_base_url']
     
-    # see if they are alread a user
-    uTest = getUserByEmail(recipient)
-    if uTest:
-        browseLink = 'Login to your Civinomics account, then visit the workshop here:\n' +  myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
-        if 'paste.testing_variables' in request.environ:
+    browseLink = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
+    if 'paste.testing_variables' in request.environ:
             request.environ['paste.testing_variables']['browseUrl'] = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
     else:
         guest = getPrivateMember(workshop['urlCode'], recipient)
-        browseLink = 'You can visit and browse the workshop here:\n' +  myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
+        browseLink = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
         if 'paste.testing_variables' in request.environ:
             request.environ['paste.testing_variables']['browseUrl'] = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
-        
-    regLink = myURL + '/signup'
 
-    htmlFile = emailDir + "/private_invite.html"
     txtFile = emailDir + "/private_invite.txt"
-    headerImage = imageDir + "/email_logo.png"
-    
-    # open and read in HTML file
-    fp = open(htmlFile, 'r')
-    htmlMessage = fp.read()
-    fp.close()
-    
-    # do the substitutions
-    htmlMessage = htmlMessage.replace('${c.sender}', senderName)
-    htmlMessage = htmlMessage.replace('${c.workshopName}', workshopName)
-    htmlMessage = htmlMessage.replace('${c.inviteMessage}', message)
-    htmlMessage = htmlMessage.replace('${c.regLink}', regLink)
-    htmlMessage = htmlMessage.replace('${c.browseLink}', browseLink)
-    htmlMessage = htmlMessage.replace('${c.imageSrc}', 'cid:civinomicslogo')
     
     # open and read the text file
     fp = open(txtFile, 'r')
@@ -287,34 +266,20 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     textMessage = textMessage.replace('${c.sender}', senderName)
     textMessage = textMessage.replace('${c.workshopName}', workshopName)
     textMessage = textMessage.replace('${c.inviteMessage}', message)
-    textMessage = textMessage.replace('${c.regLink}', regLink)
     textMessage = textMessage.replace('${c.browseLink}', browseLink)
-  
-    # open and read in the image
-    fp = open(headerImage, 'rb')
-    logo = fp.read()
-    fp.close()
     
-    senderImage = ''
-    if sender['pictureHash'] != 'flash':
-        senderImage = "/images/avatar/" + sender['directoryNumber'] + "/profile/" + sender['pictureHash'] + ".profile"
         
     # create a MIME email object, initialize the header info
     email = MIMEMultipart(_subtype='related')
     email['Subject'] = subject
-    email['From'] = 'registration@civinomics.com'
+    email['From'] = 'invitations@civinomics.com'
     email['To'] = recipient
     
     # now attatch the text and html and picture parts
     part1 = MIMEText(textMessage, 'plain')
-    #part2 = MIMEText(htmlMessage, 'html')
-    #part3 = MIMEImage(logo, 'png')
-    #part3.add_header('Content-Id', '<civinomicslogo>')
     email.attach(part1)
-    #email.attach(part2)
-    #email.attach(part3)
-    
-    # send that suckah
+
+    # send it
     s = smtplib.SMTP('localhost')
     s.sendmail(senderEmail, recipient, email.as_string())
     s.quit()

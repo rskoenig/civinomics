@@ -256,8 +256,7 @@
                 <textarea rows=6 cols=50 name="newMember"/></textarea>
                 </div><!-- span6 -->
                 <div class="span6">
-                Click to email an invitation: <input type="checkbox" name="sendInvite" value="sendInvite"><br />
-                Add optional message to invitation: <textarea rows=2 cols=50 name="inviteMsg"/></textarea><br />
+                Add optional message to email invitation: <textarea rows=2 cols=50 name="inviteMsg"/></textarea><br />
                 <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
 
                 </div><!-- span6 -->
