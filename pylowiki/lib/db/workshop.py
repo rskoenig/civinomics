@@ -9,6 +9,7 @@ from pylowiki.lib.db.pmember import getPrivateMember, getPrivateMemberByCode
 from pylowiki.lib.db.geoInfo import getGeoScope
 from pylowiki.lib.db.activity import getDiscussionCommentsSince
 from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussionByID
+import pylowiki.lib.db.listener as listenerLib
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 from page import Page
 from event import Event
@@ -220,6 +221,8 @@ def setWorkshopPrivs(workshop):
     c.privs['admin'] = False
     # Workshop facilitator
     c.privs['facilitator'] = False
+    # Like a facilitator, but with no special privs
+    c.privs['listener'] = False
     # Logged in member with privs to add objects
     c.privs['participant'] = False
     # Not logged in, privs to visit this specific workshop
@@ -230,6 +233,7 @@ def setWorkshopPrivs(workshop):
     if 'user' in session:
         c.privs['admin'] = isAdmin(c.authuser.id)
         c.privs['facilitator'] = isFacilitator(c.authuser.id, workshop.id)
+        c.privs['listener'] = listenerLib.getListener(c.authuser, workshop)
         c.privs['participant'] = isScoped(c.authuser, workshop)
         c.privs['guest'] = False
         c.privs['visitor'] = False   

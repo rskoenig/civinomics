@@ -60,6 +60,8 @@ def addedItemAs(thing, privs, role = None):
             thing['addedAs'] = 'admin'
         elif privs['facilitator']:
             thing['addedAs'] = 'facilitator'
+        elif privs['listener']:
+            thing['addedAs'] = 'listener'
         else:
             thing['addedAs'] = 'user'
     return thing
