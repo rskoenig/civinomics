@@ -38,7 +38,7 @@ class RegisterController(BaseController):
         c.numUsers = len(getActiveUsers())
         return render("/derived/signup.bootstrap")
 
-    def register_handler( self ):
+    def signupHandler( self ):
         c.numAccounts = 1000
         c.numUsers = len(getActiveUsers())
 

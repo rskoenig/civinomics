@@ -14,10 +14,11 @@
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
   </head>
 
-  <body>
+  <body ng-app>
     ${self.google_analytics()}
     <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
       <div class="navbar-inner" style="background-image: none; background-color: #FFFFFF;">
@@ -43,7 +44,6 @@
         <div class="span8">
             <p class="photoCredits">iStockphoto</p>
         </div>
-    </div>
     </div>
 
     <div class="container">
@@ -77,50 +77,54 @@
                             <h1> Sorry, Civinomics is in read only mode right now </h1>
                         % else:
                             <div class="login-body" style="border-bottom:none;">
-                                <form id="sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
+                                <form id="sign_in" action="/signup/handler" class="form form-horizontal" method="post" ng-controller="signupController" name="signupForm" ng-submit="submitForm()">
                                     <input type="hidden" name="country" value="United States">
                                     <input type="hidden" name="memberType" value="professional">
 
                                     <div class="control-group">
                                         <label class="control-label" for="name"> Full name: </label>
                                         <div class="controls">
-                                            <input type="text" name="name" id="name">
+                                            <input type="text" name="name" id="name" required>
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label class="control-label" for="email"> Email: </label>
                                         <div class="controls">
-                                            <input type="text" name="email" id="email">
+                                            <input type="email" name="email" id="email" ng-model="email" required>
+                                            <span class="error help-block" ng-show="signupForm.email.$error.email">Not a valid email!</span>
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label class="control-label" for="passphrase"> Password: </label>
                                         <div class="controls">
-                                            <input type="password" name="password" id="passphrase">
+                                            <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label class="control-label" for="passphrase2"> Password (again): </label>
                                         <div class="controls">
-                                            <input type="password" name="password2" id="passphrase2">
+                                            <input type="password" name="password2" id="passphrase2" ng-model= "passphrase2" required>
+                                            <span class="error help-block" ng-show="passphrase1 != passphrase2">Passwords don't match!</span>
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i>Postal Code: </label>
                                         <div class="controls">
-                                            <input type="text" name="postalCode" id="postalCode">
+                                            <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="word" ng-minlength="5" ng-maxlength="5" required>
+                                            <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <div class="controls">
                                             <label class="checkbox">
-                                                <input type="checkbox" name="chkTOS" id="chkTOS"> I agree to the <a href="/corp/terms" style="color: #5f774b;">Terms Of Use</a>
+                                                <input type="checkbox" name="chkTOS" id="chkTOS" ng-model="chkTOS" required> I agree to the <a href="/corp/terms" style="color: #5f774b;">Terms Of Use</a>
                                             </label>
                                         </div>
                                     </div>
                                     <div class="control-group">
                                         <div class="controls">
-                                            <button type="submit" class="btn btn-success"> Sign up </button>
+                                            <button class="btn btn-success disabled" ng-show="signupForm.$invalid">Sign up</button>
+                                            <button type="submit" class="btn btn-success" ng-show="signupForm.$valid">Sign up</button>
                                         </div>
                                     </div>
                                 </form>
