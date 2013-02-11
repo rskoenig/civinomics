@@ -160,6 +160,8 @@
                 headerClass += " admin"
             elif comment['addedAs'] == 'facilitator':
                 headerClass += " facilitator"
+            elif comment['addedAs'] == 'listener':
+                headerClass += " listener"
     %>
     <div class="${headerClass}">
         <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">

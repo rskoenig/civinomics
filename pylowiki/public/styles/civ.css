@@ -281,6 +281,10 @@ textarea.comment-reply{
     background-color:#c4ffbf;
 }
 
+.listener{
+    background-color:#d9edf7;
+}
+
 a, a:hover{
    color: #D15D00;
    text-decoration: none;
