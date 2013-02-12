@@ -28,6 +28,7 @@
                 if c.thing['disabled'] == '1':
                     helpers.showDisabledMessage(c.thing)
                 helpers.extraText(c.thing)
+                helpers.revisionHistory(c.revisions)
                 helpers.moderationPanel(c.thing)
             %>
             <div class="row-fluid">

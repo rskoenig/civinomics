@@ -12,7 +12,7 @@ import pylowiki.lib.db.resource         as  resourceLib
 import pylowiki.lib.db.discussion       as  discussionLib
 import pylowiki.lib.db.comment          as  commentLib
 import pylowiki.lib.db.revision         as  revisionLib
-import pylowiki.lib.db.geoInfo          as geoInfoLib
+import pylowiki.lib.db.geoInfo          as  geoInfoLib
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
 
@@ -61,6 +61,7 @@ class ResourceController(BaseController):
                 abort(404)
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'resource'
+        c.revisions = revisionLib.getRevisionsForThing(c.thing)
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, resourceCode, resourceURL, commentCode = ''):

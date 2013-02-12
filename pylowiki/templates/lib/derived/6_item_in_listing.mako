@@ -31,6 +31,23 @@
     % endif
 </%def>
 
+<%def name="revisionHistory(revisions)">
+    % if revisions:
+        <table class="table table-hover table-bordered table-condensed">
+            <tr>
+                <th>Date</th>
+                <th>Author</th>
+            </tr>
+        % for rev in revisions:
+            <tr>
+                <td>${rev.date}</td>
+                <td>${lib_6.userLink(rev.owner)}</td>
+            </tr>
+        % endfor
+        </table>
+    % endif
+</%def>
+
 <%def name="showItemTitle(thing)">
     <div class="span1">
         ${lib_6.upDownVote(thing)}

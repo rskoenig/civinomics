@@ -85,7 +85,7 @@ class DiscussionController(BaseController):
             else:
                 c.lastmoddate = c.thing.date
 
-        c.revisions = revisionLib.getParentRevisions(c.thing.id)
+        c.revisions = revisionLib.getRevisionsForThing(c.thing)
         
         c.listingType = 'discussion'
         return render('/derived/6_item_in_listing.bootstrap')
