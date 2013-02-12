@@ -6,6 +6,8 @@ from urlparse import urlparse
 from pylowiki.lib.db.user import getUserByEmail
 
 from pylowiki.tests.helpers.people import get_test_admin
+import pylowiki.tests.helpers.link_definitions as linkDefs
+import pylowiki.tests.helpers.form_definitions as formDefs
 
 
 ##############################################
@@ -43,16 +45,24 @@ def select_num_objects_name():
 #   login as this user
 ####################################
 def login(self, thisUser):
-    # get the login form, fill it out and submit
-    rLog = self.app.get(url=url_for(controller='login', action='loginDisplay'))
-    logForm = rLog.form
-    logForm['email'] = thisUser['email']
-    logForm['password'] = thisUser['password']
-    #logForm['password'] = 'badpassword'
-    rLogin = logForm.submit()
-    assert 'error' not in rLogin
-    assert rLogin.status_int == 302
-    return rLogin.follow()
+    """Get the login form, fill it out and submit it. Return the response page."""
+    #: visit home page
+    homePage = self.app.get(url=url_for(controller='home', content_type='text/html', action='index'))
+    #homePage = self.app.get(url="/")
+    #: click login link
+    
+    loginPage = homePage.click(href="/login", index=0)
+    #loginSoup = homePage.html
+    #loginLink = loginSoup.find("a", text=linkDefs.login_homePage())
+    #loginPage = self.app.get(url=loginLink.attrs['href'])
+    #: get the form and fill it in
+    loginForm = loginPage.forms[formDefs.login_homePage()]
+    loginForm[formDefs.login_email()] = thisUser['email']
+    loginForm[formDefs.login_password()] = thisUser['password']
+    loginSubmitted = loginForm.submit()
+    assert 'error' not in loginSubmitted
+    assert loginSubmitted.status_int == 302
+    return loginSubmitted.follow()
 
 ####################################
 # logout

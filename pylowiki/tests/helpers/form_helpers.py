@@ -49,6 +49,8 @@ def fillPaymentForm(paymentForm, **kwargs):
     return params
 
 def loadWithSubmitFields(webtestForm):
+    """accepts a webtest.response.form object and creates a dictionary of all the submit 
+    fields in the form"""
     params = {}
     for key, value in webtestForm.submit_fields():
         params[key] = value

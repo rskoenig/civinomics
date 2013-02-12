@@ -8,6 +8,7 @@ from pylons import config
 from pylowiki.tests.helpers.people import make_user
 from pylowiki.tests.helpers.authorization import login, logout
 from pylowiki.tests.helpers.registration import create_and_activate_a_user
+import pylowiki.tests.helpers.authorization as auth
 import pylowiki.tests.helpers.assertions as assertions
 import pylowiki.tests.helpers.content as content
 import pylowiki.tests.helpers.form_definitions as formDefs
@@ -67,8 +68,10 @@ class TestWorkshopController(TestController):
         #: get a new workshop form ready
         guestTitle = 'new workshop by guest'
         #: create a new workshop but pass the dontCreateWorkshop param to get the completed form, 
-        #: instead of a workshop that's already been created
-        workshopStartUrl = workshop.create_new_workshop(self, normalUser, title=guestTitle, dontCreateWorkshop=True)
+        #: instead of a workshop that's already been created. Note that the login=False parameter is needed,
+        #: since the user is already logged in this needs to be passed or else the create_new_workshop function
+        #: will try to log in as this person and this causes 
+        workshopStartUrl = workshop.create_new_workshop(self, normalUser, title=guestTitle, login=False, dontCreateWorkshop=True)
         #: logout (note: comment this line out including another one below to test that this would work for normalUser)
         logout(self)
         #: visit the browse link in order to enter the site as a guest
@@ -90,7 +93,6 @@ class TestWorkshopController(TestController):
         """This test tries to create a workshop as a non-logged-in visitor"""
         #: create a user
         publicUser = create_and_activate_a_user(self, name='PUBLIC user')
-        login(self, publicUser)
         publicTitle = 'new workshop by public'
         #: create a new workshop but pass the dontCreateWorkshop param to get the completed form, 
         #: instead of a workshop that's already been created
@@ -113,10 +115,12 @@ class TestWorkshopController(TestController):
         normalUser = create_and_activate_a_user(self)
         workshopTitle = 'new workshop by user'
         newWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitle)
-        assert workshopTitle in newWorkshop, "failure before tst complete: normal user not able to create new workshop"
+        assert workshopTitle in newWorkshop, "failure before test complete: normal user not able to create new workshop"
         #: go into the settings and click the upgrade button
-        dashboard = newWorkshop.click(href=linkDefs.workshopDashboard())
-        upgradeButton = dashboard.forms[formDefs.upgradeWorkshop()]
+        # this used to work, may again but for now it doesn't
+        #dashboard = workshop.click(href=linkDefs.workshopDashboard(), verbose=True)
+        preferences = workshop.getWorkshopPreferencesPage(self, newWorkshop)
+        upgradeButton = preferences.forms[formDefs.upgradeWorkshop()]
         paymentPage = upgradeButton.submit()
         #: fill out the payment form with info that would make for a completed form. include a spoof token value
         paymentForm = paymentPage.forms[formDefs.paymentForm()]
@@ -139,8 +143,9 @@ class TestWorkshopController(TestController):
         newWorkshop = workshop.create_new_workshop(self, facilitator, title=workshopTitle)
         assert workshopTitle in newWorkshop, "failure before tst complete: facilitator not able to create new workshop"
         #: go into the settings and click the upgrade button
-        dashboard = newWorkshop.click(href=linkDefs.workshopDashboard())
-        upgradeButton = dashboard.forms[formDefs.upgradeWorkshop()]
+        #dashboard = workshop.click(href=linkDefs.workshopDashboard(), verbose=True)
+        preferences = workshop.getWorkshopPreferencesPage(self, newWorkshop)
+        upgradeButton = preferences.forms[formDefs.upgradeWorkshop()]
         paymentPage = upgradeButton.submit()
         #: fill out the payment form with info that would make for a completed form. include a spoof token value
         paymentForm = paymentPage.forms[formDefs.paymentForm()]
@@ -163,8 +168,9 @@ class TestWorkshopController(TestController):
         newWorkshop = workshop.create_new_workshop(self, admin, title=workshopTitle)
         assert workshopTitle in newWorkshop, "failure before tst complete: admin not able to create new workshop"
         #: go into the settings and click the upgrade button
-        dashboard = newWorkshop.click(href=linkDefs.workshopDashboard())
-        upgradeButton = dashboard.forms[formDefs.upgradeWorkshop()]
+        #dashboard = workshop.click(href=linkDefs.workshopDashboard(), verbose=True)
+        preferences = workshop.getWorkshopPreferencesPage(self, newWorkshop)
+        upgradeButton = preferences.forms[formDefs.upgradeWorkshop()]
         paymentPage = upgradeButton.submit()
         #: fill out the payment form with info that would make for a completed form. include a spoof token value
         paymentForm = paymentPage.forms[formDefs.paymentForm()]
@@ -189,8 +195,9 @@ class TestWorkshopController(TestController):
         #: invite a guest to this workshop, recording the guest link
         guestLink = workshop.inviteGuest(self, newWorkshop, guestLink=True)
         #: go into the settings and click the upgrade button
-        dashboard = newWorkshop.click(href=linkDefs.workshopDashboard())
-        upgradeButton = dashboard.forms[formDefs.upgradeWorkshop()]
+        #dashboard = workshop.click(href=linkDefs.workshopDashboard(), verbose=True)
+        preferences = workshop.getWorkshopPreferencesPage(self, newWorkshop)
+        upgradeButton = preferences.forms[formDefs.upgradeWorkshop()]
         paymentPage = upgradeButton.submit()
         #: fill out the payment form with info that would make for a completed form. include a spoof token value
         paymentForm = paymentPage.forms[formDefs.paymentForm()]
@@ -204,10 +211,10 @@ class TestWorkshopController(TestController):
             url=str(paymentForm.action),
             params=paymentParams,
             expect_errors=True
-        )
+        ).follow()
         #: unless we see an error, the workshop may have been upgraded
-        assert workshopUpgraded.status_int == 404, "spoofed payment page able to be submitted by guest"
-        assert assertions.workshop_upgraded() not in workshopUpgraded
+        assert assertions.booted_to_front_page_1() in workshopUpgraded, "spoofed payment page able to be submitted by public"
+        assert assertions.workshop_upgraded() not in workshopUpgraded, "spoofed payment page able to upgrade workshop"
 
     def test_upgrade_workshop_public(self):
         """This test tries to upgrade a workshop as a non-logged-in visitor"""
@@ -217,8 +224,9 @@ class TestWorkshopController(TestController):
         newWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitle)
         assert workshopTitle in newWorkshop, "failure before tst complete: normal user not able to create new workshop"
         #: go into the settings and click the upgrade button
-        dashboard = newWorkshop.click(href=linkDefs.workshopDashboard())
-        upgradeButton = dashboard.forms[formDefs.upgradeWorkshop()]
+        #dashboard = workshop.click(href=linkDefs.workshopDashboard(), verbose=True)
+        preferences = workshop.getWorkshopPreferencesPage(self, newWorkshop)
+        upgradeButton = preferences.forms[formDefs.upgradeWorkshop()]
         paymentPage = upgradeButton.submit()
         #: fill out the payment form with info that would make for a completed form. include a spoof token value
         paymentForm = paymentPage.forms[formDefs.paymentForm()]
@@ -231,10 +239,10 @@ class TestWorkshopController(TestController):
             url=str(paymentForm.action),
             params=paymentParams,
             expect_errors=True
-        )
+        ).follow()
         #: unless we see an error, the workshop may have been upgraded
-        assert workshopUpgraded.status_int == 404, "spoofed payment page able to be submitted by public"
-        assert assertions.workshop_upgraded() not in workshopUpgraded
+        assert assertions.booted_to_front_page_1() in workshopUpgraded, "spoofed payment page able to be submitted by public"
+        assert assertions.workshop_upgraded() not in workshopUpgraded, "spoofed payment page able to upgrade workshop"
 
     def test_view_private_workshop_listing_page_nonmember_user(self):
         """This test checks to see if a member of the site who is not a member 
@@ -244,40 +252,168 @@ class TestWorkshopController(TestController):
         workshopTitle = 'new workshop by user'
         newWorkshop = workshop.create_new_workshop(self, workshopOwner, title=workshopTitle)
         assert workshopTitle in newWorkshop, "failure before tst complete: normal user not able to create new workshop"
-        #: visit the listing page and see that it's there
+        #: now create another user and look at the listing page to see if this workshop is there
+        logout(self)
+        nonMember = create_and_activate_a_user(self)
+        login(self, nonMember)
+        workshopListingPage = workshop.getWorkshopListingPage(self)
+        #: look for the title of this workshop on the page
+        assert workshopTitle not in workshopListingPage, "private workshop viewable on listing page by member of site who is not member of said workshop"
 
     def test_view_private_workshop_listing_page_member_user(self):
         """This test checks to see if a member of the site who is a member 
-        of a private workshop, can see the workshop on the workshop listing page."""
+        of a private workshop, can see the workshop on the workshop listing page.
+        This encompasses viewing this 'as a facilitator' of the workshop, since a 
+        user who creates a workshop is automatically a facilitator of that workshop."""
+        #: create a workshop
+        workshopOwner = create_and_activate_a_user(self)
+        workshopTitle = 'new workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, workshopOwner, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "failure before tst complete: normal user not able to create new workshop"
+        workshopListingPage = workshop.getWorkshopListingPage(self)
+        #: look for the title of this workshop on the page
+        assert workshopTitle not in workshopListingPage, "private workshop viewable on listing page by creator of said workshop"
 
     def test_view_private_workshop_listing_page_nonmember_facilitator(self):
         """This test checks to see if a facilitator of a workshop, who is not a member 
         of this private workshop, can see this workshop on the workshop listing page."""
-
-    def test_view_private_workshop_listing_page_member_facilitator(self):
-        """This test checks to see if a facilitator of a workshop can see this workshop
-        on the workshop listing page."""
+        """This test checks to see if a member of the site who is a member 
+        of a private workshop, can see the workshop on the workshop listing page."""
+        #: create a workshop under one user
+        workshopOwner = create_and_activate_a_user(self)
+        workshopTitle = 'new workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, workshopOwner, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "failure before tst complete: user not able to create new workshop"
+        logout(self)
+        #: create a workshop as another user
+        ownerOfOtherWorkshop = create_and_activate_a_user(self)
+        otherWorkshopTitle = 'new workshop by other user'
+        otherWorkshop = workshop.create_new_workshop(self, ownerOfOtherWorkshop, title=otherWorkshopTitle)
+        assert workshopTitle in newWorkshop, "failure before tst complete: user not able to create new workshop"
+        #: now this 'other' user is also a facilitator of a workshop. can this user see the other user's workshop in the listing page?
+        workshopListingPage = workshop.getWorkshopListingPage(self)
+        #: look for the title of this workshop on the page
+        assert workshopTitle not in workshopListingPage, "private workshop viewable on listing page by creator of a different private workshop"
 
     def test_view_private_workshop_listing_page_nonmember_admin(self):
         """This test checks to see if an admin of the site who is not a member 
         of a private workshop, can see the workshop on the workshop listing page."""
+        #: create a workshop under one user
+        workshopOwner = create_and_activate_a_user(self)
+        workshopTitle = 'new workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, workshopOwner, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "failure before tst complete: user not able to create new workshop"
+        logout(self)
+        #: login as an admin
+        admin = create_and_activate_a_user(self, name='ADMIN user', accessLevel='200')
+        auth.login(self, admin)
+        #: can an admin see the other user's workshop in the listing page?
+        workshopListingPage = workshop.getWorkshopListingPage(self)
+        #: look for the title of this workshop on the page
+        assert workshopTitle not in workshopListingPage, "private workshop viewable on listing page by admin"
 
     def test_view_private_workshop_listing_page_member_admin(self):
         """This test checks to see if an admin of the site who is a member 
         of a private workshop, can see the workshop on the workshop listing page."""
+        #: create a workshop under one user
+        workshopOwner = create_and_activate_a_user(self)
+        #: create an admin that will be a member of this workshop
+        admin = create_and_activate_a_user(self, name='ADMIN user', accessLevel='200')
+        workshopTitle = 'new workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, workshopOwner, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "failure before tst complete: user not able to create new workshop"
+        #: invite the admin to be a part of it
+        workshop.inviteGuest(self, newWorkshop, dontSendInvite=True, email=admin['email'])
+        #: login as the admin
+        auth.logout(self)
+        auth.login(self, admin)
+        #: can an admin, invited to be a part of this workshop, see it on the listing page?
+        workshopListingPage = workshop.getWorkshopListingPage(self)
+        #: look for the title of this workshop on the page
+        assert workshopTitle not in workshopListingPage, "private workshop viewable on listing page by admin who is part of the workshop"
 
     def test_view_private_workshop_listing_page_nonmember_guest(self):
         """This test checks to see if a guest of the site who is not a member 
         of a private workshop (but is the guest of another), can see the workshop 
         on the workshop listing page."""
+        normalUser = create_and_activate_a_user(self)
+        workshopTitle = 'new workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "failure before tst complete: normal user not able to create new workshop"
+        #: go into the settings and invite a guest. we will use this link at the end of the test
+        guestLink = workshop.inviteGuest(self, newWorkshop, guestLink=True)
+        #: logout, create a new user, create a workshop, see if the guest of the other workshop can see this one
+        auth.logout(self)
+        nextUser = create_and_activate_a_user(self)
+        nextWorkshopTitle = 'next workshop by next user'
+        nextWorkshop = workshop.create_new_workshop(self, nextUser, title=nextWorkshopTitle)
+        assert nextWorkshopTitle in nextWorkshop, "failure before tst complete: normal user not able to create new workshop"
+        auth.logout(self)
+        #: visit the browse link in order to enter the site as a guest
+        visitAsGuest = self.app.get(url=guestLink)
+        #: can a guest, invited to be a part of a different workshop, see nextWorkshop on the listing page?
+        workshopListingPage = workshop.getWorkshopListingPage(self)
+        #: look for the title of this workshop on the page
+        assert nextWorkshopTitle not in workshopListingPage, "private workshop viewable on listing page by guest, invited to be part of a different workshop"
 
     def test_view_private_workshop_listing_page_member_guest(self):
         """This test checks to see if a guest of the site who is a guest of
         the private workshop being tested, can see this workshop 
         on the workshop listing page."""
+        """This test checks to see if a guest of the site who is not a member 
+        of a private workshop (but is the guest of another), can see the workshop 
+        on the workshop listing page."""
+        normalUser = create_and_activate_a_user(self)
+        workshopTitle = 'new workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "failure before tst complete: normal user not able to create new workshop"
+        #: go into the settings and invite a guest. we will use this link at the end of the test
+        guestLink = workshop.inviteGuest(self, newWorkshop, guestLink=True)
+        #: logout, create a new user, create a workshop, see if the guest of the other workshop can see this one
+        auth.logout(self)
+        nextUser = create_and_activate_a_user(self)
+        nextWorkshopTitle = 'next workshop by next user'
+        nextWorkshop = workshop.create_new_workshop(self, nextUser, title=nextWorkshopTitle)
+        assert nextWorkshopTitle in nextWorkshop, "failure before tst complete: normal user not able to create new workshop"
+        auth.logout(self)
+        #: visit the browse link in order to enter the site as a guest
+        visitAsGuest = self.app.get(url=guestLink)
+        #: can a guest, invited to be a part of a different workshop, see nextWorkshop on the listing page?
+        workshopListingPage = workshop.getWorkshopListingPage(self)
+        #: look for the title of this workshop on the page
+        assert nextWorkshopTitle not in workshopListingPage, "private workshop viewable on listing page by guest, invited to be part of a different workshop"
 
     def test_view_private_workshop_listing_page_public(self):
         """This test checks to see if a non-logged-in visitor to the site can see a
         private workshop on the workshop listing page."""
+        #: create a workshop
+        workshopOwner = create_and_activate_a_user(self)
+        workshopTitle = 'new workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, workshopOwner, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "failure before tst complete: normal user not able to create new workshop"
+        auth.logout(self)
+        workshopListingPage = workshop.getWorkshopListingPage(self)
+        #: look for the title of this workshop on the page
+        assert workshopTitle not in workshopListingPage, "private workshop viewable on listing page by the public"
 
-    
+    def test_view_public_workshop(self):        
+        """This test creates a user, who creates a workshop, then the workshop is set as public."""
+        #: create a workshop
+        normalUser = create_and_activate_a_user(self)
+        workshopTitle = 'new workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "normal user not able to create new workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, normalUser)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scope = {}
+        #: ||united-states||california||santa-cruz||santa-cruz|95060
+        scope = workshop.createScope(self, state='california', county='santa-cruz', city='santa-cruz', postal='95060')
+
+        workshop.setWorkshopScope(self, newWorkshop, normalUser, scope)
+
+        reloadWorkshop = self.app.get(url=newWorkshop.request.url)
+        
+        assert reloadWorkshop == 404
+
+

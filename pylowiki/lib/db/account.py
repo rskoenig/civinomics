@@ -119,3 +119,24 @@ def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'No
     commit(account)
     return account
 
+def AccountTest(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'None'):
+    stripe.api_key = config['app_conf']['stripePrivateKey'].strip()
+    description = "Civinomics test account for customer " + billingName + " " + billingEmail + " workshop code " + workshop['urlCode']
+    plan = "PRO"
+    error = 0
+    errorTitle = 'There was an processing your payment information.'
+    errorMsg = ''
+
+    account = Thing('account')
+    account['billingName'] = billingName
+    account['billingEmail'] = billingEmail
+    account['stripeID'] = "customer['id']"
+    account['plan'] = plan
+    account['coupon'] = coupon
+    account['suspended'] = '0'
+    account['deleted'] = '0'
+    commit(account)
+    account['urlCode'] = toBase62(account)
+    account = generic.linkChildToParent(account, workshop)
+    commit(account)
+    return account

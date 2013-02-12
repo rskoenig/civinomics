@@ -16,5 +16,11 @@ def addIdea():
 def login():
 	return 'login'
 
-def workshopDashboard():
-	return 'dashboard'
+def login_homePage():
+	return u'Log In'
+
+def workshopListingPage():
+	return u'workshops'
+
+def workshopSettings():
+	return u'preferences'
