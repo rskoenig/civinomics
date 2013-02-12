@@ -9,7 +9,7 @@ import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.sort            as sortLib
-import pylowiki.lib.revision        as revisionLib
+import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render
