@@ -155,6 +155,32 @@ def generatePassword():
 def hashPassword(password):
     return md5(password + config['app_conf']['auth.pass.salt']).hexdigest()
 
+def sendWelcomeMail(u):
+        
+    subject = 'Welcome to Civinomics!'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/welcome.txt"
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+
+    # create a MIME email object, initialize the header info
+    email = MIMEMultipart(_subtype='related')
+    email['Subject'] = subject
+    email['From'] = c.conf['activation.email']
+    email['To'] = u['email']
+    
+    # now attatch the text and html and picture parts
+    part1 = MIMEText(textMessage, 'plain')
+    email.attach(part1)
+        
+    # send it
+    s = smtplib.SMTP('localhost')
+    s.sendmail(email['From'], u['email'], email.as_string())
+    s.quit()
 
 class User(object):
     def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
@@ -246,7 +272,6 @@ class User(object):
         s = smtplib.SMTP('localhost')
         s.sendmail(email['From'], u['email'], email.as_string())
         s.quit()
-
 
     def changePassword(self, password):
         self['password'] = self.hashPassword(password)

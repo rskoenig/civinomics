@@ -4,11 +4,9 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
-
-#from pylowiki.model import get_user_by_email, commit
-from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.mail import send
+import pylowiki.lib.db.user         as userLib
 
 import time
 
@@ -18,7 +16,7 @@ class ActivateController(BaseController):
 
     def index(self, id):
         hash, sep, email = id.partition('__')
-        user = get_user_by_email(email)
+        user = userLib.getUserByEmail(email)
         message = {}
         if user:
             log.info('user exists')
@@ -37,6 +35,7 @@ class ActivateController(BaseController):
                         session['alert'] = alert
                         session.save()
                         c.authuser = user
+                        userLib.sendWelcomeMail(user)
                         if 'afterLoginURL' in session:
                             returnURL = session['afterLoginURL']
                             session.pop('afterLoginURL')
