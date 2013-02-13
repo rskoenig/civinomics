@@ -46,7 +46,7 @@
          <span class="pull-right orange workshop-listing-info-icons"> 
             <a ${lib_6.workshopLink(w)}> <!-- Num watchers -->
                ${len(followLib.getWorkshopFollowers(w))}
-               <img class="small-eye" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
+               <img class="small-eye" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             </a> <!-- /Num watchers -->
             <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
                ${len(activityLib.getActivityForWorkshop(w['urlCode']))}
