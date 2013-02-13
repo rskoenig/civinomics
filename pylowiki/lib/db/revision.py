@@ -49,6 +49,7 @@ def Revision(owner, thing):
     r = Thing('revision', owner.id)
     for key in thing.keys():
         r[key] = thing[key]
+    r['objType'] = thing.objType
     commit(r)
     r['urlCode'] = toBase62(r)
     generic.linkChildToParent(r, thing)

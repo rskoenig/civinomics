@@ -40,7 +40,7 @@
             </tr>
         % for rev in revisions:
             <tr>
-                <td>${rev.date}</td>
+                <td>${lib_6.thingLinkRouter(rev, c.w, origThing = c.thing)}</td>
                 <td>${lib_6.userLink(rev.owner)}</td>
             </tr>
         % endfor
@@ -90,7 +90,9 @@
     <div class="row-fluid">
         <div class="span11 offset1">
             <div class="btn-group">
-                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+                % if thing['disabled'] == '0':
+                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+                % endif
                 % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
                 % endif
@@ -102,10 +104,11 @@
     </div>
     
     <%
-        lib_6.flagThing(thing)
-        if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
-            lib_6.editThing(thing)
-        if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
-            lib_6.adminThing(thing)
+        if thing['disabled'] == '0':
+            lib_6.flagThing(thing)
+            if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+                lib_6.editThing(thing)
+            if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+                lib_6.adminThing(thing)
     %>
 </%def>

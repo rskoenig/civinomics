@@ -263,6 +263,7 @@
 
 <%def name="thingLinkRouter(thing, workshop, **kwargs)">
     <%
+    
         if thing.objType == 'discussion':
             return discussionLink(thing, workshop, **kwargs)
         elif thing.objType == 'suggestion':

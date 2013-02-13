@@ -16,9 +16,6 @@ def Flag(thing, flagger, flagType = "overall", workshop = None):
         and can be used to specify a type of flag (e.g. off-topic, inflamatory,
         factually incorrect, etc...)
     """
-    if not getFlagMetaData(thing):
-        FlagMetaData(thing)
-    # flag creation
     f = Thing('flag', flagger.id)
     f['deleted'] = '0'
     f['disabled'] = '0'
