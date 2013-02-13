@@ -11,7 +11,7 @@ log = logging.getLogger(__name__)
 def create_user(self, usern, passw, zipc, membert, name):
     # create a user with normal privs
     rReg = self.app.post(
-        url=url_for(controller='register', action='register_handler'),
+        url=url_for(controller='register', action='signupHandler'),
         params={
             'email': usern,
             'password': passw,

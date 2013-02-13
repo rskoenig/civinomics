@@ -108,8 +108,10 @@ def create_new_workshop(self, thisUser, **kwargs):
         if formDefs.createWorkshopForm1_title() == key:
             if 'title' in kwargs:
                 createWorkshopForm1[key] = kwargs['title']
+                workshopTitle = kwargs['title']
             else:
                 createWorkshopForm1[key] = 'NEW WORKSHOP TITLE'
+                workshopTitle = 'NEW WORKSHOP TITLE'
         #: if this is the description field, set the form's description field
         elif formDefs.createWorkshopForm1_description() == key:
             if 'description' in kwargs:
