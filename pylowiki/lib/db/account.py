@@ -5,6 +5,10 @@ from pylowiki.lib.db.dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 import generic
 import stripe
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 
 def getAccountByCode(accountCode):
     try:
@@ -117,6 +121,32 @@ def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'No
     account['urlCode'] = toBase62(account)
     account = generic.linkChildToParent(account, workshop)
     commit(account)
+       
+    subject = 'Information about your new Civinomics Professional Workshop account'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/account.txt"
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+
+    # create a MIME email object, initialize the header info
+    email = MIMEMultipart(_subtype='related')
+    email['Subject'] = subject
+    email['From'] = 'billing@civinomics.com'
+    email['To'] = billingEmail
+    
+    # now attatch the text and html and picture parts
+    part1 = MIMEText(textMessage, 'plain')
+    email.attach(part1)
+        
+    # send it
+    s = smtplib.SMTP('localhost')
+    s.sendmail(email['From'], email['To'], email.as_string())
+    s.quit()
+    
     return account
 
 def AccountTest(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'None'):
