@@ -56,7 +56,7 @@ class ResourceController(BaseController):
     def showResource(self, workshopCode, workshopURL, resourceCode, resourceURL):
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:
-            c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
+            c.thing = revisionLib.getRevisionByCode(resourceCode)
             if not c.thing:
                 abort(404)
         c.discussion = discussionLib.getDiscussionForThing(c.thing)

@@ -71,7 +71,7 @@ class IdeaController(BaseController):
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
         c.thing = ideaLib.getIdea(ideaCode)
         if not c.thing:
-            c.thing = ideaLib.getIdea(ideaCode, disabled = '1')
+            c.thing = revisionLib.getRevisionByCode(ideaCode)
             if not c.thing:
                 abort(404)
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
