@@ -243,6 +243,19 @@
    ${ideaStr | n}
 </%def>
 
+<%def name="discussionLink(d, w, **kwargs)">
+   <%
+      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+      if 'id' in kwargs:
+         resourceStr += '#%s' % kwargs['id']
+      resourceStr += '"'
+      if 'embed' in kwargs:
+         if kwargs['embed'] == True:
+            return resourceStr
+   %>
+   ${resourceStr | n}
+</%def>
+
 <%def name="threadLink(comment, w, thingType = None, **kwargs)">
    <% 
       if thingType == None:
@@ -263,16 +276,19 @@
 
 <%def name="thingLinkRouter(thing, workshop, **kwargs)">
     <%
-    
-        if thing.objType == 'discussion':
+        if thing.objType == 'revision':
+            objType = thing['objType']
+        else:
+            objType = thing.objType
+        if objType == 'discussion':
             return discussionLink(thing, workshop, **kwargs)
-        elif thing.objType == 'suggestion':
+        elif objType == 'suggestion':
             return suggestionLink(thing, workshop, **kwargs)
-        elif thing.objType == 'resource':
+        elif objType == 'resource':
             return resourceLink(thing, workshop, **kwargs)
-        elif thing.objType == 'idea':
+        elif objType == 'idea':
             return ideaLink(thing, workshop, **kwargs)
-        elif thing.objType == 'comment':
+        elif objType == 'comment':
             #return threadLink(thing, workshop, **kwargs)
             if 'ideaCode' in thing.keys():
                 return ideaLink(ideaLib.getIdea(thing['ideaCode']), workshop, **kwargs)
@@ -407,19 +423,6 @@
             link += '%s/%s/%s/%s/%s"' % (geoInfo['countryURL'], geoInfo['stateURL'], geoInfo['countyURL'], geoInfo['cityURL'], geoInfo['postalURL'])
         return link
     %>
-</%def>
-
-<%def name="discussionLink(d, w, **kwargs)">
-   <%
-      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-      if 'id' in kwargs:
-         resourceStr += '#%s' % kwargs['id']
-      resourceStr += '"'
-      if 'embed' in kwargs:
-         if kwargs['embed'] == True:
-            return resourceStr
-   %>
-   ${resourceStr | n}
 </%def>
 
 <%def name="disableThingLink(thing, **kwargs)">

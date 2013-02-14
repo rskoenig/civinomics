@@ -58,10 +58,10 @@ class DiscussionController(BaseController):
         c.listingType = 'discussion'
         return render('/derived/6_detailed_listing.bootstrap')
 
-    def topic(self, workshopCode, workshopURL, discussionCode, discussionURL, revisionCode = ''):
+    def topic(self, workshopCode, workshopURL, discussionCode, discussionURL):
         c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
         if not c.thing:
-            c.thing = discussionLib.getDiscussion(dicussionCode, disabled = '1')
+            c.thing = revisionLib.getRevisionByCode(discussionCode)
             if not c.thing:
                 abort(404)
         c.flags = flagLib.getFlags(c.thing)
@@ -69,6 +69,7 @@ class DiscussionController(BaseController):
 
         c.title = c.w['title']
 
+        """
         if revisionCode != '':
             r = revisionLib.getRevisionByCode(revisionCode)
             c.content = h.literal(h.reST2HTML(r['data']))
@@ -84,7 +85,8 @@ class DiscussionController(BaseController):
                 c.lastmoddate = r.date
             else:
                 c.lastmoddate = c.thing.date
-
+        """
+        
         c.revisions = revisionLib.getRevisionsForThing(c.thing)
         
         c.listingType = 'discussion'

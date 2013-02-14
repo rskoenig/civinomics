@@ -39,8 +39,9 @@
                 <th>Author</th>
             </tr>
         % for rev in revisions:
+            <% linkStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(rev, c.w, embed=True), rev.date) %>
             <tr>
-                <td>${lib_6.thingLinkRouter(rev, c.w, origThing = c.thing)}</td>
+                <td>${linkStr | n}</td>
                 <td>${lib_6.userLink(rev.owner)}</td>
             </tr>
         % endfor

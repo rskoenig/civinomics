@@ -28,6 +28,7 @@ def getRevisionsForThing(thing):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'revision')\
             .filter(Thing.data.any(wc(codeKey, codeVal)))\
+            .filter(Thing.data.any(wc('objType', thing.objType)))\
             .all()
     except:
         return False
