@@ -31,28 +31,6 @@
     % endif
 </%def>
 
-<%def name="revisionHistory(revisions)">
-    % if revisions:
-        <div class="row-fluid">
-            <div class="span6 offset1">
-                <table class="table table-hover table-condensed">
-                    <tr>
-                        <th>Revision</th>
-                        <th>Author</th>
-                    </tr>
-                % for rev in revisions:
-                    <% linkStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(rev, c.w, embed=True), rev.date) %>
-                    <tr>
-                        <td>${linkStr | n}</td>
-                        <td>${lib_6.userLink(rev.owner)}</td>
-                    </tr>
-                % endfor
-                </table>
-            </div><!--/.span6 offset1-->
-        </div> <!--/.row-fluid-->
-    % endif
-</%def>
-
 <%def name="showItemTitle(thing)">
     <div class="span1">
         ${lib_6.upDownVote(thing)}

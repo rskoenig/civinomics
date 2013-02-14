@@ -172,7 +172,7 @@ def make_map():
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
-    # map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
     # map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/thread/{commentCode}{end:/?}', controller = 'comment', action = 'showThread')
 
     # Ratings

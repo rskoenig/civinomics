@@ -165,7 +165,6 @@ class Comment(object):
                 parentComment['children'] = parentComment['children'] + ',' + str(thisComment.id)
             commit(parentComment)
         
-        r = Revision(owner, thisComment)
         self.setDiscussionProperties(thisComment, discussion)
         self.c = thisComment
         

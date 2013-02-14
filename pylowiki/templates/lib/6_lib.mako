@@ -256,20 +256,12 @@
    ${resourceStr | n}
 </%def>
 
-<%def name="threadLink(comment, w, thingType = None, **kwargs)">
+<%def name="commentLink(comment, w, **kwargs)">
    <% 
-      if thingType == None:
-         if 'ideaCode' in comment.keys():
-            thingType = 'idea'
-         elif 'resourceCode' in comment.keys():
-            thingType = 'resource'
-      d = discussionLib.getDiscussion(comment['discussionCode'])
-      if d['discType'] == 'resource':
-         d = resourceLib.getResourceByCode(d['resourceCode'])
-      linkStr = 'href="/workshop/%s/%s/%s/%s/%s/thread/%s"' %(w["urlCode"], w["url"], thingType, d["urlCode"], d["url"], comment['urlCode'])
-      if 'embed' in kwargs:
-         if kwargs['embed'] == True:
-            return linkStr
+        linkStr = 'href="/workshop/%s/%s/comment/%s"' %(w["urlCode"], w["url"], comment["urlCode"])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return linkStr
    %>
    ${linkStr | n}
 </%def>
@@ -289,7 +281,8 @@
         elif objType == 'idea':
             return ideaLink(thing, workshop, **kwargs)
         elif objType == 'comment':
-            #return threadLink(thing, workshop, **kwargs)
+            if thing.objType == 'revision':
+                return commentLink(thing, workshop, **kwargs)
             if 'ideaCode' in thing.keys():
                 return ideaLink(ideaLib.getIdea(thing['ideaCode']), workshop, **kwargs)
             elif 'resourceCode' in thing.keys():
@@ -646,5 +639,27 @@
            session.pop('alert')
            session.save()
         %>
+    % endif
+</%def>
+
+<%def name="revisionHistory(revisions)">
+    % if revisions:
+        <div class="row-fluid">
+            <div class="span6 offset1">
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>Revision</th>
+                        <th>Author</th>
+                    </tr>
+                    % for rev in revisions:
+                        <% linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, c.w, embed=True), rev.date) %>
+                        <tr>
+                            <td>${linkStr | n}</td>
+                            <td>${userLink(rev.owner)}</td>
+                        </tr>
+                    % endfor
+                </table>
+            </div><!--/.span6 offset1-->
+        </div> <!--/.row-fluid-->
     % endif
 </%def>

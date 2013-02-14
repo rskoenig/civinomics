@@ -65,18 +65,16 @@ class CommentController(BaseController):
             # Check if the 'submit' variable is in the posted variables.
             return redirect(session['return_to'])
         return redirect(session['return_to'])
-
+    
+    def permalink(self, workshopCode, workshopURL, revisionCode):
+        c.revision = revisionLib.getRevisionByCode(revisionCode)
+        return render('/derived/6_permaComment.bootstrap')
+        
     ####################################################
     # 
     # The below functions are currently unused
     # 
     ####################################################
-    def permalink(self, workshopCode, workshopURL, revisionCode):
-        c.r = revisionLib.getRevisionByCode(revisionCode)
-        c.u = userLib.getUserByID(c.r.owner)
-        c.comment = commentLib.getComment(c.r['parent_id'])
-        
-        return render('/derived/permaComment.bootstrap')
 
     def showThread(self, workshopCode, workshopURL, commentCode):
         c.w = workshopLib.getWorkshop(workshopCode, workshopURL)

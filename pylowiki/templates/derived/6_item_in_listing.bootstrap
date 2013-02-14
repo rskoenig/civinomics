@@ -21,7 +21,7 @@
                     <div class="span10 offset1">
                         <div class="alert alert-error">
                             <h4>Warning!</h4>
-                            You are looking at a previous version, kept in the interests of transparency and history.
+                            You are looking at a previous version (dated ${c.thing.date} PST), kept in the interests of transparency and history.
                         </div>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                 if c.thing['disabled'] == '1':
                     helpers.showDisabledMessage(c.thing)
                 helpers.extraText(c.thing)
-                helpers.revisionHistory(c.revisions)
+                lib_6.revisionHistory(c.revisions)
                 helpers.moderationPanel(c.thing)
             %>
             % if c.thing.objType != 'revision':
