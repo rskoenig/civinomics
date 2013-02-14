@@ -20,8 +20,15 @@
                 ${lib_6.fields_alert()}
                 <span class="payment-errors"></span><br />
                 % if c.w:
+                    % if c.privs['admin']:
+                        <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="post" id="adminUpgradeForm">
+                        <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+                        <button type="submit" name="admin-submit-button" class="btn btn-success">Complimentary Upgrade</button><br /><br />
+                        </form>
+                    % endif
                     <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="post" id="paymentForm">
                     <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+
                 % else:
                     <form action="/workshop/create/handler" method="post" id="paymentForm">
                 % endif

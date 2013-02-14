@@ -102,7 +102,7 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'displayAllResources', 'preferences']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
@@ -595,6 +595,9 @@ class WorkshopController(BaseController):
         pError = 0
         pErrorMsg = ''
         
+        if 'admin-submit-button' in request.params and c.privs['admin']:
+            return True
+        
         if 'name' in request.params and request.params['name'] != '':
             c.billingName = request.params['name']
         else:
@@ -636,7 +639,9 @@ class WorkshopController(BaseController):
                     workshop = workshopLib.getWorkshopByCode(workshopCode)
                     workshop['type'] = 'professional'
                     dbHelpers.commit(workshop)
-                    account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, workshop, 'PRO', c.coupon)
+                    if not ('admin-submit-button' in request.params and c.privs['admin']):
+                        account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, workshop, 'PRO', c.coupon)
+                        
                     alert = {'type':'success'}
                     alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
                     session['alert'] = alert
