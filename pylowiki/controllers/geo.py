@@ -46,11 +46,11 @@ class GeoController(BaseController):
         c.workshopTitlebar = capwords(geoInfoLib.geoDeurlify(location)) + ' workshops'
         
         # Find all workshops within the filtered area
-        country = capwords(geoInfoLib.geoDeurlify(country))
-        state = capwords(geoInfoLib.geoDeurlify(state))
-        county = capwords(geoInfoLib.geoDeurlify(county))
-        city = capwords(geoInfoLib.geoDeurlify(city))
-        postalCode = capwords(geoInfoLib.geoDeurlify(postalCode))
+        #country = capwords(geoInfoLib.geoDeurlify(country))
+        #state = capwords(geoInfoLib.geoDeurlify(state))
+        #county = capwords(geoInfoLib.geoDeurlify(county))
+        #city = capwords(geoInfoLib.geoDeurlify(city))
+        #postalCode = capwords(geoInfoLib.geoDeurlify(postalCode))
         scopeList = geoInfoLib.getWorkshopsInScope(country = country, state = state, county = county, city = city, postalCode = postalCode)
         c.list = []
         workshopCodes = []
