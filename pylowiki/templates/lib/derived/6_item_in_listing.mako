@@ -33,19 +33,23 @@
 
 <%def name="revisionHistory(revisions)">
     % if revisions:
-        <table class="table table-hover table-bordered table-condensed">
-            <tr>
-                <th>Date</th>
-                <th>Author</th>
-            </tr>
-        % for rev in revisions:
-            <% linkStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(rev, c.w, embed=True), rev.date) %>
-            <tr>
-                <td>${linkStr | n}</td>
-                <td>${lib_6.userLink(rev.owner)}</td>
-            </tr>
-        % endfor
-        </table>
+        <div class="row-fluid">
+            <div class="span6 offset1">
+                <table class="table table-hover table-condensed">
+                    <tr>
+                        <th>Revision</th>
+                        <th>Author</th>
+                    </tr>
+                % for rev in revisions:
+                    <% linkStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(rev, c.w, embed=True), rev.date) %>
+                    <tr>
+                        <td>${linkStr | n}</td>
+                        <td>${lib_6.userLink(rev.owner)}</td>
+                    </tr>
+                % endfor
+                </table>
+            </div><!--/.span6 offset1-->
+        </div> <!--/.row-fluid-->
     % endif
 </%def>
 
@@ -82,7 +86,7 @@
 
 <%def name="moderationPanel(thing)">
     <%
-        if 'user' not in session:
+        if 'user' not in session or thing.objType == 'revision':
             return
         flagID = 'flag-%s' % thing['urlCode']
         editID = 'edit-%s' % thing['urlCode']

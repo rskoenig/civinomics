@@ -22,7 +22,7 @@
 
 <%def name="upDownVote(thing)">
    <div class="voteWrapper">
-      % if thing['disabled'] == '1':
+      % if thing['disabled'] == '1' or thing.objType == 'revision':
          </div> <!-- /.voteWrapper -->
          <% return %>
       % endif
@@ -553,7 +553,11 @@
 </%def>
 
 <%def name="adminThing(thing, **kwargs)">
-    <% adminID = 'admin-%s' % thing['urlCode'] %>
+    <% 
+        if thing.objType == 'revision':
+            return
+        adminID = 'admin-%s' % thing['urlCode']
+    %>
     <div class="row-fluid collapse" id="${adminID}">
         <div class="span11 offset1 alert">
             <div class="tabbable"> <!-- Only required for left/right tabs -->

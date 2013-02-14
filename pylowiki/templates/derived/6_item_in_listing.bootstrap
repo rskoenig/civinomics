@@ -16,6 +16,16 @@
      <div class="section-wrapper">
         <div class="browse">
             <h3 class="section-header"> ${d[c.listingType]} </h3>
+            % if c.thing.objType == 'revision':
+                <div class="row-fluid">
+                    <div class="span10 offset1">
+                        <div class="alert alert-error">
+                            <h4>Warning!</h4>
+                            You are looking at a previous version, kept in the interests of transparency and history.
+                        </div>
+                    </div>
+                </div>
+            % endif
             <div class="row-fluid">
                 <%
                     helpers.showItemTitle(c.thing)
