@@ -30,9 +30,19 @@
                 </table>
             </div><!-- browse -->
         </div><!-- section-wrapper -->
-    <div><!-- row-fluid -->
+    </div><!-- row-fluid -->
 </%def>
 
+<%def name="admin()">
+    <div class="row-fluid">
+        <div class="section-wrapper">
+            <div class="browse">
+                <h4 class="section-header smaller">Civ Admin Panel</h4>
+                <a href="/demo/set/${c.w['urlCode']}"><button class="btn btn-large btn-primary">Set as demo workshop</button></a>
+            </div><!-- browse -->
+        </div><!-- section-wrapper -->
+    <div><!-- row-fluid -->
+</%def>
 
 <%def name="admin_facilitators()">
     % if c.w['public_private'] != 'trial':

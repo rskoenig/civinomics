@@ -47,16 +47,6 @@
             tab7active = "active"
 %>
 
-<%doc>
-<div class="row-fluid">
-    <div class="span12">
-        <div class="summary">
-            <h3 class="centered">Workshop Preferences</h4>
-        </div><!-- summary -->
-    </div><!-- span12 -->
-</div><!-- row-fluid -->
-</%doc>
-
 <div class="row-fluid">
     <div class="tabbable">
         <div class="span3">
@@ -75,6 +65,9 @@
                             <li class="${tab10active}"><a href="#tab10" data-toggle="tab">${tabCount}. Event Log
                             <% tabCount += 1 %>
                             </a></li>
+                            % if c.privs['admin']:
+                            <li><a href="#admin" data-toggle="tab">Civ admin</a></li>
+                            % endif
                         </ul>
                     </div><!-- browse -->
                 </div><!-- section-wrapper -->
@@ -167,15 +160,17 @@
                 <div class="tab-pane ${tab10active}" id="tab10">    
                     ${admin_helpers.admin_event_log()}
                 </div><!-- tab10 -->
-                
+                % if c.privs['admin']:
+                <div class="tab-pane" id="admin">
+                    ${admin_helpers.admin()}
+                </div>
+                % endif
             </div><!-- tab-content -->
         % endif
         </div><!-- span9 -->
     </div><!-- tabbable template -->
 </div><!-- row-fluid -->
-    
 
-            
 <%def name = 'extraStyles()'>
     <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">

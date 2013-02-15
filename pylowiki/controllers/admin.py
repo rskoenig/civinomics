@@ -22,6 +22,7 @@ import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.generic          as generic
 import pylowiki.lib.db.event            as eventLib
+import pylowiki.lib.db.demo             as demoLib
 
 import simplejson as json
 log = logging.getLogger(__name__)
@@ -34,6 +35,7 @@ class AdminController(BaseController):
         if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
+        # Actions that require a workshop and a workshop child object
         if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify']:
             if thingCode is None:
                 abort(404)
@@ -44,7 +46,12 @@ class AdminController(BaseController):
             workshop = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
             if not workshop:
                 return json.dumps({'code':thingCode, 'result':'ERROR'})
-        if action in ['delete']:
+        # Actions that only require the workshop
+        if action in ['setDemo']:
+            if thingCode is None:
+                abort(404)
+            c.thing = generic.getThing(thingCode)
+        if action in ['delete', 'setDemo']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['enable', 'disable', 'immunify']:
@@ -222,3 +229,6 @@ class AdminController(BaseController):
         result = 'Marked immune!'
         return json.dumps({'code':thingCode, 'result':result})
         
+    def setDemo(self, thingCode):
+        demoLib.setDemo(c.thing, c.authuser)
+        return "Demo set"
