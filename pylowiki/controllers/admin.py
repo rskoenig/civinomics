@@ -230,5 +230,5 @@ class AdminController(BaseController):
         return json.dumps({'code':thingCode, 'result':result})
         
     def setDemo(self, thingCode):
-        demoLib.setDemo(c.thing, c.authuser)
-        return "Demo set"
+        demo, response = demoLib.setDemo(c.thing, c.authuser)
+        return response

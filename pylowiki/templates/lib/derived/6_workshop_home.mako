@@ -89,7 +89,6 @@
    </a>
 </%def>
 
-
 <%def name="workshopNav(w, listingType)">
    ## Brute forced and inelegant =(
    <% 

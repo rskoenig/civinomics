@@ -24,12 +24,12 @@ def setDemo(workshop, user, **kwargs):
         demo = Demo(workshop, user, **kwargs)
         title = 'Initial demo workshop'
         eventLib.Event(title, data, workshop, user)
-        return demo
+        return demo, 'Initialized demo'
     title = 'Updated demo workshop'
     eventLib.Event(title, data, workshop, user)
     generic.linkChildToParent(demo, workshop)
     commit(demo)
-    return demo
+    return demo, 'Updated demo workshop'
 
 def Demo(workshop, user, **kwargs):
     """

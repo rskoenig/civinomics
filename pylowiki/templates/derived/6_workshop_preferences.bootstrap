@@ -319,5 +319,8 @@
             });
         });
     </script>
-</%def>
+    % if c.privs['admin']:
+        <script src="/js/ng/workshop_admin.js" type="text/javascript"></script>
+    % endif
+    </%def>
 

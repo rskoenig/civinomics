@@ -34,11 +34,19 @@
 </%def>
 
 <%def name="admin()">
-    <div class="row-fluid">
+    <div class="row-fluid" ng-controller="adminController">
         <div class="section-wrapper">
             <div class="browse">
                 <h4 class="section-header smaller">Civ Admin Panel</h4>
-                <a href="/demo/set/${c.w['urlCode']}"><button class="btn btn-large btn-primary">Set as demo workshop</button></a>
+                <form class="form-horizontal" ng-init="code='${c.w['urlCode']}'">
+                    <div class="control-group">
+                        <label class="control-label" for="setDemo">Set as demo?</label>
+                        <div class="controls">
+                            <a id="setDemo" class="btn btn-primary" ng-click="setDemo()" href="#">Do it</a>
+                            <span class="help-block" ng-show="showResponse">{{response}}</span>
+                        </div>
+                    </div>
+                </form>
             </div><!-- browse -->
         </div><!-- section-wrapper -->
     <div><!-- row-fluid -->
