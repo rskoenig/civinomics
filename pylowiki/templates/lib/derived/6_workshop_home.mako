@@ -31,13 +31,18 @@
 <%def name="showActivity(activity)">
     <%
         numItems = 5
-        if len(activity) > numItems:
-            showMore = True
-            activity = activity[0:numItems]
-        else:
-            showMore = False
+        shownItems = 0
     %>
     % for item in activity:
+        <%
+            if c.demo:
+                author = getUserByID(item.owner)
+                if not c.privs['admin']:
+                    if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                        continue
+            if shownItems >= numItems:
+                break
+        %>
         <div class="row-fluid">
             ${lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")}
             ${lib_6.userLink(item.owner)}
@@ -60,6 +65,7 @@
                         activityStr += 'resource </a>'
                     else:
                         activityStr += 'discussion </a>'
+                shownItems += 1
             %>
             ${activityStr | n}
         </div>
