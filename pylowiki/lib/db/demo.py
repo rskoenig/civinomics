@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic as wc
 import pylowiki.lib.db.event    as eventLib
 import pylowiki.lib.db.generic  as generic
+import pylowiki.lib.db.workshop as workshopLib
 
 log = logging.getLogger(__name__)
 
@@ -29,6 +30,11 @@ def setDemo(workshop, user, **kwargs):
     eventLib.Event(title, data, workshop, user)
     generic.linkChildToParent(demo, workshop)
     commit(demo)
+    
+    # Don't set the old workshop to be undeleted automatically - may not want everything to suddenly become public.
+    workshop['deleted'] = '1'
+    commit(workshop)
+    
     return demo, 'Updated demo workshop'
 
 def Demo(workshop, user, **kwargs):
@@ -39,5 +45,7 @@ def Demo(workshop, user, **kwargs):
     demo = Thing('demo', user.id)
     generic.linkChildToParent(demo, workshop)
     commit(demo)
+    workshop['deleted'] = '1'
+    commit(workshop)
     return demo
     

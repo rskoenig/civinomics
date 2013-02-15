@@ -19,12 +19,12 @@ def linkChildToParent(child, parent):
         return False
     
     key = '%s%s' %(parent.objType, 'Code')
-    if key not in child:
-        child[key] = code
-    else:
+    if key in child:
+        # Overwrite, give warning
         log.warning("linkChildToParent(): parent object link already exists in child.")
+    child[key] = code
     return child
-   
+    
 def getThing(code):
     try:
         return meta.Session.query(Thing)\
