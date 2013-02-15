@@ -103,6 +103,12 @@
       ideaCount = 0
       resourceCount = 0
       for item in activity:
+         if c.demo:
+            author = getUserByID(item.owner)
+            if not c.privs['admin']:
+               if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                  continue
+         
          if item.objType == 'discussion':
             discussionCount += 1
          elif item.objType == 'idea':
