@@ -30,6 +30,17 @@ class ResourceController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+        
+        # Demo workshop status
+        demo = demoLib.getDemo()
+        if not demo:
+            c.demo = False
+        else:
+            if demo['workshopCode'] == c.w['urlCode']:
+                c.demo = True
+            else:
+                c.demo = False
+        
         c.title = c.w['title']
         workshopLib.setWorkshopPrivs(c.w)
         if c.w['public_private'] == 'public':

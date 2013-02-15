@@ -10,6 +10,7 @@ import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.sort            as sortLib
 import pylowiki.lib.db.revision     as revisionLib
+import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render
@@ -24,6 +25,17 @@ class IdeaController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+            
+        # Demo workshop status
+        demo = demoLib.getDemo()
+        if not demo:
+            c.demo = False
+        else:
+            if demo['workshopCode'] == c.w['urlCode']:
+                c.demo = True
+            else:
+                c.demo = False
+        
         workshopLib.setWorkshopPrivs(c.w)
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)

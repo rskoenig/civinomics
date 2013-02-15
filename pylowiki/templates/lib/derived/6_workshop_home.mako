@@ -38,8 +38,12 @@
             if c.demo:
                 author = getUserByID(item.owner)
                 if not c.privs['admin']:
-                    if (author['accessLevel'] != '300' and author.id != c.authuser.id):
-                        continue
+                    if 'user' in session:
+                        if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                            continue
+                    else:
+                        if author['accessLevel'] != '300':
+                            continue
             if shownItems >= numItems:
                 break
         %>
@@ -106,8 +110,12 @@
          if c.demo:
             author = getUserByID(item.owner)
             if not c.privs['admin']:
-               if (author['accessLevel'] != '300' and author.id != c.authuser.id):
-                  continue
+               if 'user' in session:
+                  if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                     continue
+               else:
+                  if author['accessLevel'] != '300':
+                     continue
          
          if item.objType == 'discussion':
             discussionCount += 1

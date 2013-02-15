@@ -19,7 +19,18 @@
    %>
    <ul class="unstyled">
       % for item in renderList:
-         <% author = getUserByID(item.owner) %>
+         <% 
+            if c.demo:
+               author = getUserByID(item.owner)
+               if not c.privs['admin']:
+                  if 'user' in session:
+                     if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                        continue
+                  else:
+                     if author['accessLevel'] != '300':
+                        continue
+            author = getUserByID(item.owner)
+         %>
          <li>
             % if item['disabled'] == '1':
                 <div class="row-fluid list-item disabled">

@@ -17,6 +17,7 @@ import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.demo         as demoLib
 
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
@@ -35,6 +36,17 @@ class DiscussionController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+        
+        # Demo workshop status
+        demo = demoLib.getDemo()
+        if not demo:
+            c.demo = False
+        else:
+            if demo['workshopCode'] == c.w['urlCode']:
+                c.demo = True
+            else:
+                c.demo = False
+        
         workshopLib.setWorkshopPrivs(c.w)
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
@@ -66,30 +78,10 @@ class DiscussionController(BaseController):
                 abort(404)
         c.flags = flagLib.getFlags(c.thing)
         c.events = eventLib.getParentEvents(c.thing)
-
         c.title = c.w['title']
-
-        """
-        if revisionCode != '':
-            r = revisionLib.getRevisionByCode(revisionCode)
-            c.content = h.literal(h.reST2HTML(r['data']))
-            c.lastmoduser = userLib.getUserByID(r.owner)
-            c.lastmoddate = r.date
-            c.revision = r
-        else:
-            c.content = h.literal(h.reST2HTML(c.thing['text']))
-            c.revision = False
-            c.lastmoduser = userLib.getUserByID(c.thing.owner)
-            if 'mainRevision_id' in c.thing:
-                r = get_revision(int(c.thing['mainRevision_id']))
-                c.lastmoddate = r.date
-            else:
-                c.lastmoddate = c.thing.date
-        """
-        
         c.revisions = revisionLib.getRevisionsForThing(c.thing)
-        
         c.listingType = 'discussion'
+        
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, discussionCode, discussionURL, commentCode):
