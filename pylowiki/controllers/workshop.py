@@ -131,7 +131,6 @@ class WorkshopController(BaseController):
                             return redirect('/workshop/%s/%s/login'%(c.w['urlCode'], c.w['url']))
                         else:
                             return redirect('/')
-                        #abort(404)
 
 
     ###################################################

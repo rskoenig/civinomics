@@ -13,6 +13,9 @@ from pylowiki.lib.db.user import get_user, changePassword, checkPassword, genera
 from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
 from pylowiki.lib.db.dbHelpers import commit
 
+import pylowiki.lib.db.demo         as demoLib
+import pylowiki.lib.db.workshop     as workshopLib
+
 from pylowiki.lib.mail import send
 
 
@@ -43,10 +46,11 @@ class LoginController(BaseController):
                         c.splashMsg = splashMsg
                     elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
+                        newUser = True
                         if 'laston' in user:
                             t = time.localtime(float(user['laston']))
                             user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
-                             
+                            newUser = False
                         user['laston'] = time.time()
                         loginTime = time.localtime(float(user['laston']))
                         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -61,14 +65,61 @@ class LoginController(BaseController):
                         
                         log.info( "Successful login attempt with credentials - " + email )
                         
-                        # look for accelerator cases: workshop home, item listing, item home
                         if 'afterLoginURL' in session:
+                            # look for accelerator cases: workshop home, item listing, item home
                             loginURL = session['afterLoginURL']
                             session.pop('afterLoginURL')
                             session.save()
+                        elif newUser:
+                            # Send to the demo workshop
+                            demo = demoLib.getDemo()
+                            if not demo:
+                                loginURL = '/'
+                            else:
+                                c.w = workshopLib.getWorkshopByCode(demo['workshopCode'])
+                                workshopLib.setWorkshopPrivs(c.w)
+                                # --Begin Ripped from workshop controller, display() action--
+                                c.title = c.w['title']
+                                c.isFollowing = False
+                                if 'user' in session:
+                                    c.isFollowing = followLib.isFollowing(c.authuser, c.w)
+                                c.facilitators = []
+                                for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w.id)):
+                                   if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
+                                      c.facilitators.append(f)
+                                c.listeners = []
+                                for l in (listenerLib.getListenersForWorkshop(c.w)):
+                                   if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
+                                      c.listeners.append(l)
+                                if c.w['startTime'] != '0000-00-00':
+                                   c.wStarted = True
+                                else:
+                                  c.wStarted = False
+                                c.slides = []
+                                c.slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
+                                slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
+                                for id in slide_ids:
+                                    s = slideLib.getSlide(id) # Don't grab deleted slides
+                                    if s:
+                                        c.slides.append(s)
+                                c.motd = motdLib.getMessage(c.w.id)
+                                # kludge for now
+                                if c.motd == False:
+                                   c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+                                c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+                                c.information = pageLib.getInformation(c.w)
+                                c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+                                if c.w['public_private'] == 'public':
+                                    c.scope = geoInfoLib.getPublicScope(c.w)
+                                c.goals = goalLib.getGoalsForWorkshop(c.w)
+                                if not c.goals:
+                                    c.goals = []
+                                c.demo = True
+                                return render("/derived/6_workshop_home.bootstrap")
+                                # --End Ripped from workshop controller, display() action--
                         else:
                             loginURL = "/"
-                         
+                        
                         return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password - " + email )

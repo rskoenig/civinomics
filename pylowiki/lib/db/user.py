@@ -50,7 +50,6 @@ def getAllUsers(disabled = '0', deleted = '0'):
             .filter_by(objType = 'user')\
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .all()
-            #.filter(Thing.data.any(wc('deleted', deleted)))\
     except:
         return False
 
