@@ -17,7 +17,7 @@
       <div class="row-fluid">
          <div class="span12">
             <h1 class="centered"> 
-               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" class="workshop-title" ng-init=" workshopTitle='${c.w['title']}' " ng-cloak>
+               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title']}' " ng-cloak>
                   {{workshopTitle}}
                </a>
             </h1>

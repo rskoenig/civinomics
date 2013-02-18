@@ -15,9 +15,18 @@ from pylowiki.lib.db.dbHelpers import commit
 
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.listener     as listenerLib
+import pylowiki.lib.db.slideshow    as slideshowLib
+import pylowiki.lib.db.slide        as slideLib
+import pylowiki.lib.db.motd         as motdLib
+import pylowiki.lib.db.page         as pageLib
+import pylowiki.lib.db.activity     as activityLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.goal         as goalLib
 
 from pylowiki.lib.mail import send
-
 
 log = logging.getLogger(__name__)
 
@@ -62,6 +71,7 @@ class LoginController(BaseController):
                         log.info('session of user: %s' % session['user'])
                         log.info('%s logged in %s' % (user['name'], loginTime))
                         c.authuser = user
+                        c.authuser_geo = geoInfoLib.getGeoInfo(c.authuser.id)[0]
                         
                         log.info( "Successful login attempt with credentials - " + email )
                         
@@ -76,47 +86,8 @@ class LoginController(BaseController):
                             if not demo:
                                 loginURL = '/'
                             else:
-                                c.w = workshopLib.getWorkshopByCode(demo['workshopCode'])
-                                workshopLib.setWorkshopPrivs(c.w)
-                                # --Begin Ripped from workshop controller, display() action--
-                                c.title = c.w['title']
-                                c.isFollowing = False
-                                if 'user' in session:
-                                    c.isFollowing = followLib.isFollowing(c.authuser, c.w)
-                                c.facilitators = []
-                                for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w.id)):
-                                   if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
-                                      c.facilitators.append(f)
-                                c.listeners = []
-                                for l in (listenerLib.getListenersForWorkshop(c.w)):
-                                   if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
-                                      c.listeners.append(l)
-                                if c.w['startTime'] != '0000-00-00':
-                                   c.wStarted = True
-                                else:
-                                  c.wStarted = False
-                                c.slides = []
-                                c.slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
-                                slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
-                                for id in slide_ids:
-                                    s = slideLib.getSlide(id) # Don't grab deleted slides
-                                    if s:
-                                        c.slides.append(s)
-                                c.motd = motdLib.getMessage(c.w.id)
-                                # kludge for now
-                                if c.motd == False:
-                                   c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
-                                c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
-                                c.information = pageLib.getInformation(c.w)
-                                c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-                                if c.w['public_private'] == 'public':
-                                    c.scope = geoInfoLib.getPublicScope(c.w)
-                                c.goals = goalLib.getGoalsForWorkshop(c.w)
-                                if not c.goals:
-                                    c.goals = []
-                                c.demo = True
-                                return render("/derived/6_workshop_home.bootstrap")
-                                # --End Ripped from workshop controller, display() action--
+                                workshop = workshopLib.getWorkshopByCode(demo['workshopCode'])
+                                return redirect('/workshop/%s/%s' %(workshop['urlCode'], workshop['url']))
                         else:
                             loginURL = "/"
                         
