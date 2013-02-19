@@ -153,7 +153,7 @@ class RegisterController(BaseController):
                     log.info( message )
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
-                    splashMsg['content'] = 'Check your email to finish setting up your account'
+                    splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
                     c.splashMsg = splashMsg
                     if c.w:
                         user = u.u
