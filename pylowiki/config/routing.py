@@ -284,6 +284,7 @@ def make_map():
     map.connect('/help/{faq:faq/?}', controller = 'help', action='faq')
     map.connect('/help/{reportIssue:reportIssue/?}', controller = 'help', action='reportIssue')
     map.connect('/help/{reportAbuse:reportAbuse/?}', controller = 'help', action='reportAbuse')
+    map.connect('/help/{abuseHandler:abuseHandler/?}', controller = 'help', action='abuseHandler')
     map.connect('/{surveys:surveys/?}', controller = 'actionlist', action='index', id='surveys')
     map.connect('/{sitemap:sitemap/?}', controller='actionlist', action='index', id='sitemap')
     map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')

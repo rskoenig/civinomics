@@ -28,15 +28,15 @@
             </div>
         </div>
         <div class="row-fluid">
-            <div class="span4 well help"><a href="/help/report_issue">
+            <div class="span4 well help">
                 <a href="#">
                     <span class="link-span"></span><!-- used to make entire div a link -->
                     <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_360_bug.png">  Something's not working</h3>
                     <p>Can't login, missing objects, load failures, can't edit your workshop...</p>
                 </a>
             </div>
-            <div class="span4 well help"><a href="/help/report_abuse">
-                <a href="#">
+            <div class="span4 well help">
+                <a href="/help/reportAbuse">
                     <span class="link-span"></span><!-- used to make entire div a link -->
                     <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_266_flag.png">  Report abuse or policy violoations</h3>
                     <p>Is someone misbehaving? Here's what you can do.</p>
@@ -50,6 +50,96 @@
                 </a>
             </div>
         </div><!-- row-fluid -->
+</%def>
+
+<%def name="reportAbuse()">
+    % if 'alert' in session:
+        <% alert = session['alert'] %> 
+        <div class="alert alert-${alert['type']}">
+            ## bad char: ×
+            ## good char: x
+            <button data-dismiss="alert" class="close">x</button>
+            <strong>${alert['title']}</strong> ${alert['body']}
+        </div>
+        <% 
+           session.pop('alert')
+           session.save()
+        %>
+    % endif
+    </br>
+    <h2>Report abuse or policy violations</h2>
+    </br>
+    <p class="lead">Hi, we're here to help. Before you submit a report, keep in mind that most all objects on Civinomics (comments, ideas, resources, conversations) can be flagged and that this should be your first recourse for any content that you feel is inappropriate. Facilitators and Site Administrators will be notified of flagged objects and can take action as necessary.</p>
+    <p>Example of flagging a comment:</p>
+    <img src="/images/helpCenter/flagEx.png">
+    </br>
+    </br>
+    <p class="lead">If you have already taken this step, or if the problem extends to your personal well being and prviate information, please fill out the fields below so we can assist you as quickly as possible.</p>
+    <form name="reportAbuse" action="/help/abuseHandler" enctype="multipart/form-data" method="post">
+        <fieldset>
+            <legend><strong>Report an abusive user</strong></legend>
+            <label><strong>Which of the following best describes the problem?</strong></label>
+            <label class="radio">
+                <input type="radio" name="problemType" id="problemType1" value="someone is posting my private information" checked>
+                Someone on Civinomics is posting my private information.
+            </label>
+            <label class="radio">
+                <input type="radio" name="problemType" id="problemType2" value="someone is pretending to be me">
+                Someone on Civinomics is pretending to be me.
+            </label>
+            <label class="radio">
+                <input type="radio" name="problemType" id="problemType3" value="someone is sending me abusive messages">
+                Someone on Civinomics is sending me abusive messages or threats.
+            </label>
+            <label class="radio">
+                <input type="radio" name="problemType" id="problemType4" value="other Civinomics policy violation">
+                Other violoation of Civinomics <a href="/corp/terms"> policy</a>.
+            </label>
+            </br>
+            <label><strong>Have you already flagged objects (comments, conversations, ideas or resources) authored by this user?</strong></label>
+            <label class="radio">
+                <input type="radio" name="alreadyFlagged" id="alreadyFlagged1" value="YES" checked>
+                Yes
+            </label>
+            <label class="radio">
+                <input type="radio" name="alreadyFlagged" id="alreadyFlagged2" value="NO">
+                No
+            </label>
+            </br>
+            <label><strong>What username is causing the problem?</strong></label>
+            <input type="text" class="input-xlarge" name="offendingUser" placeholder="">
+            </br>
+            </br>
+            <label><strong>How long ago did this begin?</strong></label>
+            <label class="radio">
+                <input type="radio" name="startTime" id="startTime1" value="24 hours ago" checked>
+                24 hours ago
+            </label>
+            <label class="radio">
+                <input type="radio" name="startTime" id="startTime2" value="Few days ago">
+                Few days ago
+            </label>
+            <label class="radio">
+                <input type="radio" name="startTime" id="startTime3" value="About a week ago">
+                About a week ago
+            </label>
+            <label class="radio">
+                <input type="radio" name="startTime" id="startTime4" value="About a month ago">
+                About a month ago
+            </label>
+            <label class="radio">
+                <input type="radio" name="startTime" id="startTime5" value="More than a month ago">
+                More than a month ago
+            </label>
+            </br>
+            <label><strong>Describe the problem in detail.</strong></label>
+            <textarea rows="5" name="problem" class="input-xxlarge"></textarea>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Send Report</button>
+                <button type="button" class="btn">Cancel</button>
+            </div>
+        </fieldset>
+    </form>
 </%def>
 
 <%def name="faq()">
