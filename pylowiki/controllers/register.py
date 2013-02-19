@@ -36,6 +36,15 @@ class RegisterController(BaseController):
     def signupDisplay(self):
         c.numAccounts = 1000
         c.numUsers = len(getActiveUsers())
+        if 'splashMsg' in session:
+            c.splashMsg = session['splashMsg']
+            session.pop('splashMsg')
+            session.save()
+        if 'registerSuccess' in session:
+            c.success = session['registerSuccess']
+            session.pop('registerSuccess')
+            session.save()
+            
         return render("/derived/signup.bootstrap")
 
     def signupHandler( self ):
@@ -43,21 +52,22 @@ class RegisterController(BaseController):
         c.numUsers = len(getActiveUsers())
 
         if c.numUsers >= c.numAccounts:
-            c.splashMsg = {}
-            c.splashMsg['type'] = 'error'
-            c.splashMsg['title'] = 'Error:'
-            c.splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
+            splashMsg = {}
+            splashMsg['type'] = 'error'
+            splashMsg['title'] = 'Error:'
+            splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
+            session['splashMsg'] = splashMsg
+            session.save()
             return render('/derived/signup.bootstrap')
 
         """ Handler for registration, validates """
-        returnPage = "/derived/signup.bootstrap"
+        returnPage = "/signup"
         name = False
         password = False
         password2 = False
         postalCode = False
         checkTOS = False
         c.title = c.heading = "Registration"
-        c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
@@ -110,8 +120,9 @@ class RegisterController(BaseController):
             nameTst = schema.to_python(dict(username = namecheck))
         except formencode.Invalid, error:
             splashMsg['content'] = "Error: " + unicode(error)
-            c.splashMsg = splashMsg 
-            return render(returnPage)
+            session['splashMsg'] = splashMsg
+            session.save()
+            return redirect(returnPage)
         username = name
         maxChars = 50;
         errorFound = False;
@@ -123,38 +134,45 @@ class RegisterController(BaseController):
                 log.info("Error: Long email")
                 errorFound = True
                 splashMsg['content'] = "Email can be " + unicode(maxChars) + " characters at most"
-                c.splashMsg = splashMsg 
+                session['splashMsg'] = splashMsg
+                session.save()
             if len(password) > maxChars:
                 log.info("Error: Long password")
                 errorFound = True
                 splashMsg['content'] = "Password can be " + unicode(maxChars) + " characters at most"
-                c.splashMsg = splashMsg 
+                session['splashMsg'] = splashMsg
+                session.save() 
             if postalCode:
                 pInfo = getPostalInfo(postalCode)
                 if pInfo == None:
                     log.info("Error: Bad Postal Code")
                     errorFound = True
                     splashMsg['content'] = "Invalid postal code"
-                    c.splashMsg = splashMsg 
+                    session['splashMsg'] = splashMsg
+                    session.save() 
             else: 
                 log.info("Error: Bad Postal Code")
                 errorFound = True
                 splashMsg['content'] = "Invalid postal code"
-                c.splashMsg = splashMsg 
+                session['splashMsg'] = splashMsg
+                session.save()
             if errorFound:
-                return render(returnPage)
+                return redirect(returnPage)
             username = name
             if getUserByEmail( email ) == False:
                 if password == password2:
                     u = User(email, name, password, country, memberType, postalCode)
                     message = "The user '" + username + "' was created successfully!"
                     c.success = True
+                    session['registerSuccess'] = True
+                    session.save()
                                 
                     log.info( message )
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
                     splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
-                    c.splashMsg = splashMsg
+                    session['splashMsg'] = splashMsg
+                    session.save()
                     if c.w:
                         user = u.u
                         if 'laston' in user:
@@ -179,15 +197,18 @@ class RegisterController(BaseController):
                             returnPage += "/add/" + c.listingType
                         return redirect(returnPage)
                       
-                    return render(returnPage)
+                    return redirect(returnPage)
                 else:
                     splashMsg['content'] = "The password and confirmation do not match"
-                    c.splashMsg = splashMsg 
+                    session['splashMsg'] = splashMsg
+                    session.save() 
             else:
                 splashMsg['content'] = "The email '" + email + "' is already in use"
-                c.splashMsg = splashMsg 
+                session['splashMsg'] = splashMsg
+                session.save() 
         else:
             splashMsg['content'] = "Please fill all fields"
-            c.splashMsg = splashMsg 
+            session['splashMsg'] = splashMsg
+            session.save() 
    
-        return render('/derived/signup.bootstrap')
+        return redirect('/signup')

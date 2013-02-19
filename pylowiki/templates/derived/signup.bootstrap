@@ -54,7 +54,7 @@
                         <div class="login-top">
                             <h2>Success!</h2>
                         <div>
-                        Check your email to finish setting up your account.
+                        Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder.
                     </div>
                 </div>
             % else: 
