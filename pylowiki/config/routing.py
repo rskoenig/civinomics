@@ -280,8 +280,10 @@ def make_map():
     # Action Lists #
     ################
     
-    map.connect('/{help:help/?}', controller = 'actionlist', action='help')
-    map.connect('/help/{faq:faq/?}', controller = 'actionlist', action='faq')
+    map.connect('/{help:help/?}', controller = 'help', action='help')
+    map.connect('/help/{faq:faq/?}', controller = 'help', action='faq')
+    map.connect('/help/{reportIssue:reportIssue/?}', controller = 'help', action='reportIssue')
+    map.connect('/help/{reportAbuse:reportAbuse/?}', controller = 'help', action='reportAbuse')
     map.connect('/{surveys:surveys/?}', controller = 'actionlist', action='index', id='surveys')
     map.connect('/{sitemap:sitemap/?}', controller='actionlist', action='index', id='sitemap')
     map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')

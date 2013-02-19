@@ -197,10 +197,15 @@ form.addGoal{
    color: #ffffff;
 }
 
-.nav.nav-tabs.nav-stacked.scroller{
+.nav.nav-tabs.nav-stacked{
    margin-top: 10px;
    margin-left: -20px;
    width: 230px;
+}
+
+.affix {
+  position: fixed;
+  top: 10px;
 }
 
 .nav .divider {
@@ -417,6 +422,7 @@ img.watch{
    border-color: #468847;
    height: 200px;
    padding-top: 5px;
+   position: relative;
 }
 
 .well.help:hover{
@@ -425,6 +431,15 @@ img.watch{
 
 .well.help a{
    color: #468847;
+}
+
+.link-span{
+  position:absolute; 
+  width:100%;
+  height:100%;
+  top:0;
+  left: 0;
+  z-index: 1;
 }
 
 input[type="checkbox"].goal-checkbox, .goal-title{
