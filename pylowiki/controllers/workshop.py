@@ -219,8 +219,7 @@ class WorkshopController(BaseController):
             dbHelpers.commit(c.w)
             eventLib.Event('Workshop Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
         else:
-            werror = 1
-            werrMsg = "No changes submitted."
+            weventMsg += "Changes saved."
 
         if werror:
             alert = {'type':'error'}
