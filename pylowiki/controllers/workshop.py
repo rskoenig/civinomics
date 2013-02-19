@@ -563,6 +563,7 @@ class WorkshopController(BaseController):
 
         if 'startWorkshop' in request.params:
             # Set workshop start and end time
+            c.w['published'] = '1'
             startTime = datetime.datetime.now(None)
             c.w['startTime'] = startTime
             endTime = datetime.datetime.now(None)

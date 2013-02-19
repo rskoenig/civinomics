@@ -299,7 +299,7 @@ class Workshop(object):
         w['url'] = urlify(title)
         w['startTime'] = '0000-00-00'
         w['endTime'] = '0000-00-00'
-
+        w['published'] = '0'
         w['deleted'] = '0'
         w['facilitators'] = c.authuser.id
         w['goals'] = 'No goals set'
