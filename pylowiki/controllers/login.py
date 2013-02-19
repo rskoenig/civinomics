@@ -50,12 +50,6 @@ class LoginController(BaseController):
                         session["userCode"] = user['urlCode']
                         session["userURL"] = user['url']
                         session.save()
-                        log.info('session of user: %s' % session['user'])
-                        log.info('%s logged in %s' % (user['name'], loginTime))
-                        c.authuser = user
-                        c.authuser_geo = geoInfoLib.getGeoInfo(c.authuser.id)[0]
-                        
-                        log.info( "Successful login attempt with credentials - " + email )
                         
                         if 'afterLoginURL' in session:
                             # look for accelerator cases: workshop home, item listing, item home
