@@ -13,19 +13,6 @@ from pylowiki.lib.db.user import get_user, changePassword, checkPassword, genera
 from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
 from pylowiki.lib.db.dbHelpers import commit
 
-import pylowiki.lib.db.demo         as demoLib
-import pylowiki.lib.db.workshop     as workshopLib
-import pylowiki.lib.db.follow       as followLib
-import pylowiki.lib.db.facilitator  as facilitatorLib
-import pylowiki.lib.db.listener     as listenerLib
-import pylowiki.lib.db.slideshow    as slideshowLib
-import pylowiki.lib.db.slide        as slideLib
-import pylowiki.lib.db.motd         as motdLib
-import pylowiki.lib.db.page         as pageLib
-import pylowiki.lib.db.activity     as activityLib
-import pylowiki.lib.db.geoInfo      as geoInfoLib
-import pylowiki.lib.db.goal         as goalLib
-
 from pylowiki.lib.mail import send
 
 log = logging.getLogger(__name__)
@@ -55,11 +42,6 @@ class LoginController(BaseController):
                         c.splashMsg = splashMsg
                     elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
-                        newUser = True
-                        if 'laston' in user:
-                            t = time.localtime(float(user['laston']))
-                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
-                            newUser = False
                         user['laston'] = time.time()
                         loginTime = time.localtime(float(user['laston']))
                         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -80,14 +62,6 @@ class LoginController(BaseController):
                             loginURL = session['afterLoginURL']
                             session.pop('afterLoginURL')
                             session.save()
-                        elif newUser:
-                            # Send to the demo workshop
-                            demo = demoLib.getDemo()
-                            if not demo:
-                                loginURL = '/'
-                            else:
-                                workshop = workshopLib.getWorkshopByCode(demo['workshopCode'])
-                                return redirect('/workshop/%s/%s' %(workshop['urlCode'], workshop['url']))
                         else:
                             loginURL = "/"
                         

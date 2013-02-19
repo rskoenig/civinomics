@@ -7,6 +7,8 @@ from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.mail import send
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.demo         as demoLib
+import pylowiki.lib.db.workshop     as workshopLib
 
 import time
 
@@ -19,20 +21,14 @@ class ActivateController(BaseController):
         user = userLib.getUserByEmail(email)
         message = {}
         if user:
-            log.info('user exists')
             if user['activated'] == '0':
-                log.info('user inactive')
                 if user['activationHash'] == hash:
-                    log.info('hashes match')
                     user['activated'] = '1'
                     user['laston'] = time.time()
                     if commit(user):
                         session["user"] = user['name']
                         session["userCode"] = user['urlCode']
                         session["userURL"] = user['url']
-                        alert = {'type':'success'}
-                        alert['title'] = 'Welcome to Civinomics! Please feel free to explore!'
-                        session['alert'] = alert
                         session.save()
                         c.authuser = user
                         userLib.sendWelcomeMail(user)
@@ -41,10 +37,15 @@ class ActivateController(BaseController):
                             session.pop('afterLoginURL')
                             session.save()
                         else:
-                            returnURL = "/"
-                        log.info('activation returnURL is %s'%returnURL)
+                            # Send to the demo workshop
+                            demo = demoLib.getDemo()
+                            if not demo:
+                                log.info('not demo')
+                                returnURL = '/'
+                            else:
+                                workshop = workshopLib.getWorkshopByCode(demo['workshopCode'])
+                                returnURL = '/workshop/%s/%s' %(workshop['urlCode'], workshop['url'])
                         return redirect(returnURL)
-                        
                     else:
                         message['type'] = 'error'
                         message['title'] = 'Error: '
