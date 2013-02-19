@@ -77,6 +77,8 @@
        }).mouseleave(function(e) {
            $(this).children('a').children('span').fadeOut(200);
        });
+       
+       $(".small-bulb, .small-bookmark").tooltip({delay:500});
    });
    </script>
 </%def>

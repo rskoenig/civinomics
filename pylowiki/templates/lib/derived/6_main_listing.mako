@@ -46,11 +46,11 @@
          <span class="pull-right orange workshop-listing-info-icons"> 
             <a ${lib_6.workshopLink(w)}> <!-- Num watchers -->
                ${len(followLib.getWorkshopFollowers(w))}
-               <img class="small-bookmark" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
+               <img class="small-bookmark" data-toggle="tooltip" title="Bookmarks" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             </a> <!-- /Num watchers -->
             <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
                ${len(activityLib.getActivityForWorkshop(w['urlCode']))}
-               <img class="small-bulb" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
+               <img class="small-bulb" data-toggle="tooltip" title="Ideas, conversations, resources, comments" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
             </a> <!-- /Num inputs -->
          </span>
       </div>
