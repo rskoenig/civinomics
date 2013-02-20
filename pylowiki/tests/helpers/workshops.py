@@ -251,28 +251,30 @@ def create_new_workshop(self, thisUser, **kwargs):
         return workshopCreated
 
 def createScope(self, **kwargs):
-    """Returns a dictionary of settings for determining scope in the ui. If a scope is requested,
-    all of the larger area scopes must be designated as well."""
+    """Returns a scope string."""
     import pylowiki.lib.db.geoInfo as geoInfoLib
     #: example scope string format: lowercase with '-' for ' ' and a single '|' in front of postal code 
     #: ||united-states||california||santa-cruz||santa-cruz|95060
-    geoTagCountry = 'united-states'
+    if 'country' in kwargs:
+        geoTagCountry = kwargs['country']
+    else:
+        geoTagCountry = '0'
     if 'state' in kwargs:
         geoTagState = kwargs['state']
     else:
-        geoTagState = ''
+        geoTagState = '0'
     if 'county' in kwargs:
         geoTagCounty = kwargs['county']
     else:
-        geoTagCounty = ''
+        geoTagCounty = '0'
     if 'city' in kwargs:
         geoTagCity = kwargs['city']
     else:
-        geoTagCity = ''
+        geoTagCity = '0'
     if 'postal' in kwargs:
         geoTagPostal = kwargs['postal']
     else:
-        geoTagPostal = ''
+        geoTagPostal = '0'
 
     geoTagString = "||" + geoTagCountry + "||" + geoTagState + "||" + geoTagCounty + "||" + geoTagCity + "|" + geoTagPostal
     return geoTagString
@@ -341,6 +343,9 @@ def setWorkshopScope(self, workshop, user, newScope):
     workshopObj = workshopLib.getWorkshopByCode(workshopCode)
     wscope = geoInfoLib.getWScopeByWorkshop(workshopObj)
     update = 0
+    import pylowiki.lib.db.dbHelpers as dbHelpers
+    from pylowiki.lib.db.user import getUserByEmail
+    import pylowiki.lib.db.event as eventLib
     # if no scope set, set it
     if not wscope:
         geoInfoLib.WorkshopScope(workshopObj, newScope)
@@ -349,33 +354,35 @@ def setWorkshopScope(self, workshop, user, newScope):
     if wscope and wscope['scope'] != newScope:
         geoInfoLib.editWorkshopScope(wscope, newScope)
         # wscope['scope'] = geoTagString
-        # dbHelpers.commit(wscope)
+        wscope['scope'] = newScope
+        dbHelpers.commit(wscope)
         wchanges = 1
     # if there are chagnes, we make sure the workshop is public
     #from pylons import session
     if wchanges:
         workshopObj['public_private'] = 'public'
-        import pylowiki.lib.db.dbHelpers as dbHelpers
         dbHelpers.commit(workshopObj)
         weventMsg = "Updated workshop scope."
-        from pylowiki.lib.db.user import getUserByEmail
         userObj = getUserByEmail(user['email'])
-        import pylowiki.lib.db.event as eventLib
         eventLib.Event('Workshop Config Updated by %s'%user['name'], '%s'%weventMsg, workshopObj, userObj)
-        #alert = {'type':'success'}
-        #alert['title'] = weventMsg
-        #session['alert'] = alert
-        #session.save()
-    # if not, do nothing
-    #else:
-        #alert = {'type':'error'}
-        #alert['title'] = 'No changes submitted.'
-        #session['alert'] = alert
-        #session.save()
-    # if the shop's being created, save the session
-    #if c.w['startTime'] == '0000-00-00':
-        #session['confTab'] = "tab3"
-        #session.save()
+
+def startWorkshop(self, workshop, user):
+    workshopCode = getWorkshopCode(self, workshop)
+    import datetime
+    startTime = datetime.datetime.now(None)
+    import pylowiki.lib.db.workshop as workshopLib
+    workshopObj = workshopLib.getWorkshopByCode(workshopCode)
+    workshopObj['startTime'] = startTime
+    endTime = datetime.datetime.now(None)
+    endTime = endTime.replace(year = endTime.year + 1)
+    workshopObj['endTime'] = endTime
+    import pylowiki.lib.db.event as eventLib
+    from pylowiki.lib.db.user import getUserByEmail
+    userObj = getUserByEmail(user['email'])
+    eventLib.Event('Workshop Config Updated by %s'%user['name'], 'Workshop started!', workshopObj, userObj)
+    import pylowiki.lib.db.dbHelpers as dbHelpers
+    dbHelpers.commit(workshopObj)
+
 
 def upgradeToProfessional(self, workshop, user):
     workshopCode = getWorkshopCode(self, workshop)

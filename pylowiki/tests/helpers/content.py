@@ -68,17 +68,43 @@ def oneLine(index=0):
 	return samples[index]
 
 def oneWord(index=0):
-	"""Simple function for returning a number of unique words."""
-	if index < 0 or index > 5:
-		index = 1
-	samples = ['alpha',
-		'ONE', 
-		'TWO', 
-		'THREE', 
-		'FOUR', 
-		'FIVE'
-	]
-	return samples[index]
+    """Simple function for returning a number of unique words."""
+    if index < 0 or index > 5:
+        index = 1
+    samples = ['alpha',
+        'ONE', 
+        'TWO', 
+        'THREE', 
+        'FOUR', 
+        'FIVE'
+    ]
+    return samples[index]
+
+def scopeDict(**kwargs):
+    """Creates a dictionary that can be used for creating a workshop scope string and for other purposes like assertions."""
+    # state='california', county='santa-cruz', city='santa-cruz', postal='95060'
+    scopeDict = {}
+    if 'country' in kwargs:
+    	scopeDict['country'] = kwargs['country']
+    else:
+    	scopeDict['country'] = 'united-states'
+    if 'state' in kwargs:
+        scopeDict['state'] = kwargs['state']
+    else:
+        scopeDict['state'] = 'california'
+    if 'county' in kwargs:
+        scopeDict['county'] = kwargs['county']
+    else:
+        scopeDict['county'] = 'santa-cruz'
+    if 'city' in kwargs:
+        scopeDict['city'] = kwargs['city']
+    else:
+        scopeDict['city'] = 'santa-cruz'
+    if 'postal' in kwargs:
+        scopeDict['postal'] = kwargs['postal']
+    else:
+        scopeDict['postal'] = '95060'
+    return scopeDict
 
 def twoLines():
 	return """one line of words

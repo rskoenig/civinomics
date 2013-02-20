@@ -14,7 +14,7 @@ class TestAccountController(TestController):
 
     user1 = 'test1@civinomics.org'
     pass1 = 'test1'
-    zip1 = '94122'
+    postal1 = '94122'
     member1 = 'individual'
     first1 = 'Testing1'
     last1 = 'Home1'
@@ -22,7 +22,7 @@ class TestAccountController(TestController):
 
     user2 = 'test2@civinomics.org'
     pass2 = 'test2'
-    zip2 = '94122'
+    postal2 = '94122'
     member2 = 'individual'
     first2 = 'Testing2'
     last2 = 'Home2'
@@ -30,7 +30,7 @@ class TestAccountController(TestController):
 
     user3 = 'test3@civinomics.org'
     pass3 = 'test3'
-    zip3 = '94122'
+    postal3 = '94122'
     member3 = 'individual'
     first3 = 'Testing3'
     last3 = 'Home3'
@@ -38,14 +38,14 @@ class TestAccountController(TestController):
 
     user4 = 'test4@civinomics.org'
     pass4 = 'test4'
-    zip4 = '94122'
+    postal4 = '94122'
     member4 = 'individual'
     first4 = 'Testing4'
     last4 = 'Home4'
 
     user5 = 'test5@civinomics.org'
     pass5 = 'test5'
-    zip5 = '94122'
+    postal5 = '94122'
     member5 = 'individual'
     first5 = 'Testing5'
     last5 = 'Home5'
@@ -65,7 +65,7 @@ class TestAccountController(TestController):
             self, 
             TestAccountController.user1, 
             TestAccountController.pass1, 
-            TestAccountController.zip1, 
+            TestAccountController.postal1, 
             TestAccountController.member1, 
             TestAccountController.first1, 
             TestAccountController.last1
@@ -107,7 +107,7 @@ class TestAccountController(TestController):
         create_and_activate_user(self, 
             TestAccountController.user2, 
             TestAccountController.pass2, 
-            TestAccountController.zip2, 
+            TestAccountController.postal2, 
             TestAccountController.member2, 
             TestAccountController.first2, 
             TestAccountController.last2
@@ -175,7 +175,7 @@ class TestAccountController(TestController):
         create_and_activate_user(self, 
             TestAccountController.user3, 
             TestAccountController.pass3, 
-            TestAccountController.zip3, 
+            TestAccountController.postal3, 
             TestAccountController.member3, 
             TestAccountController.first3, 
             TestAccountController.last3
@@ -242,7 +242,7 @@ class TestAccountController(TestController):
         create_and_activate_user(self, 
             TestAccountController.user4, 
             TestAccountController.pass4, 
-            TestAccountController.zip4, 
+            TestAccountController.postal4, 
             TestAccountController.member4, 
             TestAccountController.first4, 
             TestAccountController.last4
@@ -298,7 +298,7 @@ class TestAccountController(TestController):
         create_and_activate_user(self, 
             TestAccountController.user5, 
             TestAccountController.pass5, 
-            TestAccountController.zip5, 
+            TestAccountController.postal5, 
             TestAccountController.member5, 
             TestAccountController.first5, 
             TestAccountController.last5

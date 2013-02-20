@@ -32,10 +32,10 @@ def give_me_user(**kwargs):
         country = kwargs['country']
     else:
         country = 'United States'
-    if 'zip' in kwargs:
-        zip = kwargs['zip']
+    if 'postal' in kwargs:
+        postal = kwargs['postal']
     else:
-        zip = 'zip'
+        postal = '95060'
     if 'name' in kwargs:
         name = kwargs['name']
     else:
@@ -52,7 +52,7 @@ def give_me_user(**kwargs):
         'email' : email,
         'password' : password,
         'country' : country,
-        'zip' : 95060,
+        'postal' : postal,
         'name' : name,
         'memberType' : memberType,
         'accessLevel' : accessLevel
@@ -72,7 +72,7 @@ def get_test_admin():
     test_admin = {
         'email' : 'username@civinomics.com',
         'password' : 'password',
-        'zip' : '95060',
+        'postal' : '95060',
         'first' : 'test',
         'last' : 'admin',
         'type' : 'individual',

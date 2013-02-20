@@ -118,6 +118,12 @@ def parameter_submit():
 def paymentForm():
     return 'paymentForm'
 
+def paymentFormAdminUpgrade():
+    return 'adminUpgradeForm'
+
+def paymentFormAdminUpgradeSubmitName():
+    return 'admin-submit-button'
+
 def submitNone():
     return None
 

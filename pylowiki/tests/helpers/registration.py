@@ -8,7 +8,7 @@ import pylowiki.tests.helpers.content as content
 import logging
 log = logging.getLogger(__name__)
 
-def create_user(self, usern, passw, zipc, membert, name):
+def create_user(self, usern, passw, postal, membert, name):
     # create a user with normal privs
     rReg = self.app.post(
         url=url_for(controller='register', action='signupHandler'),
@@ -16,13 +16,13 @@ def create_user(self, usern, passw, zipc, membert, name):
             'email': usern,
             'password': passw,
             'password2': passw,
-            'postalCode': zipc,
+            'postalCode': postal,
             'country': 'United States',
             'memberType': membert,
             'name': name,
             'chkTOS': 'true'
         }
-    )
+    ).follow()
     assert 'alert-error' not in rReg
     assert 'success' in rReg
     return rReg
@@ -58,7 +58,7 @@ def create_and_activate_a_user(self, **who):
     else:
         thisUser = make_user(**who)
     #: use the site's signup page to register this user
-    user_created = create_user(self, thisUser['email'], thisUser['password'], thisUser['zip'], thisUser['memberType'], thisUser['name'])
+    user_created = create_user(self, thisUser['email'], thisUser['password'], thisUser['postal'], thisUser['memberType'], thisUser['name'])
     #user_activated = activate_user(self, user_created.hash_and_email)
     from pylowiki.lib.db.user import getUserByEmail
     u = getUserByEmail(thisUser['email'])
@@ -71,6 +71,6 @@ def create_and_activate_a_user(self, **who):
     #: return user object for use by test function
     return thisUser
 
-def create_and_activate_user(self, usern, passw, zipc, membert, name):
-    user_created = create_user(self, usern, passw, zipc, membert, name)
+def create_and_activate_user(self, usern, passw, postal, membert, name):
+    user_created = create_user(self, usern, passw, postal, membert, name)
     return activate_user(self, user_created.hash_and_email)
