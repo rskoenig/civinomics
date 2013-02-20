@@ -638,9 +638,7 @@ class TestWorkshopController(TestController):
         #: upgrade it to professional
         workshop.upgradeToProfessional(self, newWorkshop, normalUser)
         #: the scope needs to be set before it will show up in the 'list all' page
-        #: ||united-states||california||santa-cruz||santa-cruz|95060
         #: load a scoping object
-        # default: state='california', county='santa-cruz', city='santa-cruz', postal='95060'
         scopeDict = {}
         scopeDict = content.scopeDict()
         #: create the scope string
@@ -666,6 +664,74 @@ class TestWorkshopController(TestController):
         therefore, I will need to create users in areas that encompass the zones to be tested.
 
         """
+
+    def test_public_workshop_earth_scope(self):
+        """If I make a workshop scoped to earth, it and only it should be there when I 
+        click the scope link for earth"""
+        #: CREATE A WORKSHOP WITH THE SCOPE THIS TEST IS BUILT AROUND
+        normalUser = create_and_activate_a_user(self, postal='94122')
+        workshopTitle = 'EARTH workshop by user'
+        newWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "normal user not able to create new workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, normalUser)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        #: ||united-states|||||||
+        scopeDict = {}
+        #: NOTE - this style of scope area should end up being all lower-case with '-' instead of ' ',
+        #: so when the code matures to this state, this line should break at which point I'll convert 
+        #: the content accordingly
+        scopeDict = content.scopeDict(country='united-states')
+        scopeString = workshop.createScope(self)
+        workshop.setWorkshopScope(self, newWorkshop, normalUser, scopeString)
+        #: NOTE we need to start the workshop manually instead of through the preferences pane now
+        #: there is a check with stripe about the customer account being valid, and at the moment
+        #: I can't get a test account here to be valid with stripe
+        workshop.startWorkshop(self, newWorkshop, normalUser)
+        #: first let's make sure the workshop is public and listed
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        # if I am logged in as a user, I will have a breadcrumb link list for clicking scope areas.
+        # /workshops/geo/earth
+        earthLink = linkDefs.createGeoLink()
+        # /workshops/geo/earth/united-states
+        usLink = linkDefs.createGeoLink(country='united-states')
+        # /workshops/geo/earth/united-states/california
+        stateLink = linkDefs.createGeoLink(country='united-states', state='california')
+        #: test the views of workshops at each of these scopings
+        earthView = allWorkshops.click(href=earthLink, index=0)
+        assert workshopTitle in earthView, "workshop scoped for Earth not showing up on earth-scoped list"
+        usView = allWorkshops.click(href=usLink, index=0)
+        assert workshopTitle not in usView, "workshop scoped for Earth showing up on US-scoped list"
+        stateView = allWorkshops.click(href=stateLink, index=0)
+        assert workshopTitle not in stateView, "workshop scoped for Earth showing up on state-scoped list"
+        # futher, I can make workshops that are above scope and below scope, and expect not to see
+        # them in the scope of this workshop's designation
+
+        #: CREATE A WORKSHOP SCOPED TO BE ONE LEVEL BELOW THE SCOPE WE'RE TESTING HERE
+        workshopTitleScopeDown = 'COUNTRY workshop'
+        countryWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitleScopeDown, login=False)
+        assert workshopTitleScopeDown in countryWorkshop, "user not able to create country workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, countryWorkshop, normalUser)
+        #: scope this one a level below US: state
+        scopeString = workshop.createScope(self, country=scopeDict['country'])
+        workshop.setWorkshopScope(self, countryWorkshop, normalUser, scopeString)
+        #: NOTE we need to start the workshop manually instead of through the preferences pane now
+        #: there is a check with stripe about the customer account being valid, and at the moment
+        #: I can't get a test account here to be valid with stripe
+        workshop.startWorkshop(self, countryWorkshop, normalUser)
+        #: first let's make sure the workshop is public and listed
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitleScopeDown in allWorkshops, "country workshop not listed on all workshops page"
+        #: test the views of workshops at each of these scopings
+        earthView = allWorkshops.click(href=earthLink, index=0)
+        assert workshopTitleScopeDown not in earthView, "workshop scoped for country showing up on earth-scoped list"
+        assert workshopTitle in earthView, "workshop scoped for Earth is no longer showing up on earth-scoped list"
+        usView = allWorkshops.click(href=usLink, index=0)
+        assert workshopTitleScopeDown in usView, "workshop scoped for country not showing up on US-scoped list"
+        
+
     def test_public_workshop_country_scope(self):
         """If I make a workshop scoped to united states, it and only it should be there when I 
         click the scope link for united states"""
@@ -682,7 +748,7 @@ class TestWorkshopController(TestController):
         #: NOTE - this style of scope area should end up being all lower-case with '-' instead of ' ',
         #: so when the code matures to this state, this line should break at which point I'll convert 
         #: the content accordingly
-        scopeDict = content.scopeDict(country='United States', state='California')
+        scopeDict = content.scopeDict(country='united-states', state='california')
         scopeString = workshop.createScope(self, country=scopeDict['country'])
         workshop.setWorkshopScope(self, newWorkshop, normalUser, scopeString)
         #: NOTE we need to start the workshop manually instead of through the preferences pane now
@@ -775,7 +841,7 @@ class TestWorkshopController(TestController):
         #: NOTE - this style of scope area should end up being all lower-case with '-' instead of ' ',
         #: so when the code matures to this state, this line should break at which point I'll convert 
         #: the content accordingly
-        scopeDict = content.scopeDict(country='United States', state='California')
+        scopeDict = content.scopeDict(country='united-states', state='california', county='san-francisco')
         scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
         workshop.setWorkshopScope(self, newWorkshop, normalUser, scopeString)
         #: NOTE we need to start the workshop manually instead of through the preferences pane now
@@ -814,7 +880,7 @@ class TestWorkshopController(TestController):
         #: upgrade it to professional
         workshop.upgradeToProfessional(self, countryWorkshop, normalUser)
         #: scope this one a level below US: state
-        scopeString = workshop.createScope(self)
+        scopeString = workshop.createScope(self, country=scopeDict['country'])
         workshop.setWorkshopScope(self, countryWorkshop, normalUser, scopeString)
         #: NOTE we need to start the workshop manually instead of through the preferences pane now
         #: there is a check with stripe about the customer account being valid, and at the moment
@@ -825,37 +891,39 @@ class TestWorkshopController(TestController):
         assert workshopTitleScopeUp in allWorkshops, "state workshop not listed on all workshops page"
         #: test the views of workshops at each of these scopings
         earthView = allWorkshops.click(href=earthLink, index=0)
-        assert workshopTitleScopeUp in earthView, "workshop scoped for earth not showing up on earth-scoped list"
+        assert workshopTitleScopeUp not in earthView, "workshop scoped for country showing up on earth-scoped list"
         usView = allWorkshops.click(href=usLink, index=0)
-        assert workshopTitleScopeUp not in usView, "workshop scoped for earth showing up on US-scoped list"
+        assert workshopTitleScopeUp in usView, "workshop scoped for country not showing up on US-scoped list"
         stateView = allWorkshops.click(href=stateLink, index=0)
-        assert workshopTitleScopeUp not in stateView, "workshop scoped for earth showing up on state-scoped list"
-        assert workshopTitle in stateView, "workshop scoped for state is not showing up on US-scoped list anymore"
+        assert workshopTitleScopeUp not in stateView, "workshop scoped for country showing up on state-scoped list"
+        assert workshopTitle in stateView, "workshop scoped for state is not showing up on state-scoped list anymore"
 
         #: CREATE A WORKSHOP SCOPED TO BE ONE LEVEL BELOW THE SCOPE WE'RE TESTING HERE
-        workshopTitleScopeDown = 'STATE workshop'
-        stateWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitleScopeDown, login=False)
-        assert workshopTitleScopeDown in stateWorkshop, "user not able to create state workshop"
+        workshopTitleScopeDown = 'COUNTY workshop'
+        countyWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitleScopeDown, login=False)
+        assert workshopTitleScopeDown in countyWorkshop, "user not able to create county workshop"
         #: upgrade it to professional
-        workshop.upgradeToProfessional(self, stateWorkshop, normalUser)
+        workshop.upgradeToProfessional(self, countyWorkshop, normalUser)
         #: scope this one a level below US: state
-        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
-        workshop.setWorkshopScope(self, stateWorkshop, normalUser, scopeString)
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'], county=scopeDict['county'])
+        workshop.setWorkshopScope(self, countyWorkshop, normalUser, scopeString)
         #: NOTE we need to start the workshop manually instead of through the preferences pane now
         #: there is a check with stripe about the customer account being valid, and at the moment
         #: I can't get a test account here to be valid with stripe
-        workshop.startWorkshop(self, stateWorkshop, normalUser)
+        workshop.startWorkshop(self, countyWorkshop, normalUser)
         #: first let's make sure the workshop is public and listed
         allWorkshops = self.app.get(pageDefs.allWorkshops())
-        assert workshopTitleScopeDown in allWorkshops, "state workshop not listed on all workshops page"
+        assert workshopTitleScopeDown in allWorkshops, "county workshop not listed on all workshops page"
         #: test the views of workshops at each of these scopings
         earthView = allWorkshops.click(href=earthLink, index=0)
-        assert workshopTitleScopeDown not in earthView, "workshop scoped for state showing up on earth-scoped list"
+        assert workshopTitleScopeDown not in earthView, "workshop scoped for county showing up on earth-scoped list"
         usView = allWorkshops.click(href=usLink, index=0)
-        assert workshopTitleScopeDown not in usView, "workshop scoped for state showing up on US-scoped list"
+        assert workshopTitleScopeDown not in usView, "workshop scoped for county showing up on US-scoped list"
         stateView = allWorkshops.click(href=stateLink, index=0)
-        assert workshopTitleScopeDown in stateView, "workshop scoped for state not showing up on state-scoped list"
+        assert workshopTitleScopeDown not in stateView, "workshop scoped for county showing up on state-scoped list"
         assert workshopTitle in stateView, "workshop scoped for state now is not showing up on US-scoped list"
+        countyView = allWorkshops.click(href=countyLink, index=0)
+        assert workshopTitleScopeDown in countyView, "workshop scoped for county not showing up on county-scoped list"
 
     def test_public_workshop_county_scope(self):
         """If I make a workshop scoped to a county, it and only it should be there when I 
@@ -868,12 +936,8 @@ class TestWorkshopController(TestController):
         #: upgrade it to professional
         workshop.upgradeToProfessional(self, newWorkshop, normalUser)
         #: the scope needs to be set before it will show up in the 'list all' page
-        #: ||united-states|california||||||
         scopeDict = {}
-        #: NOTE - this style of scope area should end up being all lower-case with '-' instead of ' ',
-        #: so when the code matures to this state, this line should break at which point I'll convert 
-        #: the content accordingly
-        scopeDict = content.scopeDict(country='United States', state='California', county='San Francisco', city='San Francisco')
+        scopeDict = content.scopeDict(country='united-states', state='california', county='san-francisco', city='san-francisco')
         scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'], county=scopeDict['county'])
         workshop.setWorkshopScope(self, newWorkshop, normalUser, scopeString)
         #: NOTE we need to start the workshop manually instead of through the preferences pane now
@@ -971,12 +1035,11 @@ class TestWorkshopController(TestController):
         #: upgrade it to professional
         workshop.upgradeToProfessional(self, newWorkshop, normalUser)
         #: the scope needs to be set before it will show up in the 'list all' page
-        #: ||united-states|california||||||
         scopeDict = {}
         #: NOTE - this style of scope area should end up being all lower-case with '-' instead of ' ',
         #: so when the code matures to this state, this line should break at which point I'll convert 
         #: the content accordingly
-        scopeDict = content.scopeDict(country='United States', state='California', county='San Francisco', city='San Francisco', postal='94122')
+        scopeDict = content.scopeDict(country='united-states', state='california', county='san-francisco', city='san-francisco', postal='94122')
         scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'], county=scopeDict['county'], city=scopeDict['city'])
         workshop.setWorkshopScope(self, newWorkshop, normalUser, scopeString)
         #: NOTE we need to start the workshop manually instead of through the preferences pane now
@@ -1071,7 +1134,6 @@ class TestWorkshopController(TestController):
         assert workshopTitle in cityView, "workshop scoped for city is not showing up on city-scoped list anymore"
         assert workshopTitle not in countyView, "workshop scoped for city is now showing up on county-scoped list"
 
-
     def test_public_workshop_postal_scope(self):
         """If I make a workshop scoped to a postal code, it and only it should be there when I 
         click the scope link for this code"""
@@ -1088,7 +1150,7 @@ class TestWorkshopController(TestController):
         #: NOTE - this style of scope area should end up being all lower-case with '-' instead of ' ',
         #: so when the code matures to this state, this line should break at which point I'll convert 
         #: the content accordingly
-        scopeDict = content.scopeDict(country='United States', state='California', county='San Francisco', city='San Francisco', postal='94122')
+        scopeDict = content.scopeDict(country='united-states', state='california', county='san-francisco', city='san-francisco', postal='94122')
         scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'], county=scopeDict['county'], city=scopeDict['city'], postal=scopeDict['postal'])
         workshop.setWorkshopScope(self, newWorkshop, normalUser, scopeString)
         #: NOTE we need to start the workshop manually instead of through the preferences pane now
@@ -1130,55 +1192,30 @@ class TestWorkshopController(TestController):
 
         #: CREATE A WORKSHOP SCOPED TO BE ONE LEVEL ABOVE THE SCOPE WE'RE TESTING HERE
         workshopTitleScopeUp = 'CITY workshop'
-        countyWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitleScopeUp, login=False)
-        assert workshopTitleScopeUp in countyWorkshop, "user not able to create county workshop"
+        cityWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitleScopeUp, login=False)
+        assert workshopTitleScopeUp in cityWorkshop, "user not able to create county workshop"
         #: upgrade it to professional
-        workshop.upgradeToProfessional(self, countyWorkshop, normalUser)
+        workshop.upgradeToProfessional(self, cityWorkshop, normalUser)
         #: scope this one a level below US: state
-        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'], county=scopeDict['county'])
-        workshop.setWorkshopScope(self, countyWorkshop, normalUser, scopeString)
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'], county=scopeDict['county'], city=scopeDict['city'])
+        workshop.setWorkshopScope(self, cityWorkshop, normalUser, scopeString)
         #: NOTE we need to start the workshop manually instead of through the preferences pane now
         #: there is a check with stripe about the customer account being valid, and at the moment
         #: I can't get a test account here to be valid with stripe
-        workshop.startWorkshop(self, countyWorkshop, normalUser)
+        workshop.startWorkshop(self, cityWorkshop, normalUser)
         #: first let's make sure the workshop is public and listed
         allWorkshops = self.app.get(pageDefs.allWorkshops())
         assert workshopTitleScopeUp in allWorkshops, "county workshop not listed on all workshops page"
         #: test the views of workshops at each of these scopings
         earthView = allWorkshops.click(href=earthLink, index=0)
-        assert workshopTitleScopeUp not in earthView, "workshop scoped for county showing up on earth-scoped list"
+        assert workshopTitleScopeUp not in earthView, "workshop scoped for city showing up on earth-scoped list"
         usView = allWorkshops.click(href=usLink, index=0)
-        assert workshopTitleScopeUp not in usView, "workshop scoped for county showing up on US-scoped list"
+        assert workshopTitleScopeUp not in usView, "workshop scoped for city showing up on US-scoped list"
         stateView = allWorkshops.click(href=stateLink, index=0)
-        assert workshopTitleScopeUp not in stateView, "workshop scoped for county showing up on state-scoped list"
+        assert workshopTitleScopeUp not in stateView, "workshop scoped for city showing up on state-scoped list"
         countyView = allWorkshops.click(href=countyLink, index=0)
-        assert workshopTitleScopeUp in countyView, "workshop scoped for county not showing up on county-scoped list"
+        assert workshopTitleScopeUp not in countyView, "workshop scoped for city showing up on county-scoped list"
         cityView = allWorkshops.click(href=cityLink, index=0)
-        assert workshopTitleScopeUp not in cityView, "workshop scoped for county showing up in city-scoped list"
-        assert workshopTitle in cityView, "workshop scoped for city not showing up on city-scoped list"
-
-        #: CREATE A WORKSHOP SCOPED TO BE ONE LEVEL BELOW THE SCOPE WE'RE TESTING HERE
-        workshopTitleScopeDown = 'POSTAL CODE workshop'
-        postalWorkshop = workshop.create_new_workshop(self, normalUser, title=workshopTitleScopeDown, login=False)
-        assert workshopTitleScopeDown in postalWorkshop, "user not able to create postal code workshop"
-        #: upgrade it to professional
-        workshop.upgradeToProfessional(self, postalWorkshop, normalUser)
-        #: scope this one a level below US: state
-        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'], county=scopeDict['county'], city=scopeDict['city'], postal=scopeDict['postal'])
-        workshop.setWorkshopScope(self, postalWorkshop, normalUser, scopeString)
-        #: NOTE we need to start the workshop manually instead of through the preferences pane now
-        #: there is a check with stripe about the customer account being valid, and at the moment
-        #: I can't get a test account here to be valid with stripe
-        workshop.startWorkshop(self, postalWorkshop, normalUser)
-        #: first let's make sure the workshop is public and listed
-        allWorkshops = self.app.get(pageDefs.allWorkshops())
-        assert workshopTitleScopeDown in allWorkshops, "postal workshop not listed on all workshops page"
-        #: test the views of workshops at each of these scopings
-        countyView = allWorkshops.click(href=countyLink, index=0)
-        assert workshopTitleScopeDown not in countyView, "workshop scoped for postal code showing up on county-scoped list"
-        cityView = allWorkshops.click(href=cityLink, index=0)
-        assert workshopTitleScopeDown not in cityView, "workshop scoped for postal code showing up on city-scoped list"
+        assert workshopTitleScopeUp in cityView, "workshop scoped for city not showing up in city-scoped list"
         postalView = allWorkshops.click(href=postalLink, index=0)
-        assert workshopTitleScopeDown in postalView, "workshop scoped for postal code not showing up on postal-scoped list"
-        assert workshopTitle in cityView, "workshop scoped for city is not showing up on city-scoped list anymore"
-        assert workshopTitle not in countyView, "workshop scoped for city is now showing up on county-scoped list"
+        assert workshopTitle in postalView, "workshop scoped for postal code not showing up on postal-scoped list anymore"
