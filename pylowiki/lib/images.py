@@ -4,7 +4,6 @@ from time import time
 from hashlib import md5
 
 from pylons import config
-#from pylowiki.model import Thing
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.imageIdentifier import ImageIdentifier, getImageIdentifier
 
@@ -19,26 +18,29 @@ def isImage(imgFile):
         return False
 
 # Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
-# Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.thumbnail
+# Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.jpg
+# Passing in x = 99999 and y = 99999 will keep the same size.
 def resizeImage(identifier, hash, x, y, postfix):
     i = getImageIdentifier(identifier)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
     
     origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber,'orig')
-    origFullpath = origPathname + '/%s.orig' %(hash)
+    origFullpath = origPathname + '/%s.jpg' %(hash)
     
     try:
-        dims = x, y
         im = Image.open(origFullpath)
-        im.thumbnail(dims, Image.ANTIALIAS)
+        if x == 99999 and y == 99999:
+            dims = im.size
+        else:
+            dims = (x, y)
+        im = im.resize(dims, Image.ANTIALIAS)
         
         pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
         if not os.path.exists(pathname):
             os.makedirs(pathname)
         
         quality = 80
-        im.save(pathname + '/' + hash + '.' + postfix, 'JPEG', quality=quality)
-        #log.info('Successfully resized %s' % hash)
+        im.save(pathname + '/' + hash + '.jpg' , 'JPEG', quality=quality)
         return True
     except:
         return False
@@ -48,39 +50,36 @@ def resizeImage(identifier, hash, x, y, postfix):
 # Each identifier object contains an 'imageNum' field that is a running tally of
 # all images that have the same identifier.  When we get to 30k images in a
 # directory (via integer division), we create a new directory and save images in there.
-def saveImage(image, filename, user, identifier, thing):
-    hash = _generateHash(filename, user)
+def saveImage(image, filename, identifier, thing):
+    hash = _generateHash(filename, thing)
 
-    if not getImageIdentifier(identifier):
-        i = ImageIdentifier(identifier)
     i = getImageIdentifier(identifier)
-    i['numImages'] = int(i['numImages']) + 1 
+    if not i:
+        i = ImageIdentifier(identifier)
+    
+    i['numImages'] = unicode(int(i['numImages']) + 1)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
-
+    
     pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig')
-    savename = hash + '.orig'
+    savename = hash + '.jpg'
     if not os.path.exists(pathname):
         os.makedirs(pathname)
     
     fullpath = os.path.join(pathname, savename)
-    
     thing['directoryNumber'] = directoryNumber
     commit(thing)
     
     try:
-        f = open(fullpath, 'wb')
-        shutil.copyfileobj(image, f)
-        f.close()
-        #log.info('Successfully saved %s to disk as %s', filename, savename)
+        im = Image.open(image)
+        im.save(fullpath, "JPEG")
         return hash
     except:
-        log.info('Unable to save to %s with hash %s' % (fullpath, hash))
+        log.error('Unable to save to %s with hash %s' % (fullpath, hash))
         return False
 
-def _generateHash(filename, user):
-    s = '%s_%s_%s' %(filename, user['email'], int(time()))
+def _generateHash(filename, thing):
+    s = '%s_%s' %(filename, thing['urlCode'])
     return md5(s).hexdigest()
-    
     
 def makeSurveyThumbnail(filename, directory, x, y, postfix):
     """
@@ -115,11 +114,9 @@ def makeSurveyThumbnail(filename, directory, x, y, postfix):
     saveFilename = '.'.join(filenameSplit)
     try:
         dims = x, y
-        #log.info('attempting to open %s' % fullpath)
         im = Image.open(fullpath)
         im.thumbnail(dims, Image.ANTIALIAS)
         savepath = os.path.join(directory, '%s.%s'%(saveFilename, postfix))
-        #log.info('saving to %s' % savepath)
         im.save(savepath, 'PNG')
         return True
     except:

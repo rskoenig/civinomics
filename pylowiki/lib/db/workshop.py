@@ -9,7 +9,8 @@ from pylowiki.lib.db.pmember import getPrivateMember, getPrivateMemberByCode
 from pylowiki.lib.db.geoInfo import getGeoScope
 from pylowiki.lib.db.activity import getDiscussionCommentsSince
 from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussionByID
-import pylowiki.lib.db.listener as listenerLib
+import pylowiki.lib.db.listener     as listenerLib
+import pylowiki.lib.db.generic      as generic
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 from page import Page
 from event import Event
@@ -320,19 +321,18 @@ class Workshop(object):
         e = Event('Create workshop', 'User %s created a workshop'%(c.authuser.id), w)
         
         slideshow = Slideshow(owner, w)
-        slideshow = getSlideshow(slideshow.s.id)
-        w['mainSlideshow_id'] = slideshow.id
+        generic.linkChildToParent(slideshow, w)
         identifier = 'slide'
         title = 'Sample Title'
         caption = 'Sample Caption'
-        s = Slide(owner, slideshow, title, caption, 'supDawg.png', 'no file here', '0')
+        s = Slide(owner, slideshow, title, 'supDawg.png', 'no file here', '0')
         w['mainImage_caption'] = caption
         w['mainImage_title'] = title
-        w['mainImage_hash'] = s.s['pictureHash']
+        w['mainImage_hash'] = s['pictureHash']
         w['mainImage_postFix'] = 'orig'
         w['mainImage_identifier'] = identifier
-        w['mainImage_id'] = s.s.id
-        slideshow['slideshow_order'] = s.s.id
+        w['mainImage_id'] = s.id
+        slideshow['slideshow_order'] = s.id
         commit(slideshow)
         commit(w)
         

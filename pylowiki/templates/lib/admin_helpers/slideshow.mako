@@ -199,12 +199,11 @@
                     % if int(slide['deleted']) == 0:
                         <div class="portlet" id = "portlet_${slide.id}">
                             <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
-                            <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
                             <div class = "portlet-image">
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
                                 % else:
-                                    <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.thumbnail">
+                                    <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.jpg">
                                 % endif
                             </div><!-- portlet-image -->
                         </div><!-- portlet -->
@@ -217,12 +216,11 @@
                     % if int(slide['deleted']) == 1:
                         <div class="portlet" id = "portlet_${slide.id}">
                             <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
-                            <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
                             <div class = "portlet-image">
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
                                 % else:
-                                    <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.thumbnail">
+                                    <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.jpg">
                                 % endif
                             </div><!-- portlet-image -->
                         </div><!-- portlet -->

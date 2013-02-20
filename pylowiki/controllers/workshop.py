@@ -154,7 +154,7 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab1"
         session.save()
 
-        slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
+        slideshow = slideshowLib.getSlideshow(c.w)
         c.slideshow = slideshowLib.getAllSlides(slideshow.id)
 
         werror = 0
@@ -771,7 +771,7 @@ class WorkshopController(BaseController):
           c.wStarted = False
 
         c.slides = []
-        c.slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = slideshowLib.getSlideshow(c.w)
         slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
         for id in slide_ids:
             s = slideLib.getSlide(id) # Don't grab deleted slides
@@ -830,7 +830,7 @@ class WorkshopController(BaseController):
         if 'continueToNext' in request.params:
             c.tab = 'tab5'
             
-        slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
+        slideshow = slideshowLib.getSlideshow(c.w)
         c.slideshow = slideshowLib.getAllSlides(slideshow.id)
         c.published_slides = []
         slide_ids = [int(item) for item in slideshow['slideshow_order'].split(',')]

@@ -25,11 +25,12 @@ def getImageIdentifier(identifier):
         return False
 
 # Object
-class ImageIdentifier(object):
-    def __init__( self, identifier):
-        i = Thing('imageIdentifier')
-        i['identifier'] = identifier
-        i['numImages'] = 0
-        commit(i)
-        self.i = i
+# Used to keep track of the number of images inside a given directory, and the directory name.  For example, all slideshow
+# images in the slide directory, or all profile pictures in the profile directory.
+def ImageIdentifier(identifier):
+    i = Thing('imageIdentifier')
+    i['identifier'] = identifier
+    i['numImages'] = 0
+    commit(i)
+    return i
 
