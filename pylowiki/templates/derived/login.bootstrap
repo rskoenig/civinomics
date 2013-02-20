@@ -68,9 +68,9 @@
                                         </div>
                                     </div>
                                     <div class="control-group">
-                                        <label class="control-label" for="passphrase"> Passphrase: </label>
+                                        <label class="control-label" for="passphrase"> Password: </label>
                                         <div class="controls">
-                                            <input type="password" name="password" id="passphrase">
+                                            <input type="password" name="password" id="password">
                                         </div>
                                     </div>
                                     <div class="control-group">
