@@ -173,8 +173,8 @@ class SlideshowController(BaseController):
                     commit(slide)
         elif state == 'published':
             firstSlide = forceGetSlide(int(order[0]))
-            slideshow = getSlideshow(firstSlide['slideshow_id'])
-            w = getWorkshopByID(int(slideshow['workshop_id']))
+            slideshow = slideshowLib.getSlideshowByCode(firstSlide['slideshowCode'])
+            w = workshopLib.getWorkshopByCode(slideshow['workshopCode'])
             
             # If we change the initial image
             if firstSlide.id != int(slideshow['slideshow_order'].split(',')[0]):

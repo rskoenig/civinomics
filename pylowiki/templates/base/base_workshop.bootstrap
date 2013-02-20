@@ -44,7 +44,7 @@
       if c.w['mainImage_hash'] == 'supDawg':
          backgroundImage = '"/images/%s/slideshow/%s.slideshow"' %(c.w['mainImage_identifier'], c.w['mainImage_hash'])
       else:
-         backgroundImage = '"/images/%s/%s/slideshow/%s.slideshow"' %(c.w['mainImage_identifier'], c.w['mainImage_directoryNum'], c.w['mainImage_hash'])
+         backgroundImage = '"/images/%s/%s/slideshow/%s.jpg"' %(c.w['mainImage_identifier'], c.w['mainImage_directoryNum'], c.w['mainImage_hash'])
    %>
    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
    <script src="/js/follow.js" type="text/javascript"></script>
