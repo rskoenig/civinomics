@@ -11,7 +11,7 @@
                 % else:
                     <div class="login-body" style="border-bottom:none;">
                         <strong>Sign up for your Civinomics account to participate in this workshop!</strong><br />
-                        <form id="guest_sign_in" action="/register/register_handler" class="form form-horizontal" method="post">
+                        <form id="guest_sign_in" action="/signup/handler" class="form form-horizontal" method="post">
                             <input type="hidden" name="country" value="United States">
                             <input type="hidden" name="memberType" value="professional">
                             <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">

@@ -58,7 +58,7 @@ class RegisterController(BaseController):
             splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
             session['splashMsg'] = splashMsg
             session.save()
-            return render('/derived/signup.bootstrap')
+            return redirect('/signup')
 
         """ Handler for registration, validates """
         returnPage = "/signup"
@@ -82,6 +82,7 @@ class RegisterController(BaseController):
         if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
             workshopCode = request.params['workshopCode']
             pmember = getPrivateMemberByCode(session['guestCode'])
+            log.info("got guestCode and workshopCode")
             if pmember and pmember['workshopCode'] == workshopCode:
                 email = pmember['email']
                 returnPage = "/derived/6_guest_signup.bootstrap"
