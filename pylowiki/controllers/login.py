@@ -44,7 +44,7 @@ class LoginController(BaseController):
                     elif user['disabled'] == '1':
                         log.warning("disabled account attempting to login - " + email )
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
-                    elif checkPassword( user, password ): # if pass is True
+                    elif userLib.checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
                         user['laston'] = time.time()
                         loginTime = time.localtime(float(user['laston']))
