@@ -170,7 +170,7 @@
                     { items: ".portlet" },
                     { connectWith: ".column" },
                     { update: function(event, ui) {
-                        $.post("/slideshow/editPosition", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
+                        $.post("/workshop/${c.w['urlCode']}/${c.w['url']}/slide/edit/position", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
                     }
                 });
 

@@ -25,11 +25,14 @@ import os
 class SlideshowController(BaseController):
 
     def __before__(self, action, workshopCode = None):
-        if action in ['addImageHandler']:
+        if action in ['addImageHandler', 'edit', 'editPosition']:
             if workshopCode is None:
                 abort(404)
             c.w = workshopLib.getWorkshopByCode(workshopCode)
+            workshopLib.setWorkshopPrivs(c.w)
             if not c.w:
+                abort(404)
+            if not (c.privs['admin'] or c.privs['facilitator']):
                 abort(404)
             c.slideshow = getSlideshow(c.w)
             if not c.slideshow:
@@ -117,7 +120,7 @@ class SlideshowController(BaseController):
             return json.dumps(l)
         
     @h.login_required
-    def edit(self):
+    def edit(self, workshopCode, workshopURL):
         """
             Gets called whenever an edit to the title or caption of a slide is made
             
@@ -148,7 +151,7 @@ class SlideshowController(BaseController):
         return json.dumps({'content':content})
         
     @h.login_required
-    def editPosition(self):
+    def editPosition(self, workshopCode, workshopURL):
         """
             Gets called whenever the slideshow order is changed.
             Gets called once per column.

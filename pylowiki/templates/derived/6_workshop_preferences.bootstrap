@@ -219,7 +219,7 @@
     
     <script language="javascript">
         $(document).ready(function()	{
-            $('.edit').editable('/slideshow/edit', {
+            $('.edit').editable("/workshop/${c.w['urlCode']}/${c.w['url']}/slide/edit", {
                 indicator : 'Saving...',
                 tooltip   : 'Click to edit...'
             });
@@ -244,7 +244,7 @@
             { items: ".portlet" },
             { connectWith: ".column" },
             { update: function(event, ui) {
-                $.post("/slideshow/editPosition", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
+                $.post("/workshop/${c.w['urlCode']}/${c.w['url']}/slide/edit/position", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
             }
         });
         
