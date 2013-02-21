@@ -97,6 +97,11 @@
       if isReadOnly():
          readOnlyMessage(thing)
          return False
+      if c.w['allowResources'] == '0' and thing == 'resources':
+         return False
+      if c.w['allowIdeas'] == '0' and thing == 'ideas':
+         return False
+
       printStr = ''
       
       if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:      
