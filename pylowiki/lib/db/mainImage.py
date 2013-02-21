@@ -43,9 +43,10 @@ def setMainImage(user, workshop, slide):
         imageLocation, directoryNum = imageLib.getImageLocation(slide)
         image = open(imageLocation, 'rb')
         imgHash = imageLib.saveImage(image, slide['pictureHash'], 'mainImage', mainImage)
-        imageLib.resizeImage('mainImage', imgHash, 128, 128, 'thumbnail')
-        imageLib.resizeImage('mainImage', imgHash, 300, 300, 'listing')
+        imageLib.resizeImage('mainImage', imgHash, 128, 128, 'thumbnail', preserveAspectRatio = True)
+        imageLib.resizeImage('mainImage', imgHash, 400, 400, 'listing', preserveAspectRatio = True)
         image.close()
+        log.info('closed image')
     else:
         imgHash = u'supDawg'
         directoryNum = u'0'

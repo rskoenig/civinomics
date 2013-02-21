@@ -21,7 +21,7 @@ def isImage(imgFile):
 # Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.jpg
 # Passing in x = 99999 and y = 99999 will keep the same size.
 # TODO: preserve aspect ratio and/or crop to specified aspect ratio
-def resizeImage(identifier, hash, x, y, postfix):
+def resizeImage(identifier, hash, x, y, postfix, **kwargs):
     i = getImageIdentifier(identifier)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
     
@@ -30,12 +30,19 @@ def resizeImage(identifier, hash, x, y, postfix):
     
     try:
         im = Image.open(origFullpath)
+        ratio = 1
+        if 'preserveAspectRatio' in kwargs:
+            if kwargs['preserveAspectRatio'] == True:
+                maxwidth = x
+                maxheight = y
+                width, height = im.size
+                ratio = min(float(maxwidth)/width, float(maxheight)/height)
         if x == 99999 and y == 99999:
             dims = im.size
         else:
-            dims = (x, y)
+            dims = (im.size[0] * ratio, im.size[1] * ratio)
         im = im.resize(dims, Image.ANTIALIAS)
-        
+        log.info('resized')
         pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
         if not os.path.exists(pathname):
             os.makedirs(pathname)
