@@ -223,23 +223,10 @@
                 indicator : 'Saving...',
                 tooltip   : 'Click to edit...'
             });
-            $('.edit_area').editable('/slideshow/edit', {
-                type      : 'textarea',
-                cancel    : 'Cancel',
-                submit    : 'OK',
-                indicator : '<img src="/images/indicator.gif">',
-                tooltip   : 'Click to edit...'
-            });
         });
     </script>
     <script language="javascript">
     $(function() {
-        /*
-        $( ".column" ).sortable({
-            connectWith: ".column"
-        });
-        */
-
         $(".column").sortable(
             { items: ".portlet" },
             { connectWith: ".column" },
@@ -247,15 +234,6 @@
                 $.post("/workshop/${c.w['urlCode']}/${c.w['url']}/slide/edit/position", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
             }
         });
-        
-       /*
-        $(".column").sortable(
-            { connectWith: '.column' }, { update: function(event, ui) {
-               alert($(this).sortable('serialize'));
-               alert($(this).id);
-            }
-        });
-        */
 
         $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
             .find( ".portlet-header" )
@@ -276,7 +254,6 @@
       var $doc = $(document);
       $(document).ready(function() {
          $.fn.foundationClearing         ? $doc.foundationClearing() : null;
-         
       });
     </script>
 </%def>
