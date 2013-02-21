@@ -447,17 +447,18 @@ class WorkshopController(BaseController):
                                     else:
                                         werror = 1
                                         werrMsg += mEmail + ' already a member.'
-                                else:
+
                                     # see if they are already a user
                                     user = userLib.getUserByEmail(mEmail)
                                     if not user:
                                         user = None
                                     pMemberLib.PMember(workshopCode, mEmail, 'A', c.w, user)
-                                    inviteMsg = ''
-                                    if 'inviteMsg' in request.params:
-                                        inviteMsg = request.params['inviteMsg']
-                                    workshopLib.sendPMemberInvite(c.w, c.authuser, mEmail, inviteMsg)
-                                    counter += 1
+                                    
+                                inviteMsg = ''
+                                if 'inviteMsg' in request.params:
+                                    inviteMsg = request.params['inviteMsg']
+                                workshopLib.sendPMemberInvite(c.w, c.authuser, mEmail, inviteMsg)
+                                counter += 1
                 
                     if counter:
                         if counter > 1:
