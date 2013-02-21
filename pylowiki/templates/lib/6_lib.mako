@@ -176,7 +176,7 @@
             if w['mainImage_hash'] == 'supDawg':
                return "/images/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_hash'])
             else:
-               return "/images/%s/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
+               return "/images/%s/%s/thumbnail/%s.jpg" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
                
       imgStr = '<a href="'
       imgStr += workshopLink(w, embed=True, raw=True)
@@ -186,7 +186,7 @@
       if w['mainImage_hash'] == 'supDawg':
          picturePath = "/images/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_hash'])
       else:
-         picturePath = "/images/%s/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
+         picturePath = "/images/%s/%s/thumbnail/%s.jpg" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
       title = w['title']
       imgStr += '<img src="%s" alt="%s" title="%s"' %(picturePath, title, title)
          

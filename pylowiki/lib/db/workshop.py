@@ -2,26 +2,23 @@ from pylons import tmpl_context as c, config, session
 from pylons import request
 from pylowiki.model import Thing, meta, Data
 from sqlalchemy import and_, not_
-from pylowiki.lib.utils import urlify, toBase62
-from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
-from pylowiki.lib.db.user import getUserByID, getUserByEmail, isAdmin
-from pylowiki.lib.db.pmember import getPrivateMember, getPrivateMemberByCode
-from pylowiki.lib.db.geoInfo import getGeoScope
-from pylowiki.lib.db.activity import getDiscussionCommentsSince
-from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussionByID
+
+import pylowiki.lib.utils           as utils
+import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.pmember      as privateMemberLib
+import pylowiki.lib.db.activity     as activityLib
+import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.listener     as listenerLib
 import pylowiki.lib.db.generic      as generic
-from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
-from page import Page
-from event import Event
-from revision import Revision
-from slideshow import Slideshow, getSlideshow
-from slide import Slide
-from discussion import Discussion
+import pylowiki.lib.db.page         as pageLib
+import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.slideshow    as slideshowLib
+import pylowiki.lib.db.slide        as slideLib
 
-import time, datetime
-import logging
-import smtplib
+from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
+import time, datetime, logging, smtplib
+
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
@@ -155,11 +152,10 @@ def getRecentMemberPosts(number, publicPrivate = 'public'):
 
 def getWorkshopPostsSince(code, url, memberDatetime):
         postList = meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).order_by('-date').all()
-        discussionList = getDiscussionsForWorkshop(code)
+        discussionList = discussionLib.getDiscussionsForWorkshop(code)
         commentList = []
         for d in discussionList:
-            cList = getDiscussionCommentsSince(d.id, memberDatetime) 
-            ##log.info('d is %s and cList is %s memberDatetime is %s'%(d, cList, memberDatetime))
+            cList = activityLib.getDiscussionCommentsSince(d.id, memberDatetime)
             if cList:
                 commentList = commentList + cList
 
@@ -192,7 +188,7 @@ def getCategoryTagList():
 
 def isGuest(workshop):
     if 'guestCode' in session and 'workshopCode' in session:
-        pTest = getPrivateMemberByCode(session['guestCode'])
+        pTest = privateMemberLib.getPrivateMemberByCode(session['guestCode'])
         if pTest and pTest['urlCode'] == session['guestCode'] and pTest['workshopCode'] == session['workshopCode'] and workshop['urlCode'] == session['workshopCode']:
             return True
 
@@ -206,7 +202,7 @@ def isPublished(workshop):
     
 def isScoped(user, workshop):   
     if workshop['public_private'] != 'public':
-        pTest = getPrivateMember(workshop['urlCode'], user['email'])
+        pTest = privateMemberLib.getPrivateMember(workshop['urlCode'], user['email'])
         if pTest:
             return True
         else:
@@ -232,8 +228,8 @@ def setWorkshopPrivs(workshop):
     c.privs['visitor'] = True
     
     if 'user' in session:
-        c.privs['admin'] = isAdmin(c.authuser.id)
-        c.privs['facilitator'] = isFacilitator(c.authuser.id, workshop.id)
+        c.privs['admin'] = userLib.isAdmin(c.authuser.id)
+        c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser.id, workshop.id)
         c.privs['listener'] = listenerLib.getListener(c.authuser, workshop)
         c.privs['participant'] = isScoped(c.authuser, workshop)
         c.privs['guest'] = False
@@ -255,7 +251,7 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     if 'paste.testing_variables' in request.environ:
             request.environ['paste.testing_variables']['browseUrl'] = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
     else:
-        guest = getPrivateMember(workshop['urlCode'], recipient)
+        guest = privateMemberLib.getPrivateMember(workshop['urlCode'], recipient)
         browseLink = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
         if 'paste.testing_variables' in request.environ:
             request.environ['paste.testing_variables']['browseUrl'] = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
@@ -297,7 +293,7 @@ class Workshop(object):
     def __init__(self, title, owner, publicPrivate, type = "personal"):
         w = Thing('workshop', owner.id)
         w['title'] = title
-        w['url'] = urlify(title)
+        w['url'] = utils.urlify(title)
         w['startTime'] = '0000-00-00'
         w['endTime'] = '0000-00-00'
         w['published'] = '0'
@@ -313,19 +309,19 @@ class Workshop(object):
         w['allowSuggestions'] = 1
         w['allowResources'] = 1
         commit(w)
-        w['urlCode'] = toBase62(w)
+        w['urlCode'] = utils.toBase62(w)
         self.w = w
         background = 'No workshop summary set yet'
         
-        p = Page(title, owner, w, background)
-        e = Event('Create workshop', 'User %s created a workshop'%(c.authuser.id), w)
+        p = pageLib.Page(title, owner, w, background)
+        e = eventLib.Event('Create workshop', 'User %s created a workshop'%(c.authuser.id), w)
         
-        slideshow = Slideshow(owner, w)
+        slideshow = slideshowLib.Slideshow(owner, w)
         generic.linkChildToParent(slideshow, w)
         identifier = 'slide'
         title = 'Sample Title'
         caption = 'Sample Caption'
-        s = Slide(owner, slideshow, title, 'supDawg.png', 'no file here', '0')
+        s = slideLib.Slide(owner, slideshow, title, 'supDawg.png', 'no file here', '0')
         w['mainImage_caption'] = caption
         w['mainImage_title'] = title
         w['mainImage_hash'] = s['pictureHash']
@@ -336,6 +332,6 @@ class Workshop(object):
         commit(slideshow)
         commit(w)
         
-        f = Facilitator( c.authuser, w ) 
+        f = facilitatorLib.Facilitator( c.authuser, w ) 
         
         

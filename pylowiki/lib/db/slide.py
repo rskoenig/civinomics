@@ -3,24 +3,18 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic
+from dbHelpers import commit, with_characteristic as wc
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
-from pylowiki.lib.images import saveImage, resizeImage
+import pylowiki.lib.images          as imageLib 
 
 log = logging.getLogger(__name__)
 
 # Getters
 def getSlide(slideID, deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(id = slideID).filter_by(objType = 'slide').filter(Thing.data.any(with_characteristic('deleted', deleted))).one()
-    except:
-        return False
-
-def forceGetSlide(slideID):
-    try:
-        return meta.Session.query(Thing).filter_by(id = slideID).filter_by(objType = 'slide').one()
+        return meta.Session.query(Thing).filter_by(id = slideID).filter_by(objType = 'slide').filter(Thing.data.any(wc('deleted', deleted))).one()
     except:
         return False
 
@@ -43,11 +37,11 @@ def Slide(owner, slideshow, title, filename, image, newSlide = '0'):
         generic.linkChildToParent(s, slideshow)
         commit(s)
         s['urlCode'] = utils.toBase62(s)
-        hash = saveImage(image, filename, 'slide', s)
+        hash = imageLib.saveImage(image, filename, 'slide', s)
         slideshow['slideshow_order'] = slideshow['slideshow_order'] + ',' + str(s.id)
         # identifier, hash, x, y, postfix
-        resizeImage('slide', hash, 99999, 99999, 'slideshow') # don't resize, but antialias and save appropriately
-        resizeImage('slide', hash, 128, 128, 'thumbnail')
+        imageLib.resizeImage('slide', hash, 99999, 99999, 'slideshow') # don't resize, but antialias and save appropriately
+        imageLib.resizeImage('slide', hash, 128, 128, 'thumbnail')
     else:
         s = Thing('slide', owner.id)
         s['urlCode'] = utils.toBase62(s)
