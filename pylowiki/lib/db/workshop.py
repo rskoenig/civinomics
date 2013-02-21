@@ -287,6 +287,43 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     s = smtplib.SMTP('localhost')
     s.sendmail(senderEmail, recipient, email.as_string())
     s.quit()
+    
+def sendWorkshopMail(workshop, recipient):
+    senderEmail = "helpdesk@civinomics.com"
+    subject = 'About your new Civinomics workshop'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    myURL = config['app_conf']['site_base_url']
+
+    txtFile = emailDir + "/workshop.txt"
+    
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    # do the substitutions
+    textMessage = textMessage.replace('${c.sender}', senderName)
+    textMessage = textMessage.replace('${c.workshopName}', workshopName)
+    textMessage = textMessage.replace('${c.inviteMessage}', message)
+    textMessage = textMessage.replace('${c.browseLink}', browseLink)
+    
+        
+    # create a MIME email object, initialize the header info
+    email = MIMEMultipart(_subtype='related')
+    email['Subject'] = subject
+    email['From'] = 'invitations@civinomics.com'
+    email['To'] = recipient
+    
+    # now attatch the text and html and picture parts
+    part1 = MIMEText(textMessage, 'plain')
+    email.attach(part1)
+
+    # send it
+    s = smtplib.SMTP('localhost')
+    s.sendmail(senderEmail, recipient, email.as_string())
+    s.quit()
+
 
 class Workshop(object):
     # title -> A string
