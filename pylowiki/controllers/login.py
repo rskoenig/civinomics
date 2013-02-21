@@ -8,9 +8,8 @@ from pylons import config
 from pylowiki.lib.base import BaseController, render
 
 import pylowiki.lib.helpers as h
+import pylowiki.lib.db.user as userLib
 from pylowiki.lib.auth import login_required
-from pylowiki.lib.db.user import get_user, changePassword, checkPassword, generatePassword
-from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
 from pylowiki.lib.db.dbHelpers import commit
 
 from pylowiki.lib.mail import send
@@ -33,13 +32,18 @@ class LoginController(BaseController):
                 
             log.info('user %s attempting to log in' % email)
             if email and password:
-                user = get_user_by_email( email )
+                user = userLib.getUserByEmail( email )
          
                 if user: # not none or false
-                    if user['disabled'] == '1' or user['activated'] == '0':
-                        log.warning("disabled/inactive account attempting to login - " + email )
-                        splashMsg['content'] = 'This account has been disabled and/or has not been activated.'
-                        c.splashMsg = splashMsg
+                    if user['activated'] == '0':
+                        splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                        baseURL = c.conf['activation.url']
+                        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                        userLib.sendActivationMail(user['email'], url)
+                        
+                    elif user['disabled'] == '1':
+                        log.warning("disabled account attempting to login - " + email )
+                        splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
                         user['laston'] = time.time()
@@ -101,11 +105,11 @@ class LoginController(BaseController):
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
         email = request.params["email"].lower()
-        user = get_user_by_email( email ) 
+        user = userLib.getUserByEmail( email ) 
         if user:
             if email != config['app_conf']['admin.email']:
                 password = generatePassword() 
-                changePassword( user, password )
+                userLib.changePassword( user, password )
                 commit( user ) # commit database change
 
                 toEmail = user['email']
@@ -164,9 +168,10 @@ class LoginController(BaseController):
         c.title = c.heading = "Change password for " + user  
         return render( "/derived/changepass.mako" )
 
+    """ This code deprecated
     @login_required
     def changepass_handler(self):
-        user = get_user( session['user'] )
+        user = userLib.get_user( session['user'] )
         c.title = c.heading = "Change password for " + user.name  
         try:
             password1 = request.params["password1"]
@@ -185,6 +190,7 @@ class LoginController(BaseController):
             h.flash( "Please fill all fields", "warning" )
             
         return render("/derived/changepass.mako" )
+    """ 
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
         if workshopCode != 'None' and workshopURL != 'None':

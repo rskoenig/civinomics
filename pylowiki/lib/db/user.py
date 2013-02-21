@@ -180,6 +180,36 @@ def sendWelcomeMail(u):
     s = smtplib.SMTP('localhost')
     s.sendmail(email['From'], u['email'], email.as_string())
     s.quit()
+    
+def sendActivationMail(recipient, activationLink):
+    subject = 'Civinomics Account Activation'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/activate.txt"
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    # do the substitutions
+    textMessage = textMessage.replace('${c.activationLink}', activationLink)
+
+    # create a MIME email object, initialize the header info
+    email = MIMEMultipart(_subtype='related')
+    email['Subject'] = subject
+    email['From'] = c.conf['activation.email']
+    email['To'] = recipient
+    
+    # now attatch the text and html and picture parts
+    part1 = MIMEText(textMessage, 'plain')
+    email.attach(part1)
+        
+    # send it
+    s = smtplib.SMTP('localhost')
+    s.sendmail(email['From'], email['To'], email.as_string())
+    s.quit()
+
 
 class User(object):
     def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
@@ -239,39 +269,10 @@ class User(object):
         Revision(u, u)
         
         # send the activation email
-        self.sendActivationMail(u, url)
+        sendActivationMail(u['email'], url)
         
         log.info("Successful account creation (deactivated) for %s" %toEmail)
     
-    def sendActivationMail(self, u, activationLink):
-        subject = 'Civinomics Account Activation'
-    
-        emailDir = config['app_conf']['emailDirectory']
-        txtFile = emailDir + "/activate.txt"
-
-        # open and read the text file
-        fp = open(txtFile, 'r')
-        textMessage = fp.read()
-        fp.close()
-    
-        # do the substitutions
-        textMessage = textMessage.replace('${c.activationLink}', activationLink)
-
-        # create a MIME email object, initialize the header info
-        email = MIMEMultipart(_subtype='related')
-        email['Subject'] = subject
-        email['From'] = c.conf['activation.email']
-        email['To'] = u['email']
-    
-        # now attatch the text and html and picture parts
-        part1 = MIMEText(textMessage, 'plain')
-        email.attach(part1)
-        
-        # send it
-        s = smtplib.SMTP('localhost')
-        s.sendmail(email['From'], u['email'], email.as_string())
-        s.quit()
-
     def changePassword(self, password):
         self['password'] = self.hashPassword(password)
         return True
