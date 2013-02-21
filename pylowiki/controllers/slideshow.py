@@ -66,12 +66,12 @@ class SlideshowController(BaseController):
             else:
                 siteURL = 'http://www.civinomics.com'
             
-            d['url'] = '%s/images/%s/%s/orig/%s.orig' % (siteURL, identifier, directoryNumber, hash)
-            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.thumbnail' % (siteURL, identifier, directoryNumber, hash)
+            d['url'] = '%s/images/%s/%s/orig/%s.jpg' % (siteURL, identifier, directoryNumber, hash)
+            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.jpg' % (siteURL, identifier, directoryNumber, hash)
             d['delete_url'] = '%s/workshop/%s/%s/slideshow/delete/%s' %(siteURL, c.w['urlCode'], c.w['url'], hash)
             d['delete_type'] = "DELETE"
             d['-'] = hash
-            d['type'] = 'image/png'
+            d['type'] = 'image/jpg'
             l.append(d)
             
             if len(allSlides) == 1:
@@ -161,9 +161,7 @@ class SlideshowController(BaseController):
         value = value.split('_')
         order = '&' + value[0]
         state = value[1] # published or unpublished
-        
         order = [item for item in order.split('&portlet[]=')][1:]
-        log.info('order: %s'%order)
         
         if state == 'unpublished':
             for item in order:

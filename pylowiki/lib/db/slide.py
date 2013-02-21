@@ -41,27 +41,24 @@ def Slide(owner, slideshow, title, filename, image, newSlide = '0'):
     if newSlide != '0':
         s = Thing('slide', owner.id)
         generic.linkChildToParent(s, slideshow)
-        s['title'] = title
-        s['filename'] = filename
-        s['deleted'] = '0'
         commit(s)
         s['urlCode'] = utils.toBase62(s)
         hash = saveImage(image, filename, 'slide', s)
-        s['pictureHash'] = hash
         slideshow['slideshow_order'] = slideshow['slideshow_order'] + ',' + str(s.id)
-        
         # identifier, hash, x, y, postfix
         resizeImage('slide', hash, 99999, 99999, 'slideshow') # don't resize, but antialias and save appropriately
         resizeImage('slide', hash, 128, 128, 'thumbnail')
     else:
         s = Thing('slide', owner.id)
+        s['urlCode'] = utils.toBase62(s)
         hash = 'supDawg'
         generic.linkChildToParent(s, slideshow)
-        s['pictureHash'] = hash
-        s['title'] = title
-        s['filename'] = filename
-        s['deleted'] = '0'
         
     # finally
+    s['pictureHash'] = hash
+    s['title'] = title
+    s['filename'] = filename
+    s['deleted'] = u'0'
+    s['disabled'] = u'0'
     commit(s)
     return s

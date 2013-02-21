@@ -21,13 +21,6 @@ def undeleteSlideshow( slideshow ):
     slideshow['deleted'] = '0'
     commit(slideshow)
 
-# Getters
-#def getSlideshow(slideshowID, deleted = u'0'):
-#    try:
-#        return meta.Session.query(Thing).filter_by(id = slideshowID).filter(Thing.data.any(wc('deleted', deleted))).one()
-#    except:
-#        return False
-
 def getSlideshow(workshop, deleted = u'0'):
     try:
         return meta.Session.query(Thing)\
