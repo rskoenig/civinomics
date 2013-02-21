@@ -37,6 +37,7 @@ import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.demo         as demoLib
+import pylowiki.lib.db.mainImage    as mainImageLib
 
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
@@ -117,6 +118,7 @@ class WorkshopController(BaseController):
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
+        c.mainImage = mainImageLib.getMainImage(c.w)
         if not c.w:
             abort(404)
         if action in setPrivs:
@@ -154,7 +156,7 @@ class WorkshopController(BaseController):
         session['confTab'] = "tab1"
         session.save()
 
-        slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
+        slideshow = slideshowLib.getSlideshow(c.w)
         c.slideshow = slideshowLib.getAllSlides(slideshow.id)
 
         werror = 0
@@ -675,17 +677,17 @@ class WorkshopController(BaseController):
                 return render('/derived/6_workshop_payment.bootstrap')
                 
         w = workshopLib.Workshop('replace with a real name!', c.authuser, 'private', wType)
-        c.workshop_id = w.w.id # TEST
+        c.workshop_id = w.id # TEST
         c.title = 'Configure Workshop'
-        c.motd = motdLib.MOTD('Welcome to the workshop!', w.w.id, w.w.id)
+        c.motd = motdLib.MOTD('Welcome to the workshop!', w.id, w.id)
         if wType == 'professional':
-            account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, w.w, 'PRO', c.coupon)
+            account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, w, 'PRO', c.coupon)
         alert = {'type':'success'}
         alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
         session['alert'] = alert
         session.save()
 
-        return redirect('/workshop/%s/%s/preferences'%(w.w['urlCode'], w.w['url']))
+        return redirect('/workshop/%s/%s/preferences'%(w['urlCode'], w['url']))
     
     @h.login_required
     def adminWorkshopHandler(self, workshopCode, workshopURL):
@@ -781,7 +783,7 @@ class WorkshopController(BaseController):
           c.wStarted = False
 
         c.slides = []
-        c.slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
+        c.slideshow = slideshowLib.getSlideshow(c.w)
         slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
         for id in slide_ids:
             s = slideLib.getSlide(id) # Don't grab deleted slides
@@ -811,7 +813,7 @@ class WorkshopController(BaseController):
                 c.demo = True
             else:
                 c.demo = False
-            
+        
         return render('/derived/6_workshop_home.bootstrap')
     
     @h.login_required
@@ -840,8 +842,8 @@ class WorkshopController(BaseController):
         if 'continueToNext' in request.params:
             c.tab = 'tab5'
             
-        slideshow = slideshowLib.getSlideshow(c.w['mainSlideshow_id'])
-        c.slideshow = slideshowLib.getAllSlides(slideshow.id)
+        slideshow = slideshowLib.getSlideshow(c.w)
+        c.slideshow = slideshowLib.getAllSlides(slideshow)
         c.published_slides = []
         slide_ids = [int(item) for item in slideshow['slideshow_order'].split(',')]
         for id in slide_ids:

@@ -185,7 +185,7 @@
 
 <%def name="slideshow(w)">
    <% 
-      slides = slideshowLib.getSlidesInOrder(w['mainSlideshow_id']) 
+      slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
       slideNum = 0
    %>
    <ul class="block-grid gallery" data-clearing>
@@ -206,11 +206,11 @@
    % endif
       % if slide['pictureHash'] == 'supDawg':
          <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
-            <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['caption']}"/>
+            <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
          </a>
       % else:
-         <a href="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow">
-            <img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['caption']}"/>
+         <a href="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.jpg">
+            <img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
          </a>
       % endif
    </li>

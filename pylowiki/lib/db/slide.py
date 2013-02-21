@@ -3,17 +3,18 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic
+from dbHelpers import commit, with_characteristic as wc
 from pylons import config
-
-from pylowiki.lib.images import saveImage, resizeImage
+import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.utils           as utils
+import pylowiki.lib.images          as imageLib 
 
 log = logging.getLogger(__name__)
 
 # Getters
 def getSlide(slideID, deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(id = slideID).filter_by(objType = 'slide').filter(Thing.data.any(with_characteristic('deleted', deleted))).one()
+        return meta.Session.query(Thing).filter_by(id = slideID).filter_by(objType = 'slide').filter(Thing.data.any(wc('deleted', deleted))).one()
     except:
         return False
 
@@ -36,33 +37,29 @@ def undeleteSlide( slide ):
 
 # Object
 # If newSlide is False, then we are dealing with the initialization of a workshop, in which case we do not need to save the image.
-class Slide(object):
-    def __init__( self, owner, slideshow, title, caption, filename, image, newSlide = '0'):
-        if newSlide != '0':
-            s = Thing('slide', owner.id)
-            s['slideshow_id'] = slideshow.id
-            s['caption'] = caption
-            s['title'] = title
-            s['filename'] = filename
-            s['deleted'] = '0'
-            commit(s)
-            self.s = s        
-            
-            hash = saveImage(image, filename, owner, 'slide', s)
-            s['pictureHash'] = hash
-            slideshow['slideshow_order'] = slideshow['slideshow_order'] + ',' + str(s.id)
-            
-            # identifier, hash, x, y, postfix
-            resizeImage('slide', hash, 835, 550, 'slideshow')
-            resizeImage('slide', hash, 120, 65, 'thumbnail')
-        else:
-            s = Thing('slide', owner.id)
-            hash = 'supDawg'
-            s['slideshow_id'] = slideshow.id
-            s['pictureHash'] = hash
-            s['caption'] = caption
-            s['title'] = title
-            s['filename'] = filename
-            s['deleted'] = '0'
-            commit(s)
-            self.s = s
+def Slide(owner, slideshow, title, filename, image, newSlide = '0'):
+    if newSlide != '0':
+        s = Thing('slide', owner.id)
+        generic.linkChildToParent(s, slideshow)
+        commit(s)
+        s['urlCode'] = utils.toBase62(s)
+        hash = imageLib.saveImage(image, filename, 'slide', s)
+        slideshow['slideshow_order'] = slideshow['slideshow_order'] + ',' + str(s.id)
+        # identifier, hash, x, y, postfix
+        imageLib.resizeImage('slide', hash, 99999, 99999, 'slideshow') # don't resize, but antialias and save appropriately
+        imageLib.resizeImage('slide', hash, 128, 128, 'thumbnail')
+    else:
+        s = Thing('slide', owner.id)
+        commit(s)
+        s['urlCode'] = utils.toBase62(s)
+        hash = 'supDawg'
+        generic.linkChildToParent(s, slideshow)
+        
+    # finally
+    s['pictureHash'] = hash
+    s['title'] = title
+    s['filename'] = filename
+    s['deleted'] = u'0'
+    s['disabled'] = u'0'
+    commit(s)
+    return s

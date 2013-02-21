@@ -4,7 +4,6 @@ from time import time
 from hashlib import md5
 
 from pylons import config
-#from pylowiki.model import Thing
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.imageIdentifier import ImageIdentifier, getImageIdentifier
 
@@ -19,68 +18,79 @@ def isImage(imgFile):
         return False
 
 # Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
-# Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.thumbnail
-def resizeImage(identifier, hash, x, y, postfix):
+# Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.jpg
+def resizeImage(identifier, hash, x, y, postfix, **kwargs):
     i = getImageIdentifier(identifier)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
     
     origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber,'orig')
-    origFullpath = origPathname + '/%s.orig' %(hash)
+    origFullpath = origPathname + '/%s.jpg' %(hash)
     
     try:
-        dims = x, y
         im = Image.open(origFullpath)
-        im.thumbnail(dims, Image.ANTIALIAS)
-        
+        ratio = 1
+        if 'preserveAspectRatio' in kwargs:
+            if kwargs['preserveAspectRatio'] == True:
+                maxwidth = x
+                maxheight = y
+                width, height = im.size
+                ratio = min(float(maxwidth)/width, float(maxheight)/height)
+        dims = (im.size[0] * ratio, im.size[1] * ratio)
+        im = im.resize(dims, Image.ANTIALIAS)
         pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
         if not os.path.exists(pathname):
             os.makedirs(pathname)
         
         quality = 80
-        im.save(pathname + '/' + hash + '.' + postfix, 'JPEG', quality=quality)
-        #log.info('Successfully resized %s' % hash)
+        im.save(pathname + '/' + hash + '.jpg' , 'JPEG', quality=quality)
         return True
     except:
         return False
     
+def getImageLocation(slide):
+    # Given a slide, return the image file's location on disk
+    imgHash = slide['pictureHash']
+    identifier = getImageIdentifier('slide')
+    directoryNumber = str(int(identifier['numImages']) / numImagesInDirectory)
+    origPathname = os.path.join(config['app_conf']['imageDirectory'], 'slide', directoryNumber,'orig')
+    origFullpath = origPathname + '/%s.jpg' %(imgHash)
+    return origFullpath, directoryNumber
+
 # Save an image to disk
 # Directories are created based on the identifier that gets passed in
 # Each identifier object contains an 'imageNum' field that is a running tally of
 # all images that have the same identifier.  When we get to 30k images in a
 # directory (via integer division), we create a new directory and save images in there.
-def saveImage(image, filename, user, identifier, thing):
-    hash = _generateHash(filename, user)
+def saveImage(image, filename, identifier, thing):
+    hash = _generateHash(filename, thing)
 
-    if not getImageIdentifier(identifier):
-        i = ImageIdentifier(identifier)
     i = getImageIdentifier(identifier)
-    i['numImages'] = int(i['numImages']) + 1 
+    if not i:
+        i = ImageIdentifier(identifier)
+    
+    i['numImages'] = unicode(int(i['numImages']) + 1)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
-
+    
     pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig')
-    savename = hash + '.orig'
+    savename = hash + '.jpg'
     if not os.path.exists(pathname):
         os.makedirs(pathname)
     
     fullpath = os.path.join(pathname, savename)
-    
     thing['directoryNumber'] = directoryNumber
     commit(thing)
     
     try:
-        f = open(fullpath, 'wb')
-        shutil.copyfileobj(image, f)
-        f.close()
-        #log.info('Successfully saved %s to disk as %s', filename, savename)
+        im = Image.open(image)
+        im.save(fullpath, "JPEG")
         return hash
     except:
-        log.info('Unable to save to %s with hash %s' % (fullpath, hash))
+        log.error('Unable to save to %s with hash %s' % (fullpath, hash))
         return False
 
-def _generateHash(filename, user):
-    s = '%s_%s_%s' %(filename, user['email'], int(time()))
+def _generateHash(filename, thing):
+    s = '%s_%s' %(filename, thing['urlCode'])
     return md5(s).hexdigest()
-    
     
 def makeSurveyThumbnail(filename, directory, x, y, postfix):
     """
@@ -115,11 +125,9 @@ def makeSurveyThumbnail(filename, directory, x, y, postfix):
     saveFilename = '.'.join(filenameSplit)
     try:
         dims = x, y
-        #log.info('attempting to open %s' % fullpath)
         im = Image.open(fullpath)
         im.thumbnail(dims, Image.ANTIALIAS)
         savepath = os.path.join(directory, '%s.%s'%(saveFilename, postfix))
-        #log.info('saving to %s' % savepath)
         im.save(savepath, 'PNG')
         return True
     except:

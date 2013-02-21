@@ -112,9 +112,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/delete{end:/?}', controller = 'goals', action = 'delete')
 
     # Workshop slideshow
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{image:addImages/?}', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{editSlideshow:editSlideshow/?}', controller = 'slideshow', action = 'editSlideshowDisplay', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/slide/edit', controller = 'slideshow', action = 'edit')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/slide/edit/position', controller = 'slideshow', action = 'editPosition')
 
     # Account handler routines
     map.connect('/workshop/{workshopCode}/{workshopURL}/manage/{account:account/?}', controller = 'account', action = 'manageAccount', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')

@@ -1,14 +1,18 @@
 <%! 
    from pylowiki.lib.db.user import getUserByID
-   from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshopByCode
-   import pylowiki.lib.db.follow    as followLib
-   import pylowiki.lib.db.activity  as activityLib
-   import pylowiki.lib.db.goal      as goalLib
+   import pylowiki.lib.db.workshop      as workshopLib
+   import pylowiki.lib.db.follow        as followLib
+   import pylowiki.lib.db.activity      as activityLib
+   import pylowiki.lib.db.goal          as goalLib
+   import pylowiki.lib.db.mainImage     as mainImageLib
 %>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="show_workshop(w)">
-<% goals = goalLib.getGoalsForWorkshop(w) %>
+<% 
+    goals = goalLib.getGoalsForWorkshop(w) 
+    mainImage = mainImageLib.getMainImage(w)
+%>
 <div class="wrap-workshop">
    <div class="viewport">
       <a ${lib_6.workshopLink(w)}>
@@ -27,10 +31,10 @@
                </ul>
             % endif
          </span>
-         % if w['mainImage_hash'] == 'supDawg':
-            <img src="/images/${w['mainImage_identifier']}/slideshow/${w['mainImage_hash']}.slideshow" alt="${w['title']}" title="${w['title']}">
+         % if mainImage['pictureHash'] == 'supDawg':
+            <img src="/images/slide/thumbnail/supDawg.thumbnail" alt="${w['title']}" title="${w['title']}">
          % else:
-            <img src="/images/${w['mainImage_identifier']}/${w['mainImage_directoryNum']}/slideshow/${w['mainImage_hash']}.slideshow" alt="${w['title']}" title="${w['title']}">
+            <img src="/images/mainImage/${mainImage['directoryNum']}/listing/${mainImage['pictureHash']}.jpg" alt="${w['title']}" title="${w['title']}">
          % endif
       </a>
    </div>
@@ -71,7 +75,7 @@
             lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)
             activityStr = ''
             title = lib_6.ellipsisIZE(item['title'], 40)
-            w = getWorkshopByCode(item['workshopCode'])
+            w = workshopLib.getWorkshopByCode(item['workshopCode'])
             if item.objType == 'resource':
                activityStr += 'added the resource '
                activityStr += '<a %s>%s</a>' % (lib_6.resourceLink(item, w, embed=True), title)
