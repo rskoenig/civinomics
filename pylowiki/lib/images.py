@@ -20,6 +20,7 @@ def isImage(imgFile):
 # Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
 # Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.jpg
 # Passing in x = 99999 and y = 99999 will keep the same size.
+# TODO: preserve aspect ratio and/or crop to specified aspect ratio
 def resizeImage(identifier, hash, x, y, postfix):
     i = getImageIdentifier(identifier)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
@@ -45,6 +46,15 @@ def resizeImage(identifier, hash, x, y, postfix):
     except:
         return False
     
+def getImageLocation(slide):
+    # Given a slide, return the image file's location on disk
+    imgHash = slide['pictureHash']
+    identifier = getImageIdentifier('slide')
+    directoryNumber = str(int(identifier['numImages']) / numImagesInDirectory)
+    origPathname = os.path.join(config['app_conf']['imageDirectory'], 'slide', directoryNumber,'orig')
+    origFullpath = origPathname + '/%s.jpg' %(imgHash)
+    return origFullpath, directoryNumber
+
 # Save an image to disk
 # Directories are created based on the identifier that gets passed in
 # Each identifier object contains an 'imageNum' field that is a running tally of

@@ -6,6 +6,7 @@
    import pylowiki.lib.db.resource      as resourceLib
    import pylowiki.lib.db.user          as userLib
    import pylowiki.lib.db.rating        as ratingLib
+   import pylowiki.lib.db.mainImage     as mainImageLib
    
    from hashlib import md5
    import logging
@@ -171,12 +172,14 @@
 
 <%def name="workshopImage(w, **kwargs)">
     <%
+      if c.mainImage == '':
+         c.mainImage = mainImageLib.getMainImage(w)
       if 'raw' in kwargs:
          if kwargs['raw'] == True:
-            if w['mainImage_hash'] == 'supDawg':
-               return "/images/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_hash'])
+            if c.mainImage['pictureHash'] == 'supDawg':
+               return "/images/slide/thumbnail/supDawg.thumbnail"
             else:
-               return "/images/%s/%s/thumbnail/%s.jpg" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
+               return "/images/mainImage/%s/thumbnail/%s.jpg" %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
                
       imgStr = '<a href="'
       imgStr += workshopLink(w, embed=True, raw=True)
@@ -184,9 +187,9 @@
          imgStr += '" class="%s"' %(kwargs['linkClass'])
       imgStr += '">'
       if w['mainImage_hash'] == 'supDawg':
-         picturePath = "/images/%s/thumbnail/%s.thumbnail" %(w['mainImage_identifier'], w['mainImage_hash'])
+         picturePath = "/images/slide/thumbnail/supDawg.thumbnail"
       else:
-         picturePath = "/images/%s/%s/thumbnail/%s.jpg" %(w['mainImage_identifier'], w['mainImage_directoryNum'], w['mainImage_hash'])
+         picturePath = "/images/mainImage/%s/thumbnail/%s.jpg" %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
       title = w['title']
       imgStr += '<img src="%s" alt="%s" title="%s"' %(picturePath, title, title)
          

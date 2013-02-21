@@ -41,10 +41,10 @@
 <%def name="extraScripts()">
    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
    <%
-      if c.w['mainImage_hash'] == 'supDawg':
-         backgroundImage = '"/images/%s/slideshow/%s.slideshow"' %(c.w['mainImage_identifier'], c.w['mainImage_hash'])
+      if c.mainImage['pictureHash'] == 'supDawg':
+         backgroundImage = '"/images/slide/slideshow/supDawg.slideshow"'
       else:
-         backgroundImage = '"/images/%s/%s/slideshow/%s.jpg"' %(c.w['mainImage_identifier'], c.w['mainImage_directoryNum'], c.w['mainImage_hash'])
+         backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
    %>
    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
    <script src="/js/follow.js" type="text/javascript"></script>

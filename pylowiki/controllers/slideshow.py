@@ -12,6 +12,7 @@ from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.slide import Slide, getSlide, forceGetSlide
 from pylowiki.lib.db.slideshow import Slideshow, getSlideshow, getAllSlides
 import pylowiki.lib.db.slideshow        as slideshowLib
+import pylowiki.lib.db.mainImage        as mainImageLib
 from pylowiki.lib.db.imageIdentifier import getImageIdentifier
 
 from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory, isImage
@@ -138,12 +139,6 @@ class SlideshowController(BaseController):
         slide = forceGetSlide(slide_id)
         slideshow = slideshowLib.getSlideshowByCode(slide['slideshowCode'])
         
-        if slide_id == int(slideshow['slideshow_order'].split(',')[0]):
-            w = getWorkshopByID(int(slideshow['workshop_id']))
-            key = 'mainImage_' + slideField
-            w[key] = content
-            commit(w)
-        
         slide[slideField] = content
         commit(slide)
         
@@ -175,14 +170,10 @@ class SlideshowController(BaseController):
         elif state == 'published':
             firstSlide = forceGetSlide(int(order[0]))
             slideshow = slideshowLib.getSlideshowByCode(firstSlide['slideshowCode'])
-            w = workshopLib.getWorkshopByCode(slideshow['workshopCode'])
             
             # If we change the initial image
             if firstSlide.id != int(slideshow['slideshow_order'].split(',')[0]):
-                w['mainImage_directoryNum'] = firstSlide['directoryNumber']
-                w['mainImage_hash'] = firstSlide['pictureHash']
-                w['mainImage_id'] = firstSlide.id
-                commit(w)
+                mainImageLib.setMainImage(c.authuser, c.w, firstSlide)
             else:
                 pass
             

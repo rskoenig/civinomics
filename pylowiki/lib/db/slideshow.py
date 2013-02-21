@@ -47,10 +47,13 @@ def countSlideshowSlides(slideshowID, deleted = u'0'):
     except:
         return False
 
-def getAllSlides(slideshow_id):
+def getAllSlides(slideshow):
     # Grabs all slides given a slideshow id, regardless of the slide's 'deleted' property
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'slide').filter(Thing.data.any(wc('slideshow_id', slideshow_id))).all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'slide')\
+            .filter(Thing.data.any(wc('slideshowCode', slideshow['urlCode'])))\
+            .all()
     except:
         return False
 

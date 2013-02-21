@@ -15,6 +15,7 @@ import pylowiki.lib.db.page         as pageLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.slideshow    as slideshowLib
 import pylowiki.lib.db.slide        as slideLib
+import pylowiki.lib.db.mainImage    as mainImageLib
 
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 import time, datetime, logging, smtplib
@@ -117,7 +118,7 @@ def getParticipantsByID(id):
         return meta.Session.query(Thing).filter_by(id = id).one()['participants']
     except:
         return False
-            
+    
 def getRecentMemberPosts(number, publicPrivate = 'public'):
         counter = 0
         returnList = []
@@ -191,13 +192,13 @@ def isGuest(workshop):
         pTest = privateMemberLib.getPrivateMemberByCode(session['guestCode'])
         if pTest and pTest['urlCode'] == session['guestCode'] and pTest['workshopCode'] == session['workshopCode'] and workshop['urlCode'] == session['workshopCode']:
             return True
-
+    
     return False
     
 def isPublished(workshop):
     if workshop['startTime'] != '0000-00-00' and workshop['deleted'] != '1':
         return True
-
+    
     return False
     
 def isScoped(user, workshop):   
@@ -209,7 +210,7 @@ def isScoped(user, workshop):
             return False
     else:
         return True       
-       
+    
     return False
     
 def setWorkshopPrivs(workshop):
@@ -285,53 +286,44 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     s.sendmail(senderEmail, recipient, email.as_string())
     s.quit()
 
-class Workshop(object):
+def Workshop(title, owner, publicPrivate, type = "personal"):
     # title -> A string
     # owner -> A user object in Thing form
     #
     # Note this will generate the page and event for you.
-    def __init__(self, title, owner, publicPrivate, type = "personal"):
-        w = Thing('workshop', owner.id)
-        w['title'] = title
-        w['url'] = utils.urlify(title)
-        w['startTime'] = '0000-00-00'
-        w['endTime'] = '0000-00-00'
-        w['published'] = '0'
-        w['deleted'] = '0'
-        w['facilitators'] = c.authuser.id
-        w['goals'] = 'No goals set'
-        w['description'] = ''
-        w['pictureHash'] = 'flash' # default picture
-        w['numResources'] = 1
-        w['public_private'] = publicPrivate
-        w['type'] = type
-        w['allowIdeas'] = 1
-        w['allowSuggestions'] = 1
-        w['allowResources'] = 1
-        commit(w)
-        w['urlCode'] = utils.toBase62(w)
-        self.w = w
-        background = 'No workshop summary set yet'
-        
-        p = pageLib.Page(title, owner, w, background)
-        e = eventLib.Event('Create workshop', 'User %s created a workshop'%(c.authuser.id), w)
-        
-        slideshow = slideshowLib.Slideshow(owner, w)
-        generic.linkChildToParent(slideshow, w)
-        identifier = 'slide'
-        title = 'Sample Title'
-        caption = 'Sample Caption'
-        s = slideLib.Slide(owner, slideshow, title, 'supDawg.png', 'no file here', '0')
-        w['mainImage_caption'] = caption
-        w['mainImage_title'] = title
-        w['mainImage_hash'] = s['pictureHash']
-        w['mainImage_postFix'] = 'orig'
-        w['mainImage_identifier'] = identifier
-        w['mainImage_id'] = s.id
-        slideshow['slideshow_order'] = s.id
-        commit(slideshow)
-        commit(w)
-        
-        f = facilitatorLib.Facilitator( c.authuser, w ) 
-        
+    w = Thing('workshop', owner.id)
+    w['title'] = title
+    w['url'] = utils.urlify(title)
+    w['startTime'] = u'0000-00-00'
+    w['endTime'] = u'0000-00-00'
+    w['published'] = u'0'
+    w['deleted'] = u'0'
+    w['facilitators'] = c.authuser.id
+    w['description'] = u''
+    w['pictureHash'] = u'flash' # default picture
+    w['public_private'] = publicPrivate
+    w['type'] = type
+    w['allowIdeas'] = u'1'
+    w['allowSuggestions'] = u'1'
+    w['allowResources'] = u'1'
+    commit(w)
+    w['urlCode'] = utils.toBase62(w)
+    background = 'No workshop summary set yet'
+    
+    p = pageLib.Page(title, owner, w, background)
+    e = eventLib.Event('Create workshop', 'User %s created a workshop'%(c.authuser['email']), w)
+    
+    slideshow = slideshowLib.Slideshow(owner, w)
+    generic.linkChildToParent(slideshow, w)
+    identifier = 'slide'
+    title = 'Sample Title'
+    caption = 'Sample Caption'
+    s = slideLib.Slide(owner, slideshow, title, 'supDawg.png', 'no file here', '0')
+    mainImageLib.setMainImage(owner, w, s)
+    slideshow['slideshow_order'] = s.id
+    commit(slideshow)
+    commit(w)
+    
+    f = facilitatorLib.Facilitator( c.authuser, w ) 
+    return w
         

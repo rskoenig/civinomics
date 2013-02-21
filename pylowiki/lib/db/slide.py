@@ -18,6 +18,12 @@ def getSlide(slideID, deleted = '0'):
     except:
         return False
 
+def forceGetSlide(slideID):
+    try:
+        return meta.Session.query(Thing).filter_by(id = slideID).filter_by(objType = 'slide').one()
+    except:
+        return False
+
 # Setters
 def deleteSlide( slide ):
     """delete this slide"""
@@ -44,6 +50,7 @@ def Slide(owner, slideshow, title, filename, image, newSlide = '0'):
         imageLib.resizeImage('slide', hash, 128, 128, 'thumbnail')
     else:
         s = Thing('slide', owner.id)
+        commit(s)
         s['urlCode'] = utils.toBase62(s)
         hash = 'supDawg'
         generic.linkChildToParent(s, slideshow)
