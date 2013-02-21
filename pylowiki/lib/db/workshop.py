@@ -298,14 +298,15 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     w['endTime'] = u'0000-00-00'
     w['published'] = u'0'
     w['deleted'] = u'0'
+    w['disabled'] = u'0'
     w['facilitators'] = c.authuser.id
     w['description'] = u''
-    w['pictureHash'] = u'flash' # default picture
     w['public_private'] = publicPrivate
     w['type'] = type
     w['allowIdeas'] = u'1'
     w['allowSuggestions'] = u'1'
     w['allowResources'] = u'1'
+    w['allowDiscussions']  = u'1'
     commit(w)
     w['urlCode'] = utils.toBase62(w)
     background = 'No workshop summary set yet'

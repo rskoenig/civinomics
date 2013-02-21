@@ -41,7 +41,7 @@ class SlideshowController(BaseController):
 
     @h.login_required
     def addImageHandler(self, workshopCode, workshopURL):
-        allSlides = getAllSlides(c.slideshow.id)
+        allSlides = getAllSlides(c.slideshow)
         
         if 'files[]' in request.params.keys():
             file = request.params['files[]']

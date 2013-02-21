@@ -186,7 +186,7 @@
       if 'linkClass' in kwargs:
          imgStr += '" class="%s"' %(kwargs['linkClass'])
       imgStr += '">'
-      if w['mainImage_hash'] == 'supDawg':
+      if c.mainImage['pictureHash'] == 'supDawg':
          picturePath = "/images/slide/thumbnail/supDawg.thumbnail"
       else:
          picturePath = "/images/mainImage/%s/thumbnail/%s.jpg" %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
