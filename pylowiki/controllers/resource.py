@@ -16,6 +16,7 @@ import pylowiki.lib.db.geoInfo          as  geoInfoLib
 import pylowiki.lib.db.demo             as  demoLib
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
+import pylowiki.lib.db.mainImage        as mainImageLib
 
 from tldextract import extract
 from pylowiki.lib.base import BaseController, render
@@ -31,6 +32,8 @@ class ResourceController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+            
+        c.mainImage = mainImageLib.getMainImage(c.w)
         
         # Demo workshop status
         demo = demoLib.getDemo()

@@ -11,6 +11,7 @@ import pylowiki.lib.utils           as utils
 import pylowiki.lib.sort            as sortLib
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.demo         as demoLib
+import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render
@@ -26,6 +27,8 @@ class IdeaController(BaseController):
         if not c.w:
             abort(404)
             
+        c.mainImage = mainImageLib.getMainImage(c.w)
+        
         # Demo workshop status
         demo = demoLib.getDemo()
         if not demo:

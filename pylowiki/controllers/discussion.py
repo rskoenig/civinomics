@@ -18,6 +18,7 @@ import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.demo         as demoLib
+import pylowiki.lib.db.mainImage    as mainImageLib
 
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
@@ -36,6 +37,8 @@ class DiscussionController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+            
+        c.mainImage = mainImageLib.getMainImage(c.w)
         
         # Demo workshop status
         demo = demoLib.getDemo()
