@@ -79,17 +79,13 @@ class SlideshowController(BaseController):
             l.append(d)
             
             if len(allSlides) == 1:
+                log.info('len(allSlides) == 1')
                 if allSlides[0]['filename'] == 'supDawg.png':
                     s = allSlides[0]
                     s['deleted'] = "1"
-                    commit(s)
-                    w['mainImage_hash'] = slide.s['pictureHash']
-                    w['mainImage_directoryNum'] = directoryNumber
-                    w['mainImage_postFix'] = 'orig'
-                    w['mainImage_identifier'] = identifier
-                    w['mainImage_id'] = slide.id
                     s['slideshow_order'] = slide.id
-                    commit(s)       
+                    commit(s)
+                mainImageLib.setMainImage(c.authuser, c.w, slide)
             session['confTab'] = "tab4"
             alert = {'type':'success'}
             alert['title'] = 'Upload complete. Please add a title and caption to new slideshow images below.'
