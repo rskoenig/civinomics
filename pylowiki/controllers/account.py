@@ -12,6 +12,7 @@ import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.db.dbHelpers    as dbHelpers
+import pylowiki.lib.db.mainImage    as mainImageLib
 
 from pylowiki.lib.base import BaseController, render
 from email.mime.multipart import MIMEMultipart
@@ -42,6 +43,7 @@ class AccountController(BaseController):
                 return(redirect("/"))
             
         c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID'])
+        c.mainImage = mainImageLib.getMainImage(c.w)
 
     def manageAccount(self):
         c.stripeKey = c.stripePublicKey

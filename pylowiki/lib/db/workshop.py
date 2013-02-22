@@ -43,7 +43,7 @@ def searchWorkshops( wKey, wValue):
 
 def getActiveWorkshops( deleted = '0'):
      try:
-        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wc('public_private', 'public'))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).order_by('-date').all()
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wc('public_private', 'public'))).filter(Thing.data.any(wc('published', '1'))).order_by('-date').all()
      except:
         return False
 
@@ -65,7 +65,7 @@ def getActiveWorkshopByCode(code):
             .filter_by(objType = 'workshop')\
             .filter(Thing.data.any(wc('urlCode', code)))\
             .filter(Thing.data.any(wc('deleted', '0')))\
-            .filter(Thing.data.any(wo('startTime', u'0000-00-00'))).one()
+            .filter(Thing.data.any(wc('published', u'1'))).one()
     except:
         return False
 
@@ -141,7 +141,7 @@ def getRecentMemberPosts(number, publicPrivate = 'public'):
                    returnList.append(item)
                    counter += 1
 
-           if w and w['startTime'] != '0000-00-00' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
+           if w and w['published'] == '1' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
                if item['deleted'] != '1' and item['disabled'] != '1':
                    returnList.append(item)
                    counter += 1
@@ -196,7 +196,7 @@ def isGuest(workshop):
     return False
     
 def isPublished(workshop):
-    if workshop['startTime'] != '0000-00-00' and workshop['deleted'] != '1':
+    if workshop and workshop['published'] == '1' and workshop['deleted'] == '0':
         return True
     
     return False
@@ -212,7 +212,7 @@ def isScoped(user, workshop):
         return True       
     
     return False
-    
+
 def setWorkshopPrivs(workshop):
     c.privs = {}
     # Civinomics administrator

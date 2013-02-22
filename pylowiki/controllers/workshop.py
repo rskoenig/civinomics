@@ -121,6 +121,7 @@ class WorkshopController(BaseController):
         c.mainImage = mainImageLib.getMainImage(c.w)
         if not c.w:
             abort(404)
+        c.published = workshopLib.isPublished(c.w)
         if action in setPrivs:
             workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
@@ -163,9 +164,6 @@ class WorkshopController(BaseController):
         wchanges = 0
         weventMsg = ''
         werrMsg = 'Missing Info: '
-        wstarted = 0
-        if c.w['startTime'] != '0000-00-00':
-           wstarted = 1
 
         if 'title' in request.params:
             wTitle = request.params['title']
@@ -234,7 +232,7 @@ class WorkshopController(BaseController):
             alert['title'] = weventMsg
             session['alert'] = alert
             # to reload at the next tab
-            if c.w['startTime'] == '0000-00-00':
+            if not workshopLib.isPublished(c.w):
                 session['confTab'] = "tab2"
             session.save()
 
@@ -256,9 +254,6 @@ class WorkshopController(BaseController):
         wchanges = 0
         weventMsg = ''
         werrMsg = 'Missing Info: '
-        wstarted = 0
-        if c.w['startTime'] != '0000-00-00':
-           wstarted = 1
             
         if 'categoryTags' in request.params:
             categoryTags = request.params.getall('categoryTags')
@@ -569,9 +564,6 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         werror = 0
-        wstarted = 0
-        if c.w['startTime'] != '0000-00-00':
-           wstarted = 1
 
         if 'startWorkshop' in request.params:
             # Set workshop start and end time
@@ -776,12 +768,7 @@ class WorkshopController(BaseController):
         for l in (listenerLib.getListenersForWorkshop(c.w)):
            if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
               c.listeners.append(l)
-
-        if c.w['startTime'] != '0000-00-00':
-           c.wStarted = True
-        else:
-          c.wStarted = False
-
+              
         c.slides = []
         c.slideshow = slideshowLib.getSlideshow(c.w)
         slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]

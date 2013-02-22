@@ -24,7 +24,7 @@
 
 <%def name="intro()">
     <div style="text-align: center">Build your workshop!<br />
-    % if c.w['startTime'] == '0000-00-00':
+    % if not c.published:
        <br />Checklist must be completed before the workshop can be published.<br />
     % endif
     </div>
@@ -34,7 +34,7 @@
 <%def name="basic()">
 
     <%
-      if c.w['startTime'] == '0000-00-00':
+      if not c.published:
         wstarted = 0
       else:
         wstarted = 1
@@ -88,7 +88,7 @@
                             <label class="radio">
                                 <input type="radio" id="allowResources" name="allowResources" value="0" ${noChecked}> No
                             </label>
-                            % if c.w['startTime'] == '0000-00-00':
+                            % if not c.published:
                                 <button type="submit" class="btn btn-warning">Save Settings and Continue</button>
                             % else:
                                 <button type="submit" class="btn btn-warning">Save Settings</button>
@@ -183,7 +183,7 @@
                     % endfor
                     </fieldset>
                     <br />
-                    % if c.w['startTime'] == '0000-00-00':
+                    % if not c.published:
                         <button type="submit" class="btn btn-warning">Save Tags and Continue</button>
                     % else:
                         <button type="submit" class="btn btn-warning">Save Tags</button>
@@ -290,7 +290,7 @@
             </div><!-- row-fluid -->
         </div><!-- container-fluid -->
     % endif
-    % if c.w['startTime'] == '0000-00-00':
+    % if not c.published:
         <div class="container-fluid well">
             <button type="submit" class="btn btn-warning" name="continueToNext">Continue to Next Step</button>
         </div><!-- container-fluid -->
@@ -422,7 +422,7 @@
     <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
     <br />
     <% 
-        if c.w['startTime'] == '0000-00-00':
+        if not c.published:
             buttonMsg = "Save And Continue To Next Step"
         else:
             buttonMsg = "Save Geographic Area"
@@ -436,7 +436,7 @@
 </%def>
 
 <%def name="publish()">
-    % if c.w['startTime'] == '0000-00-00' and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
+    % if not c.published and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
         <div class="well">
             <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
             <strong>Your workshop is ready to publish: </strong> <button type="submit" class="btn btn-warning" name="startWorkshop" value="Start" >Publish Workshop</button>
