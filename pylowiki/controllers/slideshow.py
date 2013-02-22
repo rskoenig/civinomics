@@ -79,7 +79,6 @@ class SlideshowController(BaseController):
             l.append(d)
             
             if len(allSlides) == 1:
-                log.info('len(allSlides) == 1')
                 if allSlides[0]['filename'] == 'supDawg.png':
                     s = allSlides[0]
                     s['deleted'] = "1"
