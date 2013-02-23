@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
 from pylowiki.lib.db.page import get_all_pages
-from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID, getRecentMemberPosts
+from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID, getWorkshopByCode, getRecentMemberPosts
 from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
@@ -17,6 +17,9 @@ from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
+import datetime
+import PyRSS2Gen
+import webhelpers.feedgenerator as feedgenerator
 
 log = logging.getLogger(__name__)
 
@@ -83,6 +86,35 @@ class ActionlistController(BaseController):
         else:
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
+    
+    def rss( self, id1 ):
+        c.activity = getRecentMemberPosts(30)
+        feed = feedgenerator.Rss201rev2Feed(
+            title=u"Civinomics Workshop Activity Feed",
+            link=u"http://www.civinomics.com",
+            description=u"The most recent activity in Civinomics public workshops.",
+            language=u"en"
+        )
+        for item in c.activity:
+            w = getWorkshopByCode(item['workshopCode'])
+            wURL = config['site_base_url'] + "/workshop/" + w['urlCode'] + "/" + w['url']
+            
+            thisUser = getUserByID(item.owner)
+            activityStr = thisUser['name'] + " "
+            if item.objType == 'resource':
+               activityStr += 'added the resource '
+            elif item.objType == 'discussion':
+               activityStr += 'started the discussion '
+            elif item.objType == 'idea':
+                activityStr += 'posed the idea '
+
+            activityStr += '"' + item['title'] + '"'
+            wURL += item.objType + "/" + item['urlCode'] + "/" + item['url']
+            feed.add_item(title=activityStr, link=wURL, guid=wURL, description='')
+            
+        response.content_type = 'application/xml'
+
+        return feed.writeString('utf-8')
 
     def searchWorkshops( self, id1, id2  ):
         log.info('searchWorkshops %s %s' % (id1, id2))
