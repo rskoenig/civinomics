@@ -281,7 +281,7 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     # create a MIME email object, initialize the header info
     email = MIMEMultipart(_subtype='related')
     email['Subject'] = subject
-    email['From'] = 'invitations@civinomics.com'
+    email['From'] = 'Civinomics Invitations <invitations@civinomics.com>'
     email['To'] = recipient
     
     # now attatch the text and html and picture parts
@@ -306,18 +306,11 @@ def sendWorkshopMail(workshop, recipient):
     fp = open(txtFile, 'r')
     textMessage = fp.read()
     fp.close()
-    
-    # do the substitutions
-    textMessage = textMessage.replace('${c.sender}', senderName)
-    textMessage = textMessage.replace('${c.workshopName}', workshopName)
-    textMessage = textMessage.replace('${c.inviteMessage}', message)
-    textMessage = textMessage.replace('${c.browseLink}', browseLink)
-    
-        
+  
     # create a MIME email object, initialize the header info
     email = MIMEMultipart(_subtype='related')
     email['Subject'] = subject
-    email['From'] = 'invitations@civinomics.com'
+    email['From'] = 'Civinomics Helpdesk <helpdesk@civinomics.com>'
     email['To'] = recipient
     
     # now attatch the text and html and picture parts
@@ -369,6 +362,8 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     commit(slideshow)
     commit(w)
     
-    f = facilitatorLib.Facilitator( c.authuser, w ) 
+    f = facilitatorLib.Facilitator( c.authuser, w )
+    sendWorkshopMail(w, c.authuser['email'])
+    
     return w
         
