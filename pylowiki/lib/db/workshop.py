@@ -201,6 +201,13 @@ def isPublished(workshop):
     
     return False
     
+def isStarted(workshop):
+    if workshop and workshop['startTime'] != '0000-00-00' and workshop['deleted'] == '0':
+        return True
+    
+    return False
+    
+    
 def isScoped(user, workshop):   
     if workshop['public_private'] != 'public':
         pTest = privateMemberLib.getPrivateMember(workshop['urlCode'], user['email'])

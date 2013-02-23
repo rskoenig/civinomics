@@ -5,6 +5,7 @@
     import pylowiki.lib.db.flag             as flagLib
     import pylowiki.lib.db.user             as userLib
     import pylowiki.lib.db.event            as eventLib
+    import pylowiki.lib.db.workshop         as workshopLib
 %>  
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
@@ -333,7 +334,16 @@
 <%def name="marked_items()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Moderation queue</h4>
+            <h4 class="section-header smaller">Manage Workshop</h4>
+
+            <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/publish/handler" method=POST class="well">
+            % if workshopLib.isPublished(c.w):
+                <button type="submit" class="btn btn-warning" value="unpublish">Unpublish Workshop</button> This will temporarily unpublish your workshop, removing it from listings and activity streams.
+            % else:
+                <button type="submit" class="btn btn-warning" value="publish">Publish Workshop</button> Republishes your workshop, making it visible in listings and activity streams.
+            % endif
+            </form>
+            <br />  
             <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
             <div class="tabbable">
                 <ul class="nav nav-tabs">

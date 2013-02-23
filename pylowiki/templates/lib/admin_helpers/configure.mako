@@ -34,7 +34,7 @@
 <%def name="basic()">
 
     <%
-      if not c.published:
+      if not c.started:
         wstarted = 0
       else:
         wstarted = 1
@@ -436,7 +436,7 @@
 </%def>
 
 <%def name="publish()">
-    % if not c.published and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
+    % if not c.started and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
         <div class="well">
             <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
             <strong>Your workshop is ready to publish: </strong> <button type="submit" class="btn btn-warning" name="startWorkshop" value="Start" >Publish Workshop</button>

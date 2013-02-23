@@ -122,6 +122,7 @@ class WorkshopController(BaseController):
         if not c.w:
             abort(404)
         c.published = workshopLib.isPublished(c.w)
+        c.started = workshopLib.isStarted(c.w)
         if action in setPrivs:
             workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
@@ -527,7 +528,6 @@ class WorkshopController(BaseController):
         c.facilitator = c.authuser['name']
         c.workshopName = c.w['title']
         c.inviteMsg = 'Your Invitation Message Will Appear Here'
-        c.imageSrc = "/images/logo_header8.1.png"
         
         return render('/derived/6_preview_invitation.bootstrap')
         
@@ -583,6 +583,28 @@ class WorkshopController(BaseController):
             session.save()
             
         return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
+        
+    @h.login_required
+    def publishWorkshopHandler(self, workshopCode, workshopURL):
+        c.title = "Publish Workshop"
+
+        if workshopLib.isPublished(c.w):
+            c.w['published'] = '0'
+            action = "unpublished"
+        else:
+            c.w['published'] = '1'
+            action = "republished"
+            
+        eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop %s.'%action, c.w, c.authuser)
+        dbHelpers.commit(c.w)
+
+        alert = {'type':'success'}
+        alert['title'] = 'Workshop %s.'%action
+        alert['content'] = ''
+        session['alert'] = alert
+        session.save()
+            
+        return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
 
     @h.login_required
     def displayCreateForm(self):
