@@ -794,7 +794,17 @@ class WorkshopController(BaseController):
                activityStr += 'started the discussion '
             elif item.objType == 'idea':
                 activityStr += 'posed the idea '
-
+            elif item.objType == 'comment':
+                if 'ideaCode' in item.keys():
+                    newitem = ideaLib.getIdea(item['ideaCode'])
+                elif 'resourceCode' in item.keys():
+                    newitem = resourceLib.getResourceByCode(item['resourceCode'])
+                elif 'discussionCode' in item.keys():
+                    newitem = discussionLib.getDiscussion(item['discussionCode'])
+                    
+                activityStr += 'commented on the %s '%newitem.objType
+                item = newitem
+                
             activityStr += '"' + item['title'] + '"'
             wURL += item.objType + "/" + item['urlCode'] + "/" + item['url']
             feed.add_item(title=activityStr, link=wURL, guid=wURL, description='')
