@@ -77,6 +77,14 @@ def make_map():
     map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/postalList/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
 
+    # Geo rss stuff
+    map.connect('/workshops/rss/earth{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}/{state}{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}/{state}/{county}{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}/{state}/{county}/{city}{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'geo', action = 'rss')
+    
     # Workshop Base
     map.connect('/{workshop:workshops?}/display/create/{form:form/?}', controller = 'workshop', action = 'displayCreateForm')
     map.connect('/{workshop:workshops?}/create/{handler:handler/?}', controller = 'workshop', action = 'createWorkshopHandler')
@@ -107,7 +115,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/update/background/handler{end:/?}', controller = 'wiki', action = 'updateBackgroundHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # workshop activity feed
-    map.connect('/activity/rss/{id1}{end:/?}', controller='actionlist', action='rss', id1 = '{id1}')
+    map.connect('/activity/rss{end:/?}', controller='actionlist', action='rss')
     
     # Workshop goals
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/add{end:/?}', controller = 'goals', action = 'add')

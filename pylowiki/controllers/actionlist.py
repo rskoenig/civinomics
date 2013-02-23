@@ -18,7 +18,6 @@ import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 import datetime
-import PyRSS2Gen
 import webhelpers.feedgenerator as feedgenerator
 
 log = logging.getLogger(__name__)
@@ -87,7 +86,7 @@ class ActionlistController(BaseController):
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
     
-    def rss( self, id1 ):
+    def rss( self ):
         c.activity = getRecentMemberPosts(30)
         feed = feedgenerator.Rss201rev2Feed(
             title=u"Civinomics Workshop Activity Feed",
