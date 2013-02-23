@@ -97,7 +97,7 @@ class ActionlistController(BaseController):
         )
         for item in c.activity:
             w = getWorkshopByCode(item['workshopCode'])
-            wURL = config['site_base_url'] + "/workshop/" + w['urlCode'] + "/" + w['url']
+            wURL = config['site_base_url'] + "/workshop/" + w['urlCode'] + "/" + w['url'] + "/"
             
             thisUser = getUserByID(item.owner)
             activityStr = thisUser['name'] + " "
