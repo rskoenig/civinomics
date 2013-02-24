@@ -1,8 +1,3 @@
-<%! 
-   from pylowiki.lib.db.geoInfo import getGeoInfo
-   from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
-%>
-
 <%inherit file="/base/base_corp.bootstrap"/>
 <%namespace name="helpers" file="/derived/list_caseStudies/helpers.mako"/>
 
