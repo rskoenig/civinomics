@@ -776,6 +776,9 @@ class WorkshopController(BaseController):
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
         
     def rss(self, workshopCode, workshopURL):
+        if c.w['public_private'] == 'private':
+            abort(404)
+            
         activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         feed = feedgenerator.Rss201rev2Feed(
             title=u"Civinomics Workshop Activity",
