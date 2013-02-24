@@ -14,6 +14,7 @@ import pylowiki.lib.db.comment          as  commentLib
 import pylowiki.lib.db.revision         as  revisionLib
 import pylowiki.lib.db.geoInfo          as  geoInfoLib
 import pylowiki.lib.db.demo             as  demoLib
+import pylowiki.lib.db.alerts           as  alertsLib
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
 import pylowiki.lib.db.mainImage        as mainImageLib
@@ -112,4 +113,5 @@ class ResourceController(BaseController):
         if len(title) > 120:
             title = title[:120]
         newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, c.privs, text = text)
+        alertsLib.facilitatorAlerts(newResource)
         return redirect(session['return_to'])

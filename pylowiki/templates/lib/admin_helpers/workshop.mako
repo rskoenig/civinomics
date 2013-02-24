@@ -69,7 +69,21 @@
                 if pending in f and f['pending'] == '1':
                     fPending = "(Pending)"
             %>
-            <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
+            <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}
+            % if f['pending'] != '1' and fUser.id == c.authuser.id:
+                <%
+                    if 'alerts' in f and f['alerts'] == '1':
+                        alertsChecked = 'checked'
+                    else:
+                        alertsChecked = ''
+                %>
+                <form id="facilitatorNotifications" name="facilitatorNotifications" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/notifications/handler/" method="post">
+                    <strong>Notifications</strong>:  Email alerts when items added <input type="checkbox" name="notifications" value="alerts" ${alertsChecked}> &nbsp;&nbsp;&nbsp;
+                    <button type="submit" class="btn btn-warning" value="saveNotifications">Save Changes</button>
+                    <br />
+                </form>
+            % endif
+            <br />
             % if fEvents:
                 % for fE in fEvents:
                     &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />

@@ -19,6 +19,7 @@ import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.alerts       as  alertsLib
 
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
@@ -133,6 +134,7 @@ class DiscussionController(BaseController):
                 title = title[:120]
             d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w,\
                 title = title, text = text, workshop = c.w, privs = c.privs, role = None)
+            alertsLib.facilitatorAlerts(d.d)
             r = revisionLib.Revision(c.authuser, d.d)
             commit(c.w)
         

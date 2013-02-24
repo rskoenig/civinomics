@@ -12,6 +12,7 @@ import pylowiki.lib.sort            as sortLib
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.alerts       as alertsLib
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render
@@ -81,6 +82,7 @@ class IdeaController(BaseController):
         if len(title) > 120:
             title = title[:120]
         newIdea = ideaLib.Idea(c.authuser, title, c.w, c.privs)
+        alertsLib.facilitatorAlerts(newIdea)
         return redirect(session['return_to'])
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):

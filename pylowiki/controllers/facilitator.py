@@ -138,3 +138,28 @@ class FacilitatorController(BaseController):
         session['alert'] = alert
         session.save()
         return redirect("/workshop/%s/%s"%(code, url))
+        
+    @h.login_required
+    def facilitatorNotificationHandler(self, id1, id2):
+        code = id1
+        url = id2
+        w = workshopLib.getWorkshop(code, utilsLib.urlify(url))
+        facilitator = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.authuser.id, w.id)[0]
+        if 'notifications' in request.params:
+            notifications = request.params.getall('notifications')
+            if 'alerts' in notifications:
+                facilitator['alerts'] = '1'
+                eAction = 'Turned on alerts'
+        else:
+            facilitator['alerts'] = '0'
+            eAction = 'Turned off alerts'
+            
+        dbhelpersLib.commit(facilitator)
+        eventLib.Event('Facilitator notifications set', eAction, facilitator, c.authuser)
+        alert = {'type':'success'}
+        alert['title'] = 'Success. ' + eAction
+        session['alert'] = alert
+        session.save()
+            
+        return redirect("/workshop/%s/%s/preferences"%(code, url))
+

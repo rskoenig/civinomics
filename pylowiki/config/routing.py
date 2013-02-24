@@ -177,6 +177,9 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/facilitate/response/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResponseHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/{workshop:workshops?}/{id1}/{id2}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResignHandler', id1 = '{id1}', id2 = '{id2}')
 
+    # Facilitator notifications
+    map.connect('/{workshop:workshops?}/{id1}/{id2}/facilitate/notifications/{handler:handler/?}', controller = 'facilitator', action = 'facilitatorNotificationHandler', id1 = '{id1}', id2 = '{id2}')
+    
     # Listener invitation and response
     map.connect('/profile/{userCode}/{userURL}/listener/invite/{handler:handler/?}', controller = 'listener', action = 'listenerInviteHandler', userCode = '{userCode}', userURL = '{userURL}')
     map.connect('/profile/{userCode}/{userURL}/listener/response/{handler:handler/?}', controller = 'listener', action = 'listenerResponseHandler', userCode = '{userCode}', userURL = '{userURL}')
