@@ -35,6 +35,7 @@ class ActionlistController(BaseController):
         c.list = getActiveWorkshops()
         c.activity = getRecentMemberPosts(10)
         c.scope = 'earth'
+        c.rssURL = "/activity/rss"
         return render('derived/6_main_listing.bootstrap')
             
         #elif c.action == 'surveys':

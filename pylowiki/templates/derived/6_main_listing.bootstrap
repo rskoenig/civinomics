@@ -49,7 +49,7 @@
    <div class="span4"> <!-- Activity Stream -->
       <div class="section-wrapper">
          <div class="activity">
-            <h3 class="section-header"> Activity </h3>
+            <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
             <% numItems = 10 %>
             % for i in range(len(c.activity)):
                <% thisActivity = c.activity[i] %>

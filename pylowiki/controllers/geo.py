@@ -25,24 +25,31 @@ class GeoController(BaseController):
             return
         c.title = c.heading = 'Public workshops in '
             
+        c.rssURL = "/workshops/rss/earth"
         if country == '0':
             c.scope = 'planet'
             location = 'earth'
         elif state == '0':
             c.scope = 'country'
             location = country
+            c.rssURL += '/%s'%country
         elif county == '0':
             c.scope = 'state'
             location = state
+            c.rssURL += '/%s/%s'%(country, state)
         elif city == '0':
             c.scope = 'county'
             location = county
+            c.rssURL += '/%s/%s/%s'%(country, state, county)
         elif postalCode == '0':
             c.scope = 'city'
             location = city
+            c.rssURL += '/%s/%s/%s/%s'%(country, state, county, city)
         else:
             c.scope = 'postalCode'
             location = postalCode
+            c.rssURL += '/%s/%s/%s/%s/%s'%(country, state, county, city, postalCode)
+            
         c.scopeTitle = capwords(geoInfoLib.geoDeurlify(location))
         c.title += capwords(geoInfoLib.geoDeurlify(location))
         c.heading += capwords(geoInfoLib.geoDeurlify(location))
