@@ -10,12 +10,12 @@ import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 
-from pylowiki.lib.db.facilitator import Facilitator, getFacilitatorsByUser, getFacilitatorsByUserAndWorkshop
-from pylowiki.lib.db.event import Event
-from pylowiki.lib.db.user import get_user, getUserByID, isAdmin
-from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, getWorkshopsByOwner
-from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.utils import urlify
+import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.dbHelpers    as dbhelpersLib
+import pylowiki.lib.utils           as utilsLib
 
 from hashlib import md5
 
@@ -27,32 +27,39 @@ class FacilitatorController(BaseController):
     def facilitateInviteHandler(self, id1, id2):
         code = id1
         url = id2
-        c.user = get_user(code, url)
+        c.user = userLib.get_user(code, utilsLib.urlify(url))
         if c.user and 'inviteToFacilitate' in request.params:
            invite = request.params['inviteToFacilitate']
            iList = invite.split("/")
            wCode = iList[0]
            wURL = iList[1]
-           w = getWorkshop(wCode, urlify(wURL))
-           Facilitator(c.user, w, 1)
-           fList = getFacilitatorsByUserAndWorkshop(c.user.id, w.id)
-           Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
+           w = workshopLib.getWorkshopByCode(wCode)
+           facilitatorLib.Facilitator(c.user, w, 1)
+           fList = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user.id, w.id)
+           eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
+           alert = {'type':'success'}
+           alert['title'] = 'Success. CoFacilitation invitation issued.'
+           session['alert'] = alert
+           session.save()
            return redirect("/profile/%s/%s"%(code, url))
         else:
-           h.flash('Error: You are not authorized', 'error')
+           alert = {'type':'error'}
+           alert['title'] = 'Authorization Error. You are not authorized.'
+           session['alert'] = alert
+           session.save()
            return redirect("/" )
 
     @h.login_required
     def facilitateResponseHandler(self, id1, id2):
         code = id1
         url = id2
-        c.user = get_user(code, urlify(url))
+        c.user = userLib.get_user(code, utilsLib.urlify(url))
         if 'workshopCode' in request.params and 'workshopURL' in request.params:
             wCode = request.params['workshopCode']
             wURL = request.params['workshopURL']
             ##log.info('coFacilitateHandler %s %s' % (wCode, wURL))
-            w = getWorkshop(wCode, urlify(wURL))
-            fList = getFacilitatorsByUser(c.authuser.id)
+            w = workshopLib.getWorkshop(wCode, utilsLib.urlify(wURL))
+            fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id)
             doF = False
             for f in fList:
                ##log.info('coFacilitateHandler got %s w.id is %s'%(f, w.id))
@@ -70,20 +77,27 @@ class FacilitatorController(BaseController):
                   eAction = "Declined"
 
             if doF:
-                  commit(doF)
-                  Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), w['title']), doF, c.user)
-                  h.flash('CoFacilitation Invitation %s'%eAction, 'success')
+                  dbhelpersLib.commit(doF)
+                  eventLib.Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), w['title']), doF, c.user)
+                  # success message
+                  alert = {'type':'success'}
+                  alert['title'] = 'Success. CoFacilitation Invitation %s.'%eAction
+                  session['alert'] = alert
+                  session.save()
                   return redirect("/profile/%s/%s"%(code, url))
 
-        h.flash('Error: You are not authorized', 'error')
+        alert = {'type':'error'}
+        alert['title'] = 'Authorization Error. You are not authorized.'
+        session['alert'] = alert
+        session.save()
         return redirect("/" )
 
     @h.login_required
     def facilitateResignHandler(self, id1, id2):
         code = id1
         url = id2
-        w = getWorkshop(code, urlify(url))
-        fList = getFacilitatorsByUser(c.authuser.id, 0)
+        w = workshopLib.getWorkshop(code, utilsLib.urlify(url))
+        fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id, 0)
         doF = False
         for f in fList:
            if int(f['workshopID']) == int(w.id) and f['disabled'] != '1':
@@ -94,21 +108,33 @@ class FacilitatorController(BaseController):
            resignReason = resignReason.lstrip()
            resignReason = resignReason.rstrip()
            if resignReason == '':
-              h.flash('Error: include note', 'error')
-              return redirect("/workshop/%s/%s"%(code, url))
+              alert = {'type':'error'}
+              alert['title'] = 'Error. Please include a reason.'
+              session['alert'] = alert
+              session.save()
+              return redirect("/workshop/%s/%s/preferences"%(code, url))
 
            log.info('resignReason is %s'%resignReason)
         else:
-           h.flash('Error: include note', 'error')
+           alert = {'type':'error'}
+           alert['title'] = 'Error. Please include a reason.'
+           session['alert'] = alert
+           session.save()
            return redirect("/workshop/%s/%s"%(code, url))
 
 
         if doF and c.authuser.id == doF.owner:
            doF['disabled'] = '1'
-           commit(doF)
-           Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], w['title'], resignReason), doF, c.authuser)
-           h.flash('CoFacilitation Resignation Accepted', 'success')
+           dbhelpersLib.commit(doF)
+           eventLib.Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], w['title'], resignReason), doF, c.authuser)
+           alert = {'type':'success'}
+           alert['title'] = 'Success. CoFacilitation resignation successful.'
+           session['alert'] = alert
+           session.save()
            return redirect("/workshop/%s/%s"%(code, url))
 
-        h.flash('Error: You are not authorized', 'error')
+        alert = {'type':'error'}
+        alert['title'] = 'Authorization Error. You are not authorized.'
+        session['alert'] = alert
+        session.save()
         return redirect("/workshop/%s/%s"%(code, url))

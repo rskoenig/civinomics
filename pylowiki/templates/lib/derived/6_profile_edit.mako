@@ -3,6 +3,7 @@
     import pylowiki.lib.db.facilitator      as facilitatorLib
     import pylowiki.lib.db.listener         as listenerLib
     import pylowiki.lib.db.workshop         as workshopLib
+    import pylowiki.lib.db.mainImage        as mainImageLib
 %> 
 
 <%def name="profileInfo()">
@@ -194,11 +195,12 @@
             <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/facilitate/response/handler/">
             <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
             <input type="hidden" name="workshopURL" value="${workshop['url']}">
-            % if workshop['mainImage_hash'] == 'supDawg':
-                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
+            <% mainImage = mainImageLib.getMainImage(workshop) %>
+            % if mainImage['pictureHash'] == 'supDawg':
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/slide/slideshow/supDawg.slideshow" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
             % else:
-                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/${workshop['mainImage_identifier']}/${workshop['mainImage_directoryNum']}/thumbnail/${workshop['mainImage_hash']}.thumbnail" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
+                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/mainImage/${mainImage['directoryNum']}/orig/${mainImage['pictureHash']}.jpg" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
                 <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
             % endif
             <br /> <br />
