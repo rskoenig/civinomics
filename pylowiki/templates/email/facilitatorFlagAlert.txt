@@ -2,16 +2,17 @@
 Greetings from Civinomics!
 
 --------------------------------------------------------------------
-Civinomics member ${c.thingOwner} has added a new ${c.thingType} to 
+Civinomics member ${c.thingOwner} has flagged an item in 
 your workshop:
 ${c.workshopName}.
 
-To view the new ${c.thingType}, use your browser to view it here:
+To check out the flagged item, use your browser to visit your
+workshop preferences Administration tools here:
 ${c.thingURL}
 
 --------------------------------------------------------------------
 You've configured your Civinomics facilitator preferences to
-be emailed alerts when new items are added to your workshop.
+be emailed alerts when new items are flagged in your workshop.
 To change your facilitator settings, visit Civinomics, login,
 and go to the workshop preferences.
 
@@ -23,5 +24,4 @@ digest of all the items added to your workshop in the previous
 Have fun!
 
 The Civinomics Team
-
 

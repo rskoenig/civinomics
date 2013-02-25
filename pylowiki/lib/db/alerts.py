@@ -38,12 +38,16 @@ def facilitatorAlerts(thing):
                 myURL = config['app_conf']['site_base_url']
                 workshopURL = '%s/workshop/%s/%s'%(myURL, workshop['urlCode'], workshop['url'])
                 if thing.objType == 'flag':
+                    subject = 'Alert: an item was flagged in your Civinomics workshop'
                     thingURL = workshopURL + '/preferences'
                     newThing = 'flagged item'
+                    txtFile = emailDir + "/facilitatorFlagAlert.txt"
                 else:
+                    subject = 'Alert: New %s added to your Civinomics workshop'%newThing
                     thingURL = '%s/%s/%s/%s'%(workshopURL, thing.objType, thing['urlCode'], thing['url'])
+                    txtFile = emailDir + "/facilitatorItemAlert.txt"
 
-                txtFile = emailDir + "/facilitatorAlert.txt"
+
     
                 # open and read the text file
                 fp = open(txtFile, 'r')
@@ -51,7 +55,6 @@ def facilitatorAlerts(thing):
                 fp.close()
                 
                 # do the substitutions
-                subject = 'Alert: New %s added to your Civinomics workshop'%newThing
                 textMessage = textMessage.replace('${c.thingType}', newThing)
                 textMessage = textMessage.replace('${c.thingOwner}', thingOwner)
                 textMessage = textMessage.replace('${c.workshopURL}', workshopURL)
