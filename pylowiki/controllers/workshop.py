@@ -407,15 +407,7 @@ class WorkshopController(BaseController):
         wchanges = 0
         weventMsg = ''
         werrMsg = ''
-        
-        if 'sendInvitation' in request.params:
-            if 'inviteMember' in request.params and request.params['inviteMember'] != '':
-                inviteMember = request.params['inviteMember']
-                inviteMsg = ''
-                if 'inviteMsg' in request.params:
-                    inviteMsg = request.params['inviteMsg']
-                workshopLib.sendPMemberInvite(c.w, c.authuser, inviteMember, inviteMsg)
-                weventMsg += ' An email invitation has been resent.'
+
         
         if 'addMember' in request.params:
             pList = pMemberLib.getPrivateMembers(workshopCode, "0")
@@ -446,7 +438,7 @@ class WorkshopController(BaseController):
                                     else:
                                         werror = 1
                                         werrMsg += mEmail + ' already a member.'
-
+                                else:
                                     # see if they are already a user
                                     user = userLib.getUserByEmail(mEmail)
                                     if not user:
@@ -493,6 +485,15 @@ class WorkshopController(BaseController):
             else:
                 werror = 1
                 werrMsg += 'No email address entered.'
+                
+        if 'sendInvitation' in request.params:
+            if 'inviteMember' in request.params and request.params['inviteMember'] != '':
+                inviteMember = request.params['inviteMember']
+                inviteMsg = ''
+                if 'inviteMsg' in request.params:
+                    inviteMsg = request.params['inviteMsg']
+                workshopLib.sendPMemberInvite(c.w, c.authuser, inviteMember, inviteMsg)
+                weventMsg += ' An email invitation has been resent.'
 
         if c.w['public_private'] == 'public' and 'changeScope' in request.params:
             weventMsg = 'Workshop scope changed from public to private.'

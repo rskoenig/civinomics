@@ -16,13 +16,10 @@ import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.slideshow    as slideshowLib
 import pylowiki.lib.db.slide        as slideLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.mail            as mailLib
 
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
-import time, datetime, logging, smtplib
-
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
+import time, datetime, logging
 
 log = logging.getLogger(__name__)
 
@@ -246,14 +243,13 @@ def setWorkshopPrivs(workshop):
 def sendPMemberInvite(workshop, sender, recipient, message):
     workshopName = workshop['title']
     senderName = sender['name']
-    senderEmail = sender['email']
-    subject = 'An invitation from ' + senderName
-    
+
     if message and message != '':
         message = "\nHere's a message from your friend:\n" + message
     
     emailDir = config['app_conf']['emailDirectory']
     myURL = config['app_conf']['site_base_url']
+    txtFile = emailDir + "/private_invite.txt"
     
     browseLink = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
     if 'paste.testing_variables' in request.environ:
@@ -263,9 +259,7 @@ def sendPMemberInvite(workshop, sender, recipient, message):
         browseLink = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
         if 'paste.testing_variables' in request.environ:
             request.environ['paste.testing_variables']['browseUrl'] = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
-
-    txtFile = emailDir + "/private_invite.txt"
-    
+   
     # open and read the text file
     fp = open(txtFile, 'r')
     textMessage = fp.read()
@@ -276,27 +270,14 @@ def sendPMemberInvite(workshop, sender, recipient, message):
     textMessage = textMessage.replace('${c.workshopName}', workshopName)
     textMessage = textMessage.replace('${c.inviteMessage}', message)
     textMessage = textMessage.replace('${c.browseLink}', browseLink)
-    
-        
-    # create a MIME email object, initialize the header info
-    email = MIMEMultipart(_subtype='related')
-    email['Subject'] = subject
-    email['From'] = 'Civinomics Invitations <invitations@civinomics.com>'
-    email['To'] = recipient
-    
-    # now attatch the text and html and picture parts
-    part1 = MIMEText(textMessage, 'plain')
-    email.attach(part1)
 
-    # send it
-    s = smtplib.SMTP('localhost')
-    s.sendmail(senderEmail, recipient, email.as_string())
-    s.quit()
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+    toEmail = recipient
+    subject = 'An invitation from ' + senderName
+
+    mailLib.send(toEmail, fromEmail, subject, textMessage)
     
-def sendWorkshopMail(workshop, recipient):
-    senderEmail = "helpdesk@civinomics.com"
-    subject = 'About your new Civinomics workshop'
-    
+def sendWorkshopMail(workshop, recipient):    
     emailDir = config['app_conf']['emailDirectory']
     myURL = config['app_conf']['site_base_url']
 
@@ -306,21 +287,12 @@ def sendWorkshopMail(workshop, recipient):
     fp = open(txtFile, 'r')
     textMessage = fp.read()
     fp.close()
-  
-    # create a MIME email object, initialize the header info
-    email = MIMEMultipart(_subtype='related')
-    email['Subject'] = subject
-    email['From'] = 'Civinomics Helpdesk <helpdesk@civinomics.com>'
-    email['To'] = recipient
-    
-    # now attatch the text and html and picture parts
-    part1 = MIMEText(textMessage, 'plain')
-    email.attach(part1)
 
-    # send it
-    s = smtplib.SMTP('localhost')
-    s.sendmail(senderEmail, recipient, email.as_string())
-    s.quit()
+    subject = 'About your new Civinomics workshop'
+    fromEmail = 'Civinomics Helpdesk <helpdesk@civinomics.com>'
+    toEmail = recipient
+
+    mailLib.send(toEmail, fromEmail, subject, textMessage)
 
 
 def Workshop(title, owner, publicPrivate, type = "personal"):
