@@ -8,7 +8,6 @@ import pylowiki.lib.helpers as h
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.activity     as activityLib
-import webhelpers.feedgenerator     as feedgenerator
 import pylowiki.lib.db.user         as userLib
 
 from string import capwords
@@ -20,35 +19,29 @@ log = logging.getLogger(__name__)
 class GeoController(BaseController):
 
     def __before__(self, action, country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
-        if action != 'workshopSearch' and action != 'rss':
+        if action != 'workshopSearch':
             # We aren't rendering a page, and instead are drilling down geo scope for workshop config
             return
         c.title = c.heading = 'Public workshops in '
             
-        c.rssURL = "/workshops/rss/earth"
         if country == '0':
             c.scope = 'planet'
             location = 'earth'
         elif state == '0':
             c.scope = 'country'
             location = country
-            c.rssURL += '/%s'%country
         elif county == '0':
             c.scope = 'state'
             location = state
-            c.rssURL += '/%s/%s'%(country, state)
         elif city == '0':
             c.scope = 'county'
             location = county
-            c.rssURL += '/%s/%s/%s'%(country, state, county)
         elif postalCode == '0':
             c.scope = 'city'
             location = city
-            c.rssURL += '/%s/%s/%s/%s'%(country, state, county, city)
         else:
             c.scope = 'postalCode'
             location = postalCode
-            c.rssURL += '/%s/%s/%s/%s/%s'%(country, state, county, city, postalCode)
             
         c.scopeTitle = capwords(geoInfoLib.geoDeurlify(location))
         c.title += capwords(geoInfoLib.geoDeurlify(location))
@@ -69,34 +62,6 @@ class GeoController(BaseController):
 
     def workshopSearch(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
         return render('derived/6_main_listing.bootstrap')
-
-    def rss(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
-        feed = feedgenerator.Rss201rev2Feed(
-            title=u"Civinomics Public Workshop Activity",
-            link=u"http://www.civinomics.com",
-            description=u'The most recent activity in Civinomics public workshops scoped to %s.'%c.scopeTitle,
-            language=u"en"
-        )
-        for item in c.activity:
-            w = workshopLib.getWorkshopByCode(item['workshopCode'])
-            wURL = config['site_base_url'] + "/workshop/" + w['urlCode'] + "/" + w['url'] + "/"
-            
-            thisUser = userLib.getUserByID(item.owner)
-            activityStr = thisUser['name'] + " "
-            if item.objType == 'resource':
-               activityStr += 'added the resource '
-            elif item.objType == 'discussion':
-               activityStr += 'started the discussion '
-            elif item.objType == 'idea':
-                activityStr += 'posed the idea '
-
-            activityStr += '"' + item['title'] + '"'
-            wURL += item.objType + "/" + item['urlCode'] + "/" + item['url']
-            feed.add_item(title=activityStr, link=wURL, guid=wURL, description='')
-            
-        response.content_type = 'application/xml'
-
-        return feed.writeString('utf-8')
 
     ######################################################################
     # 

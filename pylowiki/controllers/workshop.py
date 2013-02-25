@@ -38,7 +38,6 @@ import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
-import webhelpers.feedgenerator     as feedgenerator
 
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
@@ -775,47 +774,6 @@ class WorkshopController(BaseController):
             
         dbHelpers.commit(m)
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
-        
-    def rss(self, workshopCode, workshopURL):
-        if c.w['public_private'] == 'private':
-            abort(404)
-            
-        activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-        feed = feedgenerator.Rss201rev2Feed(
-            title=u"Civinomics Workshop Activity",
-            link=u"http://www.civinomics.com",
-            description=u'The most recent activity in "%s".'%c.w['title'],
-            language=u"en"
-        )
-        for item in activity:
-            wURL = config['site_base_url'] + "/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/"
-            
-            thisUser = userLib.getUserByID(item.owner)
-            activityStr = thisUser['name'] + " "
-            if item.objType == 'resource':
-               activityStr += 'added the resource '
-            elif item.objType == 'discussion':
-               activityStr += 'started the discussion '
-            elif item.objType == 'idea':
-                activityStr += 'posed the idea '
-            elif item.objType == 'comment':
-                if 'ideaCode' in item.keys():
-                    newitem = ideaLib.getIdea(item['ideaCode'])
-                elif 'resourceCode' in item.keys():
-                    newitem = resourceLib.getResourceByCode(item['resourceCode'])
-                elif 'discussionCode' in item.keys():
-                    newitem = discussionLib.getDiscussion(item['discussionCode'])
-                    
-                activityStr += 'commented on the %s '%newitem.objType
-                item = newitem
-                
-            activityStr += '"' + item['title'] + '"'
-            wURL += item.objType + "/" + item['urlCode'] + "/" + item['url']
-            feed.add_item(title=activityStr, link=wURL, guid=wURL, description='')
-            
-        response.content_type = 'application/xml'
-
-        return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
         c.title = c.w['title']

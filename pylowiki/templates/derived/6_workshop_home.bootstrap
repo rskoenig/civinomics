@@ -31,11 +31,7 @@
       </div> <!-- /.section-wrapper -->
       <div class="section-wrapper activityStream">
          <div class="browse">
-            <h4 class="section-header smaller"> Activity 
-            % if c.w['public_private'] == 'public':
-                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
-            %endif            
-            </h3>
+            <h4 class="section-header smaller"> Activity </h3>
             ${helpers.showActivity(c.activity)}
          </div> <!-- /.browse -->
       </div> <!-- /.section-wrapper -->
