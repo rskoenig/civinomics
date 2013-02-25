@@ -16,11 +16,9 @@ from pylowiki.lib.mail import send
 from revision import Revision
 import pylowiki.lib.db.pmember      as pMemberLib
 import pylowiki.lib.db.generic      as genericLib
+import pylowiki.lib.mail            as mailLib
 
 from time import time
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 
 log = logging.getLogger(__name__)
 
@@ -154,10 +152,7 @@ def generatePassword():
 def hashPassword(password):
     return md5(password + config['app_conf']['auth.pass.salt']).hexdigest()
 
-def sendWelcomeMail(u):
-        
-    subject = 'Welcome to Civinomics!'
-    
+def sendWelcomeMail(u): 
     emailDir = config['app_conf']['emailDirectory']
     txtFile = emailDir + "/welcome.txt"
 
@@ -166,21 +161,12 @@ def sendWelcomeMail(u):
     textMessage = fp.read()
     fp.close()
 
-    # create a MIME email object, initialize the header info
-    email = MIMEMultipart(_subtype='related')
-    email['Subject'] = subject
-    email['From'] = c.conf['activation.email']
-    email['To'] = u['email']
+    subject = 'Welcome to Civinomics!'
+    fromEmail = c.conf['activation.email']
+    toEmail = u['email']
     
-    # now attatch the text and html and picture parts
-    part1 = MIMEText(textMessage, 'plain')
-    email.attach(part1)
-        
-    # send it
-    s = smtplib.SMTP('localhost')
-    s.sendmail(email['From'], u['email'], email.as_string())
-    s.quit()
-    
+    mailLib.send(toEmail, fromEmail, subject, textMessage)
+       
 def sendActivationMail(recipient, activationLink):
     subject = 'Civinomics Account Activation'
     
@@ -195,20 +181,10 @@ def sendActivationMail(recipient, activationLink):
     # do the substitutions
     textMessage = textMessage.replace('${c.activationLink}', activationLink)
 
-    # create a MIME email object, initialize the header info
-    email = MIMEMultipart(_subtype='related')
-    email['Subject'] = subject
-    email['From'] = c.conf['activation.email']
-    email['To'] = recipient
-    
-    # now attatch the text and html and picture parts
-    part1 = MIMEText(textMessage, 'plain')
-    email.attach(part1)
-        
-    # send it
-    s = smtplib.SMTP('localhost')
-    s.sendmail(email['From'], email['To'], email.as_string())
-    s.quit()
+    fromEmail = c.conf['activation.email']
+    toEmail = recipient
+
+    mailLib.send(toEmail, fromEmail, subject, textMessage)
 
 
 class User(object):
