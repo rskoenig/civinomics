@@ -145,21 +145,44 @@ class FacilitatorController(BaseController):
         url = id2
         w = workshopLib.getWorkshop(code, utilsLib.urlify(url))
         facilitator = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.authuser.id, w.id)[0]
-        if 'notifications' in request.params:
-            notifications = request.params.getall('notifications')
-            if 'alerts' in notifications:
-                facilitator['alerts'] = '1'
-                eAction = 'Turned on alerts'
+        # initialize to current value if any, '0' if not set in object
+        iAlerts = '0'
+        fAlerts = '0'
+        eAction = ''
+        if 'itemAlerts' in facilitator:
+            iAlerts = facilitator['itemAlerts']
+        if 'flagAlerts' in facilitator:
+            fAlerts = facilitator['flagAlerts']
+            
+        if 'itemAlerts' in request.params:
+            itemAlerts = request.params.getall('itemAlerts')
+            if 'items' in itemAlerts:
+                facilitator['itemAlerts'] = '1'
+                if iAlerts == '0':
+                    eAction += 'Turned on item alerts. '
         else:
-            facilitator['alerts'] = '0'
-            eAction = 'Turned off alerts'
+            facilitator['itemAlerts'] = '0'
+            if iAlerts == '1':
+                eAction += 'Turned off item alerts. '
+            
+        if 'flagAlerts' in request.params:
+            flagAlerts = request.params.getall('flagAlerts')
+            if 'flags' in flagAlerts:
+                facilitator['flagAlerts'] = '1'
+                if fAlerts == '0':
+                    eAction += 'Turned on flag alerts. '
+        else:
+            facilitator['flagAlerts'] = '0'
+            if fAlerts == '1':
+                eAction += 'Turned off flag alerts. '
             
         dbhelpersLib.commit(facilitator)
-        eventLib.Event('Facilitator notifications set', eAction, facilitator, c.authuser)
-        alert = {'type':'success'}
-        alert['title'] = 'Success. ' + eAction
-        session['alert'] = alert
-        session.save()
+        if eAction != '':
+            eventLib.Event('Facilitator notifications set', eAction, facilitator, c.authuser)
+            alert = {'type':'success'}
+            alert['title'] = 'Success. ' + eAction
+            session['alert'] = alert
+            session.save()
             
         return redirect("/workshop/%s/%s/preferences"%(code, url))
 

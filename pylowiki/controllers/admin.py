@@ -23,6 +23,7 @@ import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.generic          as generic
 import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.demo             as demoLib
+import pylowiki.lib.db.alerts           as alertsLib
 
 import simplejson as json
 log = logging.getLogger(__name__)
@@ -216,7 +217,8 @@ class AdminController(BaseController):
             author = userLib.getUserByID(immunifyEvent.owner)
             result = 'Marked immune to flagging by %s because %s' %(author['name'], immunifyEvent['reason'])
             return json.dumps({'code':thingCode, 'result':result})
-        flagLib.Flag(c.thing, c.authuser, workshop = c.w)
+        newFlag = flagLib.Flag(c.thing, c.authuser, workshop = c.w)
+        alertsLib.facilitatorAlerts(newFlag)
         return json.dumps({'code':thingCode, 'result':result})
         
     def immunify(self, thingCode):

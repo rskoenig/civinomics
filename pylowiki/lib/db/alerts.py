@@ -25,19 +25,24 @@ def facilitatorAlerts(thing):
         workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
         facilitators = facilitatorLib.getFacilitatorsByWorkshop(workshop.id)
         for facilitator in facilitators:
-            if 'alerts' in facilitator and facilitator['alerts'] == '1':
+            if ('flagAlerts' in facilitator and facilitator['flagAlerts'] == '1' and thing.objType == 'flag') or ('itemAlerts' in facilitator and facilitator['itemAlerts'] == '1'):
                 facilitatorUser = userLib.getUserByID(facilitator.owner)
                 thingUser = userLib.getUserByID(thing.owner)
                 fromEmail = 'Civinomics Alerts <alerts@civinomics.com>'
                 toEmail = facilitatorUser['email']
                 thingOwner = thingUser['name']
-                subject = 'Alert: New %s added to your Civinomics workshop'%thing.objType
                 workshopName = workshop['title']
+                newThing = thing.objType
     
                 emailDir = config['app_conf']['emailDirectory']
                 myURL = config['app_conf']['site_base_url']
-                thingURL = '%s/workshop/%s/%s/%s/%s/%s'%(myURL, workshop['urlCode'], workshop['url'], thing.objType, thing['urlCode'], thing['url'])
                 workshopURL = '%s/workshop/%s/%s'%(myURL, workshop['urlCode'], workshop['url'])
+                if thing.objType == 'flag':
+                    thingURL = workshopURL + '/preferences'
+                    newThing = 'flagged item'
+                else:
+                    thingURL = '%s/%s/%s/%s'%(workshopURL, thing.objType, thing['urlCode'], thing['url'])
+
                 txtFile = emailDir + "/facilitatorAlert.txt"
     
                 # open and read the text file
@@ -46,7 +51,8 @@ def facilitatorAlerts(thing):
                 fp.close()
                 
                 # do the substitutions
-                textMessage = textMessage.replace('${c.thingType}', thing.objType)
+                subject = 'Alert: New %s added to your Civinomics workshop'%newThing
+                textMessage = textMessage.replace('${c.thingType}', newThing)
                 textMessage = textMessage.replace('${c.thingOwner}', thingOwner)
                 textMessage = textMessage.replace('${c.workshopURL}', workshopURL)
                 textMessage = textMessage.replace('${c.workshopName}', workshopName)

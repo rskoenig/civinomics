@@ -72,13 +72,17 @@
             <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}
             % if f['pending'] != '1' and fUser.id == c.authuser.id:
                 <%
-                    if 'alerts' in f and f['alerts'] == '1':
-                        alertsChecked = 'checked'
+                    if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                        itemsChecked = 'checked'
                     else:
-                        alertsChecked = ''
+                        itemsChecked = ''
+                    if 'flagAlerts' in f and f['flagAlerts'] == '1':
+                        flagsChecked = 'checked'
+                    else:
+                        flagsChecked = ''
                 %>
                 <form id="facilitatorNotifications" name="facilitatorNotifications" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/notifications/handler/" method="post">
-                    <strong>Notifications</strong>:  Email alerts when items added <input type="checkbox" name="notifications" value="alerts" ${alertsChecked}> &nbsp;&nbsp;&nbsp;
+                    <strong>Email alerts</strong>:  When new items added <input type="checkbox" name="itemAlerts" value="items" ${itemsChecked}> &nbsp;&nbsp;&nbsp;When items flagged <input type="checkbox" name="flagAlerts" value="flags" ${flagsChecked}> &nbsp;&nbsp;&nbsp;
                     <button type="submit" class="btn btn-warning" value="saveNotifications">Save Changes</button>
                     <br />
                 </form>
