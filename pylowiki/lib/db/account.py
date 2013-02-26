@@ -5,10 +5,7 @@ from pylowiki.lib.db.dbHelpers import commit
 from dbHelpers import with_characteristic as wc
 import generic
 import stripe
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-
+import pylowiki.lib.mail            as mailLib
 
 def getAccountByCode(accountCode):
     try:
@@ -132,20 +129,10 @@ def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'No
     textMessage = fp.read()
     fp.close()
 
-    # create a MIME email object, initialize the header info
-    email = MIMEMultipart(_subtype='related')
-    email['Subject'] = subject
-    email['From'] = 'billing@civinomics.com'
-    email['To'] = billingEmail
-    
-    # now attatch the text and html and picture parts
-    part1 = MIMEText(textMessage, 'plain')
-    email.attach(part1)
-        
-    # send it
-    s = smtplib.SMTP('localhost')
-    s.sendmail(email['From'], email['To'], email.as_string())
-    s.quit()
+    fromEmail = 'Civinomics Billing <billing@civinomics.com>'
+    toEmail = billingEmail
+
+    mailLib.send(toEmail, fromEmail, subject, textMessage)
     
     return account
 

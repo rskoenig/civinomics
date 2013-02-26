@@ -18,6 +18,7 @@ import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 import datetime
+import webhelpers.feedgenerator as feedgenerator
 
 log = logging.getLogger(__name__)
 
@@ -34,6 +35,7 @@ class ActionlistController(BaseController):
         c.list = getActiveWorkshops()
         c.activity = getRecentMemberPosts(10)
         c.scope = 'earth'
+        c.rssURL = "/activity/rss"
         return render('derived/6_main_listing.bootstrap')
             
         #elif c.action == 'surveys':
@@ -84,6 +86,35 @@ class ActionlistController(BaseController):
         else:
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
+    
+    def rss( self ):
+        c.activity = getRecentMemberPosts(30)
+        feed = feedgenerator.Rss201rev2Feed(
+            title=u"Civinomics Workshop Activity Feed",
+            link=u"http://www.civinomics.com",
+            description=u"The most recent activity in Civinomics public workshops.",
+            language=u"en"
+        )
+        for item in c.activity:
+            w = getWorkshopByCode(item['workshopCode'])
+            wURL = config['site_base_url'] + "/workshop/" + w['urlCode'] + "/" + w['url'] + "/"
+            
+            thisUser = getUserByID(item.owner)
+            activityStr = thisUser['name'] + " "
+            if item.objType == 'resource':
+               activityStr += 'added the resource '
+            elif item.objType == 'discussion':
+               activityStr += 'started the discussion '
+            elif item.objType == 'idea':
+                activityStr += 'posed the idea '
+
+            activityStr += '"' + item['title'] + '"'
+            wURL += item.objType + "/" + item['urlCode'] + "/" + item['url']
+            feed.add_item(title=activityStr, link=wURL, guid=wURL, description='')
+            
+        response.content_type = 'application/xml'
+
+        return feed.writeString('utf-8')
 
     def searchWorkshops( self, id1, id2  ):
         log.info('searchWorkshops %s %s' % (id1, id2))
