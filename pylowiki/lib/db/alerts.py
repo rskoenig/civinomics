@@ -11,11 +11,8 @@ import pylowiki.lib.helpers as h
 from pylons import config
 
 import pylowiki.lib.db.facilitator  as facilitatorLib
-import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
-import pylowiki.lib.db.dbHelpers    as dbhelpersLib
-import pylowiki.lib.utils           as utilsLib
 import pylowiki.lib.mail            as mailLib
 
 log = logging.getLogger(__name__)
