@@ -18,16 +18,20 @@ import pylowiki.lib.db.dbHelpers    as dbhelpersLib
 import pylowiki.lib.utils           as utilsLib
 
 from hashlib import md5
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
 class FacilitatorController(BaseController):
 
+    def __before__(self, action, code, url):
+        if action in ['facilitateInviteHandler', 'facilitateResponseHandler']:
+            c.user = userLib.getUserByCode(facilitatorCode)
+        elif action in ['facilitateResignHandler', 'facilitatorNotificationHandler']:
+            c.w = workshopLib.getWorkshopByCode(code)
+
     @h.login_required
-    def facilitateInviteHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.user = userLib.get_user(code, utilsLib.urlify(url))
+    def facilitateInviteHandler(self, code, url):
         if c.user and 'inviteToFacilitate' in request.params:
            invite = request.params['inviteToFacilitate']
            iList = invite.split("/")
@@ -50,22 +54,16 @@ class FacilitatorController(BaseController):
            return redirect("/" )
 
     @h.login_required
-    def facilitateResponseHandler(self, id1, id2):
-        code = id1
-        url = id2
-        c.user = userLib.get_user(code, utilsLib.urlify(url))
+    def facilitateResponseHandler(self, code, url):
         if 'workshopCode' in request.params and 'workshopURL' in request.params:
             wCode = request.params['workshopCode']
             wURL = request.params['workshopURL']
-            ##log.info('coFacilitateHandler %s %s' % (wCode, wURL))
-            w = workshopLib.getWorkshop(wCode, utilsLib.urlify(wURL))
+            c.w = workshopLib.getWorkshop(wCode, utilsLib.urlify(wURL))
             fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id)
             doF = False
             for f in fList:
-               ##log.info('coFacilitateHandler got %s w.id is %s'%(f, w.id))
-               if int(f['workshopID']) == int(w.id):
+               if int(f['workshopID']) == int(c.w.id):
                   doF = f
-                  ##log.info('coFacilitateHandler got doF')
 
             if doF and 'acceptInvite' in request.params:
                   doF['pending'] = '0'
@@ -78,7 +76,7 @@ class FacilitatorController(BaseController):
 
             if doF:
                   dbhelpersLib.commit(doF)
-                  eventLib.Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), w['title']), doF, c.user)
+                  eventLib.Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), c.w['title']), doF, c.user)
                   # success message
                   alert = {'type':'success'}
                   alert['title'] = 'Success. CoFacilitation Invitation %s.'%eAction
@@ -93,14 +91,11 @@ class FacilitatorController(BaseController):
         return redirect("/" )
 
     @h.login_required
-    def facilitateResignHandler(self, id1, id2):
-        code = id1
-        url = id2
-        w = workshopLib.getWorkshop(code, utilsLib.urlify(url))
+    def facilitateResignHandler(self, code, url):
         fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id, 0)
         doF = False
         for f in fList:
-           if int(f['workshopID']) == int(w.id) and f['disabled'] != '1':
+           if int(f['workshopID']) == int(c.w.id) and f['disabled'] != '1':
               doF = f
 
         if 'resignReason' in request.params:
@@ -122,7 +117,6 @@ class FacilitatorController(BaseController):
            session.save()
            return redirect("/workshop/%s/%s"%(code, url))
 
-
         if doF and c.authuser.id == doF.owner:
            doF['disabled'] = '1'
            dbhelpersLib.commit(doF)
@@ -140,11 +134,9 @@ class FacilitatorController(BaseController):
         return redirect("/workshop/%s/%s"%(code, url))
         
     @h.login_required
-    def facilitatorNotificationHandler(self, id1, id2):
-        code = id1
-        url = id2
-        w = workshopLib.getWorkshop(code, utilsLib.urlify(url))
-        facilitator = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.authuser.id, w.id)[0]
+    def facilitatorNotificationHandler(self, code, url, userCode):
+        user = userLib.getUserByCode(userCode)
+        facilitator = facilitatorLib.getFacilitatorInWorkshop(user, c.w)
         # initialize to current value if any, '0' if not set in object
         iAlerts = '0'
         fAlerts = '0'
@@ -153,36 +145,37 @@ class FacilitatorController(BaseController):
             iAlerts = facilitator['itemAlerts']
         if 'flagAlerts' in facilitator:
             fAlerts = facilitator['flagAlerts']
-            
-        if 'itemAlerts' in request.params:
-            itemAlerts = request.params.getall('itemAlerts')
-            if 'items' in itemAlerts:
-                facilitator['itemAlerts'] = '1'
-                if iAlerts == '0':
-                    eAction += 'Turned on item alerts. '
+        
+        payload = json.loads(request.body)
+        if 'alert' not in payload:
+            return "Error"
+        alert = payload['alert']
+        if alert == 'flags':
+            if 'flagAlerts' in facilitator.keys(): # Not needed after DB reset
+                if facilitator['flagAlerts'] == u'1':
+                    facilitator['flagAlerts'] = u'0'
+                    eAction = 'Turned off flag alerts'
+                else:
+                    facilitator['flagAlerts'] = u'1'
+                    eAction = 'Turned on flag alerts'
+            else:
+                facilitator['flagAlerts'] = u'1'
+                eAction = 'Turned on flag alerts'
+        elif alert == 'items':
+            if 'itemAlerts' in facilitator.keys(): # Not needed after DB reset
+                if facilitator['itemAlerts'] == u'1':
+                    facilitator['itemAlerts'] = u'0'
+                    eAction = 'Turned off item alerts'
+                else:
+                    facilitator['itemAlerts'] = u'1'
+                    eAction = 'Turned on item alerts'
+            else:
+                facilitator['itemAlerts'] = u'1'
+                eAction = 'Turned on item alerts'
         else:
-            facilitator['itemAlerts'] = '0'
-            if iAlerts == '1':
-                eAction += 'Turned off item alerts. '
-            
-        if 'flagAlerts' in request.params:
-            flagAlerts = request.params.getall('flagAlerts')
-            if 'flags' in flagAlerts:
-                facilitator['flagAlerts'] = '1'
-                if fAlerts == '0':
-                    eAction += 'Turned on flag alerts. '
-        else:
-            facilitator['flagAlerts'] = '0'
-            if fAlerts == '1':
-                eAction += 'Turned off flag alerts. '
-            
+            return "Error"   
         dbhelpersLib.commit(facilitator)
         if eAction != '':
             eventLib.Event('Facilitator notifications set', eAction, facilitator, c.authuser)
-            alert = {'type':'success'}
-            alert['title'] = 'Success. ' + eAction
-            session['alert'] = alert
-            session.save()
-            
-        return redirect("/workshop/%s/%s/preferences"%(code, url))
+        return eAction
 
