@@ -13,11 +13,9 @@ import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.mail            as mailLib
 
 from pylowiki.lib.base import BaseController, render
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-import smtplib
 
 log = logging.getLogger(__name__)
 
@@ -167,21 +165,11 @@ class AccountController(BaseController):
         textMessage = textMessage.replace('${c.sender}', senderName)
         textMessage = textMessage.replace('${c.workshopName}', workshopName)
         textMessage = textMessage.replace('${c.invoices}', invoices)
-        
-        # create a MIME email object, initialize the header info
-        email = MIMEMultipart(_subtype='related')
-        email['Subject'] = subject
-        email['From'] = 'billing@civinomics.com'
-        email['To'] = recipient
-    
-        # now attatch the text and html and picture parts
-        part1 = MIMEText(textMessage, 'plain')
-        email.attach(part1)
-    
-        # send that email
-        s = smtplib.SMTP('localhost')
-        s.sendmail(senderEmail, recipient, email.as_string())
-        s.quit()
+
+        fromEmail = 'Civinomics Billing <billing@civinomics.com>'
+        toEmail = recipient
+
+        mailLib.send(toEmail, fromEmail, subject, textMessage)
         
 
         
