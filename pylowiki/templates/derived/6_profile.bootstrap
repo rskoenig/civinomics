@@ -1,0 +1,123 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
+<%!
+    from pylowiki.lib.db.user import isAdmin
+%>
+<div class="row-fluid">
+    <div class="span8">
+        <div class="tabbable"> <!-- Only required for left/right tabs -->
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
+                <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
+                % if 'user' in session:
+                    % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
+                        % if isAdmin(c.authuser.id) and c.user.id != c.authuser.id:
+                        ${helpers.followButton(c.user)}
+                        % endif
+                        <% 
+                            msgString = ''
+                            if c.messages:
+                                msgString = ' (' + str(c.messages) + ')'
+                        %>   
+                        <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit${msgString}</a></li>
+                    % else:
+                        ${helpers.followButton(c.user)}
+                    % endif
+                % endif
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab-activity">
+                    ${helpers.showActivity(c.activity)}
+                </div>
+                <div class="tab-pane" id="tab-workshops">
+                    ${helpers.inviteCoFacilitate()}
+                    <div class="section-wrapper">
+                        <div class="browse">
+                            <h3 class="centered section-header">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="centered">Facilitating</div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="centered">Watching</div>
+                                    </div>
+                                </div>
+                            </h3>
+                            <div class="row-fluid">
+                                <div class="span6 right-border">
+                                    % if len(c.facilitatorWorkshops) == 0:
+                                        There doesn't seem to be anything here!
+                                    % else:
+                                        % for item in c.facilitatorWorkshops:
+                                            ${helpers.showWorkshop(item)}
+                                        % endfor
+                                    % endif
+                                </div>
+                                <div class="span6">
+                                    % if len(c.interestedWorkshops) == 0 :
+                                        There doesn't seem to be anything here!
+                                    % else:
+                                        % for item in c.interestedWorkshops:
+                                            ${helpers.showWorkshop(item)}
+                                        % endfor
+                                    % endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%doc>
+                        <div class="span6">
+                            <div class="section-wrapper">
+                                <div class="browse">
+                                    <h3 class="centered section-header">Facilitating</h3>
+                                    % if len(c.facilitatorWorkshops) == 0:
+                                        There doesn't seem to be anything here!
+                                    % else:
+                                        % for item in c.facilitatorWorkshops:
+                                            ${helpers.showWorkshop(item)}
+                                        % endfor
+                                    % endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span6">
+                            <div class="section-wrapper">
+                                <div class="browse">
+                                    <h3 class="centered section-header">Watching</h3>
+                                    % if len(c.followingWorkshops) == 0:
+                                        There doesn't seem to be anything here!
+                                    % else:
+                                        % for item in c.followingWorkshops:
+                                            ${helpers.showWorkshop(item)}
+                                        % endfor
+                                    % endif
+                                </div>
+                            </div>
+                        </div>
+                    </%doc>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="span4">
+        ${helpers.profileDashboard()}
+    </div><!--/.span4-->
+</div>
+
+<%def name = 'extraScripts()'>
+    <script src="/js/follow.js" type="text/javascript"></script>
+    <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: ''
+            });
+        });
+    </script>
+</%def>

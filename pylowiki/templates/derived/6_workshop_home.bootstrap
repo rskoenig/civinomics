@@ -1,0 +1,196 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+<div class="row-fluid">
+   <div class="span12">
+      <div class="summary">
+         ${c.w['description']}
+         <a href="#information"> Read more </a>
+      </div> 
+   </div> <!-- /.span12 -->
+</div> <!-- /.row-fluid -->
+<div class="row-fluid">
+   <div class="span7">
+      <div class="section-wrapper listening" id="workshopFacilitators">
+         <div class="browse">
+            <%
+                if c.listeners:
+                    listenOrFacilitate = "Who's listening?"
+                else:
+                    listenOrFacilitate = "Facilitators"
+            %>
+            <h4 class="section-header smaller"> ${listenOrFacilitate} </h3>
+            <% 
+                if c.listeners:
+                    helpers.whoListening(c.listeners)
+                else:
+                    helpers.whoListening(c.facilitators)
+            %>
+         </div> <!-- /.browse -->
+      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper activityStream">
+         <div class="browse">
+            <h4 class="section-header smaller"> Activity </h3>
+            ${helpers.showActivity(c.activity)}
+         </div> <!-- /.browse -->
+      </div> <!-- /.section-wrapper -->
+   </div> <!-- /.span7 -->
+   <div class="span5">
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+               Overview 
+               <%
+                  if c.privs['admin'] or c.privs['facilitator']:
+                     helpers.configButton(c.w)
+               %>
+            </h3>
+            <div id="slideshow">
+               <h5> Slideshow </h5>
+               ${helpers.slideshow(c.w)}
+            </div>
+            <div id="workshopGoals">
+                <h5> Goals </h5>
+                <ul class="goals">
+                   ${helpers.showGoals(c.goals)}
+                </ul> <!-- /goals -->
+            </div>
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+   </div> <!-- /.span5 -->
+</div> <!-- /.row -->
+<div class="row-fluid" id="information">
+   <div class = "span12">
+      <div class="section-wrapper">
+         <div class="browse">
+            <h4 class="section-header smaller"> Information </h3>
+            ${helpers.showInfo(c.w)}
+         </div>
+      </div> <!--/.section-wrapper-->
+   </div><!-- /.span12 -->
+</div><!--/.row-->
+
+<%def name="extraScripts2()">
+    <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
+    <script>
+      var $doc = $(document);
+      $(document).ready(function() {
+         $.fn.foundationClearing         ? $doc.foundationClearing() : null;
+         
+      });
+    </script>
+    % if c.demo:
+        <script type="text/javascript" src="/js/vendor/guiders-1.3.0.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                guiders.createGuider({
+                    buttons: [{name: "next"}],
+                    description: "Welcome to Civinomics!  You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time.",
+                    id: "tour_1",
+                    next: "tour_2",
+                    title: "Welcome!",
+                    closeOnEscape: true,
+                    autoFocus: true,
+                    overlay: "true",
+                    xButton: true,
+                }).show();
+                
+                guiders.createGuider({
+                    attachTo: "#workshopTitle",
+                    buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+                    description: "Workshop title",
+                    id: "tour_2",
+                    prev: "tour_1",
+                    next: "tour_3",
+                    title: "This is the title.",
+                    closeOnEscape: true,
+                    autoFocus: true,
+                    highlight: "#workshopTitle",
+                    overlay: "true",
+                    xButton: true,
+                    position: 6
+                });
+                
+                guiders.createGuider({
+                    attachTo: "#workshopGoals",
+                    buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+                    description: "Here is where the workshop's facilitator has outlined the goals for this workshop.",
+                    id: "tour_3",
+                    prev: "tour_2",
+                    next: "tour_4",
+                    title: "Workshop Goals",
+                    closeOnEscape: true,
+                    autoFocus: true,
+                    highlight: "#workshopGoals",
+                    overlay: "true",
+                    xButton: true,
+                    position: 9
+                });
+                
+                guiders.createGuider({
+                    attachTo: "#workshopFacilitators",
+                    buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+                    description: "Facilitators here are charged with keeping the peace.  Listeners have signed onto this workshop to get your feedback!",
+                    id: "tour_4",
+                    prev: "tour_3",
+                    next: "tour_5",
+                    title: "Workshop Facilitators",
+                    closeOnEscape: true,
+                    autoFocus: true,
+                    highlight: "#workshopFacilitators",
+                    overlay: "true",
+                    xButton: true,
+                    position: 12
+                });
+                
+                guiders.createGuider({
+                    attachTo: "#discussionButton",
+                    buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+                    description: "Conversations are for questions and answers, longer discussions/debates, and general feedback to the workshop facilitators and listeners.",
+                    id: "tour_5",
+                    prev: "tour_4",
+                    next: "tour_6",
+                    title: "Conversations",
+                    closeOnEscape: true,
+                    autoFocus: true,
+                    highlight: "#discussionButton",
+                    overlay: "true",
+                    xButton: true,
+                    position: 6
+                });
+                
+                guiders.createGuider({
+                    attachTo: "#ideaButton",
+                    buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+                    description: "Ideas are short and should directly address the workshop's goals.  Vote on existing ideas and submit your own!",
+                    id: "tour_6",
+                    prev: "tour_5",
+                    next: "tour_7",
+                    title: "Ideas",
+                    closeOnEscape: true,
+                    autoFocus: true,
+                    highlight: "#ideaButton",
+                    overlay: "true",
+                    xButton: true,
+                    position: 6
+                });
+                
+                guiders.createGuider({
+                    attachTo: "#resourceButton",
+                    buttons: [{name:"prev", onclick: guiders.prev}, {name:"close", onclick: guiders.hideAll}],
+                    description: "Resources are links to information relevant to the workshop and the workshop goals.",
+                    id: "tour_7",
+                    prev: "tour_6",
+                    title: "Resources",
+                    closeOnEscape: true,
+                    autoFocus: true,
+                    highlight: "#resourceButton",
+                    overlay: "true",
+                    xButton: true,
+                    position: 6
+                });
+            });
+        </script>
+    % endif
+</%def>

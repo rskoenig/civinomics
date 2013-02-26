@@ -1,0 +1,112 @@
+hr {
+	border: none;
+	border-bottom: 1px solid #b9b9b9;
+}
+
+p.bump {
+	padding-bottom: 5px;
+}
+
+input.street {
+	width: 250px;
+}
+
+/* account photo */
+#account_photo {
+	width: 200px;
+}
+
+#account_photo div.banner_div {
+	left: -5px;
+	top: 10px;
+}
+
+#account_photo img {
+	border-bottom: 1px solid #b9b9b9;
+}
+
+/* account creation form */
+#account_create {
+	width: 699px;
+	border-left: 1px solid #b9b9b9;
+}
+
+#account_create>div {
+	padding: 0 40px;
+}
+
+#basic_info div+div, #voter_info div+div {
+	padding-left: 20px;
+}
+
+/** inputs **/
+#email {
+	width: 250px;
+}
+
+#zip_code {
+	width: 90px;
+}
+
+#take_a_pic {
+	width: 130px;
+}
+
+select {
+	color: #b9b9b9;
+}
+
+#cultural select {
+	width: 190px;
+}
+
+#cultural, #religious {
+	width: 220px;
+	padding-right: 150px;
+}
+
+input[type="text"] {
+	color: #b9b9b9;
+}
+
+#birthday input[type="text"] {
+	width: 50px;
+	margin-left: 10px;
+}
+
+#tagline {
+	width: 80%;
+}
+
+#bio {
+	width: 300px;
+	height: 100px;
+}
+
+input.middle {
+	width: 90px;
+}
+
+input.years {
+	width: 50px;
+}
+
+td+td {
+	padding-left: 10px;
+}
+
+#education button, #work_experience button {
+	width: 90px;
+	min-height: 25px;
+}
+
+button.gold.right {
+	font-size: 1.5em;
+	width: 160px;
+	height: 40px;
+	margin: 50px 100px 0 0;
+}
+
+table td {
+	height: 35px;
+}
