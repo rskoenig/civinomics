@@ -56,53 +56,67 @@
 <%def name="admin_facilitators()">
     % if c.w['public_private'] != 'trial':
        <p>To invite a member to be a listener of, or co-facilitate this workshop, visit their Civinomics profile page and look for the "Invite ..." button!</p>
-        <table class="table table-bordered">
-        <thead>
-        <tr><th>Current Facilitators</th></tr>
-        </thead>
-        <tbody>
-        % for f in c.f:
-            <%
-                fUser = userLib.getUserByID(f.owner)
-                fEvents = eventLib.getParentEvents(f)
-                fPending = ""
-                if pending in f and f['pending'] == '1':
-                    fPending = "(Pending)"
-            %>
-            <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}
-            % if f['pending'] != '1' and fUser.id == c.authuser.id:
+        <table class="table table-bordered table-condensed" ng-controller="facilitatorController">
+            <thead>
+                <tr>
+                    <th>Facilitators</th>
+                    <th>Email on new items</th>
+                    <th>Email on flagging</th>
+                </tr>
+            </thead>
+            <tbody>
+            % for f in c.f:
                 <%
-                    if 'itemAlerts' in f and f['itemAlerts'] == '1':
-                        itemsChecked = 'checked'
-                    else:
-                        itemsChecked = ''
-                    if 'flagAlerts' in f and f['flagAlerts'] == '1':
-                        flagsChecked = 'checked'
-                    else:
-                        flagsChecked = ''
+                    fUser = userLib.getUserByID(f.owner)
+                    fEvents = eventLib.getParentEvents(f)
+                    fPending = ""
+                    if pending in f and f['pending'] == '1':
+                        fPending = "(Pending)"
                 %>
-                <form id="facilitatorNotifications" name="facilitatorNotifications" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/notifications/handler/" method="post">
-                    <strong>Email alerts</strong>:  When new items added <input type="checkbox" name="itemAlerts" value="items" ${itemsChecked}> &nbsp;&nbsp;&nbsp;When items flagged <input type="checkbox" name="flagAlerts" value="flags" ${flagsChecked}> &nbsp;&nbsp;&nbsp;
-                    <button type="submit" class="btn btn-warning" value="saveNotifications">Save Changes</button>
-                    <br />
-                </form>
-            % endif
-            <br />
-            % if fEvents:
-                % for fE in fEvents:
-                    &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
-                % endfor
-            % endif
-            % if len(c.f) > 1 and fUser.id == c.authuser.id:
-                <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
-                    &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
-                    <button type="submit" class="gold" value="Resign">Resign</button>
-                    <br />
-                </form>
-            % endif
-            </td></tr>
-        % endfor
-        </tbody>
+                <tr>
+                    <td>
+                        <%
+                            lib_6.userImage(fUser, className = 'avatar small-avatar')
+                            lib_6.userLink(fUser)
+                        %>
+                        ${fPending}
+                    </td>
+                    % if (f['pending'] != '1' and fUser.id == c.authuser.id) or c.privs['admin']:
+                        <%
+                            itemsChecked = ''
+                            flagsChecked = ''
+                            if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                                itemsChecked = 'checked'
+                            if 'flagAlerts' in f and f['flagAlerts'] == '1':
+                                flagsChecked = 'checked'
+                        %>
+                        <td>
+                            <form ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${fUser['urlCode']}'" class="no-bottom">
+                                <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
+                                <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                            </form>
+                        </td>
+                        <td>
+                            <form ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${fUser['urlCode']}'" class="no-bottom">
+                                <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
+                                <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
+                            </form>
+                        </td>
+                    % else:
+                        <td>${fPending}</td>
+                        <td>${fPending}</td>
+                    % endif
+                    % if len(c.f) > 1 and fUser.id == c.authuser.id:
+                        <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
+                            &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+                            <button type="submit" class="gold" value="Resign">Resign</button>
+                            <br />
+                        </form>
+                    % endif
+                    </td>
+                </tr>
+            % endfor
+            </tbody>
         </table>
         % if len(c.df) > 0:
             <table class="table table-bordered">
@@ -223,26 +237,28 @@
     </thead>
     <tbody>
     % for f in c.f:
-       <% fUser = userLib.getUserByID(f.owner) %>
-       <% fEvents = eventLib.getParentEvents(f) %>
-       <% fPending = "" %>
-       % if pending in f and f['pending'] == '1':
-          <% fPending = "(Pending)" %>
-       % endif
-       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
-       % if fEvents:
+        <% 
+            fUser = userLib.getUserByID(f.owner)
+            fEvents = eventLib.getParentEvents(f)
+            fPending = "" 
+        
+            if pending in f and f['pending'] == '1':
+                fPending = "(Pending)"
+        %>
+        <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
+        % if fEvents:
           % for fE in fEvents:
           &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
           % endfor
-       % endif
-       % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
+        % endif
+        % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
            <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
                &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
                <button type="submit" class="gold" value="Resign">Resign</button>
            <br />
            </form>
-       % endif
-       </td></tr>
+        % endif
+        </td></tr>
     % endfor
     </tbody>
     </table>
