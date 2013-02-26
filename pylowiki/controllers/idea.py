@@ -12,7 +12,7 @@ import pylowiki.lib.sort            as sortLib
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
-import pylowiki.lib.db.alerts       as alertsLib
+import pylowiki.lib.alerts          as alertsLib
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render

@@ -23,7 +23,7 @@ import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.generic          as generic
 import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.demo             as demoLib
-import pylowiki.lib.db.alerts           as alertsLib
+import pylowiki.lib.alerts              as alertsLib
 
 import simplejson as json
 log = logging.getLogger(__name__)
