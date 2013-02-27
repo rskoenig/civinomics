@@ -66,6 +66,27 @@ def isImmune(thing):
         return True
     return False
 
+def getFlaggedThingsInWorkshop(workshop):
+    try:
+        rows = meta.Session.query(Thing)\
+            .filter_by(objType = 'flag')\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .all()
+        if len(rows) == 0:
+            return False
+        flaggedThings = []
+        flaggedCodes = []
+        codeTypes = ['discussionCode', 'ideaCode', 'resourceCode', 'commentCode']
+        for row in rows:
+            key = [item for item in codeTypes if item in row.keys()][0] # one of the codeTypes
+            code = row[key]
+            if code not in flaggedCodes:
+                flaggedCodes.append(code)
+                flaggedThings.append(generic.getThing(code))
+        return flaggedThings
+    except:
+        return False
+
 def getFlaggedThings(objType, workshop = None):
     try:
         thingKey = u'%sCode' % objType

@@ -951,7 +951,10 @@ class WorkshopController(BaseController):
         if c.w['startTime'] != '0000-00-00':
             c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w.id)
             c.df = facilitatorLib.getFacilitatorsByWorkshop(c.w.id, 1)
-            
+        
+        c.flaggedItems = flagLib.getFlaggedThingsInWorkshop(c.w)
+        
+        """
         c.flaggedItems = {'ideas':[], 'resources':[], 'discussions':[], 'comments':[]}
         for key in c.flaggedItems.keys():
             objType = key[:-1]
@@ -964,7 +967,7 @@ class WorkshopController(BaseController):
                         items.append(item)
                         codes.append(item['urlCode'])
                 c.flaggedItems[key] = items
-        
+        """
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
         return render('/derived/6_workshop_preferences.bootstrap')

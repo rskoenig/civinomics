@@ -283,93 +283,10 @@
     <br /><br />
 </%def>
 
-<%def name="admin_items(items, title, listType, active = False)">
-    <%
-        thisClass = 'tab-pane'
-        if active == True:
-            thisClass += ' active'
-        thisID = '%s-%s' %(listType, title.lower())
-    %>
-    <div class="${thisClass}" id="${thisID}">
-        % if len(items) == 0:
-            <p class="centered">There doesn't appear to be anything here.  Hooray!</p>
-        % else:
-        <table class="table table-bordered table-hover table-condensed">
-            <thead>
-                <tr>
-                    <th>Flags</th>
-                    <th>Submitter</th>
-                    % if title != 'Comments':
-                        <th>Title</th>
-                    % else:
-                        <th>Comment</th>
-                    % endif
-                    <th>Action</th> 
-                </tr>
-            </thead>
-            <tbody>
-                % for item in items:
-                    <%
-                        rowClass = None
-                        if item['deleted'] == '1' and not c.privs['admin']:
-                            continue
-                        elif item['deleted'] == '1' and c.privs['admin']:
-                            rowClass = 'error'
-                            action = 'deleted'
-                        elif item['disabled'] == '1':
-                            rowClass = 'warning'
-                            action = 'disabled'
-                        else:
-                            action = 'enabled'
-                        event = eventLib.getEventForThingWithAction(item, action)
-                        if action == 'enabled' and event:
-                            rowClass = 'success'
-                    %>
-                    % if rowClass is not None:
-                        <tr class="${rowClass}">
-                    % else:
-                        <tr>
-                    % endif
-                        <td> ${flagLib.getNumFlags(item)} </td>
-                        <td>
-                            <% 
-                                owner = userLib.getUserByID(item.owner)
-                                lib_6.userImage(owner, className = 'avatar small-avatar')
-                                lib_6.userLink(owner)
-                            %>
-                        </td>
-                        <td>
-                            % if title != 'Comments':
-                                <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
-                            % else:
-                                <a ${lib_6.thingLinkRouter(item, c.w, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a>
-                            % endif
-                        </td>
-                        <td>
-                            % if event:
-                                <p>
-                                <%
-                                    owner = userLib.getUserByID(event.owner)
-                                    lib_6.userImage(owner, className = 'avatar small-avatar')
-                                    lib_6.userLink(owner)
-                                %>
-                                : ${event['reason']}
-                                </p>
-                            % endif
-                        </td>
-                    </tr>
-                % endfor
-            </tbody>
-        </table>
-        % endif
-    </div>
-</%def>
-
 <%def name="marked_items()">
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Manage Workshop</h4>
-
             <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/publish/handler" method=POST class="well">
             % if workshopLib.isPublished(c.w):
                 <button type="submit" class="btn btn-warning" value="unpublish">Unpublish Workshop</button> This will temporarily unpublish your workshop, removing it from listings and activity streams.
@@ -377,33 +294,86 @@
                 <button type="submit" class="btn btn-warning" value="publish">Publish Workshop</button> Republishes your workshop, making it visible in listings and activity streams.
             % endif
             </form>
-            <br />  
             <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
-            <div class="tabbable">
-                <ul class="nav nav-tabs">
-                    <li class="active">
-                        <a href="#marked-resources" data-toggle="tab">Resources</a>
-                    </li>
-                    <li>
-                        <a href="#marked-ideas" data-toggle="tab">Ideas</a>
-                    </li>
-                    <li>
-                        <a href="#marked-conversations" data-toggle="tab">Conversations</a>
-                    </li>
-                    <li>
-                        <a href="#marked-comments" data-toggle="tab">Comments</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <%
-                        admin_items(c.flaggedItems['resources'], 'Resources', 'marked', active = True)
-                        admin_items(c.flaggedItems['ideas'], 'Ideas', 'marked')
-                        admin_items(c.flaggedItems['discussions'], 'Conversations', 'marked')
-                        admin_items(c.flaggedItems['comments'], 'Comments', 'marked')
-                    %>
-                </div> <!-- /.tab-content -->
-            </div> <!-- /.tabbable -->
+            ${flaggedItems(c.flaggedItems)}
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
 
+<%def name="flaggedItems(items)">
+    <%
+        thisClass = 'tab-pane'
+        if active == True:
+            thisClass += ' active'
+        objectMapping = {'comment': 'Comment', 'discussion':'Conversation', 'idea':'Idea', 'resource':'Resource'}
+    %>
+    <div class="${thisClass}">
+        % if not items:
+            <p class="centered">There doesn't appear to be anything here.  Hooray!</p>
+        % elif len(items) == 0:
+            <p class="centered">There doesn't appear to be anything here.  Hooray!</p>
+        % else:
+            <table class="table table-bordered table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>Flags</th>
+                        <th>Author</th>
+                        <th>Item</th>
+                        <th>Content</th>
+                        <th>Action</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    % for item in items:
+                        <%
+                            rowClass = ''
+                            if item['deleted'] == '1' and not c.privs['admin']:
+                                continue
+                            elif item['deleted'] == '1' and c.privs['admin']:
+                                rowClass = 'error'
+                                action = 'deleted'
+                            elif item['disabled'] == '1':
+                                rowClass = 'warning'
+                                action = 'disabled'
+                            else:
+                                action = 'enabled'
+                            event = eventLib.getEventForThingWithAction(item, action)
+                            if action == 'enabled' and event:
+                                rowClass = 'success'
+                        %>
+                        <tr class="${rowClass}">
+                            <td> ${flagLib.getNumFlags(item)} </td>
+                            <td>
+                                <% 
+                                    owner = userLib.getUserByID(item.owner)
+                                    lib_6.userImage(owner, className = 'avatar small-avatar')
+                                    lib_6.userLink(owner)
+                                %>
+                            </td>
+                            <td> ${objectMapping[item.objType]} </td>
+                            <td>
+                                % if item.objType != 'comment':
+                                    <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
+                                % else:
+                                    <a ${lib_6.thingLinkRouter(item, c.w, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a>
+                                % endif
+                            </td>
+                            <td>
+                                % if event:
+                                    <p>
+                                    <%
+                                        owner = userLib.getUserByID(event.owner)
+                                        lib_6.userImage(owner, className = 'avatar small-avatar')
+                                        lib_6.userLink(owner)
+                                    %>
+                                    : ${event['reason']}
+                                    </p>
+                                % endif
+                            </td>
+                        </tr>
+                    % endfor
+                </tbody>
+            </table>
+        % endif
+    </div>
+</%def>

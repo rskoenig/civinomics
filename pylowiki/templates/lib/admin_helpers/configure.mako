@@ -205,7 +205,7 @@
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
                 <br /><strong>Introduce visitors to your workshop:</strong><br />
                 <div class="well">
-                    <textarea rows="10" id="data" name="data" >${c.page['data']}</textarea>
+                    <textarea rows="10" id="data" name="data" class="span8">${c.page['data']}</textarea>
                     <div style="text-align:right; padding-right:35px;">
                         <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
                     </div><!-- text-align -->
