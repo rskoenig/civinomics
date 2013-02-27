@@ -26,7 +26,7 @@ class FacilitatorController(BaseController):
 
     def __before__(self, action, code, url):
         if action in ['facilitateInviteHandler', 'facilitateResponseHandler']:
-            c.user = userLib.getUserByCode(facilitatorCode)
+            c.user = userLib.getUserByCode(code)
         elif action in ['facilitateResignHandler', 'facilitatorNotificationHandler']:
             c.w = workshopLib.getWorkshopByCode(code)
 
