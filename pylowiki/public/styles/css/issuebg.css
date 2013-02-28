@@ -1,0 +1,153 @@
+#main {
+	font-size: .8em;
+}
+
+.headline h2 {
+	border: 1px solid #b9b9b9;
+	background: #fff;
+	letter-spacing: .3em;
+	font-size: .8em;
+	font-weight: normal;
+	text-transform: uppercase;
+	padding: 4px;
+	float: left;
+	position: relative;
+	top: 10px;
+	left: -10px;
+}
+
+#main h3 {
+	text-transform: uppercase;
+	padding: 5px 0;
+	text-indent: 5px;
+	width: 100%;
+	font-weight: bold;
+	letter-spacing: .4em;
+	border-bottom: 1px solid #b9b9b9;
+	border-top: 1px solid #b9b9b9;
+	color: #b9b9b9;
+	font-size: .8em;
+	float: left;
+	clear: both;
+	height: 19px;
+	margin-bottom: 10px;
+}
+
+#main h3>span {
+	text-transform: lowercase;
+	padding: 0;
+	font-weight: normal;
+	letter-spacing: 0;
+	font-size: .8em;
+}
+
+.headline {
+	width: 100%;
+	padding-bottom: 20px;
+	z-index: 1;
+}
+
+.headline h3 {
+	z-index: 1;
+}
+
+#img {
+	width: 100%;
+	height: 300px;
+	overflow: hidden;
+	position: relative;
+	top: -10px;
+}
+
+#img p {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	background: rgba(50,50,50,.4);
+	color: #fff;
+	height: 120px;
+	padding: 10px;
+}
+
+#img+ul.left.gray>li {
+	float: left;
+	width: 120px;
+	height: 40px;
+	text-align: center;
+}
+#img+ul.left.gray>li>a {
+	color: #b9b9b9;
+}
+
+/* bg main */
+
+#bgmain {
+	width: 599px;
+	border-right: 1px solid #b9b9b9;
+}
+
+#bgmain>p {
+	padding: 5px 0;
+}
+
+#readbutton {
+	width: 130px;
+	margin: 0 auto;
+}
+
+#readbutton img {
+	float: left;
+}
+
+#bgmain>span {
+	text-align: center;
+	display: block;
+	padding: 10px 0;
+}
+
+/* comments */
+
+#comments {
+	width: 100%;
+	font-size: .9em;
+}
+
+#comments form {
+	width: 90%;
+	padding: 20px;
+}
+
+#comments form textarea {
+	width: 100%;
+	height: 60px;
+	max-width: 105%;
+}
+
+/* bg side */
+
+#bgside {
+	width: 300px;
+}
+
+#articles li {
+	padding: 20px;
+}
+
+#articles .large {
+	font-size: 1.3em;
+}
+
+#articles hr {
+	border: none;
+	border-top: 1px solid #ccc;
+}
+
+#references {
+	margin-left: 10px;
+	padding: 20px;
+}
+
+#references li {
+	float: left;
+	clear: both;
+}
