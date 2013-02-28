@@ -25,6 +25,10 @@ class CommentController(BaseController):
             c.mainImage = mainImageLib.getMainImage(c.w)
             if not c.w:
                 abort(404)
+            workshopLib.setWorkshopPrivs(c.w)
+            if c.w['public_private'] != 'public':
+                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                    abort(404)
     
     @h.login_required
     def commentAddHandler(self):
