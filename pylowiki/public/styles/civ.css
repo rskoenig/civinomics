@@ -867,3 +867,11 @@ ul[data-clearing].gallery { max-height:170px; }
   height: 13px;
   width: 13px;
 }
+
+.editable{
+    display: inline;
+}
+.image-thumbnail{
+    max-width:300px;
+    max-height:200px;
+}

@@ -14,10 +14,7 @@
 <%def name="admin_slideshow()">    
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Slideshow</h4>
-            Use one or more images with titles and captions to help educate and inform participants about the workshop topic.<br />
-            Upload at least one image for your workshop. The first image of a slideshow is displayed in workshop listings, and the slideshow is displayed on the workshop home page.
-            <br /><br />
+            <h4 class="section-header smaller">Images and Slideshow</h4>
             ${add_slides()}
             ${edit_slideshow()}
         </div><!-- browse -->
@@ -27,14 +24,15 @@
 <%def name="add_slides()">
     <!-- The file upload form used as target for the file upload widget -->
     <form id="fileupload" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
-    <p><strong>Add slides to slideshow</strong></p>
-    <p>You may only upload images you own or have permission to upload to this site.<p>
-    <p>Make sure to upload images larger than 640 pixels wide by 480 pixels high! Small images or thumbnails will look terrible in the slide show! Images oriented in "landscape" mode (wider than higher) are best.</p>
+    <p><strong>Add images</strong></p>
+    <ul>
+        <li>Slideshow looks best with 6 or more images</li>
+        <li>Make sure you have permission to use the images</li>
+        <li>Avoid images smaller than 640 pixels wide by 480 pixels high</li>
+    </ul>
     <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
     <div class="row-fluid">
-        <div class="span1">
-        </div>
-        <div class="span7 fileupload-buttonbar">
+        <div class="span7 offset1 fileupload-buttonbar">
             <!-- The fileinput-button span is used to style the file input field as button -->
             <span class="btn btn-success fileinput-button">
                 <i class="icon-plus icon-white"></i>
@@ -162,41 +160,15 @@
 
 <%def name="edit_slideshow()">
     <div class="row-fluid">
-        <table class="table" >
-        <thead>
-        <tr><td>
-        <script language="javascript">
-            $(function() {
-       
-                $(".column").sortable(
-                    { items: ".portlet" },
-                    { connectWith: ".column" },
-                    { update: function(event, ui) {
-                        $.post("/workshop/${c.w['urlCode']}/${c.w['url']}/slide/edit/position", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
-                    }
-                });
-
-                $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
-                    .find( ".portlet-header" )
-                    .addClass( "ui-widget-header ui-corner-all" )
-                    .prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
-                    .end()
-                    .find( ".portlet-content" );
-
-                $( ".portlet-title .ui-icon" ).click(function() {
-                    $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
-                    $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
-                });
-            });
-        </script>
-        <p><strong>Edit Slideshow</strong></p>
-        <p>Click and drag to re-arrange a slideshow's order.</p>
-        <br />
-        <p>Click on a title or a caption to edit it.  Press enter to save your title or caption
-        edits, press escape to cancel an edit.</p>
+        <p><strong>Create Slideshow</strong></p>
+        <ul>
+            <li>Click and drag to rearrange images</li>
+            <li>Add captions</li>
+            <li>Store unused images under Unpublished Slides</li>
+        </ul>
         <div class="demo">
             <div class="column" id="published">
-                <h4 style="text-align:center;">Published slides</h4 >
+                <h4 class="centered">Published slides</h4 >
                 % for slide in c.published_slides:
                     % if int(slide['deleted']) == 0:
                         <div class="portlet" id = "portlet_${slide.id}">
@@ -205,7 +177,7 @@
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
                                 % else:
-                                    <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.jpg">
+                                    <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
                                 % endif
                             </div><!-- portlet-image -->
                         </div><!-- portlet -->
@@ -213,7 +185,7 @@
                 % endfor
             </div><!-- column -->
             <div class="column" id="unpublished">
-                <h4 style="text-align:center;" class="unsortable">Unpublished slides</h4>
+                <h4 class="unsortable centered">Unpublished slides</h4>
                 % for slide in c.slideshow:
                     % if int(slide['deleted']) == 1:
                         <div class="portlet" id = "portlet_${slide.id}">
@@ -222,7 +194,7 @@
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
                                 % else:
-                                    <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.jpg">
+                                    <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
                                 % endif
                             </div><!-- portlet-image -->
                         </div><!-- portlet -->
@@ -230,9 +202,6 @@
                 % endfor
             </div><!-- column -->
         </div><!-- End demo -->
-        </td></tr>
-        </thead>
-        </table>
         % if c.w['startTime'] == '0000-00-00':
             <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
                 <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
