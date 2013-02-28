@@ -41,6 +41,9 @@ class IdeaController(BaseController):
                 c.demo = False
         
         workshopLib.setWorkshopPrivs(c.w)
+        if c.w['public_private'] != 'public':
+            if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                abort(404)
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
         if 'user' in session:
