@@ -12,6 +12,7 @@ import pylowiki.lib.db.comment      as  commentLib
 import pylowiki.lib.db.discussion   as  discussionLib 
 import pylowiki.lib.db.revision     as  revisionLib
 import pylowiki.lib.db.generic      as  genericLib
+import pylowiki.lib.db.mainImage    as mainImageLib
 
 log = logging.getLogger(__name__)
 import pylowiki.lib.helpers as h
@@ -21,6 +22,7 @@ class CommentController(BaseController):
     def __before__(self, action, workshopCode = None, workshopURL = None):
         if action in ['permalink', 'showThread']:
             c.w = workshopLib.getWorkshop(workshopCode, workshopURL)
+            c.mainImage = mainImageLib.getMainImage(c.w)
             if not c.w:
                 abort(404)
     
