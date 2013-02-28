@@ -13,6 +13,7 @@ from pylowiki.lib.db.pmember import getPrivateMemberByCode
 from pylowiki.lib.db.workshop import getWorkshopByCode
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
+import pylowiki.lib.db.mainImage    as mainImageLib
 
 log = logging.getLogger(__name__)
 
@@ -44,6 +45,17 @@ class RegisterController(BaseController):
             c.success = session['registerSuccess']
             session.pop('registerSuccess')
             session.save()
+        if 'guestCode' in session and 'workshopCode' in session:
+                c.w = getWorkshopByCode(session['workshopCode'])
+                if c.w:
+                    c.mainImage = mainImageLib.getMainImage(c.w)
+                    c.title = c.w['title']
+                    c.listingType = False
+                    return render('/derived/6_guest_signup.bootstrap')
+                else:
+                    session.pop('guestCode')
+                    session.pop('workshopCode')
+                    session.save()
             
         return render("/derived/signup.bootstrap")
 
@@ -85,6 +97,7 @@ class RegisterController(BaseController):
             log.info("got guestCode and workshopCode")
             if pmember and pmember['workshopCode'] == workshopCode:
                 email = pmember['email']
+                log.info('got pmember email %s '%email)
                 returnPage = "/derived/6_guest_signup.bootstrap"
                 c.w = getWorkshopByCode(workshopCode)
                 if 'addItem' in request.params:
