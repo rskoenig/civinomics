@@ -13,8 +13,15 @@ img.small-logo{
    max-height:50px;
    margin-bottom:0px;
 }
+h1.workshop-title{
+    margin-top:0;
+    margin-bottom:20px;
+}
 .workshop-title{
    color:black;
+}
+.nav.nav-pills.pull-left.geo-breadcrumbs{
+    margin-bottom:0;
 }
 .civ-navbar .container .brand{
    padding-bottom: 0px;

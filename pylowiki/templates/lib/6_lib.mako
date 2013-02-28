@@ -349,7 +349,7 @@
                 city = 'City of ' + city
     %>
     % if 'user' in session:
-    <ul class="nav nav-pills pull-left">
+    <ul class="nav nav-pills pull-left geo-breadcrumbs">
         % if c.scope == 'planet':
             <li class="active"> <a href="/workshops/geo/earth">Earth</a><span class="divider">/</span></li>
         % else:
