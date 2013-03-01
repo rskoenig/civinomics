@@ -161,7 +161,7 @@ def sendWelcomeMail(u):
     textMessage = fp.read()
     fp.close()
 
-    subject = 'Welcome to Civinomics!'
+    subject = "Civinomics: let's get started!"
     fromEmail = c.conf['activation.email']
     toEmail = u['email']
     
