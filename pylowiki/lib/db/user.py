@@ -152,41 +152,6 @@ def generatePassword():
 def hashPassword(password):
     return md5(password + config['app_conf']['auth.pass.salt']).hexdigest()
 
-def sendWelcomeMail(u): 
-    emailDir = config['app_conf']['emailDirectory']
-    txtFile = emailDir + "/welcome.txt"
-
-    # open and read the text file
-    fp = open(txtFile, 'r')
-    textMessage = fp.read()
-    fp.close()
-
-    subject = "Civinomics: let's get started!"
-    fromEmail = c.conf['activation.email']
-    toEmail = u['email']
-    
-    mailLib.send(toEmail, fromEmail, subject, textMessage)
-       
-def sendActivationMail(recipient, activationLink):
-    subject = 'Civinomics Account Activation'
-    
-    emailDir = config['app_conf']['emailDirectory']
-    txtFile = emailDir + "/activate.txt"
-
-    # open and read the text file
-    fp = open(txtFile, 'r')
-    textMessage = fp.read()
-    fp.close()
-    
-    # do the substitutions
-    textMessage = textMessage.replace('${c.activationLink}', activationLink)
-
-    fromEmail = c.conf['activation.email']
-    toEmail = recipient
-
-    mailLib.send(toEmail, fromEmail, subject, textMessage)
-
-
 class User(object):
     def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
         u = Thing('user')
@@ -245,7 +210,7 @@ class User(object):
         Revision(u, u)
         
         # send the activation email
-        sendActivationMail(u['email'], url)
+        mailLib.sendActivationMail(u['email'], url)
         
         log.info("Successful account creation (deactivated) for %s" %toEmail)
     

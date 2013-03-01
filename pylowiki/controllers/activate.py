@@ -9,6 +9,7 @@ from pylowiki.lib.mail import send
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.mail            as mailLib
 
 import time
 
@@ -31,7 +32,7 @@ class ActivateController(BaseController):
                         session["userURL"] = user['url']
                         session.save()
                         c.authuser = user
-                        userLib.sendWelcomeMail(user)
+                        mailLib.sendWelcomeMail(user)
                         if 'afterLoginURL' in session:
                             returnURL = session['afterLoginURL']
                             session.pop('afterLoginURL')
