@@ -2,7 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
 
-<div class="row" ng-app="civ">
+<div class="row-fluid" ng-app="civ">
    <div class="span12 well workshop-panel">
       <div class="row-fluid">
          <div class="span10"> <!-- geographic breadcrumbs -->
@@ -11,7 +11,11 @@
             % endif
          </div><!-- /geographic breadcrumbs -->
          <div class="span2"> <!-- watch button -->
-            ${helpers.watchButton()}
+            <%
+                helpers.watchButton()
+                if c.privs['admin'] or c.privs['facilitator']:
+                    helpers.configButton(c.w)
+           %>
          </div><!-- /watch button -->
       </div> <!-- /.row-fluid -->
       <div class="row-fluid">

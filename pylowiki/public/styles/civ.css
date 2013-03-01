@@ -3,9 +3,6 @@ body{
    font-weight: normal;
 }
 
-.container, .navbar-static-top .container, .navbar-fixed-top .container, .navbar-fixed-bottom .container{
-   width:1010px;
-}
 img.small-logo{
    height: 35px;
 }
@@ -106,15 +103,18 @@ form.addGoal{
   margin-right: -10px;
   margin-top: -10px;
 }
-
+.section-header-inner{
+   border-top: 1px solid #ddd;
+}
+.section-header.smaller.section-header-inner{
+    margin-top:15px;
+}
 .section-wrapper .section-header.smaller{
     min-height:30px;
 }
-
 .section-wrapper .activity {
   padding: 10px;
 }
-
 .wrap-workshop{
     border: 5px solid #075D00;
     background-color: gainsboro;
@@ -127,13 +127,10 @@ form.addGoal{
     border: 5px solid #D15D00;
 }
 
-.section-wrapper.activityStream{
-   height:250px;
-}
 .section-wrapper.overview{
    height:435px;
 }
-.section-wrapper.listening{
+.section-wrapper.information{
    height:173px;
 }
 .section-wrapper .browse {
@@ -632,45 +629,6 @@ the same height. You can optionally uncomment the
 lines below to support arbitrary height, but know
 that IE7/8 do not support :nth-child.
 -------------------------------------------------- */
-.block-grid { display: block; overflow: hidden; padding: 0; }
-.block-grid > li { display: block; height: auto; float: left; }
-.block-grid.one-up { margin: 0; margin: 0 -8px; }
-.block-grid.one-up > li { width: 100%; padding: 0 0 15px; padding: 0 8px 8px; }
-.block-grid.two-up { margin: 0 -15px; margin: 0 -8px; }
-.block-grid.two-up > li { width: 50%; padding: 0 15px 15px; padding: 0 8px 8px; }
-.block-grid.two-up > li:nth-child(2n+1) { clear: both; }
-.block-grid.three-up { margin: 0 -12px; margin: 0 -8px; }
-.block-grid.three-up > li { width: 33.33333%; padding: 0 12px 12px; padding: 0 8px 8px; }
-.block-grid.three-up > li:nth-child(3n+1) { clear: both; }
-.block-grid.four-up { margin: 0 -10px; }
-.block-grid.four-up > li { width: 25%; padding: 0 10px 10px; }
-.block-grid.four-up > li:nth-child(4n+1) { clear: both; }
-.block-grid.five-up { margin: 0 -8px; }
-.block-grid.five-up > li { width: 20%; padding: 0 8px 8px; }
-.block-grid.five-up > li:nth-child(5n+1) { clear: both; }
-.block-grid.six-up { margin: 0 -8px; }
-.block-grid.six-up > li { width: 16.66667%; padding: 0 8px 8px; }
-.block-grid.six-up > li:nth-child(6n+1) { clear: both; }
-.block-grid.seven-up { margin: 0 -8px; }
-.block-grid.seven-up > li { width: 14.28571%; padding: 0 8px 8px; }
-.block-grid.seven-up > li:nth-child(7n+1) { clear: both; }
-.block-grid.eight-up { margin: 0 -8px; }
-.block-grid.eight-up > li { width: 12.5%; padding: 0 8px 8px; }
-.block-grid.eight-up > li:nth-child(8n+1) { clear: both; }
-.block-grid.nine-up { margin: 0 -8px; }
-.block-grid.nine-up > li { width: 11.11111%; padding: 0 8px 8px; }
-.block-grid.nine-up > li:nth-child(9n+1) { clear: both; }
-.block-grid.ten-up { margin: 0 -8px; }
-.block-grid.ten-up > li { width: 10%; padding: 0 8px 8px; }
-.block-grid.ten-up > li:nth-child(10n+1) { clear: both; }
-.block-grid.eleven-up { margin: 0 -8px; }
-.block-grid.eleven-up > li { width: 9.09091%; padding: 0 8px 8px; }
-.block-grid.eleven-up > li:nth-child(11n+1) { clear: both; }
-.block-grid.twelve-up { margin: 0 -8px; }
-.block-grid.twelve-up > li { width: 8.33333%; padding: 0 8px 8px; }
-.block-grid.twelve-up > li:nth-child(12n+1) { clear: both; }
-
-
 
 .clearing-blackout { background: black; background: rgba(0, 0, 0, 0.8); position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 999; }
 .clearing-blackout .clearing-close { display: block; }
@@ -694,12 +652,8 @@ that IE7/8 do not support :nth-child.
 
 .clearing-main-right { right: 10px; content: ""; display: block; width: 0; height: 0; border: solid 16px; border-color: transparent transparent transparent white; }
 
-.block-grid.three-up > li:nth-child(3n+1) { clear: none; }
-
 ul[data-clearing] li { display: block; }
 ul[data-clearing] li.clearing-feature ~ li { display: none; }
-ul[data-clearing].gallery { max-height:170px; }
-
 .clearing-assembled .clearing-container .carousel { background: black; background: rgba(0, 0, 0, 0.75); height: 150px; margin-top: 5px; }
 .clearing-assembled .clearing-container .visible-img { background: black; background: rgba(0, 0, 0, 0.75); overflow: hidden; }
 .clearing-assembled .clearing-container ul[data-clearing] { z-index: 999; width: 200%; height: 100%; margin-left: 0; position: relative; left: 0; }
@@ -707,24 +661,19 @@ ul[data-clearing].gallery { max-height:170px; }
 .clearing-assembled .clearing-container ul[data-clearing] li.fix-height img { min-height: 100%; height: 100%; max-width: none; }
 .clearing-assembled .clearing-container ul[data-clearing] li img { cursor: pointer !important; min-width: 100% !important; }
 .clearing-assembled .clearing-container ul[data-clearing] li.visible { border-top: 4px solid white; }
+.gallery-wrapper{
+   width:35%; float:left; margin-right:15px; border:solid 2px green; padding:2px;
+}
+ul.gallery{
+   overflow: hidden;
+}
 
-/* Clearing --- */
-  /*              
-  .clearing-main-right, .clearing-main-left { height: 100%; width: 40px; top: 0; border: none; }
-  .clearing-main-right:before, .clearing-main-left:before { position: absolute; top: 50%; }
-  .clearing-main-left { left: 0; }
-  .clearing-main-left:before { left: 5px; content: ""; display: block; width: 0; height: 0; border: solid 16px; border-color: transparent white transparent transparent; }
-  .clearing-main-right { height: 100%; right: 0; }
-  .clearing-main-right:before { content: ""; display: block; width: 0; height: 0; border: solid 16px; border-color: transparent transparent transparent white; } }
-
-.clearing-container { margin: 0; }
-  .clearing-close { z-index: 99; font-size: 37px; top: 0px; right: 5px; }
-  .clearing-caption { position: fixed; bottom: 0; left: 0; padding: 10px !important; line-height: 1.3; }
-  .clearing-main-right, .clearing-main-left { display: none; }
-  .clearing-blackout.clearing-assembled .visible-img, .clearing-blackout.clearing-assembled .clearing-container { height: 100%; }
-  .clearing-blackout.clearing-assembled ul[data-clearing] { display: none; }
-  */
-  
+li.thumbnail-gallery{
+   margin-bottom:0;
+}
+.row-fluid .span4{
+   width:30%;
+}
   /* guiders */
   
   .guider {

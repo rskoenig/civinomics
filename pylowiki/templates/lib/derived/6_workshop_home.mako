@@ -10,7 +10,16 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="whoListening(people)">
+<%def name="whoListening()">
+   <%
+       if c.listeners:
+           listenOrFacilitate = "Who's listening?"
+           people = c.listeners
+       else:
+           listenOrFacilitate = "Facilitators"
+           people = c.facilitators
+   %>
+   <h4 class="section-header smaller section-header-inner"> ${listenOrFacilitate} </h4>
    <ul class="listeners">
       <% counter = 1 %>
       % for person in people:
@@ -29,6 +38,11 @@
 </%def>
 
 <%def name="showActivity(activity)">
+    <h4 class="section-header smaller section-header-inner"> Activity 
+        % if c.w['public_private'] == 'public':
+            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
+        %endif            
+    </h4>
     <%
         numItems = 5
         shownItems = 0
@@ -188,22 +202,33 @@
       slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
       slideNum = 0
    %>
-   <ul class="block-grid gallery" data-clearing>
-      % for slide in slides:
-         %if slide['deleted'] != '1':
-            ${_slide(slide, slideNum)}
-            <% slideNum += 1 %>
-         % endif
-      % endfor
+   <ul class="gallery thumbnails" data-clearing>
+      <% 
+         numSlides = len(slides)
+         for slide in slides:
+            if slide['deleted'] != '1':
+               _slide(slide, slideNum, numSlides)
+               slideNum += 1
+      %>
    </ul>
 </%def>
 
-<%def name="_slide(slide, slideNum)">
-   % if slideNum == 0:
-      <li class="clearing-feature">
-   % else:
-      <li>
-   % endif
+<%def name="_slide(slide, slideNum, numSlides)">
+   <% 
+      if slideNum == 0:
+         spanX = "span12"
+      else:
+         if slideNum <= 3:
+            if numSlides == 2:
+               spanX = "span4 offset4 thumbnail-gallery"
+            elif numSlides == 3:
+               spanX = "span4 offset1 thumbnail-gallery"
+            elif numSlides == 4:
+               spanX = "span4 thumbnail-gallery"
+         else:
+            spanX = "noShow"
+   %>
+      <li class="${spanX}">
       % if slide['pictureHash'] == 'supDawg':
          <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
             <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
@@ -213,13 +238,18 @@
             <img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
          </a>
       % endif
+      % if slideNum == 0:
+         <small class="centered">${slide['title']}</small>
+      % endif
    </li>
 </%def>
 
 <%def name="showInfo(workshop)">
+    <div class="">
     % if c.information and 'data' in c.information:
         ${misaka.html(c.information['data']) | n}
     % endif
+    </div>
 </%def>
 
 <%def name="showGoals(goals)">
