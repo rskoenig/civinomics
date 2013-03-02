@@ -35,13 +35,13 @@
                     <table class="table table-hover table-condensed">
                     <tbody>
                     % for item in c.facilitatorWorkshops:
-                        <tr><td>${helpers.showWorkshop(item)}</td></tr>
+                        <tr><td>${helpers.showWorkshop(item, role = "Facilitating")}</td></tr>
                     % endfor
                     % for item in c.listeningWorkshops:
-                        <tr><td>${helpers.showWorkshop(item)}</td></tr>
+                        <tr><td>${helpers.showWorkshop(item, role = "Listening")}</td></tr>
                     % endfor
                     % for item in c.interestedWorkshops:
-                        <tr><td>${helpers.showWorkshop(item)}</td></tr>
+                        <tr><td>${helpers.showWorkshop(item, role = "Watching")}</td></tr>
                     % endfor
                     </tbody>
                     </table>

@@ -30,9 +30,13 @@
             if 'imageOnly' in kwargs:
                 if kwargs['imageOnly'] == True:
                     return
+            if 'role' in kwargs:
+                role = kwargs['role']
+            else:
+                role = ''
         %>
         <div class="media-body">
-            <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading">${workshop['title']}</h5></a>
+            <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading"><span class="label label-inverse">${role}</span> ${workshop['title']}</h5></a>
             ${workshop['description']}
         </div>
     </div>
