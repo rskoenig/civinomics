@@ -9,35 +9,35 @@ import pylowiki.lib.utils           as utils
 log = logging.getLogger(__name__)
 
 # Getters
-def isFacilitator( userID, workshopID ):
-   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('workshopID', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '0'))).all()
+def isFacilitator( user, workshop ):
+   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopID', workshop.id))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '0'))).all()
    if f:
       return True
    else:
       return False
 
-def isPendingFacilitator( userID, workshopID ):
-   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('workshopID', workshopID))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '1'))).all()
+def isPendingFacilitator( user, workshop ):
+   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopID', workshop.id))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '1'))).all()
    if f:
       return True
    else:
       return False
 
-def getFacilitatorsByWorkshop( workshopID, disabled = '0'):
+def getFacilitatorsByWorkshop( workshop, disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('workshopID', workshopID))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('workshopID', workshop.id))).all()
     except:
         return False
 
-def getFacilitatorsByUser(userID, disabled = '0'):
+def getFacilitatorsByUser(user, disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('disabled', disabled))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
 
-def getFacilitatorsByUserAndWorkshop(userID, workshopID, disabled = '0'):
+def getFacilitatorsByUserAndWorkshop(user, workshop, disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = userID).filter(Thing.data.any(wc('workshopID', workshopID))).filter(Thing.data.any(wc('disabled', disabled))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopID', workshop.id))).filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
 

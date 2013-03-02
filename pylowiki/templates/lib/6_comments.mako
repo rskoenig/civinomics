@@ -1,7 +1,6 @@
 <%!
     from pylowiki.lib.db.user import getUserByID, isAdmin
     import pylowiki.lib.db.user         as userLib
-    import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.revision     as revisionLib
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment

@@ -20,7 +20,7 @@ log = logging.getLogger(__name__)
 def facilitatorAlerts(thing):
     if 'workshopCode' in thing:
         workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
-        facilitators = facilitatorLib.getFacilitatorsByWorkshop(workshop.id)
+        facilitators = facilitatorLib.getFacilitatorsByWorkshop(workshop)
         for facilitator in facilitators:
             if ('flagAlerts' in facilitator and facilitator['flagAlerts'] == '1' and thing.objType == 'flag') or ('itemAlerts' in facilitator and facilitator['itemAlerts'] == '1'):
                 facilitatorUser = userLib.getUserByID(facilitator.owner)

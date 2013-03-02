@@ -77,7 +77,7 @@ class ListenerController(BaseController):
         abort(404)
 
     def listenerResignHandler(self):
-        if c.authuser.id != c.user.id and not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+        if c.authuser.id != c.user.id and not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, c.w):
             abort(404)
             
         listeners = listenerLib.getListenersForUser(c.user)

@@ -7,7 +7,6 @@ from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.user         as userLib
-import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.helpers         as h

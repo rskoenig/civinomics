@@ -69,7 +69,7 @@ class ProfileController(BaseController):
             c.browse = True
             
 
-        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user.id)
+        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
         c.facilitatorWorkshops = []
         c.pendingFacilitators = []
         for f in facilitatorList:
@@ -427,7 +427,7 @@ class ProfileController(BaseController):
             else:
                 c.admin = False
             c.pendingFacilitators = []
-            fList = facilitatorLib.getFacilitatorsByUser(c.user.id)
+            fList = facilitatorLib.getFacilitatorsByUser(c.user)
             for f in fList:
                 if 'pending' in f and f['pending'] == '1':
                     c.pendingFacilitators.append(f)

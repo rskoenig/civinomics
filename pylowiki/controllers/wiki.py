@@ -27,7 +27,7 @@ class WikiController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
-        if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+        if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, c.w):
             abort(404)
    
     def updateBackgroundHandler(self, workshopCode, workshopURL):

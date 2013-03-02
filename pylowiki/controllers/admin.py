@@ -56,7 +56,7 @@ class AdminController(BaseController):
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['enable', 'disable', 'immunify']:
-            if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
+            if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
             # Surely there must be a more elegant way to pass along this common variable
             if 'reason' not in request.params:
@@ -68,7 +68,7 @@ class AdminController(BaseController):
         if action in ['edit']:
             if c.thing.owner == c.authuser.id:
                 pass
-            elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, workshop.id):
+            elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
     
     def users(self):

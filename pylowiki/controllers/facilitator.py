@@ -39,7 +39,7 @@ class FacilitatorController(BaseController):
            wURL = iList[1]
            w = workshopLib.getWorkshopByCode(wCode)
            facilitatorLib.Facilitator(c.user, w, 1)
-           fList = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user.id, w.id)
+           fList = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, w)
            eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
            alert = {'type':'success'}
            alert['title'] = 'Success. CoFacilitation invitation issued.'
@@ -59,7 +59,7 @@ class FacilitatorController(BaseController):
             wCode = request.params['workshopCode']
             wURL = request.params['workshopURL']
             c.w = workshopLib.getWorkshop(wCode, utilsLib.urlify(wURL))
-            fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id)
+            fList = facilitatorLib.getFacilitatorsByUser(c.authuser)
             doF = False
             for f in fList:
                if int(f['workshopID']) == int(c.w.id):
@@ -92,7 +92,7 @@ class FacilitatorController(BaseController):
 
     @h.login_required
     def facilitateResignHandler(self, code, url):
-        fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id, 0)
+        fList = facilitatorLib.getFacilitatorsByUser(c.authuser, 0)
         doF = False
         for f in fList:
            if int(f['workshopID']) == int(c.w.id) and f['disabled'] != '1':
@@ -120,7 +120,7 @@ class FacilitatorController(BaseController):
         if doF and c.authuser.id == doF.owner:
            doF['disabled'] = '1'
            dbhelpersLib.commit(doF)
-           eventLib.Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], w['title'], resignReason), doF, c.authuser)
+           eventLib.Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], c.w['title'], resignReason), doF, c.authuser)
            alert = {'type':'success'}
            alert['title'] = 'Success. CoFacilitation resignation successful.'
            session['alert'] = alert
