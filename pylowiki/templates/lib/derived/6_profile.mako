@@ -242,9 +242,7 @@
                     wlisten = listenerLib.getListener(c.user, w)
                     if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
                         wListF.append(w)
-                    if not wlisten:
-                        wListL.append(w)
-                    elif wlisten['pending'] == '0':
+                    if not wlisten or wlisten['disabled'] == '1':
                         wListL.append(w)
                         
         %>

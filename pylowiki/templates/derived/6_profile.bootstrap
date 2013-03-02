@@ -32,70 +32,19 @@
                 </div>
                 <div class="tab-pane" id="tab-workshops">
                     ${helpers.inviteCoFacilitate()}
-                    <div class="section-wrapper">
-                        <div class="browse">
-                            <h3 class="centered section-header">
-                                <div class="row-fluid">
-                                    <div class="span6">
-                                        <div class="centered">Facilitating</div>
-                                    </div>
-                                    <div class="span6">
-                                        <div class="centered">Watching</div>
-                                    </div>
-                                </div>
-                            </h3>
-                            <div class="row-fluid">
-                                <div class="span6 right-border">
-                                    % if len(c.facilitatorWorkshops) == 0:
-                                        There doesn't seem to be anything here!
-                                    % else:
-                                        % for item in c.facilitatorWorkshops:
-                                            ${helpers.showWorkshop(item)}
-                                        % endfor
-                                    % endif
-                                </div>
-                                <div class="span6">
-                                    % if len(c.interestedWorkshops) == 0 :
-                                        There doesn't seem to be anything here!
-                                    % else:
-                                        % for item in c.interestedWorkshops:
-                                            ${helpers.showWorkshop(item)}
-                                        % endfor
-                                    % endif
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <%doc>
-                        <div class="span6">
-                            <div class="section-wrapper">
-                                <div class="browse">
-                                    <h3 class="centered section-header">Facilitating</h3>
-                                    % if len(c.facilitatorWorkshops) == 0:
-                                        There doesn't seem to be anything here!
-                                    % else:
-                                        % for item in c.facilitatorWorkshops:
-                                            ${helpers.showWorkshop(item)}
-                                        % endfor
-                                    % endif
-                                </div>
-                            </div>
-                        </div>
-                        <div class="span6">
-                            <div class="section-wrapper">
-                                <div class="browse">
-                                    <h3 class="centered section-header">Watching</h3>
-                                    % if len(c.followingWorkshops) == 0:
-                                        There doesn't seem to be anything here!
-                                    % else:
-                                        % for item in c.followingWorkshops:
-                                            ${helpers.showWorkshop(item)}
-                                        % endfor
-                                    % endif
-                                </div>
-                            </div>
-                        </div>
-                    </%doc>
+                    <table class="table table-hover table-condensed">
+                    <tbody>
+                    % for item in c.facilitatorWorkshops:
+                        <tr><td>${helpers.showWorkshop(item)}</td></tr>
+                    % endfor
+                    % for item in c.listeningWorkshops:
+                        ${helpers.showWorkshop(item)}
+                    % endfor
+                    % for item in c.interestedWorkshops:
+                        ${helpers.showWorkshop(item)}
+                    % endfor
+                    </tbody>
+                    </table>
                 </div>
             </div>
         </div>
