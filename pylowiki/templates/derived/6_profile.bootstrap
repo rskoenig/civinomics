@@ -38,10 +38,10 @@
                         <tr><td>${helpers.showWorkshop(item)}</td></tr>
                     % endfor
                     % for item in c.listeningWorkshops:
-                        ${helpers.showWorkshop(item)}
+                        <tr><td>${helpers.showWorkshop(item)}</td></tr>
                     % endfor
                     % for item in c.interestedWorkshops:
-                        ${helpers.showWorkshop(item)}
+                        <tr><td>${helpers.showWorkshop(item)}</td></tr>
                     % endfor
                     </tbody>
                     </table>
