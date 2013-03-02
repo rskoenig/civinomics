@@ -107,13 +107,14 @@
                         <td>${fPending}</td>
                     % endif
                     % if len(c.f) > 1 and fUser.id == c.authuser.id:
-                        <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
-                            &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
-                            <button type="submit" class="gold" value="Resign">Resign</button>
+                        </tr><tr><td colspan=3>
+                        <form class="form-inline" id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
+                            Resign as facilitator? &nbsp;&nbsp;Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+                            <button type="submit" class="btn btn-warning" value="Resign">Resign</button>
                             <br />
                         </form>
+                        </td>
                     % endif
-                    </td>
                 </tr>
             % endfor
             </tbody>
@@ -125,14 +126,17 @@
             </thead>
             <tbody>
             % for f in c.df:
+                <tr><td>
                 <% 
                     fUser = userLib.getUserByID(f.owner)
                     fEvents = eventLib.getParentEvents(f) 
+                    lib_6.userImage(fUser, className = 'avatar small-avatar')
+                    lib_6.userLink(fUser)
                 %>
-                <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
+                <br />
                 % if fEvents:
                     % for fE in fEvents:
-                        &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+                        <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
                     % endfor
                 % endif
                 </tr></td>
@@ -151,22 +155,26 @@
         </thead>
         <tbody>
         % for listener in c.listeners:
+            <tr><td>
             <%
-                lUser = userLib.getUserByCode(listener['userCode'])
-                lEvents = eventLib.getParentEvents(listener)
                 lPending = ""
                 if listener['pending'] == '1':
                     lPending = "(Pending)"
+                lUser = userLib.getUserByCode(listener['userCode'])
+                lEvents = eventLib.getParentEvents(listener)
+                lib_6.userImage(lUser, className = 'avatar small-avatar')
+                lib_6.userLink(lUser)
+
             %>
-            <tr><td><a href="/profile/${lUser['urlCode']}/${lUser['url']}">${lUser['name']}</a> ${lPending}<br />
-            <form id="resignListener" class="well form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
+            ${lPending}<br />
+            <form id="resignListener" class="form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
             Disable litener:<br />
-            &nbsp; &nbsp; &nbsp;Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+            Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
             <button type="submit" class="btn btn-warning" value="Resign">Disable</button>
             <br />
             </form><br />
-            <form id="titleListener" class="well form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
+            <form id="titleListener" class="form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
             Add a job title to listener (18 characters max):<br />
             <% 
                 if 'title' in listener:
@@ -174,7 +182,7 @@
                 else:
                     ltitle = ""
             %>
-            &nbsp; &nbsp; &nbsp;Title: <input type="text" name="listenerTitle" value="${ltitle}" size="18" maxlength="18"> &nbsp;&nbsp;&nbsp;
+            Title: <input type="text" name="listenerTitle" value="${ltitle}" size="18" maxlength="18"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
             <button type="submit" class="btn btn-warning">Save Title</button>
             <br />
@@ -182,7 +190,7 @@
 
             % if lEvents:
                 % for lE in lEvents:
-                    &nbsp; &nbsp; &nbsp; <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
+                    <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
                 % endfor
             % endif
             </td></tr>
@@ -196,14 +204,18 @@
             </thead>
             <tbody>
             % for listener in c.disabledListeners:
+                <tr><td>
                 <%
                     lUser = userLib.getUserByCode(listener['userCode'])
                     lEvents = eventLib.getParentEvents(listener)
+                    lib_6.userImage(lUser, className = 'avatar small-avatar')
+                    lib_6.userLink(lUser)
+
                 %>
-                <tr><td><a href="/profile/${lUser['urlCode']}/${lUser['url']}">${lUser['name']}</a> (Disabled)<br />
+                <br />
                 % if lEvents:
                     % for lE in lEvents:
-                        &nbsp; &nbsp; &nbsp; <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
+                        <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
                     % endfor
                 % endif
                 </tr></td>
