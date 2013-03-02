@@ -41,7 +41,7 @@
                         <tr><td>${helpers.showWorkshop(item, role = "Listening")}</td></tr>
                     % endfor
                     % for item in c.interestedWorkshops:
-                        <tr><td>${helpers.showWorkshop(item, role = "Watching")}</td></tr>
+                        <tr><td>${helpers.showWorkshop(item, role = "Bookmarked")}</td></tr>
                     % endfor
                     </tbody>
                     </table>
