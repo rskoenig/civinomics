@@ -118,21 +118,8 @@ def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'No
     account['urlCode'] = toBase62(account)
     account = generic.linkChildToParent(account, workshop)
     commit(account)
-       
-    subject = 'Information about your new Civinomics Professional Workshop account'
-    
-    emailDir = config['app_conf']['emailDirectory']
-    txtFile = emailDir + "/account.txt"
 
-    # open and read the text file
-    fp = open(txtFile, 'r')
-    textMessage = fp.read()
-    fp.close()
-
-    fromEmail = 'Civinomics Billing <billing@civinomics.com>'
-    toEmail = billingEmail
-
-    mailLib.send(toEmail, fromEmail, subject, textMessage)
+    mailLib.sendAccountMail(billingEmail)
     
     return account
 

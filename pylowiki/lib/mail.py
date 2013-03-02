@@ -92,4 +92,20 @@ def sendWorkshopMail(recipient):
     toEmail = recipient
 
     send(toEmail, fromEmail, subject, textMessage)
+    
+def sendAccountMail(recipient):
+           
+    subject = 'Information about your new Civinomics Professional Workshop account'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/account.txt"
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+
+    fromEmail = 'Civinomics Billing <billing@civinomics.com>'
+
+    send(recipient, fromEmail, subject, textMessage)
 
