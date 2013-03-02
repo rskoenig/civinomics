@@ -122,5 +122,5 @@ class ListenerController(BaseController):
             dbHelpers.commit(listener)
             eventLib.Event('Listener Title Updated', '%s updated listener title to %s'%(c.authuser['name'], listener['title']), listener, c.authuser)
             
-        return redirect("/workshop/%s/%s/dashboard"%(c.w['urlCode'], c.w['url']))
+        return redirect("/workshop/%s/%s/preferences"%(c.w['urlCode'], c.w['url']))
             
