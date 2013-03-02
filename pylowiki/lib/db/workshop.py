@@ -239,43 +239,7 @@ def setWorkshopPrivs(workshop):
         c.privs['participant'] = isScoped(c.authuser, workshop)
         c.privs['guest'] = False
         c.privs['visitor'] = False   
-    
-def sendPMemberInvite(workshop, sender, recipient, message):
-    workshopName = workshop['title']
-    senderName = sender['name']
 
-    if message and message != '':
-        message = "\nHere's a message from your friend:\n" + message
-    
-    emailDir = config['app_conf']['emailDirectory']
-    myURL = config['app_conf']['site_base_url']
-    txtFile = emailDir + "/private_invite.txt"
-    
-    browseLink = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
-    if 'paste.testing_variables' in request.environ:
-            request.environ['paste.testing_variables']['browseUrl'] = myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
-    else:
-        guest = privateMemberLib.getPrivateMember(workshop['urlCode'], recipient)
-        browseLink = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
-        if 'paste.testing_variables' in request.environ:
-            request.environ['paste.testing_variables']['browseUrl'] = myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
-   
-    # open and read the text file
-    fp = open(txtFile, 'r')
-    textMessage = fp.read()
-    fp.close()
-    
-    # do the substitutions
-    textMessage = textMessage.replace('${c.sender}', senderName)
-    textMessage = textMessage.replace('${c.workshopName}', workshopName)
-    textMessage = textMessage.replace('${c.inviteMessage}', message)
-    textMessage = textMessage.replace('${c.browseLink}', browseLink)
-
-    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
-    toEmail = recipient
-    subject = 'An invitation from ' + senderName
-
-    mailLib.send(toEmail, fromEmail, subject, textMessage)
     
 def sendWorkshopMail(workshop, recipient):    
     emailDir = config['app_conf']['emailDirectory']

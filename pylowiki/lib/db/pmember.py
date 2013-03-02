@@ -51,16 +51,17 @@ def getPrivateMemberWorkshops(user, deleted = '0'):
     retlist = pmalist + pmdlist
     return retlist
 
-class PMember(object):
-    def __init__( self, workshopCode, email, type, owner, user = None):
-        p = Thing('pmember', owner.id)
-        p['workshopCode'] = workshopCode
-        p['email'] = email
-        # type - one of A for address or D for domain
-        p['type'] = type
-        p['deleted'] = '0'
-        commit(p)
-        p['urlCode'] = toBase62(p)
-        commit(p)
-        if user:
-            p = genericLib.linkChildToParent(p, user)
+def PMember(workshopCode, email, type, owner, user = None):
+    p = Thing('pmember', owner.id)
+    p['workshopCode'] = workshopCode
+    p['email'] = email
+    # type - one of A for address or D for domain
+    p['type'] = type
+    p['deleted'] = '0'
+    commit(p)
+    p['urlCode'] = toBase62(p)
+    commit(p)
+    if user:
+        p = genericLib.linkChildToParent(p, user)
+
+    return p

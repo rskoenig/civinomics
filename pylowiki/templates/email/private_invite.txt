@@ -2,7 +2,7 @@
 Greetings!
 
 ${c.sender} has invited you to participate in a private Civinomics workshop 
-called ${c.workshopName}. 
+called "${c.workshopName}". 
 ${c.inviteMessage}
 
 Civinomics workshops are online spaces where groups of people can come together and make decisions 

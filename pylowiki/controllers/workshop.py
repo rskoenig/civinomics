@@ -38,6 +38,7 @@ import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.mail            as mailLib
 import webhelpers.feedgenerator     as feedgenerator
 
 import pylowiki.lib.db.dbHelpers as dbHelpers
@@ -430,25 +431,29 @@ class WorkshopController(BaseController):
                                 werror = 1
                                 werrMsg = werrMsg + 'Not valid email address: ' + mEmail
                             else:
-                                pTest = pMemberLib.getPrivateMember(workshopCode, mEmail)
-                                if pTest:
-                                    if pTest['deleted'] == '1':
-                                        pTest['deleted'] = '0'
-                                        dbHelpers.commit(pTest)
+                                pMember = pMemberLib.getPrivateMember(workshopCode, mEmail)
+                                user = userLib.getUserByEmail(mEmail)
+                                if not user:
+                                    user = None
+                                myURL = config['app_conf']['site_base_url']
+                                browseURL = '%s/workshop/%s/%s'%(myURL, c.w['urlCode'], c.w['url'])
+                                    
+                                if pMember:
+                                    if pMember['deleted'] == '1':
+                                        pMember['deleted'] = '0'
+                                        dbHelpers.commit(pMember)
                                     else:
                                         werror = 1
                                         werrMsg += mEmail + ' already a member.'
                                 else:
-                                    # see if they are already a user
-                                    user = userLib.getUserByEmail(mEmail)
-                                    if not user:
-                                        user = None
-                                    pMemberLib.PMember(workshopCode, mEmail, 'A', c.w, user)
+                                    pMember = pMemberLib.PMember(workshopCode, mEmail, 'A', c.w, user)
                                     
                                 inviteMsg = ''
                                 if 'inviteMsg' in request.params:
-                                    inviteMsg = request.params['inviteMsg']
-                                workshopLib.sendPMemberInvite(c.w, c.authuser, mEmail, inviteMsg)
+                                    inviteMsg = "\nHere's a message from your friend:\n" + request.params['inviteMsg']
+                                if not user:
+                                    browseURL = '%s/guest/%s/%s'%(myURL, pMember['urlCode'], c.w['urlCode'])
+                                mailLib.sendPMemberInvite(c.w['title'], c.authuser['name'], mEmail, inviteMsg, browseURL)
                                 counter += 1
                 
                     if counter:

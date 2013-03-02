@@ -1,5 +1,5 @@
 import os
-from pylons import config
+from pylons import config, request
 
 def send( send_too, send_from, subject, message ):
 
@@ -48,5 +48,30 @@ def sendActivationMail(recipient, activationLink):
 
     fromEmail = config['activation.email']
     toEmail = recipient
+
+    send(toEmail, fromEmail, subject, textMessage)
+    
+def sendPMemberInvite(workshopName, senderName, recipient, message, browseURL):
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/private_invite.txt"
+    
+    if 'paste.testing_variables' in request.environ:
+            request.environ['paste.testing_variables']['browseUrl'] = browseURL
+   
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    # do the substitutions
+    textMessage = textMessage.replace('${c.sender}', senderName)
+    textMessage = textMessage.replace('${c.workshopName}', workshopName)
+    textMessage = textMessage.replace('${c.inviteMessage}', message)
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+    toEmail = recipient
+    subject = 'An invitation from ' + senderName
 
     send(toEmail, fromEmail, subject, textMessage)
