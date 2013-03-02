@@ -85,12 +85,6 @@ class ProfileController(BaseController):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
-                    
-        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-        c.pendingListeners = []
-        for l in listenerList:
-            if 'pending' in l and l['pending'] == '1':
-                c.pendingListeners.append(l)
 
         watching = followLib.getWorkshopFollows(c.user)
         watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
@@ -108,6 +102,16 @@ class ProfileController(BaseController):
                     c.interestedWorkshops.append(workshop)
  
         interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
+        
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+        c.pendingListeners = []
+        c.listeningWorkshops = []
+        for l in listenerList:
+            if 'pending' in l and l['pending'] == '1':
+                c.pendingListeners.append(l)
+            else:
+                lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+                c.listeningWorkshops.append(lw)
         
         c.privateWorkshops = []
         if 'user' in session and c.authuser:
