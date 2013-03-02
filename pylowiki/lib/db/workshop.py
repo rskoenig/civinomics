@@ -238,25 +238,7 @@ def setWorkshopPrivs(workshop):
         c.privs['listener'] = listenerLib.getListener(c.authuser, workshop)
         c.privs['participant'] = isScoped(c.authuser, workshop)
         c.privs['guest'] = False
-        c.privs['visitor'] = False   
-
-    
-def sendWorkshopMail(workshop, recipient):    
-    emailDir = config['app_conf']['emailDirectory']
-    myURL = config['app_conf']['site_base_url']
-
-    txtFile = emailDir + "/workshop.txt"
-    
-    # open and read the text file
-    fp = open(txtFile, 'r')
-    textMessage = fp.read()
-    fp.close()
-
-    subject = 'About your new Civinomics workshop'
-    fromEmail = 'Civinomics Helpdesk <helpdesk@civinomics.com>'
-    toEmail = recipient
-
-    mailLib.send(toEmail, fromEmail, subject, textMessage)
+        c.privs['visitor'] = False
 
 
 def Workshop(title, owner, publicPrivate, type = "personal"):
@@ -299,7 +281,7 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     commit(w)
     
     f = facilitatorLib.Facilitator( c.authuser, w )
-    sendWorkshopMail(w, c.authuser['email'])
+    mailLib.sendWorkshopMail(c.authuser['email'])
     
     return w
         

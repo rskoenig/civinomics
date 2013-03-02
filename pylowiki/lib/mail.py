@@ -75,3 +75,21 @@ def sendPMemberInvite(workshopName, senderName, recipient, message, browseURL):
     subject = 'An invitation from ' + senderName
 
     send(toEmail, fromEmail, subject, textMessage)
+    
+def sendWorkshopMail(recipient):    
+    emailDir = config['app_conf']['emailDirectory']
+    myURL = config['app_conf']['site_base_url']
+
+    txtFile = emailDir + "/workshop.txt"
+    
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+
+    subject = 'About your new Civinomics workshop'
+    fromEmail = 'Civinomics Helpdesk <helpdesk@civinomics.com>'
+    toEmail = recipient
+
+    send(toEmail, fromEmail, subject, textMessage)
+
