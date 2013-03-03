@@ -113,5 +113,5 @@ class ResourceController(BaseController):
         if len(title) > 120:
             title = title[:120]
         newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, c.privs, text = text)
-        alertsLib.facilitatorAlerts(newResource)
+        alertsLib.emailAlerts(newResource)
         return redirect(session['return_to'])

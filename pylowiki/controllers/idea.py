@@ -85,7 +85,7 @@ class IdeaController(BaseController):
         if len(title) > 120:
             title = title[:120]
         newIdea = ideaLib.Idea(c.authuser, title, c.w, c.privs)
-        alertsLib.facilitatorAlerts(newIdea)
+        alertsLib.emailAlerts(newIdea)
         return redirect(session['return_to'])
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):

@@ -218,7 +218,7 @@ class AdminController(BaseController):
             result = 'Marked immune to flagging by %s because %s' %(author['name'], immunifyEvent['reason'])
             return json.dumps({'code':thingCode, 'result':result})
         newFlag = flagLib.Flag(c.thing, c.authuser, workshop = c.w)
-        alertsLib.facilitatorAlerts(newFlag)
+        alertsLib.emailAlerts(newFlag)
         return json.dumps({'code':thingCode, 'result':result})
         
     def immunify(self, thingCode):

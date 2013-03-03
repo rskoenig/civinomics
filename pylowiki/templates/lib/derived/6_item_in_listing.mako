@@ -81,10 +81,10 @@
                 % if thing['disabled'] == '0':
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
                 % endif
-                % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+                % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
                 % endif
-                % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+                % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                 % endif
             </div>
@@ -94,9 +94,9 @@
     <%
         if thing['disabled'] == '0':
             lib_6.flagThing(thing)
-            if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+            if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
                 lib_6.editThing(thing)
-            if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+            if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
                 lib_6.adminThing(thing)
     %>
 </%def>
