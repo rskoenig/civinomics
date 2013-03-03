@@ -491,6 +491,9 @@ ul.listeners > li {
     padding-bottom:0;
     margin-bottom:0;
 }
+.gallery .noShow{
+    display:none;
+}
 .table.user-thing-listing{
     margin-bottom:0;
 }
@@ -657,7 +660,7 @@ ul[data-clearing] li.clearing-feature ~ li { display: none; }
 .clearing-assembled .clearing-container .carousel { background: black; background: rgba(0, 0, 0, 0.75); height: 150px; margin-top: 5px; }
 .clearing-assembled .clearing-container .visible-img { background: black; background: rgba(0, 0, 0, 0.75); overflow: hidden; }
 .clearing-assembled .clearing-container ul[data-clearing] { z-index: 999; width: 200%; height: 100%; margin-left: 0; position: relative; left: 0; }
-.clearing-assembled .clearing-container ul[data-clearing] li { display: block; width: 175px; height: inherit; padding: 0; float: left; overflow: hidden; background: #222; margin-right: 1px; position: relative; }
+.clearing-assembled .clearing-container ul[data-clearing] li { display: block; width: 175px; height: inherit; padding: 0; float: left; overflow: hidden; background: #222; margin-right: 1px; margin-left:1px; position: relative; }
 .clearing-assembled .clearing-container ul[data-clearing] li.fix-height img { min-height: 100%; height: 100%; max-width: none; }
 .clearing-assembled .clearing-container ul[data-clearing] li img { cursor: pointer !important; min-width: 100% !important; }
 .clearing-assembled .clearing-container ul[data-clearing] li.visible { border-top: 4px solid white; }
@@ -828,6 +831,6 @@ li.thumbnail-gallery{
     display: inline;
 }
 .image-thumbnail{
-    max-width:300px;
-    max-height:200px;
+    max-width:150px;
+    max-height:100px;
 }

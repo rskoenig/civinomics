@@ -223,7 +223,7 @@
                spanX = "span4 offset4 thumbnail-gallery"
             elif numSlides == 3:
                spanX = "span4 offset1 thumbnail-gallery"
-            elif numSlides == 4:
+            elif numSlides >= 4:
                spanX = "span4 thumbnail-gallery"
          else:
             spanX = "noShow"
