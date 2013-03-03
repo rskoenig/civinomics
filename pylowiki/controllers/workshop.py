@@ -223,6 +223,9 @@ class WorkshopController(BaseController):
             eventLib.Event('Workshop Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
         else:
             weventMsg += "Changes saved."
+            
+        if not workshopLib.isPublished(c.w):
+            weventMsg += ' Preview your changes by clicking on the workshop name above.'
 
         if werror:
             alert = {'type':'error'}
@@ -275,7 +278,11 @@ class WorkshopController(BaseController):
             
             
             if wchanges:
-                weventMsg = weventMsg + "Updated category tags."
+                weventMsg +=  "Updated category tags."
+                
+            if not workshopLib.isPublished(c.w):
+                weventMsg += ' Preview your changes by clicking on the workshop name above.'
+                
         else:
             werror = 1
             werrMsg += 'Category Tags '

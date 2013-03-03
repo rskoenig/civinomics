@@ -7,7 +7,7 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 
 import pylowiki.lib.db.workshop     as workshopLib
-from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshop
+from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshop, isPublished
 from pylowiki.lib.db.dbHelpers import commit
 from pylowiki.lib.db.slide import Slide, getSlide, forceGetSlide
 from pylowiki.lib.db.slideshow import Slideshow, getSlideshow, getAllSlides
@@ -85,9 +85,12 @@ class SlideshowController(BaseController):
                     s['slideshow_order'] = slide.id
                     commit(s)
                 mainImageLib.setMainImage(c.authuser, c.w, slide)
+            aTitle = 'Upload complete. Please add a caption to new images.'
+            if not isPublished(c.w):
+                aTitle += ' Preview your changes by clicking on the workshop name above.'
             session['confTab'] = "tab4"
             alert = {'type':'success'}
-            alert['title'] = 'Upload complete. Please add a title and caption to new slideshow images below.'
+            alert['title'] = aTitle
             session['alert'] = alert
             session.save()
             """
