@@ -69,18 +69,23 @@
     </br>
     <h2>Report abuse or policy violations</h2>
     </br>
-    <p class="lead">Hi, we're here to help. Before you submit a report, keep in mind that most all objects on Civinomics (comments, ideas, resources, conversations) can be flagged and that this should be your first recourse for any content that you feel is inappropriate. Facilitators and Site Administrators will be notified of flagged objects and can take action as necessary.</p>
-    <p>Example of flagging a comment:</p>
-    <img src="/images/helpCenter/flagEx.png">
+    <p class="lead">Hi, we're here to help.</p>
+    <p>Before you submit a report of abusive behavior, keep in mind that most all objects on Civinomics (comments, ideas, resources, conversations) can be flagged and that this should be your first recourse for any content that you feel is inappropriate. Facilitators and Site Administrators will be notified of flagged objects and can take action as necessary.</p>
+    </br>
+    <div class="offset1"
+        <p><strong>Example of flagging a comment:</strong></p>
+        <img src="/images/helpCenter/flagEx.png">
+    </div>
     </br>
     </br>
-    <p class="lead">If you have already taken this step, or if the problem extends to your personal well being and prviate information, please fill out the fields below so we can assist you as quickly as possible.</p>
-    <form name="reportAbuse" action="/help/abuseHandler" enctype="multipart/form-data" method="post">
+    <p>If you have already taken this step, or if the problem extends to your personal well being and prviate information, please fill out the fields below so we can assist you as quickly as possible.</p>
+    </br>
+    <form name="reportAbuse" action="/help/abuseHandler" enctype="multipart/form-data" method="post" ng-controller="helpForm" ng-submit="submitForm()">
         <fieldset>
             <legend><strong>Report an abusive user</strong></legend>
             <label><strong>Which of the following best describes the problem?</strong></label>
             <label class="radio">
-                <input type="radio" name="problemType" id="problemType1" value="someone is posting my private information" checked>
+                <input type="radio" name="problemType" id="problemType1" value="someone is posting my private information">
                 Someone on Civinomics is posting my private information.
             </label>
             <label class="radio">
@@ -98,7 +103,7 @@
             </br>
             <label><strong>Have you already flagged objects (comments, conversations, ideas or resources) authored by this user?</strong></label>
             <label class="radio">
-                <input type="radio" name="alreadyFlagged" id="alreadyFlagged1" value="YES" checked>
+                <input type="radio" name="alreadyFlagged" id="alreadyFlagged1" value="YES">
                 Yes
             </label>
             <label class="radio">
@@ -107,12 +112,13 @@
             </label>
             </br>
             <label><strong>What username is causing the problem?</strong></label>
-            <input type="text" class="input-xlarge" name="offendingUser" placeholder="">
+            <input type="text" class="input-xlarge" name="offendingUser" ng-model="offendingUser" placeholder="" required>
+            <span class="label label-important" ng-show="offendingUser == ''">Required</span>
             </br>
             </br>
             <label><strong>How long ago did this begin?</strong></label>
             <label class="radio">
-                <input type="radio" name="startTime" id="startTime1" value="24 hours ago" checked>
+                <input type="radio" name="startTime" id="startTime1" value="24 hours ago">
                 24 hours ago
             </label>
             <label class="radio">
@@ -133,9 +139,11 @@
             </label>
             </br>
             <label><strong>Describe the problem in detail.</strong></label>
-            <textarea rows="5" name="problem" class="input-xxlarge"></textarea>
+            <textarea rows="5" name="problem" class="input-xxlarge" ng-model="problemDescription" required></textarea>
+            <span class="label label-important" ng-show="problemDescription == ''">Required</span>
             <div class="form-actions">
-                <button type="submit" class="btn btn-success">Send Report</button>
+                <button class="btn btn-success disabled" ng-show="reportAbuse.$invalid">Send Report</button>
+                <button type="submit" class="btn btn-success" ng-show="reportAbuse.$valid">Send Report</button>
                 <button type="button" class="btn">Cancel</button>
             </div>
         </fieldset>
