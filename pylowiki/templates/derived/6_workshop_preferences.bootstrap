@@ -296,8 +296,8 @@
             });
         });
     </script>
-    % if c.privs['admin']:
+    % if c.privs['admin'] or c.privs['facilitator']:
         <script src="/js/ng/workshop_admin.js" type="text/javascript"></script>
     % endif
-    </%def>
+</%def>
 

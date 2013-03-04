@@ -2,7 +2,7 @@
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
-<html lang="en-US">
+<html lang="en-US" ng-app>
    <head>
       <meta charset="UTF-8">
       <title>${c.title}</title>

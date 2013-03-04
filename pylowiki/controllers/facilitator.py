@@ -154,24 +154,24 @@ class FacilitatorController(BaseController):
             if 'flagAlerts' in facilitator.keys(): # Not needed after DB reset
                 if facilitator['flagAlerts'] == u'1':
                     facilitator['flagAlerts'] = u'0'
-                    eAction = 'Turned off flag alerts'
+                    eAction = 'Turned off'
                 else:
                     facilitator['flagAlerts'] = u'1'
-                    eAction = 'Turned on flag alerts'
+                    eAction = 'Turned on'
             else:
                 facilitator['flagAlerts'] = u'1'
-                eAction = 'Turned on flag alerts'
+                eAction = 'Turned on'
         elif alert == 'items':
             if 'itemAlerts' in facilitator.keys(): # Not needed after DB reset
                 if facilitator['itemAlerts'] == u'1':
                     facilitator['itemAlerts'] = u'0'
-                    eAction = 'Turned off item alerts'
+                    eAction = 'Turned off'
                 else:
                     facilitator['itemAlerts'] = u'1'
-                    eAction = 'Turned on item alerts'
+                    eAction = 'Turned on'
             else:
                 facilitator['itemAlerts'] = u'1'
-                eAction = 'Turned on item alerts'
+                eAction = 'Turned on'
         else:
             return "Error"   
         dbhelpersLib.commit(facilitator)

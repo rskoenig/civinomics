@@ -2,6 +2,7 @@
     import pylowiki.lib.db.workshop as workshopLib
     import pylowiki.lib.db.facilitator as facilitatorLib
     import pylowiki.lib.db.listener as listenerLib
+    import pylowiki.lib.db.user as userLib
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -37,7 +38,39 @@
         %>
         <div class="media-body">
             <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading"><span class="label label-inverse">${role}</span> ${workshop['title']}</h5></a>
-            ${workshop['description']}
+            ${workshop['description']}<br />
+            % if 'user' in session:
+                % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                    % if role == 'Facilitating':
+                        <%
+                            f = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, workshop)[0]
+                            itemsChecked = ''
+                            flagsChecked = ''
+                            if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                                itemsChecked = 'checked'
+                            if 'flagAlerts' in f and f['flagAlerts'] == '1':
+                                flagsChecked = 'checked'
+                        %>
+                        <table class="table table-bordered table-condensed" ng-controller="facilitatorController">
+                        <tbody>
+                        <tr>
+                            <td width="20%">Email alerts</td>
+                            <td width="40%">
+                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                    New items: <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
+                                    <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                </form>
+                            </td>
+                            <td width="40%">
+                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                    New flags: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
+                                    <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
+                                </form>
+                            </td>
+                        </tr></tbody></table>
+                    % endif
+                % endif
+            % endif
         </div>
     </div>
 </%def>
