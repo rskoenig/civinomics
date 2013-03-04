@@ -1,0 +1,31 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="helpers" file="/lib/derived/6_help.mako" />
+
+<div class="container-fluid">
+    <div>
+        <div class="browse">
+            <h3 class="summary"><a href="/help">Help Center</a></h3>
+            </div><!-- browse -->
+                % if c.subSection == 'helpCenter':
+                        ${helpers.helpCenter()}
+                % elif c.subSection == 'faq':
+                        ${helpers.faq()}
+                % elif c.subSection == 'reportIssue':
+                        ${helpers.reportIssue()}
+                % elif c.subSection == 'reportAbuse':
+                        ${helpers.reportAbuse()}
+                % endif
+            </div><!-- section-wrapper -->
+        </div>
+    </div>
+</div><!-- container-fluid -->
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-scrollspy.js"></script>
+    <script src="/js/bootstrap/bootstrap-affix.js"></script>
+    <script type="text/javascript"> 
+        $('#inner-sidebar').affix({offset: 130})
+        $('body').scrollspy({target: '#sidebar'})
+    </script> 
+</%def>
+
