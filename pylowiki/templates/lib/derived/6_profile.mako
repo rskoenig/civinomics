@@ -90,23 +90,25 @@
                         </tr></tbody></table>
                     % endif
                     % if role == 'Bookmarked':
-                        <%
-                            f = followLib.getFollow(c.user, workshop)
-                            itemsChecked = ''
-                            if 'itemAlerts' in f and f['itemAlerts'] == '1':
-                                itemsChecked = 'checked'
-                        %>
-                        <table class="table table-bordered table-condensed" ng-controller="followerController">
-                        <tbody>
-                        <tr>
-                            <td width="20%">Email alerts</td>
-                            <td width="80%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
-                                    New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
-                                    <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
-                                </form>
-                            </td>
-                        </tr></tbody></table>
+                        <% f = followLib.getFollow(c.user, workshop) %>
+                        % if f:
+                            <%
+                                itemsChecked = ''
+                                if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                                    itemsChecked = 'checked'
+                            %>
+                            <table class="table table-bordered table-condensed" ng-controller="followerController">
+                            <tbody>
+                            <tr>
+                                <td width="20%">Email alerts</td>
+                                <td width="80%">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                        New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                    </form>
+                                </td>
+                            </tr></tbody></table>
+                        % endif
                     % endif
                 % endif
             % endif
