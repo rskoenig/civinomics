@@ -157,7 +157,7 @@
             <li><a href="#resources">Resources<i class="icon-chevron-right pull-right"></i></a></li>
         </ul>      
     </div>
-    <div class="span9">
+    <div class="span8">
         <h3>FAQ</h3>       
         <div class="longText">
             <div id="howDoI">
