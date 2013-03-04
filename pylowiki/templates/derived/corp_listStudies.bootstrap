@@ -1,0 +1,30 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="helpers" file="/derived/list_caseStudies/helpers.mako"/>
+
+<%def name="page_specific_css()">
+    <!-- None -->
+</%def>
+
+<%def name="display_body_right_content()">
+	<div class="span8">
+        <div class="row-fluid">
+            <h1>Case Studies</h1>
+            </br>
+            <div>
+        			${helpers.list_studies(c.studies)}
+        		</div>
+        </div> <!-- /.row-fluid -->
+  </div> <!-- /.span8 -->
+    
+</%def>
+
+<%def name = 'extraStyles()'>
+
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+</%def>
+
+
