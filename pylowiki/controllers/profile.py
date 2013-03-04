@@ -98,7 +98,7 @@ class ProfileController(BaseController):
             if workshop['public_private'] == 'public':
                 c.interestedWorkshops.append(workshop)
             if workshop['public_private'] == 'private' and 'user' in session and c.authuser:
-                if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                if c.isUser or c.isAdmin:
                     c.interestedWorkshops.append(workshop)
  
         interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
