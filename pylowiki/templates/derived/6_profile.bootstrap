@@ -74,7 +74,7 @@
 <%def name="headScripts()">
     % if 'user' in session:
         % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
-            <script src="/js/ng/workshop_admin.js" type="text/javascript"></script>
+            <script src="/js/ng/alerts_admin.js" type="text/javascript"></script>
             <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
         % endif
     % endif

@@ -69,6 +69,25 @@
                             </td>
                         </tr></tbody></table>
                     % endif
+                    % if role == 'Listening':
+                        <%
+                            l = listenerLib.getListener(c.user, workshop)
+                            itemsChecked = ''
+                            if 'itemAlerts' in l and l['itemAlerts'] == '1':
+                                itemsChecked = 'checked'
+                        %>
+                        <table class="table table-bordered table-condensed" ng-controller="listenerController">
+                        <tbody>
+                        <tr>
+                            <td width="20%">Email alerts</td>
+                            <td width="80%">
+                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                    New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                    <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                </form>
+                            </td>
+                        </tr></tbody></table>
+                    % endif
                 % endif
             % endif
         </div>

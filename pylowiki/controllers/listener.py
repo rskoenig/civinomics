@@ -13,8 +13,7 @@ import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
-
-
+import simplejson as json
 
 
 log = logging.getLogger(__name__)
@@ -32,7 +31,10 @@ class ListenerController(BaseController):
         elif action in uList and userCode is not None and 'workshopCode' in request.params:
                 c.user = userLib.getUserByCode(userCode)
                 workshopCode = request.params['workshopCode']
-                c.w = workshopLib.getWorkshopByCode(workshopCode)         
+                c.w = workshopLib.getWorkshopByCode(workshopCode)
+        elif action == 'listenerNotificationHandler' and userCode is not None and workshopCode is not None:
+                c.user = userLib.getUserByCode(userCode)
+                c.w = workshopLib.getWorkshopByCode(workshopCode)
         else:
             abort(404)
             
@@ -123,4 +125,37 @@ class ListenerController(BaseController):
             eventLib.Event('Listener Title Updated', '%s updated listener title to %s'%(c.authuser['name'], listener['title']), listener, c.authuser)
             
         return redirect("/workshop/%s/%s/preferences"%(c.w['urlCode'], c.w['url']))
+        
+    @h.login_required
+    def listenerNotificationHandler(self, workshopCode, url, userCode):
+        user = userLib.getUserByCode(userCode)
+        listener = listenerLib.getListener(user, c.w)
+        # initialize to current value if any, '0' if not set in object
+        iAlerts = '0'
+        eAction = ''
+        if 'itemAlerts' in listener:
+            iAlerts = listener['itemAlerts']
+        
+        payload = json.loads(request.body)
+        if 'alert' not in payload:
+            return "Error"
+        alert = payload['alert']
+        if alert == 'items':
+            if 'itemAlerts' in listener.keys(): # Not needed after DB reset
+                if listener['itemAlerts'] == u'1':
+                    listener['itemAlerts'] = u'0'
+                    eAction = 'Turned off'
+                else:
+                    listener['itemAlerts'] = u'1'
+                    eAction = 'Turned on'
+            else:
+                listener['itemAlerts'] = u'1'
+                eAction = 'Turned on'
+        else:
+            return "Error"   
+        dbHelpers.commit(listener)
+        if eAction != '':
+            eventLib.Event('Listener item notifications set', eAction, listener, c.authuser)
+        return eAction
+
             

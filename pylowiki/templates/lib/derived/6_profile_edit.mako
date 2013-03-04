@@ -64,6 +64,7 @@
             <h4 class="section-header" style="text-align: center"><br />Invitations & Notifications</h4>
             % if c.pendingFacilitators and c.authuser.id == c.user.id:
                 ${pendingFacilitateInvitations()}
+            % elif c.pendingListeners and c.authuser.id == c.user.id:
                 ${pendingListenerInvitations()}
             % else:
                 No messages today!
