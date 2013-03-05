@@ -1,7 +1,7 @@
 <%def name="helpCenter()">
     <div class="row-fluid">
             <div class="span4 well help">
-                <a href="#">
+                <a href="${c.tutorialURL}">
                     <span class="link-span"></span><!-- used to make entire div a link -->
                     <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_071_book.png">  Tutorial 101</h3>
                     <p>Where to begin if you are entirely new to Civinomics and just don't get it.</p>
