@@ -2,14 +2,12 @@ from pylowiki.tests import *
 from webtest import TestResponse
 from routes import url_for
 
-from nose.plugins.skip import Skip, SkipTest
-
 import pylowiki.tests.helpers.authorization as authorization
 import pylowiki.tests.helpers.goals as goals
 import pylowiki.tests.helpers.registration as registration
 import pylowiki.tests.helpers.workshops as workshop
 
-class TestGoalsController(TestController):
+class TestGoalController(TestController):
     """ This class tests that goals work correctly. A workshop's goals are created using json messages.
     The interface is managed by angular. """
 

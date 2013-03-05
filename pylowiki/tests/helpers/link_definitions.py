@@ -4,8 +4,14 @@ from pylowiki.tests import *
 import logging
 log = logging.getLogger(__name__)
 
+def addConversation():
+    return 'Add conversation'
+
 def addIdea():
     return 'Add an idea'
+
+def conversations_page():
+    return 'Conversations'
 
 def createGeoLink(**kwargs):
     """returns the href of a geo scope breadcrumb link that could be expected on the

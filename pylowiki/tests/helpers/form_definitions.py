@@ -10,6 +10,15 @@ def addComment_text():
 def addComment_submit():
     return 'reply'
 
+def addConversation():
+    return 'addDiscussion'
+
+def addConversation_text():
+    return 'text'
+
+def addConversation_title():
+    return 'title'
+
 def addIdea():
     return 'addIdea'
 

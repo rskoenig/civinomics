@@ -14,6 +14,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def addCommentToIdeaPage(self, ideaPage, commentText):
+    """ DEPRECATED: this function has been moved to helper file comment.py """
     # comment on this idea
     addCommentForm = ideaPage.forms[formDefs.addComment()]
     addCommentForm.set(formDefs.addComment_text(), commentText)
@@ -50,6 +51,43 @@ def addIdeaToWorkshop(self, workshop, ideaText):
     ).follow()
     ideaPage = ideaAdded.click(description=ideaText, index=0)
     return ideaPage
+
+def addConversationToWorkshop(self, workshop, **kwargs):
+    """Add a conversation to a workshop"""
+    #: load the necessary info
+    if 'conversationTitle' in kwargs:
+        conversationTitle = kwargs['conversationTitle']
+    else:
+        conversationTitle = content.oneWord(1)
+    if 'conversationText' in kwargs:
+        conversationText = kwargs['conversationText']
+    else:
+        conversationText = content.oneLine(2)
+    #: go to the conversations page
+    conversationsPage = workshop.click(description=linkDefs.conversations_page(), index=0)
+    #: click the 'add conversation' link
+    addConversation = conversationsPage.click(description=linkDefs.addConversation(), index=0)
+    #: obtain the form for this
+    addForm = addConversation.forms[formDefs.addConversation()]
+    #: set the needed info
+    addForm.set(formDefs.addConversation_title(), conversationTitle)
+    addForm.set(formDefs.addConversation_text(), conversationText)
+    #: this is the easiest way to set up a custom set of submit fields for the form.
+    #: this is only needed because of needing to include submit='' in the parameters
+    params = {}
+    params = formHelpers.loadWithSubmitFields(addForm)
+    #: this form does not include submit as a parameter, but it must be included in the postdata
+    params[formDefs.parameter_submit()] = content.noChars()
+    #: submit the form and follow the response
+    conversationAdded = self.app.post(
+        url=str(addForm.action), 
+        content_type=addForm.enctype,
+        params=params
+    ).follow()
+    #: since we land on the conversations page, we go one step further and return the
+    #: actual conversation's page.
+    conversationPage = conversationAdded.click(description=conversationTitle, index=0)
+    return conversationPage
 
 def create_new_workshop(self, thisUser, **kwargs):
     """Unless otherwise indicated, logs in as the specified user and creates a new workshop.

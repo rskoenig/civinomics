@@ -6,9 +6,10 @@ import pylowiki.tests.helpers.content as content
 import pylowiki.tests.helpers.form_definitions as formDefs
 import pylowiki.tests.helpers.form_helpers as formHelpers
 import pylowiki.tests.helpers.link_definitions as linkDefs
+import pylowiki.tests.helpers.workshops as  workshop
 from pylowiki.tests.helpers.authorization import login, logout
 from pylowiki.tests.helpers.registration import create_and_activate_a_user
-from pylowiki.tests.helpers.workshops import create_new_workshop, addIdeaToWorkshop
+
 
 import logging
 log = logging.getLogger(__name__)
@@ -30,14 +31,14 @@ class TestIdeaController(TestController):
         # create a new user
         thisUser = create_and_activate_a_user(self)
         # create_workshop as this new user
-        newWorkshop = create_new_workshop(
+        newWorkshop = workshop.create_new_workshop(
             self, 
             thisUser, 
             personal=True,
             allowIdeas=formDefs.workshopSettings_allowIdeas(True),
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
-        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        ideaAdded = workshop.addIdeaToWorkshop(self, newWorkshop, ideaText)
         
         # after adding the idea, it should display on the following page.
         # be sure not to make too long of an idea for this test, in order for the assertion to reliably pass
@@ -45,7 +46,7 @@ class TestIdeaController(TestController):
         return ideaAdded
 
     def test_see_private_idea_public(self):
-        """FAIL Can the public see this private idea? Create an idea in a private workshop, 
+        """Can the public see this private idea? Create an idea in a private workshop, 
         then try to view it as someone who is not logged in to the site."""
         # create an idea in a private workshop
         ideaText = content.oneLine(2)
@@ -58,38 +59,34 @@ class TestIdeaController(TestController):
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # now logout, and try to view this idea
         logout(self)
-        # I would like to to a get request on this response object's url, 
-        # but it doesn't have a url attribute or a refresh action. Instead,
-        # the title of the idea page links to itself, so we click on that 
-        # to get the desired refresh.
-        canPublicSeeIdea = ideaAdded.click(description=ideaText, index=0)
-        # assert we're viewing this page without being logged in
-        assert linkDefs.login() in canPublicSeeIdea, "error before test complete: should not be logged in as someone at this point"
+        #: ideaAdded is the idea's own page, so we reload it to see if the public can view it.
+        #: we expect a 404 instead though.
+        canPublicSeeIdea = self.app.get(url=ideaAdded.request.url, status=404)
         # if this idea is visible, this is not good
-        assert ideaText not in canPublicSeeIdea, "public user able to view idea in a private workshop"
+        assert ideaText not in canPublicSeeIdea, "public user can view idea in private workshop"
 
     def test_see_private_idea_non_workshop_member(self):
-        """FAIL Can a site member who is not an invitee of the private workshop 
+        """Can a site member who is not an invitee of the private workshop 
         see this private idea? Create an idea in a private workshop, 
         then login as a new site member, and try to view it."""
-        # create a idea in a private workshop
+        #: create a idea in a private workshop
         ideaText = content.oneLine(3)
         ideaAdded = TestIdeaController.test_create_idea(
             self,
             ideaText=ideaText
         )
-        # assert that it's there
+        #: assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
-        # logout, create a new user, and try to view this idea
+        #: logout, create a new user, and try to view this idea
         logout(self)
-        # create a new user and login
+        #: create a new user and login
         thisUser = create_and_activate_a_user(self)
         loggedIn = login(self, thisUser)
-        canUserSeeIdea = ideaAdded.click(description=ideaText, index=0)
-        # assert we're viewing this page without being logged in
-        assert linkDefs.profile() in canUserSeeIdea, "error before test complete: should be logged in as someone at this point"
-        # if this idea has been created, this is not good
-        assert ideaText not in canUserSeeIdea, "site member who is not a member of a private workshop was able to view an idea in this workshop"
+        #: ideaAdded is the idea's own page, so we reload it to see if this other user can view it.
+        #: we expect a 404 instead though.
+        canUserSeeIdea = self.app.get(url=ideaAdded.request.url, status=404)
+        # if we can see the idea, this is not good
+        assert ideaText not in canUserSeeIdea, "site member, not a member of a private workshop, able to view an idea in the workshop"
 
     def test_create_idea_in_private_workshop_public(self):
         """Can a non-logged in visitor create an idea within a private workshop?"""
@@ -134,7 +131,7 @@ class TestIdeaController(TestController):
         # create first user
         thisUser = create_and_activate_a_user(self)
         # create_workshop as this new user
-        newWorkshop = create_new_workshop(
+        newWorkshop = workshop.create_new_workshop(
             self, 
             thisUser, 
             personal=True,
@@ -177,7 +174,7 @@ class TestIdeaController(TestController):
         ideaText = content.oneLine(1)
         ideaText2 = content.oneLine(2)
         #: create_workshop as this new user
-        newWorkshop = create_new_workshop(
+        newWorkshop = workshop.create_new_workshop(
             self, 
             thisUser, 
             personal=True,
@@ -185,7 +182,7 @@ class TestIdeaController(TestController):
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
         #: add idea to workshop
-        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        ideaAdded = workshop.addIdeaToWorkshop(self, newWorkshop, ideaText)
         # assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # NOTE for now, login as super admin. next, make a normal user an admin for this
@@ -226,7 +223,7 @@ class TestIdeaController(TestController):
         thisUser = create_and_activate_a_user(self)
         ideaText = content.oneLine(1)
         #: create_workshop as this new user
-        newWorkshop = create_new_workshop(
+        newWorkshop = workshop.create_new_workshop(
             self, 
             thisUser, 
             personal=True,
@@ -234,7 +231,7 @@ class TestIdeaController(TestController):
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
         #: add idea to workshop
-        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        ideaAdded = workshop.addIdeaToWorkshop(self, newWorkshop, ideaText)
         # assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # NOTE for now, login as super admin. next, make a normal user an admin for this

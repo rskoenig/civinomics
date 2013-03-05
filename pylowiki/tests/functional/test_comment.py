@@ -62,7 +62,7 @@ class TestCommentController(TestController):
         return commentAdded
 
     def test_see_private_comment_public(self):
-        """FAIL Can the public see this private comment? Create a comment in a private workshop, 
+        """Can the public see this private comment? Create a comment in a private workshop, 
         then try to view it as someone who is not logged in to the site."""
         # create a comment in a private workshop
         ideaText = content.oneLine(2)
@@ -77,18 +77,15 @@ class TestCommentController(TestController):
         assert commentText in commentAdded, "error before test complete: not able to create comment in workshop"
         # now logout, and try to view this comment
         logout(self)
-        # I would like to to a get request on this response object's url, 
-        # but it doesn't have a url attribute or a refresh action. Instead,
-        # the title of the idea page links to itself, so we click on that 
-        # to get the desired refresh.
-        canPublicSeeComment = commentAdded.click(description=ideaText, index=0)
-        # assert we're viewing this page without being logged in
-        assert linkDefs.login() in canPublicSeeComment, "error before test complete: should be logged in as someone at this point"
+        #: commentAdded is the idea's own page with the comment on it, so we reload it to see
+        #: if the public can view it.
+        #: we expect a 404 instead though.
+        canPublicSeeComment = self.app.get(url=commentAdded.request.url, status=404)
         # if this comment is visible, this is not good
         assert commentText not in canPublicSeeComment, "public user able to view comment in a private workshop"
     
     def test_see_private_comment_non_workshop_member(self):
-        """FAIL Can a site member who is not an invitee of the private workshop 
+        """Can a site member who is not an invitee of the private workshop 
         see this private comment? Create a comment in a private workshop, 
         then login as a new site member, and try to view it."""
         # create a comment in a private workshop
@@ -107,9 +104,10 @@ class TestCommentController(TestController):
         # create a new user and login
         thisUser = create_and_activate_a_user(self)
         loggedIn = login(self, thisUser)
-        canUserSeeComment = commentAdded.click(description=ideaText, index=0)
-        # assert we're viewing this page without being logged in
-        assert linkDefs.profile() in canUserSeeComment, "error before test complete: should be logged in as someone at this point"
+        #: commentAdded is the idea's own page with the comment on it, so we reload it to see
+        #: if this new user can view it.
+        #: we expect a 404 instead though.
+        canUserSeeComment = self.app.get(url=commentAdded.request.url, status=404)
         # if this comment has been created, this is not good
         assert commentText not in canUserSeeComment, "site member who is not a member of a private workshop was able to view a comment in this workshop"
 
@@ -243,7 +241,9 @@ class TestCommentController(TestController):
         
         commentAdded = self.app.get(
             url = str(addCommentForm.action),
-            params=params
+            params=params,
+            status=404,
+            expect_errors=True
         ).follow()
 
         assert commentText not in commentAdded, "site member who is not a member of the private workshop, was able to make a comment in it"

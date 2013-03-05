@@ -1,6 +1,16 @@
 # -*- coding: utf-8 -*-
 from pylowiki.tests import *
     
+def isFormPresentByAction(thisPage, formVerbFilter):
+    """ Returns a boolean value stating if the desired form is present. """
+    pageForms = thisPage.forms__get()
+    foundVerb = False
+    for formIndex in pageForms:
+        #: does it have the verb in the action?
+        if pageForms[formIndex].action.find(formVerbFilter) >= 0:
+            foundVerb = True
+    return foundVerb
+
 def fillPaymentForm(paymentForm, **kwargs):
     """Fill in the submit fields as needed for the workshop upgrade stripe payment form"""
     #: set the parameters as needed
