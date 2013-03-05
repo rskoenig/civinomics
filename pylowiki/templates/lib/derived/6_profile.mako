@@ -58,13 +58,13 @@
                         <tr>
                             <td width="20%">Email alerts</td>
                             <td width="40%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                     New items: <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
                                     <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                 </form>
                             </td>
                             <td width="40%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                     New flags: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
                                     <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
                                 </form>
@@ -83,7 +83,7 @@
                         <tr>
                             <td width="20%">Email alerts</td>
                             <td width="80%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                     New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                     <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                 </form>
@@ -103,7 +103,7 @@
                             <tr>
                                 <td width="20%">Email alerts</td>
                                 <td width="80%">
-                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
@@ -123,7 +123,7 @@
                         <tr>
                             <td width="20%">Email alerts</td>
                             <td width="80%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                     New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                     <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                 </form>
