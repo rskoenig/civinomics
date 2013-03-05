@@ -92,6 +92,7 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
             return True
         f = Thing('follow', user.id)
         generic.linkChildToParent(f, thing)
+        f['itemAlerts'] = '0'
         f['disabled'] = disabled
         commit(f)
         return True

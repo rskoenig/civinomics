@@ -46,3 +46,16 @@ function followerController($scope, $http, $location) {
     })
   }
 }
+
+function pmemberController($scope, $http, $location) {
+  $scope.emailOnAddedShow     = false;
+  
+  $scope.emailOnAdded = function() {
+    var addedURL = '/workshop/' + $scope.code + '/' + $scope.url + '/private/' + $scope.user+ '/notifications/handler';
+    var postData = {'user':$scope.user, 'alert':'items'};
+    $http.post(addedURL, postData).success(function(data){
+      $scope.emailOnAddedShow = true;
+      $scope.emailOnAddedResponse = data;
+    })
+  }
+}

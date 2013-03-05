@@ -118,8 +118,9 @@ def make_map():
     map.connect('/activity/rss{end:/?}', controller='actionlist', action='rss')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/rss{end:/?}', controller = 'workshop', action = 'rss')    
 
-    # Workshop follower notifications
+    # Workshop follower, private member notifications
     map.connect('/{workshop:workshops?}/{workshopCode}/{url}/follow/{userCode}/notifications/{handler:handler/?}', controller = 'follow', action = 'followerNotificationHandler', workshopCode = '{workshopCode}', url='{url}', userCode = '{userCode}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/private/{userCode}/notifications/{handler:handler/?}', controller = 'workshop', action = 'pmemberNotificationHandler', workshopCode = '{workshopCode}', workshopURL='{workshopURL}', userCode = '{userCode}')
     
     # Workshop goals
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/add{end:/?}', controller = 'goals', action = 'add')

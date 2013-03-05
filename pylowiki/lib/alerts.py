@@ -15,10 +15,12 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.listener     as listenerLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.pmember      as pmemberLib
 import pylowiki.lib.mail            as mailLib
 
 log = logging.getLogger(__name__)
 
+# we will continue to compactify this function over time...
 def emailAlerts(thing):
     if 'workshopCode' in thing:
         fromEmail = 'Civinomics Alerts <alerts@civinomics.com>'
@@ -35,6 +37,7 @@ def emailAlerts(thing):
         facilitators = facilitatorLib.getFacilitatorsByWorkshop(workshop)
         followers = followLib.getWorkshopFollowers(workshop)
         listeners = listenerLib.getListenersForWorkshop(workshop)
+        pmembers = pmemberLib.getPrivateMembers(workshop['urlCode'])
                 
         # do facilitators first
         if thing.objType == 'flag':
@@ -99,6 +102,15 @@ def emailAlerts(thing):
                     toEmail = listenerUser['email']
   
                     mailLib.send(toEmail, fromEmail, subject, textMessage)
+                    
+            subject = 'Private Workshop Alert: New %s added to your Civinomics workshop'%newThing                
+            for pmember in pmembers:
+                if 'itemAlerts' in pmember and pmember['itemAlerts'] == '1':
+                    pmemberUser = userLib.getUserByCode(pmember['userCode'])
+                    toEmail = pmemberUser['email']
+  
+                    mailLib.send(toEmail, fromEmail, subject, textMessage)
+                
                 
 
                 

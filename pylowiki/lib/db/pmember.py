@@ -57,7 +57,8 @@ def PMember(workshopCode, email, type, owner, user = None):
     p['email'] = email
     # type - one of A for address or D for domain
     p['type'] = type
-    p['deleted'] = '0'
+    p['deleted'] = u'0'
+    p['itemAlerts'] = u'0'
     commit(p)
     p['urlCode'] = toBase62(p)
     commit(p)

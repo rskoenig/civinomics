@@ -44,6 +44,7 @@ import webhelpers.feedgenerator     as feedgenerator
 import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
 import pylowiki.lib.sort as sort
+import simplejson as json
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
@@ -983,4 +984,37 @@ class WorkshopController(BaseController):
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
         return render('/derived/6_workshop_preferences.bootstrap')
+        
+    @h.login_required
+    def pmemberNotificationHandler(self, workshopCode, workshopURL, userCode):
+        user = userLib.getUserByCode(userCode)
+        pmember = pMemberLib.getPrivateMember(workshopCode, user['email'])
+        # initialize to current value if any, '0' if not set in object
+        iAlerts = '0'
+        eAction = ''
+        if 'itemAlerts' in pmember:
+            iAlerts = pmember['itemAlerts']
+        
+        payload = json.loads(request.body)
+        if 'alert' not in payload:
+            return "Error"
+        alert = payload['alert']
+        if alert == 'items':
+            if 'itemAlerts' in pmember.keys(): # Not needed after DB reset
+                if pmember['itemAlerts'] == u'1':
+                    listener['itemAlerts'] = u'0'
+                    eAction = 'Turned off'
+                else:
+                    pmember['itemAlerts'] = u'1'
+                    eAction = 'Turned on'
+            else:
+                pmember['itemAlerts'] = u'1'
+                eAction = 'Turned on'
+        else:
+            return "Error"   
+        dbHelpers.commit(pmember)
+        if eAction != '':
+            eventLib.Event('Private member item notifications set', eAction, pmember, c.authuser)
+        return eAction
+
     

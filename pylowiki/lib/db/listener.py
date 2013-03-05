@@ -51,7 +51,8 @@ def Listener(user, workshop, pending = 1):
         listener = Thing('listener')
         listener['title'] = ''
         listener['pending'] = pending
-        listener['disabled'] = '0'
+        listener['disabled'] = u'0'
+        listener['itemAlerts'] = u'0'
         commit(listener)
         listener['urlCode'] = toBase62(listener)
         listener = generic.linkChildToParent(listener, user)

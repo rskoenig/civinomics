@@ -4,6 +4,7 @@
     import pylowiki.lib.db.listener     as listenerLib
     import pylowiki.lib.db.follow       as followLib
     import pylowiki.lib.db.user         as userLib
+    import pylowiki.lib.db.pmember      as pmemberLib
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -109,6 +110,25 @@
                                 </td>
                             </tr></tbody></table>
                         % endif
+                    % endif
+                    % if role == 'Private':
+                        <% 
+                            p = pmemberLib.getPrivateMember(workshop['urlCode'], c.user['email'])
+                            itemsChecked = ''
+                            if 'itemAlerts' in p and p['itemAlerts'] == '1':
+                                    itemsChecked = 'checked'
+                        %>
+                        <table class="table table-bordered table-condensed" ng-controller="pmemberController">
+                        <tbody>
+                        <tr>
+                            <td width="20%">Email alerts</td>
+                            <td width="80%">
+                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom">
+                                    New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                    <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                </form>
+                            </td>
+                        </tr></tbody></table>
                     % endif
                 % endif
             % endif

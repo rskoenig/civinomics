@@ -68,7 +68,7 @@ class Facilitator(object):
         # note - the userID of the facilitator is the f.owner
         f = Thing('facilitator', user.id)
         f['workshopID'] = workshop.id
-        f['disabled'] = '0'
+        f['disabled'] = u'0'
         f['pending'] = pending
         f['itemAlerts'] = u'1'
         f['flagAlerts'] = u'1'
