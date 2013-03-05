@@ -47,6 +47,7 @@
         numItems = 5
         shownItems = 0
     %>
+    <ul class="activity">
     % for item in activity:
         <%
             if c.demo:
@@ -61,7 +62,8 @@
             if shownItems >= numItems:
                 break
         %>
-        <div class="row-fluid">
+        <li>
+        ##<div class="row-fluid">
             ${lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")}
             ${lib_6.userLink(item.owner)}
             <%
@@ -86,8 +88,10 @@
                 shownItems += 1
             %>
             ${activityStr | n}
-        </div>
+        ##</div>
+        </li>
     % endfor
+    </ul>
 </%def>
 
 <%def name="watchButton()">

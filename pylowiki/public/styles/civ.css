@@ -94,6 +94,8 @@ form.addGoal{
   -webkit-border-radius: 5px;
   border-radius: 5px;
   margin-top:10px;
+  overflow:hidden;
+  padding-bottom:10px;
 }
 .section-wrapper .section-header {
   background: whiteSmoke;
@@ -115,6 +117,10 @@ form.addGoal{
 .section-wrapper .activity {
   padding: 10px;
 }
+ul.activity{
+    list-style-type: none;
+    margin:0;
+}
 .wrap-workshop{
     border: 5px solid #075D00;
     background-color: gainsboro;
@@ -125,13 +131,6 @@ form.addGoal{
 
 .wrap-workshop:hover{
     border: 5px solid #D15D00;
-}
-
-.section-wrapper.overview{
-   height:435px;
-}
-.section-wrapper.information{
-   height:173px;
 }
 .section-wrapper .browse {
   padding: 10px;
@@ -444,10 +443,6 @@ img.watch{
 
 input[type="checkbox"].goal-checkbox, .goal-title{
     margin:0;
-}
-
-ul.goals{
-   list-style-type: none;
 }
 
 ul.goals li.finished {
