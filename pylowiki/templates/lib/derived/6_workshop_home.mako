@@ -20,7 +20,7 @@
            people = c.facilitators
    %>
    <h4 class="section-header smaller section-header-inner"> ${listenOrFacilitate} </h4>
-   <ul class="listeners">
+   <ul class="listeners"  id="workshopFacilitators">
       <% counter = 1 %>
       % for person in people:
          <li>
@@ -47,7 +47,7 @@
         numItems = 5
         shownItems = 0
     %>
-    <ul class="activity">
+    <ul class="activity"  id="workshopActivity">
     % for item in activity:
         <%
             if c.demo:
@@ -97,12 +97,12 @@
 <%def name="watchButton()">
     % if 'user' in session:
         % if c.isFollowing:
-            <button class="btn round followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="The entire workshop"> 
+            <button class="btn round followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="The entire workshop" id="workshopBookmark"> 
             <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             <span> Un-bookmark </span>
             </button>
         % else:
-            <button class="btn round followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="The entire workshop"> 
+            <button class="btn round followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="The entire workshop" id="workshopBookmark"> 
             <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             <span> Bookmark </span>
             </button>
@@ -189,7 +189,7 @@
       slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
       slideNum = 0
    %>
-   <ul class="gallery thumbnails" data-clearing>
+   <ul class="gallery thumbnails" data-clearing id="workshopSlideshow">
       <% 
          numSlides = len(slides)
          for slide in slides:
@@ -232,7 +232,7 @@
 </%def>
 
 <%def name="showInfo(workshop)">
-    <div class="">
+    <div class="" id="workshopInformation">
     % if c.information and 'data' in c.information:
         ${misaka.html(c.information['data']) | n}
     % endif
