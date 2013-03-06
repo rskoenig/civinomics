@@ -2,15 +2,18 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_workshop_create.mako" />
 
-<div class="section-wrapper">
-    <div class="browse">
-        <h3 class="section-header centered">Create A New Workshop</h3>
-        % if c.conf['read_only.value'] == 'true':
-            <!-- read only -->
-            <p>Sorry, Civinomics is in read-only mode right now!</p>
-        % else:
-            ${helpers.createWorkshop()}
-        % endif
-    </div><!-- browse -->
-</div><!-- section-wrapper -->
-
+<div class="row">
+    <div class="span12">
+        <div class="section-wrapper">
+            <div class="browse">
+                <h3 class="section-header centered">Create A New Workshop</h3>
+                % if c.conf['read_only.value'] == 'true':
+                    <!-- read only -->
+                    <p>Sorry, Civinomics is in read-only mode right now!</p>
+                % else:
+                    ${helpers.createWorkshop()}
+                % endif
+            </div><!-- browse -->
+        </div><!-- section-wrapper -->
+    </div>
+</div>
