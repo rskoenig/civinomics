@@ -26,20 +26,14 @@
       <div class="section-wrapper">
          <div class="activity">
             <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
-            <% numItems = 10 %>
-            % for i in range(len(c.activity)):
-               <% thisActivity = c.activity[i] %>
-               <div class="row-fluid">
-                  ${helpers.showActivity(thisActivity)}
-               % if i < len(c.activity) - 1:
-                  <hr>
-               % endif
-               % if i > numItems:
-                <% break %>
-               % endif
-               </div>
-            % endfor
-            
+            <% 
+               numItems = 10
+               for i in range(len(c.activity)):
+                  thisActivity = c.activity[i]
+                  helpers.showActivity(thisActivity)
+                  if i > numItems:
+                     break
+            %>
          </div>
       </div>
    </div> <!-- /Activity Stream -->

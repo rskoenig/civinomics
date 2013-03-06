@@ -9,11 +9,10 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="show_workshop(w)">
-<% 
-    goals = goalLib.getGoalsForWorkshop(w) 
-    mainImage = mainImageLib.getMainImage(w)
-%>
-##<div class="wrap-workshop">
+   <% 
+      goals = goalLib.getGoalsForWorkshop(w) 
+      mainImage = mainImageLib.getMainImage(w)
+   %>
    <div class="viewport">
       <a ${lib_6.workshopLink(w)}>
          <span class="dark-background">
@@ -60,40 +59,33 @@
             </a> <!-- /Num inputs -->
          </span>
       </div>
-##</div>
 </%def>
 
 <%def name="showActivity(item)">
-   <%
-      thisUser = getUserByID(item.owner)
-   %>
-   <div class="span4 avatar"> <!-- avatar -->
-      ${lib_6.userImage(thisUser, className = 'avatar')}
-   </div> <!-- /avatar -->
-   
-   <div class="span8 avatar"> <!-- information -->
-      <p class="feed">
-         <%
-            lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)
-            activityStr = ''
-            title = lib_6.ellipsisIZE(item['title'], 40)
-            w = workshopLib.getWorkshopByCode(item['workshopCode'])
-            if item.objType == 'resource':
-               activityStr += 'added the resource '
-               activityStr += '<a %s>%s</a>' % (lib_6.resourceLink(item, w, embed=True), title)
-            elif item.objType == 'suggestion':
-               activityStr += 'suggested '
-               activityStr += '<a %s>%s</a>' %(lib_6.suggestionLink(item, w, embed=True), title)
-            elif item.objType == 'discussion':
-               activityStr += 'started the discussion '
-               activityStr += '<a %s>%s</a>' %(lib_6.discussionLink(item, w, embed=True), title)
-            elif item.objType == 'idea':
-                activityStr += 'posed the idea '
-                activityStr += '<a %s>%s</a>' %(lib_6.ideaLink(item, w, embed=True), title)
-            else:
-               activityStr += 'fucked up'
-         %>
-         ${activityStr | n}
-      </p>
-   </div> <!-- /information -->
+   <div class="media">
+      <%
+         thisUser = getUserByID(item.owner)
+         
+         activityStr = ''
+         title = lib_6.ellipsisIZE(item['title'], 40)
+         w = workshopLib.getWorkshopByCode(item['workshopCode'])
+         if item.objType == 'resource':
+            activityStr += 'added the resource '
+            activityStr += '<a %s>%s</a>' % (lib_6.resourceLink(item, w, embed=True), title)
+         elif item.objType == 'suggestion':
+            activityStr += 'suggested '
+            activityStr += '<a %s>%s</a>' %(lib_6.suggestionLink(item, w, embed=True), title)
+         elif item.objType == 'discussion':
+            activityStr += 'started the discussion '
+            activityStr += '<a %s>%s</a>' %(lib_6.discussionLink(item, w, embed=True), title)
+         elif item.objType == 'idea':
+             activityStr += 'posed the idea '
+             activityStr += '<a %s>%s</a>' %(lib_6.ideaLink(item, w, embed=True), title)
+         else:
+            activityStr += 'Cived up'
+      %>
+      
+      <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar', linkClass = 'media-object')}</div> 
+      <div class="media-body">${lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)} ${activityStr | n}</div>
+   </div>
 </%def>

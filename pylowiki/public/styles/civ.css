@@ -135,6 +135,12 @@ ul.activity{
 .wrap-workshop:hover{
     border: 5px solid #D15D00;
 }
+.feed{
+   display:inline-block;
+}
+.avatar.feed{
+   float:left;
+}
 .section-wrapper .browse {
   padding: 10px;
 }
@@ -358,13 +364,6 @@ img.watch{
     border: 1px solid #BBBBBB;
 }
 
-/*
-.vote{
-   //padding-left:19px;
-   margin-left:auto;
-   margin-right:auto;
-}
-*/
 .vote-icon{
     height:12px;
 }
