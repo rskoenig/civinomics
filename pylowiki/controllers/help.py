@@ -40,6 +40,7 @@ class HelpController(BaseController):
 
     def abuseHandler( self ):
         c.subSection = 'reportAbuse'
+        #c.userEmail = c.authuser['email']
 
         error = 0
         errMsg = 'Missing fields: '
@@ -47,36 +48,49 @@ class HelpController(BaseController):
         if 'problemType' in request.params:
           problemType = request.params['problemType']
         else:
-          errMsg += 'Problem Type'
+          errMsg += 'problem type,'
           error = 1
 
         if 'alreadyFlagged' in request.params:
           alreadyFlagged = request.params['alreadyFlagged']
         else:
-          errMsg += 'Already Flagged'
+          errMsg += ' already flagged (Y/N),'
           error = 1  
 
         if 'offendingUser' in request.params:
           offendingUser = request.params['offendingUser']
         else:
-          errMsg += 'name of offending user'
+          errMsg += ' name of offending user,'
           error = 1 
 
         if 'startTime' in request.params:
           startTime = request.params['startTime']
         else:
-          errMsg += 'start time'
+          errMsg += ' start time,'
           error = 1 
 
         if 'problem' in request.params and 'problem' != '':
           problem = request.params['problem']
         else:
-          errMsg += 'problem description'
+          errMsg += ' problem description,'
+          error = 1 
+
+        if 'reporterName' in request.params and 'reporterName' != '':
+          reporterName = request.params['reporterName']
+        else:
+          errMsg += ' name,'
+          error = 1 
+
+        if 'reporterEmail' in request.params and 'reporterEmail' != '':
+          reporterEmail = request.params['reporterEmail']
+        else:
+          errMsg += ' email '
           error = 1 
 
         if error == 1:
           alert = {'type':'error'}
-          alert['title'] = errMsg
+          alert['title'] = 'Error'
+          alert['body'] = errMsg
           session['alert'] = alert
           session.save()
 
@@ -88,6 +102,6 @@ class HelpController(BaseController):
           alert['body'] = 'Your report has been received. We will get back to you as soon as possible.'
           session['alert'] = alert
           session.save()
-          helpLib.sendAbuseReport(problemType, alreadyFlagged, offendingUser, startTime, problem, c.authuser)
+          helpLib.sendAbuseReport(problemType, alreadyFlagged, offendingUser, startTime, problem, reporterName, reporterEmail)
 
         return render('/derived/6_help.bootstrap')

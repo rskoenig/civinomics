@@ -10,11 +10,19 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 
 
-def sendAbuseReport(problemType, alreadyFlagged, offendingUser, startTime, problem, sender):
-    senderName = sender['name']
-    senderEmail = sender['email']
-    subject = senderName + ' is reporting an offending user'
-    recipient = 'manu@civinomics.com'
+def sendAbuseReport(problemType, alreadyFlagged, offendingUser, startTime, problem, reporterName, reporterEmail):
+    subject = reporterName + ' is reporting a violation of Civinomics policy'
+    recipient = 'help@civinomics.com'
+
+    if 'user' in session:
+      userName = c.authuser['name']
+      userEmail = c.authuser['email']
+      loggedIn = ''
+    else:
+      userName = "Not Logged In"
+      userEmail = "Not Logged In"
+      loggedIn = 'NOT'
+
 
     emailDir = config['app_conf']['emailDirectory']
    # imageDir = config['app_conf']['imageDirectory']
@@ -30,13 +38,16 @@ def sendAbuseReport(problemType, alreadyFlagged, offendingUser, startTime, probl
     fp.close()
     
     # do the substitutions
-    htmlMessage = htmlMessage.replace('${c.sender}', senderName)
-    htmlMessage = htmlMessage.replace('${c.senderEmail}', senderEmail)
-    htmlMessage = htmlMessage.replace('${c.problem_type}', problemType)
-    htmlMessage = htmlMessage.replace('${c.already_flagged}', alreadyFlagged)
+    htmlMessage = htmlMessage.replace('${c.reporterName}', reporterName)
+    htmlMessage = htmlMessage.replace('${c.reporterEmail}', reporterEmail)
+    htmlMessage = htmlMessage.replace('${c.problemType}', problemType)
+    htmlMessage = htmlMessage.replace('${c.alreadyFlagged}', alreadyFlagged)
     htmlMessage = htmlMessage.replace('${c.offendingUser}', offendingUser)
     htmlMessage = htmlMessage.replace('${c.startTime}', startTime)
     htmlMessage = htmlMessage.replace('${c.problem}', problem)
+    htmlMessage = htmlMessage.replace('${c.userName}', userName)
+    htmlMessage = htmlMessage.replace('${c.userEmail}', userEmail)
+    htmlMessage = htmlMessage.replace('${c.loggedIn}', loggedIn)
 
     htmlMessage = htmlMessage.replace('${c.imageSrc}', 'cid:civinomicslogo')
     
@@ -46,13 +57,17 @@ def sendAbuseReport(problemType, alreadyFlagged, offendingUser, startTime, probl
     fp.close()
     
     # do the substitutions
-    textMessage = textMessage.replace('${c.sender}', senderName)
-    textMessage = textMessage.replace('${c.senderEmail}', senderEmail)
+    textMessage = textMessage.replace('${c.reporterName}', reporterName)
+    textMessage = textMessage.replace('${c.reporterEmail}', reporterEmail)
     textMessage = textMessage.replace('${c.problemType}', problemType)
     textMessage = textMessage.replace('${c.alreadyFlagged}', alreadyFlagged)
     textMessage = textMessage.replace('${c.offendingUser}', offendingUser)
     textMessage = textMessage.replace('${c.startTime}', startTime)
     textMessage = textMessage.replace('${c.problem}', problem)
+    textMessage = textMessage.replace('${c.userName}', userName)
+    textMessage = textMessage.replace('${c.userEmail}', userEmail)
+    textMessage = textMessage.replace('${c.loggedIn}', loggedIn)
+
   
     # open and read in the image
     #fp = open(headerImage, 'rb')
@@ -61,7 +76,7 @@ def sendAbuseReport(problemType, alreadyFlagged, offendingUser, startTime, probl
        
     # create a MIME email object, initialize the header info
     email = MIMEMultipart(_subtype='related')
-    email['Subject'] = 'Test subject'
+    email['Subject'] = 'html test subject'
     email['From'] = 'help@civinomics.com'
     email['To'] = 'help@civinomics.com'
     
@@ -75,4 +90,4 @@ def sendAbuseReport(problemType, alreadyFlagged, offendingUser, startTime, probl
     #email.attach(part3)
     
     # send that suckah
-    send( 'manu@civinomics.com', 'help@civinomics.com', subject, textMessage)
+    send( 'help@civinomics.com', 'help@civinomics.com', subject, textMessage)
