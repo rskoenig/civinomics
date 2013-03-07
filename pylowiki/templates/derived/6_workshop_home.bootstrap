@@ -25,10 +25,9 @@
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 
-               Overview 
+               Goals
             </h4>
             <div>
-                <h5> Goals </h5>
                 <ul class="goals" id="workshopGoals">
                    ${helpers.showGoals(c.goals)}
                 </ul> <!-- /goals -->

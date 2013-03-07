@@ -839,13 +839,13 @@ class WorkshopController(BaseController):
         
         c.facilitators = []
         for f in (facilitatorLib.getFacilitatorsByWorkshop(c.w)):
-           if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
-              c.facilitators.append(f)
+            if 'pending' in f and f['pending'] == '0' and f['disabled'] == '0':
+                c.facilitators.append(f)
               
         c.listeners = []
         for l in (listenerLib.getListenersForWorkshop(c.w)):
-           if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
-              c.listeners.append(l)
+            if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
+                c.listeners.append(l)
               
         c.slides = []
         c.slideshow = slideshowLib.getSlideshow(c.w)

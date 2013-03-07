@@ -11,30 +11,29 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="whoListening()">
-   <%
-       if c.listeners:
-           listenOrFacilitate = "Who's listening?"
-           people = c.listeners
-       else:
-           listenOrFacilitate = "Facilitators"
-           people = c.facilitators
-   %>
-   <h4 class="section-header smaller section-header-inner"> ${listenOrFacilitate} </h4>
-   <ul class="listeners"  id="workshopFacilitators">
-      <% counter = 1 %>
-      % for person in people:
-         <li>
-            ${lib_6.userImage(person, className="avatar")}
-            <br>
-            ${lib_6.userLink(person)}
-         </li>
-         <%
-            counter += 1
-            if counter > 3:
-               break
-         %>
-      % endfor
-   </ul>
+    <%
+        people = c.facilitators
+        if c.listeners:
+            people += c.listeners
+    %>
+    <h4 class="section-header smaller section-header-inner"> Notables </h4>
+    <ul class="media-list centered">
+        % for person in people:
+            <%
+                if person.objType == 'facilitator':
+                    personTitle = 'Workshop Facilitator'
+                else:
+                    personTitle = person['title']
+            %>
+            <li class="media">
+                ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
+                <div class="media-body">
+                    <h4 class="media-heading">${lib_6.userLink(person)}</h4>
+                    ${personTitle}
+                </div>
+            </li>
+        % endfor
+    </ul>
 </%def>
 
 <%def name="showActivity(activity)">
@@ -47,50 +46,49 @@
         numItems = 5
         shownItems = 0
     %>
+    
     <ul class="activity"  id="workshopActivity">
-    % for item in activity:
-        <%
-            if c.demo:
-                author = getUserByID(item.owner)
-                if not c.privs['admin']:
-                    if 'user' in session:
-                        if (author['accessLevel'] != '300' and author.id != c.authuser.id):
-                            continue
-                    else:
-                        if author['accessLevel'] != '300':
-                            continue
-            if shownItems >= numItems:
-                break
-        %>
-        <li>
-        ##<div class="row-fluid">
-            ${lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")}
-            ${lib_6.userLink(item.owner)}
+        % for item in activity:
             <%
-                if item.objType == 'comment':
-                    activityStr = 'Commented on a'
-                    if 'ideaCode' in item.keys():
-                        activityStr += 'n'
-                else:
-                    activityStr = 'Added a'
-                if item.objType == 'idea':
-                    activityStr += 'n'
-                activityStr += ' <a ' + lib_6.thingLinkRouter(item, c.w, embed = True) + '>'
-                if item.objType != 'comment':
-                    activityStr += item.objType + "</a>"
-                else:
-                    if 'ideaCode' in item.keys():
-                        activityStr += 'idea </a>'
-                    elif 'resourceCode' in item.keys():
-                        activityStr += 'resource </a>'
-                    else:
-                        activityStr += 'discussion </a>'
-                shownItems += 1
+                if c.demo:
+                    author = getUserByID(item.owner)
+                    if not c.privs['admin']:
+                        if 'user' in session:
+                            if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                                continue
+                        else:
+                            if author['accessLevel'] != '300':
+                                continue
+                if shownItems >= numItems:
+                    break
             %>
-            ${activityStr | n}
-        ##</div>
-        </li>
-    % endfor
+            <li>
+                ${lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")}
+                ${lib_6.userLink(item.owner)}
+                <%
+                    if item.objType == 'comment':
+                        activityStr = 'Commented on a'
+                        if 'ideaCode' in item.keys():
+                            activityStr += 'n'
+                    else:
+                        activityStr = 'Added a'
+                    if item.objType == 'idea':
+                        activityStr += 'n'
+                    activityStr += ' <a ' + lib_6.thingLinkRouter(item, c.w, embed = True) + '>'
+                    if item.objType != 'comment':
+                        activityStr += item.objType + "</a>"
+                    else:
+                        if 'ideaCode' in item.keys():
+                            activityStr += 'idea </a>'
+                        elif 'resourceCode' in item.keys():
+                            activityStr += 'resource </a>'
+                        else:
+                            activityStr += 'conversation </a>'
+                    shownItems += 1
+                %>
+                ${activityStr | n}
+            </li>
+        % endfor
     </ul>
 </%def>
 
