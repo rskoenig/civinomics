@@ -82,7 +82,7 @@
     </br>
     <form name="reportAbuse" id="reportAbuse" action="/help/abuseHandler" enctype="multipart/form-data" method="post" ng-controller="helpForm" ng-submit="submitForm()">
         <fieldset>
-            <legend><strong>Report an abusive user</strong></legend>
+            <legend><strong>File an abuse report</strong></legend>
             <label><strong>Which of the following best describes the problem?</strong></label>
             <label class="radio">
                 <input type="radio" name="problemType" id="problemType1" value="someone is posting my private information" ng-model="problemType" required>
@@ -117,7 +117,6 @@
                 <span class="label label-important" ng-show="offendingUser == ''">Required</span>
             </div>
             </br>
-            </br>
             <label><strong>How long ago did this begin?</strong></label>
             <label class="radio">
                 <input type="radio" name="startTime" id="startTime1" value="24 hours ago" ng-model="startTime" required>
@@ -143,6 +142,21 @@
             <label><strong>Describe the problem in detail.</strong></label>
             <textarea rows="5" name="problem" class="input-xxlarge" ng-model="problemDescription" required></textarea>
             <span class="label label-important" ng-show="problemDescription == ''">Required</span>
+            <label><strong>Your name:</strong></label>
+            <div class="form-inline">
+                <input type="text" class="input-xlarge" name="reporterName" id="reporterName" ng-model="reporterName" required>
+                <span class="label label-important" ng-show="reporterName == ''">Required</span>
+            </div>
+            </br>
+            <label><strong>What is the best email to reach you at?</strong></label>
+            <div class="form-inline">
+                <input type="email" class="input-xlarge" name="reporterEmail" id="reporterEmail" ng-model="reporterEmail" required>
+                <span class="label label-important" ng-show="reporterEmail == ''">Required</span>
+            </div>
+            <span class="error help-block" ng-show="reportAbuse.reporterEmail.$error.email">Not a valid email!</span>
+
+
+            </br>
             <div class="form-actions">
                 <button class="btn btn-success disabled" ng-show="reportAbuse.$invalid">Send Report</button>
                 <button type="submit" class="btn btn-success" ng-show="reportAbuse.$valid">Send Report</button>
