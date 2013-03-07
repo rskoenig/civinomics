@@ -202,7 +202,7 @@ class TestCommentController(TestController):
         )
         # comments can exist on discussion, idea or resource objects.
         # go to the ideas page
-        ideasPage = newWorkshop.click(description=linkDefs.ideas_page(), index=0)
+        ideasPage = newWorkshop.click(description=linkDefs.vote_page(), index=0)
         # click the 'add idea' link
         addIdea = ideasPage.click(description=linkDefs.addIdea(), index=0)
         # obtain the form for this

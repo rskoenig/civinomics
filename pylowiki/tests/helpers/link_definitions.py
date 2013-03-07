@@ -10,8 +10,8 @@ def addConversation():
 def addIdea():
     return 'Add an idea'
 
-def conversations_page():
-    return 'Conversations'
+def talk_page():
+    return 'Talk'
 
 def createGeoLink(**kwargs):
     """returns the href of a geo scope breadcrumb link that could be expected on the
@@ -54,8 +54,8 @@ def createGeoLink(**kwargs):
 
     return geoBase
 
-def ideas_page():
-    return 'Ideas'
+def vote_page():
+    return 'Vote'
 
 def login():
 	return 'login'

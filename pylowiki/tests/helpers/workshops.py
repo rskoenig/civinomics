@@ -32,7 +32,7 @@ def addCommentToIdeaPage(self, ideaPage, commentText):
 def addIdeaToWorkshop(self, workshop, ideaText):
     """Add an idea to a workshop"""
     # go to the ideas page
-    ideasPage = workshop.click(description=linkDefs.ideas_page(), index=0)
+    ideasPage = workshop.click(description=linkDefs.vote_page(), index=0)
     # click the 'add idea' link
     addIdea = ideasPage.click(description=linkDefs.addIdea(), index=0)
     # obtain the form for this
@@ -64,7 +64,7 @@ def addConversationToWorkshop(self, workshop, **kwargs):
     else:
         conversationText = content.oneLine(2)
     #: go to the conversations page
-    conversationsPage = workshop.click(description=linkDefs.conversations_page(), index=0)
+    conversationsPage = workshop.click(description=linkDefs.talk_page(), index=0)
     #: click the 'add conversation' link
     addConversation = conversationsPage.click(description=linkDefs.addConversation(), index=0)
     #: obtain the form for this

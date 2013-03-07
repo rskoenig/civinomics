@@ -100,7 +100,7 @@ class TestIdeaController(TestController):
         # assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # get the add idea form
-        ideaPage = ideaAdded.click(description=linkDefs.ideas_page(), index=0)
+        ideaPage = ideaAdded.click(description=linkDefs.vote_page(), index=0)
         addIdea = ideaPage.click(description=linkDefs.addIdea(), index=0)
 
         logout(self)
@@ -139,7 +139,7 @@ class TestIdeaController(TestController):
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
         # go to the idea page
-        ideasPage = newWorkshop.click(description=linkDefs.ideas_page(), index=0)
+        ideasPage = newWorkshop.click(description=linkDefs.vote_page(), index=0)
         # click the 'add idea' link
         addIdea = ideasPage.click(description=linkDefs.addIdea(), index=0)
         # obtain the form for this
@@ -262,7 +262,7 @@ class TestIdeaController(TestController):
             url = str.strip(str(formParts['action']))
         )
         # reload the page by clicking the ideas menu and the idea should no longer be visible
-        confirmDelete = ideaAdded.click(description=linkDefs.ideas_page(), index=0)
+        confirmDelete = ideaAdded.click(description=linkDefs.vote_page(), index=0)
         #assert didDelete == 404
         assert ideaText not in confirmDelete, "admin not able to delete idea made by a user in their own workshop"
           
