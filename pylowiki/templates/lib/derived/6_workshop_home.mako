@@ -28,7 +28,7 @@
             <li class="media">
                 ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
                 <div class="media-body">
-                    <h4 class="media-heading">${lib_6.userLink(person)}</h4>
+                    <h4 class="media-heading">${lib_6.userLink(person, className="green green-hover")}</h4>
                     ${personTitle}
                 </div>
             </li>
@@ -63,30 +63,11 @@
                     break
             %>
             <li>
-                ${lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")}
-                ${lib_6.userLink(item.owner)}
                 <%
-                    if item.objType == 'comment':
-                        activityStr = 'Commented on a'
-                        if 'ideaCode' in item.keys():
-                            activityStr += 'n'
-                    else:
-                        activityStr = 'Added a'
-                    if item.objType == 'idea':
-                        activityStr += 'n'
-                    activityStr += ' <a ' + lib_6.thingLinkRouter(item, c.w, embed = True) + '>'
-                    if item.objType != 'comment':
-                        activityStr += item.objType + "</a>"
-                    else:
-                        if 'ideaCode' in item.keys():
-                            activityStr += 'idea </a>'
-                        elif 'resourceCode' in item.keys():
-                            activityStr += 'resource </a>'
-                        else:
-                            activityStr += 'conversation </a>'
-                    shownItems += 1
+                    lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")
+                    lib_6.userLink(item.owner, className = "green green-hover")
+                    lib_6.showItemInActivity(item, c.w)
                 %>
-                ${activityStr | n}
             </li>
         % endfor
     </ul>

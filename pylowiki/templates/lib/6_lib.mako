@@ -670,3 +670,38 @@
         </div> <!--/.row-fluid-->
     % endif
 </%def>
+
+<%def name="showItemInActivity(item, w)">
+    <%
+        thisUser = userLib.getUserByID(item.owner)
+        actionMapping = {   'resource': 'added the resource',
+                            'discussion': 'started the conversation',
+                            'idea': 'posed the idea',
+                            'comment': 'commented on a'}
+        objTypeMapping = {  'resource':'resource',
+                            'discussion':'conversation',
+                            'idea':'idea',
+                            'comment':'comment'}
+        if item.objType == 'comment':
+            title = ellipsisIZE(item['data'], 40)
+        else:
+            title = ellipsisIZE(item['title'], 40)
+        
+        activityStr = actionMapping[item.objType]
+        if item.objType == 'comment':
+            if 'ideaCode' in item.keys():
+                activityStr += 'n'
+            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>'
+            if 'ideaCode' in item.keys():
+                activityStr += objTypeMapping['idea']
+            elif 'resourceCode' in item.keys():
+                activityStr += objTypeMapping['resource']
+            elif 'discussionCode' in item.keys():
+                activityStr += objTypeMapping['discussion']
+            activityStr += '</a>, saying '
+            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, id='accordion-%s'%item['urlCode']) + '>' + title + '</a>'
+        else:
+            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
+    %>
+    ${activityStr | n}
+</%def>

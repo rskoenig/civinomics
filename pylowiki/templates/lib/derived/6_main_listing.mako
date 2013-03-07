@@ -64,28 +64,13 @@
 <%def name="showActivity(item)">
    <div class="media">
       <%
-         thisUser = getUserByID(item.owner)
-         
-         activityStr = ''
-         title = lib_6.ellipsisIZE(item['title'], 40)
          w = workshopLib.getWorkshopByCode(item['workshopCode'])
-         if item.objType == 'resource':
-            activityStr += 'added the resource '
-            activityStr += '<a %s>%s</a>' % (lib_6.resourceLink(item, w, embed=True), title)
-         elif item.objType == 'suggestion':
-            activityStr += 'suggested '
-            activityStr += '<a %s>%s</a>' %(lib_6.suggestionLink(item, w, embed=True), title)
-         elif item.objType == 'discussion':
-            activityStr += 'started the discussion '
-            activityStr += '<a %s>%s</a>' %(lib_6.discussionLink(item, w, embed=True), title)
-         elif item.objType == 'idea':
-             activityStr += 'posed the idea '
-             activityStr += '<a %s>%s</a>' %(lib_6.ideaLink(item, w, embed=True), title)
-         else:
-            activityStr += 'Cived up'
+         thisUser = getUserByID(item.owner)
       %>
-      
       <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar', linkClass = 'media-object')}</div> 
-      <div class="media-body">${lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)} ${activityStr | n}</div>
+      <div class="media-body">
+         ${lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)} 
+         ${lib_6.showItemInActivity(item, w)}
+      </div>
    </div>
 </%def>
