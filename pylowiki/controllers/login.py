@@ -9,10 +9,9 @@ from pylowiki.lib.base import BaseController, render
 
 import pylowiki.lib.helpers as h
 import pylowiki.lib.db.user as userLib
+import pylowiki.lib.mail as mailLib
 from pylowiki.lib.auth import login_required
 from pylowiki.lib.db.dbHelpers import commit
-
-from pylowiki.lib.mail import send
 
 log = logging.getLogger(__name__)
 
@@ -39,7 +38,7 @@ class LoginController(BaseController):
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
                         baseURL = c.conf['activation.url']
                         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
-                        userLib.sendActivationMail(user['email'], url)
+                        mailLib.sendActivationMail(user['email'], url)
                         
                     elif user['disabled'] == '1':
                         log.warning("disabled account attempting to login - " + email )
@@ -120,7 +119,7 @@ class LoginController(BaseController):
                 You can change your password to something you prefer on your profile page.\n\n
                 We have reset your password to: ''' + password
 
-                send( toEmail, frEmail, subject, message )
+                mailLib.send( toEmail, frEmail, subject, message )
 
                 log.info( "Successful forgot password for " + email )
                 splashMsg['type'] = 'success'
