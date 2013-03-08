@@ -41,7 +41,7 @@ class DiscussionController(BaseController):
         c.mainImage = mainImageLib.getMainImage(c.w)
         
         # Demo workshop status
-        c.demo = workshopib.isDemo(c.w)
+        c.demo = workshopLib.isDemo(c.w)
         
         workshopLib.setWorkshopPrivs(c.w)
         if c.w['public_private'] == 'public':
