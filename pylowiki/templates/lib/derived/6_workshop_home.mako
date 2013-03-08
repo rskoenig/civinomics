@@ -17,7 +17,7 @@
             people += c.listeners
     %>
     <h4 class="section-header smaller section-header-inner"> Notables </h4>
-    <ul class="media-list centered">
+    <ul class="media-list centered" id="workshopNotables">
         % for person in people:
             <%
                 if person.objType == 'facilitator':
@@ -91,7 +91,7 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <a class="pull-right" href="${workshopLink | n}">
+   <a class="pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="Workshop preferences">
       <img class="config" src="/images/glyphicons_pro/glyphicons/png/glyphicons_137_cogwheels.png">
    </a>
 </%def>

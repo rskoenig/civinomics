@@ -30,10 +30,10 @@
                   <span class="icon-bar"></span>
                </a>
                <a class="brand civ-brand" href="/">
-                  <img src="/images/logo_splash4.png" class="small-logo">
+                  <img src="/images/logo_splash4.png" class="small-logo" id="civinomicsLogo">
                </a>
                <div class="nav-collapse collapse">
-                  <ul class="nav pull-right">
+                  <ul class="nav pull-right" id="profileAvatar">
                      % if 'user' in session:
                         <li>
                             ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", linkClass="topbar-avatar-link")}

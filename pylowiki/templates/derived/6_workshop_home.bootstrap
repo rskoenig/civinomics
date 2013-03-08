@@ -27,13 +27,11 @@
             <h4 class="section-header smaller"> 
                Goals
             </h4>
-            <div>
                 <ul class="goals" id="workshopGoals">
                    ${helpers.showGoals(c.goals)}
                 </ul> <!-- /goals -->
                 ${helpers.whoListening()}
                 ${helpers.showActivity(c.activity)}
-            </div>
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->

@@ -28,6 +28,12 @@ def getWorkshops( deleted = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
         return False
+        
+def getDemoWorkshops():
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('demo', '1'))).all()
+    except:
+        return False
 
 def searchWorkshops( wKey, wValue):
     try:
@@ -215,6 +221,21 @@ def isScoped(user, workshop):
     else:
         return True       
     
+    return False
+
+def setDemo(workshop): 
+    workshop['demo'] = '1'
+    workshop['deleted'] = '1'
+    commit(workshop)
+    return 'New demo workshop'
+
+def isDemo(workshop):   
+    if 'demo' in workshop:
+        if workshop['demo'] == '1':
+            return True
+        else:
+            return False       
+ 
     return False
 
 def setWorkshopPrivs(workshop):

@@ -13,7 +13,6 @@ import pylowiki.lib.db.discussion       as  discussionLib
 import pylowiki.lib.db.comment          as  commentLib
 import pylowiki.lib.db.revision         as  revisionLib
 import pylowiki.lib.db.geoInfo          as  geoInfoLib
-import pylowiki.lib.db.demo             as  demoLib
 import pylowiki.lib.alerts              as  alertsLib
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
@@ -37,14 +36,8 @@ class ResourceController(BaseController):
         c.mainImage = mainImageLib.getMainImage(c.w)
         
         # Demo workshop status
-        demo = demoLib.getDemo()
-        if not demo:
-            c.demo = False
-        else:
-            if demo['workshopCode'] == c.w['urlCode']:
-                c.demo = True
-            else:
-                c.demo = False
+        c.demo = workshopLib.isDemo(c.w)
+
         
         c.title = c.w['title']
         workshopLib.setWorkshopPrivs(c.w)
