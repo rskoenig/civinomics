@@ -15,9 +15,7 @@
                      <strong><small>Click image(s) above for slideshow</small></strong>
                   </div>
                </div>
-               <div>
-                  ${helpers.showInfo(c.w)}
-               </div>
+               ${helpers.showInfo(c.w)}
          </div> <!-- /.browse -->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span8 -->
