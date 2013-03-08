@@ -16,8 +16,9 @@ log = logging.getLogger(__name__)
 class GoalsController(BaseController):
 
     def __before__(self, action, workshopCode = None, goalCode = None):
-        if 'user' not in session:
-            abort(404)
+        if action not in ['getGoals']:
+            if 'user' not in session:
+                abort(404)
         if workshopCode is None:
             abort(404)
         c.w = workshopLib.getWorkshopByCode(workshopCode)
@@ -29,7 +30,12 @@ class GoalsController(BaseController):
             c.goal = goalLib.getGoal(goalCode)
             if not c.goal:
                 abort(404)
-        if not c.privs['admin'] and not c.privs['facilitator']:
+            if not c.privs['admin'] and not c.privs['facilitator']:
+                abort(404)
+        if c.privs['visitor']:
+            if c.w['public_private'] == 'private':
+                abort(404)
+        elif not c.privs['admin'] and not c.privs['facilitator'] and not c.privs['participant']:
             abort(404)
 
     def _returnGoal(self, goal, done = None):
