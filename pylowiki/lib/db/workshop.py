@@ -217,6 +217,21 @@ def isScoped(user, workshop):
     
     return False
 
+def setDemo(workshop): 
+    workshop['demo'] = '1'
+    workshop['deleted'] = '1'
+    commit(workshop)
+    return 'New demo workshop'
+
+def isDemo(workshop):   
+    if 'demo' in workshop:
+        if workshop['demo'] == '1':
+            return True
+        else:
+            return False       
+ 
+    return False
+
 def setWorkshopPrivs(workshop):
     c.privs = {}
     # Civinomics administrator

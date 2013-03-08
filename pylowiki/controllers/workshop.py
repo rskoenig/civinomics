@@ -36,7 +36,6 @@ import pylowiki.lib.db.page         as pageLib
 import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.goal         as goalLib
-import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
 import webhelpers.feedgenerator     as feedgenerator
@@ -870,14 +869,7 @@ class WorkshopController(BaseController):
             c.goals = []
         
         # Demo workshop status
-        demo = demoLib.getDemo()
-        if not demo:
-            c.demo = False
-        else:
-            if demo['workshopCode'] == c.w['urlCode']:
-                c.demo = True
-            else:
-                c.demo = False
+        c.demo = workshopLib.isDemo(c.w)
         
         return render('/derived/6_workshop_home.bootstrap')
     

@@ -10,7 +10,6 @@ import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.sort            as sortLib
 import pylowiki.lib.db.revision     as revisionLib
-import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.alerts          as alertsLib
 import pylowiki.lib.helpers as h
@@ -31,14 +30,8 @@ class IdeaController(BaseController):
         c.mainImage = mainImageLib.getMainImage(c.w)
         
         # Demo workshop status
-        demo = demoLib.getDemo()
-        if not demo:
-            c.demo = False
-        else:
-            if demo['workshopCode'] == c.w['urlCode']:
-                c.demo = True
-            else:
-                c.demo = False
+        c.demo = workshopLib.isDemo(c.w)
+
         
         workshopLib.setWorkshopPrivs(c.w)
         if c.w['public_private'] != 'public':
