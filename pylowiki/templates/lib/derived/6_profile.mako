@@ -89,7 +89,7 @@
                                 <div class="span4">Email me when new: </div>
                                 <div class="span8">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
                                 </div><!-- span8>
@@ -112,7 +112,7 @@
                                     <div class="span4">Email me when new: </div>
                                     <div class="span8">
                                         <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                            New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                            Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                             <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                         </form>
                                     </div><!-- span8 -->
@@ -135,7 +135,7 @@
                                 <div class="span4">Email me when new: </div>
                                 <div class="span8">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
                                 </div><!-- span8 -->
