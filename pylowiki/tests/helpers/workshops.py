@@ -418,7 +418,7 @@ def setWorkshopScope(self, workshop, user, newScope):
         wscope['scope'] = newScope
         dbHelpers.commit(wscope)
         wchanges = 1
-    # if there are chagnes, we make sure the workshop is public
+    # if there are changes, we make sure the workshop is public
     #from pylons import session
     if wchanges:
         workshopObj['public_private'] = 'public'
@@ -428,15 +428,22 @@ def setWorkshopScope(self, workshop, user, newScope):
         eventLib.Event('Workshop Config Updated by %s'%user['name'], '%s'%weventMsg, workshopObj, userObj)
 
 def startWorkshop(self, workshop, user):
+    """ works with the database to set a workshop to be started """
+    #: grab the workshop code
     workshopCode = getWorkshopCode(self, workshop)
-    import datetime
-    startTime = datetime.datetime.now(None)
+    #: load the workshop from db
     import pylowiki.lib.db.workshop as workshopLib
     workshopObj = workshopLib.getWorkshopByCode(workshopCode)
+    #: set the start and end times
+    import datetime
+    startTime = datetime.datetime.now(None)
     workshopObj['startTime'] = startTime
     endTime = datetime.datetime.now(None)
     endTime = endTime.replace(year = endTime.year + 1)
     workshopObj['endTime'] = endTime
+    #: set workshop as published
+    workshopObj['published'] = '1'
+    #: record the event and commit the workshop's new settings
     import pylowiki.lib.db.event as eventLib
     from pylowiki.lib.db.user import getUserByEmail
     userObj = getUserByEmail(user['email'])
@@ -446,13 +453,27 @@ def startWorkshop(self, workshop, user):
 
 
 def upgradeToProfessional(self, workshop, user):
+    """ upgrades a workshop to be professional. sidesteps the stripe payment auth,
+    so it's not perfect """
+    #: grab the workshop code and load the workshop fom db
     workshopCode = getWorkshopCode(self, workshop)
     import pylowiki.lib.db.workshop as workshopLib
     workshopObj = workshopLib.getWorkshopByCode(workshopCode)
+    assert workshopObj != False
+    assert workshopObj is not None
+    #: set it to professional and commit
     workshopObj['type'] = 'professional'
     import pylowiki.lib.db.dbHelpers as dbHelpers
     dbHelpers.commit(workshopObj)
     #: now create the account object this workshop needs to be associated with
     import pylowiki.lib.db.account as accountLib
-    #: using a mock account function because we're currently not able to use paste to test the stripe payment service
-    account = accountLib.AccountTest(user['name'], user['email'], 'stripeToken', workshopObj, 'PRO', 'coupon')
+    #: use a mock account function because we're currently not able to use paste 
+    #: for testing the stripe payment service
+    account = accountLib.AccountTest(
+        user['name'], 
+        user['email'], 
+        'stripeToken', 
+        workshopObj, 
+        'PRO', 
+        'test-coupon'
+    )

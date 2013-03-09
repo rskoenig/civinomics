@@ -74,7 +74,6 @@ def immunify(self, conversation, **kwargs):
     immunifyUrl = None
     for formIndex in convoForms:
         #: does it have 'disable' in the action?
-        log.info("form action: "+convoForms[formIndex].action)
         if convoForms[formIndex].action.find('immunify') >= 0:
             immunifyUrl = convoForms[formIndex].action
 
