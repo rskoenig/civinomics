@@ -44,91 +44,104 @@
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                     % if role == 'Facilitating':
-                        <%
-                            f = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, workshop)[0]
-                            itemsChecked = ''
-                            flagsChecked = ''
-                            if 'itemAlerts' in f and f['itemAlerts'] == '1':
-                                itemsChecked = 'checked'
-                            if 'flagAlerts' in f and f['flagAlerts'] == '1':
-                                flagsChecked = 'checked'
-                        %>
-                        <table class="table table-bordered table-condensed" ng-controller="facilitatorController">
-                        <tbody>
-                        <tr>
-                            <td width="20%">Email alerts</td>
-                            <td width="40%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                    New items: <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
-                                    <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
-                                </form>
-                            </td>
-                            <td width="40%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                    New flags: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
-                                    <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
-                                </form>
-                            </td>
-                        </tr></tbody></table>
-                    % endif
-                    % if role == 'Listening':
-                        <%
-                            l = listenerLib.getListener(c.user, workshop)
-                            itemsChecked = ''
-                            if 'itemAlerts' in l and l['itemAlerts'] == '1':
-                                itemsChecked = 'checked'
-                        %>
-                        <table class="table table-bordered table-condensed" ng-controller="listenerController">
-                        <tbody>
-                        <tr>
-                            <td width="20%">Email alerts</td>
-                            <td width="80%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                    New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
-                                    <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
-                                </form>
-                            </td>
-                        </tr></tbody></table>
-                    % endif
-                    % if role == 'Bookmarked':
-                        <% f = followLib.getFollow(c.user, workshop) %>
-                        % if f:
+                        <div style="margin-top: 10px;">
+                            <table class="table table-bordered table-condensed">
+                            <tr class="warning"><td>
                             <%
+                                f = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, workshop)[0]
                                 itemsChecked = ''
+                                flagsChecked = ''
                                 if 'itemAlerts' in f and f['itemAlerts'] == '1':
                                     itemsChecked = 'checked'
+                                if 'flagAlerts' in f and f['flagAlerts'] == '1':
+                                    flagsChecked = 'checked'
                             %>
-                            <table class="table table-bordered table-condensed" ng-controller="followerController">
-                            <tbody>
-                            <tr>
-                                <td width="20%">Email alerts</td>
-                                <td width="80%">
+                            <div class="row-fluid" ng-controller="facilitatorController">
+                                <div class="span4">Email me when new: </div>
+                                <div class="span4">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        Items: <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                    </form>
+                                </div><!-- span4 -->
+                                <div class="span4">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        Flags: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
+                                        <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
+                                    </form>
+                                </div><!-- span4 -->
+                            </div><!-- row-fluid -->
+                            </td></tr>
+                            </table>
+                        </div><!-- margin-top -->
+                    % endif
+                    % if role == 'Listening':
+                        <div style="margin-top: 10px;">
+                            <table class="table table-bordered table-condensed">
+                            <tr class="warning"><td>
+                            <%
+                                l = listenerLib.getListener(c.user, workshop)
+                                itemsChecked = ''
+                                if 'itemAlerts' in l and l['itemAlerts'] == '1':
+                                    itemsChecked = 'checked'
+                            %>
+                            <div class="row-fluid" ng-controller="listenerController">
+                                <div class="span4">Email me when new: </div>
+                                <div class="span8">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
-                                </td>
+                                </div><!-- span8>
+                            </div><!-- row-fluid -->
                             </tr></tbody></table>
+                        </div><!-- margin-top -->
+                    % endif
+                    % if role == 'Bookmarked':
+                        <% f = followLib.getFollow(c.user, workshop) %>
+                        % if f:
+                            <div style="margin-top: 10px;">
+                                <table class="table table-bordered table-condensed">
+                                <tr class="warning"><td>
+                                <%
+                                    itemsChecked = ''
+                                    if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                                        itemsChecked = 'checked'
+                                %>
+                                <div class="row-fluid" ng-controller="followerController">
+                                    <div class="span4">Email me when new: </div>
+                                    <div class="span8">
+                                        <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                            New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                            <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                        </form>
+                                    </div><!-- span8 -->
+                                </div><!-- row-fluid -->
+                                </tr></tbody></table>
+                            </div><!-- margin-top -->
                         % endif
                     % endif
                     % if role == 'Private':
-                        <% 
-                            p = pmemberLib.getPrivateMember(workshop['urlCode'], c.user['email'])
-                            itemsChecked = ''
-                            if 'itemAlerts' in p and p['itemAlerts'] == '1':
-                                    itemsChecked = 'checked'
-                        %>
-                        <table class="table table-bordered table-condensed" ng-controller="pmemberController">
-                        <tbody>
-                        <tr>
-                            <td width="20%">Email alerts</td>
-                            <td width="80%">
-                                <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                    New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
-                                    <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
-                                </form>
-                            </td>
-                        </tr></tbody></table>
+                        <div style="margin-top: 10px;">
+                            <table class="table table-bordered table-condensed">
+                            <tr class="warning"><td>
+                            <% 
+                                p = pmemberLib.getPrivateMember(workshop['urlCode'], c.user['email'])
+                                itemsChecked = ''
+                                if 'itemAlerts' in p and p['itemAlerts'] == '1':
+                                        itemsChecked = 'checked'
+                            %>
+                            <div class="row-fluid" ng-controller="pmemberController">
+                                <div class="span4">Email me when new: </div>
+                                <div class="span8">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        New items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                    </form>
+                                </div><!-- span8 -->
+                            </div><!-- row-fluid -->
+                            </tr></tbody></table>
+                        </div><!-- margin-top -->
                     % endif
                 % endif
             % endif
