@@ -289,8 +289,6 @@
                     ${thingCount(c.user, c.watching, 'bookmarks')}
                 </div>
             </div> <!--/.row-fluid-->
-            <hr>
-            Placeholder for listing organizations
         </div><!--/.browse-->
     </div><!--/.section-wrapper-->
 </%def>
