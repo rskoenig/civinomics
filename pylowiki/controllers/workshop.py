@@ -325,7 +325,7 @@ class WorkshopController(BaseController):
            
         if c.w['type'] == 'personal':
             alert = {'type':'error'}
-            alert['title'] = 'Personal workshops are limited to being private invitation only with a maximum of 10 participants.'
+            alert['title'] = 'Personal workshops are limited to being private invitation only with a maximum of 20 participants.'
             session['alert'] = alert
             session.save()
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
@@ -422,16 +422,16 @@ class WorkshopController(BaseController):
         if 'addMember' in request.params:
             pList = pMemberLib.getPrivateMembers(workshopCode, "0")
             if 'newMember' in request.params and request.params['newMember'] != '':
-                if c.w['type'] == 'personal' and len(pList) >= 10:
+                if c.w['type'] == 'personal' and len(pList) >= 20:
                     werror = 1
-                    werrMsg += 'You have already reached the maximum number of 10 participants for a personal workshop.'
+                    werrMsg += 'You have already reached the maximum number of 20 participants for a personal workshop.'
                 else:
                     newMember = request.params['newMember']
                     counter = 0
                     mList = newMember.split('\n')
-                    if c.w['type'] == 'personal' and (len(pList) + len(mList) > 10):
+                    if c.w['type'] == 'personal' and (len(pList) + len(mList) > 20):
                         werror = 1
-                        werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, personal workshops are limited to a maximum of 10 participants.'
+                        werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, personal workshops are limited to a maximum of 20 participants.'
                     else:
                         for mEmail in mList:
                             mEmail = mEmail.strip()
