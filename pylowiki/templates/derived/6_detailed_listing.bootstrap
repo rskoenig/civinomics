@@ -16,7 +16,7 @@
    elif c.listingType == 'resources':
       itemList = c.resources
       helperText = 'Link to educational information resources like videos, articles and reports.'
-      helperText += '<br /><strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.'
+      helperText += '<br />View and <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.'
    elif c.listingType == 'ideas':
       itemList = c.ideas
       helperText = 'Add an idea to meet the goals of the workshop!'
