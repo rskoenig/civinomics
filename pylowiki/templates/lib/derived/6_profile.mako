@@ -260,7 +260,7 @@
                 <small class="muted expandable">${c.user['greetingMsg']}</small>
             % endif
             % if c.user['websiteLink'] != '':
-                <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}">${c.user['websiteLink']}</a></p>
+                <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
                 % if c.user['websiteDesc'] != '':
                     <small class="muted expandable">${c.user['websiteDesc']}</small>
                 % endif
