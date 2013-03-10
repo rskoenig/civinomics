@@ -2,7 +2,6 @@
     import time
     from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList, getPostalList
     from pylowiki.lib.db.user import getUserByEmail
-    from pylowiki.lib.db.workshop import getCategoryTagList
     from pylowiki.lib.db.tag import getWorkshopTagCategories
 %>
 

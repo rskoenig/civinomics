@@ -17,6 +17,7 @@ import pylowiki.lib.db.slideshow    as slideshowLib
 import pylowiki.lib.db.slide        as slideLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
+import pylowiki.lib.db.tag          as tagLib
 
 from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
 import time, datetime, logging
@@ -167,28 +168,18 @@ def getWorkshopPostsSince(code, url, memberDatetime):
 
         return returnList
         
-def getCategoryTagList():
-    cTagList = []
-    cTagList.append('Business')
-    cTagList.append('Civil Rights')
-    cTagList.append('Community')
-    cTagList.append('Economy')
-    cTagList.append('Education')
-    cTagList.append('Entertainment')
-    cTagList.append('Environment')
-    cTagList.append('Family')
-    cTagList.append('Government')
-    cTagList.append('Health')
-    cTagList.append('Housing')
-    cTagList.append('Infrastructure')
-    cTagList.append('Justice')
-    cTagList.append('Land Use')
-    cTagList.append('Municipal Services')
-    cTagList.append('Policy')
-    cTagList.append('Safety')
-    cTagList.append('Transportation')
-    cTagList.append('Other')
-    return cTagList
+def getCategoryTagCount():
+    categories = tagLib.getWorkshopTagCategories()
+    tagDict = dict()
+    for category in categories:
+        tagDict[category] = 0
+        tagList = tagLib.searchTags(category)
+        for tag in tagList:
+            workshop = getWorkshopByCode(tag['workshopCode'])
+            if isPublished(workshop) and isPublic(workshop):
+                tagDict[category] = tagDict[category] + 1
+                
+    return tagDict
 
 def isGuest(workshop):
     if 'guestCode' in session and 'workshopCode' in session:
@@ -200,6 +191,12 @@ def isGuest(workshop):
     
 def isPublished(workshop):
     if workshop and workshop['published'] == '1' and workshop['deleted'] == '0':
+        return True
+    
+    return False
+
+def isPublic(workshop):
+    if workshop and workshop['public_private'] == 'public':
         return True
     
     return False

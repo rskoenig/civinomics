@@ -1,10 +1,12 @@
 <%!
     import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
     import pylowiki.lib.db.follow       as followLib
     import pylowiki.lib.db.user         as userLib
     import pylowiki.lib.db.pmember      as pmemberLib
+    import pylowiki.lib.utils           as utils
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -194,7 +196,7 @@
             % if len(things) == 0:
                 There doesn't seem to be anything here!
             % else:
-                % if c.listingType == 'watching':
+                % if c.listingType == 'watching' or c.listingType == 'search':
                     <table class="table table-condensed table-hover user-thing-listing">
                         <tbody>
                             <% counter = 0 %>
@@ -384,6 +386,19 @@
             </div><!-- row -->
         % endif
     %endif
+</%def>
+
+<%def name="search()">
+    <% tagCount = workshopLib.getCategoryTagCount() %>
+    Show workshops by tag: <br />
+    <ul class="unstyled">
+    %for tag in tagCount.keys():
+        % if tagCount[tag] != 0:
+            <% uTag = utils.urlify(tag) %>
+            <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/workshop/tag/${uTag}">${tag}</a> : ${tagCount[tag]}</li>
+        % endif
+    % endfor
+    </ul>
 </%def>
 
 

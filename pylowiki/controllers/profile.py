@@ -25,6 +25,8 @@ import pylowiki.lib.db.follow           as followLib
 import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.revision         as revisionLib
+import pylowiki.lib.db.tag              as tagLib
+import pylowiki.lib.utils               as utils
 
 import simplejson as json
 import csv
@@ -342,6 +344,22 @@ class ProfileController(BaseController):
         # Called when visiting /profile/urlCode/url/watching
         self._basicSetup(id1, id2, 'watching')
         return render("/derived/6_profile_list.bootstrap")
+        
+
+    def searchWorkshopTag(self, id1, id2, id3):
+        tag = utils.geoDeurlify(id3)
+        tags = tagLib.searchTags(tag)
+        self._basicSetup(id1, id2, 'search')
+        c.things = []
+        for tag in tags:
+            workshop = workshopLib.getWorkshopByCode(tag['workshopCode'])
+            if workshopLib.isPublished(workshop) and workshopLib.isPublic(workshop):
+                c.things.append(workshop)
+
+        c.thingsTitle = 'Workshops with tag "' + tag['title'] + '"'
+        c.listingType = 'search'
+        
+        return render('/derived/6_profile_list.bootstrap')
     
     def _basicSetup(self, code, url, page):
         # code and url are now unused here, now that __before__ is defined
@@ -399,6 +417,7 @@ class ProfileController(BaseController):
         items['resources'] = []
         items['discussions'] = []
         items['ideas'] = []
+        items['search'] = []
         for thing in createdThings:
             if 'workshopCode' in thing:
                 w = workshopLib.getWorkshopByCode(thing['workshopCode'])

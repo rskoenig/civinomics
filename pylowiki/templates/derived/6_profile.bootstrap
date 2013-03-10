@@ -19,7 +19,8 @@
                             msgString = ''
                             if c.messages:
                                 msgString = ' (' + str(c.messages) + ')'
-                        %>   
+                        %>
+                        <li><a href="#tab-search" data-toggle="tab" class="green green-hover">Search</a></li>
                         <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit${msgString}</a></li>
                     % else:
                         ${helpers.followButton(c.user)}
@@ -49,6 +50,13 @@
                     </tbody>
                     </table>
                 </div>
+                % if 'user' in session:
+                    % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
+                        <div class="tab-pane" id="tab-search">
+                            ${helpers.search()}
+                        </div>
+                    % endif
+                % endif
             </div>
         </div>
     </div>
