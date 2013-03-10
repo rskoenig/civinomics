@@ -115,7 +115,7 @@
             printStr += 'idea" title="Click to add an idea to this workshop"'
         printStr += ' class="pull-right btn btn-large btn-success" type="button">'
         if thing == 'discussion':
-            printStr += 'Add conversation'
+            printStr += 'Add a conversation'
         elif thing == 'ideas':
             printStr += 'Add an idea'
         elif thing == 'resources':
