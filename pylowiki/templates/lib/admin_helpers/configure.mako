@@ -233,7 +233,7 @@
 <%def name="private()">
     <ul>
     % if c.w['type'] == 'personal':
-        <li>Personal workshops are private and limited to 10 participants.</li>
+        <li>Free workshops are private and limited to 20 participants.</li>
     % endif
     <li>Private workshops are not visible to the public.</li>
     <li>Private workshops are invitation only.</li>

@@ -325,7 +325,7 @@ class WorkshopController(BaseController):
            
         if c.w['type'] == 'personal':
             alert = {'type':'error'}
-            alert['title'] = 'Personal workshops are limited to being private invitation only with a maximum of 20 participants.'
+            alert['title'] = 'Free workshops are limited to being private invitation only with a maximum of 20 participants.'
             session['alert'] = alert
             session.save()
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
@@ -424,14 +424,14 @@ class WorkshopController(BaseController):
             if 'newMember' in request.params and request.params['newMember'] != '':
                 if c.w['type'] == 'personal' and len(pList) >= 20:
                     werror = 1
-                    werrMsg += 'You have already reached the maximum number of 20 participants for a personal workshop.'
+                    werrMsg += 'You have already reached the maximum number of 20 participants for a Free workshop.'
                 else:
                     newMember = request.params['newMember']
                     counter = 0
                     mList = newMember.split('\n')
                     if c.w['type'] == 'personal' and (len(pList) + len(mList) > 20):
                         werror = 1
-                        werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, personal workshops are limited to a maximum of 20 participants.'
+                        werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, Free workshops are limited to a maximum of 20 participants.'
                     else:
                         for mEmail in mList:
                             mEmail = mEmail.strip()
@@ -685,7 +685,7 @@ class WorkshopController(BaseController):
                         account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, workshop, 'PRO', c.coupon)
                         
                     alert = {'type':'success'}
-                    alert['title'] = 'Your workshop has been upgraded from personal to professional. Have fun!'
+                    alert['title'] = 'Your workshop has been upgraded from Free to Professional. Have fun!'
                     session['alert'] = alert
                     session.save()
                     return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
