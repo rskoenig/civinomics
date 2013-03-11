@@ -81,10 +81,11 @@
                                     <input type="hidden" name="country" value="United States">
                                     <input type="hidden" name="memberType" value="professional">
 
-                                    <div class="control-group">
+                                    <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
                                         <label class="control-label" for="name"> Full name: </label>
                                         <div class="controls">
-                                            <input type="text" name="name" id="name" ng-model="name" required>
+                                            <input type="text" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
+                                            <span class="error help-block" ng-show="signupForm.name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
                                         </div>
                                     </div>
                                     <div class="control-group">
@@ -100,17 +101,17 @@
                                             <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
                                         </div>
                                     </div>
-                                    <div class="control-group">
+                                    <div ng-class=" {'control-group': true} ">
                                         <label class="control-label" for="passphrase2"> Password (again): </label>
                                         <div class="controls">
                                             <input type="password" name="password2" id="passphrase2" ng-model= "passphrase2" required>
                                             <span class="error help-block" ng-show="passphrase1 != passphrase2">Passwords don't match!</span>
                                         </div>
                                     </div>
-                                    <div class="control-group">
+                                    <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} ">
                                         <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i>Postal Code: </label>
                                         <div class="controls">
-                                            <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="word" ng-minlength="5" ng-maxlength="5" required>
+                                            <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" required>
                                             <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
                                         </div>
                                     </div>
