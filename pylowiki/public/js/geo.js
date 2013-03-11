@@ -42,7 +42,7 @@ function geoTagCityChange(){
     document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
     document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
     if (citySelectIndex === 0) {
-        document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "or leave blank if your workshop is specific to the entire county."; 
+        document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "or leave blank if specific to the entire county."; 
     } else {
         document.getElementById("postalSelect").innerText = "";
         var urlString = '/geo/postalList/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-") + "/" + cityName.replace(" ", "-");
@@ -63,7 +63,7 @@ function geoTagCityChange(){
             postalMenu = postalMenu + "</select></div>";
             document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
             document.getElementById("postalSelect").innerHTML = postalMenu;  
-            document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "or leave blank if your workshop is specific to the entire city.";
+            document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "or leave blank if specific to the entire city.";
         }
     }
 }
@@ -80,7 +80,7 @@ function geoTagCountyChange(){
     document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
     document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
     if (selectIndex === 0) {
-        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if your workshop is specific to the entire state."; 
+        document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if specific to the entire state."; 
     } else {
         document.getElementById("citySelect").innerText = "";
         var urlString = '/geo/cityList/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-");
@@ -101,7 +101,7 @@ function geoTagCountyChange(){
             cityMenu = cityMenu + "</select></div>";
             document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
             document.getElementById("citySelect").innerHTML = cityMenu;  
-            document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "or leave blank if your workshop is specific to the entire county.";
+            document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "or leave blank if specific to the entire county.";
         }
     }
 }
@@ -117,7 +117,7 @@ function geoTagStateChange(){
     document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
     document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
     if (selectIndex === 0) {
-        document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if your workshop is specific to the entire country.";
+        document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if specific to the entire country.";
     } else {
         document.getElementById("countySelect").innerText = "";
         var urlString = '/geo/countyList/united-states/' + stateName.replace(" ", "-");
@@ -138,7 +138,7 @@ function geoTagStateChange(){
             countyMenu = countyMenu + "</select></div>";
             document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
             document.getElementById("countySelect").innerHTML = countyMenu;  
-            document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if your workshop is specific to the entire state.";
+            document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "or leave blank if specific to the entire state.";
         }
     }
 }
@@ -153,7 +153,7 @@ $('.geoTagCountry').change(function(e){
     document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
     document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
     if (selectIndex === 0) {
-        document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "or leave blank if your workshop is specific to the entire planet.";
+        document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "or leave blank if specific to the entire planet.";
     }
     if (selectIndex === 1) {
         var urlString = '/geo/stateList/united-states';
@@ -174,7 +174,7 @@ $('.geoTagCountry').change(function(e){
             stateMenu = stateMenu + "</select></div>";
             document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
             document.getElementById("stateSelect").innerHTML = stateMenu;            
-            document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if your workshop is specific to the entire country.";
+            document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if specific to the entire country.";
         }
     }
 });

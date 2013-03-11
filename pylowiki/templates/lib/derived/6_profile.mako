@@ -406,8 +406,45 @@
             <form class="form-search well" method="POST" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/name">
                 Name like <input type="text" name="searchString" class="search-query"><br /><br />
                 <button class="btn" name="memberButton">Search Members</button> &nbsp;&nbsp; <button class="btn" name="workshopButton">Search Workshops</button><br />
-            </form>  
-        </div><!-- span6 -->
+            </form>
+            <br />
+            <form name="scope" id="scope" class="left form-inline well" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/geo" method="post" >
+                <div class="row-fluid">
+                    <span id="countrySelect">
+                        <div class="span1"></div><div class="span2">Country:</div><div class="span9"><select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+                            <option value="0">Select a country</option>
+                            <option value="United States">United States</option>
+                        </select>
+                        </div><!-- span9 -->
+                    </span>
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <span id="stateSelect">
+                        or leave blank if your search is specific to the entire planet.
+                    </span>
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <span id="countySelect">
+                    </span>
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <span id="citySelect">
+                    </span>
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <span id="postalSelect">
+                    </span>
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <span id="underPostal">
+                    </span>
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <br />
+                    <button class="btn" name="memberButton">List Members</button> &nbsp;&nbsp; <button class="btn" name="workshopButton">List Workshops</button><br />
+                </div><!-- row-fluid -->
+            </form>
+        </div><!-- span8 -->
     </div><!-- row-fluid -->
 </%def>
 
