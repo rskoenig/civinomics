@@ -393,6 +393,89 @@ class ProfileController(BaseController):
                     c.things.append(workshop)
         
         return render('/derived/6_profile_list.bootstrap')
+        
+    def searchItemGeo(self, id1, id2):
+        if 'memberButton' in request.params:
+            self._basicSetup(id1, id2, 'searchUsers')
+            searchItem = "users"
+        elif 'workshopButton' in request.params:
+            self._basicSetup(id1, id2, 'searchWorkshops')
+            searchItem = "workshops"
+        else:
+            abort(404)
+         
+        scopeLevel = 0
+        geoScopeTitle = "Planet Earth"
+        geoTagString = "||"
+        if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
+            geoTagCountry = request.params['geoTagCountry']
+            geoScopeTitle = geoTagCountry
+            geoTagString += utils.urlify(geoTagCountry) + "||"
+            scopeLevel = 2
+        else:
+            geoTagCountry = "0"
+            geoTagString += "||"
+            
+        if 'geoTagState' in request.params and request.params['geoTagState'] != '0':
+            geoTagState = request.params['geoTagState']
+            geoScopeTitle = "The State of " + geoTagState
+            geoTagString += utils.urlify(geoTagState) + "||"
+            scopeLevel = 4
+        else:
+            geoTagState = "0"
+            geoTagString += "||"
+            
+        if 'geoTagCounty' in request.params and request.params['geoTagCounty'] != '0':
+            geoTagCounty = request.params['geoTagCounty']
+            geoScopeTitle = "The County of " + geoTagCounty
+            geoTagString += utils.urlify(geoTagCounty) + "||"
+            scopeLevel = 6
+        else:
+            geoTagCounty = "0"
+            geoTagString += "||"
+            
+        if 'geoTagCity' in request.params and request.params['geoTagCity'] != '0':
+            geoTagCity = request.params['geoTagCity']
+            geoScopeTitle = "The City of " + geoTagCity
+            geoTagString += utils.urlify(geoTagCity) + "|"
+            scopeLevel = 8
+        else:
+            geoTagCity = "0"
+            geoTagString += "|"
+            
+        if 'geoTagPostal' in request.params and request.params['geoTagPostal'] != '0':
+            # no zip code granularity searches for people
+            if searchItem == 'workshops':
+                geoTagPostal = request.params['geoTagPostal']
+                geoTagString += utils.urlify(geoTagPostal)
+                scopeLevel = 9
+            else:
+                geoTagPostal = "0"
+        else:
+            geoTagPostal = "0"
+            
+        if searchItem == 'users':
+            c.things = []
+            c.thingsTitle = 'Members residing in ' + geoScopeTitle
+            c.listingType = 'searchUsers'
+            uScopeList = geoInfoLib.getUserScopes(geoTagString, scopeLevel)
+            for uScope in uScopeList:
+                user = userLib.getUserByID(uScope.owner)
+                if user['activated'] == '1' and user['disabled'] == '0' and user['deleted'] == '0':
+                    c.things.append(user)
+                    
+        elif searchItem == 'workshops':
+            c.things = []
+            c.thingsTitle = 'Workshops scoped under ' + geoScopeTitle
+            c.listingType = 'searchWorkshops'
+            c.things = []
+            wScopeList = geoInfoLib.getWorkshopScopes(geoTagString, scopeLevel)
+            for wscope in wScopeList:
+                workshop = workshopLib.getWorkshopByCode(wscope['workshopCode'])
+                if workshopLib.isPublic(workshop) and workshopLib.isPublished(workshop):
+                    c.things.append(workshop)
+        
+        return render('/derived/6_profile_list.bootstrap')
     
     def _basicSetup(self, code, url, page):
         # code and url are now unused here, now that __before__ is defined

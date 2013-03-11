@@ -187,6 +187,7 @@ def getWorkshopScopes(searchScope, scopeLevel):
     except sa.orm.exc.NoResultFound:
         return False
 
+# this is exclusive
 def getWorkshopsInScope(country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
     try:
         return meta.Session.query(Thing)\
@@ -199,6 +200,7 @@ def getWorkshopsInScope(country = '0', state = '0', county = '0', city = '0', po
             .all()
     except:
         return False
+
 
 def editWorkshopScope(wscope, geoTagString):
     try:

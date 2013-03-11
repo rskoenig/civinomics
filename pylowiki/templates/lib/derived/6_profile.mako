@@ -408,14 +408,14 @@
                 <button class="btn" name="memberButton">Search Members</button> &nbsp;&nbsp; <button class="btn" name="workshopButton">Search Workshops</button><br />
             </form>
             <br />
-            <form name="scope" id="scope" class="left form-inline well" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/geo" method="post" >
+            <form name="scope" id="scope" class="left form-inline well" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/geo" method="post">
                 <div class="row-fluid">
                     <span id="countrySelect">
                         <div class="span1"></div><div class="span2">Country:</div><div class="span9"><select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
                             <option value="0">Select a country</option>
                             <option value="United States">United States</option>
                         </select>
-                        </div><!-- span9 -->
+                    </div><!-- span9 -->
                     </span>
                 </div><!-- row-fluid -->
                 <div class="row-fluid">
@@ -441,7 +441,7 @@
                 </div><!-- row-fluid -->
                 <div class="row-fluid">
                     <br />
-                    <button class="btn" name="memberButton">List Members</button> &nbsp;&nbsp; <button class="btn" name="workshopButton">List Workshops</button><br />
+                    <button class="btn" name="memberButton">Search Members</button> &nbsp;&nbsp; <button class="btn" name="workshopButton">Search Workshops</button><br />
                 </div><!-- row-fluid -->
             </form>
         </div><!-- span8 -->

@@ -300,6 +300,7 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/password/update/{handler:handler/?}', controller = 'profile', action = 'passwordUpdateHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/profile/{id1}/{id2}/search/item/name', controller = 'profile', action = 'searchItemName', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/search/item/geo', controller = 'profile', action = 'searchItemGeo', id1 = '{id1}', id2 = '{id2}')
     
     ################
     # Action Lists #
