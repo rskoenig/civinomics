@@ -357,7 +357,7 @@ class ProfileController(BaseController):
                 c.things.append(workshop)
 
         c.thingsTitle = 'Workshops with tag "' + tag['title'] + '"'
-        c.listingType = 'search'
+        c.listingType = 'searchWorkshops'
         
         return render('/derived/6_profile_list.bootstrap')
         
