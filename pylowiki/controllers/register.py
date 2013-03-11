@@ -28,12 +28,6 @@ class RegisterController(BaseController):
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
 
-    
-    #def index( self ):
-    #    """ Display Registration Form """
-    #    return render("/derived/signup.bootstrap")
-    
-
     def signupDisplay(self):
         c.numAccounts = 1000
         c.numUsers = len(getActiveUsers())
@@ -133,7 +127,7 @@ class RegisterController(BaseController):
             namecheck = name.replace(' ', '')
             nameTst = schema.to_python(dict(username = namecheck))
         except formencode.Invalid, error:
-            splashMsg['content'] = "Error: " + unicode(error)
+            splashMsg['content'] = "Full name: Enter only letters, numbers, or _ (underscore)"
             session['splashMsg'] = splashMsg
             session.save()
             return redirect(returnPage)
@@ -180,7 +174,7 @@ class RegisterController(BaseController):
                     c.success = True
                     session['registerSuccess'] = True
                     session.save()
-                                
+                    
                     log.info( message )
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
@@ -192,7 +186,7 @@ class RegisterController(BaseController):
                         if 'laston' in user:
                             t = time.localtime(float(user['laston']))
                             user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
-                             
+                            
                         user['laston'] = time.time()
                         loginTime = time.localtime(float(user['laston']))
                         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -210,7 +204,7 @@ class RegisterController(BaseController):
                         if c.listingType:
                             returnPage += "/add/" + c.listingType
                         return redirect(returnPage)
-                      
+                        
                     return redirect(returnPage)
                 else:
                     splashMsg['content'] = "The password and confirmation do not match"
