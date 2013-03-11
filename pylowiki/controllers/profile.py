@@ -360,6 +360,39 @@ class ProfileController(BaseController):
         c.listingType = 'search'
         
         return render('/derived/6_profile_list.bootstrap')
+        
+    def searchItemName(self, id1, id2):
+        if 'searchString' in request.params:
+            searchString = request.params['searchString']
+        else:
+            alert = {'type':'error'}
+            alert['title'] = 'Please enter a search string.' 
+            alert['content'] = ''
+            session['alert'] = alert
+            session.save()
+            returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
+
+            
+        if 'memberButton' in request.params:
+            self._basicSetup(id1, id2, 'searchUsers')
+            c.things = []
+            c.thingsTitle = 'Users with name like "' + searchString + '"'
+            c.listingType = 'searchUsers'
+            userList = userLib.searchUsers('name', searchString)
+            for user in userList:
+                if user['activated'] == '1' and user['disabled'] == '0' and user['deleted'] == '0':
+                    c.things.append(user) 
+        elif 'workshopButton' in request.params:
+            self._basicSetup(id1, id2, 'searchWorkshops')
+            c.things = []
+            c.thingsTitle = 'Workshops with name like "' + searchString + '"'
+            c.listingType = 'searchWorkshops'
+            workshopList = workshopLib.searchWorkshops('title', searchString)
+            for workshop in workshopList:
+                if workshopLib.isPublished(workshop) and workshopLib.isPublic(workshop):
+                    c.things.append(workshop)
+        
+        return render('/derived/6_profile_list.bootstrap')
     
     def _basicSetup(self, code, url, page):
         # code and url are now unused here, now that __before__ is defined
@@ -417,7 +450,8 @@ class ProfileController(BaseController):
         items['resources'] = []
         items['discussions'] = []
         items['ideas'] = []
-        items['search'] = []
+        items['searchWorkshops'] = []
+        items['searchUsers'] = []
         for thing in createdThings:
             if 'workshopCode' in thing:
                 w = workshopLib.getWorkshopByCode(thing['workshopCode'])

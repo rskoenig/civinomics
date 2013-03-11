@@ -196,7 +196,7 @@
             % if len(things) == 0:
                 There doesn't seem to be anything here!
             % else:
-                % if c.listingType == 'watching' or c.listingType == 'search':
+                % if c.listingType == 'watching' or c.listingType == 'searchWorkshops':
                     <table class="table table-condensed table-hover user-thing-listing">
                         <tbody>
                             <% counter = 0 %>
@@ -389,16 +389,26 @@
 </%def>
 
 <%def name="search()">
-    <% tagCount = workshopLib.getCategoryTagCount() %>
-    Show workshops by tag: <br />
-    <ul class="unstyled">
-    %for tag in tagCount.keys():
-        % if tagCount[tag] != 0:
-            <% uTag = utils.urlify(tag) %>
-            <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/workshop/tag/${uTag}">${tag}</a> : ${tagCount[tag]}</li>
-        % endif
-    % endfor
-    </ul>
+    <div class="row-fluid">
+        <div class="span4">
+            <% tagCount = workshopLib.getCategoryTagCount() %>
+            Show workshops by tag: <br />
+            <ul class="unstyled">
+            %for tag in tagCount.keys():
+                % if tagCount[tag] != 0:
+                    <% uTag = utils.urlify(tag) %>
+                    <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/workshop/tag/${uTag}">${tag}</a> : ${tagCount[tag]}</li>
+                % endif
+            % endfor
+            </ul>
+        </div><!-- span4 -->
+        <div class="span8">
+            <form class="form-search well" method="POST" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/name">
+                Name like <input type="text" name="searchString" class="search-query"><br /><br />
+                <button class="btn" name="memberButton">Search Members</button> &nbsp;&nbsp; <button class="btn" name="workshopButton">Search Workshops</button><br />
+            </form>  
+        </div><!-- span6 -->
+    </div><!-- row-fluid -->
 </%def>
 
 
