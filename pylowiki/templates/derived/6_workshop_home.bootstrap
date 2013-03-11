@@ -28,9 +28,7 @@
             <h4 class="section-header smaller"> 
                Goals
             </h4>
-                <ul class="goals" id="workshopGoals">
-                   ${helpers.showGoals(c.goals)}
-                </ul> <!-- /goals -->
+                ${helpers.showGoals(c.goals)}
                 ${helpers.whoListening()}
                 ${helpers.showActivity(c.activity)}
          </div> <!--/.browse-->
