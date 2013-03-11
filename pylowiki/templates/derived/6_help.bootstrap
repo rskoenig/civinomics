@@ -25,7 +25,8 @@
     <script src="/js/bootstrap/bootstrap-affix.js"></script>
     <script type="text/javascript"> 
         $('#inner-sidebar').affix({offset: 130})
-        $('body').scrollspy({target: '#sidebar'})
+        <!-- $('body').scrollspy({target: '#sidebar'}) -->
+        $(window).scrollspy({wrap: $('#wrap')[0]});
     </script> 
 </%def>
 

@@ -78,7 +78,7 @@
            </div> <!--/.navbar-inner.civ-navbar -->
         </div> <!-- /.navbar -->
         <hr class="civ-topbar-hr" />
-        <div class="container main" id="container_main">
+        <div class="container main">
            ${next.body()}
         </div>
       </div><!-- close wrap -->
