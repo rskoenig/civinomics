@@ -349,7 +349,7 @@ class ProfileController(BaseController):
     def searchWorkshopTag(self, id1, id2, id3):
         tag = utils.geoDeurlify(id3)
         tags = tagLib.searchTags(tag)
-        self._basicSetup(id1, id2, 'search')
+        self._basicSetup(id1, id2, 'searchWorkshops')
         c.things = []
         for tag in tags:
             workshop = workshopLib.getWorkshopByCode(tag['workshopCode'])
