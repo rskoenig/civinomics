@@ -29,7 +29,7 @@
         </div>
         <div class="row-fluid">
             <div class="span4 well help">
-                <a href="#">
+                <a id="helpCenter_bugReporter">
                     <span class="link-span"></span><!-- used to make entire div a link -->
                     <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_360_bug.png">  Something's not working</h3>
                     <p>Can't login, missing objects, load failures, can't edit your workshop...</p>
