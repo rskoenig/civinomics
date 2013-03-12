@@ -7,6 +7,7 @@
 
 <%def name="showListing(thing)">
    <%
+      target = "_self"
       if c.paginator != '':
          renderList = c.paginator
       else:
@@ -16,6 +17,9 @@
             renderList = c.resources
          elif thing == 'ideas':
             renderList = c.ideas
+            
+      if thing == 'resources':
+         target = "_blank"
    %>
    <ul class="unstyled">
       % for item in renderList:
@@ -44,7 +48,7 @@
                   ${lib_6.userImage(author, className = 'avatar')}
                </div> <!--/.span2-->
                <div class="span9 list-item-text">
-                  <% itemTitle = '<h5><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['title'], 150)) %>
+                  <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
                   ${itemTitle | n}
                   Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
                      <br />
