@@ -504,7 +504,9 @@ class WorkshopController(BaseController):
                 inviteMsg = ''
                 if 'inviteMsg' in request.params:
                     inviteMsg = request.params['inviteMsg']
-                workshopLib.sendPMemberInvite(c.w, c.authuser, inviteMember, inviteMsg)
+                myURL = config['app_conf']['site_base_url']
+                browseURL = '%s/workshop/%s/%s'%(myURL, c.w['urlCode'], c.w['url'])
+                mailLib.sendPMemberInvite(c.w['title'], c.authuser['name'], inviteMember, inviteMsg, browseURL)
                 weventMsg += ' An email invitation has been resent.'
 
         if c.w['public_private'] == 'public' and 'changeScope' in request.params:
