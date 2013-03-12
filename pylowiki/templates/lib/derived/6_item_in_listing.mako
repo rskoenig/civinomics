@@ -98,5 +98,10 @@
                 lib_6.editThing(thing)
             if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
                 lib_6.adminThing(thing)
+        else:
+            if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+                lib_6.editThing(thing)
+            if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+                lib_6.adminThing(thing)
     %>
 </%def>
