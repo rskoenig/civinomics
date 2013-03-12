@@ -344,8 +344,6 @@ class WorkshopController(BaseController):
             eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], '%s'%weventMsg, c.w, c.authuser)
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
-            
-
         if 'geoTagCountry' in request.params and request.params['geoTagCountry'] != '0':
             geoTagCountry = request.params['geoTagCountry']
         else:
