@@ -87,12 +87,12 @@
           <div class="row footer well">
             <div class="span8">
               <ul class="horizontal-list">
-                <li><a href="/corp/about">About</a></li> 
-                <li><a href="/corp/outreach">Services</a></li>
-                <li><a href="/corp/contact">Contact</a></li>
-                <li><a href="/corp/terms">Terms</a></li>
-                <li><a href="/help">Help</a></li>
-                <li><a href="#" id="footerFeedbackButton">Feedback</a></li>
+                <li><a class="green green-hover" href="/corp/about">About</a></li> 
+                <li><a class="green green-hover" href="/corp/outreach">Services</a></li>
+                <li><a class="green green-hover" href="/corp/contact">Contact</a></li>
+                <li><a class="green green-hover" href="/corp/terms">Terms</a></li>
+                <li><a class="green green-hover" href="/help">Help</a></li>
+                <li><a class="green green-hover" href="#" id="footerFeedbackButton">Feedback</a></li>
               </ul>
             </div>
             <div class="span pull-right">

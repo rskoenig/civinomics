@@ -31,8 +31,8 @@
           <a class="brand" href="/"> <img src="/images/splash/logo.png"> </a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
-              <li class="nav-item"><a href="/signup" class="nav-item" style="color: #86945A;">Sign Up</a></li>
-              <li class="nav-item"><a href="/login" style="color: #86945A;">Log In</a></li>
+              <li class="nav-item"><a href="/signup" class="nav-item" style="color: #075D00;">Sign Up</a></li>
+              <li class="nav-item"><a href="/login" style="color: #075D00;">Log In</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -118,7 +118,7 @@
                                     <div class="control-group">
                                         <div class="controls">
                                             <label class="checkbox">
-                                                <input type="checkbox" name="chkTOS" id="chkTOS" ng-model="chkTOS" required> I agree to the <a href="/corp/terms" style="color: #5f774b;">Terms Of Use</a>
+                                                <input type="checkbox" name="chkTOS" id="chkTOS" ng-model="chkTOS" required> I agree to the <a href="/corp/terms" style="color: #075D00;">Terms Of Use</a>
                                             </label>
                                         </div>
                                     </div>

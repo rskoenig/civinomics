@@ -30,8 +30,8 @@
           <a class="brand" href="/"> <img src="/images/splash/logo.png"> </a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
-              <li class="nav-item"><a href="/signup" class="nav-item" style="color: #86945A;">Sign Up</a></li>
-              <li class="nav-item"><a href="/login" style="color: #86945A;">Log In</a></li>
+              <li class="nav-item"><a href="/signup" class="nav-item" style="color: #075D00;">Sign Up</a></li>
+              <li class="nav-item"><a href="/login" style="color: #075D00;">Log In</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -83,8 +83,8 @@
                         </div>
                         <div class="login-bottom">
                             
-                            <text class="form-subtext"><a href="/forgotPassword" style="color: #5f774b; padding-top:20px;"> Forgot password?</a></text>
-                            <text class="form-subtext pull-right"><a href="/signup" style="color: #5f774b; padding-top:20px;"> Don't have a Civinomics account yet?</a></text>
+                            <text class="form-subtext"><a href="/forgotPassword" style="color: #075D00; padding-top:20px;"> Forgot password?</a></text>
+                            <text class="form-subtext pull-right"><a href="/signup" style="color: #075D00; padding-top:20px;"> Don't have a Civinomics account yet?</a></text>
                             </label>
                             
                         </div>

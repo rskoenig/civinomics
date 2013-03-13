@@ -5,13 +5,13 @@ import logging
 log = logging.getLogger(__name__)
 
 def addConversation():
-    return 'Add conversation'
+    return 'Add a conversation'
 
 def addIdea():
     return 'Add an idea'
 
-def talk_page():
-    return 'Talk'
+def conversationsPage():
+    return talk_page()
 
 def createGeoLink(**kwargs):
     """returns the href of a geo scope breadcrumb link that could be expected on the
@@ -68,6 +68,9 @@ def profile():
 
 def profile_edit():
     return 'Edit'
+
+def talk_page():
+    return 'Talk'
 
 def workshopListingPage():
 	return u'workshops'

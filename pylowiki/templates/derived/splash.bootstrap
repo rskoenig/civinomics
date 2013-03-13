@@ -8,6 +8,7 @@
     <meta name="author" content="">
 
     <link href="/styles/splash/splash.css" rel="stylesheet">
+    
     <link href="/styles/bootstrap.min.css" rel="stylesheet">
     <link href='http://fonts.googleapis.com/css?family=Handlee' rel='stylesheet' type='text/css'>
 
@@ -35,8 +36,8 @@
                <li class="nav-item"><p class="nav-item">build our civ</p></li> 
             </ul>
             <ul class="nav pull-right">
-              <li class="nav-item"><a href="/signup" class="nav-item" style="color: #86945A;">Sign Up</a></li>
-              <li class="nav-item"><a href="/login" style="color: #86945A;">Log In</a></li>
+              <li class="nav-item"><a href="/signup" class="nav-item" style="color: #075D00;">Sign Up</a></li>
+              <li class="nav-item"><a href="/login" class="nav-item" style="color: #075D00;">Log In</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

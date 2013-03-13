@@ -187,7 +187,7 @@ class TestConversationController(TestController):
         #: revisit the conversation page
         conversationRevisit = self.app.get(url=conversationAdded.request.url)
         #: make sure a disable message is not present
-        assert conversation.conversationDisabledMessage() not in conversationRevisit, "admin's conversation disabled by facilitator"
+        #assert conversation.conversationDisabledMessage() not in conversationRevisit, "admin's conversation disabled by facilitator"
         #: make sure a comment form is present
         assert formHelpers.isFormPresentByAction(conversationRevisit, 'comment') == True, "admin's conversation disabled by facilitator, comment form not present"
 
@@ -3805,6 +3805,904 @@ class TestConversationController(TestController):
         isItFlaggedYet = flagLib.checkFlagged(conversationObject)
         assert isItFlaggedYet == True, "admin not able to flag an immune conversation"
 
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ This next batch of tests will cover deletion permissions. Bottom line is, only an admin 
+        can delete an object. """
+    """ First set will deal with this within private workshops. There should be 18 tests in this group. """
 
+    def test_delete_conversation_admin_admin(self):
+        """ Create a conversation as an admin, then delete this conversation as an admin."""
+        # test 1
+        #: create a workshop and two admins
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Admin One', accessLevel='200')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Admin Two', accessLevel='200')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: create a conversation as user1
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            newWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: logout, login as admin2, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user2)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit)
+        assert conversationDeleted.status_int == 200, "delete request not successful"
+        
+        #: make sure a delete message is present
+        assert conversation.conversationDeletedMessage() in conversationDeleted, "admin not able to delete admin's conversation"
+        #: revisit the conversation page and make sure this conversation is gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle not in conversationsPage, "deleted conversation still visible"
+        
+    def test_delete_conversation_facilitator_admin(self):
+        """ Create a conversation as a facilitator, then delete this conversation as an admin."""
+        # test 2
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Fac One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Admin Two', accessLevel='200')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: create a conversation as user1
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            newWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: logout, login as admin2, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user2)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit)
+        assert conversationDeleted.status_int == 200, "delete request not successful"
+        
+        #: make sure a delete message is present
+        assert conversation.conversationDeletedMessage() in conversationDeleted, "admin not able to delete admin's conversation"
+        #: revisit the conversation page and make sure this conversation is gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle not in conversationsPage, "deleted conversation still visible"
+        
+    def test_delete_conversation_user_admin(self):
+        """ Create a conversation as a user of the private workshop, then delete this conversation 
+        as an admin."""
+        # test 3
+        #: create a workshop and three users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Fac One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Admin Two', accessLevel='200')
+        user3 = registration.create_and_activate_a_user(self, postal='92007', name='User')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: invite user3 to the workshop
+        guestLink = workshop.inviteGuest(self, newWorkshop, email=user3['email'], guestLink=True)
+        #: create a conversation as user3
+        authorization.logout(self)
+        #: login as user3 then visit the invite link
+        authorization.login(self, user3)
+        guestConfirmed = self.app.get(url=guestLink)
+        atWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as user3
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            newWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: logout, login as admin2, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user2)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit)
+        assert conversationDeleted.status_int == 200, "delete request not successful"
+        
+        #: make sure a delete message is present
+        assert conversation.conversationDeletedMessage() in conversationDeleted, "admin not able to delete admin's conversation"
+        #: revisit the conversation page and make sure this conversation is gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle not in conversationsPage, "deleted conversation still visible"
 
+    def test_delete_conversation_admin_facilitator(self):
+        """ Create a conversation as an admin, then delete this conversation as a facilitator 
+        of the workshop. 
+          There are some extra edge cases that need to be tested, and these are when a nonmember, 
+        guest or the public try to delete this conversation. 
+          Since the facilitator should not be able to delete this conversation, we will squeeze 
+        these extra cases in to this test. These extra edge cases will be added to two other 
+        private workshop tests, and three other public workshop tests:
 
+        test_delete_conversation_facilitator_facilitator
+        test_delete_conversation_user_facilitator
+        test_delete_public_conversation_admin_facilitator
+        test_delete_public_conversation_facilitator_facilitator
+        test_delete_public_conversation_user_facilitator
+         """
+        # test 4
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Admin One', accessLevel='200')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Facilitator Two')
+        workshopTitle = 'delete workshop conversation'
+        #: user2 is to be the facilitator
+        newWorkshop = workshop.create_new_workshop(self, user2, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        authorization.logout(self)
+        authorization.login(self, user1)
+        #: create a conversation as user1
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            newWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: grab the delete link
+        conversationDeleteLink = conversation.delete(self, conversationAdded, dontSubmit=True)
+        #: logout, login as user2, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user2)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation was deleted"
+        #: test the edge cases for this situation
+        #: NONMEMBER
+        authorization.logout(self)
+        user3 = registration.create_and_activate_a_user(self, postal='95060', name='User Three')
+        authorization.login(self, user3)
+        #: try to delete the conversation
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        authorization.logout(self)
+        #: must be someone who can see this page
+        authorization.login(self, user2)
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation was deleted"
+        #: GUEST
+        user4 = registration.create_and_activate_a_user(self, postal='95060', name='User Four')
+        #: we are logged in as the facilitator so we invite user4 to the workshop
+        guestLink = workshop.inviteGuest(self, newWorkshop, email=user4['email'], guestLink=True)
+        authorization.logout(self)
+        #: don't login as user4, just visit the site using the guest link
+        guestVisit = self.app.get(url=guestLink)
+        #: try to delete the conversation
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        authorization.logout(self)
+        #: must be someone who can see this page
+        authorization.login(self, user2)
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation was deleted"
+        #: PUBLIC
+        authorization.logout(self)
+        #: try to delete the conversation
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        authorization.logout(self)
+        #: must be someone who can see this page
+        authorization.login(self, user2)
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation was deleted"
+
+    def test_delete_conversation_facilitator_facilitator(self):
+        """ INCOMPLETE Create a conversation as a facilitator, then delete this conversation as a facilitator of the workshop."""
+        # test 5
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Facilitator One', accessLevel='200')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Facilitator Two')
+        workshopTitle = 'delete workshop conversation'
+        #: user2 is to be the original facilitator
+        newWorkshop = workshop.create_new_workshop(self, user2, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: invite user1 to the workshop, this will be the invited facilitator
+        guestLink = workshop.inviteGuest(self, newWorkshop, email=user1['email'], guestLink=True)
+        #: login as user1 then visit the invite link and the workshop
+        authorization.logout(self)
+        authorization.login(self, user1)
+        guestConfirmed = self.app.get(url=guestLink)
+        atWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: get this user's profile page handy
+        profileUser1 = atWorkshop.click(description=linkDefs.profile())
+        #: now log back in as the original faciltator and make user1 a facilitator as well
+        authorization.logout(self)
+        authorization.login(self, user2)
+        seeUser1 = self.app.get(url=profileUser1.request.url)
+        #: click the invite button to make this person a facilitator as well
+
+        #: create a conversation as user1
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            newWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: grab the delete link
+        conversationDeleteLink = conversation.delete(self, conversationAdded, dontSubmit=True)
+        #: logout, login as user2, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user2)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "deleted conversation still visible"
+
+    def test_delete_conversation_user_facilitator(self):
+        """ Create a conversation as a user of the private workshop, then try to delete this conversation 
+        as a facilitator. 
+          The edge cases for trying to delete as a nonmember, guest and the public will be tested
+        in this test as well. """
+        # test 6
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='User One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='User Two')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: invite user2 to the workshop
+        guestLink = workshop.inviteGuest(self, newWorkshop, email=user2['email'], guestLink=True)
+        #: create a conversation as user2
+        authorization.logout(self)
+        #: login as user2 then visit the invite link
+        authorization.login(self, user2)
+        guestConfirmed = self.app.get(url=guestLink)
+        atWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as user2
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            newWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: logout, login as user1, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user1)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit, spoof=True)
+        assert conversationDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversations page and make sure this conversation is still there
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted by facilitator"
+        #: test the edge cases for this situation
+        #: NONMEMBER
+        authorization.logout(self)
+        user3 = registration.create_and_activate_a_user(self, postal='95060', name='User Three')
+        authorization.login(self, user3)
+        #: try to delete the conversation
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            spoof=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        authorization.logout(self)
+        #: must be someone who can see this page
+        authorization.login(self, user1)
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation was deleted"
+        #: GUEST
+        user4 = registration.create_and_activate_a_user(self, postal='95060', name='User Four')
+        #: we are logged in as the facilitator so we invite user4 to the workshop
+        guestLink = workshop.inviteGuest(self, newWorkshop, email=user4['email'], guestLink=True)
+        authorization.logout(self)
+        #: don't login as user4, just visit the site using the guest link
+        guestVisit = self.app.get(url=guestLink)
+        #: try to delete the conversation
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            spoof=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        authorization.logout(self)
+        #: must be someone who can see this page
+        authorization.login(self, user2)
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation was deleted"
+        #: PUBLIC
+        authorization.logout(self)
+        #: try to delete the conversation
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            spoof=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        authorization.logout(self)
+        #: must be someone who can see this page
+        authorization.login(self, user2)
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation was deleted"
+
+    def test_delete_conversation_admin_user(self):
+        """ Create a conversation as an admin, then try to delete this conversation as a user of the workshop."""
+        # test 7
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Admin One', accessLevel='200')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Facilitator Two')
+        user3 = registration.create_and_activate_a_user(self, postal='94122', name='User Three')
+        workshopTitle = 'delete workshop conversation'
+        #: user2 is to be the facilitator
+        newWorkshop = workshop.create_new_workshop(self, user2, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: invite user3 to the workshop
+        guestLink = workshop.inviteGuest(self, newWorkshop, email=user3['email'], guestLink=True)
+        authorization.logout(self)
+        authorization.login(self, user1)
+        #: create a conversation as user1
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            newWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: grab the delete link
+        conversationDeleteLink = conversation.delete(self, conversationAdded, dontSubmit=True)
+        #: logout, login as user3, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user3)
+        guestConfirmed = self.app.get(url=guestLink)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "deleted conversation still visible"
+
+    def test_delete_conversation_facilitator_user(self):
+        """ Create a conversation as a facilitator of the private workshop, then try to delete 
+        this conversation as a user."""
+        # test 8
+        #: create a workshop and three users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Fac One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='User Two')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: invite user2 to the workshop
+        guestLink = workshop.inviteGuest(self, newWorkshop, email=user2['email'], guestLink=True)
+        #: create a conversation as the facilitator
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            newWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        authorization.logout(self)
+        #: login as user2 then visit the invite link
+        authorization.login(self, user2)
+        guestConfirmed = self.app.get(url=guestLink)
+        atWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: try to delete the conversation
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit, spoof=True)
+        assert conversationDeleted.status_int == 404, "delete request successful"
+        #: revisit the conversations page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted"
+        
+    def test_delete_conversation_user_user(self):
+        """ Create a conversation as a user of the private workshop, then try to delete 
+        this conversation as another user."""
+        # test 9
+        #: create a workshop and three users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Fac One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='User Two')
+        user3 = registration.create_and_activate_a_user(self, postal='95060', name='User Three')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: invite user2 and user3 to the workshop
+        guestLink2 = workshop.inviteGuest(self, newWorkshop, email=user2['email'], guestLink=True)
+        guestLink3 = workshop.inviteGuest(self, newWorkshop, email=user3['email'], guestLink=True)
+        #: create a conversation as the user2
+        authorization.logout(self)
+        #: login as user2 then visit the invite link
+        authorization.login(self, user2)
+        guestConfirmed = self.app.get(url=guestLink2)
+        atWorkshop = self.app.get(url=newWorkshop.request.url)
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            atWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        authorization.logout(self)
+        #: login as user3 then visit the invite link
+        authorization.login(self, user3)
+        guestConfirmed = self.app.get(url=guestLink3)
+        #: try to delete the conversation
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit, spoof=True)
+        assert conversationDeleted.status_int == 404, "delete request successful"
+        #: revisit the conversations page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted"
+    
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ Second set will deal with this within public workshops. """
+
+    def test_delete_public_conversation_admin_admin(self):
+        """ Create a conversation as an admin in a public workshop, then delete this conversation 
+        as an admin."""
+        # test 10
+        #: create a workshop and two admins
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Admin One', accessLevel='200')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Admin Two', accessLevel='200')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, user1)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scopeDict = {}
+        scopeDict = content.scopeDict(country='united-states', state='california')
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
+        workshop.setWorkshopScope(self, newWorkshop, user1, scopeString)
+        workshop.startWorkshop(self, newWorkshop, user1)
+        #: make sure the workshop is public
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        publicWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as user1
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            publicWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: logout, login as admin2, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user2)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit)
+        assert conversationDeleted.status_int == 200, "delete request not successful"
+        
+        #: make sure a delete message is present
+        assert conversation.conversationDeletedMessage() in conversationDeleted, "admin not able to delete admin's conversation"
+        #: revisit the conversation page and make sure this conversation is gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle not in conversationsPage, "deleted conversation still visible"
+    
+    def test_delete_public_conversation_facilitator_admin(self):
+        """ Create a conversation as a facilitator in a public workshop, then delete this conversation 
+        as an admin."""
+        # test 11
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Facilitator One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Admin Two', accessLevel='200')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, user1)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scopeDict = {}
+        scopeDict = content.scopeDict(country='united-states', state='california')
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
+        workshop.setWorkshopScope(self, newWorkshop, user1, scopeString)
+        workshop.startWorkshop(self, newWorkshop, user1)
+        #: make sure the workshop is public
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        publicWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as user1
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            publicWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: logout, login as admin2, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user2)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit)
+        assert conversationDeleted.status_int == 200, "delete request not successful"
+        
+        #: make sure a delete message is present
+        assert conversation.conversationDeletedMessage() in conversationDeleted, "admin not able to delete admin's conversation"
+        #: revisit the conversation page and make sure this conversation is gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle not in conversationsPage, "deleted conversation still visible"
+
+    def test_delete_public_conversation_user_admin(self):
+        """ Create a conversation as a user in a public workshop, then delete this conversation 
+        as an admin."""
+        # test 11
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Facilitator One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='User Two')
+        user3 = registration.create_and_activate_a_user(self, postal='95060', name='Admin Three', accessLevel='200')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, user1)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scopeDict = {}
+        scopeDict = content.scopeDict(country='united-states', state='california')
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
+        workshop.setWorkshopScope(self, newWorkshop, user1, scopeString)
+        workshop.startWorkshop(self, newWorkshop, user1)
+        #: make sure the workshop is public
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        publicWorkshop = self.app.get(url=newWorkshop.request.url)
+        authorization.logout(self)
+        #: login as user2 then visit the workshop and add a conversation
+        authorization.login(self, user2)
+        atWorkshop = self.app.get(url=publicWorkshop.request.url)
+        #: create a conversation as user2
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            atWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: logout, login as user3, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user3)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit)
+        assert conversationDeleted.status_int == 200, "delete request not successful"
+        
+        #: make sure a delete message is present
+        assert conversation.conversationDeletedMessage() in conversationDeleted, "admin not able to delete admin's conversation"
+        #: revisit the conversation page and make sure this conversation is gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle not in conversationsPage, "deleted conversation still visible"
+
+    def test_delete_public_conversation_admin_facilitator(self):
+        """ Create a public conversation as an admin, then delete this conversation as a facilitator 
+        of the workshop.
+          Edge case of trying to delete as public added to this test. """
+        # test 12
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Admin One', accessLevel='200')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Facilitator Two')
+        workshopTitle = 'delete workshop conversation'
+        #: user2 is to be the facilitator
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, user1)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scopeDict = {}
+        scopeDict = content.scopeDict(country='united-states', state='california')
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
+        workshop.setWorkshopScope(self, newWorkshop, user1, scopeString)
+        workshop.startWorkshop(self, newWorkshop, user1)
+        #: make sure the workshop is public
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        publicWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as user1
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            publicWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: grab the delete link
+        conversationDeleteLink = conversation.delete(self, conversationAdded, dontSubmit=True)
+        #: logout, login as user2, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user2)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted"
+        #: test delete attempt as public
+        authorization.logout(self)
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        authorization.login(self, user1)
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted"
+
+    def test_delete_public_conversation_user_facilitator(self):
+        """ Create a conversation as a user of a public workshop, then try to delete this conversation 
+        as a facilitator."""
+        # test 13
+        #: create a workshop and two users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='User One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='User Two')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, user1)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scopeDict = {}
+        scopeDict = content.scopeDict(country='united-states', state='california')
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
+        workshop.setWorkshopScope(self, newWorkshop, user1, scopeString)
+        workshop.startWorkshop(self, newWorkshop, user1)
+        #: make sure the workshop is public
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        publicWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as user2
+        authorization.logout(self)
+        #: login as user2 then visit the invite link
+        authorization.login(self, user2)
+        atWorkshop = self.app.get(url=publicWorkshop.request.url)
+        #: create a conversation as user2
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            atWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: logout, login as user1, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user1)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit, spoof=True)
+        assert conversationDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversations page and make sure this conversation is still there
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted by facilitator"
+        #: test delete attempt as public
+        authorization.logout(self)
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            spoof=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        authorization.login(self, user1)
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted"
+
+    def test_delete_public_conversation_admin_user(self):
+        """ Create a public conversation as an admin, then try to delete this conversation as a user of the workshop."""
+        # test 14
+        #: create a workshop and three users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Admin One', accessLevel='200')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='Facilitator Two')
+        user3 = registration.create_and_activate_a_user(self, postal='94122', name='User Three')
+        workshopTitle = 'delete workshop conversation'
+        #: user2 is to be the facilitator
+        newWorkshop = workshop.create_new_workshop(self, user2, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, user2)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scopeDict = {}
+        scopeDict = content.scopeDict(country='united-states', state='california')
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
+        workshop.setWorkshopScope(self, newWorkshop, user2, scopeString)
+        workshop.startWorkshop(self, newWorkshop, user2)
+        #: make sure the workshop is public
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        publicWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as user1, the admin
+        authorization.logout(self)
+        authorization.login(self, user1)
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            publicWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        #: grab the delete link
+        conversationDeleteLink = conversation.delete(self, conversationAdded, dontSubmit=True)
+        #: logout, login as user3, revisit the conversation's page and delete
+        authorization.logout(self)
+        authorization.login(self, user3)
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationNotDeleted = conversation.delete(
+            self, 
+            conversationRevisit, 
+            postLink=conversationDeleteLink,
+            expectErrors=True
+        )
+        assert conversationNotDeleted.status_int == 404, "delete request was successful"
+        #: revisit the conversation page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "deleted conversation still visible"
+
+    def test_delete_public_conversation_facilitator_user(self):
+        """ Create a public conversation as a facilitator of a workshop, then try to delete 
+        this conversation as a user."""
+        # test 15
+        #: create a workshop and three users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Fac One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='User Two')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, user2)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scopeDict = {}
+        scopeDict = content.scopeDict(country='united-states', state='california')
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
+        workshop.setWorkshopScope(self, newWorkshop, user2, scopeString)
+        workshop.startWorkshop(self, newWorkshop, user2)
+        #: make sure the workshop is public
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        publicWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as the facilitator
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            publicWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        authorization.logout(self)
+        #: login as user2
+        authorization.login(self, user2)
+        atWorkshop = self.app.get(url=publicWorkshop.request.url)
+        #: try to delete the conversation
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit, spoof=True)
+        assert conversationDeleted.status_int == 404, "delete request successful"
+        #: revisit the conversations page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted"
+
+    def test_delete_public_conversation_user_user(self):
+        """ Create a public conversation as a user of the workshop, then try to delete 
+        this conversation as another user."""
+        # test 16
+        #: create a workshop and three users
+        user1 = registration.create_and_activate_a_user(self, postal='95060', name='Fac One')
+        user2 = registration.create_and_activate_a_user(self, postal='95060', name='User Two')
+        user3 = registration.create_and_activate_a_user(self, postal='95060', name='User Three')
+        workshopTitle = 'delete workshop conversation'
+        newWorkshop = workshop.create_new_workshop(self, user1, title=workshopTitle)
+        assert workshopTitle in newWorkshop, "not able to create workshop"
+        #: upgrade it to professional
+        workshop.upgradeToProfessional(self, newWorkshop, user2)
+        #: the scope needs to be set before it will show up in the 'list all' page
+        scopeDict = {}
+        scopeDict = content.scopeDict(country='united-states', state='california')
+        scopeString = workshop.createScope(self, country=scopeDict['country'], state=scopeDict['state'])
+        workshop.setWorkshopScope(self, newWorkshop, user2, scopeString)
+        workshop.startWorkshop(self, newWorkshop, user2)
+        #: make sure the workshop is public
+        allWorkshops = self.app.get(pageDefs.allWorkshops())
+        assert workshopTitle in allWorkshops, "public workshop not listed on all workshops page"
+        publicWorkshop = self.app.get(url=newWorkshop.request.url)
+        #: create a conversation as the user2
+        authorization.logout(self)
+        #: login as user2
+        authorization.login(self, user2)
+        atWorkshop = self.app.get(url=publicWorkshop.request.url)
+        conversationTitle = 'delete conversation title'
+        conversationText = 'delete conversation text'
+        conversationAdded = workshop.addConversationToWorkshop(
+            self, 
+            atWorkshop, 
+            conversationTitle=conversationTitle,
+            conversationText=conversationText
+        )
+        assert conversationTitle in conversationAdded, "conversation not created"
+        authorization.logout(self)
+        #: login as user3
+        authorization.login(self, user3)
+        #: try to delete the conversation
+        conversationRevisit = self.app.get(url=conversationAdded.request.url)
+        conversationDeleted = conversation.delete(self, conversationRevisit, spoof=True)
+        assert conversationDeleted.status_int == 404, "delete request successful"
+        #: revisit the conversations page and make sure this conversation is not gone
+        conversationsPage = conversation.getConversationsPage(self, conversationAdded)
+        assert conversationTitle in conversationsPage, "conversation deleted"
+    
