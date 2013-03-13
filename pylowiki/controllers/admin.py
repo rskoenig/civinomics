@@ -227,6 +227,8 @@ class AdminController(BaseController):
         return json.dumps({'code':thingCode, 'result':result})
         
     def flag(self, thingCode):
+        if not workshopLib.isScoped(c.authuser, c.w):
+            return json.dumps({'code':thingCode, 'result':'Error: Unable to flag.'})
         if c.error:
             return c.returnDict
         if c.thing['disabled'] == '1':
