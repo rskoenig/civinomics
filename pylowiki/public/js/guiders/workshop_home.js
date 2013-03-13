@@ -2,7 +2,7 @@
         guiders.createGuider({
             buttons: [{name: "next"}],
             description: "Welcome to the Civinomics tour!  You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
-            id: "tour_0",
+            id: "tour_0welcome",
             next: "tour_1",
             title: "Welcome!",
             closeOnEscape: true,
@@ -12,18 +12,18 @@
         }).show();
 
         guiders.createGuider({
-            attachTo: "#profileAvatar",
+            attachTo: "#civinomicsLogo",
             buttons: [{name: "next"}],
-            description: "Click on the Civinomics logo on the left if you want to go to the Civinomics main page where all workshops are listed. Click on your avatar or the profile link if you want to go to your Civinomics profile. It is the place to go for links back to everything you've added and everything you are interested in.",
+            description: "Click on the Civinomics logo if you want to go to the Civinomics main page where all workshops are listed. ",
             id: "tour_1",
             next: "tour_2",
-            title: "Civinomics navigation bar.",
+            title: "Civinomics home.",
             closeOnEscape: true,
             autoFocus: true,
-            highlight: "#ideaButton",
+            highlight: "#civinomicsLogo",
             overlay: "true",
             xButton: true,
-            position: 6
+            position: 3
         });
         
         guiders.createGuider({
@@ -68,7 +68,7 @@
             title: "Notables",
             closeOnEscape: true,
             autoFocus: true,
-            highlight: "#workshopFacilitators",
+            highlight: "#workshopNotables",
             overlay: "true",
             xButton: true,
             position: 9
@@ -117,7 +117,7 @@
             title: "Background",
             closeOnEscape: true,
             autoFocus: true,
-            highlight: "#workshopBackground",
+            highlight: "#workshopInformation",
             overlay: "true",
             xButton: true,
             position: 12
@@ -181,7 +181,7 @@
             title: "Bookmark",
             closeOnEscape: true,
             autoFocus: true,
-            highlight: "#ideaButton",
+            highlight: "#workshopBookmark",
             overlay: "true",
             xButton: true,
             position: 6
