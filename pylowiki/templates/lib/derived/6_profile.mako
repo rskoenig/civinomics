@@ -405,7 +405,7 @@
         <div class="span8">
             <form class="form-search well" method="POST" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/name">
                 Name like <input type="text" name="searchString" class="search-query"><br /><br />
-                <button class="btn" name="memberButton">Search Members</button> &nbsp;&nbsp; <button class="btn" name="workshopButton">Search Workshops</button><br />
+                <button class="btn btn-warning" name="memberButton">Search Members</button> &nbsp;&nbsp; <button class="btn btn-warning" name="workshopButton">Search Workshops</button><br />
             </form>
             <br />
             <form name="scope" id="scope" class="left form-inline well" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/geo" method="post">
@@ -441,7 +441,7 @@
                 </div><!-- row-fluid -->
                 <div class="row-fluid">
                     <br />
-                    <button class="btn" name="memberButton">Search Members</button> &nbsp;&nbsp; <button class="btn" name="workshopButton">Search Workshops</button><br />
+                    <button class="btn btn-warning" name="memberButton">List Members</button> &nbsp;&nbsp; <button class="btn btn-warning" name="workshopButton">List Workshops</button><br />
                 </div><!-- row-fluid -->
             </form>
         </div><!-- span8 -->
