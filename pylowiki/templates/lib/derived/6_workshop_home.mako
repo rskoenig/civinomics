@@ -222,7 +222,7 @@
     % if len(goals) == 0:
         <p>This workshop has no goals!</p>
     % else:
-        <ul>
+        <ul id="workshopGoals">
         % for goal in goals:
             % if goal['status'] == '100':
                 <li class="done-true">${goal['title']}</li>
