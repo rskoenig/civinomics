@@ -12,7 +12,8 @@ import pylowiki.lib.db.comment      as  commentLib
 import pylowiki.lib.db.discussion   as  discussionLib 
 import pylowiki.lib.db.revision     as  revisionLib
 import pylowiki.lib.db.generic      as  genericLib
-import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.mainImage    as  mainImageLib
+import pylowiki.lib.utils           as  utils
 
 log = logging.getLogger(__name__)
 import pylowiki.lib.helpers as h
@@ -65,12 +66,12 @@ class CommentController(BaseController):
                 discussion = discussionLib.getDiscussion(request.params['discussionCode'])
                 parentCommentID = 0
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            return redirect(session['return_to'])
+            return redirect(utils.thingURL(workshop, thing))
                 
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
-            return redirect(session['return_to'])
-        return redirect(session['return_to'])
+            return redirect(utils.thingURL(workshop, thing))
+        return redirect(utils.thingURL(workshop, thing))
     
     def permalink(self, workshopCode, workshopURL, revisionCode):
         c.revision = revisionLib.getRevisionByCode(revisionCode)

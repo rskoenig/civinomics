@@ -130,4 +130,4 @@ class DiscussionController(BaseController):
             r = revisionLib.Revision(c.authuser, d.d)
             commit(c.w)
         
-        return redirect('/workshop/%s/%s/discussion/%s/%s' % (workshopCode, workshopURL, d.d['urlCode'], d.d['url']))
+        return redirect(utils.thingURL(c.w, d.d))

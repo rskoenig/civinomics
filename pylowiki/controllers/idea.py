@@ -79,7 +79,7 @@ class IdeaController(BaseController):
             title = title[:120]
         newIdea = ideaLib.Idea(c.authuser, title, c.w, c.privs)
         alertsLib.emailAlerts(newIdea)
-        return redirect(session['return_to'])
+        return redirect(utils.thingURL(c.w, newIdea))
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
         c.thing = ideaLib.getIdea(ideaCode)

@@ -61,3 +61,5 @@ def isWatching(user, workshop):
    # object follows as 'watching'.
    c.isFollowing = followLib.isFollowing(user, workshop)
   
+def thingURL(workshop, thing):
+    return "/workshop/%s/%s/%s/%s/%s" %(workshop['urlCode'], workshop['url'], thing.objType, thing['urlCode'], thing['url'])

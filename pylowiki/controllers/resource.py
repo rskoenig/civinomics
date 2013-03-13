@@ -109,4 +109,4 @@ class ResourceController(BaseController):
             title = title[:120]
         newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, c.privs, text = text)
         alertsLib.emailAlerts(newResource)
-        return redirect(session['return_to'])
+        return redirect(utils.thingURL(c.w, newResource))
