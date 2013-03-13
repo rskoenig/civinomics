@@ -1,0 +1,39 @@
+/*********************
+        flash 
+*********************/
+
+#flash {
+
+    text-align: center;
+    padding: 2%;
+    color: #ffffff; 
+    display: none; 
+    font-weight: bold; 
+    float: right;
+    position: fixed;
+    right: 5%;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    z-index: 4;
+    
+    filter:alpha(opacity=60);
+    -moz-opacity:0.6;
+    -khtml-opacity: 0.6;
+    opacity: 0.6;
+}
+
+#flash:hover {
+    filter:alpha(opacity=30);
+    -moz-opacity:0.3;
+    -khtml-opacity: 0.3;
+    opacity: 0.3;
+}
+
+.warning, .error {
+    background-color: #CB0003;
+}
+
+.success, .notice {
+    background-color: #707f09;
+}
+

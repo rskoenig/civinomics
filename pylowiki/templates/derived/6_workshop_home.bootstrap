@@ -1,0 +1,47 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+<div class="row-fluid">
+   <div class="span8">
+      <div class="section-wrapper">
+         <div class="browse">
+            <h4 class="section-header smaller"> Information </h4>
+               <div class="gallery-wrapper">
+                  <div>
+                  ${helpers.slideshow(c.w)}
+                  </div>
+                  <div>
+                     <strong><small>Click image(s) above for slideshow</small></strong>
+                  </div>
+               </div>
+               <div>
+                  ${helpers.showTags()}
+                  ${helpers.showInfo(c.w)}
+               </div>
+         </div> <!-- /.browse -->
+      </div> <!-- /.section-wrapper -->
+   </div> <!-- /.span8 -->
+   <div class="span4">
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+               Goals
+            </h4>
+                ${helpers.showGoals(c.goals)}
+                ${helpers.whoListening()}
+                ${helpers.showActivity(c.activity)}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+   </div> <!-- /.span4 -->
+</div> <!-- /.row -->
+
+<%def name="extraScripts2()">
+    <script type="text/javascript" src="/js/vendor/jquery.foundation.clearing.js"></script>
+    <script>
+      var $doc = $(document);
+      $(document).ready(function() {
+         $.fn.foundationClearing         ? $doc.foundationClearing() : null;
+      });
+    </script>
+</%def>
