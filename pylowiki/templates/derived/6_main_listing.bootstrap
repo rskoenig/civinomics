@@ -6,7 +6,7 @@
    <div class = "span12">
         <%
             outOfScope = lib_6.geoBreadcrumbs()
-            if outOfScope:
+            if outOfScope and c.scope['level'] != 'earth':
                 lib_6.outOfScope()
         %>
    </div><!--/.span12-->
