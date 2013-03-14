@@ -341,6 +341,7 @@
 
 <%def name="geoBreadcrumbs()">
     <%
+        outOfScope = False
         if 'user' in session:
             county = c.authuser_geo['countyTitle']
             city = c.authuser_geo['cityTitle']
@@ -354,7 +355,6 @@
                             ('city', city),
                             ('postalCode', c.authuser_geo['postalCode'])
                             ]
-            outOfScope = False
     %>
     % if 'user' in session:
         <ul class="nav nav-pills pull-left geo-breadcrumbs">
