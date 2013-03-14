@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Civinomics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="/styles/splash/splash.css" rel="stylesheet">
+    
+    <link href="/styles/bootstrap.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Handlee' rel='stylesheet' type='text/css'>
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+
+  <body>
+    ${facebookID()}
+    ${self.google_analytics()}
+    
+    <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
+      <div class="navbar-inner" style="background-image: none; background-color: #FFFFFF;">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#"> <img src="/images/splash/logo.png"> </a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-left">
+               <li class="nav-item"><p class="nav-item">build our civ</p></li> 
+            </ul>
+            <ul class="nav pull-right">
+              <li class="nav-item"><a href="/signup" class="nav-item" style="color: #075D00;">Sign Up</a></li>
+              <li class="nav-item"><a href="/login" class="nav-item" style="color: #075D00;">Log In</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    ##
+    ## Top Carousel
+    ##
+
+    <div class="imageChanger imageChanger4">
+        <div class="span8">
+            <p class="photoCredits">need photo permissions</p>
+        </div>
+    </div>
+    <div class="imageChanger imageChanger3">
+        <div class="span8">
+            <p class="photoCredits">need photo permissions</p>
+        </div>
+    </div>
+    <div class="imageChanger imageChanger2">
+        <div class="span8">
+            <p class="photoCredits">need photo permissions</p>
+        </div>
+    </div>
+    <div class="imageChanger imageChanger1" style="display:none;">
+        <div class="span8">
+            <p class="photoCredits">need photo permissions</p>
+        </div>
+    </div>
+    <div class="imageChanger imageChanger0" style="display:none;">
+        <div class="span8">
+            <p class="photoCredits">need photo permissions</p>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span1"></div>
+            <div class="span5 offset5" style="padding-top:65px;">
+                <div class="hero-unit main-well">
+                    <div class="row-fluid">
+                            <p style="font-size: 24px;">Collaboration and voting tools for groups of all sizes.</p>
+                            </br>
+                            <div style="text-align:center;">
+                                <a href="/signup"><button class="btn btn-success btn-default btn-large" style="width: 110px;">Sign up</button></a>
+                                <a href="/workshops"><button class="btn btn-info btn-large" style="width: 110px;">Browse</button></a>   
+                            </div>                     
+                    </div>
+                </div><!-- hero-unit -->
+            </div><!-- span5 -->
+        </div><!-- row -->
+    </div><!-- container -->
+
+    ##
+    ## Info Section
+    ##
+
+    <div class="info">
+        <a name="info" style="padding-top:60px;"></a>
+        <div class="container">
+            
+            ##How it works
+
+            <div class="row marketing" style="padding-top:20px; text-align:center;">
+                    <h1> How it Works </h1>
+                    </br>
+                    <div class="span4">
+                       <img src="/images/splash/step1_group.png"></image>
+                        </br>
+                        <h2>Assemble</h2>
+                        <p>Join a group of people to make things better. Build a knowledge base with a wiki, resource links and discussion.</p>
+                    </div>                
+                    <div class="span4">
+                        <img src="/images/splash/step2_ideas.png"></image>
+                        </br>
+                        <h2>Vote</h2>
+                        <p>Vote on the best ideas. Develop proposals so that they meet defined goals. No filibusters allowed.</p>
+                    </div>
+                    <div class="span4">
+                       <img src="/images/splash/step3_profit.png"></image>
+                        </br>
+                        <h2>Solve</h2>
+                        <p>Implement ideas by getting the attention of key stakeholders and leveraging a network of experts.</p>
+                    </div>
+            </div>                  
+        </div> <!-- container -->
+    </div> <!-- info -->
+
+    <div class="footer-separator"></div>
+
+    <div class="footer-civ">
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span10 offset1">
+                    <div class="span2">
+                        <ul class="unstyled footer-list">
+                            <li>
+                                <h4>
+                                    ORGANIZATION
+                                </h4>
+                            </li>
+                            <li><a href="/corp/about"> About Us </a></li>
+                            <li><a href="http://www.civinomics.wordpress.com" target="_blank">Development Blog</a></li>
+                            <li><a href="/corp/careers">Careers</a></li>
+                            <li><a href="/corp/team">Team</a></li>
+                            <li><a href="/corp/terms">Terms of Use</a></li>
+                            <li><a href="/corp/privacy">Privacy Policy</a></li>
+                            <li><a href="/corp/contact">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="span3">
+                        <ul class="unstyled footer-list">
+                            <li>
+                                <h4>
+                                    SERVICES
+                                </h4>
+                            </li>
+                            <li><a href="/corp/outreach">Outreach</a></li>
+                            <li><a href="/corp/caseStudies/">Case Studies</a></li>
+                            <li><a href="#">Create a workshop </a><span class="label label-warning">Coming Soon</span></li>
+                        </ul>
+                    </div>
+
+                    <div class="span3" style="padding-top:20px;">
+                        <ul class="unstyled" style="color:#818180;">
+                        <li><div class="fb-like" data-href="http://www.facebook.com/civinomics" data-send="true" data-width="395" data-show-faces="true"></div> 
+                        </li>
+                        <li><a href="https://twitter.com/civinomics" class="twitter-follow-button" data-show-count="true" data-size="large">Follow @civinomics</a></li>
+                        <li><g:plusone annotation="inline"></g:plusone></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span10 offset1" style="color:#e4e4e4;">
+                    <p class="pull-right">
+                        © 2012 Civinomics Inc. All rights reserved.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% imageTitles = ['Make your voice heard', 'Technology for the real world', 'We can do it'] %>
+    % for i in range(3, 6):
+        <div class="modal hide fade" id="inPerson-${i}" style="width:70%; left:35%;">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h3 id="myModalLabel-inPerson-${i}" style="text-align:center;">${imageTitles[i-3]}</h3>
+            </div>
+            <div class="modal-body">
+                <img src="/images/splash/inPerson_${i}.jpg">
+            </div>
+        </div>
+    % endfor
+
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    <script src="/js/splash/imageFader.js"></script>
+
+    <!-- additional social media scripts -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    </script>
+
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+  </body>
+</html>
+
+<%def name="facebookID()">
+    <!-- Facebook Like Button -->
+        <div id="fb-root"></div>
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '421911304496726', // App ID
+              channelUrl : '//WWW.CIVINOMICS.COM/channel.html', // Channel File
+              status     : true, // check login status
+              cookie     : true, // enable cookies to allow the server to access the session
+              xfbml      : true  // parse XFBML
+            });
+
+            // Additional initialization code here
+          };
+
+          // Load the SDK Asynchronously
+          (function(d){
+             var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement('script'); js.id = id; js.async = true;
+             js.src = "//connect.facebook.net/en_US/all.js";
+             ref.parentNode.insertBefore(js, ref);
+           }(document));
+        </script>
+</%def>
+
+<%def name="google_analytics()">
+    % if c.conf['google.analytics']:
+      <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', "${c.conf['google.analytics']}"]);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+      </script>
+    % endif
+</%def>

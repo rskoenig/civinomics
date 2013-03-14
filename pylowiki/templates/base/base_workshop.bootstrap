@@ -1,0 +1,71 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+<div class="row-fluid" ng-app="civ">
+   <div class="span12 well workshop-panel">
+      <div class="row-fluid">
+         <div class="span10" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
+            <%
+                if c.w['public_private'] == 'public':
+                    outOfScope = lib_6.geoBreadcrumbs()
+            %>
+         </div><!-- /geographic breadcrumbs -->
+         <div class="span2"> <!-- watch button -->
+            <%
+                helpers.watchButton()
+                if c.privs['admin'] or c.privs['facilitator']:
+                    helpers.configButton(c.w)
+           %>
+         </div><!-- /watch button -->
+      </div> <!-- /.row-fluid -->
+     <%
+        if c.w['public_private'] == 'public':
+            if outOfScope:
+                lib_6.outOfScope()
+     %>
+      <div class="row-fluid">
+         <div class="span12">
+            <h1 class="centered workshop-title"> 
+               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title']}' " ng-cloak>
+                  {{workshopTitle}}
+               </a>
+            </h1>
+         </div>
+      </div>
+      <div class="row-fluid">
+         <div class="span12">
+            <%
+               if c.listingType != '':
+                  listingType = c.listingType
+               else:
+                  listingType = None
+            %>
+            ${helpers.workshopNav(c.w, listingType)}
+         </div>
+      </div> <!-- /.row-fluid -->
+      ${next.body()}
+   </div><!-- /.span12.well -->
+</div><!--/.row-->
+
+<%def name="extraScripts()">
+   <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
+   <%
+      if c.mainImage['pictureHash'] == 'supDawg':
+         backgroundImage = '"/images/slide/slideshow/supDawg.slideshow"'
+      else:
+         backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+   %>
+   <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+   <script src="/js/follow.js" type="text/javascript"></script>
+   <script type="text/javascript">
+      $(".followButton").tooltip();
+      $(".preferencesLink").tooltip();
+   </script>
+
+</%def>
+
+<%def name="headScripts2()">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="/js/ng/goals.js"></script>
+</%def>
