@@ -15,11 +15,9 @@
             renderList = c.discussions
          elif thing == 'resources':
             renderList = c.resources
+            target = "_blank"
          elif thing == 'ideas':
             renderList = c.ideas
-            
-      if thing == 'resources':
-         target = "_blank"
    %>
    <ul class="unstyled">
       % for item in renderList:
