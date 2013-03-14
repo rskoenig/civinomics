@@ -9,6 +9,8 @@ from pylons.middleware import ErrorHandler, StatusCodeRedirect
 from pylons.wsgiapp import PylonsApp
 from routes.middleware import RoutesMiddleware
 
+from pylowiki.lib.middleware.gzipMiddleware import GzipMiddleware
+
 from pylowiki.config.environment import load_environment
 
 def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
@@ -65,5 +67,5 @@ def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
         # Serve static files
         static_app = StaticURLParser(config['pylons.paths']['static_files'])
         app = Cascade([static_app, app])
-
+        app = GzipMiddleware(app, compresslevel=9)
     return app
