@@ -347,46 +347,57 @@
             if county == city:
                 county = 'County of ' + county
                 city = 'City of ' + city
+            scopeMapping = [    ('earth', 'Earth'),
+                            ('country', c.authuser_geo['countryTitle']),
+                            ('state', c.authuser_geo['stateTitle']),
+                            ('county', county),
+                            ('city', city),
+                            ('postalCode', c.authuser_geo['postalCode'])
+                            ]
+            outOfScope = False
     %>
     % if 'user' in session:
-    <ul class="nav nav-pills pull-left geo-breadcrumbs">
-        % if c.scope == 'planet':
-            <li class="active"> <a href="/workshops/geo/earth">Earth</a><span class="divider">/</span></li>
-        % else:
-            <li> <a href="/workshops/geo/earth">Earth</a><span class="divider">/</span></li>
-        % endif
-        
-        % if c.scope == 'country':
-            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'country') | n}>${c.authuser_geo['countryTitle']}</a> <span class="divider">/</span> </li>
-        % else:
-            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'country') | n}>${c.authuser_geo['countryTitle']}</a> <span class="divider">/</span> </li>
-        % endif
-        
-        % if c.scope == 'state':
-            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'state') | n}>${c.authuser_geo['stateTitle']}</a> <span class="divider">/</span> </li>
-        % else:
-            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'state') | n}>${c.authuser_geo['stateTitle']}</a> <span class="divider">/</span> </li>
-        % endif
-        
-        % if c.scope == 'county':
-            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'county') | n}>${county}</a> <span class="divider">/</span> </li>
-        % else:
-            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'county') | n}>${county}</a> <span class="divider">/</span> </li>
-        % endif
-        
-        % if c.scope == 'city':
-            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'city') | n}>${city}</a> <span class="divider">/</span> </li>
-        % else:
-            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'city') | n}>${city}</a> <span class="divider">/</span> </li>
-        % endif
-        
-        % if c.scope == 'postalCode':
-            <li class="active"> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'postalCode') | n}>${c.authuser_geo['postalCode']}</a></li>
-        % else:
-            <li> <a ${self._geoWorkshopLink(c.authuser_geo, depth = 'postalCode') | n}>${c.authuser_geo['postalCode']}</a></li>
-        % endif
-    </ul>
-   % endif
+        <ul class="nav nav-pills pull-left geo-breadcrumbs">
+            % for scopeLevel in scopeMapping:
+                <%
+                    activeClass = ''
+                    if c.scope['level'] == scopeLevel[0]:
+                        if scopeLevel[0] != 'earth':
+                            scopeKey = '%sURL' % scopeLevel[0]
+                            userScope = c.authuser_geo[scopeKey]
+                        else:
+                            userScope = 'earth'
+                        if c.scope['name'] == userScope:
+                            activeClass = 'active'
+                        else:
+                            outOfScope = True
+                %>
+                <li class="${activeClass}">
+                    <a ${self._geoWorkshopLink(c.authuser_geo, depth = scopeLevel[0]) | n}>${scopeLevel[1]}</a>
+                    % if scopeLevel[0] != 'postalCode':
+                        <span class="divider">/</span>
+                    % endif
+                </li>
+            % endfor
+        </ul>
+    % endif
+    <% 
+        return outOfScope
+    %>
+</%def>
+
+<%def name="outOfScope()">
+    <%
+        scopeName = c.scope['level'].title()
+        scopeName += " of "
+        scopeName += c.scope['name']\
+                        .replace('-', ' ')\
+                        .title()
+    %>
+    <div class="alert alert-info span6 offset3">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        This page is scoped for the ${scopeName}
+    </div>
 </%def>
 
 <%def name="userGeoLink(user, **kwargs)">
@@ -409,7 +420,7 @@
 <%def name="_geoWorkshopLink(geoInfo, depth = None, **kwargs)">
     <%
         link = 'href="/workshops/geo/earth/'
-        if depth is None:
+        if depth is None or depth == 'earth':
             link += '"'
         elif depth == 'country':
             link += '%s"' % geoInfo['countryURL']

@@ -254,20 +254,26 @@ def getPublicScope(workshop):
         scope = scope['scope'].split('|')
         if scope[9] != '0':
             scopeLevel = 'postal'
+            scopeName  = scope[9]
         elif scope[8] != '0':
             scopeLevel = 'city'
+            scopeName  = scope[8]
         elif scope[6] != '0':
             scopeLevel = 'county'
+            scopeName  = scope[6]
         elif scope[4] != '0':
             scopeLevel = 'state'
+            scopeName  = scope[4]
         elif scope[2] != '0':
             scopeLevel = 'country'
+            scopeName  = scope[2]
         else:
-            scopeLevel = 'planet'
+            scopeLevel = 'earth'
+            scopeName  = 'earth'
     else:
-        scopeLevel = 'planet'
-        
-    return scopeLevel
+        scopeLevel = 'earth'
+        scopeName  = 'earth'
+    return {'level':scopeLevel, 'name':scopeName}
 
 class WorkshopScope(object):
     def __init__(self, workshop, scope):

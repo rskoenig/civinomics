@@ -961,20 +961,6 @@ class WorkshopController(BaseController):
         
         c.flaggedItems = flagLib.getFlaggedThingsInWorkshop(c.w)
         
-        """
-        c.flaggedItems = {'ideas':[], 'resources':[], 'discussions':[], 'comments':[]}
-        for key in c.flaggedItems.keys():
-            objType = key[:-1]
-            flaggedItems = flagLib.getFlaggedThings(objType, workshop = c.w)
-            if flaggedItems:
-                items = []
-                codes = []
-                for item in flaggedItems:
-                    if item['urlCode'] not in codes:
-                        items.append(item)
-                        codes.append(item['urlCode'])
-                c.flaggedItems[key] = items
-        """
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
         return render('/derived/6_workshop_preferences.bootstrap')

@@ -34,7 +34,7 @@ class ActionlistController(BaseController):
         c.title = c.heading = c.workshopTitlebar = 'All Workshops'
         c.list = getActiveWorkshops()
         c.activity = getRecentMemberPosts(10)
-        c.scope = 'earth'
+        c.scope = {'level':'earth', 'name':'all'}
         c.rssURL = "/activity/rss"
         return render('derived/6_main_listing.bootstrap')
             

@@ -6,9 +6,10 @@
    <div class="span12 well workshop-panel">
       <div class="row-fluid">
          <div class="span10" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
-            % if c.w['public_private'] == 'public':
-                ${lib_6.geoBreadcrumbs()}
-            % endif
+            <%
+                if c.w['public_private'] == 'public':
+                    outOfScope = lib_6.geoBreadcrumbs()
+            %>
          </div><!-- /geographic breadcrumbs -->
          <div class="span2"> <!-- watch button -->
             <%
@@ -18,6 +19,9 @@
            %>
          </div><!-- /watch button -->
       </div> <!-- /.row-fluid -->
+     % if outOfScope:
+        ${lib_6.outOfScope()}
+     % endif
       <div class="row-fluid">
          <div class="span12">
             <h1 class="centered workshop-title"> 

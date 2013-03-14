@@ -27,26 +27,26 @@ class GeoController(BaseController):
             
         c.rssURL = "/workshops/rss/earth"
         if country == '0':
-            c.scope = 'planet'
+            c.scope = {'level':'earth', 'name':'earth'}
             location = 'earth'
         elif state == '0':
-            c.scope = 'country'
+            c.scope = {'level':'country', 'name':country}
             location = country
             c.rssURL += '/%s'%country
         elif county == '0':
-            c.scope = 'state'
+            c.scope = {'level':'state', 'name':state}
             location = state
             c.rssURL += '/%s/%s'%(country, state)
         elif city == '0':
-            c.scope = 'county'
+            c.scope = {'level':'county', 'name':county}
             location = county
             c.rssURL += '/%s/%s/%s'%(country, state, county)
         elif postalCode == '0':
-            c.scope = 'city'
+            c.scope = {'level':'city', 'name':city}
             location = city
             c.rssURL += '/%s/%s/%s/%s'%(country, state, county, city)
         else:
-            c.scope = 'postalCode'
+            c.scope = {'level':'postalCode', 'name':postalCode}
             location = postalCode
             c.rssURL += '/%s/%s/%s/%s/%s'%(country, state, county, city, postalCode)
             
