@@ -19,9 +19,11 @@
            %>
          </div><!-- /watch button -->
       </div> <!-- /.row-fluid -->
-     % if outOfScope:
-        ${lib_6.outOfScope()}
-     % endif
+     <%
+        if c.w['public_private'] == 'public':
+            if outOfScope:
+                lib_6.outOfScope()
+     %>
       <div class="row-fluid">
          <div class="span12">
             <h1 class="centered workshop-title"> 
