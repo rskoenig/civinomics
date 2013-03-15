@@ -923,14 +923,14 @@ class WorkshopController(BaseController):
 
         if c.w['public_private'] != 'public':
             c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
-            
+        
         c.accounts = accountLib.getAccountsForWorkshop(c.w, deleted = '0')
         if c.accounts:
             c.accountInvoices = accountLib.getInvoicesForAccount(c.accounts[0])
         else:
             c.accountInvoices = []
             c.accounts = []
-            
+        
         c.page = pageLib.getInformation(c.w)
         if c.page and 'data' in c.page and c.page['data'] != "No workshop summary set yet":
             c.backConfig = 1
