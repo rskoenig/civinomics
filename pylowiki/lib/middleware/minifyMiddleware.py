@@ -41,11 +41,9 @@ class MinifyMiddleware(object):
         s = f.readlines()
         s = ''.join(s)
         f.close()
-        print "Before %s: %d" % (path, len(s))
         if self.minify:
             content = self.minifier(s)
             
-        print "After %s: %d" % (path, len(content))
         etag_key = '"%s"' % os.stat(full_path).st_mtime
         
         # Here we either need to register the response object with this thread,
