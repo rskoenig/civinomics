@@ -11,6 +11,7 @@ from routes.middleware import RoutesMiddleware
 
 from pylowiki.lib.middleware.gzipMiddleware import GzipMiddleware
 from pylowiki.lib.middleware.coffeescriptMiddleware import CoffeeScriptMiddleware
+from pylowiki.lib.middleware.minifyMiddleware import MinifyMiddleware
 
 from pylowiki.config.environment import load_environment
 
@@ -70,4 +71,5 @@ def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
         app = Cascade([static_app, app])
         app = CoffeeScriptMiddleware(app)
         app = GzipMiddleware(app, compresslevel=9)
+        app = MinifyMiddleware(app)
     return app
