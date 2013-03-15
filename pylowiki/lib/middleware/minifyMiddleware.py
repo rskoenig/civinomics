@@ -14,6 +14,7 @@ class MinifyMiddleware(object):
                 # Try to import slimit for javascript minifying
                 from slimit import minify as slimit_minify
                 self.minifier = lambda x: slimit_minify(x, mangle=True)
+                self.minifier_noMangle = lambda x: slimit_minify(x, mangle=False)
             except:
                 try:
                     # Try jsmin as a fallback
@@ -42,7 +43,10 @@ class MinifyMiddleware(object):
         s = ''.join(s)
         f.close()
         if self.minify:
-            content = self.minifier(s)
+            if path.startswith('/js/ng/'):
+                content = self.minifier_noMangle(s)
+            else:
+                content = self.minifier(s)
             
         etag_key = '"%s"' % os.stat(full_path).st_mtime
         
