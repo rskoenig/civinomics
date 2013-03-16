@@ -9,6 +9,7 @@ import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.account      as accountLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.mainImage    as mainImageLib
@@ -41,11 +42,15 @@ class AccountController(BaseController):
             
         c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID'])
         c.mainImage = mainImageLib.getMainImage(c.w)
+        workshopLib.setWorkshopPrivs(c.w)
 
     def manageAccount(self):
         c.stripeKey = c.stripePublicKey
         if c.account:
             c.accountInvoices = accountLib.getInvoicesForAccount(c.account)
+
+        if c.w['public_private'] == 'public':
+            c.scope = geoInfoLib.getPublicScope(c.w)
 
         return render('/derived/6_account.bootstrap')
         
