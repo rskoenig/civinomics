@@ -36,7 +36,9 @@ class MinifyMiddleware(object):
         # NOT WORKING
         full_path = os.path.join(self.static_files_path, path[1:])
         if not os.path.exists(full_path):
-            return status_map[404]()(environment, start_response)
+            response = Response()
+            response.status_int = 404
+            return response(environment, start_response)
 
         f = open(full_path, 'rb')
         s = f.readlines()
