@@ -681,8 +681,14 @@ class WorkshopController(BaseController):
                     workshop = workshopLib.getWorkshopByCode(workshopCode)
                     workshop['type'] = 'professional'
                     dbHelpers.commit(workshop)
-                    if not ('admin-submit-button' in request.params and c.privs['admin']):
-                        account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, workshop, 'PRO', c.coupon)
+                    if ('admin-submit-button' in request.params and c.privs['admin']):
+                        c.stripeToken = "ADMINCOMP"
+                        c.billingName = c.authuser['name']
+                        c.billingEmail = "billing@civinomics.com"
+                        c.coupon = ''
+                        
+                    account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, workshop, 'PRO', c.coupon)
+                    eventLib.Event('Workshop upgraded to Pro', 'Workshop upgraded to Pro by %s'%c.authuser['name'], workshop, c.authuser)
                         
                     alert = {'type':'success'}
                     alert['title'] = 'Your workshop has been upgraded from Free to Professional. Have fun!'
@@ -925,7 +931,7 @@ class WorkshopController(BaseController):
             c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
         
         c.accounts = accountLib.getAccountsForWorkshop(c.w, deleted = '0')
-        if c.accounts:
+        if c.accounts and (not accountLib.isComp(c.accounts[0]) or c.privs['admin']):
             c.accountInvoices = accountLib.getInvoicesForAccount(c.accounts[0])
         else:
             c.accountInvoices = []

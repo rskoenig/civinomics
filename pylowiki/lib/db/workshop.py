@@ -249,6 +249,8 @@ def setWorkshopPrivs(workshop):
     c.privs['guest'] = isGuest(workshop)
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
+    # is a demo workshop
+    c.privs['demo'] = isDemo(workshop)
     
     if 'user' in session:
         c.privs['admin'] = userLib.isAdmin(c.authuser.id)

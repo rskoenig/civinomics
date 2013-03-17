@@ -39,15 +39,24 @@ class AccountController(BaseController):
             workshopLib.setWorkshopPrivs(c.w)
             if not c.privs['admin'] and not c.privs['facilitator']:
                 return(redirect("/"))
-            
-        c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID'])
+
+        if accountLib.isComp(c.account):
+            c.stripCustomer = ''
+        else:
+            c.stripeCustomer = stripe.Customer.retrieve(c.account['stripeID'])
+        
         c.mainImage = mainImageLib.getMainImage(c.w)
         workshopLib.setWorkshopPrivs(c.w)
 
     def manageAccount(self):
         c.stripeKey = c.stripePublicKey
         if c.account:
-            c.accountInvoices = accountLib.getInvoicesForAccount(c.account)
+            if accountLib.isComp(c.account):
+                c.accountInvoices = {}
+                c.accountInvoices['count'] = 0
+                c.accountInvoices['data'] = ''
+            else:
+                c.accountInvoices = accountLib.getInvoicesForAccount(c.account)
 
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
