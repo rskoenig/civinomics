@@ -10,12 +10,17 @@
 <%def name="showDisabledMessage(thing)">
     <%
         events = eventLib.getEventsWithAction(thing, 'disabled')
+        objTypeMapping = {  'discussion':'conversation',
+                            'idea':'idea',
+                            'resource':'resource'}
     %>
     <div class="row-fluid">
         <div class="span11 offset1">
             % for event in events:
-                <% eventOwner = userLib.getUserByID(event.owner) %>
-                <small>This ${thing.objType} has been disabled by ${lib_6.userLink(eventOwner)} because: ${event['reason']}</small> <br />
+                <% 
+                    eventOwner = userLib.getUserByID(event.owner)
+                %>
+                <small>This ${objTypeMapping[thing.objType]} has been disabled by ${lib_6.userLink(eventOwner)} because: ${event['reason']}</small>
             % endfor
         </div>
     </div>
