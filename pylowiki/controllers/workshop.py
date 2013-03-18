@@ -325,7 +325,7 @@ class WorkshopController(BaseController):
            
         if c.w['type'] == 'personal':
             alert = {'type':'error'}
-            alert['title'] = 'Free workshops are limited to being private invitation only with a maximum of 20 participants.'
+            alert['title'] = 'In order to switch from private to public, you must upgrade this workshop from Free to Professional. Click on the Upgrade to Professional button to upgrade this workshop.'
             session['alert'] = alert
             session.save()
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
