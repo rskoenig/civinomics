@@ -28,17 +28,21 @@ def getAccountsForWorkshop(workshop, deleted = '0', suspended = '0'):
         return False
 
 def getInvoicesForAccount(account):
-    returnList = []
-    if account['stripeID'] == 'ADMINCOMP':
-        return returnList
+    if isComp(account):
+        accountInvoices = {}
+        accountInvoices['count'] = 0
+        accountInvoices['data'] = ''
+        return accountInvoices
+
     stripe.api_key = config['app_conf']['stripePrivateKey'].strip()
     stripeCustomer = stripe.Customer.retrieve(account['stripeID'])
     return stripe.Invoice.all(customer = stripeCustomer['id'])
 
 def isComp(account):
-    if account['stripeID'] == 'ADMINCOMP':
-        return True
-    
+    if 'comp' in account:
+        if account['comp'] == '1':
+            return True
+            
     return False
 
 def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'None'):
@@ -104,6 +108,7 @@ def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'No
             errorMsg = 'A system error has occured.'
             pass
         
+        
         if error:
             errorMsg += ' Please try upgrading your workshop when the issue has been resolved.'
             alert = {'type':'error'}
@@ -120,8 +125,10 @@ def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'No
     account['billingEmail'] = billingEmail
     if stripeToken == 'ADMINCOMP':
         account['stripeID'] = stripeToken
+        account['comp'] = '1'
     else:
         account['stripeID'] = customer['id']
+        account['comp'] = '0'
     account['plan'] = plan
     account['coupon'] = coupon
     account['suspended'] = '0'

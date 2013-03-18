@@ -51,12 +51,9 @@ class AccountController(BaseController):
     def manageAccount(self):
         c.stripeKey = c.stripePublicKey
         if c.account:
-            if accountLib.isComp(c.account):
-                c.accountInvoices = {}
-                c.accountInvoices['count'] = 0
-                c.accountInvoices['data'] = ''
-            else:
-                c.accountInvoices = accountLib.getInvoicesForAccount(c.account)
+            c.accountInvoices = accountLib.getInvoicesForAccount(c.account)
+        else:
+            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/preferences")
 
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
