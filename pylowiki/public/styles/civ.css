@@ -916,3 +916,9 @@ li.thumbnail-gallery{
 .background-edit-wrapper{
    padding-top:20px;
 }
+
+.collapsed-item-header{
+    padding-top:5px;
+    padding-bottom:10px;
+    padding-left:10px;
+}

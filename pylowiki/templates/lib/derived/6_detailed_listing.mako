@@ -1,6 +1,7 @@
 <%!
-   from pylowiki.lib.db.user import getUserByID
-   import pylowiki.lib.db.discussion as discussionLib
+   import pylowiki.lib.db.user          as userLib
+   import pylowiki.lib.db.discussion    as discussionLib
+   import pylowiki.lib.db.event         as eventLib
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -23,7 +24,7 @@
       % for item in renderList:
          <% 
             if c.demo:
-               author = getUserByID(item.owner)
+               author = userLib.getUserByID(item.owner)
                if not c.privs['admin']:
                   if 'user' in session:
                      if (author['accessLevel'] != '300' and author.id != c.authuser.id):
@@ -31,36 +32,72 @@
                   else:
                      if author['accessLevel'] != '300':
                         continue
-            author = getUserByID(item.owner)
+            author = userLib.getUserByID(item.owner)
          %>
          <li>
             % if item['disabled'] == '1':
-                <div class="row-fluid list-item disabled">
+                <div class="accordion" id="item-${item['urlCode']}">
+                    <div class="accordion-group no-border">
+                        <div class="accordion-heading disabled">
+                            <div class="collapsed-item-header">
+                                <button class="accordion-toggle inline btn btn-mini collapsed" data-toggle="collapse" data-parent="#item-${item['urlCode']}" href="#item-body-${item['urlCode']}">Show</button>
+                                <%
+                                    (disabler, reason) = getDisabledMessage(item)
+                                %>
+                                <small>This item has been disabled by ${lib_6.userLink(disabler)} because: ${reason}</small>
+                            </div>
+                            <div class="accordion-body collapse" id="item-body-${item['urlCode']}">
+                                <div class="row-fluid list-item">
+                                    <div class="span2 offset1">
+                                        ${lib_6.userImage(author, className = 'avatar')}
+                                    </div> <!--/.span2-->
+                                    <div class="span9 list-item-text">
+                                        <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
+                                        ${itemTitle | n}
+                                        Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
+                                            <br />
+                                            <% 
+                                                comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
+                                                numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                                            %>
+                                            See ${comments | n} (${numComments})
+                                    </div><!--/.span9-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             % else:
                 <div class="row-fluid list-item">
+                    <div class="span1 voteBlock">
+                        ${lib_6.upDownVote(item)}
+                    </div>
+                    <div class="span2">
+                        ${lib_6.userImage(author, className = 'avatar')}
+                    </div> <!--/.span2-->
+                    <div class="span9 list-item-text">
+                        <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
+                        ${itemTitle | n}
+                        Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
+                            <br />
+                            <% 
+                                comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
+                                numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                            %>
+                            See ${comments | n} (${numComments})
+                    </div><!--/.span9-->
+                </div><!--/.row-fluid-->
             % endif
-               <div class="span1 voteBlock">
-                  ${lib_6.upDownVote(item)}
-               </div>
-               <div class="span2">
-                  ${lib_6.userImage(author, className = 'avatar')}
-               </div> <!--/.span2-->
-               <div class="span9 list-item-text">
-                  <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
-                  ${itemTitle | n}
-                  Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
-                     <br />
-                     <% 
-                        comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
-                        numComments = discussionLib.getDiscussionForThing(item)['numComments']
-                     %>
-                     See ${comments | n} (${numComments})
-                     % if item['disabled'] == '1':
-                        <small>(this has been disabled)</small>
-                     % endif
-               </div><!--/.span9-->
-            </div><!--/.row-fluid-->
          </li>
       % endfor
    </ul>
+</%def>
+
+<%def name="getDisabledMessage(thing)">
+    <%
+        event = eventLib.getEventsWithAction(thing, 'disabled')[0]
+        disabler = userLib.getUserByID(event.owner)
+        reason = event['reason']
+        return (disabler, reason)
+    %>
 </%def>
