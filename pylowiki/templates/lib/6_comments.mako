@@ -75,7 +75,6 @@
     ########################################################################
     <%
         rules = []
-        rules.append("Rule #1 of comment club: Don't call people Hitler.")
         rules.append("Rule #2 of comment club: Do you talk to your mother with that voice?")
         rules.append("Rule #3 of comment club: You do not talk about comment club.")
         rules.append("Rule #4 of comment club: Gold Five: Stay on <del>target</del> topic!")
