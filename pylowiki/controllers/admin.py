@@ -43,6 +43,8 @@ class AdminController(BaseController):
             c.thing = generic.getThing(thingCode)
             c.w = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
             author = userLib.getUserByID(c.thing.owner)
+            
+            # Check if a non-admin is attempting to mess with an admin-level item
             if userLib.isAdmin(author.id):
                 if not userLib.isAdmin(c.authuser.id):
                     """
@@ -55,11 +57,19 @@ class AdminController(BaseController):
                     """
                     c.returnDict = json.dumps({'code':c.thing['urlCode'], 'result':'Error: cannot %s an item authored by an administrator' % action})
                     c.error = True
+            
             if not c.thing:
                 abort(404)
             workshop = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
             if not workshop:
                 return json.dumps({'code':thingCode, 'result':'ERROR'})
+        if action in ['edit', 'enable', 'disable', 'immunify']:
+            # Check if a non-admin is attempting to mess with an item already touched by an admin
+            if c.thing['disabled'] == u'1':
+                event = eventLib.getEventsWithAction(c.thing, 'disabled')[0]
+                if userLib.isAdmin(event.owner):
+                    c.returnDict = json.dumps({'code':c.thing['urlCode'], 'result':'Error: cannot %s an item touched by an administrator' % action})
+                    c.error = True
         # Actions that only require the workshop
         if action in ['setDemo']:
             if thingCode is None:
