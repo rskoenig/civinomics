@@ -68,8 +68,9 @@ class AdminController(BaseController):
             if c.thing['disabled'] == u'1':
                 event = eventLib.getEventsWithAction(c.thing, 'disabled')[0]
                 if userLib.isAdmin(event.owner):
-                    c.returnDict = json.dumps({'code':c.thing['urlCode'], 'result':'Error: cannot %s an item touched by an administrator' % action})
-                    c.error = True
+                    if not userLib.isAdmin(c.authuser.id):
+                        c.returnDict = json.dumps({'code':c.thing['urlCode'], 'result':'Error: cannot %s an item touched by an administrator' % action})
+                        c.error = True
         # Actions that only require the workshop
         if action in ['setDemo']:
             if thingCode is None:
