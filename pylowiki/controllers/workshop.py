@@ -931,11 +931,9 @@ class WorkshopController(BaseController):
             c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
         
         c.accounts = accountLib.getAccountsForWorkshop(c.w, deleted = '0')
-        if c.accounts and (not accountLib.isComp(c.accounts[0]) or c.privs['admin']):
-            c.accountInvoices = accountLib.getInvoicesForAccount(c.accounts[0])
-        else:
-            c.accountInvoices = []
-            c.accounts = []
+        if c.accounts and accountLib.isComp(c.accounts[0]):
+            if not c.privs['admin']:
+                c.accounts = []
         
         c.page = pageLib.getInformation(c.w)
         if c.page and 'data' in c.page and c.page['data'] != "No workshop summary set yet":
