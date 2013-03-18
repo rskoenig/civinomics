@@ -930,6 +930,7 @@ class WorkshopController(BaseController):
         if c.w['public_private'] != 'public':
             c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
         
+        
         c.accounts = accountLib.getAccountsForWorkshop(c.w, deleted = '0')
         if c.accounts and accountLib.isComp(c.accounts[0]):
             if not c.privs['admin']:
