@@ -276,7 +276,8 @@
 <%def name="continueThread(comment)">
     <br />
     <%
-        continueStr = '<a %s>%s</a>' %(lib_6.threadLink(comment, c.w, c.listingType, embed=True, commentRoot=comment), "Continue this thread -->")
+        #continueStr = '<a %s>%s</a>' %(lib_6.threadLink(comment, c.w, c.listingType, embed=True, commentRoot=comment), "Continue this thread -->")
+        continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
     %>
     ${continueStr | n}
 </%def>

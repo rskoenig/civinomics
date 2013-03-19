@@ -78,6 +78,10 @@ class DiscussionController(BaseController):
         c.revisions = revisionLib.getRevisionsForThing(c.thing)
         c.listingType = 'discussion'
         
+        if 'comment' in request.params:
+            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+            if not c.rootComment:
+                abort(404)
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, discussionCode, discussionURL, commentCode):

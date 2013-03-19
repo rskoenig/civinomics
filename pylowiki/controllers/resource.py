@@ -73,6 +73,12 @@ class ResourceController(BaseController):
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'resource'
         c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        
+        if 'comment' in request.params:
+            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+            if not c.rootComment:
+                abort(404)
+                
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, resourceCode, resourceURL, commentCode = ''):

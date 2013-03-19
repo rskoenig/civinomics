@@ -205,62 +205,73 @@
    ${imgStr | n}
 </%def>
 
+<%def name="commentLinkAppender(**kwargs)">
+    ## Small refactoring of the resource/discussion/idea link generation when a comment is involved
+    <%
+        appendedLink = ''
+        if 'id' not in kwargs and 'commentCode' not in kwargs:
+            return appendedLink
+        if 'id' in kwargs:
+            appendedLink = '#%s' % kwargs['id']
+        elif 'commentCode' in kwargs:
+            appendedLink = '?comment=%s' % kwargs['commentCode']
+        return appendedLink
+    %>
+</%def>
+
 <%def name="resourceLink(r, w, **kwargs)">
    <%
-      if 'directLink' in kwargs:
-         if kwargs['directLink'] == True:
-            resourceStr = 'href="%s' %(r['link'])
-         else:
+        if 'directLink' in kwargs:
+            if kwargs['directLink'] == True:
+                resourceStr = 'href="%s' %(r['link'])
+            else:
+                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+        else:
             resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
-      else:
-         resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
-      if 'id' in kwargs:
-         resourceStr += '#%s' % kwargs['id']
-      resourceStr += '"'
-      if 'embed' in kwargs:
-         if kwargs['embed'] == True:
-            return resourceStr
+        
+        resourceStr += commentLinkAppender(**kwargs)
+        resourceStr += '"'
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return resourceStr
    %>
    ${resourceStr | n}
 </%def>
 
 <%def name="suggestionLink(s, w, **kwargs)">
    <%
-      resourceStr = 'href="/workshop/%s/%s/suggestion/%s/%s' %(w["urlCode"], w["url"], s["urlCode"], s["url"])
-      if 'id' in kwargs:
-         resourceStr += '#%s' % kwargs['id']
-      resourceStr += '"'
-      if 'embed' in kwargs:
-         if kwargs['embed'] == True:
-            return resourceStr
+        resourceStr = 'href="/workshop/%s/%s/suggestion/%s/%s' %(w["urlCode"], w["url"], s["urlCode"], s["url"])
+        resourceStr += commentLinkAppender(**kwargs)
+        resourceStr += '"'
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return resourceStr
    %>
    ${resourceStr | n}
 </%def>
 
 <%def name="ideaLink(i, w, **kwargs)">
    <%
-      ideaStr = 'href="/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
-      if 'id' in kwargs:
-         ideaStr += '#%s' % kwargs['id']
-      ideaStr += '"'
-      if 'embed' in kwargs:
-         if kwargs['embed'] == True:
-            return ideaStr
+        ideaStr = 'href="/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
+        ideaStr += commentLinkAppender(**kwargs)
+        ideaStr += '"'
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return ideaStr
    %>
    ${ideaStr | n}
 </%def>
 
 <%def name="discussionLink(d, w, **kwargs)">
-   <%
-      resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-      if 'id' in kwargs:
-         resourceStr += '#%s' % kwargs['id']
-      resourceStr += '"'
-      if 'embed' in kwargs:
-         if kwargs['embed'] == True:
-            return resourceStr
-   %>
-   ${resourceStr | n}
+    <%
+        resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+        resourceStr += commentLinkAppender(**kwargs)
+        resourceStr += '"'
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return resourceStr
+    %>
+    ${resourceStr | n}
 </%def>
 
 <%def name="commentLink(comment, w, **kwargs)">
