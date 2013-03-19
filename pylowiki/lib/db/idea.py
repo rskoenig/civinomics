@@ -51,6 +51,12 @@ def editIdea(idea, title, owner):
     except:
         log.error('ERROR: unable to edit idea')
         return False
+        
+def isAdopted(idea):
+    if idea['adopted'] == '1':
+        return True
+        
+    return False
 
 def Idea(user, title, workshop, privs, role = None):
     """
@@ -61,6 +67,7 @@ def Idea(user, title, workshop, privs, role = None):
     idea['title'] = title
     idea['disabled'] = '0'
     idea['deleted'] = '0'
+    idea['adopted'] = '0'
     idea['allowComments'] = '1'
     idea['ups'] = '0'
     idea['downs'] = '0'
