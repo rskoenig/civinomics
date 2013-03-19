@@ -721,7 +721,7 @@
             elif 'discussionCode' in item.keys():
                 activityStr += objTypeMapping['discussion']
             activityStr += '</a>, saying '
-            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, id='accordion-%s'%item['urlCode']) + '>' + title + '</a>'
+            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
         else:
             activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
     %>

@@ -162,7 +162,7 @@
     %>
     <div class="${headerClass}">
         <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
-            Hide ${comment.id}
+            Hide
         </button>
         <%
             lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")
