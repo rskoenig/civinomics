@@ -17,11 +17,12 @@ class HelpController(BaseController):
     def help( self ):
         c.subSection = 'helpCenter'
         
-        demo = demoLib.getDemo()
+        demos = workshopLib.getDemoWorkshops()
+        demo = demos[0]
         if not demo:
             tutorialURL = '/'
         else:
-            tutorial = workshopLib.getWorkshopByCode(demo['workshopCode'])
+            tutorial = workshopLib.getWorkshopByCode(demo['urlCode'])
             c.tutorialURL = '/workshops/%s/%s' %(tutorial['urlCode'], tutorial['url'])
 
         return render('/derived/6_help.bootstrap')
