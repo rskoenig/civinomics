@@ -307,6 +307,7 @@ def make_map():
     ################
     
     map.connect('/{help:help/?}', controller = 'help', action='help')
+    map.connect('/help/{facilitatorGuide:facilitatorGuide/?}', controller = 'help', action='facilitatorGuide')
     map.connect('/help/{faq:faq/?}', controller = 'help', action='faq')
     map.connect('/help/{reportIssue:reportIssue/?}', controller = 'help', action='reportIssue')
     map.connect('/help/{reportAbuse:reportAbuse/?}', controller = 'help', action='reportAbuse')

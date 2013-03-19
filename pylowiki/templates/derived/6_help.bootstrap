@@ -5,18 +5,18 @@
     <div>
         <div class="browse">
             <h3 class="summary"><a href="/help">Help Center</a></h3>
-            </div><!-- browse -->
-                % if c.subSection == 'helpCenter':
-                        ${helpers.helpCenter()}
-                % elif c.subSection == 'faq':
-                        ${helpers.faq()}
-                % elif c.subSection == 'reportIssue':
-                        ${helpers.reportIssue()}
-                % elif c.subSection == 'reportAbuse':
-                        ${helpers.reportAbuse()}
-                % endif
-            </div><!-- section-wrapper -->
-        </div>
+        </div><!-- browse -->
+            % if c.subSection == 'helpCenter':
+                    ${helpers.helpCenter()}
+            % elif c.subSection == 'facilitatorGuide':
+                    ${helpers.facilitatorGuide()}
+            % elif c.subSection == 'faq':
+                    ${helpers.faq()}
+            % elif c.subSection == 'reportIssue':
+                    ${helpers.reportIssue()}
+            % elif c.subSection == 'reportAbuse':
+                    ${helpers.reportAbuse()}
+            % endif
     </div>
 </div><!-- container-fluid -->
 

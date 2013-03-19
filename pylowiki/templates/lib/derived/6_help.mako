@@ -8,7 +8,7 @@
                 </a>
             </div>
              <div class="span4 well help">
-                <a href="#">
+                <a href="help/facilitatorGuide">
                     <span class="link-span"></span><!-- used to make entire div a link -->
                     <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_043_group.png">  How to start a workshop</h3>
                     <p>Ready to start a workshop of your own? Here are some things you'll need to keep in mind as a facilitator.</p>
@@ -164,6 +164,63 @@
             </div>
         </fieldset>
     </form>
+</%def>
+
+<%def name="facilitatorGuide()">
+    <div class="span3">
+        <ul id="inner-sidebar" class="nav nav-tabs nav-stacked">
+            <li><a href="#title">Title<i class="icon-chevron-right pull-right"></i></a></li>
+            <li><a href="#goals">Goals<i class="icon-chevron-right pull-right"></i></a></li>
+            <li><a href="#scope">Scope<i class="icon-chevron-right pull-right"></i></a></li>
+            <li><a href="#slideshow">Slideshow<i class="icon-chevron-right pull-right"></i></a></li>
+            <li><a href="#captions">Captions<i class="icon-chevron-right pull-right"></i></a></li>
+            <li><a href="#objects">Vote, Talk, Learn<i class="icon-chevron-right pull-right"></i></a></li>
+        </ul>      
+    </div>
+    <div class="span8">
+        <h3>How to start a workshop</h3>   
+        <div class="longText">
+            <p class="lead">A few tips to help you change the world.</p><p> Civinomics allows anyone to create a workshop on something that could be improved. It may be improving public safety in your city, creating a better work environment in the office, or just having the best family vacation ever. However, the success of your workshop is up to you. Here are a few tips to help you shake things up.</p> 
+            <hr>
+            <ol>
+                <li>
+                    <strong id="title">Use a detailed and descriptive title</strong>
+                    <p>Which of these workshops sounds more likely to be successful? "Saving Marriage" or "Reforming Civil-Marriage Law in the US"? The second one sets has a much clearer purpose simply in its title. Aim for a title that is descriptive rather than snappy or catchy in your own workshops.</p>
+                </li>
+                <li>
+                    <strong id="goals">Breakdown the challenge in the goals</strong>
+                    <p>Lets say your workshop is about improving your local school. What are some general metrics that everyone can agree account for a good education? "Raise test scores to a B average school wide" or "Provide afterschool activities for all students" or "Reduce campus crime rates below 10 a year" are all goals that can be measured and tracked. They are based in observed fact and require the effectiveness of the solutions to be measured. This is generally better than goals such as "Create a healthy and safe school atmosphere." Of course questions that require an empathetic answer like this are good too, but they are better placed in the "Talk" section than listed as a goal. The later requires a subjective answer, the former can be objectiviely measured.  </p>
+                </li>
+                <li>
+                    <strong id="scope">When a workshop should be private...</strong>
+                    <ul>
+                        <li>Do you want people that you don't know to participate in your workshop?</li>
+                        <li>Do you want people with opposing political views to participate in your workshop?</li>
+                        <li>Do you want people that aren't aren't credentialed to participate in your workshop?</li>
+                        <li>Do you want your workshop to be able to claim it shows outcomes that are representative of public opinion?</li>
+                        <li>Do you want people with tenuous or uncertain ties to your organization participating in your workshop?</li>
+                    </ul>
+                    <p>If the answer to one or more of these question is no, than you should start a public workshop instead of a private one.</p>
+                </li>
+                <li>
+                    <strong id="slideshow">The logos and pathos of the slideshow</strong>
+                    <p>A picture is worth a thousand words. Use the slideshow to show why this topic is important. Find pictures that encapsulate the key problems. Remeber how your teacher taught you to use logos (logic), pathos (sympathy) and ethos (credibility) to proove your point. This is a great opportunity to use logos in key graphs and figures or pathos in striking images that show why things must be improved.</p>
+                </li>
+                <li>
+                    <strong id="captions">Use slide captions to impart key facts</strong>
+                    <p>There's a reason they call it surfing the internet. People cruise along looking for tantilizing bites of information. Not everyone is going to read through your eloquent background information. Just as not everyone is going to read this tip section. Use slide captions to convey the key bullet points for your workshop and you'll reach a greater range of participants.</p>
+                </li>
+                <li>
+                    <strong id="information">Treat the information section as a work in progress</strong>
+                    <p>In Civinomics alpha release, only facilitators can edit the information section. Future releases may provide the option for any workshop participant to edit this information, much as Wikipedia allows anyone to contribute to an article.For now, it's your soul responsibility. But that doesn't mean you have to write a masterpiece the first time. The essence of your workshop will be in the participation. You can improve the background information as time goes on and important or critical pieces of information are identified. You may even promote some participants to co-facilitators so they can help you with this process. If your background information isn't perfect, publish anyways, you can always come back.</p>
+                </li>
+                <li>
+                    <strong id="objects">Vote, Talk, Learn - you got thoughts, share them</strong>
+                    <p>One of the most improtant elements in getting any workshop rolling is populating the dance floor. Lets face it, you started this workshop because you're passionate about this topic. What do you think should be voted on? What key facts do you want to share? What conversations do you want to have? Add them! Your passion will help make the workshop a success. As a facilitator your do need to remember that it's your job to find solutions, even if they aren't your own. So make sure that all ideas are evaluated equally, and that discourse remains civil. However, that doesn't exlude you from participating in your workshop.</p>
+                </li>
+            </ol>
+        </div><!-- longText -->
+    </div><!-- span8 -->
 </%def>
 
 <%def name="faq()">

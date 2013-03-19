@@ -26,6 +26,10 @@ class HelpController(BaseController):
 
         return render('/derived/6_help.bootstrap')
 
+    def facilitatorGuide( self ):
+      c.subSection = 'facilitatorGuide'
+      return render('/derived/6_help.bootstrap')
+
     def faq( self ):
         c.subSection = 'faq'
         return render('/derived/6_help.bootstrap')
