@@ -43,7 +43,7 @@
                 </a>
             </div>
             <div class="span4 well help">
-                <a href="#">
+                <a href="help/feedbackWorkshop">
                     <span class="link-span"></span><!-- used to make entire div a link -->
                     <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_374_claw_hammer.png">  Suggest new features</h3>
                     <p>Help make Civinomics more effective.</p>

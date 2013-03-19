@@ -43,6 +43,11 @@ class HelpController(BaseController):
         c.subSection = 'reportAbuse'
         return render('/derived/6_help.bootstrap')
 
+    def feedbackWorkshop( self ):
+        # set feedback workshop here, by default it is left blank
+        feedbackURL = '/'
+        return redirect(feedbackURL)
+
     def abuseHandler( self ):
         c.subSection = 'reportAbuse'
         #c.userEmail = c.authuser['email']
