@@ -98,14 +98,13 @@
 
 <%def name="recurseCommentTree(node, commentType, maxDepth, curDepth)">
     <%
-        if not node: # if node == 0
+        if not node:
             return
         if type(node) == int:
             node = getComment(node)
         if curDepth >= maxDepth or node['children'] == 0:
             return
-
-        if commentType == 'thread':
+        if node.objType == 'comment':
             if curDepth == 0:
                 childList = [int(node.id)]
             else:
@@ -121,13 +120,13 @@
             if child == 0:
                 pass
             try:
-                displayComment(child, commentType, maxDepth, curDepth)
+                displayComment(child, commentType, maxDepth, curDepth, parent = node)
             except:
                 raise
     %>
 </%def>
 
-<%def name="displayComment(comment, commentType, maxDepth, curDepth)">
+<%def name="displayComment(comment, commentType, maxDepth, curDepth, parent = None)">
     <%
         comment = getComment(comment)
         if comment:
@@ -145,13 +144,13 @@
     %>
     <div class="accordion" id="${accordionID}">
         <div class="accordion-group ${backgroundShade}">
-            ${commentHeading(comment, author, accordionID, collapseID)}
+            ${commentHeading(comment, author, accordionID, collapseID, parent = parent)}
             ${commentContent(comment, commentType, curDepth, maxDepth, author, accordionID, collapseID)}
         </div>
     </div>
 </%def>
 
-<%def name="commentHeading(comment, author, accordionID, collapseID)">
+<%def name="commentHeading(comment, author, accordionID, collapseID, parent = None)">
     <%
         headerClass = "accordion-heading"
         if comment['addedAs'] == 'admin':
@@ -163,7 +162,7 @@
     %>
     <div class="${headerClass}">
         <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
-            Hide
+            Hide ${comment.id}
         </button>
         <%
             lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")
@@ -175,9 +174,21 @@
         %>
         ${role} from ${lib_6.userGeoLink(author, comment=True)}
         
-        % if comment['disabled'] == '1':
-            <span class="pull-right tiny disabledComment-notice">(comment disabled)</span>
-        % endif
+        <span class="pull-right disabledComment-notice">
+            <small>
+            <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">Link</a>
+            % if parent is not None:
+                % if parent.objType == 'comment':
+                    % if parent['urlCode'] != comment['urlCode']:
+                        | <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
+                    % endif
+                % endif
+            % endif
+            % if comment['disabled'] == '1':
+                (comment disabled)
+            % endif
+            </small>
+        </span>
     </div> <!--/.accordion-heading-->
 </%def>
 
@@ -276,7 +287,6 @@
 <%def name="continueThread(comment)">
     <br />
     <%
-        #continueStr = '<a %s>%s</a>' %(lib_6.threadLink(comment, c.w, c.listingType, embed=True, commentRoot=comment), "Continue this thread -->")
         continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
     %>
     ${continueStr | n}
