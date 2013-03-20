@@ -1,20 +1,15 @@
-    
-    var workshopURL = document.getElementById("workshopTitle").href;
-    var resourcesURL = workshopURL + '/resources';
-    var discussionURL = workshopURL + '/discussions';
-    var ideasURL = workshopURL + '/ideas';
     $(document).ready(function() {
         guiders.createGuider({
             buttons: [{name: "next"}],
             description: "Welcome to the Civinomics tour!  You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
-            id: "tour_welcome",
+            id: "tour_0welcome",
             next: "tour_1",
             title: "Welcome!",
             closeOnEscape: true,
             autoFocus: true,
             overlay: "true",
-            xButton: true
-        });
+            xButton: true,
+        }).show();
 
         guiders.createGuider({
             attachTo: "#civinomicsLogo",
@@ -163,14 +158,30 @@
         
         guiders.createGuider({
             attachTo: "#ideaButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name:"next", onclick: function() { window.location.href=resourcesURL;}}],
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
             description: "Vote on existing ideas or add new ideas. Ideas are short and should directly address the workshop's goals.",
             id: "tour_10",
             prev: "tour_9",
+            next: "tour_11",
             title: "Vote",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#ideaButton",
+            overlay: "true",
+            xButton: true,
+            position: 6
+        });
+                
+        guiders.createGuider({
+            attachTo: "#workshopBookmark",
+            buttons: [{name:"prev", onclick: guiders.prev}, {name:"close", onclick: guiders.hideAll}],
+            description: "Bookmark the workshop to add a link to it in the 'My Workshop' tab in your profile. This makes it easy to find when you want to visit the workshop again to catch up.",
+            id: "tour_11",
+            prev: "tour_10",
+            title: "Bookmark",
+            closeOnEscape: true,
+            autoFocus: true,
+            highlight: "#workshopBookmark",
             overlay: "true",
             xButton: true,
             position: 6

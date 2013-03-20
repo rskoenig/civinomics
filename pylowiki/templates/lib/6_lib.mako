@@ -106,7 +106,7 @@
       printStr = ''
       
       if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:      
-        printStr = '<a href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
+        printStr = '<a id="addButton" href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
         if thing == 'discussion':
             printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'
         elif thing == 'resources':

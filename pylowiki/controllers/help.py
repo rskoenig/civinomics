@@ -6,7 +6,6 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 from pylons import config
 
-import pylowiki.lib.db.demo         as demoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.help         as helpLib
 
@@ -23,7 +22,7 @@ class HelpController(BaseController):
             tutorialURL = '/'
         else:
             tutorial = workshopLib.getWorkshopByCode(demo['urlCode'])
-            c.tutorialURL = '/workshops/%s/%s' %(tutorial['urlCode'], tutorial['url'])
+            c.tutorialURL = '/workshops/%s/%s#guider=tour_welcome' %(tutorial['urlCode'], tutorial['url'])
 
         return render('/derived/6_help.bootstrap')
 
