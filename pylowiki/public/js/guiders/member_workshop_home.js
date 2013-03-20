@@ -1,8 +1,14 @@
+      
+    var workshopURL = document.getElementById("workshopTitle").href;
+    var resourcesURL = workshopURL + '/resources#guider=tour_0';
+    var discussionsURL = workshopURL + '/discussions#guider=tour_0';
+    var ideasURL = workshopURL + '/ideas#guider=tour_0';  
+    
     $(document).ready(function() {
         guiders.createGuider({
             buttons: [{name: "next"}],
             description: "Welcome to the Civinomics tour!  You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
-            id: "tour_0welcome",
+            id: "tour_welcome",
             next: "tour_1",
             title: "Welcome!",
             closeOnEscape: true,
@@ -126,7 +132,7 @@
                 
         guiders.createGuider({
             attachTo: "#resourceButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=resourcesURL; }}],
             description: "The Learn section of the workshop is where links to information resources relevant to the workshop and the workshop goals are added by members and the facilitators.",
             id: "tour_8",
             prev: "tour_7",

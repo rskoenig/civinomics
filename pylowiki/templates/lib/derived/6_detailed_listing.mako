@@ -21,6 +21,7 @@
             renderList = c.ideas
    %>
    <ul class="unstyled">
+      <% itemCounter = 0 %>
       % for item in renderList:
          <% 
             if c.demo:
@@ -82,13 +83,13 @@
                         addedAs += '(listener) '
                 %>
                 <div class="${authorClass}">
-                    <div class="span1 voteBlock">
+                    <div class="span1 voteBlock" id="vote_${itemCounter}">
                         ${lib_6.upDownVote(item)}
                     </div>
-                    <div class="span2">
+                    <div class="span2" id="author_${itemCounter}">
                         ${lib_6.userImage(author, className = 'avatar')}
                     </div> <!--/.span2-->
-                    <div class="span9 list-item-text">
+                    <div class="span9 list-item-text" id="content_${itemCounter}">
                         <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
                         ${itemTitle | n}
                         Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}
@@ -102,6 +103,7 @@
                 </div><!--/.row-fluid-->
             % endif
          </li>
+         <% itemCounter += 1 %>
       % endfor
    </ul>
 </%def>

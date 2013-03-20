@@ -1,12 +1,12 @@
-    var workshopURL = document.getElementById("workshopTitle").href + "#guider=tour_10";
+    var workshopURL = document.getElementById("workshopTitle").href + "#guider=tour_10";   
     
     $(document).ready(function() {
         guiders.createGuider({
             buttons: [{name: "next"}],
-            description: "This is the ideas listing page. Participating members can contribute ideas which address the goals of the workshop. All contributed ideas are voted up or down depending on how participating members rank their value.",
+            description: "This is the conversations listing page. Participating members can start conversations related to the workshop topic to ask questions, provide feedback to the facilitator and listeners, or generally discuss topics related to the workshop.",
             id: "tour_0",
             next: "tour_1",
-            title: "The Ideas Listing Page",
+            title: "The Conversations Listing Page",
             closeOnEscape: true,
             autoFocus: true,
             overlay: "true",
@@ -35,7 +35,7 @@
             id: "tour_2",
             prev: "tour_1",
             next: "tour_3",
-            title: "Login To Add a New Idea",
+            title: "Login To Start a New Conversation",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#addButton",
@@ -43,15 +43,14 @@
             xButton: true,
             position: 9
         });
-
         guiders.createGuider({
             attachTo: "#content_0",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "This is the idea, which links to the idea comments page, the name of the author which links to their profile page and a link to the comments about this idea. ",
+            description: "This is the conversation topic which links to the conversation page, the name of the author which links to their profile page and a link to the comments about this conversation. ",
             id: "tour_3",
             prev: "tour_2",
             next: "tour_4",
-            title: "Idea Listing",
+            title: "Conversation Listing",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#content_0",
@@ -63,11 +62,11 @@
         guiders.createGuider({
             attachTo: "#author_0",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "This is the avatar of the author of the idea. Click it to display their profile page.",
+            description: "This is the avatar of the author of the conversation topic. Click it to display their profile page.",
             id: "tour_4",
             prev: "tour3",
             next: "tour_5",
-            title: "Idea Author",
+            title: "Conversation Topic Author",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#author_0",
@@ -79,11 +78,11 @@
         guiders.createGuider({
             attachTo: "#vote_0",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=workshopURL; }}],
-            description: "This is the current vote count for the idea. Participants can click on the up chevron to vote the idea up, or the down chevron to vote the idea down. The votes reflect participants ranking of how well the idea addresses the workshop goals.",
+            description: "This is the current vote count for the conversation topic. Participants can click on the up chevron to vote the conversation up, or the down chevron to vote the conversation down. The votes reflect participants ranking of the value of the conversation.",
             id: "tour_5",
             prev: "tour4",
             next: "tour_5",
-            title: "Idea Voting",
+            title: "Conversation Voting",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#vote_0",

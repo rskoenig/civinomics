@@ -1,8 +1,8 @@
     
     var workshopURL = document.getElementById("workshopTitle").href;
-    var resourcesURL = workshopURL + '/resources';
-    var discussionURL = workshopURL + '/discussions';
-    var ideasURL = workshopURL + '/ideas';
+    var resourcesURL = workshopURL + '/resources#guider=tour_0';
+    var discussionsURL = workshopURL + '/discussions#guider=tour_0';
+    var ideasURL = workshopURL + '/ideas#guider=tour_0';
     $(document).ready(function() {
         guiders.createGuider({
             buttons: [{name: "next"}],
@@ -131,7 +131,7 @@
                 
         guiders.createGuider({
             attachTo: "#resourceButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=resourcesURL; }}],
             description: "The Learn section of the workshop is where links to information resources relevant to the workshop and the workshop goals are added by members and the facilitators.",
             id: "tour_8",
             prev: "tour_7",
@@ -147,7 +147,7 @@
         
         guiders.createGuider({
             attachTo: "#discussionButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=discussionsURL;}}],
             description: "The Talk section of the workshop is for questions and answers, longer discussions/debates, and general feedback to the workshop facilitators and listeners.",
             id: "tour_9",
             prev: "tour_8",
@@ -163,7 +163,7 @@
         
         guiders.createGuider({
             attachTo: "#ideaButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name:"next", onclick: function() { window.location.href=resourcesURL;}}],
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=ideasURL;}}],
             description: "Vote on existing ideas or add new ideas. Ideas are short and should directly address the workshop's goals.",
             id: "tour_10",
             prev: "tour_9",
