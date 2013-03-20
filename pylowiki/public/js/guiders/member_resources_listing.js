@@ -46,7 +46,7 @@
 
         guiders.createGuider({
             attachTo: "#content_0",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=workshopURL; }}],
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
             description: "This is the resource name which links to the resource web page, the name of the author which links to their profile page and a link to the comments about this resource. ",
             id: "tour_3",
             prev: "tour_2",

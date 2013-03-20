@@ -15,7 +15,7 @@
             autoFocus: true,
             overlay: "true",
             xButton: true,
-        }).show();
+        });
 
         guiders.createGuider({
             attachTo: "#civinomicsLogo",
@@ -148,7 +148,7 @@
         
         guiders.createGuider({
             attachTo: "#discussionButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=discussionsURL;}}],
             description: "The Talk section of the workshop is for questions and answers, longer discussions/debates, and general feedback to the workshop facilitators and listeners.",
             id: "tour_9",
             prev: "tour_8",
@@ -164,7 +164,7 @@
         
         guiders.createGuider({
             attachTo: "#ideaButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=ideasURL;}}],
             description: "Vote on existing ideas or add new ideas. Ideas are short and should directly address the workshop's goals.",
             id: "tour_10",
             prev: "tour_9",
