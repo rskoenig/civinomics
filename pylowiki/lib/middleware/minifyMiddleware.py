@@ -62,7 +62,9 @@ class MinifyMiddleware(object):
         # or return something different
         response = Response()
         response.content_type = "text/javascript"
-        response.headers['ETag'] = etag_key
-        response.body = content
+        #response.headers['ETag'] = etag_key
+        response.headers['ETag'] = cached['etag_key']
+        #response.body = content
+        response.body = cached['content']
 
         return response(environment, start_response)
