@@ -33,7 +33,7 @@
           <a class="brand" href="#"> <img src="/images/splash/logo.png"> </a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-left">
-               <li class="nav-item"><p class="nav-item">build our civ</p></li> 
+               <li class="nav-item"></li> 
             </ul>
             <ul class="nav pull-right">
               <li class="nav-item"><a href="/signup" class="nav-item" style="color: #075D00;">Sign Up</a></li>
@@ -49,35 +49,20 @@
     ##
 
     <div class="imageChanger imageChanger4">
-        <div class="span8">
-            <p class="photoCredits">need photo permissions</p>
-        </div>
     </div>
     <div class="imageChanger imageChanger3">
-        <div class="span8">
-            <p class="photoCredits">need photo permissions</p>
-        </div>
     </div>
     <div class="imageChanger imageChanger2">
-        <div class="span8">
-            <p class="photoCredits">need photo permissions</p>
-        </div>
     </div>
     <div class="imageChanger imageChanger1" style="display:none;">
-        <div class="span8">
-            <p class="photoCredits">need photo permissions</p>
-        </div>
     </div>
     <div class="imageChanger imageChanger0" style="display:none;">
-        <div class="span8">
-            <p class="photoCredits">need photo permissions</p>
-        </div>
     </div>
 
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span1"></div>
-            <div class="span5 offset5" style="padding-top:65px;">
+            <div class="span4 offset5" style="padding-top:65px;">
                 <div class="hero-unit main-well">
                     <div class="row-fluid">
                             <p style="font-size: 24px;">Collaboration and voting tools for groups of all sizes.</p>

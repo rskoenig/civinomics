@@ -42,23 +42,23 @@ html, body {
 }
 
 .imageChanger0{
-    background-image: url('/images/splash/shasta.jpg');
+    background-image: url('/images/splash/bigCity.jpg');
 }
 
 .imageChanger1{
-    background-image: url('/images/splash/wiener.jpg');
+    background-image: url('/images/splash/environment.jpg');
 }
 
 .imageChanger2{
-    background-image: url('/images/splash/doha.jpg');
+    background-image: url('/images/splash/museum.jpg');
 }
 
 .imageChanger3{
-    background-image: url('/images/splash/pta.jpg');
+    background-image: url('/images/splash/park.jpg');
 }
 
 .imageChanger4{
-    background-image: url('/images/splash/rackspace.jpg');
+    background-image: url('/images/splash/schoolTransit.jpg');
 }
 
 .main-well{
