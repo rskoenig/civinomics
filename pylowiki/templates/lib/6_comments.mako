@@ -106,8 +106,13 @@
             return
         if node.objType == 'comment':
             if curDepth == 0:
+                if node.objType == 'discussion':
+                    parent = node
+                else:
+                    parent = getComment(node['parent'])
                 childList = [int(node.id)]
             else:
+                parent = node
                 childList = map(int, node['children'].split(','))
         else:
             childList = map(int, node['children'].split(','))
@@ -120,7 +125,7 @@
             if child == 0:
                 pass
             try:
-                displayComment(child, commentType, maxDepth, curDepth, parent = node)
+                displayComment(child, commentType, maxDepth, curDepth, parent)
             except:
                 raise
     %>
@@ -150,7 +155,7 @@
     </div>
 </%def>
 
-<%def name="commentHeading(comment, author, accordionID, collapseID, parent = None)">
+<%def name="commentHeading(comment, author, accordionID, collapseID, parent)">
     <%
         headerClass = "accordion-heading"
         if comment['addedAs'] == 'admin':
@@ -177,7 +182,7 @@
         <span class="pull-right disabledComment-notice">
             <small>
             <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">Link</a>
-            % if parent is not None:
+            % if parent:
                 % if parent.objType == 'comment':
                     % if parent['urlCode'] != comment['urlCode']:
                         | <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
