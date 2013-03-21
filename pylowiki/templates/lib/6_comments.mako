@@ -104,6 +104,7 @@
             node = getComment(node)
         if curDepth >= maxDepth or node['children'] == 0:
             return
+        parent = node
         if node.objType == 'comment':
             if curDepth == 0:
                 if node.objType == 'discussion':
@@ -112,7 +113,6 @@
                     parent = getComment(node['parent'])
                 childList = [int(node.id)]
             else:
-                parent = node
                 childList = map(int, node['children'].split(','))
         else:
             childList = map(int, node['children'].split(','))
