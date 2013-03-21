@@ -2,19 +2,19 @@
 
 import subprocess
 import os
-from pylons import config
+from pylons import config, cache as pylons_cache
 from pylons.middleware import Response
 
 class CoffeeScriptMiddleware(object):
     def __init__(self, app, cache=None, bare=True, minify=False):
         self.app = app
-        if cache:
-            self.cache = cache
-        else:
+        if cache is None:
             self.cache = {}
+        else:
+            self.cache = cache
         
         self.static_files_path = os.path.abspath(config['pylons.paths']['static_files'])
-        self.bare = True
+        self.bare = bare
         self.minify = minify
 
         if self.minify:
@@ -64,7 +64,6 @@ class CoffeeScriptMiddleware(object):
 
     def __call__(self, environment, start_response):
         path = environment.get('PATH_INFO')
-
         if not path.endswith('.coffee'):
             return self.app(environment, start_response)
 

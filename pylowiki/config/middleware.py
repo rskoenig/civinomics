@@ -69,7 +69,7 @@ def make_app(global_conf, full_stack=True, static_files=True, **app_conf):
         # Serve static files
         static_app = StaticURLParser(config['pylons.paths']['static_files'])
         app = Cascade([static_app, app])
-        app = CoffeeScriptMiddleware(app)
-        app = MinifyMiddleware(app, cache = app.cache)
+        app = CoffeeScriptMiddleware(app, minify = True)
+        app = MinifyMiddleware(app)
         app = GzipMiddleware(app, compresslevel=9)
     return app
