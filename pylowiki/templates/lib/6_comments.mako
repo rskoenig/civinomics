@@ -22,7 +22,7 @@
         if 'user' in session and discussion.objType != 'comment':
             if thing['disabled'] != '1':
                 addCommentToDiscussion(thing, discussion)
-        else:
+        elif 'user' not in session and discussion.objType != 'comment':
                 loginToAddComment(thing)
         displayDiscussion(thing, discussion)
     %>
@@ -107,10 +107,6 @@
         parent = node
         if node.objType == 'comment':
             if curDepth == 0:
-                if node.objType == 'discussion':
-                    parent = node
-                else:
-                    parent = getComment(node['parent'])
                 childList = [int(node.id)]
             else:
                 childList = map(int, node['children'].split(','))
@@ -125,7 +121,7 @@
             if child == 0:
                 pass
             try:
-                displayComment(child, commentType, maxDepth, curDepth, parent)
+                displayComment(child, commentType, maxDepth, curDepth, parent = node)
             except:
                 raise
     %>
@@ -155,7 +151,7 @@
     </div>
 </%def>
 
-<%def name="commentHeading(comment, author, accordionID, collapseID, parent)">
+<%def name="commentHeading(comment, author, accordionID, collapseID, parent = None)">
     <%
         headerClass = "accordion-heading"
         if comment['addedAs'] == 'admin':
@@ -182,7 +178,7 @@
         <span class="pull-right disabledComment-notice">
             <small>
             <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">Link</a>
-            % if parent:
+            % if parent is not None:
                 % if parent.objType == 'comment':
                     % if parent['urlCode'] != comment['urlCode']:
                         | <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>

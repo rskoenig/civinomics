@@ -168,7 +168,7 @@
       slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
       slideNum = 0
    %>
-   <ul class="gallery thumbnails" data-clearing id="workshopSlideshow">
+   <ul class="gallery thumbnails" data-clearing>
       <% 
          numSlides = len(slides)
          for slide in slides:
@@ -211,7 +211,7 @@
 </%def>
 
 <%def name="showInfo(workshop)">
-    <div class="" id="workshopInformation">
+    <div>
     % if c.information and 'data' in c.information:
         ${misaka.html(c.information['data']) | n}
     % endif

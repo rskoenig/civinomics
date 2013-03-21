@@ -9,14 +9,27 @@
             buttons: [{name: "next"}],
             description: "Welcome to the Civinomics tour!  You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
             id: "tour_welcome",
-            next: "tour_1",
+            next: "tour_navbar",
             title: "Welcome!",
             closeOnEscape: true,
             autoFocus: true,
             overlay: "true",
             xButton: true,
         });
-
+        
+        guiders.createGuider({
+            attachTo: "#profileAvatar",
+            buttons: [{name: "next"}],
+            description: "Click on the profile link to go to your Civinomics profile. Click on the workshops link to list all workshops or create your own. Click on the help link to visit the help center and learn more about Civinomics.",
+            id: "tour_navbar",
+            next: "tour_1",
+            title: "Title Bar Links",
+            closeOnEscape: true,
+            autoFocus: true,
+            overlay: "true",
+            xButton: true,
+            position: 6
+        });
         guiders.createGuider({
             attachTo: "#civinomicsLogo",
             buttons: [{name: "next"}],
@@ -35,7 +48,7 @@
         guiders.createGuider({
             attachTo: "#workshopTitle",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "This is the name of the workshop. You can click it to return to the workshop main page.",
+            description: "This is the name of the workshop. You can click it to return to the workshop main page from any of the other workshop pages.",
             id: "tour_2",
             prev: "tour_1",
             next: "tour_3",
@@ -96,13 +109,30 @@
             position: 9
         });
         
+        
+        guiders.createGuider({
+            attachTo: "#workshopInformation",
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+            description: "Along with the slideshow, this section provides background information about the topic of the workshop.",
+            id: "tour_6",
+            prev: "tour_5",
+            next: "tour_7",
+            title: "Background",
+            closeOnEscape: true,
+            autoFocus: true,
+            highlight: "#workshopInformation",
+            overlay: "true",
+            xButton: true,
+            position: 12
+        });
+        
         guiders.createGuider({
             attachTo: "#workshopSlideshow",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
             description: "The slideshow is an educational introduction to the workshop topic. When visiting a workshop for the first time, be sure to go through the slideshow.",
-            id: "tour_6",
-            prev: "tour_5",
-            next: "tour_7",
+            id: "tour_7",
+            prev: "tour_6",
+            next: "tour_8",
             title: "Slideshow",
             closeOnEscape: true,
             autoFocus: true,
@@ -112,22 +142,7 @@
             position: 3
         });
         
-        
-        guiders.createGuider({
-            attachTo: "#workshopInformation",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "Along with the slideshow, this section provides background information about the topic of the workshop.",
-            id: "tour_7",
-            prev: "tour_6",
-            next: "tour_8",
-            title: "Background",
-            closeOnEscape: true,
-            autoFocus: true,
-            highlight: "#workshopInformation",
-            overlay: "true",
-            xButton: true,
-            position: 12
-        });
+
         
                 
         guiders.createGuider({
