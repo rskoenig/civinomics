@@ -32,6 +32,17 @@ html, body {
     min-height:50%;
 }
 
+.textChanger{
+    font-size: 18px;
+    display:block;
+    position: absolute;
+}
+
+div.hidden{
+    display: none;
+}
+
+
 .imageChanger{
     height: 500px;
     display:block;
@@ -66,9 +77,13 @@ html, body {
     background-image: url('/images/splash/dust.png');
     background-repeat: repeat;
     background-position: top left;
-
+    
     opacity:0.9;
     filter:alpha(opacity=90); /* For IE8 and earlier */
+}
+
+#splash-well{
+    width: 270px;
 }
 
 .success-well{
@@ -107,8 +122,8 @@ html, body {
 }
 
 .info{
-    border-top:1px solid #DDDDDD;
-    margin-top:185px;
+    /*border-top:1px solid #DDDDDD;*/
+    margin-top:140px;
 }
 
 .infoSection{
