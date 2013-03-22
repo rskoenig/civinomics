@@ -675,19 +675,31 @@
     % if revisions:
         <div class="row-fluid">
             <div class="span6 offset1">
-                <table class="table table-hover table-condensed">
-                    <tr>
-                        <th>Revision</th>
-                        <th>Author</th>
-                    </tr>
-                    % for rev in revisions:
-                        <% linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, c.w, embed=True), rev.date) %>
-                        <tr>
-                            <td>${linkStr | n}</td>
-                            <td>${userLink(rev.owner)}</td>
-                        </tr>
-                    % endfor
-                </table>
+                <div class="accordion" id="revision-wrapper">
+                    <div class="accordion-group no-border">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable">
+                                Click to show revisions
+                            </a>
+                        </div>
+                        <div id="revisionsTable" class="accordion-body collapse">
+                            <div class="accordion-inner no-border">
+                                <table class="table table-hover table-condensed">
+                                    <tr>
+                                        <th>Revision</th>
+                                        <th>Author</th>
+                                    </tr>
+                                    % for rev in revisions:
+                                        <% linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, c.w, embed=True), rev.date) %>
+                                        <tr>
+                                            <td>${linkStr | n}</td>
+                                            <td>${userLink(rev.owner)}</td>
+                                        </tr>
+                                    % endfor
+                                </table>
+                            </div>
+                        </div>
+                    </div>
             </div><!--/.span6 offset1-->
         </div> <!--/.row-fluid-->
     % endif
