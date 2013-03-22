@@ -247,13 +247,16 @@ class AdminController(BaseController):
             return False
         result = 'Successfully flagged!'
         if flagLib.isFlagged(c.thing, c.authuser):
-            result = 'Already flagged!'
+            result = 'You have already flagged this item!'
             return json.dumps({'code':thingCode, 'result':result})
         if flagLib.isImmune(c.thing):
             immunifyEvent = eventLib.getEventForThingWithAction(c.thing, 'immunified')
             author = userLib.getUserByID(immunifyEvent.owner)
-            result = 'Marked immune to flagging by %s because %s' %(author['name'], immunifyEvent['reason'])
-            return json.dumps({'code':thingCode, 'result':result})
+            if not userLib.isAdmin(c.authuser.id):
+                result = 'Marked immune to flagging by %s because %s' %(author['name'], immunifyEvent['reason'])
+                return json.dumps({'code':thingCode, 'result':result})
+            else:
+                result += ' Warning: %s has marked this as immune because %s.' % (author['email'], immunifyEvent['reason'])
         newFlag = flagLib.Flag(c.thing, c.authuser, workshop = c.w)
         alertsLib.emailAlerts(newFlag)
         return json.dumps({'code':thingCode, 'result':result})
