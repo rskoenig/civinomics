@@ -82,6 +82,7 @@ class AdminController(BaseController):
         if action in ['enable', 'disable', 'immunify']:
             if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
+        if action in ['enable', 'disable', 'immunify', 'delete']:
             # Surely there must be a more elegant way to pass along this common variable
             if 'reason' not in request.params:
                 c.reason = '(No reason given.)'
