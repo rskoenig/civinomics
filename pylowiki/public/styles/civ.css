@@ -22,6 +22,14 @@ html,body{
   margin-bottom: 60px;
 }
 
+.form-search{
+   margin-bottom:0;
+   margin-top:7px;
+}
+.form-search .input-append .search-query{
+   border-radius:14px 14px 14px 14px;
+   width:150px;
+}
 .well.footer{
    background: white;
    border-color: transparent;
