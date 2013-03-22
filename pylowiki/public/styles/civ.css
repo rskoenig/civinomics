@@ -29,6 +29,17 @@ html,body{
 .form-search .input-append .search-query{
    border-radius:14px 14px 14px 14px;
    width:150px;
+   padding-right:20px;
+}
+.search-icon{
+   max-width:12px;
+   max-height:12px;
+}
+.search-icon-container{
+   position:absolute;
+   top:12px;
+   bottom:0;
+   right:12px;
 }
 .well.footer{
    background: white;
