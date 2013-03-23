@@ -65,14 +65,14 @@
             <div class="span4 offset5" style="padding-top:65px;">
                 <div id="splash-well" class="hero-unit main-well">
                     <div class="row-fluid">
-                        <span class="textChanger textChanger2">Create better public spaces</span>
+                        <span class="textChanger textChanger2">Elevate your hometown</span>
                         <div id="textChanger" class="hidden">
-                            <span class="textChanger textChanger4">Make campus transportation faster</span>
+                            <span class="textChanger textChanger4">Upgrade campus sustainability</span>
                             <span class="textChanger textChanger3">Improve a park</span>
-                            <span class="textChanger textChanger1">Keep your beaches clean</span>
-                            <span class="textChanger textChanger0">Tackle big city issues</span>
+                            <span class="textChanger textChanger1">Boost your metro</span>
+                            <span class="textChanger textChanger0">Revamp a public space</span>
                         </div>
-                        <p style="margin-top: 35px;">...join people solving problems, or build a team of your own.</p>
+                        <p style="margin-top: 35px;">...join people solving problems, or start a group of your own.</p>
                         </br>
                         <div style="text-align:center; margin-top: 5px;">
                             <a href="/signup"><button class="btn btn-success btn-default btn-large" style="width: 110px;">Sign up</button></a>
@@ -100,7 +100,7 @@
                        <img src="/images/splash/step1_group.png"></image>
                         </br>
                         <h2>Assemble</h2>
-                        <p>Join a group of people to make things better. Build a knowledge base with a wiki, resource links and discussion.</p>
+                        <p>Cultivate a group of people to make things better. Build a knowledge base with resource links and conversations.</p>
                     </div>                
                     <div class="span4">
                         <img src="/images/splash/step2_ideas.png"></image>
