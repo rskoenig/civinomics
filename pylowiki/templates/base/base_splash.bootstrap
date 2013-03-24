@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Civinomics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="/styles/splash/splash.css" rel="stylesheet">
+    
+    <link href="/styles/bootstrap.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Handlee' rel='stylesheet' type='text/css'>
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+
+  </head>
+
+  <body ${self.bodyTag_extras()}>
+    ${facebookID()}
+    ${self.google_analytics()}
+    
+    <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
+      <div class="navbar-inner" style="background-image: none; background-color: #FFFFFF;">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/"> <img src="/images/splash/logo.png"> </a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-left">
+               <li class="nav-item"></li> 
+            </ul>
+            <ul class="nav pull-right">
+              <li class="nav-item"><a href="/signup" class="nav-item" style="color: #075D00;">Sign Up</a></li>
+              <li class="nav-item"><a href="/login" class="nav-item" style="color: #075D00;">Log In</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+ 
+    <div>
+      ${next.body()}
+    </div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+    <script src="/js/bootstrap/bootstrap.min.js"></script>
+    ${self.extraScripts()}
+  </body>
+</html>
+
+<%def name="facebookID()">
+    <!-- Facebook Like Button -->
+        <div id="fb-root"></div>
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '421911304496726', // App ID
+              channelUrl : '//WWW.CIVINOMICS.COM/channel.html', // Channel File
+              status     : true, // check login status
+              cookie     : true, // enable cookies to allow the server to access the session
+              xfbml      : true  // parse XFBML
+            });
+
+            // Additional initialization code here
+          };
+
+          // Load the SDK Asynchronously
+          (function(d){
+             var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement('script'); js.id = id; js.async = true;
+             js.src = "//connect.facebook.net/en_US/all.js";
+             ref.parentNode.insertBefore(js, ref);
+           }(document));
+        </script>
+</%def>
+
+<%def name="google_analytics()">
+    % if c.conf['google.analytics']:
+      <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', "${c.conf['google.analytics']}"]);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+      </script>
+    % endif
+</%def>
+
+<%def name="bodyTag_extras()">
+  ## do nothing by default.  Overwritten if the function is defined
+  ## in a child template
+</%def>
+
+<%def name="extraScripts()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
