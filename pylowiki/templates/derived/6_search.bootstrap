@@ -1,29 +1,30 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-% if 'alert' in session:
-    <div class="row-fluid">
-        <div class="span6 offset3">
-            ${lib_6.fields_alert()}
-        </div>
-    </div>
-% endif
-
 <div class="row-fluid">
-    <div class="span2">
+    <div class="span2" ng-controller="SearchCtrl">
         <ul class="nav nav-list">
             <li class="active">
                 <a href="#" class="fullWidth">
                     <span class="pull-left">Users</span>
-                    <span class="pull-right">(${len(c.users)})</span>
+                    <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
             <li>
                 <a href="#" class="fullWidth">
                     <span class="pull-left">Workshops</span>
-                    <span class="pull-right">(${len(c.workshops)})</span>
+                    <span class="pull-right">(${c.numWorkshops})</span>
                 </a>
             </li>
         </ul>
     </div><!--/.span2-->
+    % if 'alert' in session:
+        <div class="span6">
+            ${lib_6.fields_alert()}
+        </div>
+    % else:
+        <div class="span9">
+            
+        </div>
+    % endif
 </div>

@@ -34,20 +34,6 @@
                      <img src="/images/logo_splash4.png" class="small-logo" id="civinomicsLogo">
                   </a>
                   <ul class="nav">
-                  
-                  <%doc>
-                     <div class="command-bar js-command-bar">
-                        <form accept-charset="UTF-8" action="/search" class="command-bar-form" id="top_search_form" method="get">
-                        <div class="commandbar">
-                           <span class="message"></span>
-                           <input type="text" name="q" id="js-command-bar-field" placeholder="Search or type a command" tabindex="1" data-username="edolfo" autocapitalize="off" autocomplete="off" spellcheck="false">
-                           <div class="display hidden">
-                           </div>
-                        </div>
-                        <span class="mini-icon help tooltipped downwards" original-title="Show command bar help"></span>
-                        </form>
-                  </%doc>
-                  
                      <li>
                        <form class="form-search" action="/search">
                           <div class="input-append">

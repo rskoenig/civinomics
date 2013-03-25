@@ -36,15 +36,17 @@ def getDemoWorkshops():
     except:
         return False
 
-def searchWorkshops( wKey, wValue, deleted = u'0', published = u'1', public_private = u'public'):
+def searchWorkshops( wKey, wValue, deleted = u'0', published = u'1', public_private = u'public', count = False):
     try:
-        return  meta.Session.query(Thing)\
+        query = meta.Session.query(Thing)\
                 .filter_by(objType = 'workshop')\
                 .filter(Thing.data.any(wcl(wKey, wValue)))\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('published', published)))\
-                .filter(Thing.data.any(wc('public_private', public_private)))\
-                .all()
+                .filter(Thing.data.any(wc('public_private', public_private)))
+        if count:
+            return query.count()
+        return query.all()
     except:
         return False
 

@@ -74,15 +74,17 @@ def isAdmin(id):
     except:
         return False
     
-def searchUsers( uKey, uValue, deleted = u'0', disabled = u'0', activated = u'1'):
+def searchUsers( uKey, uValue, deleted = u'0', disabled = u'0', activated = u'1', count = False):
     try:
-        return  meta.Session.query(Thing)\
+        query = meta.Session.query(Thing)\
                 .filter_by(objType = 'user')\
                 .filter(Thing.data.any(wcl(uKey, uValue)))\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
-                .filter(Thing.data.any(wc('activated', activated)))\
-                .all()
+                .filter(Thing.data.any(wc('activated', activated)))
+        if count:
+            return query.count()
+        return query.all()
     except:
         return False
 

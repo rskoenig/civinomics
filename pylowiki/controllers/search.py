@@ -38,9 +38,13 @@ class SearchController(BaseController):
         else:
             return self._noSearch()
         
-        c.users = userLib.searchUsers('name', query)
-        c.workshops = workshopLib.searchWorkshops('title', query)
+        c.numUsers = userLib.searchUsers('name', query, count = True)
+        c.numWorkshops = workshopLib.searchWorkshops('title', query, count = True)
         return render('/derived/6_search.bootstrap')
+    
+    def searchUsers(self):
+        response = {}
+        return json.dumps(response)
     
     def searchItemName(self):
         if 'memberButton' in request.params:
