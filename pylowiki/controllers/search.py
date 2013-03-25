@@ -37,6 +37,8 @@ class SearchController(BaseController):
                 return self._noSearch()
         else:
             return self._noSearch()
+        userList = userLib.searchUsers('name', searchString)
+        
         return render('/derived/6_search.bootstrap')
     
     def searchItemName(self):
