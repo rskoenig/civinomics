@@ -136,6 +136,9 @@
         comment = getComment(comment)
         if comment:
             author = getUserByID(comment.owner)
+            if comment['deleted'] == u'1':
+                if not isAdmin(c.authuser.id):
+                    return
         else:
             return
         accordionID = 'accordion-%s' % comment['urlCode']
