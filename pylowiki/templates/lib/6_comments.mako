@@ -137,7 +137,10 @@
         if comment:
             author = getUserByID(comment.owner)
             if comment['deleted'] == u'1':
-                if not isAdmin(c.authuser.id):
+                if 'user' in session:
+                    if not isAdmin(c.authuser.id):
+                        return
+                else:
                     return
         else:
             return
