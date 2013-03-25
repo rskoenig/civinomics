@@ -215,6 +215,8 @@ def isStarted(workshop):
     
 def isScoped(user, workshop):   
     if workshop['public_private'] != 'public':
+        if userLib.isAdmin(user.id):
+            return True
         pTest = privateMemberLib.getPrivateMember(workshop['urlCode'], user['email'])
         if pTest:
             return True
