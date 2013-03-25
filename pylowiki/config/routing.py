@@ -299,8 +299,6 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/picture/upload/{handler:handler/?}', controller = 'profile', action = 'pictureUploadHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/password/update/{handler:handler/?}', controller = 'profile', action = 'passwordUpdateHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/profile/{id1}/{id2}/search/item/name', controller = 'profile', action = 'searchItemName', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/search/item/geo', controller = 'profile', action = 'searchItemGeo', id1 = '{id1}', id2 = '{id2}')
     
     ################
     # Action Lists #
@@ -324,12 +322,17 @@ def make_map():
     map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
 
     ################
+    # Search       #
+    ################
+
+    map.connect('/search{end:/?}', controller = 'search', action = 'search')
+    map.connect('/search/handler', controller = 'search', action = 'searchHandler')
+
+    ################
     # Application  #
     ################
     map.connect('/', controller = 'home', action = 'index' ) # load the homepage.
     
-    map.connect('/{search:search/?}', controller = 'search', action = 'index' ) # search root route
-    map.connect('/search/{handler:handler/?}', controller = 'search', action = 'handler' ) # search handler route
     map.connect('/{controller}', controller='{controller}', action='index') # Maps url to controller index
     map.connect('/{controller}/', controller = '{controller}', action = 'index')
     map.connect('/{controller}/{action}', controller='{controller}', action='{action}')

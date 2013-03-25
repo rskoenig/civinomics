@@ -1,0 +1,10 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
+% if 'alert' in session:
+    <div class="row-fluid">
+        <div class="span6 offset3">
+            ${lib_6.fields_alert()}
+        </div>
+    </div>
+% endif
