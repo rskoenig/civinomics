@@ -7,13 +7,10 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.utils import urlify
 
-import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 
-import pylowiki.lib.images              as imageLib
 import pylowiki.lib.db.activity         as activityLib
-import pylowiki.lib.db.imageIdentifier  as imageIdentifierLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
@@ -27,12 +24,6 @@ import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.tag              as tagLib
 import pylowiki.lib.utils               as utils
-
-import simplejson as json
-import csv
-import os
-
-from hashlib import md5
 
 log = logging.getLogger(__name__)
 
@@ -157,106 +148,6 @@ class ProfileController(BaseController):
         
         return render("/derived/6_profile.bootstrap")
     
-    def stats(self, id1, id2):
-        if 'user' in session and (user.id == c.authuser.id or userLib.isAdmin(c.authuser.id)):
-            posts = activityLib.getMemberPosts(user, 0)
-        else:
-            posts = activityLib.getMemberPosts(user, 1)
-        
-        types = ['discussion', 'comment', 'resource']
-        counts = {}
-        for item in types:
-            counts[item] = len([post for post in posts if post.objType == item])
-        retObj = {}
-        retObj['titles'] = types
-        retObj['values'] = [counts[key] for key in types] # Key off of types to preserve order
-        return json.dumps(retObj)
-    
-    def statsCSV(self, id1, id2):
-        if 'user' in session and (user.id == c.authuser.id or userLib.isAdmin(c.authuser.id)):
-            posts = activityLib.getMemberPosts(user, 0)
-        else:
-            posts = activityLib.getMemberPosts(user, 1)
-        
-        headers = ['objType', 'time']
-        data = []
-        counts = {}
-        for post in posts:
-            data.append([post.objType, post.date])
-            if post.objType not in counts:
-                counts[post.objType] = 1
-            else:
-                counts[post.objType] += 1
-                
-        for key in counts.keys():
-            log.info(key)
-            log.info(counts[key])
-            
-        response.content_type = 'text/csv'
-        writer = csv.writer(response)
-        writer.writerow(headers)
-        for row in data:
-            writer.writerow(row)
-        return response
-    
-    def showUserSuggestions(self, id1, id2):
-        # Called when visiting /profile/urlCode/url/suggestions
-        c.title = c.user['name']
-        c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
-        c.isFollowing = False
-        if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
-        else:
-           c.isFollowing = False
-
-        pList = userLib.getUserPosts(c.user)
-        c.totalPoints = 0
-        c.suggestions = []
-        c.userFollowers = []
-        c.flags = 0
-
-        uList = followLib.getUserFollowers(c.user)
-        c.userFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.userFollowers.append(userLib.getUserByID(uID))
-
-
-        c.posts = len(pList)
-        for p in pList:
-           if p['deleted'] == '0' and p['disabled'] == '0':
-               if p.objType == 'suggestion':
-                   c.suggestions.append(p)
-
-           fList = flagLib.getFlags(p)
-           if fList:
-              c.flags += len(fList)
-
-        if c.suggestions and len(c.suggestions) > 0:
-            totalRateAvg = 0
-            for s in c.suggestions:
-                totalRateAvg += float(s['ratingAvg_overall'])
-
-            totalRateAvg = totalRateAvg/len(c.suggestions)
-            c.sugRateAvg = int(totalRateAvg)
-            c.sugUpperRateAvg = totalRateAvg+(5-totalRateAvg%5)
-            c.sugLowerRateAvg = totalRateAvg-(totalRateAvg%5)
-            c.sugRateAvgfuzz = c.sugLowerRateAvg+2.5
-        else:
-            totalRateAvg = 0
-            c.sugRateAvg = totalRateAvg
-            c.sugUpperRateAvg = 0
-            c.sugLowerRateAvg = 0
-            c.sugRateAvgfuzz = 0
-
-        c.count = len(c.suggestions)
-        c.paginator = paginate.Page(
-            c.suggestions, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        return render("/derived/profileSuggestions.bootstrap")
-
     def showUserResources(self, id1, id2):
         # Called when visiting /profile/urlCode/url
         self._basicSetup(id1, id2, 'resources')
@@ -271,64 +162,6 @@ class ProfileController(BaseController):
         # Called when visiting /profile/urlCode/url/ideas
         self._basicSetup(id1, id2, 'ideas')
         return render("/derived/6_profile_list.bootstrap")
-    
-    def showUserComments(self, id1, id2):
-        # Called when visiting /profile/urlCode/url/comments
-        c.title = c.user['name']
-        c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
-        c.isFollowing = False
-        if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
-        else:
-           c.isFollowing = False
-
-        uList = followLib.getUserFollows(c.user)
-        c.followingUsers = []
-        for u in uList:
-           uCode = u['userCode']
-           c.followingUsers.append(userLib.getUserByCode(userCode))
-
-        uList = followLib.getUserFollowers(c.user)
-        c.userFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.userFollowers.append(userLib.getUserByID(uID))
-
-        pList = userLib.getUserPosts(c.user)
-        c.totalPoints = 0
-        c.comments = []
-        c.flags = 0
-        comUpVotes = 0
-        c.comVotes = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           if p['deleted'] == '0' and p['disabled'] == '0':
-               if p.objType == 'comment':
-                   c.comments.append(p)
-                   comUpVotes += int(p['ups'])
-                   c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
-
-           fList = flagLib.getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        c.numComs = len(c.comments)
-        if c.comVotes > 0:
-            c.comUpsPercent = 100*float(comUpVotes)/float(c.comVotes)
-        else:
-            c.comUpsPercent = 0
-
-        c.count = len(c.comments)
-        c.paginator = paginate.Page(
-            c.comments, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        return render("/derived/profileComments.bootstrap")
     
     def showUserFollowers(self, id1, id2):
         # Called when visiting /profile/urlCode/url/followers
@@ -788,54 +621,6 @@ class ProfileController(BaseController):
         returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/edit"
                 
         return redirect(returnURL)
-    
-    def hashPicture(self, username, title):
-        return md5(username + title).hexdigest()
-        
-    @h.login_required
-    def pictureUploadHandler(self, id1, id2):
-        session['confTab'] = "tab2"
-        session.save()
-        
-        if 'pictureFile' in request.params:
-            file = request.params['pictureFile']
-            imageFile = file.file
-            filename = file.filename
-            identifier = 'avatar'
-            hash = imageLib.saveImage(imageFile, filename, c.user, 'avatar', c.user)
-            c.user['pictureHash'] = hash
-            imageLib.resizeImage(identifier, hash, 200, 200, 'profile')
-            imageLib.resizeImage(identifier, hash, 25, 25, 'thumbnail')
-            
-            alert = {'type':'success'}
-            alert['title'] = 'Upload complete. Profile picture updated.'
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-
-            i = imageIdentifierLib.getImageIdentifier(identifier)
-            directoryNumber = str(int(i['numImages']) / imageLib.numImagesInDirectory)
-            savename = hash + '.orig'
-            newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
-            st = os.stat(newPath)
-            l = []
-            d = {}
-            d['name'] = savename
-            d['size'] = st.st_size
-            if 'site_base_url' in config:
-                siteURL = config['site_base_url']
-            else:
-                siteURL = 'http://www.civinomics.com'
-            
-            d['url'] = '%s/images/%s/%s/orig/%s.orig' % (siteURL, identifier, directoryNumber, hash)
-            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.thumbnail' % (siteURL, identifier, directoryNumber, hash)
-            d['delete_url'] = ''
-            d['delete_type'] = "DELETE"
-            d['-'] = hash
-            d['type'] = 'image/png'
-            l.append(d)
-
-            return json.dumps(l)
 
     @h.login_required
     def enableHandler(self, id1, id2):
