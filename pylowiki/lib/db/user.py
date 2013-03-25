@@ -79,9 +79,9 @@ def searchUsers( uKey, uValue, deleted = u'0', disabled = u'0', activated = u'1'
         return  meta.Session.query(Thing)\
                 .filter_by(objType = 'user')\
                 .filter(Thing.data.any(wcl(uKey, uValue)))\
-                .filter(Thing.data.any(wc(deleted, deleted)))\
-                .filter(Thing.data.any(wc(disabled, disabled)))\
-                .filter(Thing.data.any(wc(activated, activated)))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('activated', activated)))\
                 .all()
     except:
         return False

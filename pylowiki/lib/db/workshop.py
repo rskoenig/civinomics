@@ -36,12 +36,15 @@ def getDemoWorkshops():
     except:
         return False
 
-def searchWorkshops( wKey, wValue):
+def searchWorkshops( wKey, wValue, deleted = u'0', published = u'1', public_private = u'public'):
     try:
-        if wKey != 'startTime':
-            return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wcl(wKey, wValue))).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).all()
-        else:
-            return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wcl(wKey, wValue))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        return  meta.Session.query(Thing)\
+                .filter_by(objType = 'workshop')\
+                .filter(Thing.data.any(wcl(wKey, wValue)))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('published', published)))\
+                .filter(Thing.data.any(wc('public_private', public_private)))\
+                .all()
     except:
         return False
 
