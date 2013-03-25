@@ -18,9 +18,16 @@ log = logging.getLogger(__name__)
 
 class SearchController(BaseController):
 
-    def __before__(self):
+    def __before__(self, action):
         c.title = c.heading = "Civinomics Search"
-        #h.check_if_login_required()
+        self.query = ''
+        self.noQuery = False
+        if 'searchQuery' in request.params:
+            self.query = request.params['searchQuery']
+            if self.query.strip() == '':
+                self.noQuery = True
+        else:
+            self.noQuery = True
     
     def _noSearch(self):
         alert = {'type':'info'}
@@ -31,20 +38,29 @@ class SearchController(BaseController):
         return render('/derived/6_search.bootstrap')
     
     def search(self):
-        if 'searchQuery' in request.params:
-            query = request.params['searchQuery']
-            if query.strip() == '':
-                return self._noSearch()
-        else:
+        if self.noQuery:
             return self._noSearch()
-        
-        c.numUsers = userLib.searchUsers('name', query, count = True)
-        c.numWorkshops = workshopLib.searchWorkshops('title', query, count = True)
+        c.numUsers = userLib.searchUsers('name', self.query, count = True)
+        c.numWorkshops = workshopLib.searchWorkshops('title', self.query, count = True)
         return render('/derived/6_search.bootstrap')
     
     def searchUsers(self):
-        response = {}
-        return json.dumps(response)
+        if self.noQuery:
+            return self._noSearch()
+        result = {}
+        return json.dumps(result)
+    
+    def searchWorkshops(self):
+        if self.noQuery:
+            return self._noSearch()
+        result = []
+        workshops = workshopLib.searchWorkshops('title', self.query)
+        for w in workshops:
+            entry = {}
+            entry['title'] = w['title']
+            entry['description'] = w['description']
+            result.append(entry)
+        return json.dumps(result)
     
     def searchItemName(self):
         if 'memberButton' in request.params:
@@ -146,3 +162,5 @@ class SearchController(BaseController):
                     c.things.append(workshop)
         
         return render('/derived/6_search.bootstrap')
+    
+    

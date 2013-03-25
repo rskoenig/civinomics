@@ -1,17 +1,17 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<div class="row-fluid">
-    <div class="span2" ng-controller="SearchCtrl">
+<div class="row-fluid" ng-controller="SearchCtrl">
+    <div class="span2">
         <ul class="nav nav-list">
             <li class="active">
-                <a href="#" class="fullWidth">
+                <a href="#users" class="fullWidth">
                     <span class="pull-left">Users</span>
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
             <li>
-                <a href="#" class="fullWidth">
+                <a href="#workshops" class="fullWidth" ng-click="searchWorkshops()">
                     <span class="pull-left">Workshops</span>
                     <span class="pull-right">(${c.numWorkshops})</span>
                 </a>
@@ -23,8 +23,19 @@
             ${lib_6.fields_alert()}
         </div>
     % else:
-        <div class="span9">
-            
+        <div class="span9" ng-show="showingWorkshops">
+            <div id="searchResults">
+                <ul class="unstyled goalList">
+                    <li ng-repeat="w in workshops">
+                    {{w.title}}: {{w.description}}
+                    </li>
+                </ul>
+            </div>
         </div>
     % endif
 </div>
+
+<%def name="headScripts()">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/ng/search.js"></script>
+</%def>
