@@ -8,3 +8,22 @@
         </div>
     </div>
 % endif
+
+<div class="row-fluid">
+    <div class="span2">
+        <ul class="nav nav-list">
+            <li class="active">
+                <a href="#" class="fullWidth">
+                    <span class="pull-left">Users</span>
+                    <span class="pull-right">(${len(c.users)})</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="fullWidth">
+                    <span class="pull-left">Workshops</span>
+                    <span class="pull-right">(${len(c.workshops)})</span>
+                </a>
+            </li>
+        </ul>
+    </div><!--/.span2-->
+</div>

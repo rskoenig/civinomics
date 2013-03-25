@@ -38,20 +38,11 @@ class SearchController(BaseController):
         else:
             return self._noSearch()
         
-        userList = userLib.searchUsers('name', searchString)
-        workshopList = workshopLib.searchWorkshops('title', searchString)
+        c.users = userLib.searchUsers('name', query)
+        c.workshops = workshopLib.searchWorkshops('title', query)
         return render('/derived/6_search.bootstrap')
     
     def searchItemName(self):
-        if 'searchString' in request.params:
-            searchString = request.params['searchString']
-        else:
-            alert = {'type':'error'}
-            alert['title'] = 'Please enter a search string.' 
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-            
         if 'memberButton' in request.params:
             c.things = []
             c.thingsTitle = 'Users with name like "' + searchString + '"'
