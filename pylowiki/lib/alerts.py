@@ -41,12 +41,12 @@ def emailAlerts(thing):
                 
         # do facilitators first
         if thing.objType == 'flag':
-            subject = 'Alert: an item was flagged in your Civinomics workshop'
+            subject = 'Civinomics Alert: New Flag in workshop "%s"'%workshopName
             thingURL = workshopURL + '/preferences'
             newThing = 'flagged item'
             txtFile = emailDir + "/facilitatorFlagAlert.txt"
         else:
-            subject = 'Alert: New %s added to your Civinomics workshop'%newThing
+            subject = 'Civinomics Alert: New Item in workshop "%s"'%workshopName
             thingURL = '%s/%s/%s/%s'%(workshopURL, thing.objType, thing['urlCode'], thing['url'])
             txtFile = emailDir + "/facilitatorItemAlert.txt"
     
