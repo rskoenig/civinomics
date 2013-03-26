@@ -200,8 +200,8 @@
             <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
          </a>
       % else:
-         <a href="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.jpg">
-            <img src="/images/slide/${slide['directoryNumber']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
+         <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
+            <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
          </a>
       % endif
       % if slideNum == 0:

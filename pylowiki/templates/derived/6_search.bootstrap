@@ -11,7 +11,7 @@
                 </a>
             </li>
             <li>
-                <a href="#users" class="fullWidth">
+                <a href="#users" class="fullWidth" ng-click="searchPeople()">
                     <span class="pull-left">Users</span>
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
@@ -28,6 +28,15 @@
                 <ul class="unstyled goalList">
                     <li ng-repeat="w in workshops">
                     <img src="{{w.imageURL}}">{{w.title}}: {{w.description}}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="span9" ng-show="showingPeople">
+            <div id="searchResults">
+                <ul class="unstyled goalList">
+                    <li ng-repeat="p in people">
+                    <img src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">{{p.name}}
                     </li>
                 </ul>
             </div>

@@ -14,7 +14,7 @@ import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers as h
 
 import simplejson as json
-
+from hashlib import md5
 log = logging.getLogger(__name__)
 
 class SearchController(BaseController):
@@ -45,10 +45,16 @@ class SearchController(BaseController):
         c.numWorkshops = workshopLib.searchWorkshops('title', self.query, count = True)
         return render('/derived/6_search.bootstrap')
     
-    def searchUsers(self):
+    def searchPeople(self):
         if self.noQuery:
             return self._noSearch()
-        result = {}
+        result = []
+        people = userLib.searchUsers('name', self.query)
+        for p in people:
+            entry = {}
+            entry['name'] = p['name']
+            entry['hash'] = md5(p['email']).hexdigest()
+            result.append(entry)
         return json.dumps(result)
     
     def searchWorkshops(self):
