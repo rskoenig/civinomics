@@ -54,6 +54,8 @@ class SearchController(BaseController):
             entry = {}
             entry['name'] = p['name']
             entry['hash'] = md5(p['email']).hexdigest()
+            entry['urlCode'] = p['urlCode']
+            entry['url'] = p['url']
             result.append(entry)
         return json.dumps(result)
     

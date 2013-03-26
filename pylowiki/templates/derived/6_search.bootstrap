@@ -36,7 +36,10 @@
             <div id="searchResults">
                 <ul class="unstyled goalList">
                     <li ng-repeat="p in people">
-                    <img src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">{{p.name}}
+                    <a href="/profile/{{p.urlCode}}/{{p.url}}">
+                        <img src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}" class="avatar">
+                        {{p.name}}
+                    </a>
                     </li>
                 </ul>
             </div>
