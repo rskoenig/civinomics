@@ -77,7 +77,7 @@ def saveImage(image, filename, identifier, thing):
         os.makedirs(pathname)
     
     fullpath = os.path.join(pathname, savename)
-    thing['directoryNumber'] = directoryNumber
+    thing['directoryNum'] = directoryNumber
     commit(thing)
     
     try:

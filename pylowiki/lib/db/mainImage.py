@@ -46,7 +46,6 @@ def setMainImage(user, workshop, slide):
         imageLib.resizeImage('mainImage', imgHash, 128, 128, 'thumbnail', preserveAspectRatio = True)
         imageLib.resizeImage('mainImage', imgHash, 400, 400, 'listing', preserveAspectRatio = True)
         image.close()
-        log.info('closed image')
     else:
         imgHash = u'supDawg'
         directoryNum = u'0'

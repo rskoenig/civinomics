@@ -7,9 +7,10 @@ from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 
-import pylowiki.lib.db.user as userLib
-import pylowiki.lib.db.workshop as workshopLib
-
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers as h
 
 import simplejson as json
@@ -59,6 +60,8 @@ class SearchController(BaseController):
             entry = {}
             entry['title'] = w['title']
             entry['description'] = w['description']
+            mainImage = mainImageLib.getMainImage(w)
+            entry['imageURL'] = utils.workshopImageURL(w, mainImage)
             result.append(entry)
         return json.dumps(result)
     

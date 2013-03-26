@@ -5,15 +5,15 @@
     <div class="span2">
         <ul class="nav nav-list">
             <li class="active">
-                <a href="#users" class="fullWidth">
-                    <span class="pull-left">Users</span>
-                    <span class="pull-right">(${c.numUsers})</span>
-                </a>
-            </li>
-            <li>
                 <a href="#workshops" class="fullWidth" ng-click="searchWorkshops()">
                     <span class="pull-left">Workshops</span>
                     <span class="pull-right">(${c.numWorkshops})</span>
+                </a>
+            </li>
+            <li>
+                <a href="#users" class="fullWidth">
+                    <span class="pull-left">Users</span>
+                    <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
         </ul>
@@ -27,7 +27,7 @@
             <div id="searchResults">
                 <ul class="unstyled goalList">
                     <li ng-repeat="w in workshops">
-                    {{w.title}}: {{w.description}}
+                    <img src="{{w.imageURL}}">{{w.title}}: {{w.description}}
                     </li>
                 </ul>
             </div>
