@@ -31,6 +31,18 @@ def editIdea_submit():
 def addIdea_text():
     return 'title'
 
+def addResource():
+    return 'addResource'
+
+def addResource_title():
+    return 'title'
+
+def addResource_link():
+    return 'link'
+
+def addResource_text():
+    return 'text'
+
 def createWorkshop_1_form():
     return 'CreateWorkshop'
 

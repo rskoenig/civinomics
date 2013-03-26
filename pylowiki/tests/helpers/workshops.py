@@ -5,6 +5,8 @@ import re
 
 import pylowiki.tests.helpers.assertions as assertions
 import pylowiki.tests.helpers.content as content
+import pylowiki.tests.helpers.conversation as conversation
+import pylowiki.tests.helpers.idea as idea
 import pylowiki.tests.helpers.form_definitions as formDefs
 import pylowiki.tests.helpers.form_helpers as formHelpers
 import pylowiki.tests.helpers.link_definitions as linkDefs
@@ -30,7 +32,8 @@ def addCommentToIdeaPage(self, ideaPage, commentText):
     return commentAdded
 
 def addIdeaToWorkshop(self, workshop, ideaText):
-    """Add an idea to a workshop"""
+    """NOTE - deprecated. Convert calls to work with addNounToWorkshop in noun_verb_actions.py
+    Add an idea to a workshop"""
     # go to the ideas page
     ideasPage = workshop.click(description=linkDefs.vote_page(), index=0)
     # click the 'add idea' link
@@ -53,7 +56,8 @@ def addIdeaToWorkshop(self, workshop, ideaText):
     return ideaPage
 
 def addConversationToWorkshop(self, workshop, **kwargs):
-    """Add a conversation to a workshop"""
+    """NOTE - deprecated. Convert calls to work with addNounToWorkshop in noun_verb_actions.py
+    Add a conversation to a workshop"""
     #: load the necessary info
     if 'conversationTitle' in kwargs:
         conversationTitle = kwargs['conversationTitle']
@@ -89,6 +93,7 @@ def addConversationToWorkshop(self, workshop, **kwargs):
     conversationPage = conversationAdded.click(description=conversationTitle, index=0)
     return conversationPage
 
+
 def create_new_workshop(self, thisUser, **kwargs):
     """Unless otherwise indicated, logs in as the specified user and creates a new workshop.
     Returns this workshop's main page. """
@@ -104,10 +109,8 @@ def create_new_workshop(self, thisUser, **kwargs):
     rWorkshops = rHome.follow()
     # click the profile link
     rProfile = rWorkshops.click(description=linkDefs.profile(), index=0)
-    # click the edit link
-    rDashboard = rProfile.click(description=linkDefs.profile_edit(), index=0)
     # click the create workshop button
-    createWorkshopForm = rDashboard.forms[formDefs.createWorkshop_button()]
+    createWorkshopForm = rProfile.forms[formDefs.createWorkshop_button()]
     createWorkshop = createWorkshopForm.submit()
     #: we have a choice now for creating a personal or professional workshop
     #: get the form that holds both choices

@@ -4,7 +4,6 @@ import re
 
 import pylowiki.tests.helpers.content as content
 import pylowiki.tests.helpers.link_definitions as linkDefs
-import pylowiki.tests.helpers.workshops as workshop
 
 import logging
 log = logging.getLogger(__name__)
@@ -15,6 +14,9 @@ def conversationDeletedMessage():
 
 def conversationDisabledMessage():
     return 'This discussion has been disabled'
+
+def conversationEnabledMessage():
+    return 'Successfully enabled'
 
 def delete(self, conversation, **kwargs):
     """deletes a conversation, or return the url needed for doing so """
@@ -143,6 +145,9 @@ def flag(self, conversation, **kwargs):
             return flagResponse
     else:
         return False
+
+def getAddPage(self, conversationsPage):
+    return conversationsPage.click(description=linkDefs.addConversation(), index=0)
 
 def getConversationCode(self, conversation):
     """returns the conversation's code """

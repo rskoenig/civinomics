@@ -10,6 +10,9 @@ def addConversation():
 def addIdea():
     return 'Add an idea'
 
+def addResource():
+    return 'Add a resource'
+
 def conversationsPage():
     return talk_page()
 
@@ -54,6 +57,9 @@ def createGeoLink(**kwargs):
 
     return geoBase
 
+def ideasPage():
+    return 'Vote'
+
 def vote_page():
     return 'Vote'
 
@@ -68,6 +74,9 @@ def profile():
 
 def profile_edit():
     return 'Edit'
+
+def resourcesPage():
+    return 'Learn'
 
 def talk_page():
     return 'Talk'
