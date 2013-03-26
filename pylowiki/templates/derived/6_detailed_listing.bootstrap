@@ -63,12 +63,8 @@
         $('.nullvote').tooltip();
     </script>
     
-    % if c.demo:
+    % if c.demo and c.listingType == 'ideas':
         <script type="text/javascript" src="/js/vendor/guiders-1.3.0.js"></script>
-        % if c.authuser:
-            <script type="text/javascript" src="/js/guiders/member_${c.listingType}_listing.js"></script>
-        % else:
-            <script type="text/javascript" src="/js/guiders/${c.listingType}_listing.js"></script>
-        % endif
+        <script type="text/javascript" src="/js/guiders/${c.listingType}_listing.js"></script>
     % endif
 </%def>
