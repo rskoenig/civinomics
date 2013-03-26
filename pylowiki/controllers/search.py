@@ -68,6 +68,8 @@ class SearchController(BaseController):
             entry = {}
             entry['title'] = w['title']
             entry['description'] = w['description']
+            entry['urlCode'] = w['urlCode']
+            entry['url'] = w['url']
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage)
             result.append(entry)
