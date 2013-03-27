@@ -196,7 +196,7 @@
             % if len(things) == 0:
                 There doesn't seem to be anything here!
             % else:
-                % if c.listingType == 'watching' or c.listingType == 'searchWorkshops':
+                % if c.listingType == 'watching':
                     <table class="table table-condensed table-hover user-thing-listing">
                         <tbody>
                             <% counter = 0 %>
@@ -355,67 +355,6 @@
         % endif
     %endif
 </%def>
-
-<%def name="search()">
-    <div class="row-fluid">
-        <div class="span4">
-            <% tagCount = workshopLib.getCategoryTagCount() %>
-            Show workshops by tag: <br />
-            <ul class="unstyled">
-            %for tag in tagCount.keys():
-                % if tagCount[tag] != 0:
-                    <% uTag = utils.urlify(tag) %>
-                    <li><a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/workshop/tag/${uTag}">${tag}</a> : ${tagCount[tag]}</li>
-                % endif
-            % endfor
-            </ul>
-        </div><!-- span4 -->
-        <div class="span8">
-            <form class="form-search well" method="POST" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/name">
-                Name like <input type="text" name="searchString" class="search-query"><br /><br />
-                <button class="btn btn-warning" name="memberButton">Search Members</button> &nbsp;&nbsp; <button class="btn btn-warning" name="workshopButton">Search Workshops</button><br />
-            </form>
-            <br />
-            <form name="scope" id="scope" class="left form-inline well" action = "/profile/${c.authuser['urlCode']}/${c.authuser['url']}/search/item/geo" method="post">
-                <div class="row-fluid">
-                    <span id="countrySelect">
-                        <div class="span1"></div><div class="span2">Country:</div><div class="span9"><select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
-                            <option value="0">Select a country</option>
-                            <option value="United States">United States</option>
-                        </select>
-                    </div><!-- span9 -->
-                    </span>
-                </div><!-- row-fluid -->
-                <div class="row-fluid">
-                    <span id="stateSelect">
-                        or leave blank if your search is specific to the entire planet.
-                    </span>
-                </div><!-- row-fluid -->
-                <div class="row-fluid">
-                    <span id="countySelect">
-                    </span>
-                </div><!-- row-fluid -->
-                <div class="row-fluid">
-                    <span id="citySelect">
-                    </span>
-                </div><!-- row-fluid -->
-                <div class="row-fluid">
-                    <span id="postalSelect">
-                    </span>
-                </div><!-- row-fluid -->
-                <div class="row-fluid">
-                    <span id="underPostal">
-                    </span>
-                </div><!-- row-fluid -->
-                <div class="row-fluid">
-                    <br />
-                    <button class="btn btn-warning" name="memberButton">List Members</button> &nbsp;&nbsp; <button class="btn btn-warning" name="workshopButton">List Workshops</button><br />
-                </div><!-- row-fluid -->
-            </form>
-        </div><!-- span8 -->
-    </div><!-- row-fluid -->
-</%def>
-
 
 <%def name="editProfile()">
     <%namespace file="/lib/derived/6_profile_edit.mako" name="helpersEdit" />

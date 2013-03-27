@@ -64,9 +64,15 @@ def isWatching(user, workshop):
 def thingURL(workshop, thing):
     return "/workshop/%s/%s/%s/%s/%s" %(workshop['urlCode'], workshop['url'], thing.objType, thing['urlCode'], thing['url'])
     
-def workshopImageURL(workshop, mainImage):
-    if mainImage['pictureHash'] == 'supDawg':
-        return '/images/slide/slideshow/supDawg.slideshow'
+def workshopImageURL(workshop, mainImage, thumbnail = False):
+    if thumbnail:
+        if mainImage['pictureHash'] == 'supDawg':
+            return '/images/slide/thumbnail/supDawg.thumbnail'
+        else:
+            return '/images/mainImage/%s/thumbnail/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
     else:
-        return '/images/mainImage/%s/listing/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
+        if mainImage['pictureHash'] == 'supDawg':
+            return '/images/slide/slideshow/supDawg.slideshow'
+        else:
+            return '/images/mainImage/%s/listing/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
     
