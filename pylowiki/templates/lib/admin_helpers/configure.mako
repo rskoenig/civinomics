@@ -321,21 +321,28 @@
         endif
     %>
     <br />
-    <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePublicWorkshopHandler" enctype="multipart/form-data" method="post" >
+    <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePublicWorkshopHandler" enctype="multipart/form-data" method="post" >  
     <div class="row-fluid"><span id="countrySelect">
-        <div class="span1"></div><div class="span2">Country:</div><!-- span2 -->
-        <div class="span9"><select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+        <div class="span1"></div><div class="span2">Country:</div>
+        <div class="span9">
+            <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+            <!--
             <option value="0">Select a country</option>
+            -->
             <option value="United States" ${countrySelected}>United States</option>
-        </select>
+            </select>
         </div><!-- span9 -->
-    </span>
-    </div><!-- row -->
+    </span><!-- countrySelect -->
+    </div><!-- row-fluid -->
     <div class="row-fluid"><span id="stateSelect">
         % if c.country != "0":
             <div class="span1"></div><div class="span2">State:</div><div class="span9">
             <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
+            <!--
             <option value="0">Select a state</option>
+            -->
+            <option value="California" selected>California</option>
+            <!--
             % for state in states:
                 % if state != 'District of Columbia':
                     % if c.state == state['StateFullName']:
@@ -346,6 +353,7 @@
                     <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
                 % endif
             % endfor
+            -->
             </select>
             </div><!-- span9 -->
         % else:
@@ -358,7 +366,11 @@
             <% cityMessage = "or leave blank if your workshop is specific to the entire state." %>
             <div class="span1"></div><div class="span2">County:</div><div class="span9">
             <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
+                <!--
                 <option value="0">Select a county</option>
+                -->
+                <option value="Santa Cruz" selected>Santa Cruz</option>
+                <!--
                 % for county in counties:
                     % if c.county == county['County'].title():
                         <% countySelected = "selected" %>
@@ -367,6 +379,7 @@
                     % endif
                     <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
                 % endfor
+                -->
             </select>
             </div><!-- span9 -->
         % else:
