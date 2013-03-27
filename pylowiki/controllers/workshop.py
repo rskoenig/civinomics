@@ -959,6 +959,11 @@ class WorkshopController(BaseController):
             c.city = "0"
             c.postal = "0"
             
+        # temporary kludge CCN
+        c.country = "United States"
+        c.state = "California"
+        c.county = "Santa Cruz"
+            
         c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
             c.f = facilitatorLib.getFacilitatorsByWorkshop(c.w)
