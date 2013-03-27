@@ -1,0 +1,52 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
+<div class="row-fluid" ng-controller="SearchCtrl">
+    <div class="span2">
+        <ul class="nav nav-list">
+            <li class="active">
+                <a href="#workshops" class="fullWidth" ng-click="searchWorkshops()">
+                    <span class="pull-left">Workshops</span>
+                    <span class="pull-right">(${c.numWorkshops})</span>
+                </a>
+            </li>
+            <li>
+                <a href="#users" class="fullWidth" ng-click="searchPeople()">
+                    <span class="pull-left">Users</span>
+                    <span class="pull-right">(${c.numUsers})</span>
+                </a>
+            </li>
+        </ul>
+    </div><!--/.span2-->
+    % if 'alert' in session:
+        <div class="span6">
+            ${lib_6.fields_alert()}
+        </div>
+    % else:
+        <div class="span9" ng-cloak>
+            <div id="searchResults">
+                <ul class="unstyled goalList" ng-show="showingWorkshops">
+                    <li ng-repeat="w in workshops">
+                    <a href = '/workshops/{{w.urlCode}}/{{w.url}}'>
+                        <img src="{{w.imageURL}}" alt="{{w.title}}" title="{{w.title}}">{{w.title}}
+                    </a>
+                    <span>{{w.description}}</span>
+                    </li>
+                </ul>
+                <ul class="unstyled goalList" ng-show="showingPeople">
+                    <li ng-repeat="p in people">
+                    <a href="/profile/{{p.urlCode}}/{{p.url}}">
+                        <img src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}" class="avatar">
+                        {{p.name}}
+                    </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    % endif
+</div>
+
+<%def name="headScripts()">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="/js/ng/search.js"></script>
+</%def>
