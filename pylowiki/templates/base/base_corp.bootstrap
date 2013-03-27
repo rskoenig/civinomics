@@ -55,7 +55,7 @@
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
     
-    <link rel="shortcut icon" href="/images/fluid1_images/logo_tab.ico">
+    <link rel="shortcut icon" href="/images/logo_tab.ico">
     
   </head>
   
@@ -254,7 +254,7 @@
               </a>
 
                 <div class="span2 offset" style="padding-top: 2px; padding-bottom: 5px;">
-                    <a href="/"><img src="/images/fluid1_images/civheaderlogo_alphawhite.png"></a>
+                    <a href="/"><img src="/images/logo_white.png"></a>
                 </div>
 
               <div class="nav-collapse">
