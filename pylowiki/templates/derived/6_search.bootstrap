@@ -5,13 +5,13 @@
     <div class="span2">
         <ul class="nav nav-list">
             <li ng-class="showingWorkshops.class">
-                <a href="#workshops" class="fullWidth" ng-click="searchWorkshops()">
+                <a href="#workshops" class="fullWidth green green-hover" ng-click="searchWorkshops()">
                     <span class="pull-left">Workshops</span>
                     <span class="pull-right">(${c.numWorkshops})</span>
                 </a>
             </li>
             <li ng-class="showingPeople.class">
-                <a href="#users" class="fullWidth" ng-click="searchPeople()">
+                <a href="#users" class="fullWidth green green-hover" ng-click="searchPeople()">
                     <span class="pull-left">Users</span>
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
@@ -32,7 +32,7 @@
                                 <img class="media-object" src="{{w.imageURL}}" alt="{{w.title}}" title="{{w.title}}">
                             </a>
                             <div class="media-body">
-                                <h4 class="media-heading"><a href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
+                                <h4 class="media-heading"><a class="green green-hover" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
                                 {{w.description}}
                             </div>
                         </div>
@@ -44,7 +44,7 @@
                             <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
                                 <img class="media-object avatar" src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
                             </a>
-                            <h4 class="media-heading"><a href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
+                            <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
                         </div>
                     </td></tr>
                 </table>
