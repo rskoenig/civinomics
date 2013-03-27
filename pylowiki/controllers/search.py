@@ -73,7 +73,7 @@ class SearchController(BaseController):
             entry['urlCode'] = w['urlCode']
             entry['url'] = w['url']
             mainImage = mainImageLib.getMainImage(w)
-            entry['imageURL'] = utils.workshopImageURL(w, mainImage)
+            entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             result.append(entry)
         return json.dumps(result)
     
