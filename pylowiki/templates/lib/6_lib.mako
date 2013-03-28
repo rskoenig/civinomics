@@ -122,7 +122,7 @@
             printStr += 'Add a resource'
         printStr += '</a>'
       else:
-        printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right btn btn-large btn-success" type="button" id="loginButton">Login to Participate</a>'
+        printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right btn btn-large btn-success" type="button" id="addButton">Login to Participate</a>'
 
    %>
    ${printStr | n}

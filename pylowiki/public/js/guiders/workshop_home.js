@@ -1,10 +1,10 @@
     
     var workshopURL = document.getElementById("workshopTitle").href;
-    var ideasURL = workshopURL + '/ideas#guider=tour_0';
+    var ideasURL = workshopURL + '/ideas#guider=tour_ideas';
     $(document).ready(function() {
         guiders.createGuider({
             buttons: [{name: "next"}],
-            description: "Welcome to the Civinomics tour!  You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
+            description: "Welcome to the Civinomics tour!<br>You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
             id: "tour_welcome",
             next: "tour_logo",
             title: "Welcome!",
@@ -20,7 +20,7 @@
             description: "Click on the Civinomics logo if you want to go back to the Civinomics main page where all workshops are listed. ",
             id: "tour_logo",
             next: "tour_name",
-            title: "Civinomics home.",
+            title: "Civinomics home",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#civinomicsLogo",
@@ -36,7 +36,7 @@
             id: "tour_name",
             prev: "tour_logo",
             next: "tour_goals",
-            title: "Workshop Name.",
+            title: "Workshop Name",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#workshopTitle",
@@ -64,7 +64,7 @@
         guiders.createGuider({
             attachTo: "#workshopNotables",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "Notables are the Facilitators and Listeners monitoring the workshop. Facilitators here are charged with keeping the peace and facilitating the workshop process.  Listeners have signed onto this workshop to get your feedback!",
+            description: "Notables are the Facilitators and Listeners monitoring the workshop.<br><p>Facilitators here are charged with keeping the peace and facilitating the workshop process.<p>Listeners have signed onto this workshop to get your feedback!",
             id: "tour_notables",
             prev: "tour_goals",
             next: "tour_info",

@@ -3,9 +3,9 @@
     $(document).ready(function() {
         guiders.createGuider({
             buttons: [{name: "next"}],
-            description: "This is the ideas listing page. Participating members can contribute ideas which address the goals of the workshop. All contributed ideas are voted up or down depending on how participating members rank their value.",
-            id: "tour_0",
-            next: "tour_1",
+            description: "This is the ideas page, where all the ideas for the workshop are listed.",
+            id: "tour_ideas",
+            next: "tour_workshopname",
             title: "The Ideas Listing Page",
             closeOnEscape: true,
             autoFocus: true,
@@ -17,9 +17,9 @@
             attachTo: "#workshopTitle",
             buttons: [{name: "next"}],
             description: "Remember, you can click on the workshop name to return to the workshop main page.",
-            id: "tour_1",
-            next: "tour_2",
-            title: "Workshop Name.",
+            id: "tour_workshopname",
+            next: "tour_addbutton",
+            title: "Workshop Name",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#workshopTitle",
@@ -29,13 +29,13 @@
         });
         
         guiders.createGuider({
-            attachTo: "#loginButton",
+            attachTo: "#addButton",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "You need a Civinomics account, and need to be logged in to add a new idea.",
-            id: "tour_2",
-            prev: "tour_1",
-            next: "tour_3",
-            title: "Login To Add a New Idea",
+            description: "Have a great idea which addresses the workshop goals? Add it!",
+            id: "tour_addbutton",
+            prev: "tour_workshopname",
+            next: "tour_idea",
+            title: "Add a New Idea",
             closeOnEscape: true,
             autoFocus: true,
             overlay: "true",
@@ -46,10 +46,10 @@
         guiders.createGuider({
             attachTo: "#content_0",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "This is the idea, which links to the idea comments page, the name of the author which links to their profile page and a link to the comments about this idea. ",
-            id: "tour_3",
-            prev: "tour_2",
-            next: "tour_4",
+            description: "This is an idea. Click on the comments link to visit the idea comments page, or click on the name of the author to visit their profile page.",
+            id: "tour_idea",
+            prev: "tour_addbutton",
+            next: "tour_vote",
             title: "Idea Listing",
             closeOnEscape: true,
             autoFocus: true,
@@ -60,28 +60,11 @@
         });
         
         guiders.createGuider({
-            attachTo: "#author_0",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "This is the avatar of the author of the idea. Click it to display their profile page.",
-            id: "tour_4",
-            prev: "tour3",
-            next: "tour_5",
-            title: "Idea Author",
-            closeOnEscape: true,
-            autoFocus: true,
-            highlight: "#author_0",
-            overlay: "true",
-            xButton: true,
-            position: 3
-        });
-        
-        guiders.createGuider({
             attachTo: "#vote_0",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=workshopURL; }}],
-            description: "This is the current vote count for the idea. Participants can click on the up chevron to vote the idea up, or the down chevron to vote the idea down. The votes reflect participants ranking of how well the idea addresses the workshop goals.",
-            id: "tour_5",
-            prev: "tour4",
-            next: "tour_5",
+            description: "This is the current vote count for the idea.<br>Click on the up chevron to vote the idea up, or the down chevron to vote the idea down.<p>Votes reflect participants' ranking of how well the idea addresses the workshop goals.",
+            id: "tour_vote",
+            prev: "tour_idea",
             title: "Idea Voting",
             closeOnEscape: true,
             autoFocus: true,
