@@ -12,17 +12,31 @@
             </li>
             <li ng-class="showingPeople.class">
                 <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                    <span class="pull-left">Users</span>
+                    <span class="pull-left">People</span>
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
         </ul>
         <div class="tab-content">
             <div class="loading-civ" ng-show="loading">
-            <img src="/images/civ-loader.gif">
+                <img src="/images/civ-loader.gif">
             </div>
-            <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class">
-                <table class="table table-condensed table-hover" ng-show="showingWorkshops.show">
+            <div ng-show="noQuery">
+                <div class="row-fluid">
+                    <div class="alert alert-info centered span6 offset3">
+                        Searching for nothing yields nothing.  How zen.
+                    </div>
+                </div>
+            </div>
+            <div ng-show="noResult">
+                <div class="row-fluid">
+                    <div class="alert centered span6 offset3">
+                        Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                    </div>
+                </div>
+            </div>
+            <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show">
+                <table class="table table-condensed table-hover">
                     <tr ng-repeat="w in workshops"><td>
                         <div class="media">
                             <a class="pull-left" href = '/workshops/{{w.urlCode}}/{{w.url}}'>
@@ -36,8 +50,8 @@
                     </td></tr>
                 </table>
             </div>
-            <div id="users" class="tab-pane" ng-class="showingPeople.class">
-                <table class="table table-condensed table-hover" ng-show="showingPeople.show">
+            <div id="users" class="tab-pane" ng-class="showingPeople.class" ng-show="showingPeople.show">
+                <table class="table table-condensed table-hover">
                     <tr ng-repeat = "p in people"><td>
                         <div class="media">
                             <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">

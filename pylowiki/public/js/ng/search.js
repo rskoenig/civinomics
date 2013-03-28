@@ -1,32 +1,99 @@
 function SearchCtrl($scope, $http) {
+    /* 
+    * This controller could benefit from some refactoring
+    * 
+    * Server response:
+    *       statusCode == 0: Same as unix exit code (OK)
+    *       statusCode == 1: No query was submitted
+    *       statusCode == 2: Query submitted, no results found
+    */
     $scope.workshopsURL = '/search/workshops'
     $scope.peopleURL = '/search/people'
-    $scope.searchQuery = window.location.search
-    $scope.showingWorkshops = {'class': 'active', 'show': true};
-    $scope.showingPeople = {'class': '', 'show': true};
+    var searchQuery = window.location.search;
+    $scope.searchQuery = searchQuery;
+    $scope.searchQueryPretty = searchQuery.substr(13, searchQuery.length)
+    $scope.showingWorkshops = {'class': 'active', 'show': false};
+    $scope.showingPeople = {'class': '', 'show': false};
     $scope.loading = true;
+    $scope.noResult = false;
+    $scope.noQuery = false;
+    $scope.objType = 'workshops';
     
     $http.get($scope.workshopsURL + $scope.searchQuery).success(function(data){
-        $scope.workshops = data;
+        if (data.statusCode == 1)
+        {
+            $scope.noQuery = true;
+            $scope.noResult = true;
+            $scope.showingWorkshops.show = false;
+            $scope.workshops = null;
+        }
+        else if (data.statusCode == 2)
+        {
+            $scope.noResult = true;
+            $scope.workshops = null;
+        }
+        else if (data.statusCode == 0)
+        {
+            $scope.workshops = data.result;
+            $scope.showingWorkshops.show = true;
+        }
         $scope.loading = false;
     })
     
     $scope.searchWorkshops = function() {
         $scope.showingPeople = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
         $scope.loading = true;
+        $scope.objType = 'workshops';
         $http.get($scope.workshopsURL + $scope.searchQuery).success(function(data){
-            $scope.workshops = data;
-            $scope.showingWorkshops = {'class': 'active', 'show': true};
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingWorkshops = {'class': 'active', 'show': false};
+                $scope.workshops = null;
+            }
+            else if(data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingWorkshops = {'class': 'active', 'show': false};
+                $scope.workshops = null;
+            }
+            else if (data.statusCode == 0)
+            {
+                $scope.workshops = data.result;
+                $scope.showingWorkshops = {'class': 'active', 'show': true};
+            }
             $scope.loading = false;
         })
     }
     
     $scope.searchPeople = function() {
         $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
         $scope.loading = true;
+        $scope.objType = 'people';
         $http.get($scope.peopleURL + $scope.searchQuery).success(function(data){
-            $scope.people = data;
-            $scope.showingPeople = {'class': 'active', 'show': true};
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingPeople = {'class': 'active', 'show': false};
+                $scope.people = null;
+            }
+            else if (data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingPeople = {'class': 'active', 'show': false};
+                $scope.people = null;
+            }
+            else if (data.statusCode == 0)
+            {
+                $scope.people = data.result;
+                $scope.showingPeople = {'class': 'active', 'show': true};
+            }
             $scope.loading = false;
         })
     }

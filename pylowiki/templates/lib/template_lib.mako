@@ -17,7 +17,7 @@
                     <li>
                         <form class="form-search" action="/search">
                             <div class="input-append">
-                                <input type="text" class="span2 search-query" placeholder="people or workshops" id="search-input" name="searchQuery">
+                                <input type="text" class="span2 search-query" placeholder="workshops or people" id="search-input" name="searchQuery">
                             </div>
                             <span class="search-icon-container">
                                 <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_027_search.png" class="search-icon" data-toggle="tooltip" title="search">

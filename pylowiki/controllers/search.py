@@ -19,6 +19,14 @@ log = logging.getLogger(__name__)
 
 class SearchController(BaseController):
 
+    """
+        JSON responses:
+            statusCode == 0:    Same as unix exit code (OK)
+            statusCode == 1:    No query was submitted
+            statusCode == 2:    Query submitted, no results found
+            result:             The search result, given there was at least one
+    """
+
     def __before__(self, action):
         c.title = c.heading = "Civinomics Search"
         self.query = ''
@@ -30,7 +38,7 @@ class SearchController(BaseController):
         else:
             self.noQuery = True
     
-    def _noSearch(self):
+    def _noSearch(self, noRender = False):
         alert = {'type':'info'}
         alert['title'] = '' 
         alert['content'] = 'Searching for nothing yields nothing.  How zen.'
@@ -38,6 +46,7 @@ class SearchController(BaseController):
         session.save()
         c.numUsers = 0
         c.numWorkshops = 0
+        print "no search"
         return render('/derived/6_search.bootstrap')
     
     def search(self):
@@ -49,9 +58,11 @@ class SearchController(BaseController):
     
     def searchPeople(self):
         if self.noQuery:
-            return self._noSearch()
+            return json.dumps({'statusCode': 1})
         result = []
         people = userLib.searchUsers('name', self.query)
+        if len(people) == 0:
+            return json.dumps({'statusCode': 2})
         for p in people:
             entry = {}
             entry['name'] = p['name']
@@ -59,15 +70,17 @@ class SearchController(BaseController):
             entry['urlCode'] = p['urlCode']
             entry['url'] = p['url']
             result.append(entry)
-        return json.dumps(result)
+        return json.dumps({'statusCode':0, 'result':result})
     
     def searchWorkshops(self):
         if self.noQuery:
-            return self._noSearch()
+            return json.dumps({'statusCode': 1})
         result = []
         keys = ['title', 'description']
         values = [self.query, self.query]
         workshops = workshopLib.searchWorkshops(keys, values)
+        if len(workshops) == 0:
+            return json.dumps({'statusCode':2})
         for w in workshops:
             entry = {}
             entry['title'] = w['title']
@@ -77,7 +90,7 @@ class SearchController(BaseController):
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             result.append(entry)
-        return json.dumps(result)
+        return json.dumps({'statusCode':0, 'result':result})
         
     def searchItemGeo(self, id1, id2):
         if 'memberButton' in request.params:
