@@ -138,7 +138,8 @@ def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'No
     account = generic.linkChildToParent(account, workshop)
     commit(account)
 
-    mailLib.sendAccountMail(billingEmail)
+    if not isComp(account):
+        mailLib.sendAccountMail(billingEmail)
     
     return account
 
