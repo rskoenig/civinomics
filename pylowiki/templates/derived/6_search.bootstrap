@@ -2,7 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <div class="row-fluid" ng-controller="SearchCtrl">
-    <div class="tabbable tabs-left">
+    <div class="tabbable tabs-left civ-search">
         <ul class="nav nav-tabs">
             <li ng-class="showingWorkshops.class">
                 <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">

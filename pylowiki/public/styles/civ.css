@@ -41,19 +41,19 @@ html,body{
    bottom:0;
    right:12px;
 }
-.nav.nav-tabs > li > a{
+.civ-search > .nav.nav-tabs > li > a{
     min-width:100px;
 }
-.nav-tabs > .active > a, .nav-tabs > .active > a:hover{
+.civ-search > .nav-tabs > .active > a, .civ-search > .nav-tabs > .active > a:hover{
     border:3px solid #075D00;
 }
-.tabs-left > .nav-tabs .active > a, .tabs-left > .nav-tabs .active > a:hover{
+.civ-search.tabs-left > .nav-tabs .active > a, .tabs-left > .nav-tabs .active > a:hover{
     border-color:#075D00 transparent #075D00 #075D00;
 }
-.tabs-left > .nav-tabs > li > a{
+.civ-search.tabs-left > .nav-tabs > li > a{
     margin-right:-3px;
 }
-.tabs-left > .nav-tabs{
+.civ-search.tabs-left > .nav-tabs{
     border-right:3px solid #075D00;
 }
 .loading-civ{
@@ -306,9 +306,8 @@ ul.activity{
 
 .navbar .nav > li > a:hover{
    color: #075D00;
-   text-decoration:none
+   text-decoration:underline
 }
-
 
 img.config{
    margin-right:10px;
