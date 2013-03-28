@@ -2,29 +2,26 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <div class="row-fluid" ng-controller="SearchCtrl">
-    <div class="span2">
-        <ul class="nav nav-list">
+    <div class="tabbable tabs-left">
+        <ul class="nav nav-tabs">
             <li ng-class="showingWorkshops.class">
-                <a href="#workshops" class="fullWidth green green-hover" ng-click="searchWorkshops()">
+                <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
                     <span class="pull-left">Workshops</span>
                     <span class="pull-right">(${c.numWorkshops})</span>
                 </a>
             </li>
             <li ng-class="showingPeople.class">
-                <a href="#users" class="fullWidth green green-hover" ng-click="searchPeople()">
+                <a href="#users" class="green green-hover" ng-click="searchPeople()">
                     <span class="pull-left">Users</span>
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
         </ul>
-    </div><!--/.span2-->
-    % if 'alert' in session:
-        <div class="span6">
-            ${lib_6.fields_alert()}
-        </div>
-    % else:
-        <div class="span9" ng-cloak>
-            <div id="searchResults">
+        <div class="tab-content">
+            <div class="loading-civ" ng-show="loading">
+            <img src="/images/civ-loader.gif">
+            </div>
+            <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class">
                 <table class="table table-condensed table-hover" ng-show="showingWorkshops.show">
                     <tr ng-repeat="w in workshops"><td>
                         <div class="media">
@@ -38,6 +35,8 @@
                         </div>
                     </td></tr>
                 </table>
+            </div>
+            <div id="users" class="tab-pane" ng-class="showingPeople.class">
                 <table class="table table-condensed table-hover" ng-show="showingPeople.show">
                     <tr ng-repeat = "p in people"><td>
                         <div class="media">
@@ -50,7 +49,7 @@
                 </table>
             </div>
         </div>
-    % endif
+    </div>
 </div>
 
 <%def name="headScripts()">
