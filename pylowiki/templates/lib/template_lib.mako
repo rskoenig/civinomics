@@ -1,3 +1,6 @@
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%! import pylowiki.lib.db.user as userLib %>
+
 <%def name="mainNavbar()">
     <div class="navbar civ-navbar">
         <div class="navbar-inner">
