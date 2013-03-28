@@ -17,10 +17,9 @@
         guiders.createGuider({
             attachTo: "#civinomicsLogo",
             buttons: [{name: "next"}],
-            description: "Click on the Civinomics logo if you want to go back to the Civinomics main page where all workshops are listed. ",
+            description: "<br><h1 class=guiders_title>Civinomics home</h1></p><p>Click on the Civinomics logo if you want to go back to the Civinomics main page where all workshops are listed.</p> ",
             id: "tour_logo",
             next: "tour_name",
-            title: "Civinomics home",
             closeOnEscape: true,
             autoFocus: true,
             highlight: "#civinomicsLogo",

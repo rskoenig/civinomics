@@ -26,11 +26,11 @@
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 
-               Goals
-            </h4>
-                ${helpers.showGoals(c.goals)}
-                ${helpers.whoListening()}
-                ${helpers.showActivity(c.activity)}
+            Goals
+            </h4> 
+            ${helpers.showGoals(c.goals)}
+            ${helpers.whoListening()}
+            ${helpers.showActivity(c.activity)}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
