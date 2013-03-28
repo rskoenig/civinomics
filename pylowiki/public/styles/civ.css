@@ -41,6 +41,25 @@ html,body{
    bottom:0;
    right:12px;
 }
+.nav.nav-tabs > li > a{
+    min-width:100px;
+}
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover{
+    border:3px solid #075D00;
+}
+.tabs-left > .nav-tabs .active > a, .tabs-left > .nav-tabs .active > a:hover{
+    border-color:#075D00 transparent #075D00 #075D00;
+}
+.tabs-left > .nav-tabs > li > a{
+    margin-right:-3px;
+}
+.tabs-left > .nav-tabs{
+    border-right:3px solid #075D00;
+}
+.loading-civ{
+    margin-top:10%;
+    margin-left:35%;
+}
 .well.footer{
    background: white;
    border-color: transparent;
@@ -565,7 +584,9 @@ ul.listeners > li {
 .green{
     color:#075D00;
 }
-
+.white{
+    color:#ffffff;
+}
 .orange{
     color:#D15D00;
 }
