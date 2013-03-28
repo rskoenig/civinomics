@@ -369,6 +369,12 @@ class WorkshopController(BaseController):
         else:
             geoTagPostal = "0"
             
+        # CCN kludge to enforce SC County top level workshops, remove to unconstrain
+        geoTagCountry = "United States"
+        geoTagState = "California"
+        geoTagCounty = "Santa Cruz"
+        
+            
         # assemble a workshop scope string 
         # ||country||state||county||city|zip
         geoTagString = "||" + utils.urlify(geoTagCountry) + "||" + utils.urlify(geoTagState) + "||" + utils.urlify(geoTagCounty) + "||" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
