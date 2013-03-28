@@ -1,7 +1,7 @@
 from pylons import tmpl_context as c, config, session
 from pylons import request
 from pylowiki.model import Thing, meta, Data
-from sqlalchemy import and_, not_
+from sqlalchemy import and_, not_, or_
 
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.facilitator  as facilitatorLib
@@ -36,17 +36,21 @@ def getDemoWorkshops():
     except:
         return False
 
-def searchWorkshops( wKey, wValue, deleted = u'0', published = u'1', public_private = u'public', count = False):
+def searchWorkshops( keys, values, deleted = u'0', published = u'1', public_private = u'public', count = False):
     try:
-        query = meta.Session.query(Thing)\
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        m = map(wcl, keys, values)
+        q = meta.Session.query(Thing)\
                 .filter_by(objType = 'workshop')\
-                .filter(Thing.data.any(wcl(wKey, wValue)))\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('published', published)))\
                 .filter(Thing.data.any(wc('public_private', public_private)))
+        rows = q.filter(Thing.data.any(reduce(or_, m)))
         if count:
-            return query.count()
-        return query.all()
+            return rows.count()
+        return rows.all()
     except:
         return False
 

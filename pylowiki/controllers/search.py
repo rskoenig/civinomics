@@ -44,7 +44,7 @@ class SearchController(BaseController):
         if self.noQuery:
             return self._noSearch()
         c.numUsers = userLib.searchUsers('name', self.query, count = True)
-        c.numWorkshops = workshopLib.searchWorkshops('title', self.query, count = True)
+        c.numWorkshops = workshopLib.searchWorkshops(['title', 'description'], [self.query, self.query], count = True)
         return render('/derived/6_search.bootstrap')
     
     def searchPeople(self):
@@ -65,7 +65,9 @@ class SearchController(BaseController):
         if self.noQuery:
             return self._noSearch()
         result = []
-        workshops = workshopLib.searchWorkshops('title', self.query)
+        keys = ['title', 'description']
+        values = [self.query, self.query]
+        workshops = workshopLib.searchWorkshops(keys, values)
         for w in workshops:
             entry = {}
             entry['title'] = w['title']
@@ -76,26 +78,6 @@ class SearchController(BaseController):
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             result.append(entry)
         return json.dumps(result)
-    
-    def searchItemName(self):
-        if 'memberButton' in request.params:
-            c.things = []
-            c.thingsTitle = 'Users with name like "' + searchString + '"'
-            c.listingType = 'searchUsers'
-            userList = userLib.searchUsers('name', searchString)
-            for user in userList:
-                if user['activated'] == '1' and user['disabled'] == '0' and user['deleted'] == '0':
-                    c.things.append(user) 
-        elif 'workshopButton' in request.params:
-            c.things = []
-            c.thingsTitle = 'Workshops with name like "' + searchString + '"'
-            c.listingType = 'searchWorkshops'
-            workshopList = workshopLib.searchWorkshops('title', searchString)
-            for workshop in workshopList:
-                if workshopLib.isPublished(workshop) and workshopLib.isPublic(workshop):
-                    c.things.append(workshop)
-        
-        return render('/derived/6_search.bootstrap')
         
     def searchItemGeo(self, id1, id2):
         if 'memberButton' in request.params:
