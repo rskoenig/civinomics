@@ -12,6 +12,7 @@ import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers as h
 
@@ -71,6 +72,11 @@ class SearchController(BaseController):
             entry['hash'] = md5(p['email']).hexdigest()
             entry['urlCode'] = p['urlCode']
             entry['url'] = p['url']
+            userGeo = geoInfoLib.getGeoInfo(p.id)[0]
+            entry['cityURL'] = '/workshops/geo/earth/%s/%s/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'], userGeo['countyURL'], userGeo['cityURL'])
+            entry['cityTitle'] = userGeo['cityTitle']
+            entry['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
+            entry['stateTitle'] = userGeo['stateTitle']
             result.append(entry)
         return json.dumps({'statusCode':0, 'result':result})
     
