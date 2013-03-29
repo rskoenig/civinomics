@@ -1,5 +1,5 @@
 
-$('button.geoButton').live('click', function(e){
+$('button.geoButton').click(function(e){
     e.preventDefault();
     $geo = $(this);
     var urlString = '/geoHandler/united-states/' + document.getElementById("publicPostal").value;
