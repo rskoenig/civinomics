@@ -372,13 +372,15 @@
             % for scopeLevel in scopeMapping:
                 <%
                     activeClass = ''
-                    if c.scope['level'] == scopeLevel[0]:
+                    
+                    # kludge to map between "postal" and "postalCode"
+                    testScope = scopeLevel[0]
+                    if testScope == 'postalCode':
+                        testScope = 'postal'
+                        
+                    if c.scope['level'] == testScope:
                         if scopeLevel[0] != 'earth':
-                            # kludge to map key inconsistancy 
-                            if scopeLevel[0] == 'postalCode':
-                                scopeKey = "postalURL"
-                            else:
-                                scopeKey = '%sURL' % scopeLevel[0]
+                            scopeKey = '%sURL' % testScope 
                             userScope = c.authuser_geo[scopeKey]
                         else:
                             userScope = 'earth'
