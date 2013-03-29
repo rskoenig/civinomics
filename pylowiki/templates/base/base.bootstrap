@@ -68,7 +68,7 @@
 
    <!-- scripts go at the bottom so they don't keep the user waiting -->
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
-   <script type="text/javascript" src="/js/searchBox.js"></script>
+   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
