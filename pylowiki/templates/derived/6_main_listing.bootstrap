@@ -56,7 +56,4 @@
        $(".small-bulb, .small-bookmark").tooltip({delay:500});
    });
    </script>
-   <script>
-       var app = angular.module('civ', []);
-   </script>
 </%def>

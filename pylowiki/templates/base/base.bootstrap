@@ -15,6 +15,9 @@
       <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+      <script>
+        var dummyApp = angular.module('civ', []);
+      </script>
       ${self.extraStyles()}
       ${self.headScripts()}
       ${self.headScripts2()}
