@@ -9,7 +9,7 @@
    import pylowiki.lib.db.mainImage     as mainImageLib
    
    from hashlib import md5
-   import logging
+   import logging, os
    log = logging.getLogger(__name__)
 %>
 
@@ -742,4 +742,13 @@
             activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
     %>
     ${activityStr | n}
+</%def>
+
+<%def name="fingerprintFile(path)">
+    <%
+        # Adds a fingerprint so we can cache-bust the browser if the file is modified
+        prefix = 'pylowiki/public'
+        modTime = os.stat(prefix + path).st_mtime
+        return "%s?t=%s" %(path, modTime)
+    %>
 </%def>

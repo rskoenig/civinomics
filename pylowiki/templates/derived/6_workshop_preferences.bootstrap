@@ -198,9 +198,9 @@
     <!-- The File Upload user interface plugin -->
     <script src="/js/jquery.fileupload-ui.js"></script>
     <!-- The localization script -->
-    <script src="/js/locale.js"></script>
+    <script src="${lib_6.fingerprintFile('/js/locale.js')}"></script>
     <!-- The main application script -->
-    <script src="/js/main.js"></script>
+    <script src="${lib_6.fingerprintFile('/js/main.js')}"></script>
     <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
     <!--[if gte IE 8]><script src="js/cors/jquery.xdr-transport.js"></script><![endif]-->
     
@@ -246,13 +246,13 @@
       });
     </script>
     <script src="/js/vendor/markdown.js" type="text/javascript"></script>
-    <script src="/js/markdown_preview.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/markdown_preview.js')}" type="text/javascript"></script>
 </%def>
 
 <%def name="headScripts()">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     % if c.privs['admin'] or c.privs['facilitator']:
-        <script src="/js/ng/workshop_admin.js" type="text/javascript"></script>
+        <script src="${lib_6.fingerprintFile('/js/ng/workshop_admin.js')}" type="text/javascript"></script>
     % endif
 </%def>
 

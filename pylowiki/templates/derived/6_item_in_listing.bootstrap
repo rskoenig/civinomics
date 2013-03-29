@@ -63,13 +63,13 @@
 </div><!--/.row-fluid-->
 
 <%def name="extraScripts2()">
-    <script src="/js/upDown.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript">
         $('.nullvote').tooltip();
     </script>
     % if 'user' in session:
-        <script src="/js/flag.js" type="text/javascript"></script>
+        <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
         % if c.privs['admin'] or c.privs['facilitator'] or c.authuser.id == c.thing.owner:
             <script type="text/javascript" src="/js/vendor/charCount.js"></script>
             <script>

@@ -1,5 +1,4 @@
-
-$('button.followButton').live('click', function(e){
+$('button.followButton').click(function(e){
     e.preventDefault();
     $button = $(this);
     var urlList = $button.attr('data-URL-list').split(/_/);

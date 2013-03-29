@@ -41,4 +41,5 @@ class GzipMiddleware(object):
         headers.append(('Content-Encoding', 'gzip'))
         start_response(start_response_args[0], headers, start_response_args[2])
         buffer.close()
+        print start_response_args
         return [result]

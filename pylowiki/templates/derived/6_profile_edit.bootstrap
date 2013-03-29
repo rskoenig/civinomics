@@ -116,6 +116,6 @@
     <script src="/js/jquery.fileupload.js"></script>
     <script src="/js/jquery.fileupload-ip.js"></script>
     <script src="/js/jquery.fileupload-ui.js"></script>
-    <script src="/js/locale.js"></script>
-    <script src="/js/main.js"></script>
+    <script src="${lib_6.fingerprintFile('/js/locale.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/main.js')}"></script>
 </%def>

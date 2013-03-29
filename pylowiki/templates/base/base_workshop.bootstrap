@@ -57,7 +57,7 @@
          backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
    %>
    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
-   <script src="/js/follow.js" type="text/javascript"></script>
+   <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
    <script type="text/javascript">
       $(".followButton").tooltip();
       $(".preferencesLink").tooltip();

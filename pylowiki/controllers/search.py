@@ -42,11 +42,6 @@ class SearchController(BaseController):
             self.noQuery = True
     
     def _noSearch(self, noRender = False):
-        alert = {'type':'info'}
-        alert['title'] = '' 
-        alert['content'] = 'Searching for nothing yields nothing.  How zen.'
-        session['alert'] = alert
-        session.save()
         c.numUsers = 0
         c.numWorkshops = 0
         return render('/derived/6_search.bootstrap')
