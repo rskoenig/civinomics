@@ -1,0 +1,286 @@
+# -*- coding: utf-8 -*-
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="UTF-8"/>
+  <title>
+    Civinomics | 
+    ${c.title.capitalize()}
+  </title>
+  
+    <!-- styles -->
+    <link rel="stylesheet" href="/styles/bootstrap/civinomics_corp.css">
+    <link href="/styles/bootstrap-responsive.css" rel="stylesheet">
+
+    <link type="text/css" rel="stylesheet" href = "/styles/flash.css" />
+    ${self.page_specific_css()}
+    ${self.google_analytics()}
+
+    <style type="text/css">
+          html {
+            height: 100%;
+          }
+          body {
+            text-align:center;
+            height: 100%;
+            min-height: 100%;
+          }
+          #wrap{
+            min-height: 100%;
+          }
+          #container{ 
+            text-align: left;
+            overflow:auto;
+            padding-bottom: 240px;
+            padding-top: 60px;
+          }
+          #footer{
+            margin:0;
+            text-align:left;
+            background-color:#d9dad9;
+            margin-top: -240px;
+            height: 200px;
+            position:relative;
+            clear: both;
+            
+          }
+    </style>
+
+
+
+
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    
+    <link rel="shortcut icon" href="/images/logo_tab.ico">
+    
+  </head>
+  
+  
+  <body>
+      
+  <!-- Facebook Like Button -->
+    <div id="fb-root"></div>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '421911304496726', // App ID
+          channelUrl : '//WWW.CIVINOMICS.COM/channel.html', // Channel File
+          status     : true, // check login status
+          cookie     : true, // enable cookies to allow the server to access the session
+          xfbml      : true  // parse XFBML
+        });
+    
+        // Additional initialization code here
+      };
+    
+      // Load the SDK Asynchronously
+      (function(d){
+         var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement('script'); js.id = id; js.async = true;
+         js.src = "//connect.facebook.net/en_US/all.js";
+         ref.parentNode.insertBefore(js, ref);
+       }(document));
+    </script>    
+     
+  
+   
+   ${self.navbar()}   
+     
+    <div id="wrap">
+        <div id="container" style="padding-top:80px;">
+            <div class="row"><!-- main content -->
+                <div id="left_navigbar" class="span2">
+                    ${self.display_navigbarfn()}
+                </div>
+                <div id="right_content" class="span9" style="padding-bottom: 30px;">
+                    ${self.display_body_right_content()}
+                </div>
+            </div><!-- close row--> 
+        </div><!--close container-->
+    </div><!--close wrap-->
+    
+
+  ${self.footer()}
+  
+    <script src="/js/bootstrap/jquery.js"></script>
+    <script src="/js/bootstrap/bootstrap-modal.js"></script> <!-- bootstrap modal scripts -->
+    <script src="/js/bootstrap/bootstrap-carousel.js"></script> <!-- bootstrap carousel scripts -->
+    
+    <script>
+        function closeDialog () {
+        $('#windowTitleDialog').modal('hide'); 
+        };
+        function okClicked () {
+        closeDialog ();
+        };
+    </script>
+    
+    <!-- additional social media scripts -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    </script>
+
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+
+    <script>
+        function closeDialog () {
+            $('#windowTitleDialog').modal('hide'); 
+            };
+        function okClicked () {
+            closeDialog ();
+            };
+    </script>
+    
+  </body>
+</html>
+
+
+
+<%def name="footer()">
+<footer id="footer" class="wellfooter">
+            <div class="row" style="width: 1000px; margin: 0 auto;">
+                <div class="span2">
+                    <ul class="unstyled">
+                        <li><h4>ORGANIZATION</h4></li>
+                        <li><a href="/corp/about">About Us</a></li>
+                        <li><a href="http://www.civinomics.wordpress.com" target="_blank"> Development Blog</li>
+                        <li><a href="/corp/careers">Careers</a></li>
+                        <li><a href="/corp/team">Team</a></li>
+                        <li><a href="/corp/privacy">Privacy Policy</a></li>
+                        <li><a href="/corp/terms">Terms of Use</a></li>
+                        <li><a href="/corp/contact">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="span3">
+                    <ul class="unstyled">
+                        <li><h4>SERVICES</h4></li>
+                        <li><a href="/corp/outreach">Outreach</a></li>
+                        <li><a href="/corp/caseStudies/">Case Studies</a></li>
+                        <li><a href="#">Create a workshop </a><span class="label label-warning">Coming Soon</span></li>
+                    </ul>
+                </div>
+                    <div class="span3">
+                        <ul class="unstyled" style="color:#818180;">
+                        <li><div class="fb-like" data-href="http://www.facebook.com/civinomics" data-send="true" data-width="450" data-show-faces="true"></div> 
+                        </li>
+                        <li><a href="https://twitter.com/civinomics" class="twitter-follow-button" data-show-count="true" data-size="large">Follow @civinomics</a></li>
+                        <li><g:plusone annotation="inline"></g:plusone></li>
+                        </ul>
+                </div>
+            </div>
+
+            <div class="row" style="width: 1000px; margin: 0 auto;">
+                <div class="span10 offset1" style="color:#818180;" align="right">
+                    </br>
+                    <p>
+                        © 2012 Civinomics Inc. All rights reserved.
+                    </p>
+                </div>
+            </div>
+      </footer>
+</%def>
+
+<%def name="display_navigbarfn()">
+    <div class="span2">
+      <div class="well sidebar-nav" style="padding-top:10px; padding-left:14px; padding-right:14px;">
+        <ul class="nav nav-list" >
+            <li class="nav-header">Organization</li>
+            <li 
+            % if c.pagetype == "about":
+                class ="active"
+            %endif
+            ><a href="/corp/about">About Us</a></li>
+            <li><a href="http://www.civinomics.wordpress.com" target="_blank">Development Blog</a></li>
+            <li 
+            % if c.pagetype == "careers":
+               class ="active"
+            %endif
+            ><a href="/corp/careers">Careers</a></li>
+            <li 
+            % if c.pagetype == "team":
+               class ="active"
+            %endif
+            ><a href="/corp/team">Team</a></li>
+            <li 
+            % if c.pagetype == "privacy":
+               class ="active"
+            %endif
+            ><a href="/corp/privacy">Privacy Policy</a></li>
+            <li 
+            % if highlight_name == "terms":
+               class ="active"
+            %endif
+            ><a href="/corp/terms">Terms of Use</a></li>
+            <li 
+            % if c.pagetype == "contact":
+               class ="active"
+            %endif
+            ><a href="/corp/contact">Contact Us</a></li>
+
+            <li class="nav-header">Services</li>
+            <li
+            % if c.pagetype == "outreach":
+                class ="active"
+            %endif
+            ><a href="/corp/outreach">Outreach</a></li>
+            <li
+            % if c.pagetype == "casestudies":
+                class ="active"
+            %endif
+            ><a href="/corp/caseStudies/">Case Studies</a></li>
+        </ul>
+      </div><!--/.well -->
+    </div><!--/span sidebar-->
+</%def>
+
+<%def name="navbar()">
+<div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container-fluid">
+              <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+
+                <div class="span2 offset" style="padding-top: 2px; padding-bottom: 5px;">
+                    <a href="/"><img src="/images/logo_white.png"></a>
+                </div>
+
+              <div class="nav-collapse">
+              </div><!--/.nav-collapse -->
+            </div>
+          </div>
+        </div>
+</%def>
+
+<%def name="google_analytics()">
+    % if c.conf['google.analytics']:
+      <script type="text/javascript">
+
+          var _gaq = _gaq || [];
+          _gaq.push(['_setAccount', "${c.conf['google.analytics']}"]);
+          _gaq.push(['_trackPageview']);
+
+          (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+          })();
+
+      </script>
+    % endif
+</%def>
+
+
+
