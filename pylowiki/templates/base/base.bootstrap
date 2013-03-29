@@ -3,7 +3,7 @@
 <%! import pylowiki.lib.db.user as userLib %>
 <% lib_6.validateSession() %>
 <!DOCTYPE HTML>
-<html lang="en-US" ng-app>
+<html lang="en-US" ng-app='civ'>
    <head>
       <meta charset="UTF-8">
       <title>${c.title}</title>
@@ -13,6 +13,8 @@
       <link rel="stylesheet" href="/styles/civ.css">
       <link rel="shortcut icon" href="/images/logo_tab.ico">
       <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
       ${self.extraStyles()}
       ${self.headScripts()}
       ${self.headScripts2()}
@@ -62,7 +64,6 @@
    </div>
 
    <!-- scripts go at the bottom so they don't keep the user waiting -->
-   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
    <script type="text/javascript" src="/js/searchBox.js"></script>
    ${self.extraScripts()}

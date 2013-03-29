@@ -58,6 +58,7 @@ def getDiscussionCommentsSince(discussionID, memberDatetime):
 def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
     """
         Activity inside a single workshop
+        Should be rewritten to return a count if that's all we want, and to do the discussion filtering on the db level
     """
     objTypes = ['resource', 'discussion', 'idea', 'comment']
     finalActivityList = []
@@ -82,6 +83,7 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
 def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
     """
         Activity inside multiple workshops, given a list of workshop codes
+        Should be rewritten to return a count if that's all we want, and to do the discussion filtering on the db level
     """
     objTypes = ['resource', 'discussion', 'idea']
     finalActivityList = []

@@ -10,6 +10,8 @@ from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.activity     as activityLib
+import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers as h
 
@@ -87,6 +89,8 @@ class SearchController(BaseController):
             entry['description'] = w['description']
             entry['urlCode'] = w['urlCode']
             entry['url'] = w['url']
+            entry['activity'] = len(activityLib.getActivityForWorkshop(w['urlCode']))
+            entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             result.append(entry)

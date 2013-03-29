@@ -1,4 +1,7 @@
-function SearchCtrl($scope, $http) {
+var app = angular.module('civ', ['$strap.directives']);
+
+app.controller('SearchCtrl', function($scope, $http){
+//function SearchCtrl($scope, $http) {
     /* 
     * This controller could benefit from some refactoring
     * 
@@ -18,6 +21,8 @@ function SearchCtrl($scope, $http) {
     $scope.noResult = false;
     $scope.noQuery = false;
     $scope.objType = 'workshops';
+    
+    $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments'};
     
     $http.get($scope.workshopsURL + $scope.searchQuery).success(function(data){
         if (data.statusCode == 1)
@@ -97,4 +102,4 @@ function SearchCtrl($scope, $http) {
             $scope.loading = false;
         })
     }
-}
+})
