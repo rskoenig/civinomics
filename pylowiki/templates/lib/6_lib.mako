@@ -374,7 +374,11 @@
                     activeClass = ''
                     if c.scope['level'] == scopeLevel[0]:
                         if scopeLevel[0] != 'earth':
-                            scopeKey = '%sURL' % scopeLevel[0]
+                            # kludge to map key inconsistancy 
+                            if scopeLevel[0] == 'postalCode':
+                                scopeKey = "postalURL"
+                            else:
+                                scopeKey = '%sURL' % scopeLevel[0]
                             userScope = c.authuser_geo[scopeKey]
                         else:
                             userScope = 'earth'
