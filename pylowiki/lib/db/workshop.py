@@ -295,77 +295,7 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     w['allowDiscussions']  = u'1'
     commit(w)
     w['urlCode'] = utils.toBase62(w)
-    background = """
-Quick Markdown Syntax Guide
-===========================
-
-This guide shows you how to use Markdown instead of HTML when
-writing background information.
-
-Markdown simplifies the HTML rendering
-
-Links
------
-
-Raw links: <http://civ.io>
-
-Links with [text](http://civ.io).
-
-You can add hover words(which show up under the cursor), 
-[like this](http://civ.io "Hovering text").
-
-Text
-----
-
-There are *two* ways to _italicize_ (or emphasize) text.
-
-Blank lines separate paragraphs.
-
-So this is a new paragraph. But any text on adjacent lines
-will all end up 
-in the same paragraph.
-
-Quoting
-----------
-> This is quoted *like email*
-Even though this line doesn't have the '>' character, it's still part of the same paragraph, so it's still quoted.
-
-This paragraph is not quoted.
-
-Literal text
-----------------
-
-You can use `*backquotes*` to mark certain sections as literal text (Note it is not italicized)
-
-    You can apply this to entire paragraphs by starting with four spaces
-    These two lines start off with four spaces.
-
-Lists
---------
-
-* Asterisks
-* make
-* unordered
-* lists
-
-1. numbers
-2. make
-3. numbered
-4. lists
-1. the number used does not matter        
-
-Headers
-----------
-
-# Biggest #
-## Big ##
-### Medium-big ###
-#### Medium-small ####
-##### Smaller #####
-###### smallest
-
-None of these require us to wrap both sides with hashes.
-    """
+    background = utils.workshopInfo
     
     p = pageLib.Page(title, owner, w, background)
     e = eventLib.Event('Create workshop', 'User %s created a workshop'%(c.authuser['email']), w)
