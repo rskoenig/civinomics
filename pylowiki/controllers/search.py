@@ -49,11 +49,13 @@ class SearchController(BaseController):
         session.save()
         c.numUsers = 0
         c.numWorkshops = 0
-        print "no search"
         return render('/derived/6_search.bootstrap')
     
     def search(self):
         if self.noQuery:
+            return self._noSearch()
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
             return self._noSearch()
         c.numUsers = userLib.searchUsers('name', self.query, count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description'], [self.query, self.query], count = True)
@@ -62,6 +64,9 @@ class SearchController(BaseController):
     def searchPeople(self):
         if self.noQuery:
             return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
         result = []
         people = userLib.searchUsers('name', self.query)
         if len(people) == 0:
@@ -83,6 +88,9 @@ class SearchController(BaseController):
     def searchWorkshops(self):
         if self.noQuery:
             return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
         result = []
         keys = ['title', 'description']
         values = [self.query, self.query]
