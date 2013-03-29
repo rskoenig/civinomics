@@ -2,7 +2,7 @@
    import pylowiki.lib.db.slideshow as slideshowLib
    from pylowiki.lib.db.user import getUserByID
    import pylowiki.lib.db.activity as activityLib
-   import misaka as misaka
+   import misaka as m
    
    import logging
    log = logging.getLogger(__name__)
@@ -213,7 +213,7 @@
 <%def name="showInfo(workshop)">
     <div>
     % if c.information and 'data' in c.information:
-        ${misaka.html(c.information['data']) | n}
+        ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
     % endif
     </div>
 </%def>
