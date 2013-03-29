@@ -1,12 +1,15 @@
-function GoalsCtrl($scope, $http, $location) {
-  var getGoalsURL = $location.url() + 'goals/get'
+var app = angular.module('civ', []);
+
+app.controller('GoalsCtrl', function($scope, $http, $location){
+//function GoalsCtrl($scope, $http, $location) {
+  var getGoalsURL = $location.url() + 'goals/get';
   $http.get(getGoalsURL).success(function(data){
     $scope.goals = data;
     angular.forEach($scope.goals, function(goal){
-        goal['editing'] = false;
-    })
-    $scope.baseURL = $location.url()
-  })
+        goal.editing = false;
+    });
+    $scope.baseURL = $location.url();
+  });
  
   $scope.addGoal = function() {
     if ($scope.goalTitle.length > 0)
@@ -60,11 +63,11 @@ function GoalsCtrl($scope, $http, $location) {
     });
     return count;
   };
-}
+});
 
-angular.module('civ', [])
+//angular.module('civ', [])
 
-.directive('civBlur', function() 
+app.directive('civBlur', function() 
 {
   return function( scope, elem, attrs ) {
     elem.bind('blur', function() {

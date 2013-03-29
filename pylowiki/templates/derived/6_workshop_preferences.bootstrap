@@ -181,7 +181,7 @@
     <script src="/js/jquery-ui-1.8.22.custom.min.js" type="text/javascript"></script>
     <script src="/js/jquery.jeditable.mini.js" type="text/javascript"></script>
     <script src = "/js/jquery.touchwipe.min.js" type="text/javascript"></script>
-    <script src = "/js/geo.js" type="text/javascript"></script>
+    <script src = "${lib_6.fingerprintFile('/js/geo.js')}" type="text/javascript"></script>
     <!-- The Templates plugin is included to render the upload/download listings -->
     <script src="/js/vendor/blueimp-tmpl.min.js"></script>
     <!-- The Load Image plugin is included for the preview images and image resizing functionality -->
@@ -250,7 +250,7 @@
 </%def>
 
 <%def name="headScripts()">
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+    ##<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
     % if c.privs['admin'] or c.privs['facilitator']:
         <script src="${lib_6.fingerprintFile('/js/ng/workshop_admin.js')}" type="text/javascript"></script>
     % endif

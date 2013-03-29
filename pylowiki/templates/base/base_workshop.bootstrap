@@ -66,6 +66,6 @@
 </%def>
 
 <%def name="headScripts2()">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
-    <script src="/js/ng/goals.js"></script>
+    ##<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/goals.js')}"></script>
 </%def>
