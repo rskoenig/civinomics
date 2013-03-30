@@ -1,0 +1,129 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="helpers" file="/lib/template_lib.mako" />
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+
+##
+## Top Carousel
+##
+
+<div class="imageChanger imageChanger4">
+</div>
+<div class="imageChanger imageChanger3">
+</div>
+<div class="imageChanger imageChanger2">
+</div>
+<div class="imageChanger imageChanger1" style="display:none;">
+</div>
+<div class="imageChanger imageChanger0" style="display:none;">
+</div>
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span1"></div>
+        <div class="span4" style="padding-top:65px;">
+            <div id="splash-well" class="hero-unit main-well">
+                <div class="row-fluid">
+                    <h4 class="textChanger textChanger2">Elevate your hometown</h4>
+                    <div id="textChanger" class="hidden">
+                        <h4 class="textChanger textChanger4">Up campus sustainability</h4>
+                        <h4 class="textChanger textChanger3">Improve a park</h4>
+                        <h4 class="textChanger textChanger1">Boost your metro</h4>
+                        <h4 class="textChanger textChanger0">Revamp a public space</h4>
+                    </div>
+                    <p>...join people solving problems, or start a group of your own.</p>
+                    </br>
+                    <div class="centered">
+                        <a href="/signup"><button class="btn btn-success btn-default btn-large" style="width: 110px;">Sign up</button></a>
+                        <a href="/workshops"><button class="btn btn-info btn-large" style="width: 110px;">Browse</button></a>   
+                    </div>                     
+                </div>
+            </div><!-- hero-unit -->
+        </div><!-- span5 -->
+    </div><!-- row -->
+</div><!-- container -->
+
+##
+## Info Section
+##
+
+<div class="info">
+    <div class="container">
+        
+        ##
+        ##How it works
+        ## 
+
+        <div class="row marketing centered">
+                <h1> How it Works </h1>
+                </br>
+                <div class="span4">
+                   <img src="/images/splash/step1_group.png"></image>
+                    </br>
+                    <h2>Assemble</h2>
+                    <p>Cultivate a group of people to make things better. Build a knowledge base with resource links and conversations.</p>
+                </div>                
+                <div class="span4">
+                    <img src="/images/splash/step2_ideas.png"></image>
+                    </br>
+                    <h2>Vote</h2>
+                    <p>Vote on the best ideas. Develop proposals so that they meet defined goals. No filibusters allowed.</p>
+                </div>
+                <div class="span4">
+                   <img src="/images/splash/step3_profit.png"></image>
+                    </br>
+                    <h2>Solve</h2>
+                    <p>Implement ideas by getting the attention of key stakeholders and leveraging a network of experts.</p>
+                </div>
+        </div>                  
+    </div> <!-- container -->
+</div> <!-- info -->
+
+
+<%def name="headScripts()">
+    <!-- Facebook Like Button -->
+        <div id="fb-root"></div>
+        <script>
+          window.fbAsyncInit = function() {
+            FB.init({
+              appId      : '421911304496726', // App ID
+              channelUrl : '//WWW.CIVINOMICS.COM/channel.html', // Channel File
+              status     : true, // check login status
+              cookie     : true, // enable cookies to allow the server to access the session
+              xfbml      : true  // parse XFBML
+            });
+
+            // Additional initialization code here
+          };
+
+          // Load the SDK Asynchronously
+          (function(d){
+             var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+             if (d.getElementById(id)) {return;}
+             js = d.createElement('script'); js.id = id; js.async = true;
+             js.src = "//connect.facebook.net/en_US/all.js";
+             ref.parentNode.insertBefore(js, ref);
+           }(document));
+        </script>
+</%def>
+
+
+<%def name="extraScripts()">
+    <script src="/js/splash/imageFader.js"></script>
+    <script src="/js/splash/textFader.js"></script>
+
+    <!-- additional social media scripts -->
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    </script>
+
+    <script type="text/javascript">
+      (function() {
+        var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+        po.src = 'https://apis.google.com/js/plusone.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+      })();
+    </script>
+</%def>
