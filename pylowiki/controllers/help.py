@@ -17,10 +17,10 @@ class HelpController(BaseController):
         c.subSection = 'helpCenter'
         
         demos = workshopLib.getDemoWorkshops()
-        demo = demos[0]
-        if not demo:
+        if not demos:
             tutorialURL = '/'
         else:
+            demo = demos[0]
             tutorial = workshopLib.getWorkshopByCode(demo['urlCode'])
             c.tutorialURL = '/workshops/%s/%s#guider=tour_welcome' %(tutorial['urlCode'], tutorial['url'])
 
