@@ -1,5 +1,5 @@
 
-$('a.flagButton').live('click', function(e){
+$('a.flagButton').click(function(e){
     e.preventDefault();
     var urlString = $(this).attr('href');
     var data = $.ajax({
@@ -11,7 +11,7 @@ $('a.flagButton').live('click', function(e){
     $('#flag_0').empty().append(data.result);
 });
 
-$('a.flagCommentButton').live('click', function(e){
+$('a.flagCommentButton').click(function(e){
     e.preventDefault();
     var urlString = $(this).attr('href');
     var data = $.ajax({
@@ -23,7 +23,7 @@ $('a.flagCommentButton').live('click', function(e){
     $('#flagged_' + data.code).empty().append(data.result);
 });
 
-$('.disableButton').live('click', function(e){
+$('.disableButton').click(function(e){
     e.preventDefault();
     var urlString = $(this).attr('href');
     var formData = $(this).parents('form').serializeArray();
@@ -37,7 +37,7 @@ $('.disableButton').live('click', function(e){
     $('#disableResponse-' + data.code).empty().append(data.result);
 });
 
-$('.enableButton').live('click', function(e){
+$('.enableButton').click(function(e){
     e.preventDefault();
     var urlString = $(this).attr('href');
     var formData = $(this).parents('form').serializeArray();
@@ -51,7 +51,7 @@ $('.enableButton').live('click', function(e){
     $('#enableResponse-' + data.code).empty().append(data.result);
 });
 
-$('.deleteButton').live('click', function(e){
+$('.deleteButton').click(function(e){
     e.preventDefault();
     var urlString = $(this).attr('href');
     var formData = $(this).parents('form').serializeArray();
@@ -65,7 +65,7 @@ $('.deleteButton').live('click', function(e){
     $('#deleteResponse-' + data.code).empty().append(data.result);
 });
 
-$('.immunifyButton').live('click', function(e){
+$('.immunifyButton').click(function(e){
     e.preventDefault();
     var urlString = $(this).attr('href');
     var formData = $(this).parents('form').serializeArray();
