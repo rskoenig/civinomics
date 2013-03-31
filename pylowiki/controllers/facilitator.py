@@ -62,7 +62,7 @@ class FacilitatorController(BaseController):
             fList = facilitatorLib.getFacilitatorsByUser(c.authuser)
             doF = False
             for f in fList:
-               if int(f['workshopID']) == int(c.w.id):
+               if f['workshopCode'] == c.w['urlCode']:
                   doF = f
 
             if doF and 'acceptInvite' in request.params:
@@ -95,7 +95,7 @@ class FacilitatorController(BaseController):
         fList = facilitatorLib.getFacilitatorsByUser(c.authuser, 0)
         doF = False
         for f in fList:
-           if int(f['workshopID']) == int(c.w.id) and f['disabled'] != '1':
+           if f['workshopCode'] == c.w['urlCode'] and f['disabled'] != '1':
               doF = f
 
         if 'resignReason' in request.params:

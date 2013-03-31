@@ -59,6 +59,7 @@ def PMember(workshopCode, email, type, owner, user = None):
     p['type'] = type
     p['deleted'] = u'0'
     p['itemAlerts'] = u'0'
+    p['digest'] = u'0'
     commit(p)
     p['urlCode'] = toBase62(p)
     commit(p)

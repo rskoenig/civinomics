@@ -316,7 +316,7 @@
             wListF = []
             wListL = []
             for f in fList:
-                w = workshopLib.getWorkshopByID(f['workshopID'])
+                w = workshopLib.getWorkshopByCode(f['workshopCode'])
                 if w['deleted'] == '0' and w['type'] != 'personal':
                     wlisten = listenerLib.getListener(c.user, w)
                     if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):

@@ -190,7 +190,7 @@
                 <ul class="unstyled civ-block-list">
             % endif
             <li>
-            <% workshop = workshopLib.getWorkshopByID(f['workshopID']) %>
+            <% workshop = workshopLib.getWorkshopByCode(f['workshopCode']) %>
             <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/facilitate/response/handler/">
             <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
             <input type="hidden" name="workshopURL" value="${workshop['url']}">

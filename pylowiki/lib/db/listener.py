@@ -53,6 +53,7 @@ def Listener(user, workshop, pending = 1):
         listener['pending'] = pending
         listener['disabled'] = u'0'
         listener['itemAlerts'] = u'0'
+        listener['digest'] = u'0'
         commit(listener)
         listener['urlCode'] = toBase62(listener)
         listener = generic.linkChildToParent(listener, user)

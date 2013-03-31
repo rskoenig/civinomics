@@ -10,14 +10,14 @@ log = logging.getLogger(__name__)
 
 # Getters
 def isFacilitator( user, workshop ):
-   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopID', workshop.id))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '0'))).all()
+   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '0'))).all()
    if f:
       return True
    else:
       return False
 
 def isPendingFacilitator( user, workshop ):
-   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopID', workshop.id))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '1'))).all()
+   f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '1'))).all()
    if f:
       return True
    else:
@@ -25,7 +25,7 @@ def isPendingFacilitator( user, workshop ):
 
 def getFacilitatorsByWorkshop( workshop, disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('workshopID', workshop.id))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter(Thing.data.any(wc('disabled', disabled))).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).all()
     except:
         return False
 
@@ -37,7 +37,7 @@ def getFacilitatorsByUser(user, disabled = '0'):
 
 def getFacilitatorsByUserAndWorkshop(user, workshop, disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopID', workshop.id))).filter(Thing.data.any(wc('disabled', disabled))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).filter(Thing.data.any(wc('disabled', disabled))).all()
     except:
         return False
 
@@ -46,7 +46,7 @@ def getFacilitatorInWorkshop(user, workshop):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'facilitator')\
             .filter_by(owner = user.id)\
-            .filter(Thing.data.any(wc('workshopID', workshop.id)))\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
             .one()
     except:
         return False
@@ -67,11 +67,11 @@ class Facilitator(object):
     def __init__(self, user, workshop, pending = '0'):
         # note - the userID of the facilitator is the f.owner
         f = Thing('facilitator', user.id)
-        f['workshopID'] = workshop.id
         f['disabled'] = u'0'
         f['pending'] = pending
         f['itemAlerts'] = u'1'
         f['flagAlerts'] = u'1'
+        f['digest'] = u'0'
         generic.linkChildToParent(f, workshop)
         commit(f)
         f['urlCode'] = utils.toBase62(f)

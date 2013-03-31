@@ -69,8 +69,7 @@ class ProfileController(BaseController):
            if 'pending' in f and f['pending'] == '1':
               c.pendingFacilitators.append(f)
            elif f['disabled'] == '0':
-              wID = f['workshopID']
-              myW = workshopLib.getWorkshopByID(wID)
+              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
               if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
                  # show to the workshop owner, show to the facilitator owner, show to admin
                  if 'user' in session: 

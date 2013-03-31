@@ -848,7 +848,7 @@
            <ul class="unstyled civ-block-list">
         % endif
         <li>
-        <% workshop = getWorkshopByID(f['workshopID']) %>
+        <% workshop = getWorkshopByCode(f['workshopCode']) %>
         <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/coFacilitateHandler/">
         <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
         <input type="hidden" name="workshopURL" value="${workshop['url']}">
@@ -880,7 +880,7 @@
           fList = getFacilitatorsByUser(c.authuser.id)
           wList = []
           for f in fList:
-              w = getWorkshopByID(f['workshopID'])
+              w = getWorkshopByCode(f['workshopCode'])
               if w['deleted'] == '0' and w['public_private'] != 'personal':
                   if not isFacilitator(c.user.id, w.id) and not isPendingFacilitator(c.user.id, w.id):
                       wList.append(w)
