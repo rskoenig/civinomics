@@ -51,6 +51,17 @@ class FollowController(BaseController):
             else:
                 follower['itemAlerts'] = u'1'
                 eAction = 'Turned on'
+        elif alert == 'digest':
+            if 'digest' in follower.keys(): # Not needed after DB reset
+                if follower['digest'] == u'1':
+                    follower['digest'] = u'0'
+                    eAction = 'Turned off'
+                else:
+                    follower['digest'] = u'1'
+                    eAction = 'Turned on'
+            else:
+                follower['digest'] = u'1'
+                eAction = 'Turned on'
         else:
             return "Error"   
         dbHelpers.commit(follower)

@@ -1006,6 +1006,17 @@ class WorkshopController(BaseController):
             else:
                 pmember['itemAlerts'] = u'1'
                 eAction = 'Turned on'
+        elif alert == 'digest':
+            if 'digest' in pmember.keys(): # Not needed after DB reset
+                if pmember['digest'] == u'1':
+                    listener['digest'] = u'0'
+                    eAction = 'Turned off'
+                else:
+                    pmember['digest'] = u'1'
+                    eAction = 'Turned on'
+            else:
+                pmember['digest'] = u'1'
+                eAction = 'Turned on'
         else:
             return "Error"   
         dbHelpers.commit(pmember)

@@ -140,11 +140,14 @@ class FacilitatorController(BaseController):
         # initialize to current value if any, '0' if not set in object
         iAlerts = '0'
         fAlerts = '0'
+        fDigest = '0'
         eAction = ''
         if 'itemAlerts' in facilitator:
             iAlerts = facilitator['itemAlerts']
         if 'flagAlerts' in facilitator:
             fAlerts = facilitator['flagAlerts']
+        if 'digest' in facilitator:
+            fDigest = facilitator['digest']
         
         payload = json.loads(request.body)
         if 'alert' not in payload:
@@ -172,8 +175,20 @@ class FacilitatorController(BaseController):
             else:
                 facilitator['itemAlerts'] = u'1'
                 eAction = 'Turned on'
+        elif alert == 'digest':
+            if 'digest' in facilitator.keys(): # Not needed after DB reset
+                if facilitator['digest'] == u'1':
+                    facilitator['digest'] = u'0'
+                    eAction = 'Turned off'
+                else:
+                    facilitator['digest'] = u'1'
+                    eAction = 'Turned on'
+            else:
+                facilitator['digest'] = u'1'
+                eAction = 'Turned on'
         else:
             return "Error"   
+            
         dbhelpersLib.commit(facilitator)
         if eAction != '':
             eventLib.Event('Facilitator notifications set', eAction, facilitator, c.authuser)

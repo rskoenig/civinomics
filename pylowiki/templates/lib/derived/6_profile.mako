@@ -53,25 +53,34 @@
                                 f = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, workshop)[0]
                                 itemsChecked = ''
                                 flagsChecked = ''
+                                digestChecked = ''
                                 if 'itemAlerts' in f and f['itemAlerts'] == '1':
                                     itemsChecked = 'checked'
                                 if 'flagAlerts' in f and f['flagAlerts'] == '1':
                                     flagsChecked = 'checked'
+                                if 'digest' in f and f['digest'] == '1':
+                                    digestChecked = 'checked'
                             %>
                             <div class="row-fluid" ng-controller="facilitatorController">
-                                <div class="span4">Email me when new: </div>
-                                <div class="span4">
+                                <div class="span3">Email when:</div>
+                                <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Items: <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        New Items: <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
-                                </div><!-- span4 -->
-                                <div class="span4">
+                                </div><!-- span3 -->
+                                <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Flags: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
+                                        New Flags: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
                                         <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
                                     </form>
-                                </div><!-- span4 -->
+                                </div><!-- span3 -->
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
                             </div><!-- row-fluid -->
                             </td></tr>
                             </table>
@@ -84,17 +93,26 @@
                             <%
                                 l = listenerLib.getListener(c.user, workshop)
                                 itemsChecked = ''
+                                digestChecked = ''
                                 if 'itemAlerts' in l and l['itemAlerts'] == '1':
                                     itemsChecked = 'checked'
+                                if 'digest' in l and l['digest'] == '1':
+                                    digestChecked = 'checked'
                             %>
                             <div class="row-fluid" ng-controller="listenerController">
-                                <div class="span4">Email me when new: </div>
-                                <div class="span8">
+                                <div class="span3">Email when:</div>
+                                <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
-                                </div><!-- span8>
+                                </div><!-- span3 -->
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
                             </div><!-- row-fluid -->
                             </tr></tbody></table>
                         </div><!-- margin-top -->
@@ -107,17 +125,26 @@
                                 <tr class="warning"><td>
                                 <%
                                     itemsChecked = ''
+                                    digestChecked = ''
                                     if 'itemAlerts' in f and f['itemAlerts'] == '1':
                                         itemsChecked = 'checked'
+                                    if 'digest' in f and f['digest'] == '1':
+                                        digestChecked = 'checked'
                                 %>
                                 <div class="row-fluid" ng-controller="followerController">
-                                    <div class="span4">Email me when new: </div>
-                                    <div class="span8">
+                                    <div class="span3">Email when: </div>
+                                    <div class="span3">
                                         <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                             Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                             <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                         </form>
-                                    </div><!-- span8 -->
+                                    </div><!-- span3 -->
+                                    <div class="span3">
+                                        <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                            Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                            <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
+                                        </form>
+                                    </div><!-- span3 -->
                                 </div><!-- row-fluid -->
                                 </tr></tbody></table>
                             </div><!-- margin-top -->
@@ -130,17 +157,26 @@
                             <% 
                                 p = pmemberLib.getPrivateMember(workshop['urlCode'], c.user['email'])
                                 itemsChecked = ''
+                                digestChecked = ''
                                 if 'itemAlerts' in p and p['itemAlerts'] == '1':
                                         itemsChecked = 'checked'
+                                if 'digest' in p and p['digest'] == '1':
+                                        digestChecked = 'checked'
                             %>
                             <div class="row-fluid" ng-controller="pmemberController">
-                                <div class="span4">Email me when new: </div>
-                                <div class="span8">
+                                <div class="span3">Email when: </div>
+                                <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
                                         Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
-                                </div><!-- span8 -->
+                                </div><!-- span3 -->
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
                             </div><!-- row-fluid -->
                             </tr></tbody></table>
                         </div><!-- margin-top -->

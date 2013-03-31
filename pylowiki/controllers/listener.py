@@ -151,6 +151,17 @@ class ListenerController(BaseController):
             else:
                 listener['itemAlerts'] = u'1'
                 eAction = 'Turned on'
+        elif alert == 'digest':
+            if 'digest' in listener.keys(): # Not needed after DB reset
+                if listener['digest'] == u'1':
+                    listener['digest'] = u'0'
+                    eAction = 'Turned off'
+                else:
+                    listener['digest'] = u'1'
+                    eAction = 'Turned on'
+            else:
+                listener['digest'] = u'1'
+                eAction = 'Turned on'
         else:
             return "Error"   
         dbHelpers.commit(listener)
