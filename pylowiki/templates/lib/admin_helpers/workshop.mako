@@ -174,14 +174,14 @@
             <br />
             </form><br />
             <form id="titleListener" class="form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
-            Add a job title to listener (18 characters max):<br />
+            Add a job title to listener (60 characters max):<br />
             <% 
                 if 'title' in listener:
                     ltitle = listener['title']
                 else:
                     ltitle = ""
             %>
-            Title: <input type="text" name="listenerTitle" value="${ltitle}" size="18" maxlength="18"> &nbsp;&nbsp;&nbsp;
+            Title: <input type="text" name="listenerTitle" value="${ltitle}" size="60" maxlength="60"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
             <button type="submit" class="btn btn-warning">Save Title</button>
             <br />
