@@ -90,7 +90,7 @@ def emailAlerts(thing):
             subject = 'Alert: New %s added to a bookmarked Civinomics workshop'%newThing
             for follower in followers:
                 if 'itemAlerts' in follower and follower['itemAlerts'] == '1':
-                    followerUser = userLib.getUserByID(follower.id)
+                    followerUser = userLib.getUserByID(follower.owner)
                     toEmail = followerUser['email']
   
                     mailLib.send(toEmail, fromEmail, subject, textMessage)
