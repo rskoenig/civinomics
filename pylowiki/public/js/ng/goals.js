@@ -1,8 +1,8 @@
 var app = angular.module('civ', []);
 
 app.controller('GoalsCtrl', function($scope, $http, $location){
-//function GoalsCtrl($scope, $http, $location) {
-  var getGoalsURL = $location.url() + 'goals/get';
+  var getGoalsURL = window.location.pathname;
+  getGoalsURL = getGoalsURL.slice(-getGoalsURL.length, -8) + 'goals/get';
   $http.get(getGoalsURL).success(function(data){
     $scope.goals = data;
     angular.forEach($scope.goals, function(goal){
@@ -64,8 +64,6 @@ app.controller('GoalsCtrl', function($scope, $http, $location){
     return count;
   };
 });
-
-//angular.module('civ', [])
 
 app.directive('civBlur', function() 
 {

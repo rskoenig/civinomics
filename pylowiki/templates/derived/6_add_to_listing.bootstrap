@@ -68,8 +68,8 @@
          <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120">
          <span class="help-block"> (Try to have your idea address one or more of the workshop goals below) </span>
          <label>Workshop goals</label>
-         <ul>
-            <li ng-repeat="goal in goals" ng-cloak>
+         <ul ng-cloak>
+            <li ng-repeat="goal in goals">
                <span class="goal-title done-{{goal.done}}">{{goal.title}}</span>
             </li>
          </ul>
