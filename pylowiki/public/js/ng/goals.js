@@ -1,10 +1,7 @@
-var app = angular.module('civ', [], function($locationProvider){
-    $locationProvider.html5Mode(true);
-});
+var app = angular.module('civ', []);
 
-app.controller('GoalsCtrl', function($scope, $http, $location){
-  $scope.baseURL = $location.path();
-  $scope.location = $location;
+app.controller('GoalsCtrl', function($scope, $http){
+  $scope.baseURL = location.pathname;
   if ($scope.baseURL.match('preferences'))
   {
     $scope.baseURL = $scope.baseURL.slice(-$scope.baseURL.length, -11);
