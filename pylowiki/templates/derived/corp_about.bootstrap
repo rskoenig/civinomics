@@ -1,0 +1,32 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+
+<%def name="display_body_right_content()">
+    <div class="row-fluid">
+        <h1>About Us</h1>
+        </br>
+        <p class="lead">Our mission is to improve social decision making the collective creativity of communities.</p>
+        <p>We enable an iterative process of citizen collaboration to fix problems. This starts with 140 character long ideas collected online or through a tablet outreach campaign. These ideas are then developed into full fledged proposals online as participants improve them, link information resources, and conduct more rigorous cost benefit analysis. Participants vote for the best proposals via personal computer or tablet. Elected representatives and other listeners adopt proposals that reach critical-mass support. 
+        </p>
+        </br>
+        <div class="centered">
+            <img class="plain" src="/images/corp/howitworks.png" alt="">
+        </div>
+        </br>
+        <h3>Polling, Outreach and Citizen Engagement</h3>
+            <blockquote>
+                <p>We always hear about the rights of democracy, but the major responsibility of it is participation.</p>
+                <small>Wynton Marsalis</small>
+            </blockquote>
+        <p>We facilitate tablet based scientific polling and program outreach for governments, ngos, schools and generally anyone whos stands for stakeholder education instead of advocacy. Participation is vital to the health of all our civic groups and institutions. Facilitating that partipatiion is essential to our mission.</p>
+        </br>
+        <div class="centered">
+            <iframe src="http://player.vimeo.com/video/42731448" width="600" height="375" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+        </div>
+        </br>
+        </br>
+        <p>Interested in polling or engaging your community? Visit our <a href="/corp/outreach/">outreach</a> section.</p>
+        <p>For more information on past outreach visit our <a href="/corp/caseStudies/">case studies</a> section.</p>
+        </br>
+    </div>
+</%def>
+
