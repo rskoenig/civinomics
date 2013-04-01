@@ -192,15 +192,15 @@
     <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
     <script src="/js/jquery.iframe-transport.js"></script>
     <!-- The basic File Upload plugin -->
-    <script src="/js/jquery.fileupload.js"></script>
+    <script src="/js/vendor/blueimp-jquery.fileupload.js"></script>
     <!-- The File Upload image processing plugin -->
-    <script src="/js/jquery.fileupload-ip.js"></script>
+    <script src="/js/vendor/blueimp-jquery.fileupload-fp.js"></script>
     <!-- The File Upload user interface plugin -->
-    <script src="/js/jquery.fileupload-ui.js"></script>
+    <script src="/js/vendor/blueimp-jquery.fileupload-ui.js"></script>
     <!-- The localization script -->
     <script src="${lib_6.fingerprintFile('/js/locale.js')}"></script>
     <!-- The main application script -->
-    <script src="${lib_6.fingerprintFile('/js/main.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/blueimp-main.js')}"></script>
     <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
     <!--[if gte IE 8]><script src="js/cors/jquery.xdr-transport.js"></script><![endif]-->
     
