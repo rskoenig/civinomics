@@ -1,0 +1,14 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="helpers" file="/derived/news/helpers.mako"/>
+
+<%def name="page_specific_css()">
+    <!-- None -->
+</%def>
+<%def name="display_body_right_content()">
+    <div class="row-fluid">
+        <h1>News</h1>
+        ${helpers.list_news(c.articles)}
+    </div>
+    
+</%def>
+
