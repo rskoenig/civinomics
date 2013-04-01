@@ -27,7 +27,7 @@
 </%def>
 
 <%def name="extraText(thing)">
-    % if thing.objType in ['discussion', 'resource']:
+    % if 'text' in thing.keys():
         <div class="row-fluid">
             <div class="span11 offset1">
                 ${misaka.html(thing['text']) | n}
