@@ -803,7 +803,7 @@
                         if (that._active === 0) {
                             // The stop callback is triggered when all uploads have
                             // been completed, equivalent to the global ajaxStop event:
-                            that._trigger('stop');
+                            that._trigger('stop', e);
                             document.location.reload(true);
                         }
                     });
