@@ -754,6 +754,7 @@
             // jqXHRorResult, textStatus and jqXHRorError are added to the
             // options object via done and fail callbacks
             this._trigger('always', null, options);
+            document.location.reload(true);
         },
 
         _onSend: function (e, data) {
