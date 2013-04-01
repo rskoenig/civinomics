@@ -87,7 +87,7 @@ def emailAlerts(thing):
             textMessage = textMessage.replace('${c.thingURL}', thingURL)
             textMessage = textMessage.replace('${c.thingOwner}', thingOwner)
             
-            subject = 'Alert: New %s added to a bookmarked Civinomics workshop'%newThing
+            subject = 'Civinomics Alert: New Item in bookmarked workshop "%s"'%workshopName
             for follower in followers:
                 if 'itemAlerts' in follower and follower['itemAlerts'] == '1':
                     followerUser = userLib.getUserByID(follower.owner)
@@ -95,7 +95,7 @@ def emailAlerts(thing):
   
                     mailLib.send(toEmail, fromEmail, subject, textMessage)
 
-            subject = 'Listener Alert: New %s added to your Civinomics workshop'%newThing                
+            subject = 'Civinomics Listener Alert: New Item in workshop "%s"'%workshopName                
             for listener in listeners:
                 if 'itemAlerts' in listener and listener['itemAlerts'] == '1':
                     listenerUser = userLib.getUserByCode(listener['userCode'])
@@ -103,7 +103,7 @@ def emailAlerts(thing):
   
                     mailLib.send(toEmail, fromEmail, subject, textMessage)
                     
-            subject = 'Private Workshop Alert: New %s added to your Civinomics workshop'%newThing                
+            subject = 'Civinomics Alert: New Item in private workshop "%s"'%workshopName                
             for pmember in pmembers:
                 if 'itemAlerts' in pmember and pmember['itemAlerts'] == '1':
                     pmemberUser = userLib.getUserByCode(pmember['userCode'])
