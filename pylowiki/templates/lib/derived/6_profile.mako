@@ -132,10 +132,10 @@
                                         digestChecked = 'checked'
                                 %>
                                 <div class="row-fluid" ng-controller="followerController">
-                                    <div class="span3">Email when: </div>
+                                    <div class="span3">Email when:</div>
                                     <div class="span3">
                                         <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                            Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                            New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                             <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                         </form>
                                     </div><!-- span3 -->
@@ -164,10 +164,10 @@
                                         digestChecked = 'checked'
                             %>
                             <div class="row-fluid" ng-controller="pmemberController">
-                                <div class="span3">Email when: </div>
+                                <div class="span3">Email when:</div>
                                 <div class="span3">
                                     <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                        Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
                                         <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
                                     </form>
                                 </div><!-- span3 -->
