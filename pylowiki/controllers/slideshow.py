@@ -116,7 +116,8 @@ class SlideshowController(BaseController):
                 ]
                 
             """
-            return json.dumps(l)
+            result = {'files': l}
+            return json.dumps(result)
         
     @h.login_required
     def edit(self, workshopCode, workshopURL):
