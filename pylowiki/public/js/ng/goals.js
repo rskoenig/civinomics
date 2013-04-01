@@ -1,14 +1,23 @@
-var app = angular.module('civ', []);
+var app = angular.module('civ', [], function($locationProvider){
+    $locationProvider.html5Mode(true);
+});
 
 app.controller('GoalsCtrl', function($scope, $http, $location){
-  var getGoalsURL = window.location.pathname;
-  getGoalsURL = getGoalsURL.slice(-getGoalsURL.length, -8) + 'goals/get';
-  $http.get(getGoalsURL).success(function(data){
+  $scope.baseURL = $location.path();
+  $scope.location = $location;
+  if ($scope.baseURL.match('preferences'))
+  {
+    $scope.baseURL = $scope.baseURL.slice(-$scope.baseURL.length, -11);
+  }
+  else if ($scope.baseURL.match('/add/idea'))
+  {
+    $scope.baseURL = $scope.baseURL.slice(-$scope.baseURL.length, -8);
+  }
+  $http.get($scope.baseURL + 'goals/get').success(function(data){
     $scope.goals = data;
     angular.forEach($scope.goals, function(goal){
         goal.editing = false;
     });
-    $scope.baseURL = $location.url();
   });
  
   $scope.addGoal = function() {
