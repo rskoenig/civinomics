@@ -754,7 +754,6 @@
             // jqXHRorResult, textStatus and jqXHRorError are added to the
             // options object via done and fail callbacks
             this._trigger('always', null, options);
-            document.location.reload(true);
         },
 
         _onSend: function (e, data) {
@@ -805,6 +804,7 @@
                             // The stop callback is triggered when all uploads have
                             // been completed, equivalent to the global ajaxStop event:
                             that._trigger('stop');
+                            document.location.reload(true);
                         }
                     });
                     return jqXHR;
