@@ -44,8 +44,7 @@ class ActivateController(BaseController):
                                 log.info('not demo')
                                 returnURL = '/'
                             else:
-                                workshop = workshopLib.getWorkshopByCode(demo['workshopCode'])
-                                returnURL = '/workshop/%s/%s' %(workshop['urlCode'], workshop['url'])
+                                returnURL = '/workshop/%s/%s#guider=tour_welcome' %(demo['urlCode'], demo['url'])
                         return redirect(returnURL)
                     else:
                         message['type'] = 'error'

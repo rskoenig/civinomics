@@ -13,7 +13,8 @@ log = logging.getLogger(__name__)
 def getDemo():
     try:
         return meta.Session.query(Thing)\
-            .filter_by(objType = 'demo')\
+            .filter_by(objType = 'workshop')\
+            .filter(Thing.data.any(wc('demo', u'1')))\
             .one()
     except:
         return False
