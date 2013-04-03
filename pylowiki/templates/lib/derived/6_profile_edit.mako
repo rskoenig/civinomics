@@ -5,6 +5,7 @@
     import pylowiki.lib.db.workshop         as workshopLib
     import pylowiki.lib.db.mainImage        as mainImageLib
     import pylowiki.lib.db.discussion       as discussionLib
+    import pylowiki.lib.db.comment          as commentLib
     import pylowiki.lib.db.event            as eventLib
 %> 
 
@@ -143,6 +144,19 @@
                                     </div>
                                 </form>
                             % endif
+                        % elif message['extraInfo'] in ['commentResponse']:
+                            <%
+                                comment = commentLib.getCommentByCode(message['commentCode'])
+                                workshop = workshopLib.getWorkshopByCode(comment['workshopCode'])
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <p><a ${lib_6.thingLinkRouter(comment, workshop, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">${comment['data']}</a></p>
+                                    <p>${message['text']}</p>
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
                         % endif
                     % endif
                 </td>

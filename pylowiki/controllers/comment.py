@@ -9,10 +9,12 @@ import pylowiki.lib.db.user         as  userLib
 import pylowiki.lib.db.facilitator  as  facilitatorLib
 import pylowiki.lib.db.workshop     as  workshopLib
 import pylowiki.lib.db.comment      as  commentLib 
+import pylowiki.lib.db.message      as  messageLib
 import pylowiki.lib.db.discussion   as  discussionLib 
 import pylowiki.lib.db.revision     as  revisionLib
 import pylowiki.lib.db.generic      as  genericLib
 import pylowiki.lib.db.mainImage    as  mainImageLib
+import pylowiki.lib.db.dbHelpers    as  dbHelpers
 import pylowiki.lib.utils           as  utils
 
 log = logging.getLogger(__name__)
@@ -61,11 +63,19 @@ class CommentController(BaseController):
                 parentComment = commentLib.getCommentByCode(parentCommentCode)
                 parentCommentID = parentComment.id
                 discussion = discussionLib.getDiscussion(parentComment['discussionCode'])
+                parentAuthor = userLib.getUserByID(parentComment.owner)
             elif 'discussionCode' in request.params:
                 # Root level comment
                 discussion = discussionLib.getDiscussion(request.params['discussionCode'])
                 parentCommentID = 0
+                parentAuthor = userLib.getUserByID(discussion.owner)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
+            title = 'Someone replied to a post you made'
+            text = '(This is an automated message)'
+            extraInfo = 'commentResponse'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
+            message = genericLib.linkChildToParent(message, comment.c)
+            dbHelpers.commit(message)
             return redirect(utils.thingURL(workshop, thing))
                 
         except KeyError:

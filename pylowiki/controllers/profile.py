@@ -146,7 +146,6 @@ class ProfileController(BaseController):
                     
         c.messages = messageLib.getMessages(c.user)
         c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
-        print c.unreadMessageCount
         
         return render("/derived/6_profile.bootstrap")
     
