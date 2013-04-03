@@ -14,6 +14,7 @@ import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
+import pylowiki.lib.db.generic      as generic
 import simplejson as json
 
 log = logging.getLogger(__name__)
@@ -52,7 +53,6 @@ class ListenerController(BaseController):
 
     def listenerInviteHandler(self):
         listener = listenerLib.Listener(c.user, c.w, 1)
-        eventLib.Event('Listener Invitation Issued', '%s issued an invitation to be a listener of %s'%(c.authuser['name'], c.w['title']), listener, c.authuser)
         alert = {'type':'success'}
         alert['title'] = 'Listener invitation issued.'
         session['alert'] = alert
@@ -63,6 +63,9 @@ class ListenerController(BaseController):
         text = '(This is an automated message)'
         extraInfo = 'listenerInvite'
         m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = c.authuser)
+        m = generic.linkChildToParent(m, listener)
+        dbHelpers.commit(m)
+        eventLib.Event('Listener Invitation Issued', '%s issued an invitation to be a listener of %s'%(c.authuser['name'], c.w['title']), m, user = c.authuser, action='extraInfo')
         
         return redirect("/profile/%s/%s"%(c.user['urlCode'], c.user['url']))
 
@@ -76,7 +79,7 @@ class ListenerController(BaseController):
             if listener and 'acceptInvite' in request.params:
                 listener['pending'] = '0'
                 eAction = "Accepted"
-                  
+                
             if listener and 'declineInvite' in request.params:
                 listener['pending'] = '0'
                 listener['disabled'] = '1'
@@ -84,7 +87,7 @@ class ListenerController(BaseController):
 
             if listener:
                 dbHelpers.commit(listener)
-                eventLib.Event('Listener Invitation %s'%eAction, '%s %s an invitation to be a listener %s'%(c.user['name'], eAction.lower(), c.w['title']), listener, c.user)
+                eventLib.Event('Listener Invitation %s'%eAction, '%s %s an invitation to be a listener %s'%(c.user['name'], eAction.lower(), c.w['title']), self.message, user = c.user, action = eAction.lower())
                 alert = {'type':'success'}
                 alert['title'] = 'Invitation %s'%eAction
                 session['alert'] = alert
@@ -126,7 +129,7 @@ class ListenerController(BaseController):
         if listener:
             listener['disabled'] = '1'
             dbHelpers.commit(listener)
-            eventLib.Event('Listener Resigned', '%s resigned as listener of %s: %s'%(c.user['name'], c.w['title'], resignReason), listener, c.authuser)
+            eventLib.Event('Listener Resigned', '%s resigned as listener of %s: %s'%(c.user['name'], c.w['title'], resignReason), listener, user = c.user, action = 'resigned', reason = resignReason)
             alert = {'type':'success'}
             alert['title'] = 'Listener resignation accepted.'
             session['alert'] = alert

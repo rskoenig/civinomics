@@ -419,12 +419,10 @@
                             <ul class="nav nav-pills nav-stacked">
                             <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Update your profile info
                             </a></li>
-                            <li class="${tab3active}"><a href="#tab3" data-toggle="tab">2. Invitations & Notifications${msgString}
-                            </a></li>
-                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">3. Change your password<br />
+                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">2. Change your password<br />
                             </a></li>
                             % if c.admin:
-                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">4. Administrate<br />
+                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">3. Administrate<br />
                             Admin only - shhh!.</a></li>
                             % endif
                             </ul>
@@ -447,9 +445,6 @@
                             <div class="tab-pane ${tab1active}" id="tab1">
                                 ${helpersEdit.profileInfo()}
                             </div><!-- tab1 -->
-                            <div class="tab-pane ${tab3active}" id="tab3">
-                                ${helpersEdit.profileMessages()}
-                            </div><!-- tab3 -->
                             <div class="tab-pane ${tab4active}" id="tab4">
                                 ${helpersEdit.changePassword()}
                             </div><!-- tab4 -->

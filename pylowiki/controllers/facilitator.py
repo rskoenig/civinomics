@@ -47,8 +47,9 @@ class FacilitatorController(BaseController):
             text = '(This is an automated message)'
             extraInfo = 'facilitationInvite'
             m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = w, extraInfo = extraInfo, sender = c.authuser)
-            generic.linkChildToParent(m, fList[0])
-            eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
+            m = generic.linkChildToParent(m, fList[0])
+            dbhelpersLib.commit(m)
+            eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), m, user = c.authuser, action = extraInfo)
             alert = {'type':'success'}
             alert['title'] = 'Success. CoFacilitation invitation issued.'
             session['alert'] = alert
@@ -90,7 +91,7 @@ class FacilitatorController(BaseController):
 
             if doF:
                   dbhelpersLib.commit(doF)
-                  eventLib.Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), c.w['title']), doF, c.user)
+                  eventLib.Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), c.w['title']), message, user = c.user, action = eAction.lower())
                   # success message
                   
                   alert = {'type':'success'}
@@ -139,7 +140,7 @@ class FacilitatorController(BaseController):
         if doF and c.authuser.id == doF.owner:
            doF['disabled'] = '1'
            dbhelpersLib.commit(doF)
-           eventLib.Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], c.w['title'], resignReason), doF, c.authuser)
+           eventLib.Event('CoFacilitator Resigned', '%s resigned as cofacilitator of %s: %s'%(c.authuser['name'], c.w['title'], resignReason), doF, user = c.authuser)
            alert = {'type':'success'}
            alert['title'] = 'Success. CoFacilitation resignation successful.'
            session['alert'] = alert
