@@ -16,7 +16,6 @@ import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import simplejson as json
 
-
 log = logging.getLogger(__name__)
 
 class ListenerController(BaseController):
@@ -39,6 +38,14 @@ class ListenerController(BaseController):
         else:
             abort(404)
             
+        if action == 'listenerResponseHandler':
+            if 'messageCode' not in request.params:
+                abort(404)
+            message = messageLib.getMessage(c.user, request.params['messageCode'])
+            if not message:
+                abort(404)
+            self.message = message
+        
         if not c.user or not c.w:
             abort(404)
             
@@ -52,9 +59,10 @@ class ListenerController(BaseController):
         session.save()
         
         workshopLib.setWorkshopPrivs(c.w)
-        title = '%s has invited you to be a listener for the workshop %s' %(c.authuser['name'], c.w['title'])
+        title = 'Listener invitation'
         text = '(This is an automated message)'
-        m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = c.w)
+        extraInfo = 'listenerInvite'
+        m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = c.authuser)
         
         return redirect("/profile/%s/%s"%(c.user['urlCode'], c.user['url']))
 
@@ -81,6 +89,10 @@ class ListenerController(BaseController):
                 alert['title'] = 'Invitation %s'%eAction
                 session['alert'] = alert
                 session.save()
+                
+                self.message['read'] = u'1'
+                dbHelpers.commit(self.message)
+                
                 return redirect("/profile/%s/%s"%(c.user['urlCode'], c.user['url']))
                 
         abort(404)

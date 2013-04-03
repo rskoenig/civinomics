@@ -20,7 +20,31 @@ def getMessages(user, deleted = u'0', disabled = u'0', read = u'all', count = Fa
             query = query.filter(Thing.data.any(wc('read', read)))
         if count:
             return query.count()
-        return query.all()
+        return query.order_by('-date').all()
+    except:
+        return False
+
+def getMessagesForThing(user, thing, deleted = u'0', disabled = u'0'):
+    try:
+        thingKey = '%sCode' % thing.objType
+        thingCode = thing['urlCode']
+        query = meta.Session.query(Thing).filter_by(objType = 'message')\
+                .filter_by(owner = user.id)\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc(thingKey, thingCode)))\
+                .all()
+    except:
+        return False
+
+def getMessage(user, code, deleted = u'0', disabled = u'0'):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'message')\
+                .filter_by(owner = user.id)\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('urlCode', code)))\
+                .one()
     except:
         return False
 
@@ -60,6 +84,13 @@ def Message(**kwargs):
     else:
         sender = u'0'
     
+    if 'extraInfo' in kwargs:
+        extraInfo = kwargs['extraInfo']
+        m['extraInfo'] = extraInfo
+        workshop = kwargs['workshop']
+        if extraInfo in ['facilitationInvite', 'listenerInvite']:
+            generic.linkChildToParent(m, workshop)
+    
     m['sender']     = sender
     m['text']       = text
     m['title']      = title
@@ -71,6 +102,6 @@ def Message(**kwargs):
     commit(m)
     
     d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
-                title = title, text = text, workshop = kwargs['workshop'], privs = kwargs['privs'], role = None)
+                title = title, text = text, workshop = workshop, privs = kwargs['privs'], role = None)
     return m
     

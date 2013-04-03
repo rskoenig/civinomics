@@ -17,6 +17,7 @@ import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.dbHelpers    as dbhelpersLib
 import pylowiki.lib.utils           as utilsLib
 import pylowiki.lib.db.message      as messageLib
+import pylowiki.lib.db.generic      as generic
 
 from hashlib import md5
 import simplejson as json
@@ -41,12 +42,12 @@ class FacilitatorController(BaseController):
             w = workshopLib.getWorkshopByCode(wCode)
             workshopLib.setWorkshopPrivs(w)
             facilitator = facilitatorLib.Facilitator(c.user, w, 1)
-           
-            title = '%s has invited you to facilitate the workshop %s' %(c.authuser['name'], w['title'])
-            text = '(This is an automated message)'
-            m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = w)
-           
             fList = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, w)
+            title = 'Facilitation invitation'
+            text = '(This is an automated message)'
+            extraInfo = 'facilitationInvite'
+            m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = w, extraInfo = extraInfo, sender = c.authuser)
+            generic.linkChildToParent(m, fList[0])
             eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
             alert = {'type':'success'}
             alert['title'] = 'Success. CoFacilitation invitation issued.'
@@ -65,6 +66,12 @@ class FacilitatorController(BaseController):
         if 'workshopCode' in request.params and 'workshopURL' in request.params:
             wCode = request.params['workshopCode']
             wURL = request.params['workshopURL']
+            if 'messageCode' not in request.params:
+                abort(404)
+            messageCode = request.params['messageCode']
+            message = messageLib.getMessage(c.user, messageCode)
+            if not message:
+                abort(404)
             c.w = workshopLib.getWorkshop(wCode, utilsLib.urlify(wURL))
             fList = facilitatorLib.getFacilitatorsByUser(c.authuser)
             doF = False
@@ -85,10 +92,15 @@ class FacilitatorController(BaseController):
                   dbhelpersLib.commit(doF)
                   eventLib.Event('CoFacilitator Invitation %s'%eAction, '%s %s an invitation to co facilitate %s'%(c.user['name'], eAction.lower(), c.w['title']), doF, c.user)
                   # success message
+                  
                   alert = {'type':'success'}
                   alert['title'] = 'Success. CoFacilitation Invitation %s.'%eAction
                   session['alert'] = alert
                   session.save()
+                  
+                  message['read'] = u'1'
+                  dbhelpersLib.commit(message)
+                  
                   return redirect("/profile/%s/%s"%(code, url))
 
         alert = {'type':'error'}

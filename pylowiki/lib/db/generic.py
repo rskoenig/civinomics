@@ -15,7 +15,7 @@ def linkChildToParent(child, parent):
     try:
         code = parent['urlCode']
     except Exception as e:
-        log.error("linkChildToParent(): parent object missing 'urlCode' field.")
+        log.error("linkChildToParent(): parent object of type %s and id %s missing 'urlCode' field." %(parent.objType, parent.id))
         return False
     
     key = '%s%s' %(parent.objType, 'Code')

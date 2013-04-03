@@ -10,6 +10,15 @@ import generic
 
 log = logging.getLogger(__name__)
 
+def getListenerByCode(code):
+    try:
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'listener')\
+                .filter(Thing.data.any(wc('urlCode', code)))\
+                .one()
+    except:
+        return False
+
 def getListener(user, workshop):
     try:
         return meta.Session.query(Thing)\

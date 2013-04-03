@@ -1,9 +1,13 @@
 <%!
     import pylowiki.lib.db.user             as userLib
     import pylowiki.lib.db.listener         as listenerLib
+    import pylowiki.lib.db.facilitator      as facilitatorLib
     import pylowiki.lib.db.workshop         as workshopLib
     import pylowiki.lib.db.mainImage        as mainImageLib
+    import pylowiki.lib.db.discussion       as discussionLib
 %> 
+
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="profileInfo()">
     <div class="section-wrapper">
@@ -61,14 +65,76 @@
 <%def name="profileMessages()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Invitations & Notifications</h4>
-            % if c.pendingFacilitators and c.authuser.id == c.user.id:
-                ${pendingFacilitateInvitations()}
-            % elif c.pendingListeners and c.authuser.id == c.user.id:
-                ${pendingListenerInvitations()}
-            % else:
-                No messages today!
-            % endif
+            <h4 class="section-header" class="centered"><br />Messages</h4>
+            <table class="table table-condensed table-hover">
+                <thead>
+                    <th>Sender</th>
+                    <th>Message</th>
+                </thead>
+                % for message in c.messages:
+                    <tr>
+                        <%
+                            if message['sender'] == u'0':
+                                sender = 'Civinomics'
+                            else:
+                                sender = userLib.getUserByCode(message['sender'])
+                        %>
+                        <td>
+                            % if sender == 'Civinomics':
+                                <img src="/images/handdove_medium.png" title="Civinomics" alt="Civinomics">
+                                <p>Civinomics</p>
+                            % else:
+                                ${lib_6.userImage(sender, className="avatar")}
+                                <p>${lib_6.userLink(sender)}</p>
+                            % endif
+                        </td>
+                        <td> 
+                            % if 'extraInfo' in message.keys():
+                                % if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
+                                    <% 
+                                        workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
+                                        if message['extraInfo'] == 'listenerInvite':
+                                            formStr = """<form method="post" name="inviteListener" id="inviteListener" action="/profile/%s/%s/listener/response/handler/">""" %(c.user['urlCode'], c.user['url'])
+                                            action = 'be a listener for'
+                                        else:
+                                            formStr = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
+                                            action = 'facilitate'
+                                    %>
+                                    % if message['read'] == u'1':
+                                        <div class="media">
+                                            ${lib_6.workshopImage(workshop, linkClass="pull-left")}
+                                            <div class="media-body">
+                                                <h4 class="media-heading centered">${message['title']}</h4>
+                                                <p>${lib_6.userLink(sender)} invites you to facilitate <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a></p>
+                                                <p>${message['text']}</p>
+                                                <p>(You have already responded)</p>
+                                                <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                            </div>
+                                        </div>
+                                    % else:
+                                        ${formStr | n}
+                                            <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
+                                            <input type="hidden" name="workshopURL" value="${workshop['url']}">
+                                            <input type="hidden" name="messageCode" value="${message['urlCode']}">
+                                            <div class="media">
+                                                ${lib_6.workshopImage(workshop, linkClass="pull-left")}
+                                                <div class="media-body">
+                                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                                    <p>${lib_6.userLink(sender)} invites you to ${action} <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a></p>
+                                                    <p>${message['text']}</p>
+                                                    <button type="submit" name="acceptInvite" class="btn btn-mini btn-success" title="Accept the invitation to ${action} the workshop">Accept</button>
+                                                    <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to ${action} the workshop">Decline</button>
+                                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    % endif
+                                % endif
+                            % endif
+                        </td>
+                    </tr>
+                % endfor
+            </table>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
@@ -175,46 +241,6 @@
             <br /><br />
         </div><!-- browse -->
     </div><!-- section-wrapper -->
-</%def>
-
-<%def name="pendingFacilitateInvitations()">
-    <div class="well">
-        <strong>Invitations to CoFacilitate Workshops</strong><br />
-        <% fNum = len(c.pendingFacilitators) %>
-        <% wNum = 0 %>
-        % for f in c.pendingFacilitators:
-            % if wNum % 6 == 0 or wNum == 0: ## begin a new row
-                <ul class="unstyled civ-block-list">
-            % elif wNum % 6 == 5: ## end a row
-                </ul>
-                <ul class="unstyled civ-block-list">
-            % endif
-            <li>
-            <% workshop = workshopLib.getWorkshopByCode(f['workshopCode']) %>
-            <form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/${c.user['urlCode']}/${c.user['url']}/facilitate/response/handler/">
-            <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
-            <input type="hidden" name="workshopURL" value="${workshop['url']}">
-            <% mainImage = mainImageLib.getMainImage(workshop) %>
-            % if mainImage['pictureHash'] == 'supDawg':
-                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/slide/slideshow/supDawg.slideshow" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
-                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
-            % else:
-                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}"><img src="/images/mainImage/${mainImage['directoryNum']}/orig/${mainImage['pictureHash']}.jpg" alt="mtn" class="block" style = "margin: 5px; width: 120px; height: 80px;"/><br>
-                <a href="/workshops/${workshop['urlCode']}/${workshop['url']}">${workshop['title']}</a>
-            % endif
-            <br /> <br />
-            <button type="submit" name="acceptInvite" class="btn btn-mini btn-success" title="Accept the invitation to cofacilitate the workshop">Accept</button>
-            <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to cofcilitate the workshop">Decline</button>
-            </form>
-            <li>
-            <% 
-            wNum = wNum + 1
-            if wNum == 6:
-              wNum = 0
-            %>
-        % endfor
-        </ul>
-    </div><!-- well -->
 </%def>
 
 <%def name="pendingListenerInvitations()">

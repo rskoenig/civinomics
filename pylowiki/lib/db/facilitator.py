@@ -16,6 +16,15 @@ def isFacilitator( user, workshop ):
    else:
       return False
 
+def getFacilitatorByCode(code):
+    try:
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'facilitator')\
+                .filter(Thing.data.any(wc('urlCode', code)))\
+                .one()
+    except:
+        return False
+
 def isPendingFacilitator( user, workshop ):
    f = meta.Session.query(Thing).filter_by(objType = 'facilitator').filter_by(owner = user.id).filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('pending', '1'))).all()
    if f:

@@ -46,7 +46,7 @@
                                     numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
                                     if numMessages:
                                         if numMessages > 0:
-                                            profileTitle += '(%s)' % numMessages
+                                            profileTitle += ' (%s)' % numMessages
                                 %>
                                 <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${profileTitle}</a>
                             </li>

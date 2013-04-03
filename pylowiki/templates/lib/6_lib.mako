@@ -137,6 +137,8 @@
    <%
       if type(user) == type(1L):
          user = userLib.getUserByID(user)
+      elif type(user) == type(u''):
+         user = userLib.getUserByCode(user)
       if user.objType == 'facilitator':
          user = userLib.getUserByID(user.owner)
       if user.objType == 'listener':

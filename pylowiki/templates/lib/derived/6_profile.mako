@@ -1,6 +1,5 @@
 <%!
     import pylowiki.lib.db.workshop     as workshopLib
-    import pylowiki.lib.db.tag          as tagLib
     import pylowiki.lib.db.facilitator  as facilitatorLib
     import pylowiki.lib.db.listener     as listenerLib
     import pylowiki.lib.db.follow       as followLib
@@ -402,8 +401,8 @@
             tab1active = "active"
     
         msgString = ''
-        if c.messages:
-            msgString = ' (' + str(c.messages) + ')'
+        if c.unreadMessageCount != 0:
+            msgString = ' (' + str(c.unreadMessageCount) + ')'
     %>
     <div class="row-fluid">
         % if c.conf['read_only.value'] == 'true':

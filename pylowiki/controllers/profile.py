@@ -22,6 +22,7 @@ import pylowiki.lib.db.follow           as followLib
 import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.revision         as revisionLib
+import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.tag              as tagLib
 import pylowiki.lib.utils               as utils
 
@@ -143,7 +144,9 @@ class ProfileController(BaseController):
                     elif p.objType == 'comment':
                         c.comments.append(p)
                     
-        c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
+        c.messages = messageLib.getMessages(c.user)
+        c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
+        print c.unreadMessageCount
         
         return render("/derived/6_profile.bootstrap")
     
