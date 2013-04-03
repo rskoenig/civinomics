@@ -16,6 +16,7 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.dbHelpers    as dbhelpersLib
 import pylowiki.lib.utils           as utilsLib
+import pylowiki.lib.db.message      as messageLib
 
 from hashlib import md5
 import simplejson as json
@@ -33,25 +34,31 @@ class FacilitatorController(BaseController):
     @h.login_required
     def facilitateInviteHandler(self, code, url):
         if c.user and 'inviteToFacilitate' in request.params:
-           invite = request.params['inviteToFacilitate']
-           iList = invite.split("/")
-           wCode = iList[0]
-           wURL = iList[1]
-           w = workshopLib.getWorkshopByCode(wCode)
-           facilitatorLib.Facilitator(c.user, w, 1)
-           fList = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, w)
-           eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
-           alert = {'type':'success'}
-           alert['title'] = 'Success. CoFacilitation invitation issued.'
-           session['alert'] = alert
-           session.save()
-           return redirect("/profile/%s/%s"%(code, url))
+            invite = request.params['inviteToFacilitate']
+            iList = invite.split("/")
+            wCode = iList[0]
+            wURL = iList[1]
+            w = workshopLib.getWorkshopByCode(wCode)
+            workshopLib.setWorkshopPrivs(w)
+            facilitator = facilitatorLib.Facilitator(c.user, w, 1)
+           
+            title = '%s has invited you to facilitate the workshop %s' %(c.authuser['name'], w['title'])
+            text = '(This is an automated message)'
+            m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = w)
+           
+            fList = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, w)
+            eventLib.Event('CoFacilitator Invitation Issued', '%s issued an invitation to co facilitate %s'%(c.authuser['name'], w['title']), fList[0], c.authuser)
+            alert = {'type':'success'}
+            alert['title'] = 'Success. CoFacilitation invitation issued.'
+            session['alert'] = alert
+            session.save()
+            return redirect("/profile/%s/%s"%(code, url))
         else:
-           alert = {'type':'error'}
-           alert['title'] = 'Authorization Error. You are not authorized.'
-           session['alert'] = alert
-           session.save()
-           return redirect("/" )
+            alert = {'type':'error'}
+            alert['title'] = 'Authorization Error. You are not authorized.'
+            session['alert'] = alert
+            session.save()
+            return redirect("/" )
 
     @h.login_required
     def facilitateResponseHandler(self, code, url):

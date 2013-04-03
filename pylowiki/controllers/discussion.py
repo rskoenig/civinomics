@@ -131,7 +131,6 @@ class DiscussionController(BaseController):
             d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w,\
                 title = title, text = text, workshop = c.w, privs = c.privs, role = None)
             alertsLib.emailAlerts(d.d)
-            r = revisionLib.Revision(c.authuser, d.d)
             commit(c.w)
         
         return redirect(utils.thingURL(c.w, d.d))

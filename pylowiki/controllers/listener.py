@@ -9,6 +9,7 @@ import pylowiki.lib.helpers         as h
 import pylowiki.lib.db.listener     as listenerLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.message      as messageLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.utils           as utils
@@ -49,6 +50,12 @@ class ListenerController(BaseController):
         alert['title'] = 'Listener invitation issued.'
         session['alert'] = alert
         session.save()
+        
+        workshopLib.setWorkshopPrivs(c.w)
+        title = '%s has invited you to be a listener for the workshop %s' %(c.authuser['name'], c.w['title'])
+        text = '(This is an automated message)'
+        m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = c.w)
+        
         return redirect("/profile/%s/%s"%(c.user['urlCode'], c.user['url']))
 
     def listenerResponseHandler(self):

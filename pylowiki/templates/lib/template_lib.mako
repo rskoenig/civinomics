@@ -1,6 +1,8 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%! import pylowiki.lib.db.user as userLib %>
-<%! import glob %>
+<%! 
+    import pylowiki.lib.db.user     as userLib 
+    import pylowiki.lib.db.message  as messageLib
+%>
 
 <%def name="mainNavbar()">
     <div class="navbar civ-navbar">
@@ -38,8 +40,15 @@
                     <ul class="nav pull-right" id="profileAvatar">
                         % if 'user' in session:
                             <li>
-                              ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", linkClass="topbar-avatar-link")}
-                              <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">profile</a>
+                                ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", linkClass="topbar-avatar-link")}
+                                <%
+                                    profileTitle = 'profile'
+                                    numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
+                                    if numMessages:
+                                        if numMessages > 0:
+                                            profileTitle += '(%s)' % numMessages
+                                %>
+                                <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${profileTitle}</a>
                             </li>
                             % if 'user' in session:
                                 <li class="dropdown">
