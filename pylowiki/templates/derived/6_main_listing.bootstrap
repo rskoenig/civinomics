@@ -20,7 +20,7 @@
             <div class="row-fluid"><!--navigation row-->
                 <ul class="thumbnails">
                     % for item in c.list:
-                        <li class="span6 thumbnail wrap-workshop"> ${helpers.show_workshop(item)} </li>
+                        <li class="span6 wrap-workshop"> ${helpers.show_workshop(item)} </li>
                     % endfor
                 </ul>
             </div><!--/navigation row-->

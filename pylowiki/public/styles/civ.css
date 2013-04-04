@@ -204,7 +204,7 @@ ul.activity{
     margin:0;
 }
 .wrap-workshop{
-    border: 1px solid #075D00;
+    border: 5px solid #075D00;
     background-color: gainsboro;
     height:310px;
     margin-top:5px;
@@ -212,7 +212,7 @@ ul.activity{
 }
 
 .wrap-workshop:hover{
-    border: 1px solid #D15D00;
+    border: 5px solid #D15D00;
 }
 .feed{
    display:inline-block;
