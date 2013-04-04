@@ -666,7 +666,7 @@ class WorkshopController(BaseController):
 
         c.coupon = ''
         if 'coupon' in request.params and request.params['coupon'] != '':
-            if request.params['coupon'] == 'CIVCOMP1':
+            if request.params['coupon'] == 'CIVCOMP100' or request.params['coupon'] == 'CIVCOMP99':
                 c.coupon = request.params['coupon']
             
         if pError: 
