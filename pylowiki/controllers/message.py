@@ -19,8 +19,8 @@ class MessageController(BaseController):
             self.error = True
 
     def markRead(self, urlCode):
-        self.message['read'] = u'1'
-        dbHelpers.commit(self.message)
         if self.error:
             return "Error"
+        self.message['read'] = u'1'
+        dbHelpers.commit(self.message)
         return "OK"
