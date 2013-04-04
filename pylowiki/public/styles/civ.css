@@ -630,24 +630,19 @@ ul.listeners > li {
    background-image:none;
 }
 
-.btn-civ.round{
+.btn.round{
   padding-top: 8px;
   padding-bottom: 8px;
   line-height: 14px;
 }
-.btn-civ.round.followButton{
+.btn.round.followButton{
   padding-top: 8px;
   padding-bottom: 8px;
-  line-height: 16px;
+  line-height: 17px;
+  transition: all 0.50s linear;
 }
 .btn-civ.round i{
-
   padding-right: 3px;
-  /*
-  border-right-color:#f2f2f2;
-  border-right-style:solid;
-  border-right-width:1px;
-*/
   }
 
 .inline{

@@ -81,8 +81,8 @@
              Following </span>
             </button>
         % else:
-            <button class="btn round btn-civ pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-             <span><i class="icon-user icon-white"></i>
+            <button class="btn round pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+             <span><i class="icon-user"></i>
             Follow </span>
             </button>
         % endif
