@@ -34,8 +34,17 @@ class ProfileController(BaseController):
         if action not in ['hashPicture']:
             if id1 is not None and id2 is not None:
                 c.user = userLib.get_user(id1, id2)
+                if not c.user:
+                    abort(404)
             else:
                 abort(404)
+            c.isAdmin = False
+            if 'user' in session:
+                if userLib.isAdmin(c.authuser.id):
+                    c.isAdmin = True
+            if c.user.id == c.authuser.id or c.isAdmin:
+                c.messages = messageLib.getMessages(c.user)
+                c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
     
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
@@ -49,7 +58,6 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
-        c.isAdmin = False
         c.isUser = False
         c.browse = False
         if 'user' in session:
@@ -143,9 +151,6 @@ class ProfileController(BaseController):
                         c.ideas.append(p)
                     elif p.objType == 'comment':
                         c.comments.append(p)
-                    
-        c.messages = messageLib.getMessages(c.user)
-        c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
         
         return render("/derived/6_profile.bootstrap")
     
@@ -293,9 +298,7 @@ class ProfileController(BaseController):
                 if 'pending' in l and l['pending'] == '1':
                     c.pendingListeners.append(l)
                     
-            c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
-
-            return render('/derived/6_profile_edit.bootstrap')
+            return render('/derived/6_profile.bootstrap')
         else:
             abort(404)
 
@@ -408,8 +411,7 @@ class ProfileController(BaseController):
                 session['alert'] = alert
                 session.save()
                 
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/edit"
-                
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
         return redirect(returnURL)
         
     @h.login_required
@@ -504,7 +506,7 @@ class ProfileController(BaseController):
             session['alert'] = alert
             session.save()
             
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/edit"
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
                 
         return redirect(returnURL)
 
