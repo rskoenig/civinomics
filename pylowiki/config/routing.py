@@ -302,6 +302,11 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     
     ################
+    # Messaging    #
+    ################
+    map.connect('/message/{urlCode}/mark/read{end:/?}', controller = 'message', action = 'markRead')
+    
+    ################
     # Action Lists #
     ################
     
