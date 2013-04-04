@@ -76,14 +76,14 @@
 <%def name="watchButton()">
     % if 'user' in session:
         % if c.isFollowing:
-            <button class="btn round followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="The entire workshop" id="workshopBookmark"> 
-            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
-            <span> Un-bookmark </span>
+            <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+            <span><i class="icon-user icon-white"></i>
+             Following </span>
             </button>
         % else:
-            <button class="btn round followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="The entire workshop" id="workshopBookmark"> 
-            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
-            <span> Bookmark </span>
+            <button class="btn round pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+             <span><i class="icon-user"></i>
+            Follow </span>
             </button>
         % endif
     % endif
@@ -91,8 +91,8 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <a class="pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="Workshop preferences">
-      <img class="config" src="/images/glyphicons_pro/glyphicons/png/glyphicons_137_cogwheels.png">
+   <a class="btn round btn-civ pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration">
+      <span><i class="icon-wrench icon-white"></i>Admin</span>
    </a>
 </%def>
 

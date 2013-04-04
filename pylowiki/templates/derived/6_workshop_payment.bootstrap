@@ -41,7 +41,7 @@
                     <input type="text" name="email" value="${c.billingEmail}" class="required" />
                 </div><!-- form-row -->
                 <div class="form-row">
-                    <label>Credit Card Number (use 4242424242424242 for testing)</label>
+                    <label>Credit Card Number</label>
                     <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
                 </div><!-- form-row -->
                 <div class="form-row">

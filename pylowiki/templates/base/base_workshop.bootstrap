@@ -5,13 +5,13 @@
 <div class="row-fluid" ng-app="civ">
    <div class="span12 well workshop-panel">
       <div class="row-fluid">
-         <div class="span10" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
+         <div class="span9" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
             <%
                 if c.w['public_private'] == 'public':
                     outOfScope = lib_6.geoBreadcrumbs()
             %>
          </div><!-- /geographic breadcrumbs -->
-         <div class="span2"> <!-- watch button -->
+         <div class="span3"> <!-- watch button -->
             <%
                 helpers.watchButton()
                 if c.privs['admin'] or c.privs['facilitator']:

@@ -39,8 +39,8 @@
          <div style="width:100%; height:190px; background-image:url('${imgSrc}'); background-repeat:no-repeat; background-size:cover; background-position:center;"></div>
       </a>
    </div>
-      <p class="centered orange">
-         <a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 50)} </a>
+      <p class="orange centered">
+         <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 50)} </a></strong>
       </p>
       <div class="workshop-listing-info">
          <span>
@@ -51,7 +51,7 @@
          <span class="pull-right orange workshop-listing-info-icons"> 
             <a ${lib_6.workshopLink(w)}> <!-- Num watchers -->
                ${len(followLib.getWorkshopFollowers(w))}
-               <img class="small-bookmark" data-toggle="tooltip" title="Bookmarks" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
+               <img class="small-bookmark" data-toggle="tooltip" title="Followers" src="/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png">
             </a> <!-- /Num watchers -->
             <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
                ${len(activityLib.getActivityForWorkshop(w['urlCode']))}
