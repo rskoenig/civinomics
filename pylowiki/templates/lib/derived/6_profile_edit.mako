@@ -75,9 +75,9 @@
             <%
                 rowClass = ''
                 if message['read'] == u'0':
-                    rowClass = 'warning'
+                    rowClass = 'warning unread-message'
             %>
-            <tr class="${rowClass}">
+            <tr class = "${rowClass}" data-code="${message['urlCode']}">
                 <%
                     if message['sender'] == u'0':
                         sender = 'Civinomics'
