@@ -204,7 +204,7 @@ ul.activity{
     margin:0;
 }
 .wrap-workshop{
-    border: 5px solid #075D00;
+    border: 1px solid #075D00;
     background-color: gainsboro;
     height:310px;
     margin-top:5px;
@@ -212,7 +212,7 @@ ul.activity{
 }
 
 .wrap-workshop:hover{
-    border: 5px solid #D15D00;
+    border: 1px solid #D15D00;
 }
 .feed{
    display:inline-block;
@@ -436,12 +436,12 @@ img.watch{
 }
 
 .btn.followButton{
-    border: 1px solid #BBBBBB;
-    padding:3px 7px;
+    margin-left: 8px;
+    width: 90px;
 }
 
-.btn.followButton:hover{
-    border: 1px solid #BBBBBB;
+.btn.followButton.following{
+    width: 110px;
 }
 
 .vote-icon{
@@ -612,22 +612,43 @@ ul.listeners > li {
 .btn-civ {
    color: white;
    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-   background-color: #D15D00;
-   background-image: -moz-linear-gradient(top, #FF9A48, #D15E00);
-   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FF9A48), to(#D15E00));
-   background-image: -webkit-linear-gradient(top, #FF9A48, #D15E00);
-   background-image: -o-linear-gradient(top, #FF9A48, #D15E00);
-   background-image: linear-gradient(to bottom, #FF9A48, #D15E00);
+   background-color: #0ca900;
+   background-image: -moz-linear-gradient(top, #0ca900, #087600);
+   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0ca900), to(#087600));
+   background-image: -webkit-linear-gradient(top, #0ca900, #087600);
+   background-image: -o-linear-gradient(top, #0ca900, #087600);
+   background-image: linear-gradient(to bottom, #0ca900, #087600);
    background-repeat: repeat-x;
-   border-color: #FF9A48 #D15E00 #aa4c00;
+   border-color: #0ca900 #087600 #aa4c00;
    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-   background-image: -ms-linear-gradient(top, #FF9A48, #D15E00);
+   background-image: -ms-linear-gradient(top, #0ca900, #087600);
 }
 
 .btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled] {
    color: white;
-   background-color: #D15D00;
+   background-color: #0ca900;
+   background-image:none;
 }
+
+.btn-civ.round{
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 14px;
+}
+.btn-civ.round.followButton{
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 16px;
+}
+.btn-civ.round i{
+
+  padding-right: 3px;
+  /*
+  border-right-color:#f2f2f2;
+  border-right-style:solid;
+  border-right-width:1px;
+*/
+  }
 
 .inline{
     display:inline-block;
@@ -969,3 +990,4 @@ li.thumbnail-gallery{
     padding-bottom:10px;
     padding-left:10px;
 }
+
