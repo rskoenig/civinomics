@@ -27,7 +27,7 @@
                             <strong>Update Credit Card Information</strong><br />
                             <form action="/account/${c.account['urlCode']}/update/paymentInfo/handler" method="post" id="paymentForm">
                                 <div class="form-row">
-                                    <label>Credit Card Number (use 4242424242424242 for testing)</label>
+                                    <label>Credit Card Number</label>
                                     <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
                                 </div><!-- form-row -->
                                 <div class="form-row">
@@ -114,10 +114,10 @@
 
 <%def name="display_invoice(invoice)">
     <li><strong>Date: </strong> ${time.ctime(invoice['date'])} Amount Due: ${invoice['amount_due']/100} Paid: 
-    % if invoice['ending_balance'] == 0:
+    % if invoice['ending_balance'] == 0 or invoice['amount_due'] == 0:
         Yes
     % else:
-        No ${invoice}
+        Not yet,.
     % endif
     <br />Line items:<br />
     <ol>
