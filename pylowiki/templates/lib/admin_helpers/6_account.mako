@@ -117,7 +117,7 @@
     % if invoice['ending_balance'] == 0 or invoice['amount_due'] == 0:
         Yes
     % else:
-        Not yet,.
+        Not yet.
     % endif
     <br />Line items:<br />
     <ol>

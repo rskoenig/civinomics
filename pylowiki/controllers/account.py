@@ -137,7 +137,7 @@ class AccountController(BaseController):
             session.save()
             eventLib.Event(title, data, c.account)
             self.emailInvoicesHandler(c.account['billingEmail'])
-            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/dashboard")     
+            return redirect("/workshop/" + c.w['urlCode'] + "/" + c.w['url'] + "/preferences")     
         else:
             return(redirect("/"))
             
