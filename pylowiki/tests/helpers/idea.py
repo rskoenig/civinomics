@@ -29,7 +29,7 @@ def getAddPage(self, ideasPage):
 
 def getIdeasPage(self, workshopPage):
     """ Returns the ideas page by clicking on the ideas menu bar link. """
-    return workshopPage.click(description=linkDefs.ideasPage())
+    return workshopPage.click(description=linkDefs.ideasPage(), index=0)
 
 def setIdea():
     return formDefs.addIdea_text()

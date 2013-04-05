@@ -26,6 +26,22 @@ def deleteObjectForm_findByCode(soup, ideaCode):
 def email_to_todd_1():
 		return 'andetodd@gmail.com'
 
+def generateText2(*length):
+    """Return a system generated hash for random text"""
+    from string import letters
+    from random import choice
+    size = length or 10
+    hash =  ''.join([choice(letters) for i in range(size)])
+    return hash.lower()
+
+def generateText(*length):
+    """ make up some text """
+    from random import choice
+    from string import lowercase
+    n = 10
+    generatedString = "".join(choice(lowercase) for i in range(n))
+    return generatedString
+
 def getFormParts_soup(deleteForm):
     """expects a beautifulsoup form object, returns action, parameters"""
     formParts = {}

@@ -23,7 +23,6 @@ def create_user(self, usern, passw, postal, membert, name):
             'chkTOS': 'true'
         }
     ).follow()
-    assert 'alert-error' not in rReg
     assert 'success' in rReg
     return rReg
 

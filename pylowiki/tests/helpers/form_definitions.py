@@ -145,6 +145,9 @@ def paymentFormAdminUpgrade():
 def paymentFormAdminUpgradeSubmitName():
     return 'admin-submit-button'
 
+def profile_edit():
+    return 'infoEdit'
+
 def submitNone():
     return None
 

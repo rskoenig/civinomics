@@ -6,6 +6,7 @@ import pylowiki.tests.helpers.authorization as authorization
 import pylowiki.tests.helpers.conversation as conversation
 import pylowiki.tests.helpers.content as content
 import pylowiki.tests.helpers.form_helpers as formHelpers
+import pylowiki.tests.helpers.idea as idea
 import pylowiki.tests.helpers.noun_definitions as nounDefs
 import pylowiki.tests.helpers.noun_helpers as nounHelp
 import pylowiki.tests.helpers.noun_verb_actions as nounAction

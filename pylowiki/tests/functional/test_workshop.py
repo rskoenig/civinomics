@@ -507,9 +507,7 @@ class TestWorkshopController(TestController):
         assert workshopTitle not in workshopListingPage, "private workshop viewable on listing page by creator of said workshop"
 
     def test_view_private_workshop_listing_page_nonmember_facilitator(self):
-        """This test checks to see if a facilitator of a workshop, who is not a member 
-        of this private workshop, can see this workshop on the workshop listing page."""
-        """This test checks to see if a member of the site who is a member 
+        """This test checks to see if a member of the site who is not a member 
         of a private workshop, can see the workshop on the workshop listing page."""
         #: create a workshop under one user
         workshopOwner = create_and_activate_a_user(self)

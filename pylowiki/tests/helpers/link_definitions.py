@@ -72,8 +72,23 @@ def login_homePage():
 def profile():
     return 'profile'
 
+def profilePage():
+    return profile()
+
+def profileEditPage():
+    return profile_edit()
+
 def profile_edit():
-    return 'Edit'
+    return 'Edit Profile'
+
+def profileConversations():
+    return 'conversations'
+
+def profileIdeas():
+    return 'ideas'
+
+def profileResources():
+    return 'resources'
 
 def resourcesPage():
     return 'Learn'
