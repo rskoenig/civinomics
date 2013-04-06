@@ -78,15 +78,15 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
             elif activity.objType == 'comment':
                 if 'resourceCode' in activity.keys():
                     resource = generic.getThing(activity['resourceCode'])
-                    if resource['deleted'] == u'1':
+                    if resource['deleted'] == u'1' or resource['disabled'] == u'1':
                         continue
                 elif 'ideaCode' in activity.keys():
                     idea = generic.getThing(activity['ideaCode'])
-                    if idea['deleted'] == u'1':
+                    if idea['deleted'] == u'1' or idea['disabled'] == u'1':
                         continue
                 else:
                     discussion = discussionLib.getDiscussion(activity['discussionCode'])
-                    if discussion['deleted'] == u'1':
+                    if discussion['deleted'] == u'1' or discussion['disabled'] == u'1':
                         continue
                 finalActivityList.append(activity)
             else:

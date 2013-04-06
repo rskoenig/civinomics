@@ -105,15 +105,15 @@ def getAllComments(disabled = '0', deleted = '0'):
         for comment in comments:
             if 'ideaCode' in comment.keys():
                 idea = generic.getThing(comment['ideaCode'])
-                if idea['deleted'] == u'1':
+                if idea['deleted'] == u'1' or idea['disabled'] == u'1':
                     continue
             elif 'resourceCode' in comment.keys():
                 resource = generic.getThing(comment['resourceCode'])
-                if resource['deleted'] == u'1':
+                if resource['deleted'] == u'1' or resource['disabled'] == u'1':
                     continue
             else:
                 discussion = generic.getThing(comment['discussionCode'])
-                if discussion['deleted'] == u'1':
+                if discussion['deleted'] == u'1' or discussion['disabled'] == u'1':
                     continue
             liveComments.append(comment)
         return liveComments
