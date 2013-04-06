@@ -54,6 +54,7 @@ class SearchController(BaseController):
             return self._noSearch()
         c.numUsers = userLib.searchUsers('name', self.query, count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description'], [self.query, self.query], count = True)
+        c.searchQuery = self.query
         return render('/derived/6_search.bootstrap')
     
     def searchPeople(self):
