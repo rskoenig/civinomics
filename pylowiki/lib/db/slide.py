@@ -47,7 +47,7 @@ def Slide(owner, slideshow, title, filename, image, newSlide = '0'):
         slideshow['slideshow_order'] = slideshow['slideshow_order'] + ',' + str(s.id)
         # identifier, hash, x, y, postfix
         imageLib.resizeImage('slide', hash, 99999, 99999, 'slideshow') # don't resize, but antialias and save appropriately
-        imageLib.resizeImage('slide', hash, 128, 128, 'thumbnail')
+        imageLib.resizeImage('slide', hash, 128, 128, 'thumbnail', preserveAspectRatio = True)
     else:
         s = Thing('slide', owner.id)
         commit(s)

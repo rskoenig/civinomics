@@ -29,13 +29,16 @@ def resizeImage(identifier, hash, x, y, postfix, **kwargs):
     try:
         im = Image.open(origFullpath)
         ratio = 1
+        dims = (x, y)
+        if x == 99999 and y == 99999:
+            dims = im.size
         if 'preserveAspectRatio' in kwargs:
             if kwargs['preserveAspectRatio'] == True:
                 maxwidth = x
                 maxheight = y
                 width, height = im.size
                 ratio = min(float(maxwidth)/width, float(maxheight)/height)
-        dims = (im.size[0] * ratio, im.size[1] * ratio)
+                dims = (int(im.size[0] * ratio), int(im.size[1] * ratio))
         im = im.resize(dims, Image.ANTIALIAS)
         pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
         if not os.path.exists(pathname):
