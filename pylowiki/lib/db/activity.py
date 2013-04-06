@@ -1,7 +1,8 @@
 from pylowiki.model import Thing, Data, meta
 from sqlalchemy import and_
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
-from pylowiki.lib.db.discussion import getDiscussionByID
+import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.generic      as generic
 from dbHelpers import commit
 from pylowiki.lib.utils import urlify
 
@@ -38,7 +39,7 @@ def isActiveWorkshop(thing):
     if thing.objType == 'suggestion' or thing.objType == 'discussion' or thing.objType == 'resource':
         w = meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('urlCode', thing['workshopCode']))).one()
     elif thing.objType == 'comment':
-        d = getDiscussionByID(thing['discussion_id'])
+        d = discussionLib.getDiscussionByID(thing['discussion_id'])
         if d:
             w = meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('urlCode', d['workshopCode']))).one()
         else:
@@ -74,6 +75,20 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
+            elif activity.objType == 'comment':
+                if 'resourceCode' in activity.keys():
+                    resource = generic.getThing(activity['resourceCode'])
+                    if resource['deleted'] == u'1':
+                        continue
+                elif 'ideaCode' in activity.keys():
+                    idea = generic.getThing(activity['ideaCode'])
+                    if idea['deleted'] == u'1':
+                        continue
+                else:
+                    discussion = discussionLib.getDiscussion(activity['discussionCode'])
+                    if discussion['deleted'] == u'1':
+                        continue
+                finalActivityList.append(activity)
             else:
                 finalActivityList.append(activity)
         return finalActivityList
