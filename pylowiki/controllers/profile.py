@@ -42,9 +42,9 @@ class ProfileController(BaseController):
             if 'user' in session:
                 if userLib.isAdmin(c.authuser.id):
                     c.isAdmin = True
-            if c.user.id == c.authuser.id or c.isAdmin:
-                c.messages = messageLib.getMessages(c.user)
-                c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
+                if c.user.id == c.authuser.id or c.isAdmin:
+                    c.messages = messageLib.getMessages(c.user)
+                    c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
     
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
