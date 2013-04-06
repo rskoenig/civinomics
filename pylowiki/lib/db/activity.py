@@ -19,8 +19,20 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
-            else:
-                finalActivityList.append(activity)
+            elif activity.objType == 'comment':
+                if 'resourceCode' in activity.keys():
+                    resource = generic.getThing(activity['resourceCode'])
+                    if resource['deleted'] == u'1' or resource['disabled'] == u'1':
+                        continue
+                elif 'ideaCode' in activity.keys():
+                    idea = generic.getThing(activity['ideaCode'])
+                    if idea['deleted'] == u'1' or idea['disabled'] == u'1':
+                        continue
+                else:
+                    discussion = generic.getThing(activity['discussionCode'])
+                    if discussion['deleted'] == u'1' or discussion['disabled'] == u'1':
+                        continue
+            finalActivityList.append(activity)
         return finalActivityList
     except:
         return False
