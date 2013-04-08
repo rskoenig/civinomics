@@ -583,6 +583,15 @@ class WorkshopController(BaseController):
 
     @h.login_required
     def configureStartWorkshopHandler(self, workshopCode, workshopURL):
+        if not self.checkPreferences():
+            alert = {'type':'error'}
+            alert['title'] = 'Workshop not started'
+            alert['content'] = ' !'
+            session['alert'] = alert
+            session.save()
+            
+        return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
+            
         c.title = "Configure Workshop"
 
         werror = 0
@@ -887,24 +896,55 @@ class WorkshopController(BaseController):
         c.demo = workshopLib.isDemo(c.w)
         
         return render('/derived/6_workshop_home.bootstrap')
-    
-    @h.login_required
-    def preferences(self, workshopCode, workshopURL):
+   
+    def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)
-        if testGoals:
+        if testGoals and c.w['description'] and c.w['description'] != '':
             c.basicConfig = 1
         else:
             c.basicConfig = 0
+        
+        tags = tagLib.getWorkshopTags(c.w)
+        if len(tags):
+            c.tagConfig = 1
+        else:
+            c.tagConfig = 0
+            
+        slides = slideshowLib.getSlideshow(c.w)
+        slideshow = slideshowLib.getAllSlides(slides)
+        published = 0
+        slide_ids = [int(item) for item in slides['slideshow_order'].split(',')]
+        for id in slide_ids:
+            s = slideLib.getSlide(id) # Don't grab deleted slides
+            if s:
+                published += 1
+        if len(slideshow) > 1 and published > 0:
+            c.slideConfig = 1
+        else:
+            c.slideConfig = 0
+       
+        page = pageLib.getInformation(c.w)
+        if page and 'data' in page:
+            background = page['data']
+        if background and background != '':
+            c.backConfig = 1
+        else:
+            c.backConfig = 0
+            
+        if c.basicConfig and c.tagConfig and c.slideConfig and c.backConfig:
+            return True
+        
+        return False
+                       
+            
+    @h.login_required
+    def preferences(self, workshopCode, workshopURL):
+        readyToStart = self.checkPreferences()
         
         c.tags = tagLib.getWorkshopTags(c.w)
         c.categories = []
         for tag in c.tags:
             c.categories.append(tag['title'])
-        
-        if c.categories:
-            c.tagConfig = 1
-        else:
-            c.tagConfig = 0
             
         if 'confTab' in session:
             c.tab = session['confTab']
@@ -922,10 +962,6 @@ class WorkshopController(BaseController):
             s = slideLib.getSlide(id) # Don't grab deleted slides
             if s:
                 c.published_slides.append(s)
-        if len(c.slideshow) > 1 and len(c.published_slides) > 0:
-            c.slideConfig = 1
-        else:
-            c.slideConfig = 0
             
         c.slides = c.published_slides
             
@@ -944,10 +980,6 @@ class WorkshopController(BaseController):
                 c.accounts = []
         
         c.page = pageLib.getInformation(c.w)
-        if c.page and 'data' in c.page and c.page['data'] != "No workshop summary set yet":
-            c.backConfig = 1
-        else:
-            c.backConfig = 0
         
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
