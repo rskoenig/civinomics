@@ -309,7 +309,7 @@ def make_map():
     ################
     # Action Lists #
     ################
-    
+    map.connect('/stream/{id1}/{id2}{end:/?}', controller='stream', action='stream', id1 = '{id1}', id2 = '{id2}', id3 = '')
     map.connect('/{help:help/?}', controller = 'help', action='help')
     map.connect('/help/{facilitatorGuide:facilitatorGuide/?}', controller = 'help', action='facilitatorGuide')
     map.connect('/help/{faq:faq/?}', controller = 'help', action='faq')
