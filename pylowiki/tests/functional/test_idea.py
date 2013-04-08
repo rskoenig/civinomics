@@ -1,19 +1,27 @@
 # -*- coding: utf-8 -*-
 from pylowiki.tests import *
+from nose.plugins.skip import Skip, SkipTest
 
 import pylowiki.tests.helpers.content as content
 import pylowiki.tests.helpers.form_definitions as formDefs
 import pylowiki.tests.helpers.form_helpers as formHelpers
 import pylowiki.tests.helpers.link_definitions as linkDefs
+import pylowiki.tests.helpers.noun_verb_tests as nounVerbTest
+import pylowiki.tests.helpers.workshops as  workshop
 from pylowiki.tests.helpers.authorization import login, logout
 from pylowiki.tests.helpers.registration import create_and_activate_a_user
-from pylowiki.tests.helpers.workshops import create_new_workshop, addIdeaToWorkshop
+
 
 import logging
 log = logging.getLogger(__name__)
 
 class TestIdeaController(TestController):
-    """This class tests the various aspects of ideas."""
+    """ This class tests that ideas work correctly. A workshop's ideas are created
+    similar to how ideas and resources are created, so there is a helper file, noun_verb_tests.py
+    that hosts most of the tests for these objects. Any tests that are not in this file either
+    have not been refactored to apply to all three of these types, or applies to a situation 
+    specific to that type of workshop object. """
+
     #: Can an idea be created?
     #: Can an idea in a private workshop be seen by a user who is not a participant in this workshop?
     #: Can a user who is not a participant in this workshop create an idea in it?
@@ -29,14 +37,14 @@ class TestIdeaController(TestController):
         # create a new user
         thisUser = create_and_activate_a_user(self)
         # create_workshop as this new user
-        newWorkshop = create_new_workshop(
+        newWorkshop = workshop.create_new_workshop(
             self, 
             thisUser, 
             personal=True,
             allowIdeas=formDefs.workshopSettings_allowIdeas(True),
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
-        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        ideaAdded = workshop.addIdeaToWorkshop(self, newWorkshop, ideaText)
         
         # after adding the idea, it should display on the following page.
         # be sure not to make too long of an idea for this test, in order for the assertion to reliably pass
@@ -57,38 +65,34 @@ class TestIdeaController(TestController):
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # now logout, and try to view this idea
         logout(self)
-        # I would like to to a get request on this response object's url, 
-        # but it doesn't have a url attribute or a refresh action. Instead,
-        # the title of the idea page links to itself, so we click on that 
-        # to get the desired refresh.
-        canPublicSeeIdea = ideaAdded.click(description=ideaText, index=0)
-        # assert we're viewing this page without being logged in
-        assert linkDefs.login() in canPublicSeeIdea, "error before test complete: should not be logged in as someone at this point"
+        #: ideaAdded is the idea's own page, so we reload it to see if the public can view it.
+        #: we expect a 404 instead though.
+        canPublicSeeIdea = self.app.get(url=ideaAdded.request.url, status=404)
         # if this idea is visible, this is not good
-        assert ideaText not in canPublicSeeIdea, "public user able to view idea in a private workshop"
+        assert ideaText not in canPublicSeeIdea, "public user can view idea in private workshop"
 
     def test_see_private_idea_non_workshop_member(self):
         """Can a site member who is not an invitee of the private workshop 
         see this private idea? Create an idea in a private workshop, 
         then login as a new site member, and try to view it."""
-        # create a idea in a private workshop
+        #: create a idea in a private workshop
         ideaText = content.oneLine(3)
         ideaAdded = TestIdeaController.test_create_idea(
             self,
             ideaText=ideaText
         )
-        # assert that it's there
+        #: assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
-        # logout, create a new user, and try to view this idea
+        #: logout, create a new user, and try to view this idea
         logout(self)
-        # create a new user and login
+        #: create a new user and login
         thisUser = create_and_activate_a_user(self)
         loggedIn = login(self, thisUser)
-        canUserSeeIdea = ideaAdded.click(description=ideaText, index=0)
-        # assert we're viewing this page without being logged in
-        assert linkDefs.profile() in canUserSeeIdea, "error before test complete: should be logged in as someone at this point"
-        # if this idea has been created, this is not good
-        assert ideaText not in canUserSeeIdea, "site member who is not a member of a private workshop was able to view an idea in this workshop"
+        #: ideaAdded is the idea's own page, so we reload it to see if this other user can view it.
+        #: we expect a 404 instead though.
+        canUserSeeIdea = self.app.get(url=ideaAdded.request.url, status=404)
+        # if we can see the idea, this is not good
+        assert ideaText not in canUserSeeIdea, "site member, not a member of a private workshop, able to view an idea in the workshop"
 
     def test_create_idea_in_private_workshop_public(self):
         """Can a non-logged in visitor create an idea within a private workshop?"""
@@ -102,7 +106,8 @@ class TestIdeaController(TestController):
         # assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # get the add idea form
-        addIdea = ideaAdded.click(description=linkDefs.addIdea(), index=0)
+        ideaPage = ideaAdded.click(description=linkDefs.vote_page(), index=0)
+        addIdea = ideaPage.click(description=linkDefs.addIdea(), index=0)
 
         logout(self)
 
@@ -116,8 +121,10 @@ class TestIdeaController(TestController):
             ideaAdded1 = self.app.post(
                 url=str(addIdeaForm.action), 
                 content_type=addIdeaForm.enctype,
-                params=params
-            ).follow()
+                params=params,
+                status=404,
+                expect_errors=True
+            )
             # if the idea is present on the page, this is bad
             assert ideaText1 not in ideaAdded1, "public user was able to create a idea in a private workshop, using form on page"
 
@@ -127,7 +134,7 @@ class TestIdeaController(TestController):
         # create first user
         thisUser = create_and_activate_a_user(self)
         # create_workshop as this new user
-        newWorkshop = create_new_workshop(
+        newWorkshop = workshop.create_new_workshop(
             self, 
             thisUser, 
             personal=True,
@@ -135,7 +142,7 @@ class TestIdeaController(TestController):
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
         # go to the idea page
-        ideasPage = newWorkshop.click(description=linkDefs.ideas_page(), index=0)
+        ideasPage = newWorkshop.click(description=linkDefs.vote_page(), index=0)
         # click the 'add idea' link
         addIdea = ideasPage.click(description=linkDefs.addIdea(), index=0)
         # obtain the form for this
@@ -153,10 +160,13 @@ class TestIdeaController(TestController):
         ideaAdded = self.app.post(
             url=str(addForm.action), 
             content_type=addForm.enctype,
-            params=params
-        ).follow()
+            params=params,
+            status=404,
+            expect_errors=True
+        )
         # after trying to add the idea, it should not display on the following page.
         assert ideaText not in ideaAdded, "site member who is not a member of the private workshop, was able to make a idea in it"
+        assert ideaAdded.status_int == 404
 
     # NEXT SECTION
     #An admin, or a facilitor of a workshop can edit, delete, or make hidden (on first display) an idea.
@@ -168,7 +178,7 @@ class TestIdeaController(TestController):
         ideaText = content.oneLine(1)
         ideaText2 = content.oneLine(2)
         #: create_workshop as this new user
-        newWorkshop = create_new_workshop(
+        newWorkshop = workshop.create_new_workshop(
             self, 
             thisUser, 
             personal=True,
@@ -176,10 +186,11 @@ class TestIdeaController(TestController):
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
         #: add idea to workshop
-        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        ideaAdded = workshop.addIdeaToWorkshop(self, newWorkshop, ideaText)
         # assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # NOTE for now, login as super admin. next, make a normal user an admin for this
+        logout(self)
         admin = {}
         # conf = config['app_conf']
         # admin['email'] = conf['admin.email']
@@ -216,7 +227,7 @@ class TestIdeaController(TestController):
         thisUser = create_and_activate_a_user(self)
         ideaText = content.oneLine(1)
         #: create_workshop as this new user
-        newWorkshop = create_new_workshop(
+        newWorkshop = workshop.create_new_workshop(
             self, 
             thisUser, 
             personal=True,
@@ -224,7 +235,7 @@ class TestIdeaController(TestController):
             allowResourceLinks=formDefs.workshopSettings_allowResourceLinks(True)
         )
         #: add idea to workshop
-        ideaAdded = addIdeaToWorkshop(self, newWorkshop, ideaText)
+        ideaAdded = workshop.addIdeaToWorkshop(self, newWorkshop, ideaText)
         # assert that it's there
         assert ideaText in ideaAdded, "error before test complete: not able to create idea in workshop"
         # NOTE for now, login as super admin. next, make a normal user an admin for this
@@ -255,24 +266,234 @@ class TestIdeaController(TestController):
             url = str.strip(str(formParts['action']))
         )
         # reload the page by clicking the ideas menu and the idea should no longer be visible
-        confirmDelete = ideaAdded.click(description=linkDefs.ideas_page(), index=0)
+        confirmDelete = ideaAdded.click(description=linkDefs.vote_page(), index=0)
         #assert didDelete == 404
-        assert ideaText not in confirmDelete
+        assert ideaText not in confirmDelete, "admin not able to delete idea made by a user in their own workshop"
+          
+
+    """ ****************************************************************************************** """
+    """ ****************************************************************************************** """
+    """ This group of tests focuses on permissions for disabling and enabling. In the tests
+    where there should be a successful disabling of the idea, the cases for enabling will
+    be tested as well. """
+    
+    def test_disable_idea_admin_admin(self):
+        """ Create a idea as an admin, then disable this idea as an admin. 
+        In order to test a more realistic situation, these admins will be different users. """
+        #: create a workshop and two admins
+        nounVerbTest.test_disable_noun_admin_admin(self, 'idea')
+
+    def test_disable_idea_facilitator_admin(self):
+        """ Create a idea as a facilitator, then disable this idea as an admin. """
+        #: create a workshop and two users
+        nounVerbTest.test_disable_noun_facilitator_admin(self, 'idea')
+
+    def test_disable_idea_user_admin(self):
+        """ Create a idea as a user of the workshop, then disable this idea as an admin. """
+        #: create a workshop and two users
+        nounVerbTest.test_disable_noun_user_admin(self, 'idea')
+
+    def test_disable_idea_admin_facilitator(self):
+        """ Create a idea as an admin, then try to disable it as a facilitator. """
+        #: create a workshop and two users
+        nounVerbTest.test_disable_noun_admin_facilitator(self, 'idea')
+
+    def test_disable_idea_facilitator_facilitator(self):
+        """ Create an idea as a facilitator, then disable it as a facilitator. """
+        nounVerbTest.test_disable_noun_facilitator_facilitator(self, 'idea')
         
+    def test_disable_idea_user_facilitator(self):
+        """ Create a idea as a user of the workshop, then disable this idea as its facilitator. """
+        #: create a workshop and two users
+        nounVerbTest.test_disable_noun_user_facilitator(self, 'idea')
         
+    def test_disable_idea_admin_user(self):
+        """ Create a idea as an admin, then disable this idea as a user of the workshop. """
+        #: create a workshop and two users
+        nounVerbTest.test_disable_noun_admin_user(self, 'idea')
 
-    #def can_make_hidden_idea_admin():
-        # create comment as random person
-        # create another person, change to admin
-        # login as this new admin
-        # visit the comment
-        # make it hidden
-        # reload page, confirm comment is hidden
+    def test_disable_idea_facilitator_user(self):
+        """ Create a idea as a facilitator, then disable this idea as a user of the workshop. """
+        #: create a workshop and two users
+        nounVerbTest.test_disable_noun_facilitator_user(self, 'idea')
 
+    def test_disable_idea_user_user(self):
+        """ Create a idea as a user, then disable this idea as a user of the workshop. """
+        #: create a workshop and two users
+        nounVerbTest.test_disable_noun_user_user(self, 'idea')
 
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ TEST IMMUNITY - PRIVATE WORKSHOPS """
+    """ In this next group, we will be looking for holes in the ability to immunify an object.
+    There are many possible combinations of situations, but only a few of them should be successful. Therefore, 
+    in order to reduce the number of tests here, the attempts to immunify that should
+    not be successful will be attempted before testing what should be a successful setting of an object's immunity. """
 
+    "admin not able to flag an immune conversation"
+    def test_immunify_privateWorkshop_user_facilitator(self):
+        """ Create a idea in a private workshop as a user, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as the workshop's facilitator.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 1/12 for this group
+        nounVerbTest.test_immunify_private_noun_user_facilitator(self, 'idea')
+        
+    "admin not able to flag an immune conversation"
+    def test_immunify_privateWorkshop_facilitator_facilitator(self):
+        """ Create a idea in a private workshop as its facilitator, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as the workshop's facilitator.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 2/12 for this group
+        nounVerbTest.test_immunify_private_noun_facilitator_facilitator(self, 'idea')
+        
+    "OK"
+    def test_immunify_privateWorkshop_admin_facilitator(self):
+        """ Create a idea in a private workshop as an admin, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as the workshop's facilitator.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 3/12 for this group
+        nounVerbTest.test_immunify_private_noun_admin_facilitator(self, 'idea')
 
+    "admin not able to flag an immune conversation"
+    def test_immunify_privateWorkshop_user_admin(self):
+        """ Create a idea in a private workshop as a user, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as an admin.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 4/12 for this group
+        nounVerbTest.test_immunify_noun_user_admin(self, 'idea')
 
+    "admin not able to flag an immune conversation"
+    def test_immunify_privateWorkshop_facilitator_admin(self):
+        """ Create a idea in a private workshop as its facilitator, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as an admin.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 5/12 for this group
+        nounVerbTest.test_immunify_private_noun_facilitator_admin(self, 'idea')
 
+    "admin not able to flag an immune conversation"
+    def test_immunify_privateWorkshop_admin_admin(self):
+        """ Create a idea in a private workshop as an admin, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as the workshop's facilitator.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 6/12 for this group
+        nounVerbTest.test_immunify_private_noun_admin_admin(self, 'idea')
 
+    """ ****************************************************************************************** """
+    """ This next group of tests are the same as the previous ones that started at 
+    'TEST IMMUNITY - PRIVATE WORKSHOPS', except for the fact that these are working 
+    with public workshops. """
 
+    "OK"
+    def test_immunify_publicWorkshop_user_facilitator(self):
+        """ Create a idea in a public workshop as a user, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as the workshop's facilitator.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 7/12 for this group
+        nounVerbTest.test_immunify_public_noun_user_facilitator(self, 'idea')
+
+    "OK"
+    def test_immunify_publicWorkshop_facilitator_facilitator(self):
+        """ Create a idea in a public workshop as the facilitator, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as the workshop's facilitator.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 8/12 for this group
+        nounVerbTest.test_immunify_public_noun_facilitator_facilitator(self, 'idea')
+        
+    "OK"
+    def test_immunify_publicWorkshop_admin_facilitator(self):
+        """ Create a idea in a public workshop as an admin, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as the workshop's facilitator.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 9/12 for this group
+        nounVerbTest.test_immunify_public_noun_admin_facilitator(self, 'idea')
+
+    "OK"
+    def test_immunify_publicWorkshop_user_admin(self):
+        """ Create a idea in a public workshop as a user, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as an admin.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 10/12 for this group
+        nounVerbTest.test_immunify_public_noun_user_admin(self, 'idea')
+
+    "OK"
+    def test_immunify_publicWorkshop_facilitator_admin(self):
+        """ Create a idea in a public workshop as the facilitator, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as an admin.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 11/12 for this group
+        nounVerbTest.test_immunify_public_noun_facilitator_admin(self, 'idea')
+
+    "OK"
+    def test_immunify_publicWorkshop_admin_admin(self):
+        """ Create a idea in a public workshop as an admin, try to immunify and confirm it hasn't
+        happened with each role that shouldn't be able to, then immunify the object as an admin.
+        At this point, confirm that it is immune by attempting to flag the object as each of the roles that shouldn't
+        be able to, confirming after each attempt this is true. Finally, flag the object as an admin and assert this
+        has been successful. """
+        # test 12/12 for this group
+        nounVerbTest.test_immunify_public_noun_admin_admin(self, 'idea')
+
+    """ ****************************************************************************************** """ 
+    """ ****************************************************************************************** """ 
+    """ This next group of tests will cover deletion permissions. Bottom line is, only an admin 
+        can delete an object. """
+
+    def test_delete_idea_admin_admin(self):
+        """ Create a idea as an admin, then delete this idea as an admin."""
+        # test 1
+        nounVerbTest.test_delete_noun_admin_admin(self, 'idea')
+        
+    def test_delete_idea_facilitator_admin(self):
+        """ Create a idea as a facilitator, then delete this idea as an admin."""
+        # test 2
+        nounVerbTest.test_delete_noun_facilitator_admin(self, 'idea')
+        
+    def test_delete_idea_user_admin(self):
+        """ Create a idea as a user of the private workshop, then delete this idea 
+        as an admin."""
+        # test 3
+        nounVerbTest.test_delete_noun_user_admin(self, 'idea')
+
+    """ ****************************************************************************************** """ 
+    """ Second set will deal with this within public workshops. """
+
+    def test_delete_public_idea_admin_admin(self):
+        """ Create a idea as an admin in a public workshop, then delete this idea 
+        as an admin."""
+        # test 4
+        nounVerbTest.test_delete_public_noun_admin_admin(self, 'idea')
+    
+    def test_delete_public_idea_facilitator_admin(self):
+        """ Create a idea as a facilitator in a public workshop, then delete this idea 
+        as an admin."""
+        # test 5
+        nounVerbTest.test_delete_public_noun_facilitator_admin(self, 'idea')
+        
+    def test_delete_public_idea_user_admin(self):
+        """ Create a idea as a user in a public workshop, then delete this idea 
+        as an admin."""
+        # test 6
+        nounVerbTest.test_delete_public_noun_user_admin(self, 'idea')
+        

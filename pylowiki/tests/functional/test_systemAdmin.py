@@ -10,7 +10,7 @@ class TestSystemAdminController(TestController):
 
     user1 = 'test1@civinomics.org'
     pass1 = 'test1'
-    zip1 = '94122'
+    postal1 = '94122'
     member1 = 'individual'
     first1 = 'Testing1'
     last1 = 'Home1'
@@ -20,7 +20,7 @@ class TestSystemAdminController(TestController):
 
     user2 = 'test2@civinomics.org'
     pass2 = 'test2'
-    zip2 = '94122'
+    postal2 = '94122'
     member2 = 'individual'
     first2 = 'Testing2'
     last2 = 'Home2'
@@ -30,7 +30,7 @@ class TestSystemAdminController(TestController):
 
     user3 = 'test3@civinomics.org'
     pass3 = 'test3'
-    zip3 = '94122'
+    postal3 = '94122'
     member3 = 'individual'
     first3 = 'Testing3'
     last3 = 'Home3'
@@ -48,7 +48,7 @@ class TestSystemAdminController(TestController):
             self, 
             TestSystemAdminController.user1, 
             TestSystemAdminController.pass1, 
-            TestSystemAdminController.zip1, 
+            TestSystemAdminController.postal1, 
             TestSystemAdminController.member1,
             TestSystemAdminController.first1, 
             TestSystemAdminController.last1
@@ -85,7 +85,7 @@ class TestSystemAdminController(TestController):
             self, 
             TestSystemAdminController.user2, 
             TestSystemAdminController.pass2, 
-            TestSystemAdminController.zip2, 
+            TestSystemAdminController.postal2, 
             TestSystemAdminController.member2,
             TestSystemAdminController.first2, 
             TestSystemAdminController.last2
@@ -120,7 +120,7 @@ class TestSystemAdminController(TestController):
             self, 
             TestSystemAdminController.user3, 
             TestSystemAdminController.pass3, 
-            TestSystemAdminController.zip3, 
+            TestSystemAdminController.postal3, 
             TestSystemAdminController.member3,
             TestSystemAdminController.first3, 
             TestSystemAdminController.last3

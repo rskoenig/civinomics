@@ -3,8 +3,8 @@
     <!-- None -->
 </%def>
 <%def name="display_body_right_content()">
-    <div class="span8"><!--span body-->
-        <div class="row-fluid">
+    <div class="row-fluid">
+        <div class="span8">
             <h1>Contact Us</h1>
             </br>
             <h4>Street Address</h3>
@@ -14,15 +14,15 @@
             </br>
 
             <h4>Email</h4>
-            Information: <a href = "mailto:info@civinomics.com?subject=Question"> info@civinomics.org </a>
+            Information: <a href = "mailto:info@civinomics.com?subject=Question"> info @ civinomics.com </a>
             <br />
-            Sales: <a href = "mailto:sales@civinomics.com?subject=Sales Query"> sales@civinomics.org </a>
+            Sales: <a href = "mailto:sales@civinomics.com?subject=Sales Query"> sales @ civinomics.com </a>
             <br />
-            Careers: <a href = "mailto:careers@civinomics.com?subject=Careers"> careers@civinomics.org </a>
+            Careers: <a href = "mailto:careers@civinomics.com?subject=Careers"> careers @ civinomics.com </a>
             
             </p>
         </div>      
-    </div><!--/.span8-->
+    </div>
 </%def>
 
 <%def name="display_body_bottom_content()"></%def>

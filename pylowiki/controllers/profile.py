@@ -7,13 +7,10 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 from pylowiki.lib.utils import urlify
 
-import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
 
-import pylowiki.lib.images              as imageLib
 import pylowiki.lib.db.activity         as activityLib
-import pylowiki.lib.db.imageIdentifier  as imageIdentifierLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
@@ -25,11 +22,9 @@ import pylowiki.lib.db.follow           as followLib
 import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.revision         as revisionLib
-import simplejson as json
-import csv
-import os
-
-from hashlib import md5
+import pylowiki.lib.db.message          as messageLib
+import pylowiki.lib.db.tag              as tagLib
+import pylowiki.lib.utils               as utils
 
 log = logging.getLogger(__name__)
 
@@ -39,8 +34,17 @@ class ProfileController(BaseController):
         if action not in ['hashPicture']:
             if id1 is not None and id2 is not None:
                 c.user = userLib.get_user(id1, id2)
+                if not c.user:
+                    abort(404)
             else:
                 abort(404)
+            c.isAdmin = False
+            if 'user' in session:
+                if userLib.isAdmin(c.authuser.id):
+                    c.isAdmin = True
+                if c.user.id == c.authuser.id or c.isAdmin:
+                    c.messages = messageLib.getMessages(c.user)
+                    c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
     
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
@@ -54,34 +58,68 @@ class ProfileController(BaseController):
         c.title = c.user['name']
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
-        if 'user' in session and c.authuser.id != c.user.id:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
+        c.isUser = False
+        c.browse = False
+        if 'user' in session:
+            if c.authuser.id != c.user.id:
+                c.isFollowing = followLib.isFollowing(c.authuser, c.user)
+            else:
+                c.isUser = True
+            if userLib.isAdmin(c.authuser.id):
+                c.isAdmin = True
+        else:
+            c.browse = True
+            
 
-        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user.id)
+        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
         c.facilitatorWorkshops = []
         c.pendingFacilitators = []
         for f in facilitatorList:
            if 'pending' in f and f['pending'] == '1':
               c.pendingFacilitators.append(f)
            elif f['disabled'] == '0':
-              wID = f['workshopID']
-              myW = workshopLib.getWorkshopByID(wID)
-              if myW['startTime'] == '0000-00-00' or myW['deleted'] == '1' or myW['public_private'] != 'public':
+              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
                  # show to the workshop owner, show to the facilitator owner, show to admin
                  if 'user' in session: 
                      if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
-                    
+
+        watching = followLib.getWorkshopFollows(c.user)
+        watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        c.watching = []
+        for workshop in watchList:
+            if workshop['public_private'] == 'public' or (c.isUser or c.isAdmin):
+                c.watching.append(workshop)
+                
+        c.bookmarkedWorkshops = []
+        for workshop in c.watching:
+            if workshop['public_private'] == 'public':
+                c.bookmarkedWorkshops.append(workshop)
+            if workshop['public_private'] == 'private' and 'user' in session and c.authuser:
+                if c.isUser or c.isAdmin:
+                    c.bookmarkedWorkshops.append(workshop)
+ 
+        interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
+        
         listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
         c.pendingListeners = []
+        c.listeningWorkshops = []
         for l in listenerList:
             if 'pending' in l and l['pending'] == '1':
                 c.pendingListeners.append(l)
-
-        watching = followLib.getWorkshopFollows(c.user)
-        c.watching = [workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching]
+            else:
+                lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+                c.listeningWorkshops.append(lw)
+        
+        c.privateWorkshops = []
+        if 'user' in session and c.authuser:
+            if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
+                if privateList:
+                    c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
 
         following = followLib.getUserFollows(c.user) # list of follow objects
         c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
@@ -98,122 +136,24 @@ class ProfileController(BaseController):
         
         posts = activityLib.getMemberPosts(c.user)
         for p in posts:
-            if p['deleted'] == '0' and p['disabled'] == '0':
-                if p.objType == 'suggestion':
-                    c.suggestions.append(p)
-                elif p.objType == 'resource':
-                    c.resources.append(p)
-                elif p.objType == 'discussion':
-                    c.discussions.append(p)
-                elif p.objType == 'idea':
-                    c.ideas.append(p)
-                elif p.objType == 'comment':
-                    c.comments.append(p)
-                    
-        c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
+            # ony active objects
+            if p['deleted'] == '0' and p['disabled'] == '0' and 'workshopCode' in p:
+                # only public objects unless author or admin
+                w = workshopLib.getWorkshopByCode(p['workshopCode'])
+                if workshopLib.isPublished(w) and w['public_private'] == 'public' or (c.isUser or c.isAdmin):
+                    if p.objType == 'suggestion':
+                        c.suggestions.append(p)
+                    elif p.objType == 'resource':
+                        c.resources.append(p)
+                    elif p.objType == 'discussion':
+                        c.discussions.append(p)
+                    elif p.objType == 'idea':
+                        c.ideas.append(p)
+                    elif p.objType == 'comment':
+                        c.comments.append(p)
         
         return render("/derived/6_profile.bootstrap")
     
-    def stats(self, id1, id2):
-        if 'user' in session and (user.id == c.authuser.id or userLib.isAdmin(c.authuser.id)):
-            posts = activityLib.getMemberPosts(user, 0)
-        else:
-            posts = activityLib.getMemberPosts(user, 1)
-        
-        types = ['discussion', 'comment', 'resource']
-        counts = {}
-        for item in types:
-            counts[item] = len([post for post in posts if post.objType == item])
-        retObj = {}
-        retObj['titles'] = types
-        retObj['values'] = [counts[key] for key in types] # Key off of types to preserve order
-        return json.dumps(retObj)
-    
-    def statsCSV(self, id1, id2):
-        if 'user' in session and (user.id == c.authuser.id or userLib.isAdmin(c.authuser.id)):
-            posts = activityLib.getMemberPosts(user, 0)
-        else:
-            posts = activityLib.getMemberPosts(user, 1)
-        
-        headers = ['objType', 'time']
-        data = []
-        counts = {}
-        for post in posts:
-            data.append([post.objType, post.date])
-            if post.objType not in counts:
-                counts[post.objType] = 1
-            else:
-                counts[post.objType] += 1
-                
-        for key in counts.keys():
-            log.info(key)
-            log.info(counts[key])
-            
-        response.content_type = 'text/csv'
-        writer = csv.writer(response)
-        writer.writerow(headers)
-        for row in data:
-            writer.writerow(row)
-        return response
-    
-    def showUserSuggestions(self, id1, id2):
-        # Called when visiting /profile/urlCode/url/suggestions
-        c.title = c.user['name']
-        c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
-        c.isFollowing = False
-        if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
-        else:
-           c.isFollowing = False
-
-        pList = userLib.getUserPosts(c.user)
-        c.totalPoints = 0
-        c.suggestions = []
-        c.userFollowers = []
-        c.flags = 0
-
-        uList = followLib.getUserFollowers(c.user)
-        c.userFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.userFollowers.append(userLib.getUserByID(uID))
-
-
-        c.posts = len(pList)
-        for p in pList:
-           if p['deleted'] == '0' and p['disabled'] == '0':
-               if p.objType == 'suggestion':
-                   c.suggestions.append(p)
-
-           fList = flagLib.getFlags(p)
-           if fList:
-              c.flags += len(fList)
-
-        if c.suggestions and len(c.suggestions) > 0:
-            totalRateAvg = 0
-            for s in c.suggestions:
-                totalRateAvg += float(s['ratingAvg_overall'])
-
-            totalRateAvg = totalRateAvg/len(c.suggestions)
-            c.sugRateAvg = int(totalRateAvg)
-            c.sugUpperRateAvg = totalRateAvg+(5-totalRateAvg%5)
-            c.sugLowerRateAvg = totalRateAvg-(totalRateAvg%5)
-            c.sugRateAvgfuzz = c.sugLowerRateAvg+2.5
-        else:
-            totalRateAvg = 0
-            c.sugRateAvg = totalRateAvg
-            c.sugUpperRateAvg = 0
-            c.sugLowerRateAvg = 0
-            c.sugRateAvgfuzz = 0
-
-        c.count = len(c.suggestions)
-        c.paginator = paginate.Page(
-            c.suggestions, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        return render("/derived/profileSuggestions.bootstrap")
-
     def showUserResources(self, id1, id2):
         # Called when visiting /profile/urlCode/url
         self._basicSetup(id1, id2, 'resources')
@@ -229,64 +169,6 @@ class ProfileController(BaseController):
         self._basicSetup(id1, id2, 'ideas')
         return render("/derived/6_profile_list.bootstrap")
     
-    def showUserComments(self, id1, id2):
-        # Called when visiting /profile/urlCode/url/comments
-        c.title = c.user['name']
-        c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
-        c.isFollowing = False
-        if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
-        else:
-           c.isFollowing = False
-
-        uList = followLib.getUserFollows(c.user)
-        c.followingUsers = []
-        for u in uList:
-           uCode = u['userCode']
-           c.followingUsers.append(userLib.getUserByCode(userCode))
-
-        uList = followLib.getUserFollowers(c.user)
-        c.userFollowers = []
-        for u in uList:
-           uID = u.owner
-           c.userFollowers.append(userLib.getUserByID(uID))
-
-        pList = userLib.getUserPosts(c.user)
-        c.totalPoints = 0
-        c.comments = []
-        c.flags = 0
-        comUpVotes = 0
-        c.comVotes = 0
-
-        c.posts = len(pList)
-        for p in pList:
-           if p['deleted'] == '0' and p['disabled'] == '0':
-               if p.objType == 'comment':
-                   c.comments.append(p)
-                   comUpVotes += int(p['ups'])
-                   c.comVotes = c.comVotes + int(p['ups']) + int(p['downs'])
-
-           fList = flagLib.getFlags(p)
-           if fList:
-              c.flags += len(fList)
-           if 'ups' in p and 'downs' in p:
-               t = int(p['ups']) - int(p['downs'])
-               c.totalPoints += t 
-
-        c.numComs = len(c.comments)
-        if c.comVotes > 0:
-            c.comUpsPercent = 100*float(comUpVotes)/float(c.comVotes)
-        else:
-            c.comUpsPercent = 0
-
-        c.count = len(c.comments)
-        c.paginator = paginate.Page(
-            c.comments, page=int(request.params.get('page', 1)),
-            items_per_page = 25, item_count = c.count
-        )
-
-        return render("/derived/profileComments.bootstrap")
-    
     def showUserFollowers(self, id1, id2):
         # Called when visiting /profile/urlCode/url/followers
         self._basicSetup(id1, id2, 'followers')
@@ -301,14 +183,33 @@ class ProfileController(BaseController):
         # Called when visiting /profile/urlCode/url/watching
         self._basicSetup(id1, id2, 'watching')
         return render("/derived/6_profile_list.bootstrap")
+        
+
+    def searchWorkshopTag(self, id1, id2, id3):
+        tag = utils.geoDeurlify(id3)
+        tags = tagLib.searchTags(tag)
+        self._basicSetup(id1, id2, 'searchWorkshops')
+        c.things = []
+        for tag in tags:
+            workshop = workshopLib.getWorkshopByCode(tag['workshopCode'])
+            if workshopLib.isPublished(workshop) and workshopLib.isPublic(workshop):
+                c.things.append(workshop)
+
+        c.thingsTitle = 'Workshops with tag "' + tag['title'] + '"'
+        c.listingType = 'searchWorkshops'
+        
+        return render('/derived/6_profile_list.bootstrap')
+        
     
     def _basicSetup(self, code, url, page):
         # code and url are now unused here, now that __before__ is defined
         c.title = c.user['name']
         c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
         c.isFollowing = False
+        c.isUser = False
+        c.isAdmin = False
         if 'user' in session and c.authuser:
-           c.isFollowing = followLib.isFollowing(c.authuser, c.user) 
+           c.isFollowing = followLib.isFollowing(c.authuser, c.user)
         else:
            c.isFollowing = False
         
@@ -325,6 +226,14 @@ class ProfileController(BaseController):
         c.watching = items['watching']
     
     def _userItems(self, user):
+        isUser = False
+        isAdmin = False
+        if 'user' in session and c.authuser:
+            if user.id == c.authuser.id:
+               isUser = True
+            if userLib.isAdmin(c.authuser.id):
+               isAdmin = True
+
         # returns a dictionary of user-created (e.g. resources, discussions, ideas)
         # or user-interested (e.g. followers, following, watching) objects
         items = {}
@@ -336,7 +245,11 @@ class ProfileController(BaseController):
         items['followers'] = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
         
         watching = followLib.getWorkshopFollows(user)
-        items['watching'] = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+        items['watching'] = []
+        for workshop in watchList:
+            if workshop['public_private'] == 'public' or (isUser or isAdmin):
+                items['watching'].append(workshop)
         
         # Already checks for disabled/deleted by default
         # The following section feels like a good candidate for map/reduce
@@ -344,21 +257,27 @@ class ProfileController(BaseController):
         items['resources'] = []
         items['discussions'] = []
         items['ideas'] = []
+        items['searchWorkshops'] = []
+        items['searchUsers'] = []
         for thing in createdThings:
-            if thing.objType == 'resource':
-                items['resources'].append(thing)
-            elif thing.objType == 'discussion':
-                items['discussions'].append(thing)
-            elif thing.objType == 'idea':
-                items['ideas'].append(thing)
-        
+            if 'workshopCode' in thing:
+                w = workshopLib.getWorkshopByCode(thing['workshopCode'])
+                if workshopLib.isPublished(w) or isAdmin:
+                    if w['public_private'] == 'public' and thing['disabled'] != '1' and thing['deleted'] != '1' or (isUser or isAdmin):
+                        if thing.objType == 'resource':
+                            items['resources'].append(thing)
+                        elif thing.objType == 'discussion':
+                            items['discussions'].append(thing)
+                        elif thing.objType == 'idea':
+                            items['ideas'].append(thing)
+
         return items
 
     @h.login_required
-    def dashboard(self, id1, id2):
+    def edit(self, id1, id2):
         c.events = eventLib.getParentEvents(c.user)
         if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
-            c.title = 'Member Dashboard'
+            c.title = 'Edit Profile'
             if 'confTab' in session:
                 c.tab = session['confTab']
                 session.pop('confTab')
@@ -368,7 +287,7 @@ class ProfileController(BaseController):
             else:
                 c.admin = False
             c.pendingFacilitators = []
-            fList = facilitatorLib.getFacilitatorsByUser(c.user.id)
+            fList = facilitatorLib.getFacilitatorsByUser(c.user)
             for f in fList:
                 if 'pending' in f and f['pending'] == '1':
                     c.pendingFacilitators.append(f)
@@ -379,9 +298,7 @@ class ProfileController(BaseController):
                 if 'pending' in l and l['pending'] == '1':
                     c.pendingListeners.append(l)
                     
-            c.messages = len(c.pendingFacilitators) + len(c.pendingListeners)
-
-            return render('/derived/6_profile_dashboard.bootstrap')
+            return render('/derived/6_profile.bootstrap')
         else:
             abort(404)
 
@@ -494,8 +411,7 @@ class ProfileController(BaseController):
                 session['alert'] = alert
                 session.save()
                 
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/dashboard"
-                
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
         return redirect(returnURL)
         
     @h.login_required
@@ -590,57 +506,9 @@ class ProfileController(BaseController):
             session['alert'] = alert
             session.save()
             
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/dashboard"
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
                 
         return redirect(returnURL)
-    
-    def hashPicture(self, username, title):
-        return md5(username + title).hexdigest()
-        
-    @h.login_required
-    def pictureUploadHandler(self, id1, id2):
-        session['confTab'] = "tab2"
-        session.save()
-        
-        if 'pictureFile' in request.params:
-            file = request.params['pictureFile']
-            imageFile = file.file
-            filename = file.filename
-            identifier = 'avatar'
-            hash = imageLib.saveImage(imageFile, filename, c.user, 'avatar', c.user)
-            c.user['pictureHash'] = hash
-            imageLib.resizeImage(identifier, hash, 200, 200, 'profile')
-            imageLib.resizeImage(identifier, hash, 25, 25, 'thumbnail')
-            
-            alert = {'type':'success'}
-            alert['title'] = 'Upload complete. Profile picture updated.'
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-
-            i = imageIdentifierLib.getImageIdentifier(identifier)
-            directoryNumber = str(int(i['numImages']) / imageLib.numImagesInDirectory)
-            savename = hash + '.orig'
-            newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
-            st = os.stat(newPath)
-            l = []
-            d = {}
-            d['name'] = savename
-            d['size'] = st.st_size
-            if 'site_base_url' in config:
-                siteURL = config['site_base_url']
-            else:
-                siteURL = 'http://www.civinomics.com'
-            
-            d['url'] = '%s/images/%s/%s/orig/%s.orig' % (siteURL, identifier, directoryNumber, hash)
-            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.thumbnail' % (siteURL, identifier, directoryNumber, hash)
-            d['delete_url'] = ''
-            d['delete_type'] = "DELETE"
-            d['-'] = hash
-            d['type'] = 'image/png'
-            l.append(d)
-
-            return json.dumps(l)
 
     @h.login_required
     def enableHandler(self, id1, id2):
@@ -678,7 +546,7 @@ class ProfileController(BaseController):
            session['alert'] = alert
            session.save()
 
-        return redirect("/profile/" + id1 + "/" + id2 + "/dashboard" )
+        return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
 
     @h.login_required
     def privsHandler(self, id1, id2):
@@ -714,6 +582,6 @@ class ProfileController(BaseController):
             session['alert'] = alert
             session.save()
 
-        return redirect("/profile/" + id1 + "/" + id2 + "/dashboard" )
+        return redirect("/profile/" + id1 + "/" + id2 + "/edit" )
 
 

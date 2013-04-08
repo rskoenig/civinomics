@@ -4,30 +4,26 @@
     <!-- None -->
 </%def>
 <%def name="display_body_right_content()">
-    <div class="span8"><!--span body-->
-        <div class="row-fluid">
-            <h1>${helpers.showTitle(c.career)}</h1>
-            <p class="lead">${helpers.showComLocation(c.career)}</p>
+    <div class="row-fluid">
+        <h1>${helpers.showTitle(c.career)}</h1>
+        <p class="lead">${helpers.showComLocation(c.career)}</p>
+        </br>
+        <p>${helpers.showDescription(c.career)}</p>
+        <p><strong>Required:</strong></p>
+        ${helpers.showRequirements(c.career)}
+        </br>
+        % if len(c.career['recommendeds']) > 0:
+            <p><strong>Recommended:</strong></p>
+            ${helpers.showRecommendeds(c.career)}
             </br>
-            <p>${helpers.showDescription(c.career)}</p>
-            <p><strong>Required:</strong></p>
-            ${helpers.showRequirements(c.career)}
+        % endif
+
+            <p>To apply for this position send a resume and cover letter to <a href="#">careers @ civinomics.com</a> with the subject line <em>Application for ${helpers.showTitle(c.career)}</em>.
             </br>
-            % if len(c.career['recommendeds']) > 0:
-                <p><strong>Recommended:</strong></p>
-                ${helpers.showRecommendeds(c.career)}
-                </br>
-            % endif
+            </br>
+            </br>
+            </br>
+            </br>
 
-                <p>To apply for this position send a resume and cover letter to <a href="#">careers AT civinomics DOT com</a> with the subject line <em>Application for ${helpers.showTitle(c.career)}</em>.
-                </br>
-                </br>
-                </br>
-                </br>
-                </br>
-
-        </div>
-    </div><!--/.span8-->
+    </div>
 </%def>
-
-<%def name="display_body_bottom_content()"></%def>

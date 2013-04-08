@@ -5,53 +5,15 @@
     import pylowiki.lib.db.flag             as flagLib
     import pylowiki.lib.db.user             as userLib
     import pylowiki.lib.db.event            as eventLib
+    import pylowiki.lib.db.workshop         as workshopLib
 %>  
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-
-<%def name="admin_show()">
-	<div class="row-fluid">
-        <h4 class="section-header" style="text-align: center"><br />Facilitator Tools</h4>
-        <br />
-	    <form name="admin_issue" id="admin_issue" class="form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
-        <strong>Message to Participants:</strong>
-        <br />
-        This is displayed on the workshop landing page. Use this to welcome members to the workshop or to make announcements.<br />
-        <textarea name="motd" rows="2" cols="80">${c.motd['data']}</textarea>
-        &nbsp; &nbsp;
-        <% 
-            if c.motd['enabled'] == '1':
-                pChecked = 'checked'
-                uChecked = ''
-            else:
-                pChecked = ''
-                uChecked = 'checked'
-        %>
-        <input type="radio" name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type="radio" name="enableMOTD" value="0" ${uChecked}> Unpublish Message
-        <br /><br />
-        % if c.w['startTime'] != '0000-00-00':
-            % if c.w['deleted'] == '1':
-                <strong>Publish Workshop</strong><br />
-                This republishes the workshop, displaying it in lists of active workshops. It may be unpublished again later.<br />
-                <% eAction = 'Publish' %>
-            % else:
-                <strong>Unpublish Workshop</strong><br />
-                This unpublishes the workshop, removing it from lists of active workshops. It may be republished again later.<br />
-                <% eAction = 'Unpublish' %>
-            % endif
-            Reason: <input type="text" name="eventReason" id="eventReason"> &nbsp; &nbsp;
-            <input type="radio" name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type="radio" name="verifyEnableWorkshop" value="0"> Verify ${eAction}
-        % endif
-        <br /><br />
-        <button type="submit" class="btn btn-warning">Save All Changes</button>
-        </form>
-    </div><!-- row-fluid -->
-</%def>
 
 <%def name="admin_event_log()">
     <div class="row-fluid">
         <div class="section-wrapper">
             <div class="browse">
-                <h4 class="section-header" style="text-align: center"><br />Event Log</h4>
+                <h4 class="section-header smaller">Event Log</h4>
                 A record of configuration and administrative changes to the workshop.<br />
                 <% wEvents = eventLib.getParentEvents(c.w) %>
                 <table class="table table-bordered">
@@ -60,7 +22,6 @@
                 </thead>
                 <tbody>
                 % if wEvents:
-                    <br /><br />
                     % for wE in wEvents:
                         <tr><td><strong>${wE.date} ${wE['title']}</strong> ${wE['data']}</td></tr>
                     % endfor
@@ -69,42 +30,93 @@
                 </table>
             </div><!-- browse -->
         </div><!-- section-wrapper -->
-    <div><!-- row-fluid -->
+    </div><!-- row-fluid -->
 </%def>
 
+<%def name="admin()">
+    <div class="row-fluid" ng-controller="adminController">
+        <div class="section-wrapper">
+            <div class="browse">
+                <h4 class="section-header smaller">Civ Admin Panel</h4>
+                <form class="form-horizontal" ng-init="code='${c.w['urlCode']}'">
+                    <div class="control-group">
+                        <label class="control-label" for="setDemo">Set as demo?</label>
+                        <div class="controls">
+                            <a id="setDemo" class="btn btn-primary" ng-click="setDemo()" href="#">Do it</a>
+                            <span class="help-block" ng-show="showResponse">{{response}}</span>
+                        </div>
+                    </div>
+                </form>
+            </div><!-- browse -->
+        </div><!-- section-wrapper -->
+    <div><!-- row-fluid -->
+</%def>
 
 <%def name="admin_facilitators()">
     % if c.w['public_private'] != 'trial':
        <p>To invite a member to be a listener of, or co-facilitate this workshop, visit their Civinomics profile page and look for the "Invite ..." button!</p>
-        <table class="table table-bordered">
-        <thead>
-        <tr><th>Current Facilitators</th></tr>
-        </thead>
-        <tbody>
-        % for f in c.f:
-            <%
-                fUser = userLib.getUserByID(f.owner)
-                fEvents = eventLib.getParentEvents(f)
-                fPending = ""
-                if pending in f and f['pending'] == '1':
-                    fPending = "(Pending)"
-            %>
-            <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
-            % if fEvents:
-                % for fE in fEvents:
-                    &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
-                % endfor
-            % endif
-            % if len(c.f) > 1 and fUser.id == c.authuser.id:
-                <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
-                    &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
-                    <button type="submit" class="gold" value="Resign">Resign</button>
-                    <br />
-                </form>
-            % endif
-            </td></tr>
-        % endfor
-        </tbody>
+        <table class="table table-bordered table-condensed" ng-controller="facilitatorController">
+            <thead>
+                <tr>
+                    <th>Facilitators</th>
+                    <th>Email on new items</th>
+                    <th>Email on flagging</th>
+                </tr>
+            </thead>
+            <tbody>
+            % for f in c.f:
+                <%
+                    fUser = userLib.getUserByID(f.owner)
+                    fEvents = eventLib.getParentEvents(f)
+                    fPending = ""
+                    if pending in f and f['pending'] == '1':
+                        fPending = "(Pending)"
+                %>
+                <tr>
+                    <td>
+                        <%
+                            lib_6.userImage(fUser, className = 'avatar small-avatar')
+                            lib_6.userLink(fUser)
+                        %>
+                        ${fPending}
+                    </td>
+                    % if (f['pending'] != '1' and fUser.id == c.authuser.id) or c.privs['admin']:
+                        <%
+                            itemsChecked = ''
+                            flagsChecked = ''
+                            if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                                itemsChecked = 'checked'
+                            if 'flagAlerts' in f and f['flagAlerts'] == '1':
+                                flagsChecked = 'checked'
+                        %>
+                        <td>
+                            <form ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${fUser['urlCode']}'" class="no-bottom">
+                                <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
+                                <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                            </form>
+                        </td>
+                        <td>
+                            <form ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${fUser['urlCode']}'" class="no-bottom">
+                                <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
+                                <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
+                            </form>
+                        </td>
+                    % else:
+                        <td>${fPending}</td>
+                        <td>${fPending}</td>
+                    % endif
+                    % if len(c.f) > 1 and fUser.id == c.authuser.id:
+                        </tr><tr><td colspan=3>
+                        <form class="form-inline" id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
+                            Resign as facilitator? &nbsp;&nbsp;Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+                            <button type="submit" class="btn btn-warning" value="Resign">Resign</button>
+                            <br />
+                        </form>
+                        </td>
+                    % endif
+                </tr>
+            % endfor
+            </tbody>
         </table>
         % if len(c.df) > 0:
             <table class="table table-bordered">
@@ -113,14 +125,17 @@
             </thead>
             <tbody>
             % for f in c.df:
+                <tr><td>
                 <% 
                     fUser = userLib.getUserByID(f.owner)
                     fEvents = eventLib.getParentEvents(f) 
+                    lib_6.userImage(fUser, className = 'avatar small-avatar')
+                    lib_6.userLink(fUser)
                 %>
-                <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
+                <br />
                 % if fEvents:
                     % for fE in fEvents:
-                        &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+                        <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
                     % endfor
                 % endif
                 </tr></td>
@@ -139,30 +154,34 @@
         </thead>
         <tbody>
         % for listener in c.listeners:
+            <tr><td>
             <%
-                lUser = userLib.getUserByCode(listener['userCode'])
-                lEvents = eventLib.getParentEvents(listener)
                 lPending = ""
                 if listener['pending'] == '1':
                     lPending = "(Pending)"
+                lUser = userLib.getUserByCode(listener['userCode'])
+                lEvents = eventLib.getParentEvents(listener)
+                lib_6.userImage(lUser, className = 'avatar small-avatar')
+                lib_6.userLink(lUser)
+
             %>
-            <tr><td><a href="/profile/${lUser['urlCode']}/${lUser['url']}">${lUser['name']}</a> ${lPending}<br />
-            <form id="resignListener" class="well form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
+            ${lPending}<br />
+            <form id="resignListener" class="form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
             Disable litener:<br />
-            &nbsp; &nbsp; &nbsp;Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+            Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
             <button type="submit" class="btn btn-warning" value="Resign">Disable</button>
             <br />
             </form><br />
-            <form id="titleListener" class="well form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
-            Add a job title to listener (18 characters max):<br />
+            <form id="titleListener" class="form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
+            Add a job title to listener (60 characters max):<br />
             <% 
                 if 'title' in listener:
                     ltitle = listener['title']
                 else:
                     ltitle = ""
             %>
-            &nbsp; &nbsp; &nbsp;Title: <input type="text" name="listenerTitle" value="${ltitle}" size="18" maxlength="18"> &nbsp;&nbsp;&nbsp;
+            Title: <input type="text" name="listenerTitle" value="${ltitle}" size="60" maxlength="60"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
             <button type="submit" class="btn btn-warning">Save Title</button>
             <br />
@@ -170,7 +189,7 @@
 
             % if lEvents:
                 % for lE in lEvents:
-                    &nbsp; &nbsp; &nbsp; <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
+                    <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
                 % endfor
             % endif
             </td></tr>
@@ -184,14 +203,18 @@
             </thead>
             <tbody>
             % for listener in c.disabledListeners:
+                <tr><td>
                 <%
                     lUser = userLib.getUserByCode(listener['userCode'])
                     lEvents = eventLib.getParentEvents(listener)
+                    lib_6.userImage(lUser, className = 'avatar small-avatar')
+                    lib_6.userLink(lUser)
+
                 %>
-                <tr><td><a href="/profile/${lUser['urlCode']}/${lUser['url']}">${lUser['name']}</a> (Disabled)<br />
+                <br />
                 % if lEvents:
                     % for lE in lEvents:
-                        &nbsp; &nbsp; &nbsp; <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
+                        <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
                     % endfor
                 % endif
                 </tr></td>
@@ -225,26 +248,28 @@
     </thead>
     <tbody>
     % for f in c.f:
-       <% fUser = userLib.getUserByID(f.owner) %>
-       <% fEvents = eventLib.getParentEvents(f) %>
-       <% fPending = "" %>
-       % if pending in f and f['pending'] == '1':
-          <% fPending = "(Pending)" %>
-       % endif
-       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
-       % if fEvents:
+        <% 
+            fUser = userLib.getUserByID(f.owner)
+            fEvents = eventLib.getParentEvents(f)
+            fPending = "" 
+        
+            if pending in f and f['pending'] == '1':
+                fPending = "(Pending)"
+        %>
+        <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
+        % if fEvents:
           % for fE in fEvents:
           &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
           % endfor
-       % endif
-       % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
+        % endif
+        % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
            <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
                &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
                <button type="submit" class="gold" value="Resign">Resign</button>
            <br />
            </form>
-       % endif
-       </td></tr>
+        % endif
+        </td></tr>
     % endfor
     </tbody>
     </table>
@@ -269,71 +294,97 @@
     <br /><br />
 </%def>
 
-<%def name="admin_items(items, title)">
-    <table class="table table-bordered">
-        <thead>
-            <tr><th>${title}</th></tr>
-        </thead>
-        <tbody>
-            % for item in items:
-                % if item['deleted'] == '0': 
+<%def name="marked_items()">
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header smaller">Manage Workshop</h4>
+            <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/publish/handler" method=POST class="well">
+            % if workshopLib.isPublished(c.w):
+                <button type="submit" class="btn btn-warning" value="unpublish">Unpublish Workshop</button> This will temporarily unpublish your workshop, removing it from listings and activity streams.
+            % else:
+                <button type="submit" class="btn btn-warning" value="publish">Publish Workshop</button> Republishes your workshop, making it visible in listings and activity streams.
+            % endif
+            </form>
+            <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
+            ${flaggedItems(c.flaggedItems)}
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
+</%def>
+
+<%def name="flaggedItems(items)">
+    <%
+        thisClass = 'tab-pane'
+        if active == True:
+            thisClass += ' active'
+        objectMapping = {'comment': 'Comment', 'discussion':'Conversation', 'idea':'Idea', 'resource':'Resource'}
+    %>
+    <div class="${thisClass}">
+        % if not items:
+            <p class="centered">There doesn't appear to be anything here.  Hooray!</p>
+        % elif len(items) == 0:
+            <p class="centered">There doesn't appear to be anything here.  Hooray!</p>
+        % else:
+            <table class="table table-bordered table-hover table-condensed">
+                <thead>
                     <tr>
-                        <td>
-                            (${flagLib.getNumFlags(item)})
-                            <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
-                        </td>
+                        <th>Flags</th>
+                        <th>Author</th>
+                        <th>Item</th>
+                        <th>Content</th>
+                        <th>Action</th> 
                     </tr>
-                % endif
-            % endfor
-        </tbody>
-    </table>
-</%def>
-
-<%def name="admin_flagged()">
-    <div class="section-wrapper">
-        <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Flagged Items</h4>
-            These are items in the workshop which have been flagged by members. Each flagged item needs to be examined by the facilitator and some action taken, even if it is only clearing the flags.<br />
-            <br /><br />
-            ${admin_items(c.flaggedItems['resources'], 'Flagged Resources and Comments')}
-            <br /><br />
-            ${admin_items(c.flaggedItems['ideas'], 'Flagged Ideas and Comments')}
-            <br /><br />
-            ${admin_items(c.flaggedItems['discussions'], 'Flagged Discussions and Comments')}
-        </div><!-- browse -->
-    </div><!-- section-wrapper -->
-</%def>
-
-<%def name="admin_disabled()">
-    <div class="section-wrapper">
-        <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Disabled Items</h4>
-            These are items in the workshop which have been disabled by a facilitator or admin. These items are 
-            filtered to the bottom of lists or not displayed by default. Items are often disabled for being off-topic, 
-            duplicates of existing items, or have been flagged as offensive or otherwise violating the terms of service. 
-            <br /><br />
-            ${admin_items(c.disabledItems['resources'], 'Disabled Resources and Comments')}
-            <br /><br />
-            ${admin_items(c.disabledItems['ideas'], 'Disabled Ideas and Comments')}
-            <br /><br />
-            ${admin_items(c.disabledItems['discussions'], 'Disabled Discussions and Comments')}
-        </div><!-- browse -->
-    </div><!-- section-wrapper -->
-</%def>
-
-<%def name="admin_deleted()">
-    <div class="section-wrapper">
-        <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Deleted Items</h4>
-            These are items in the workshop which have been deleted by a facilitator or admin. These items are filtered to the bottom of lists 
-            and their content not displayed to anyone, including members and admins. Items are deleted when they are in violation of the law such 
-            as linking to pirated content or child porn or if they are serious breech of the terms of service such as displaying or linking to porn.
-            <br /><br />
-            ${admin_items(c.deletedItems['resources'], 'Deleted Resources and Comments')}
-            <br /><br />
-            ${admin_items(c.deletedItems['ideas'], 'Deletede Ideas and Comments')}
-            <br /><br />
-            ${admin_items(c.deletedItems['discussions'], 'Deleted Discussions and Comments')}
-        </div><!-- browse -->
-    </div><!-- section-wrapper -->
+                </thead>
+                <tbody>
+                    % for item in items:
+                        <%
+                            rowClass = ''
+                            if item['deleted'] == '1' and not c.privs['admin']:
+                                continue
+                            elif item['deleted'] == '1' and c.privs['admin']:
+                                rowClass = 'error'
+                                action = 'deleted'
+                            elif item['disabled'] == '1':
+                                rowClass = 'warning'
+                                action = 'disabled'
+                            else:
+                                action = 'enabled'
+                            event = eventLib.getEventForThingWithAction(item, action)
+                            if action == 'enabled' and event:
+                                rowClass = 'success'
+                        %>
+                        <tr class="${rowClass}">
+                            <td> ${flagLib.getNumFlags(item)} </td>
+                            <td>
+                                <% 
+                                    owner = userLib.getUserByID(item.owner)
+                                    lib_6.userImage(owner, className = 'avatar small-avatar')
+                                    lib_6.userLink(owner)
+                                %>
+                            </td>
+                            <td> ${objectMapping[item.objType]} </td>
+                            <td>
+                                % if item.objType != 'comment':
+                                    <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
+                                % else:
+                                    <a ${lib_6.thingLinkRouter(item, c.w, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a>
+                                % endif
+                            </td>
+                            <td>
+                                % if event:
+                                    <p>
+                                    <%
+                                        owner = userLib.getUserByID(event.owner)
+                                        lib_6.userImage(owner, className = 'avatar small-avatar')
+                                        lib_6.userLink(owner)
+                                    %>
+                                    : ${event['reason']}
+                                    </p>
+                                % endif
+                            </td>
+                        </tr>
+                    % endfor
+                </tbody>
+            </table>
+        % endif
+    </div>
 </%def>

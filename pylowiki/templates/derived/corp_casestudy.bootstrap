@@ -6,51 +6,48 @@
 <%def name="page_specific_css()">
 </%def>
 <%def name="display_body_right_content()">
-<div class="span8"><!--span body-->
-    
-        <div class="hero-unit">
-            <div class="row">
-                <div class="span6">
-                    ${helpers.showSlide(c.study)}
-                </div>
-                <div class="span6">
-                    <table class="table table-bordered">
-                        <tbody>
-                             <tr>
-                                <td><h4>Status</h4></td>
-                                <td>${helpers.status(c.study)}</td>
-                             </tr>
-                              <tr>
-                                <td><h4>Dates</h4></td>
-                                <td>${helpers.dates(c.study)}</td>
-                             </tr>
-                             <tr>
-                                <td><h4>Respondents</h4></td>
-                                <td>${helpers.respondents(c.study)}</td>
-                             </tr>
-                             <tr>
-                                <td style="width:150px;"><h4>Partner Agencies</h4></td>
-                                <td>${helpers.listPartners(c.study)}</td>
-                             </tr>
-                             % if len(c.study['sponsors']) > 0:
-                               <tr>
-                                  <td><h4>Sponsors</h4></td>
-                                  <td>${helpers.sponsors(c.study)}</td>
-                               </tr>
-                             % endif
-                             % if len(c.study['publications']) > 0:
-                               <tr>
-                                  <td><h4>Publications</h4></td>
-                                  <td>${helpers.publications(c.study)}</td>
-                               </tr>
-                             % endif
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<div class="row-fluid">
+  <div class="span7">
+      ${helpers.showSlide(c.study)}
+  </div>
+  <div class="span5">
+      <table class="table table-bordered">
+          <tbody>
+               <tr>
+                  <td><h4>Status</h4></td>
+                  <td>${helpers.status(c.study)}</td>
+               </tr>
+                <tr>
+                  <td><h4>Dates</h4></td>
+                  <td>${helpers.dates(c.study)}</td>
+               </tr>
+               <tr>
+                  <td><h4>Respondents</h4></td>
+                  <td>${helpers.respondents(c.study)}</td>
+               </tr>
+               <tr>
+                  <td style="width:150px;"><h4>Partner Agencies</h4></td>
+                  <td>${helpers.listPartners(c.study)}</td>
+               </tr>
+               % if len(c.study['sponsors']) > 0:
+                 <tr>
+                    <td><h4>Sponsors</h4></td>
+                    <td>${helpers.sponsors(c.study)}</td>
+                 </tr>
+               % endif
+               % if len(c.study['publications']) > 0:
+                 <tr>
+                    <td><h4>Publications</h4></td>
+                    <td>${helpers.publications(c.study)}</td>
+                 </tr>
+               % endif
+          </tbody>
+      </table>
+  </div>
+</div>
             
         </br>
-            <h3><em>Background</em></h3>
+            <h3><em>Problem</em></h3>
                 <div>${helpers.background(c.study)}</div>
                 % if c.video:
                       </br>

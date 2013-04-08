@@ -15,16 +15,16 @@ def linkChildToParent(child, parent):
     try:
         code = parent['urlCode']
     except Exception as e:
-        log.error("linkChildToParent(): parent object missing 'urlCode' field.")
+        log.error("linkChildToParent(): parent object of type %s and id %s missing 'urlCode' field." %(parent.objType, parent.id))
         return False
     
     key = '%s%s' %(parent.objType, 'Code')
-    if key not in child:
-        child[key] = code
-    else:
+    if key in child:
+        # Overwrite, give warning
         log.warning("linkChildToParent(): parent object link already exists in child.")
+    child[key] = code
     return child
-   
+    
 def getThing(code):
     try:
         return meta.Session.query(Thing)\
@@ -40,3 +40,28 @@ def getThingByID(thingID):
             .one()
     except:
         return False
+
+def addedItemAs(thing, privs, role = None):
+    """
+        thing       ->  A Thing object
+        privs       ->  The c.privs dict that sets permissions within a workshop
+        role        ->  (Optional) The preferred role to use, in string format.
+        
+        This sets the addedAs attribute for a given Thing.  For example, if someone is
+        posting a comment as a facilitator, then that comment gets the 'addedAs' attribute
+        set to 'facilitator'.
+        
+        If the attribute already exists, it overwrites.  If the attribute does not exist, it creates.
+    """
+    if role is not None:
+        thing['addedAs'] = role
+    else:
+        if privs['admin']:
+            thing['addedAs'] = 'admin'
+        elif privs['facilitator']:
+            thing['addedAs'] = 'facilitator'
+        elif privs['listener']:
+            thing['addedAs'] = 'listener'
+        else:
+            thing['addedAs'] = 'user'
+    return thing

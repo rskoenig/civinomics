@@ -1,27 +1,26 @@
 from pylons import tmpl_context as c, config, session
+from pylons import request
 from pylowiki.model import Thing, meta, Data
-from sqlalchemy import and_, not_
-from pylowiki.lib.utils import urlify, toBase62
-from pylowiki.lib.db.facilitator import Facilitator, isFacilitator
-from pylowiki.lib.db.user import getUserByID, getUserByEmail, isAdmin
-from pylowiki.lib.db.pmember import getPrivateMember, getPrivateMemberByCode
-from pylowiki.lib.db.geoInfo import getGeoScope
-from pylowiki.lib.db.activity import getDiscussionCommentsSince
-from pylowiki.lib.db.discussion import getDiscussionsForWorkshop, getDiscussionByID
-from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
-from page import Page
-from event import Event
-from revision import Revision
-from slideshow import Slideshow, getSlideshow
-from slide import Slide
-from discussion import Discussion
+from sqlalchemy import and_, not_, or_
 
-import time, datetime
-import logging
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from email.mime.image import MIMEImage
+import pylowiki.lib.utils           as utils
+import pylowiki.lib.db.facilitator  as facilitatorLib
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.pmember      as privateMemberLib
+import pylowiki.lib.db.activity     as activityLib
+import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.listener     as listenerLib
+import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.page         as pageLib
+import pylowiki.lib.db.event        as eventLib
+import pylowiki.lib.db.slideshow    as slideshowLib
+import pylowiki.lib.db.slide        as slideLib
+import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.mail            as mailLib
+import pylowiki.lib.db.tag          as tagLib
+
+from dbHelpers import commit, with_characteristic as wc, without_characteristic as wo, with_characteristic_like as wcl
+import time, datetime, logging
 
 log = logging.getLogger(__name__)
 
@@ -30,19 +29,34 @@ def getWorkshops( deleted = '0'):
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
         return False
-
-def searchWorkshops( wKey, wValue):
+        
+def getDemoWorkshops():
     try:
-        if wKey != 'startTime':
-            return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wcl(wKey, wValue))).filter(Thing.data.any(wc('deleted', '0'))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).all()
-        else:
-            return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wcl(wKey, wValue))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('demo', '1'))).all()
+    except:
+        return False
+
+def searchWorkshops( keys, values, deleted = u'0', published = u'1', public_private = u'public', count = False):
+    try:
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        m = map(wcl, keys, values)
+        q = meta.Session.query(Thing)\
+                .filter_by(objType = 'workshop')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('published', published)))\
+                .filter(Thing.data.any(wc('public_private', public_private)))
+        rows = q.filter(Thing.data.any(reduce(or_, m)))
+        if count:
+            return rows.count()
+        return rows.all()
     except:
         return False
 
 def getActiveWorkshops( deleted = '0'):
      try:
-        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wc('public_private', 'public'))).filter(Thing.data.any(wo('startTime', '0000-00-00'))).order_by('-date').all()
+        return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('deleted', deleted))).filter(Thing.data.any(wc('public_private', 'public'))).filter(Thing.data.any(wc('published', '1'))).order_by('-date').all()
      except:
         return False
 
@@ -64,7 +78,7 @@ def getActiveWorkshopByCode(code):
             .filter_by(objType = 'workshop')\
             .filter(Thing.data.any(wc('urlCode', code)))\
             .filter(Thing.data.any(wc('deleted', '0')))\
-            .filter(Thing.data.any(wo('startTime', u'0000-00-00'))).one()
+            .filter(Thing.data.any(wc('published', u'1'))).one()
     except:
         return False
 
@@ -117,7 +131,7 @@ def getParticipantsByID(id):
         return meta.Session.query(Thing).filter_by(id = id).one()['participants']
     except:
         return False
-            
+    
 def getRecentMemberPosts(number, publicPrivate = 'public'):
         counter = 0
         returnList = []
@@ -140,7 +154,7 @@ def getRecentMemberPosts(number, publicPrivate = 'public'):
                    returnList.append(item)
                    counter += 1
 
-           if w and w['startTime'] != '0000-00-00' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
+           if w and w['published'] == '1' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
                if item['deleted'] != '1' and item['disabled'] != '1':
                    returnList.append(item)
                    counter += 1
@@ -152,11 +166,10 @@ def getRecentMemberPosts(number, publicPrivate = 'public'):
 
 def getWorkshopPostsSince(code, url, memberDatetime):
         postList = meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).order_by('-date').all()
-        discussionList = getDiscussionsForWorkshop(code)
+        discussionList = discussionLib.getDiscussionsForWorkshop(code)
         commentList = []
         for d in discussionList:
-            cList = getDiscussionCommentsSince(d.id, memberDatetime) 
-            ##log.info('d is %s and cList is %s memberDatetime is %s'%(d, cList, memberDatetime))
+            cList = activityLib.getDiscussionCommentsSince(d.id, memberDatetime)
             if cList:
                 commentList = commentList + cList
 
@@ -164,198 +177,142 @@ def getWorkshopPostsSince(code, url, memberDatetime):
 
         return returnList
         
-def getCategoryTagList():
-    cTagList = []
-    cTagList.append('Business')
-    cTagList.append('Civil Rights')
-    cTagList.append('Community')
-    cTagList.append('Economy')
-    cTagList.append('Education')
-    cTagList.append('Entertainment')
-    cTagList.append('Environment')
-    cTagList.append('Family')
-    cTagList.append('Government')
-    cTagList.append('Health')
-    cTagList.append('Housing')
-    cTagList.append('Infrastructure')
-    cTagList.append('Justice')
-    cTagList.append('Land Use')
-    cTagList.append('Municipal Services')
-    cTagList.append('Policy')
-    cTagList.append('Safety')
-    cTagList.append('Transportation')
-    cTagList.append('Other')
-    return cTagList
+def getCategoryTagCount():
+    categories = tagLib.getWorkshopTagCategories()
+    tagDict = dict()
+    for category in categories:
+        tagDict[category] = 0
+        tagList = tagLib.searchTags(category)
+        for tag in tagList:
+            workshop = getWorkshopByCode(tag['workshopCode'])
+            if isPublished(workshop) and isPublic(workshop):
+                tagDict[category] = tagDict[category] + 1
+                
+    return tagDict
 
 def isGuest(workshop):
     if 'guestCode' in session and 'workshopCode' in session:
-        pTest = getPrivateMemberByCode(session['guestCode'])
+        pTest = privateMemberLib.getPrivateMemberByCode(session['guestCode'])
         if pTest and pTest['urlCode'] == session['guestCode'] and pTest['workshopCode'] == session['workshopCode'] and workshop['urlCode'] == session['workshopCode']:
             return True
-
+    
     return False
+    
+def isPublished(workshop):
+    if workshop and workshop['published'] == '1' and workshop['deleted'] == '0':
+        return True
+    
+    return False
+
+def isPublic(workshop):
+    if workshop and workshop['public_private'] == 'public':
+        return True
+    
+    return False
+    
+def isStarted(workshop):
+    if workshop and workshop['startTime'] != '0000-00-00' and workshop['deleted'] == '0':
+        return True
+    
+    return False
+    
     
 def isScoped(user, workshop):   
     if workshop['public_private'] != 'public':
-        pTest = getPrivateMember(workshop['urlCode'], user['email'])
+        if userLib.isAdmin(user.id):
+            return True
+        pTest = privateMemberLib.getPrivateMember(workshop['urlCode'], user['email'])
         if pTest:
             return True
         else:
             return False
     else:
         return True       
-       
-    return False
     
+    return False
+
+def setDemo(workshop): 
+    workshop['demo'] = '1'
+    workshop['deleted'] = '1'
+    commit(workshop)
+    return 'New demo workshop'
+
+def isDemo(workshop):   
+    if 'demo' in workshop:
+        if workshop['demo'] == '1':
+            return True
+        else:
+            return False       
+ 
+    return False
+
 def setWorkshopPrivs(workshop):
     c.privs = {}
     # Civinomics administrator
     c.privs['admin'] = False
     # Workshop facilitator
     c.privs['facilitator'] = False
+    # Like a facilitator, but with no special privs
+    c.privs['listener'] = False
     # Logged in member with privs to add objects
     c.privs['participant'] = False
     # Not logged in, privs to visit this specific workshop
     c.privs['guest'] = isGuest(workshop)
     # Not logged in, visitor privs in all public workshops
     c.privs['visitor'] = True
+    # is a demo workshop
+    c.privs['demo'] = isDemo(workshop)
     
     if 'user' in session:
-        c.privs['admin'] = isAdmin(c.authuser.id)
-        c.privs['facilitator'] = isFacilitator(c.authuser.id, workshop.id)
+        c.privs['admin'] = userLib.isAdmin(c.authuser.id)
+        c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser, workshop)
+        c.privs['listener'] = listenerLib.getListener(c.authuser, workshop)
         c.privs['participant'] = isScoped(c.authuser, workshop)
         c.privs['guest'] = False
-        c.privs['visitor'] = False   
-    
-def sendPMemberInvite(workshop, sender, recipient, message):
-    workshopName = workshop['title']
-    senderName = sender['name']
-    senderEmail = sender['email']
-    subject = senderName + ' invites you to a workshop.'
-    
-    if message and message != '':
-        message = '\n' + message
-    
-    emailDir = config['app_conf']['emailDirectory']
-    imageDir = config['app_conf']['imageDirectory']
-    myURL = config['app_conf']['site_base_url']
-    
-    # see if they are alread a user
-    uTest = getUserByEmail(recipient)
-    if uTest:
-        browseLink = 'Login to your Civinomics account, then visit the workshop here:\n' +  myURL + '/workshop/' + workshop['urlCode'] + '/' + workshop['url']
-    else:
-        guest = getPrivateMember(workshop['urlCode'], recipient)
-        browseLink = 'You can visit and browse the workshop here:\n' +  myURL + '/guest/' + guest['urlCode'] + '/' + workshop['urlCode']
-        
-    regLink = myURL + '/signup'
+        c.privs['visitor'] = False
 
-    htmlFile = emailDir + "/private_invite.html"
-    txtFile = emailDir + "/private_invite.txt"
-    headerImage = imageDir + "/email_logo.png"
-    
-    # open and read in HTML file
-    fp = open(htmlFile, 'r')
-    htmlMessage = fp.read()
-    fp.close()
-    
-    # do the substitutions
-    htmlMessage = htmlMessage.replace('${c.sender}', senderName)
-    htmlMessage = htmlMessage.replace('${c.workshopName}', workshopName)
-    htmlMessage = htmlMessage.replace('${c.inviteMessage}', message)
-    htmlMessage = htmlMessage.replace('${c.regLink}', regLink)
-    htmlMessage = htmlMessage.replace('${c.browseLink}', browseLink)
-    htmlMessage = htmlMessage.replace('${c.imageSrc}', 'cid:civinomicslogo')
-    
-    # open and read the text file
-    fp = open(txtFile, 'r')
-    textMessage = fp.read()
-    fp.close()
-    
-    # do the substitutions
-    textMessage = textMessage.replace('${c.sender}', senderName)
-    textMessage = textMessage.replace('${c.workshopName}', workshopName)
-    textMessage = textMessage.replace('${c.inviteMessage}', message)
-    textMessage = textMessage.replace('${c.regLink}', regLink)
-    textMessage = textMessage.replace('${c.browseLink}', browseLink)
-  
-    # open and read in the image
-    fp = open(headerImage, 'rb')
-    logo = fp.read()
-    fp.close()
-    
-    senderImage = ''
-    if sender['pictureHash'] != 'flash':
-        senderImage = "/images/avatar/" + sender['directoryNumber'] + "/profile/" + sender['pictureHash'] + ".profile"
-        
-    # create a MIME email object, initialize the header info
-    email = MIMEMultipart(_subtype='related')
-    email['Subject'] = subject
-    email['From'] = 'registration@civinomics.com'
-    email['To'] = recipient
-    
-    # now attatch the text and html and picture parts
-    part1 = MIMEText(textMessage, 'plain')
-    #part2 = MIMEText(htmlMessage, 'html')
-    #part3 = MIMEImage(logo, 'png')
-    #part3.add_header('Content-Id', '<civinomicslogo>')
-    email.attach(part1)
-    #email.attach(part2)
-    #email.attach(part3)
-    
-    # send that suckah
-    s = smtplib.SMTP('localhost')
-    s.sendmail(senderEmail, recipient, email.as_string())
-    s.quit()
 
-class Workshop(object):
+def Workshop(title, owner, publicPrivate, type = "personal"):
     # title -> A string
     # owner -> A user object in Thing form
     #
     # Note this will generate the page and event for you.
-    def __init__(self, title, owner, publicPrivate, type = "personal"):
-        w = Thing('workshop', owner.id)
-        w['title'] = title
-        w['url'] = urlify(title)
-        w['startTime'] = '0000-00-00'
-        w['endTime'] = '0000-00-00'
-
-        w['deleted'] = '0'
-        w['facilitators'] = c.authuser.id
-        w['goals'] = 'No goals set'
-        w['description'] = ''
-        w['pictureHash'] = 'flash' # default picture
-        w['numResources'] = 1
-        w['public_private'] = publicPrivate
-        w['type'] = type
-        w['allowIdeas'] = 1
-        w['allowSuggestions'] = 1
-        w['allowResources'] = 1
-        commit(w)
-        w['urlCode'] = toBase62(w)
-        self.w = w
-        background = 'No wiki background set yet'
-        
-        p = Page(title, owner, w, background)
-        e = Event('Create workshop', 'User %s created a workshop'%(c.authuser.id), w)
-        
-        slideshow = Slideshow(owner, w)
-        slideshow = getSlideshow(slideshow.s.id)
-        w['mainSlideshow_id'] = slideshow.id
-        identifier = 'slide'
-        title = 'Sample Title'
-        caption = 'Sample Caption'
-        s = Slide(owner, slideshow, title, caption, 'supDawg.png', 'no file here', '0')
-        w['mainImage_caption'] = caption
-        w['mainImage_title'] = title
-        w['mainImage_hash'] = s.s['pictureHash']
-        w['mainImage_postFix'] = 'orig'
-        w['mainImage_identifier'] = identifier
-        w['mainImage_id'] = s.s.id
-        slideshow['slideshow_order'] = s.s.id
-        commit(slideshow)
-        commit(w)
-        
-        f = Facilitator( c.authuser, w ) 
-        
+    w = Thing('workshop', owner.id)
+    w['title'] = title
+    w['url'] = utils.urlify(title)
+    w['startTime'] = u'0000-00-00'
+    w['endTime'] = u'0000-00-00'
+    w['published'] = u'0'
+    w['deleted'] = u'0'
+    w['disabled'] = u'0'
+    w['facilitators'] = c.authuser.id
+    w['description'] = u''
+    w['public_private'] = publicPrivate
+    w['type'] = type
+    w['allowIdeas'] = u'1'
+    w['allowSuggestions'] = u'1'
+    w['allowResources'] = u'1'
+    w['allowDiscussions']  = u'1'
+    commit(w)
+    w['urlCode'] = utils.toBase62(w)
+    background = utils.workshopInfo
+    
+    p = pageLib.Page(title, owner, w, background)
+    e = eventLib.Event('Create workshop', 'User %s created a workshop'%(c.authuser['email']), w)
+    
+    slideshow = slideshowLib.Slideshow(owner, w)
+    generic.linkChildToParent(slideshow, w)
+    identifier = 'slide'
+    title = 'Sample Title'
+    caption = 'Sample Caption'
+    s = slideLib.Slide(owner, slideshow, title, 'supDawg.png', 'no file here', '0')
+    mainImageLib.setMainImage(owner, w, s)
+    slideshow['slideshow_order'] = s.id
+    commit(slideshow)
+    commit(w)
+    
+    f = facilitatorLib.Facilitator( c.authuser, w )
+    mailLib.sendWorkshopMail(c.authuser['email'])
+    
+    return w
         

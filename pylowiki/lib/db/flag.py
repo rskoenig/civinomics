@@ -8,6 +8,7 @@ from dbHelpers import with_characteristic as wc
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.event        as eventLib
 
 def Flag(thing, flagger, flagType = "overall", workshop = None):
     """
@@ -15,9 +16,6 @@ def Flag(thing, flagger, flagType = "overall", workshop = None):
         and can be used to specify a type of flag (e.g. off-topic, inflamatory,
         factually incorrect, etc...)
     """
-    if not getFlagMetaData(thing):
-        FlagMetaData(thing)
-    # flag creation
     f = Thing('flag', flagger.id)
     f['deleted'] = '0'
     f['disabled'] = '0'
@@ -34,15 +32,20 @@ def Flag(thing, flagger, flagType = "overall", workshop = None):
     
     return f
 
-def FlagMetaData(thing, immune = '0'):
+def FlagMetaData(thing, user, reason, immune = u'1'):
     # Instead of denormalizing the object getting flagged, we instead
     # create a new object that dictates whether or not the flagged item
     # is immune to flagging.
-    flagMetaData = Thing('flagMetaData')
+    flagMetaData = Thing('flagMetaData', user.id)
     flagMetaData['immune'] = immune
     dbHelpers.commit(flagMetaData)
     generic.linkChildToParent(flagMetaData, thing)
     dbHelpers.commit(flagMetaData)
+    
+    action = 'immunified'
+    eventTitle = '%s %s' % (action.title(), thing.objType)
+    eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
+    eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action)
 
 def getFlagMetaData(thing):
     try:
@@ -52,6 +55,35 @@ def getFlagMetaData(thing):
             .filter_by(objType = 'flagMetaData')\
             .filter(Thing.data.any(wc(thingKey, thingCode)))\
             .one()
+    except:
+        return False
+
+def isImmune(thing):
+    metaData = getFlagMetaData(thing)
+    if not metaData:
+        return False
+    if metaData['immune'] == u'1':
+        return True
+    return False
+
+def getFlaggedThingsInWorkshop(workshop):
+    try:
+        rows = meta.Session.query(Thing)\
+            .filter_by(objType = 'flag')\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .all()
+        if len(rows) == 0:
+            return False
+        flaggedThings = []
+        flaggedCodes = []
+        codeTypes = ['discussionCode', 'ideaCode', 'resourceCode', 'commentCode']
+        for row in rows:
+            key = [item for item in codeTypes if item in row.keys()][0] # one of the codeTypes
+            code = row[key]
+            if code not in flaggedCodes:
+                flaggedCodes.append(code)
+                flaggedThings.append(generic.getThing(code))
+        return flaggedThings
     except:
         return False
 
@@ -102,7 +134,7 @@ def getNumFlags(thing, deleted = '0', disabled = '0'):
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .count()
     except:
-        return False
+        return 0
 
 def immunify(thing):
     # Flips the 'immune' bit
@@ -114,7 +146,7 @@ def immunify(thing):
         dbHelpers.commit(flagMetaData)
 
 def checkFlagged(thing):
-    return len(getFlags(thing)) > 0
+    return getNumFlags(thing) > 0
 
 def isFlagged(thing, flagger):
     """

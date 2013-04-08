@@ -10,14 +10,27 @@ import generic
 
 log = logging.getLogger(__name__)
 
-def getGoalsForWorkshop(workshop):
+def getGoalsForWorkshop(workshop, deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'goal').filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'goal')\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .all()
     except:
         return False
 
-def Goal(title, status, workshop):
-    goal = Thing('goal')
+def getGoal(goalCode):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'goal')\
+            .filter(Thing.data.any(wc('urlCode', goalCode)))\
+            .one()
+    except:
+        return False
+
+def Goal(title, status, workshop, owner):
+    goal = Thing('goal', owner.id)
     goal['title'] = title
     goal['status'] = status
     goal['deleted'] = '0'

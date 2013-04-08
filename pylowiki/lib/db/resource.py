@@ -163,7 +163,7 @@ def editResource(resource, title, text, url, owner):
         return False
 
 # Object
-def Resource(url, title, owner, workshop, text = None, parent = None):
+def Resource(url, title, owner, workshop, privs, role = None, text = None, parent = None):
     a = Thing('resource', owner.id)
     if not url.startswith('http://'):
         url = u'http://' + url
@@ -186,9 +186,9 @@ def Resource(url, title, owner, workshop, text = None, parent = None):
     a['deleted'] = '0'
     a['ups'] = '0'
     a['downs'] = '0'
+    a = generic.addedItemAs(a, privs, role)
     commit(a)
     a['urlCode'] = toBase62(a)
     commit(a)
-    d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title)
-    r = revisionLib.Revision(c.authuser, a)
+    d = Discussion(owner = owner, discType = 'resource', attachedThing = a, workshop = workshop, title = title, privs = privs, role = role)
     return a

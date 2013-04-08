@@ -16,6 +16,9 @@ import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.flag         as flagLib
 import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.revision     as revisionLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.alerts          as  alertsLib
 
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
 
@@ -27,28 +30,28 @@ log = logging.getLogger(__name__)
 class DiscussionController(BaseController):
 
     def __before__(self, action, workshopCode = None):
-        setPrivs = ['index', 'topic', 'thread', 'addDiscussion', 'clearDiscussionFlagsHandler', 'addDiscussionHandler',\
-        'editDiscussion', 'flagDiscussion', 'adminDiscussion', 'adminDiscussionHandler']
-        
-        noWorkshopCode = ['editDiscussion', 'clearDiscussionFlagsHandler', 'editDiscussionHandler', 'flagDiscussion', 'adminDiscussion'\
-        'adminDiscussionHandler']
-        
         publicOrPrivate = ['index', 'topic', 'thread']
         
-        if action not in noWorkshopCode:
-            if workshopCode is None:
-                abort(404)
-            c.w = workshopLib.getWorkshopByCode(workshopCode)
-            if not c.w:
-                abort(404)
-            if action in setPrivs:
-                workshopLib.setWorkshopPrivs(c.w)
-            if action in publicOrPrivate:
-                if c.w['public_private'] != 'public':
-                    if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
-                        abort(404)
-            if 'user' in session:
-                utils.isWatching(c.authuser, c.w)
+        if workshopCode is None:
+            abort(404)
+        c.w = workshopLib.getWorkshopByCode(workshopCode)
+        if not c.w:
+            abort(404)
+            
+        c.mainImage = mainImageLib.getMainImage(c.w)
+        
+        # Demo workshop status
+        c.demo = workshopLib.isDemo(c.w)
+        
+        workshopLib.setWorkshopPrivs(c.w)
+        if c.w['public_private'] == 'public':
+            c.scope = geoInfoLib.getPublicScope(c.w)
+        if action in publicOrPrivate:
+            if c.w['public_private'] != 'public':
+                if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
+                    abort(404)
+        if 'user' in session:
+            utils.isWatching(c.authuser, c.w)
 
     def index(self, workshopCode, workshopURL):
         c.title = c.w['title']
@@ -63,36 +66,22 @@ class DiscussionController(BaseController):
         c.listingType = 'discussion'
         return render('/derived/6_detailed_listing.bootstrap')
 
-    def topic(self, workshopCode, workshopURL, discussionCode, discussionURL, revisionCode = ''):
+    def topic(self, workshopCode, workshopURL, discussionCode, discussionURL):
         c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
         if not c.thing:
-            c.thing = discussionLib.getDiscussion(dicussionCode, disabled = '1')
+            c.thing = revisionLib.getRevisionByCode(discussionCode)
             if not c.thing:
                 abort(404)
         c.flags = flagLib.getFlags(c.thing)
         c.events = eventLib.getParentEvents(c.thing)
-
         c.title = c.w['title']
-
-        if revisionCode != '':
-            r = revisionLib.getRevisionByCode(revisionCode)
-            c.content = h.literal(h.reST2HTML(r['data']))
-            c.lastmoduser = userLib.getUserByID(r.owner)
-            c.lastmoddate = r.date
-            c.revision = r
-        else:
-            c.content = h.literal(h.reST2HTML(c.thing['text']))
-            c.revision = False
-            c.lastmoduser = userLib.getUserByID(c.thing.owner)
-            if 'mainRevision_id' in c.thing:
-                r = get_revision(int(c.thing['mainRevision_id']))
-                c.lastmoddate = r.date
-            else:
-                c.lastmoddate = c.thing.date
-
-        c.revisions = revisionLib.getParentRevisions(c.thing.id)
-        
+        c.revisions = revisionLib.getRevisionsForThing(c.thing)
         c.listingType = 'discussion'
+        
+        if 'comment' in request.params:
+            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+            if not c.rootComment:
+                abort(404)
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, discussionCode, discussionURL, commentCode):
@@ -103,12 +92,14 @@ class DiscussionController(BaseController):
         c.listingType = 'discussion'
         return render('/derived/6_item_in_listing.bootstrap')
 
-    @h.login_required
     def addDiscussion(self, workshopCode, workshopURL):
         if c.privs['participant'] or c.privs['admin'] or c.privs['facilitator']:
             c.title = c.w['title']
             c.listingType = 'discussion'
             return render('/derived/6_add_to_listing.bootstrap')
+        elif c.privs['guest']:
+            c.listingType = 'discussion'
+            return render('/derived/6_guest_signup.bootstrap')
         else:
             return redirect('/workshop/%s/%s' % (c.w['urlCode'], c.w['url']))
 
@@ -137,8 +128,9 @@ class DiscussionController(BaseController):
         else:
             if len(title) > 120:
                 title = title[:120]
-            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w, title = title, text = text, workshop = c.w)
-            r = revisionLib.Revision(c.authuser, d.d)
+            d = discussionLib.Discussion(owner = c.authuser, discType = 'general', attachedThing = c.w,\
+                title = title, text = text, workshop = c.w, privs = c.privs, role = None)
+            alertsLib.emailAlerts(d.d)
             commit(c.w)
         
-        return redirect('/workshop/%s/%s/discussion/%s/%s' % (workshopCode, workshopURL, d.d['urlCode'], d.d['url']))
+        return redirect(utils.thingURL(c.w, d.d))

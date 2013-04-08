@@ -2,28 +2,27 @@ from pylowiki.tests import *
 from routes import url_for
 from urlparse import urlparse
 
-from pylowiki.tests.helpers.people import make_user, createActivatedUser
+from pylowiki.tests.helpers.people import make_user
 import pylowiki.tests.helpers.content as content
 
 import logging
 log = logging.getLogger(__name__)
 
-def create_user(self, usern, passw, zipc, membert, name):
+def create_user(self, usern, passw, postal, membert, name):
     # create a user with normal privs
     rReg = self.app.post(
-        url=url_for(controller='register', action='register_handler'),
+        url=url_for(controller='register', action='signupHandler'),
         params={
             'email': usern,
             'password': passw,
             'password2': passw,
-            'postalCode': zipc,
+            'postalCode': postal,
             'country': 'United States',
             'memberType': membert,
             'name': name,
             'chkTOS': 'true'
         }
-    )
-    assert 'alert-error' not in rReg
+    ).follow()
     assert 'success' in rReg
     return rReg
 
@@ -49,20 +48,28 @@ def activate_user(self, hash_and_email):
     assert content.activation_success() in rThen
     return rNext
 
-# is there a need
 def create_and_activate_a_user(self, **who):
+    """Creates a user and sets access level. kwargs is used for any desired settings 
+    otherwise basic defaults are assumed"""
+    #: create a user object
     if not who:
         thisUser = make_user()
-         #thisUser = createActivatedUser()
     else:
         thisUser = make_user(**who)
-         #thisUser = createActivatedUser(**who)
-    user_created = create_user(self, thisUser['email'], thisUser['password'], thisUser['zip'], thisUser['memberType'], thisUser['name'])
-    log.info('created ' + thisUser['email'])
-    user_activated = activate_user(self, user_created.hash_and_email)
-
+    #: use the site's signup page to register this user
+    user_created = create_user(self, thisUser['email'], thisUser['password'], thisUser['postal'], thisUser['memberType'], thisUser['name'])
+    #user_activated = activate_user(self, user_created.hash_and_email)
+    from pylowiki.lib.db.user import getUserByEmail
+    u = getUserByEmail(thisUser['email'])
+    #: activate the user
+    u['accessLevel'] = thisUser['accessLevel']
+    u['activated'] = '1'
+    u['disabled'] = '0'
+    from pylowiki.lib.db.dbHelpers import commit
+    commit(u)
+    #: return user object for use by test function
     return thisUser
 
-def create_and_activate_user(self, usern, passw, zipc, membert, name):
-    user_created = create_user(self, usern, passw, zipc, membert, name)
+def create_and_activate_user(self, usern, passw, postal, membert, name):
+    user_created = create_user(self, usern, passw, postal, membert, name)
     return activate_user(self, user_created.hash_and_email)

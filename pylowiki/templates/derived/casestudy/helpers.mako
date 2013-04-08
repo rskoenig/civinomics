@@ -4,7 +4,7 @@
 
 <%def name="showSlide(study)">
             <ul class="thumbnails">
-              <li class="span6">
+              <li class="span12">
                 <div class="thumbnail">
                     <img src="/images/corp/casestudies/${study['url']}/${study['image']}" alt="">
                 </div> 
@@ -71,7 +71,7 @@
               <% pictures= study['pictures']%>
               
               <% picture = pictures[0] %>
-                <div class="active item"><img class="centered" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
+                <div class="active item"><img class="centered civ-carousel" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
                             <div class="carousel-caption">
                                 <h4>${picture['title']}</h4>
                                 <div style="color:#ffffff;">${picture['caption']}</div>
@@ -80,7 +80,7 @@
               
                     <% assclownpics = pictures[1:] %>
                         % for picture in assclownpics:
-                                <div class="item"><img class="centered" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
+                                <div class="item"><img class="centered civ-carousel" src="/images/corp/casestudies/${study['url']}/${picture['image']}"/>
                                     <div class="carousel-caption">
                                         <h4>${picture['title']}</h4>
                                         <div style="color:#ffffff;">${picture['caption']}</div>
@@ -104,7 +104,7 @@
                 % for question in questions:
                 <p><em>${question['title']}</em></p>
                     <ul class="thumbnails">
-                        <li class="span6">
+                        <li class="span12">
                             <div class="thumbnail">
                                 <img class="centered" src="/images/corp/casestudies/${study['url']}/${question['image']}" alt="">
                             </div>

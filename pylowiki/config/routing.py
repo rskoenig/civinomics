@@ -48,6 +48,7 @@ def make_map():
     map.connect('/corp/contact', controller = 'corp', action = 'contact')
     map.connect('/corp/caseStudies/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
     map.connect('/corp/caseStudies', controller = 'corp', action = 'caseStudies')
+    map.connect('/corp/polling', controller = 'corp', action = 'polling')
 
     ########################################################################################################
     # 
@@ -77,6 +78,14 @@ def make_map():
     map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/geo/postalList/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
 
+    # Geo rss stuff
+    map.connect('/workshops/rss/earth{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}/{state}{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}/{state}/{county}{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}/{state}/{county}/{city}{end:/?}', controller = 'geo', action = 'rss')
+    map.connect('/workshops/rss/earth/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'geo', action = 'rss')
+    
     # Workshop Base
     map.connect('/{workshop:workshops?}/display/create/{form:form/?}', controller = 'workshop', action = 'displayCreateForm')
     map.connect('/{workshop:workshops?}/create/{handler:handler/?}', controller = 'workshop', action = 'createWorkshopHandler')
@@ -86,7 +95,7 @@ def make_map():
     map.connect('/guest/{guestCode}/{workshopCode}{end:/|}', controller = 'workshop', action = 'guest', guestCode = '{guestCode}', workshopCode = '{workshopCode}')
     map.connect('/{workshop:workshops?}/{code}/{workshopURL}/follow/{handler:handler/?}', controller = 'follow', action = 'followHandler', code = '{code}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{background:background/?}', controller = 'workshop', action = 'background', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{dashboard:dashboard/?}', controller = 'workshop', action = 'dashboard', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{preferences:preferences/?}', controller = 'workshop', action = 'preferences', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/feedback{end:/?}', controller = 'workshop', action = 'feedback', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     # These two are duplicated
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{admin:admin/?}', controller = 'workshop', action = 'admin', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
@@ -94,6 +103,7 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{adminWorkshopHandler:adminWorkshopHandler/?}', controller = 'workshop', action = 'adminWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
     # Workshop configuration submit handler
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/publish/handler{end:/?}', controller = 'workshop', action = 'publishWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureBasicWorkshopHandler{end:/?}', controller = 'workshop', action = 'configureBasicWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureScopeWorkshopHandler{end:/?}', controller = 'workshop', action = 'configureScopeWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureStartWorkshopHandler{end:/?}', controller = 'workshop', action = 'configureStartWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
@@ -102,13 +112,27 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/previewInvitation{end:/?}', controller = 'workshop', action = 'previewInvitation', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listPrivateMembersHandler{end:/?}', controller = 'workshop', action = 'listPrivateMembersHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configurePublicWorkshopHandler{end:/?}', controller = 'workshop', action = 'configurePublicWorkshopHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureContinueHandler{end:/?}', controller = 'workshop', action = 'dashboard', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/configureContinueHandler{end:/?}', controller = 'workshop', action = 'preferences', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/update/background/handler{end:/?}', controller = 'wiki', action = 'updateBackgroundHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+    
+    # workshop activity feeds
+    map.connect('/activity/rss{end:/?}', controller='actionlist', action='rss')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/rss{end:/?}', controller = 'workshop', action = 'rss')    
+
+    # Workshop follower, private member notifications
+    map.connect('/{workshop:workshops?}/{workshopCode}/{url}/follow/{userCode}/notifications/{handler:handler/?}', controller = 'follow', action = 'followerNotificationHandler', workshopCode = '{workshopCode}', url='{url}', userCode = '{userCode}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/private/{userCode}/notifications/{handler:handler/?}', controller = 'workshop', action = 'pmemberNotificationHandler', workshopCode = '{workshopCode}', workshopURL='{workshopURL}', userCode = '{userCode}')
+    
+    # Workshop goals
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/add{end:/?}', controller = 'goals', action = 'add')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/get{end:/?}', controller = 'goals', action = 'getGoals')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/update{end:/?}', controller = 'goals', action = 'update')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/delete{end:/?}', controller = 'goals', action = 'delete')
 
     # Workshop slideshow
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{image:addImages/?}', controller = 'slideshow', action = 'addImageDisplay', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/{editSlideshow:editSlideshow/?}', controller = 'slideshow', action = 'editSlideshowDisplay', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/slide/edit', controller = 'slideshow', action = 'edit')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/slide/edit/position', controller = 'slideshow', action = 'editPosition')
 
     # Account handler routines
     map.connect('/workshop/{workshopCode}/{workshopURL}/manage/{account:account/?}', controller = 'account', action = 'manageAccount', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
@@ -154,19 +178,25 @@ def make_map():
     # ADD HERE: threaded discussion route
 
     # Cofacilitation invitation and response
-    map.connect('/profile/{id1}/{id2}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'facilitateInviteHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/facilitate/response/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResponseHandler', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/{workshop:workshops?}/{id1}/{id2}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResignHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{code}/{url}/facilitate/invite/{handler:handler/?}', controller = 'facilitator', action = 'facilitateInviteHandler', code = '{code}', url='{url}')
+    map.connect('/profile/{code}/{url}/facilitate/response/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResponseHandler', code = '{code}', url='{url}')
+    map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/resign/{handler:handler/?}', controller = 'facilitator', action = 'facilitateResignHandler', code = '{code}', url='{url}')
 
+    # Facilitator notifications
+    map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/{userCode}/notifications/{handler:handler/?}', controller = 'facilitator', action = 'facilitatorNotificationHandler', code = '{code}', url='{url}', userCode = '{userCode}')
+    
     # Listener invitation and response
     map.connect('/profile/{userCode}/{userURL}/listener/invite/{handler:handler/?}', controller = 'listener', action = 'listenerInviteHandler', userCode = '{userCode}', userURL = '{userURL}')
     map.connect('/profile/{userCode}/{userURL}/listener/response/{handler:handler/?}', controller = 'listener', action = 'listenerResponseHandler', userCode = '{userCode}', userURL = '{userURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/resign/{handler:handler/?}', controller = 'listener', action = 'listenerResignHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/title/{handler:handler/?}', controller = 'listener', action = 'listenerTitleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+
+    # Listener notifications
+    map.connect('/{workshop:workshops?}/{workshopCode}/{url}/listen/{userCode}/notifications/{handler:handler/?}', controller = 'listener', action = 'listenerNotificationHandler', workshopCode = '{workshopCode}', url='{url}', userCode = '{userCode}')
     
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
-    # map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
     # map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/thread/{commentCode}{end:/?}', controller = 'comment', action = 'showThread')
 
     # Ratings
@@ -183,7 +213,8 @@ def make_map():
     map.connect('/delete/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'delete')
     map.connect('/edit/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'edit')
     map.connect('/flag/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'flag')
-    # Flag reset/object immunity goes here
+    map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
+    map.connect('/demo/set/{thingCode}{end:/?}', controller = 'admin', action='setDemo')
     
     ########################################################################################################
     # 
@@ -232,9 +263,13 @@ def make_map():
     ########################################################################################################
     
     # Login and signup
-    map.connect('/{login:login/?}', controller = 'login', action = 'loginDisplay')
+    map.connect('/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = 'None', thingCode = 'None', thingURL = 'None')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/login/{thing}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = 'None', thingURL = 'None')
+    map.connect('/workshop/{workshopCode}/{workshopURL}/clogin/{thing}/{thingCode}/{thingURL}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = '{thingCode}', thingURL = '{thingURL}')
     map.connect('/{loginHandler:loginHandler/?}', controller = 'login', action = 'loginHandler')
     map.connect('/{signup:signup/?}', controller = 'register', action = 'signupDisplay')
+    map.connect('/signup/handler{end:/?}', controller = 'register', action= 'signupHandler')
     map.connect('/{forgotPassword:forgotPassword/?}', controller = 'login', action = 'forgotPassword')
     map.connect('/{forgotPasswordHandler:forgotPasswordHandler/?}', controller = 'login', action = 'forgot_handler')
 
@@ -260,16 +295,28 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/{admin:admin/?}', controller = 'profile', action = 'userAdmin', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{edit:edit/?}', controller = 'profile', action = 'edit')
     map.connect('/profile/{editSubmit:editSubmit/?}', controller = 'profile', action = 'editSubmit')
-    map.connect('/profile/{id1}/{id2}/{dashboard:dashboard/?}', controller = 'profile', action = 'dashboard', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/{edit:edit/?}', controller = 'profile', action = 'edit', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/info/edit/{handler:handler/?}', controller = 'profile', action = 'infoEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/picture/upload/{handler:handler/?}', controller = 'profile', action = 'pictureUploadHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/password/update/{handler:handler/?}', controller = 'profile', action = 'passwordUpdateHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    
+    ################
+    # Messaging    #
+    ################
+    map.connect('/message/{urlCode}/mark/read{end:/?}', controller = 'message', action = 'markRead')
     
     ################
     # Action Lists #
     ################
     
-    map.connect('/{help:help/?}', controller = 'actionlist', action='help')
+    map.connect('/{help:help/?}', controller = 'help', action='help')
+    map.connect('/help/{facilitatorGuide:facilitatorGuide/?}', controller = 'help', action='facilitatorGuide')
+    map.connect('/help/{faq:faq/?}', controller = 'help', action='faq')
+    map.connect('/help/{reportIssue:reportIssue/?}', controller = 'help', action='reportIssue')
+    map.connect('/help/{reportAbuse:reportAbuse/?}', controller = 'help', action='reportAbuse')
+    map.connect('/help/{abuseHandler:abuseHandler/?}', controller = 'help', action='abuseHandler')
+    map.connect('/help/{feedbackWorkshop:feedbackWorkshop/?}', controller = 'help', action='feedbackWorkshop')
     map.connect('/{surveys:surveys/?}', controller = 'actionlist', action='index', id='surveys')
     map.connect('/{sitemap:sitemap/?}', controller='actionlist', action='index', id='sitemap')
     map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')
@@ -281,12 +328,17 @@ def make_map():
     map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
 
     ################
+    # Search       #
+    ################
+
+    map.connect('/search{end:/?}', controller = 'search', action = 'search')
+    map.connect('/search/workshops{end:/?}', controller = 'search', action = 'searchWorkshops')
+    map.connect('/search/people{end:/?}', controller = 'search', action = 'searchPeople')
+    ################
     # Application  #
     ################
     map.connect('/', controller = 'home', action = 'index' ) # load the homepage.
     
-    map.connect('/{search:search/?}', controller = 'search', action = 'index' ) # search root route
-    map.connect('/search/{handler:handler/?}', controller = 'search', action = 'handler' ) # search handler route
     map.connect('/{controller}', controller='{controller}', action='index') # Maps url to controller index
     map.connect('/{controller}/', controller = '{controller}', action = 'index')
     map.connect('/{controller}/{action}', controller='{controller}', action='{action}')

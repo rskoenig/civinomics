@@ -12,8 +12,11 @@ import pylowiki.lib.db.resource         as  resourceLib
 import pylowiki.lib.db.discussion       as  discussionLib
 import pylowiki.lib.db.comment          as  commentLib
 import pylowiki.lib.db.revision         as  revisionLib
+import pylowiki.lib.db.geoInfo          as  geoInfoLib
+import pylowiki.lib.alerts              as  alertsLib
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
+import pylowiki.lib.db.mainImage        as mainImageLib
 
 from tldextract import extract
 from pylowiki.lib.base import BaseController, render
@@ -29,9 +32,17 @@ class ResourceController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
+            
+        c.mainImage = mainImageLib.getMainImage(c.w)
+        
+        # Demo workshop status
+        c.demo = workshopLib.isDemo(c.w)
+
+        
         c.title = c.w['title']
         workshopLib.setWorkshopPrivs(c.w)
-        
+        if c.w['public_private'] == 'public':
+            c.scope = geoInfoLib.getPublicScope(c.w)
         if c.w['public_private'] != 'public':
             if not c.privs['guest'] and not c.privs['participant'] and not c.privs['facilitator'] and not c.privs['admin']:
                 abort(404)
@@ -56,9 +67,18 @@ class ResourceController(BaseController):
         if not c.thing:
             c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
             if not c.thing:
-                abort(404)
+                c.thing = revisionLib.getRevisionByCode(resourceCode)
+                if not c.thing:
+                    abort(404)
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'resource'
+        c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        
+        if 'comment' in request.params:
+            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+            if not c.rootComment:
+                abort(404)
+                
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, resourceCode, resourceURL, commentCode = ''):
@@ -68,11 +88,13 @@ class ResourceController(BaseController):
         c.listingType = 'resource'
         return render('/derived/6_item_in_listing.bootstrap')
 
-    @h.login_required
     def addResource(self, workshopCode, workshopURL):
         if (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin']) and c.w['allowResources'] == '1':
             c.listingType = 'resource'
             return render('/derived/6_add_to_listing.bootstrap')
+        elif c.privs['guest']:
+            c.listingType = 'resource'
+            return render('/derived/6_guest_signup.bootstrap')
         else:
             c.listingType = 'resources'
             return render('/derived/6_detailed_listing.bootstrap')
@@ -91,5 +113,6 @@ class ResourceController(BaseController):
             text = request.params['text'] # Optional
         if len(title) > 120:
             title = title[:120]
-        newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, text = text)
-        return redirect(session['return_to'])
+        newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, c.privs, text = text)
+        alertsLib.emailAlerts(newResource)
+        return redirect(utils.thingURL(c.w, newResource))

@@ -1,7 +1,11 @@
 <%!
-    import pylowiki.lib.db.workshop as workshopLib
-    import pylowiki.lib.db.facilitator as facilitatorLib
-    import pylowiki.lib.db.listener as listenerLib
+    import pylowiki.lib.db.workshop     as workshopLib
+    import pylowiki.lib.db.facilitator  as facilitatorLib
+    import pylowiki.lib.db.listener     as listenerLib
+    import pylowiki.lib.db.follow       as followLib
+    import pylowiki.lib.db.user         as userLib
+    import pylowiki.lib.db.pmember      as pmemberLib
+    import pylowiki.lib.utils           as utils
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -30,10 +34,141 @@
             if 'imageOnly' in kwargs:
                 if kwargs['imageOnly'] == True:
                     return
+            if 'role' in kwargs:
+                role = kwargs['role']
+            else:
+                role = ''
         %>
         <div class="media-body">
-            <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading">${workshop['title']}</h5></a>
-            ${workshop['description']}
+            <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading"><span class="label label-inverse">${role}</span> ${workshop['title']}</h5></a>
+            ${workshop['description']}<br />
+            % if 'user' in session:
+                % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                    % if role == 'Facilitating':
+                        <div style="margin-top: 10px;">
+                            <%
+                                f = facilitatorLib.getFacilitatorsByUserAndWorkshop(c.user, workshop)[0]
+                                itemsChecked = ''
+                                flagsChecked = ''
+                                digestChecked = ''
+                                if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                                    itemsChecked = 'checked'
+                                if 'flagAlerts' in f and f['flagAlerts'] == '1':
+                                    flagsChecked = 'checked'
+                                if 'digest' in f and f['digest'] == '1':
+                                    digestChecked = 'checked'
+                            %>
+                            <div class="row-fluid" ng-controller="facilitatorController">
+                                <div class="span3">Email when:</div>
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        New Items: <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        New Flags: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
+                                        <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
+                            </div><!-- row-fluid -->
+                        </div><!-- margin-top -->
+                    % endif
+                    % if role == 'Listening':
+                        <div style="margin-top: 10px;">
+                            <%
+                                l = listenerLib.getListener(c.user, workshop)
+                                itemsChecked = ''
+                                digestChecked = ''
+                                if 'itemAlerts' in l and l['itemAlerts'] == '1':
+                                    itemsChecked = 'checked'
+                                if 'digest' in l and l['digest'] == '1':
+                                    digestChecked = 'checked'
+                            %>
+                            <div class="row-fluid" ng-controller="listenerController">
+                                <div class="span3">Email when:</div>
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
+                            </div><!-- row-fluid -->
+                        </div><!-- margin-top -->
+                    % endif
+                    % if role == 'Bookmarked':
+                        <% f = followLib.getFollow(c.user, workshop) %>
+                        % if f:
+                            <div style="margin-top: 10px;">
+                                <%
+                                    itemsChecked = ''
+                                    digestChecked = ''
+                                    if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                                        itemsChecked = 'checked'
+                                    if 'digest' in f and f['digest'] == '1':
+                                        digestChecked = 'checked'
+                                %>
+                                <div class="row-fluid" ng-controller="followerController">
+                                    <div class="span3">Email when:</div>
+                                    <div class="span3">
+                                        <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                            New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                            <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                        </form>
+                                    </div><!-- span3 -->
+                                    <div class="span3">
+                                        <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                            Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                            <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
+                                        </form>
+                                    </div><!-- span3 -->
+                                </div><!-- row-fluid -->
+                            </div><!-- margin-top -->
+                        % endif
+                    % endif
+                    % if role == 'Private':
+                        <div style="margin-top: 10px;">
+                            <% 
+                                p = pmemberLib.getPrivateMember(workshop['urlCode'], c.user['email'])
+                                itemsChecked = ''
+                                digestChecked = ''
+                                if 'itemAlerts' in p and p['itemAlerts'] == '1':
+                                        itemsChecked = 'checked'
+                                if 'digest' in p and p['digest'] == '1':
+                                        digestChecked = 'checked'
+                            %>
+                            <div class="row-fluid" ng-controller="pmemberController">
+                                <div class="span3">Email when:</div>
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
+                                        <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
+                                <div class="span3">
+                                    <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
+                                        Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
+                                        <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
+                                    </form>
+                                </div><!-- span3 -->
+                            </div><!-- row-fluid -->
+                        </div><!-- margin-top -->
+                    % endif
+                % endif
+            % endif
         </div>
     </div>
 </%def>
@@ -122,12 +257,12 @@
     % else:
         <span class="button_container">
         % if c.isFollowing:
-            <button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton following">
+            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton following">
             <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
             <span> Unfollow </span>
             </button>
         % else:
-            <button rel="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton unfollow">
+            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton unfollow">
             <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
             <span> Follow </span>
             </button>
@@ -145,8 +280,11 @@
             <h3 class="section-header">${c.user['name']}</h3>
             <p>${lib_6.userGeoLink(c.user)}</p>
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
+            % if c.user['greetingMsg'] != '':
+                <small class="muted expandable">${c.user['greetingMsg']}</small>
+            % endif
             % if c.user['websiteLink'] != '':
-                <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}">${c.user['websiteLink']}</a></p>
+                <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
                 % if c.user['websiteDesc'] != '':
                     <small class="muted expandable">${c.user['websiteDesc']}</small>
                 % endif
@@ -168,15 +306,13 @@
                 <div class="span4">
                     ${thingCount(c.user, c.followers, 'followers')}
                 </div>
+                <!-- users might ultimately be integrated in as one of the things you follow <div class="span4">
+                    ${thingCount(c.user, c.following, 'users')}
+                </div> -->
                 <div class="span4">
-                    ${thingCount(c.user, c.following, 'following')}
-                </div>
-                <div class="span4">
-                    ${thingCount(c.user, c.watching, 'bookmarks')}
+                    ${thingCount(c.user, c.watching, 'following')}
                 </div>
             </div> <!--/.row-fluid-->
-            <hr>
-            Placeholder for listing organizations
         </div><!--/.browse-->
     </div><!--/.section-wrapper-->
 </%def>
@@ -184,39 +320,12 @@
 <%def name="showActivity(activity)">
     <table class="table table-hover table-condensed">
         <tbody>
+        
         % for item in activity:
-            <%
-                workshop = workshopLib.getWorkshopByCode(item['workshopCode'])
-                if item.objType == 'comment':
-                    activityStr = 'Commented on a'
-                    if 'ideaCode' in item.keys():
-                        activityStr += 'n'
-                else:
-                    activityStr = 'Added a'
-                if item.objType == 'idea':
-                    activityStr += 'n'
-                if item.objType == 'comment':
-                    activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True, id='accordion-%s'%item['urlCode']) + '>'
-                else:
-                    activityStr += ' <a ' + lib_6.thingLinkRouter(item, workshop, embed = True) + '>'
-                if item.objType != 'comment':
-                    if item.objType == 'discussion':
-                        activityStr += "conversation </a>"
-                    else:
-                        activityStr += item.objType + "</a>"
-                else:
-                    if 'ideaCode' in item.keys():
-                        activityStr += 'idea </a>'
-                    elif 'resourceCode' in item.keys():
-                        activityStr += 'resource </a>'
-                    else:
-                        activityStr += 'conversation </a>'
-                activityStr += ' in <a ' + lib_6.workshopLink(workshop, embed = True) + '>'
-                activityStr += lib_6.ellipsisIZE(workshop['title'], 25) + '</a>'
-                if item.objType == 'comment':
-                    activityStr += ' : <span class="expandable">%s</span>' % item['data']
-            %>
-            <tr> <td>${activityStr | n} </td></tr>
+            <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
+            % if workshop['public_private'] == 'public' or (c.browser == False or c.isAdmin == True): 
+                <tr><td>${lib_6.showItemInActivity(item, workshop)}</td></tr>
+            % endif
         % endfor
         </tbody>
     </table>
@@ -225,18 +334,16 @@
 <%def name="inviteCoFacilitate()">
     %if 'user' in session and c.authuser:
         <% 
-            fList = facilitatorLib.getFacilitatorsByUser(c.authuser.id)
+            fList = facilitatorLib.getFacilitatorsByUser(c.authuser)
             wListF = []
             wListL = []
             for f in fList:
-                w = workshopLib.getWorkshopByID(f['workshopID'])
+                w = workshopLib.getWorkshopByCode(f['workshopCode'])
                 if w['deleted'] == '0' and w['type'] != 'personal':
                     wlisten = listenerLib.getListener(c.user, w)
-                    if not facilitatorLib.isFacilitator(c.user.id, w.id) and not facilitatorLib.isPendingFacilitator(c.user.id, w.id):
+                    if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
                         wListF.append(w)
-                    if not wlisten:
-                        wListL.append(w)
-                    elif wlisten['pending'] == '0':
+                    if not wlisten or wlisten['disabled'] == '1':
                         wListL.append(w)
                         
         %>
@@ -271,4 +378,86 @@
     %endif
 </%def>
 
-
+<%def name="editProfile()">
+    <%namespace file="/lib/derived/6_profile_edit.mako" name="helpersEdit" />
+    <%
+        tab1active = ""
+        tab2active = ""
+        tab3active = ""
+        tab4active = ""
+        tab5active = ""
+                    
+        if c.tab == "tab1":
+            tab1active = "active"
+        elif c.tab == "tab2":
+            tab2active = "active"
+        elif c.tab == "tab3":
+            tab3active = "active"
+        elif c.tab == "tab4":
+            tab4active = "active"
+        elif c.tab == "tab5":
+            tab5active = "active"
+        else:
+            tab1active = "active"
+    
+        msgString = ''
+        if c.unreadMessageCount != 0:
+            msgString = ' (' + str(c.unreadMessageCount) + ')'
+    %>
+    <div class="row-fluid">
+        % if c.conf['read_only.value'] == 'true':
+            <h1> Sorry, Civinomics is in read only mode right now </h1>
+        % else:
+            <div class="tabbable">
+                <div class="span3">
+                    <div class="section-wrapper">
+                        <div class="browse">
+                            <div style="text-align: center">
+                                <h4 class="section-header"><br />Edit Profile</h4>
+                                For the periodic upkeep of your Civinomics profile.<br /><br />
+                            </div><!-- center -->
+                            <ul class="nav nav-pills nav-stacked">
+                            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Update your profile info
+                            </a></li>
+                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">2. Change your password<br />
+                            </a></li>
+                            % if c.admin:
+                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">3. Administrate<br />
+                            Admin only - shhh!.</a></li>
+                            % endif
+                            </ul>
+                            <div style="text-align: center">
+                                <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/display/create/form">
+                                <br />
+                                <button type="submit" class="btn btn-warning">Create a Workshop!</button>
+                                <br /><br />
+                                </form>
+                            </div><!-- center -->
+                        </div><!-- browse -->
+                    </div><!-- section-wrapper -->
+                </div> <!-- /.span3 -->
+                <div class="span9">
+                    ${lib_6.fields_alert()}
+                    % if c.conf['read_only.value'] == 'true':
+                        <!-- read only -->
+                    % else:
+                        <div class="tab-content">
+                            <div class="tab-pane ${tab1active}" id="tab1">
+                                ${helpersEdit.profileInfo()}
+                            </div><!-- tab1 -->
+                            <div class="tab-pane ${tab4active}" id="tab4">
+                                ${helpersEdit.changePassword()}
+                            </div><!-- tab4 -->
+                            % if c.admin:
+                                <div class="tab-pane ${tab5active}" id="tab5">
+                                    ${helpersEdit.memberAdmin()}
+                                    ${helpersEdit.memberEvents()}
+                                </div><!-- tab5 -->
+                            % endif
+                        </div><!-- tab-content -->
+                    % endif
+                </div> <!-- /.span9 -->
+            </div><!-- tabbable -->
+        % endif
+    </div> <!-- /.row-fluid -->
+</%def>

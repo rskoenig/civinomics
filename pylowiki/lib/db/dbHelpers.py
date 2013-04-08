@@ -26,11 +26,13 @@ def with_characteristic(key, value):
 def without_characteristic(key, value):
     return and_(Data.key == key, Data.value != value)
 
-def with_characteristic_like(key, value, raw = 0):
+def with_characteristic_like(key, value, raw = 0, case_insensitive = True):
     if raw == 0:
        value = '%' + value + '%'
-
-    return and_(Data.key == key, Data.value.like(value))
+    if case_insensitive:
+        return and_(Data.key == key, Data.value.ilike(value))
+    else:
+        return and_(Data.key == key, Data.value.like(value))
 
 def lessThan_characteristic(key, value):
     return and_(Data.key == key, Data.value < value)

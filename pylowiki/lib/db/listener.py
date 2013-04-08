@@ -10,6 +10,15 @@ import generic
 
 log = logging.getLogger(__name__)
 
+def getListenerByCode(code):
+    try:
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'listener')\
+                .filter(Thing.data.any(wc('urlCode', code)))\
+                .one()
+    except:
+        return False
+
 def getListener(user, workshop):
     try:
         return meta.Session.query(Thing)\
@@ -51,7 +60,9 @@ def Listener(user, workshop, pending = 1):
         listener = Thing('listener')
         listener['title'] = ''
         listener['pending'] = pending
-        listener['disabled'] = '0'
+        listener['disabled'] = u'0'
+        listener['itemAlerts'] = u'0'
+        listener['digest'] = u'0'
         commit(listener)
         listener['urlCode'] = toBase62(listener)
         listener = generic.linkChildToParent(listener, user)

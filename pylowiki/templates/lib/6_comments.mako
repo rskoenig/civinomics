@@ -1,7 +1,7 @@
 <%!
     from pylowiki.lib.db.user import getUserByID, isAdmin
-    import pylowiki.lib.db.user as userLib
-    import pylowiki.lib.db.facilitator as facilitatorLib
+    import pylowiki.lib.db.user         as userLib
+    import pylowiki.lib.db.revision     as revisionLib
     from pylowiki.lib.db.facilitator import isFacilitator
     from pylowiki.lib.db.comment import getComment
     import logging, random
@@ -22,10 +22,26 @@
         if 'user' in session and discussion.objType != 'comment':
             if thing['disabled'] != '1':
                 addCommentToDiscussion(thing, discussion)
+        elif 'user' not in session and discussion.objType != 'comment':
+                loginToAddComment(thing)
         displayDiscussion(thing, discussion)
     %>
 </%def>
 
+<%def name="loginToAddComment(thing)">
+    ########################################################################
+    ##
+    ## Display a button to login to add a comment
+    ##
+    ########################################################################
+    <% url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url'] %>
+    <div class="row-fluid">
+        <div class="span12">
+            <a href="${url}" title="Login to comment." class="pull-right btn btn-success" type="button">Login to Comment</a>
+            <br /><br />
+        </div><!- span12 -->
+    </div><!-- row-fluid -->
+</%def>
 
 <%def name="addCommentToDiscussion(thing, discussion)">
     ########################################################################
@@ -59,7 +75,6 @@
     ########################################################################
     <%
         rules = []
-        rules.append("Rule #1 of comment club: Don't call people Hitler.")
         rules.append("Rule #2 of comment club: Do you talk to your mother with that voice?")
         rules.append("Rule #3 of comment club: You do not talk about comment club.")
         rules.append("Rule #4 of comment club: Gold Five: Stay on <del>target</del> topic!")
@@ -83,15 +98,19 @@
 
 <%def name="recurseCommentTree(node, commentType, maxDepth, curDepth)">
     <%
-        if not node: # if node == 0
+        if not node:
             return
         if type(node) == int:
             node = getComment(node)
         if curDepth >= maxDepth or node['children'] == 0:
             return
-
-        if commentType == 'thread':
+        parent = node
+        if node.objType == 'comment':
             if curDepth == 0:
+                if node.objType == 'discussion':
+                    parent = node
+                else:
+                    parent = getComment(node['parent'])
                 childList = [int(node.id)]
             else:
                 childList = map(int, node['children'].split(','))
@@ -106,17 +125,23 @@
             if child == 0:
                 pass
             try:
-                displayComment(child, commentType, maxDepth, curDepth)
+                displayComment(child, commentType, maxDepth, curDepth, parent)
             except:
                 raise
     %>
 </%def>
 
-<%def name="displayComment(comment, commentType, maxDepth, curDepth)">
+<%def name="displayComment(comment, commentType, maxDepth, curDepth, parent = None)">
     <%
         comment = getComment(comment)
         if comment:
             author = getUserByID(comment.owner)
+            if comment['deleted'] == u'1':
+                if 'user' in session:
+                    if not isAdmin(c.authuser.id):
+                        return
+                else:
+                    return
         else:
             return
         accordionID = 'accordion-%s' % comment['urlCode']
@@ -130,36 +155,51 @@
     %>
     <div class="accordion" id="${accordionID}">
         <div class="accordion-group ${backgroundShade}">
-            ${commentHeading(comment, author, accordionID, collapseID)}
+            ${commentHeading(comment, author, accordionID, collapseID, parent)}
             ${commentContent(comment, commentType, curDepth, maxDepth, author, accordionID, collapseID)}
         </div>
     </div>
 </%def>
 
-<%def name="commentHeading(comment, author, accordionID, collapseID)">
+<%def name="commentHeading(comment, author, accordionID, collapseID, parent)">
     <%
         headerClass = "accordion-heading"
-        if int(author['accessLevel']) >= 200:
+        if comment['addedAs'] == 'admin':
             headerClass += " admin"
-        elif isFacilitator( author.id, c.w.id ):
+        elif comment['addedAs'] == 'facilitator':
             headerClass += " facilitator"
+        elif comment['addedAs'] == 'listener':
+            headerClass += " listener"
     %>
     <div class="${headerClass}">
         <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
             Hide
         </button>
-        ${lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")}
-        ${lib_6.userLink(author, className="inline")}
-        % if int(author['accessLevel']) >= 200:
-            (admin)
-        % elif isFacilitator( author.id, c.w.id ):
-            (facilitator)
-        % endif
-        from ${lib_6.userGeoLink(author, comment=True)}
+        <%
+            lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")
+            lib_6.userLink(author, className="inline")
+            role = ''
+            roles = ['admin', 'facilitator', 'listener']
+            if comment['addedAs'] in roles:
+                role = '(%s)' % comment['addedAs']
+        %>
+        ${role} from ${lib_6.userGeoLink(author, comment=True)}
         
-        % if comment['disabled'] == '1':
-            <span class="pull-right tiny disabledComment-notice">(comment disabled)</span>
-        % endif
+        <span class="pull-right disabledComment-notice">
+            <small>
+            <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">Link</a>
+            % if parent:
+                % if parent.objType == 'comment':
+                    % if parent['urlCode'] != comment['urlCode']:
+                        | <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
+                    % endif
+                % endif
+            % endif
+            % if comment['disabled'] == '1':
+                (comment disabled)
+            % endif
+            </small>
+        </span>
     </div> <!--/.accordion-heading-->
 </%def>
 
@@ -186,6 +226,8 @@
                 </div> <!--/.span11-->
             </div> <!--/.row-fluid-->
             <%
+                revisions = revisionLib.getRevisionsForThing(comment)
+                lib_6.revisionHistory(revisions)
                 if 'user' in session:
                     if c.thing['disabled'] == '0':
                         commentFooter(comment, author)
@@ -256,7 +298,7 @@
 <%def name="continueThread(comment)">
     <br />
     <%
-        continueStr = '<a %s>%s</a>' %(lib_6.threadLink(comment, c.w, c.listingType, embed=True, commentRoot=comment), "Continue this thread -->")
+        continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
     %>
     ${continueStr | n}
 </%def>

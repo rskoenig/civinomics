@@ -38,17 +38,6 @@ def getCommentByCode( code ):
     except sa.orm.exc.NoResultFound:
         return False
 
-def getFlaggedDiscussionComments( id ):
-    try:
-        cList =  meta.Session.query(Thing).filter_by(objType = 'comment').filter(Thing.data.any(wc('discussion_id', id))).all()
-        fList = []
-        for c in cList:
-            if checkFlagged(c) and c.id not in fList:
-               fList.append(c.id)        
-        return fList
-    except sa.orm.exc.NoResultFound:
-        return False
-
 def getCommentsInDiscussion(discussion, deleted = '0', disabled = '0'):
     try:
        return meta.Session.query(Thing)\
@@ -107,10 +96,37 @@ def isDisabled(comment):
 
 def getAllComments(disabled = '0', deleted = '0'):
     try:
+        comments = meta.Session.query(Thing)\
+            .filter_by(objType = 'comment')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .all()
+        liveComments = []
+        for comment in comments:
+            if 'ideaCode' in comment.keys():
+                idea = generic.getThing(comment['ideaCode'])
+                if idea['deleted'] == u'1' or idea['disabled'] == u'1':
+                    continue
+            elif 'resourceCode' in comment.keys():
+                resource = generic.getThing(comment['resourceCode'])
+                if resource['deleted'] == u'1' or resource['disabled'] == u'1':
+                    continue
+            else:
+                discussion = generic.getThing(comment['discussionCode'])
+                if discussion['deleted'] == u'1' or discussion['disabled'] == u'1':
+                    continue
+            liveComments.append(comment)
+        return liveComments
+    except:
+        return False
+
+def getCommentsInWorkshop(workshop, disabled = '0', deleted = '0'):
+    try:
         return meta.Session.query(Thing)\
             .filter_by(objType = 'comment')\
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
             .all()
     except:
         return False
@@ -125,7 +141,7 @@ def editComment(comment, data):
 # Object
 class Comment(object):
     # parent is a Thing id
-    def __init__(self, data, owner, discussion, parent = 0):
+    def __init__(self, data, owner, discussion, privs, role = None, parent = 0):
         w = getWorkshopByCode(discussion['workshopCode'])
         if discussion['discType'] == 'idea':
             attachedThing = ideaLib.getIdea(discussion['ideaCode'])
@@ -148,6 +164,7 @@ class Comment(object):
         thisComment['ups'] = '0'
         thisComment['downs'] = '0'
         thisComment['lastModified'] = datetime.now().ctime()
+        thisComment = generic.addedItemAs(thisComment, privs, role)
         commit(thisComment)
         thisComment['urlCode'] = toBase62(thisComment)
         commit(thisComment)
@@ -164,7 +181,6 @@ class Comment(object):
                 parentComment['children'] = parentComment['children'] + ',' + str(thisComment.id)
             commit(parentComment)
         
-        r = Revision(owner, thisComment)
         self.setDiscussionProperties(thisComment, discussion)
         self.c = thisComment
         

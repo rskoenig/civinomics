@@ -1,8 +1,8 @@
+
 #-*- coding: utf-8 -*-
 import logging
 
-from pylons import tmpl_context as c
-from pylons import request
+from pylons import tmpl_context as c, session, config, request
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
@@ -15,6 +15,9 @@ from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.geoInfo import GeoInfo
 from pylowiki.lib.mail import send
 from revision import Revision
+import pylowiki.lib.db.pmember      as pMemberLib
+import pylowiki.lib.db.generic      as genericLib
+import pylowiki.lib.mail            as mailLib
 
 from time import time
 
@@ -46,7 +49,6 @@ def getAllUsers(disabled = '0', deleted = '0'):
             .filter_by(objType = 'user')\
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .all()
-            #.filter(Thing.data.any(wc('deleted', deleted)))\
     except:
         return False
 
@@ -72,9 +74,17 @@ def isAdmin(id):
     except:
         return False
     
-def searchUsers( uKey, uValue):
+def searchUsers( uKey, uValue, deleted = u'0', disabled = u'0', activated = u'1', count = False):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wcl(uKey, uValue))).all()
+        query = meta.Session.query(Thing)\
+                .filter_by(objType = 'user')\
+                .filter(Thing.data.any(wcl(uKey, uValue)))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('activated', activated)))
+        if count:
+            return query.count()
+        return query.all()
     except:
         return False
 
@@ -151,7 +161,6 @@ def generatePassword():
 def hashPassword(password):
     return md5(password + config['app_conf']['auth.pass.salt']).hexdigest()
 
-
 class User(object):
     def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
         u = Thing('user')
@@ -173,13 +182,18 @@ class User(object):
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         u['accessLevel'] = 0
-        if email != config['app_conf']['admin.email']:
+        if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
             self.generateActivationHash(u)
         commit(u)
         u['urlCode'] = toBase62(u)
         commit(u)
         self.u = u
         g = GeoInfo(postalCode, country, u.id)
+        
+        # update any pmembers
+        memberList = pMemberLib.getPrivateMemberWorkshopsByEmail(u['email'])
+        for pMember in memberList:
+            pMember = genericLib.linkChildToParent(pMember, u)  
 
     # TODO: Should be encrypted instead of hashed
     def hashPassword(self, password):
@@ -199,19 +213,16 @@ class User(object):
         # this next line is needed for functional testing to be able to use the generated hash
         if 'paste.testing_variables' in request.environ:
                 request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
-
-        subject = "Civinomics Account Activation"
-        message = 'Greetings from Civinomics!\n\nOnly one more step till your Civinomics member registration is complete. Please click on the following link to activate your account:\n\n%s' % url
-        message = message + '\n\nThis will log you into your Civinomics member dashboard, where you can update your member profile with a picture and other details. To find workshops in your area, click on the green Civinomics icon in the top corner.\n\n' 
-        message = message + 'See you soon!\n\nThe Civinomics Team'
-        send(toEmail, frEmail, subject, message)
-        
+       
         u['activationHash'] = hash
         commit(u)
         Revision(u, u)
         
+        # send the activation email
+        mailLib.sendActivationMail(u['email'], url)
+        
         log.info("Successful account creation (deactivated) for %s" %toEmail)
-
+    
     def changePassword(self, password):
         self['password'] = self.hashPassword(password)
         return True

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from pylowiki.tests import *
 
-from pylowiki.lib.db.user import User
-
 ##################
 # design idea - for guaranteed unique generated emails:
 #   - use the activation hash
@@ -34,10 +32,10 @@ def give_me_user(**kwargs):
         country = kwargs['country']
     else:
         country = 'United States'
-    if 'zip' in kwargs:
-        zip = kwargs['zip']
+    if 'postal' in kwargs:
+        postal = kwargs['postal']
     else:
-        zip = 'zip'
+        postal = '95060'
     if 'name' in kwargs:
         name = kwargs['name']
     else:
@@ -46,39 +44,20 @@ def give_me_user(**kwargs):
         memberType = kwargs['memberType']
     else:
         memberType = 'individual'
-    if 'authName' in kwargs:
-        authValDict = {
-            'user' : '0',
-            'facilitator' : '100',
-            'admin' : '200'
-        }
-        if authName in authValDict:
-            authLevel = authValDict[authName]
-        else:
-            authLevel = authValDict['user']
-    if 'authLevel' in kwargs:
-        # do I expect user/facilitator/admin or 100/200/300?
-        # if I accept name, then I cannot accept #?
-        # if I accept both, must one trump the other? we only use the #, so # should trump name.
-        authLevel = kwargs['authLevel']
+    if 'accessLevel' in kwargs:
+        accessLevel = kwargs['accessLevel']
     else:
-        authLevel = '0'
+        accessLevel = '0'
     new_user = {
         'email' : email,
         'password' : password,
         'country' : country,
-        'zip' : 95060,
+        'postal' : postal,
         'name' : name,
         'memberType' : memberType,
-        'authLevel' : authLevel
+        'accessLevel' : accessLevel
     }
     return new_user
-
-def createActivatedUser(**kwargs):
-    newUser = give_me_user(**kwargs)
-    u = User(newUser['email'], newUser['name'], newUser['password'], newUser['country'], newUser['memberType'], newUser['zip'])
-    u['activated'] = '1'
-    return newUser
 
 ##################
 # make_user
@@ -87,14 +66,13 @@ def createActivatedUser(**kwargs):
 def make_user(**kwargs):
     return give_me_user(**kwargs)
 
-
 # test.ini admin
 # NOTE - fill these fields with those found in test.ini where applicable. for those that are not?
 def get_test_admin():
     test_admin = {
         'email' : 'username@civinomics.com',
         'password' : 'password',
-        'zip' : '95060',
+        'postal' : '95060',
         'first' : 'test',
         'last' : 'admin',
         'type' : 'individual',

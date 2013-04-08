@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
 
 from pylowiki.lib.db.page import get_all_pages
-from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID, getRecentMemberPosts
+from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID, getWorkshopByCode, getRecentMemberPosts
 from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
@@ -17,6 +17,8 @@ from pylowiki.lib.db.featuredSurvey import getFeaturedSurvey, setFeaturedSurvey
 import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 from pylons import config
+import datetime
+import webhelpers.feedgenerator as feedgenerator
 
 log = logging.getLogger(__name__)
 
@@ -32,14 +34,9 @@ class ActionlistController(BaseController):
         c.title = c.heading = c.workshopTitlebar = 'All Workshops'
         c.list = getActiveWorkshops()
         c.activity = getRecentMemberPosts(10)
-        c.scope = 'earth'
+        c.scope = {'level':'earth', 'name':'all'}
+        c.rssURL = "/activity/rss"
         return render('derived/6_main_listing.bootstrap')
-            
-        #elif c.action == 'surveys':
-        #    c.title = c.heading = 'Surveys'
-        #    c.list = getActiveSurveys()
-        #else:
-        #    c.title = c.heading = "Which " + c.action + "?"
 
         if c.action == "restore":
             c.list = get_all_pages(1)
@@ -83,137 +80,34 @@ class ActionlistController(BaseController):
         else:
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
-
-    def help( self ):
-        return render('/derived/6_help.bootstrap')
-
-    def searchWorkshops( self, id1, id2  ):
-        log.info('searchWorkshops %s %s' % (id1, id2))
-        id2 = id2.replace("_", " ")
-        c.title = c.heading = 'Search Workshops: ' + id1 + ' ' + id2
-        c.list = searchWorkshops(id1, id2)
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
+    
+    def rss( self ):
+        c.activity = getRecentMemberPosts(30)
+        feed = feedgenerator.Rss201rev2Feed(
+            title=u"Civinomics Workshop Activity Feed",
+            link=u"http://www.civinomics.com",
+            description=u"The most recent activity in Civinomics public workshops.",
+            language=u"en"
         )
+        for item in c.activity:
+            w = getWorkshopByCode(item['workshopCode'])
+            wURL = config['site_base_url'] + "/workshop/" + w['urlCode'] + "/" + w['url'] + "/"
+            
+            thisUser = getUserByID(item.owner)
+            activityStr = thisUser['name'] + " "
+            if item.objType == 'resource':
+               activityStr += 'added the resource '
+            elif item.objType == 'discussion':
+               activityStr += 'started the discussion '
+            elif item.objType == 'idea':
+                activityStr += 'posed the idea '
 
-        return render('/derived/list_workshops.bootstrap')
+            activityStr += '"' + item['title'] + '"'
+            wURL += item.objType + "/" + item['urlCode'] + "/" + item['url']
+            feed.add_item(title=activityStr, link=wURL, guid=wURL, description='')
+            
+        response.content_type = 'application/xml'
 
-    def searchName( self, id1, id2 ):
-        searchType = id1
-        searchString = id2
-        if searchString == '%':
-           searchString = ''
-        log.info('searchName')
-        if searchType == 'Workshops':
-              c.title = c.heading = 'Search Workshops: ' + searchString
-              c.list = searchWorkshops('title', searchString)
-              c.count = len( c.list )
-              c.paginator = paginate.Page(
-                  c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 15, item_count = c.count
-              )
+        return feed.writeString('utf-8')
 
-              return render('/derived/list_workshops.bootstrap')
-
-        else:
-              c.title = c.heading = 'Search Members: ' + searchString
-              c.list = searchUsers('name', searchString)
-              c.count = len( c.list )
-              c.paginator = paginate.Page(
-                  c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 15, item_count = c.count
-              )
-
-              return render('/derived/list_users.bootstrap')
-
-    def searchGeoUsers( self, id1 ):
-        log.info('searchGeoUsers')
-        scopeLevel = id1
-        geoInfo = getGeoInfo(c.authuser.id)
-        searchScope = geoInfo[0]['scope']
-        c.list = []
-
-        scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
-        c.title = c.heading = 'List Members: ' + scopeTitle
-        log.info('postalCode is %s scopeLevel is %s'%(geoInfo[0]['postalCode'], scopeLevel))
-        scopeList = getUserScopes(searchScope, scopeLevel)
-        for gInfo in scopeList:
-           c.list.append(getUserByID(gInfo.owner))
-
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-                  c.list, page=int(request.params.get('page', 1)),
-                  items_per_page = 15, item_count = c.count
-              )
-
-        return render('/derived/list_users.bootstrap')
-
-    def searchGeoWorkshops( self ):
-        geoInfo = getGeoInfo(c.authuser.id)
-        searchScope = geoInfo[0]['scope']
-        c.list = []
-        if 'scopeLevel' in request.params:
-           scopeLevel = request.params['scopeLevel']
-           scopeTitle = getScopeTitle(geoInfo[0]['postalCode'], "United States", scopeLevel)
-           c.title = c.heading = 'List Workshops: ' + scopeTitle
-           scopeList = getWorkshopScopes(searchScope, scopeLevel)
-           for gInfo in scopeList:
-              w = getWorkshopByID(gInfo['workshopID'])
-              if w['startTime'] == '0000-00-00' or w['deleted'] == '1':
-                  continue
-              else:
-                  if w not in c.list:
-                      doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
-
-                      if doit:
-                          offset = 10 - int(scopeLevel)
-                          offset = offset * -1
-                          wTest = gInfo['scope'].split('|')
-                          sTest = searchScope.split('|')
-                          ##log.info('offset is %s'%offset)
-                          if wTest[:offset] == sTest[:offset]:
-                              c.list.append(w)
-
-           c.count = len( c.list )
-           c.paginator = paginate.Page(
-                     c.list, page=int(request.params.get('page', 1)),
-                     items_per_page = 15, item_count = c.count
-                 )
-           return render('/derived/list_workshops.bootstrap')
-        else:
-           return redirect('/')
-
-
-    def searchTags( self, id1 ):
-        id1 = id1.replace("_", " ")
-        c.title = c.heading = 'Search Workshops by Tag: ' + id1
-        tList = searchTags(id1)
-        c.list = []
-        for t in tList:
-           w = getWorkshopByID(t['thingID'])
-           if w['deleted'] == '0' and w['startTime'] != '0000-00-00':
-               c.list.append(getWorkshopByID(t['thingID']))
-
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
-        return render('/derived/list_workshops.bootstrap')
-
-    def searchUsers( self, id1, id2  ):
-        log.info('searchUsers %s %s' % (id1, id2))
-        id2 = id2.replace("_", " ")
-        c.title = c.heading = 'Search Users: ' + id1 + ' ' + id2
-        c.list = searchUsers(id1, id2)
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
-        return render('/derived/list_users.bootstrap')
 

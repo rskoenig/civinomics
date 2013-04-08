@@ -20,8 +20,15 @@
                 ${lib_6.fields_alert()}
                 <span class="payment-errors"></span><br />
                 % if c.w:
+                    % if c.privs['admin']:
+                        <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="post" id="adminUpgradeForm">
+                        <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+                        <button type="submit" name="admin-submit-button" class="btn btn-success">Complimentary Upgrade</button><br /><br />
+                        </form>
+                    % endif
                     <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="post" id="paymentForm">
                     <input type="hidden" name="workshopCode" value="${c.w['urlCode']}">
+
                 % else:
                     <form action="/workshop/create/handler" method="post" id="paymentForm">
                 % endif
@@ -34,11 +41,11 @@
                     <input type="text" name="email" value="${c.billingEmail}" class="required" />
                 </div><!-- form-row -->
                 <div class="form-row">
-                    <label>Credit Card Number (use 4242424242424242 for testing)</label>
+                    <label>Credit Card Number</label>
                     <input type="text" maxlength="20" autocomplete="off" class="card-number stripe-sensitive required" />
                 </div><!-- form-row -->
                 <div class="form-row">
-                    <label>CVC</label>
+                    <label>CVC <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="The three digit security code on the back of the credit card."></i></label>
                     <input type="text" maxlength="4" autocomplete="off" class="card-cvc stripe-sensitive required" />
                 </div><!-- form-row -->
                 <div class="form-row">
@@ -76,6 +83,14 @@
     </div><!-- row-fluid -->
     </div><!-- browse -->
 </div><!-- section-wrapper -->
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.signup-tooltip').tooltip();
+        $('.icon-question-sign').tooltip();
+    </script>
+</%def>
 
 <%def name="headScripts()">
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>

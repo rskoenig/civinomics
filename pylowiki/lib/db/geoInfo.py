@@ -187,12 +187,8 @@ def getWorkshopScopes(searchScope, scopeLevel):
     except sa.orm.exc.NoResultFound:
         return False
 
+# this is exclusive
 def getWorkshopsInScope(country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
-    log.info('country = %s' % country)
-    log.info('state = %s' % state)
-    log.info('county = %s' % county)
-    log.info('city = %s' % city)
-    log.info('postalCode = %s' % postalCode)
     try:
         return meta.Session.query(Thing)\
             .filter_by(objType = 'wscope')\
@@ -200,10 +196,11 @@ def getWorkshopsInScope(country = '0', state = '0', county = '0', city = '0', po
             .filter(Thing.data.any(wc('state', state)))\
             .filter(Thing.data.any(wc('county', county)))\
             .filter(Thing.data.any(wc('city', city)))\
-            .filter(Thing.data.any(wc('postal', postalCode)))\
+            .filter(Thing.data.any(wc('postalCode', postalCode)))\
             .all()
     except:
         return False
+
 
 def editWorkshopScope(wscope, geoTagString):
     try:
@@ -213,7 +210,7 @@ def editWorkshopScope(wscope, geoTagString):
         wscope['state'] = geoTags[4]
         wscope['county'] = geoTags[6]
         wscope['city'] = geoTags[8]
-        wscope['postal'] = geoTags[9]
+        wscope['postalCode'] = geoTags[9]
         commit(wscope)
         return wscope
     except:
@@ -250,7 +247,34 @@ def getScopeTitle(postalCode, country, scope):
        return 'Planet Earth'
     else:
        return 'hmmm, I dunno'
-        
+
+def getPublicScope(workshop):
+    scope = getWScopeByWorkshop(workshop)
+    if scope:
+        scope = scope['scope'].split('|')
+        if scope[9] != '0':
+            scopeLevel = 'postalCode'
+            scopeName  = scope[9]
+        elif scope[8] != '0':
+            scopeLevel = 'city'
+            scopeName  = scope[8]
+        elif scope[6] != '0':
+            scopeLevel = 'county'
+            scopeName  = scope[6]
+        elif scope[4] != '0':
+            scopeLevel = 'state'
+            scopeName  = scope[4]
+        elif scope[2] != '0':
+            scopeLevel = 'country'
+            scopeName  = scope[2]
+        else:
+            scopeLevel = 'earth'
+            scopeName  = 'earth'
+    else:
+        scopeLevel = 'earth'
+        scopeName  = 'earth'
+    return {'level':scopeLevel, 'name':scopeName}
+
 class WorkshopScope(object):
     def __init__(self, workshop, scope):
         wscope = Thing('wscope')
@@ -262,7 +286,7 @@ class WorkshopScope(object):
         wscope['state'] = geoTags[4]
         wscope['county'] = geoTags[6]
         wscope['city'] = geoTags[8]
-        wscope['postal'] = geoTags[9]
+        wscope['postalCode'] = geoTags[9]
         
         commit(wscope)
         wscope = generic.linkChildToParent(wscope, workshop)
@@ -316,7 +340,7 @@ def GeoInfo(postalCode, country, ownerID ):
     g['countyURL'] = urlify(county)
     g['cityTitle'] = city.title()
     g['cityURL'] = urlify(city)
-    g['postalTitle'] = postalCode
-    g['postalURL'] = postalCode
+    g['postalCodeTitle'] = postalCode
+    g['postalCodeURL'] = postalCode
     g['scope'] ='||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
     commit(g)

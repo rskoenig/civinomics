@@ -4,7 +4,12 @@
 
 <div class="row">
    <div class = "span12">
-        ${lib_6.geoBreadcrumbs()}
+        <%
+            if 'user' in session:
+                outOfScope = lib_6.geoBreadcrumbs()
+                if outOfScope and c.scope['level'] != 'earth':
+                    lib_6.outOfScope()
+        %>
    </div><!--/.span12-->
 </div><!-- /.row-->
 <div class="row">
@@ -13,65 +18,27 @@
          <div class="browse">
             <h3 class="section-header"> ${c.workshopTitlebar} </h3>
             <div class="row-fluid"><!--navigation row-->
-               <%doc>
-               <div class="span12"> <!-- object navigation -->
-                  <ul class="nav nav-pills">
-                     <li class="active"> <a href="#">workshops</a></li>
-                     <li> <a href="#">suggestions</a></li>
-                  </ul>
-               </div> <!-- /object navigation -->
-               </%doc>
+                <ul class="thumbnails">
+                    % for item in c.list:
+                        <li class="span6 wrap-workshop"> ${helpers.show_workshop(item)} </li>
+                    % endfor
+                </ul>
             </div><!--/navigation row-->
-            <%
-               if len(c.list) % 2 == 0:
-                  numRows = len(c.list)/2
-               else:
-                  numRows = len(c.list)/2 + 1
-               curItem = 0
-            %>
-            % for row in range(numRows):
-               <div class="row-fluid"> <!-- display row -->
-                  % if curItem < len(c.list):
-                     <div class="span6">
-                        <% 
-                           w = c.list[curItem]
-                           helpers.show_workshop(w)
-                        %>
-                     </div>
-                  % endif
-                  <% curItem += 1 %>
-                  % if curItem < len(c.list):
-                     <div class="span6">
-                        <% 
-                           w = c.list[curItem]
-                           helpers.show_workshop(w)
-                        %>
-                     </div>
-                  % endif
-                  <% curItem += 1 %>
-               </div>
-            % endfor
          </div><!--/.browse-->
       </div><!--/.section-wrapper-->
    </div> <!-- /listings -->
    <div class="span4"> <!-- Activity Stream -->
       <div class="section-wrapper">
          <div class="activity">
-            <h3 class="section-header"> Activity </h3>
-            <% numItems = 10 %>
-            % for i in range(len(c.activity)):
-               <% thisActivity = c.activity[i] %>
-               <div class="row-fluid">
-                  ${helpers.showActivity(thisActivity)}
-               % if i < len(c.activity) - 1:
-                  <hr>
-               % endif
-               % if i > numItems:
-                <% break %>
-               % endif
-               </div>
-            % endfor
-            
+            <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
+            <% 
+               numItems = 10
+               for i in range(len(c.activity)):
+                  thisActivity = c.activity[i]
+                  helpers.showActivity(thisActivity)
+                  if i > numItems:
+                     break
+            %>
          </div>
       </div>
    </div> <!-- /Activity Stream -->
@@ -85,6 +52,8 @@
        }).mouseleave(function(e) {
            $(this).children('a').children('span').fadeOut(200);
        });
+       
+       $(".small-bulb, .small-bookmark").tooltip({delay:500});
    });
    </script>
 </%def>

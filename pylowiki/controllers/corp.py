@@ -1,4 +1,5 @@
 import logging
+import glob
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -21,45 +22,116 @@ class CorpController(BaseController):
         return render('/derived/corp_about.bootstrap')
 
     def caseStudies(self):
+        c.pagetype="caseStudies"  
+        c.title="Case Studies"
+
+        c.clients=[]
+        client={}
+        client['name']="San Francisco Public Utilities Commission"
+        client['logo']="sfpuc_small.jpg"
+        client['url']='SSIP'
+        c.clients.append(client)
+        client={}
+        client['name']="Soquel Creek Water District"
+        client['logo']="soquelCreek_small.jpg"
+        client['url']='scwd2'
+        c.clients.append(client)
+        client={}
+        client['name']="Land Trust of Santa Cruz County"
+        client['logo']="landTrust_small.jpg"
+        client['url']='landtrust'
+        c.clients.append(client)
+        client={}
+        client['name']="Santa Cruz Area Chamber of Commerce"
+        client['logo']="scChamber_small.jpg"
+        client['url']='#'
+        c.clients.append(client)
+        client={}
+        client['name']="City of Santa Cruz"
+        client['logo']="santaCruz_small.jpg"
+        client['url']='cap2'
+        c.clients.append(client)
+        client={}
+        client['name']="University of California Santa Cruz"
+        client['logo']="ucsc.jpg"
+        client['url']='#'
+        c.clients.append(client)
+
+
         c.studies=[]
-        scwd2={}
-        scwd2["title"]="Santa Cruz and Soquel Creek Water Planning"
-        scwd2["description"]="Raising awareness about the regions' water shortage and a proposed desalination plant"
-        scwd2["image"]="scwd2_splash_1.26.001.png"
-        scwd2["url"]="scwd2"
-        c.studies.append(scwd2)
-        landtrust={}
-        landtrust["title"]="Campaign for 10,000 Acres"
-        landtrust["description"]="Collecting ideas on how to save Santa Cruz County's highest priority conservation land"
-        landtrust["image"]="Landtrust_2.001.png"
-        landtrust["url"]="landtrust"
-        c.studies.append(landtrust)
-        cap2={}
-        cap2["title"]="Santa Cruz Climate Action Plan"
-        cap2["description"]="Implenting the City's plan to reduce carbon emissions 30% by 2020"
-        cap2["image"]="CAP2.001.jpg"
-        cap2["url"]="cap2"
-        c.studies.append(cap2)
-        eastsideProject={}
-        eastsideProject["title"]="Eastside Recycled Water Project"
-        eastsideProject["description"]="Siting a new facility to produce recycled water for San Francisco's Downtown"
-        eastsideProject["image"]="eastsideProject.001.jpg"
-        eastsideProject["url"]="eastsideProject"
-        c.studies.append(eastsideProject)
         SSIP={}
         SSIP["title"]="Sewer System Improvement Program"
         SSIP["description"]="Planning for a multi-billion dollar upgrade to San Francisco's sewer system"
         SSIP["image"]="SSIP.001.jpg"
         SSIP["url"]="SSIP"
+        SSIP['date']="3.4.13"
         c.studies.append(SSIP)
+        eastsideProject={}
+        eastsideProject["title"]="Eastside Recycled Water Project"
+        eastsideProject["description"]="Siting a new facility to produce recycled water for San Francisco's Downtown"
+        eastsideProject["image"]="eastsideProject.001.jpg"
+        eastsideProject["url"]="eastsideProject"
+        eastsideProject['date']="10.10.12"
+        c.studies.append(eastsideProject)
+        cap2={}
+        cap2["title"]="Santa Cruz Climate Action Plan"
+        cap2["description"]="Implenting the City's plan to reduce carbon emissions 30% by 2020"
+        cap2["image"]="CAP2.001.jpg"
+        cap2["url"]="cap2"
+        cap2['date']="9.11.12"
+        c.studies.append(cap2)
+        landtrust={}
+        landtrust["title"]="Campaign for 10,000 Acres"
+        landtrust["description"]="Collecting ideas on how to save Santa Cruz County's highest priority conservation land"
+        landtrust["image"]="Landtrust_2.001.png"
+        landtrust["url"]="landtrust"
+        landtrust['date']="7.2.12"
+        c.studies.append(landtrust)
+        scwd2={}
+        scwd2["title"]="Santa Cruz and Soquel Creek Water Planning"
+        scwd2["description"]="Raising awareness about the regions' water shortage and a proposed desalination plant"
+        scwd2["image"]="scwd2_splash_1.26.001.png"
+        scwd2["url"]="scwd2"
+        scwd2['date']="4.10.12"
+        c.studies.append(scwd2)
 
-        c.pagetype="casestudies"  
-        c.title="Case Studies"
         return render("/derived/corp_listStudies.bootstrap")
 
+
+    def polling(self):
+        c.pagetype="polling"  
+        c.title="Polling"
+
+        c.reports=[]
+        report={}
+        report["title"]="Santa Cruz County Bag Ban at One Year"
+        report["url"]="SOS_BanAnniversary_PollResults.pdf"
+        report['partner']='Partner: Save Our Shores'
+        report['date']="3.22.13"
+        c.reports.append(report)
+        report={}
+        report["title"]="Santa Cruz County Business Fair 2013"
+        report["url"]="BizFair_2013_Results.pdf"
+        report['partner']='Partner: Santa Cruz Area Chamber of Commerce'
+        report['date']="3.14.13"
+        c.reports.append(report)
+        report={}
+        report["title"]="Santa Cruz Climate Action Plan - Initial Funding and Policy Option"
+        report["url"]="CAP_PublicReport_091112.pdf"
+        report['partner']='Partner: City of Santa Cruz'
+        report['date']="9.11.12"
+        c.reports.append(report)
+
+        return render("/derived/corp_polling.bootstrap")
+
+
     def displayCaseStudy(self, id):
+        c.pagetype="caseStudies"  
+        c.title="Case Studies"
+
         casestudyname=id
         study={}
+        c.study=study 
         if casestudyname=="scwd2":
             study["url"]="scwd2"
             study["title"]="Santa Cruz and Soquel Creek Water Planning"
@@ -415,9 +487,6 @@ class CorpController(BaseController):
             c.video='<iframe width="560" height="315" src="http://www.youtube.com/embed/m4039IQU7BM" frameborder="0" allowfullscreen></iframe></p>'
 
 
-        c.study=study   
-        c.pagetype="casestudies"  
-        c.title="Case Studies"
         return render("/derived/corp_casestudy.bootstrap")
 
 
@@ -472,6 +541,23 @@ class CorpController(BaseController):
             recommendeds.append(recommended)
             career["recommendeds"]=recommendeds
 
+        if careername=="prgmManager":
+            career["title"]="Program Manager"
+            career["commitment location"]="Fulll time - Santa Cruz, CA"
+            career["description"]="Implement best practices to help Civinomics customers get the most out of their usage. Make vital product recommendations based on customer feedback. Facilitate cutting edge online interaction paradigm."
+
+            requirements=[]
+            requirement = "Clear and Effective Communication"
+            requirements.append(requirement)
+            requirement = "Scientific approach to observation, must not let subjective opinions color recommendations"
+            requirements.append(requirement)
+            requirement = "Patience and respect for customers and team mates"
+            requirements.append(requirement)
+            career["requirements"]=requirements
+
+            recommendeds=[]
+            career["recommendeds"]=recommendeds
+
 
         if careername=="prep":
             career["title"]="Public Outreach Representative"
@@ -508,6 +594,11 @@ class CorpController(BaseController):
         engbackend["department"]="Engineering"
         engbackend["url"]="engbackend"
         c.careers.append(engbackend)
+        career={}
+        career["title"]="Program Manager"
+        career["department"]="Operations"
+        career["url"]="prgmManager"
+        c.careers.append(career)
         prep={}
         prep["title"]="Public Outreach Representative"
         prep["department"]="Outreach"
@@ -522,7 +613,117 @@ class CorpController(BaseController):
     def team(self):
         c.title = 'Team'
         c.pagetype="team" 
+
+        c.team=[]
+        toddAnderson={}
+        toddAnderson["name"]="Todd Anderson"
+        toddAnderson['title']='Lead Mobile Engineer'
+        toddAnderson['bio']="Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform."
+        toddAnderson['photo']='todd_anderson.jpg'
+        c.team.append(toddAnderson)
+        ajBurleson={}
+        ajBurleson["name"]="AJ Burleson"
+        ajBurleson['title']='Public Outreach Manager '
+        ajBurleson['bio']="AJ grew up on the streets of Hunter's Point, one of San Francisco's most violent neighborhoods. This gave him a deep desire to see the world adhere to just principles. As a Co-Producer at 6West Productions he helped to distribute \"Straight Out of Hunter's Point\" an award winning documentary about his neighborhood. Working as a Manager at Cafe Roma and Organic Coffee further ingrained in him the keen sense of community building that he brings to Civinomics."
+        ajBurleson['photo']='aj_burleson.jpg'
+        c.team.append(ajBurleson)
+        noelleDaley={}
+        noelleDaley["name"]="Noelle Daley"
+        noelleDaley['title']='Social Media Intern'
+        noelleDaley['bio']="Noelle is a marketing handywoman.  With a diverse background in marketing, social media, and account management, Noelle helps maintain Civinomics' online presence.  She is passionate about bringing social justice and technology together, and believes in the collaborative, pragmatic nature of start-ups. Noelle is currently finishing her undergraduate degree at the University of California, Santa Cruz in Sociology, with emphases in urban studies and education."
+        noelleDaley['photo']='noelle_daley.jpg'
+        c.team.append(noelleDaley)
+        edolfoG={}
+        edolfoG["name"]="Edolfo Garza-Licudine"
+        edolfoG['title']='CTO & Founder'
+        edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
+        edolfoG['photo']='edolfo_garzalicudine.jpg'
+        c.team.append(edolfoG)
+        traciH={}
+        traciH["name"]="Traci Hukill"
+        traciH['title']='Director of Content'
+        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
+        traciH['photo']='traci_hukill.jpg'
+        c.team.append(traciH)
+        manuK={}
+        manuK["name"]="Manu Koenig"
+        manuK['title']='CEO & Founder'
+        manuK['bio']="Manu makes sure Civinomics runs on time. Previously he was General Manager of Strategic Partnerships at Martini Media Network - a Venrock backed vertical ad network. There he also served as Operations Manager, running campaigns for clients including Lexus, Chanel, and British Air. Manu holds dual US-European citizenship and worked as a Corporate Campaign Intern for Deutsche Bahn AG in Berlin. He studied German and Management Science at Stanford."
+        manuK['photo']='manu_koenig.jpg'
+        c.team.append(manuK)
+        chrisN={}
+        chrisN["name"]="Chris Neklason"
+        chrisN['title']='Product Management'
+        chrisN['bio']="Chris Neklason has been involved with community networking since 1984, before the Internet, and has decades of experience as a UNIX software engineer and as co-founder of Cruzio, one of the oldest ongoing independent ISPs in the United States."
+        chrisN['photo']='chris_neklason.jpg'
+        c.team.append(chrisN)
+        derroldP={}
+        derroldP["name"]="Derrold Purifoy"
+        derroldP['title']='Public Outreach Manager'
+        derroldP['bio']="Derrold was born in Orange, Texas and has lived his adult life in San Francisco. His business experience includes working in Customer Service, B2B Sales and Marketing Research. His hobbies include movies, literature and photography. He's excited to work on projects that have a positive impact on the community."
+        derroldP['photo']='derrold_purifoy.jpg'
+        c.team.append(derroldP)
+        robertS={}
+        robertS["name"]="Robert Singleton"
+        robertS['title']='Director of Public Outreach & Founder'
+        robertS['bio']="Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics."
+        robertS['photo']='robert_singleton.jpg'
+        c.team.append(robertS)
+
+        c.advisors=[]
+        kevinB={}
+        kevinB["name"]="Kevin Bell"
+        kevinB['title']='Energy and Sustainability'
+        kevinB['bio']="Kevin Bell has over thirty years experience in energy resource policy and energy-related innovation, working in a staff and consulting capacity in the public, private, and non-profit sectors as a researcher, regulator, and advocate of next-generation energy technologies. His expertise includes the design and implementation of energy and carbon models and public policies for enabling the low-carbon economy. He is the former CEO of a successful venture that developed a new generation of educational tools and technologies for teaching science. He received his Masters in Public Administration from the Harvard Kennedy School of Government."
+        kevinB['photo']='kevin_bell.jpg'
+        c.advisors.append(kevinB)
+        davidP={}
+        davidP["name"]="David Pascal"
+        davidP['title']='Fundraising'
+        davidP['bio']="David was most recently President of the San Francisco Carbon Collaborative. Previously, David was the Lead Clean Technology and Green Business Advocate for the City and County of San Francisco, where his time was split between the Mayor's Office of Economic and Workforce Development and the City's Department of the Environment. In that capacity, David was responsible for attracting and retaining companies whose products and services address our greatest environmental challenges. Prior to entering the government sector, David worked as an environmental sustainability consultant, and served as the Director of Events and Entertainment for Al Gore's Alliance for Climate Protection."
+        davidP['photo']='david_pascal.jpg'
+        c.advisors.append(davidP)
+
+
         return render('/derived/corp_team.bootstrap')
+
+    def news(self):
+        c.title = 'News'
+        c.pagetype="news" 
+
+        c.articles=[]
+        article={}
+        article['title']="Civinomics to launch community workshops online, seeking public safety solutions"
+        article['link']='http://www.santacruzsentinel.com/localnews/ci_22826816/civinomics-launch-community-workshops-online-seeking-public-safety'
+        article['date']='3.19.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Santa Cruz's Cruzio hosts open house Friday to showcase new businesses"
+        article['link']='http://www.santacruzsentinel.com/localnews/ci_22493961/santa-cruzs-cruzio-hosts-open-house-friday-showcase'
+        article['date']='1.31.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Officials to Discuss Energy-Saving Options"
+        article['link']='http://www.santacruz.com/news/2012/12/04/officials_to_discuss_energy_saving_options'
+        article['date']='12.04.2012'
+        article['source']='Santa Cruz Weekly'
+        c.articles.append(article)
+        article={}
+        article['title']="Civinomics tech startup to test software at candidate forum"
+        article['link']='http://www.santacruzsentinel.com/localnews/ci_21491926/civinomics-tech-startup-test-software-at-candidate-forum'
+        article['date']='9.07.2012'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Santa Cruz's Crush on Tech"
+        article['link']='http://www.santacruz.com/news/2012/03/20/santa_cruzs_crush_on_tech'
+        article['date']='3.20.2012'
+        article['source']='Santa Cruz Weekly'
+        c.articles.append(article)
+
+        return render('/derived/corp_news.bootstrap')
 
     def terms(self):
         c.title = 'Terms'

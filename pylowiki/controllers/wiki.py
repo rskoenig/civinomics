@@ -27,7 +27,7 @@ class WikiController(BaseController):
         c.w = workshopLib.getWorkshopByCode(workshopCode)
         if not c.w:
             abort(404)
-        if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser.id, c.w.id):
+        if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, c.w):
             abort(404)
    
     def updateBackgroundHandler(self, workshopCode, workshopURL):
@@ -38,8 +38,11 @@ class WikiController(BaseController):
             data = request.params['data']
             page = pageLib.getInformation(c.w)
             pageLib.editInformation(page, data, c.authuser)
+            aTitle = 'Information Updated.'
+            if not workshopLib.isPublished(c.w):
+                aTitle += ' Preview your changes by clicking on the workshop name above.'
             alert = {'type':'success'}
-            alert['title'] = 'Information Updated.'
+            alert['title'] = aTitle
         except Exception as e:
             log.info(e)
             alert = {'type':'error'}
