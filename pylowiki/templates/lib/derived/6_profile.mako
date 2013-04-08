@@ -306,11 +306,11 @@
                 <div class="span4">
                     ${thingCount(c.user, c.followers, 'followers')}
                 </div>
-                <!-- users might ultimately be integrated in as one of the things you follow <div class="span4">
-                    ${thingCount(c.user, c.following, 'users')}
-                </div> -->
                 <div class="span4">
-                    ${thingCount(c.user, c.watching, 'following')}
+                    ${thingCount(c.user, c.following, 'following')}
+                </div>
+                <div class="span4">
+                    ${thingCount(c.user, c.watching, 'bookmarks')}
                 </div>
             </div> <!--/.row-fluid-->
         </div><!--/.browse-->

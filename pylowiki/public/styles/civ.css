@@ -435,15 +435,6 @@ img.watch{
    width: 100%;
 }
 
-.btn.followButton{
-    margin-left: 8px;
-    width: 90px;
-}
-
-.btn.followButton.following{
-    width: 110px;
-}
-
 .vote-icon{
     height:12px;
 }
@@ -634,20 +625,28 @@ ul.listeners > li {
    background-image:none;
 }
 
+.btn-civ.round i{
+  padding-right: 3px;
+}
+
 .btn.round{
   padding-top: 8px;
   padding-bottom: 8px;
   line-height: 14px;
 }
+
 .btn.round.followButton{
-  padding-top: 8px;
-  padding-bottom: 8px;
   line-height: 17px;
-  transition: all 0.50s linear;
 }
-.btn-civ.round i{
-  padding-right: 3px;
-  }
+
+.btn.followButton{
+    margin-left: 4px;
+    width: 105px;
+}
+
+.btn.followButton.following{
+    width: 123px;
+}
 
 .inline{
     display:inline-block;
