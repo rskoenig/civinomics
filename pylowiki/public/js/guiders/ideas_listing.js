@@ -31,7 +31,7 @@
         guiders.createGuider({
             attachTo: "#addButton",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "Have a great idea which addresses the workshop goals? Add it!",
+            description: "Have a great idea? Add it!",
             id: "tour_addbutton",
             prev: "tour_workshopname",
             next: "tour_idea",
