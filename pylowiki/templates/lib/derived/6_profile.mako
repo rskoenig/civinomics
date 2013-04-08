@@ -258,13 +258,11 @@
         <span class="button_container">
         % if c.isFollowing:
             <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton following">
-            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
-            <span> Unfollow </span>
+            <span><i class="icon-user icon-white"></i> Following </span>
             </button>
         % else:
             <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton unfollow">
-            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
-            <span> Follow </span>
+            <span><i class="icon-user"></i> Follow </span>
             </button>
         % endif
         </span>
