@@ -256,7 +256,9 @@
                 </div><!-- span6 -->
                 <div class="span6">
                 Add optional message to email invitation: <textarea rows=2 cols=50 name="inviteMsg"/></textarea><br />
+                <!-- 
                 <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
+                -->
 
                 </div><!-- span6 -->
             </div><!-- row-fluid -->
