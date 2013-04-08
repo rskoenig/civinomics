@@ -304,11 +304,20 @@
             if thing.objType == 'revision':
                 return commentLink(thing, workshop, **kwargs)
             if 'ideaCode' in thing.keys():
-                return ideaLink(ideaLib.getIdea(thing['ideaCode']), workshop, **kwargs)
+                idea = ideaLib.getIdea(thing['ideaCode'])
+                if not idea:
+                    return False
+                return ideaLink(idea, workshop, **kwargs)
             elif 'resourceCode' in thing.keys():
-                return resourceLink(resourceLib.getResourceByCode(thing['resourceCode']), workshop, **kwargs)
+                resource = resourceLib.getResourceByCode(thing['resourceCode'])
+                if not resource:
+                    return False
+                return resourceLink(resource, workshop, **kwargs)
             else:
-                return discussionLink(discussionLib.getDiscussion(thing['discussionCode']), workshop, **kwargs)
+                discussion = discussionLib.getDiscussion(thing['discussionCode'])
+                if not discussion:
+                    return False
+                return discussionLink(discussion, workshop, **kwargs)
     %>
 </%def>
 

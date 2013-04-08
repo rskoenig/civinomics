@@ -13,10 +13,11 @@ import generic
 
 log = logging.getLogger(__name__)
 
-def getIdea(urlCode):
+def getIdea(urlCode, deleted = u'0'):
     try:
         return meta.Session.query(Thing)\
             .filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
             .filter(Thing.data.any(wc('urlCode', urlCode))).one()
     except:
         return False

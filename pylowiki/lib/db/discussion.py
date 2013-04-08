@@ -17,9 +17,13 @@ def getDiscussionByID(id):
     except:
         return False
 
-def getDiscussion(code):
+def getDiscussion(code, deleted = u'0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('urlCode', code))).one()
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'discussion')\
+                .filter(Thing.data.any(wc('urlCode', code)))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .one()
     except:
         return False
 

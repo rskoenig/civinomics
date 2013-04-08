@@ -35,7 +35,6 @@ def getResourceByCode(urlCode, disabled = '0', deleted = '0'):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'resource')\
             .filter(Thing.data.any(wc('urlCode', urlCode)))\
-            .filter(Thing.data.any(wc('disabled', disabled)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .one()
     except:
