@@ -7,21 +7,16 @@ from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 
-#Fox imported these modules
 import pylowiki.lib.helpers as h
+import pylowiki.lib.db.user as userLib
+import pylowiki.lib.mail as mailLib
 from pylowiki.lib.auth import login_required
-from pylowiki.lib.db.user import get_user, changePassword, checkPassword, generatePassword
-from pylowiki.lib.db.user import getUserByEmail as get_user_by_email
 from pylowiki.lib.db.dbHelpers import commit
-
-from pylowiki.lib.mail import send
-
 
 log = logging.getLogger(__name__)
 
 class LoginController(BaseController):
 
-    #def index(self):
     def loginHandler(self):
         """ Display and Handle Login """
         c.title = c.heading = "Login"  
@@ -33,21 +28,23 @@ class LoginController(BaseController):
         try:
             email = request.params["email"].lower()
             password = request.params["password"]
+                
             log.info('user %s attempting to log in' % email)
             if email and password:
-                user = get_user_by_email( email )
+                user = userLib.getUserByEmail( email )
          
                 if user: # not none or false
-                    if user['disabled'] == '1' or user['activated'] == '0':
-                        log.warning("disabled/inactive account attempting to login - " + email )
-                        splashMsg['content'] = 'This account has been disabled and/or has not been activated.'
-                        c.splashMsg = splashMsg
-                    elif checkPassword( user, password ): # if pass is True
+                    if user['activated'] == '0':
+                        splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                        baseURL = c.conf['activation.url']
+                        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                        mailLib.sendActivationMail(user['email'], url)
+                        
+                    elif user['disabled'] == '1':
+                        log.warning("disabled account attempting to login - " + email )
+                        splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
+                    elif userLib.checkPassword( user, password ): # if pass is True
                         # todo logic to see if pass change on next login, display reset page
-                        if 'laston' in user:
-                            t = time.localtime(float(user['laston']))
-                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
-                             
                         user['laston'] = time.time()
                         loginTime = time.localtime(float(user['laston']))
                         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -56,48 +53,43 @@ class LoginController(BaseController):
                         session["userCode"] = user['urlCode']
                         session["userURL"] = user['url']
                         session.save()
-                        log.info('session of user: %s' % session['user'])
-                        log.info('%s logged in %s' % (user['name'], loginTime))
-                        c.authuser = user
                         
-                        log.info( "Successful login attempt with credentials - " + email )
-                        try:
-                            return redirect("/")
-                        except:
-                            return redirect(config['app_conf']['site_base_url'])
+                        if 'afterLoginURL' in session:
+                            # look for accelerator cases: workshop home, item listing, item home
+                            loginURL = session['afterLoginURL']
+                            session.pop('afterLoginURL')
+                            session.save()
+                        else:
+                            loginURL = "/"
+                        
+                        return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
-                        c.splashMsg = splashMsg
                 else:
                     log.warning("incorrect username or password - " + email )
                     splashMsg['content'] = 'incorrect username or password'
-                    c.splashMsg = splashMsg
             else:
                 splashMsg['content'] = 'missing username or password'
-                c.splashMsg = splashMsg
             
-            return render("/derived/login.bootstrap")
+            session['splashMsg'] = splashMsg
+            session.save()
+            
+            return redirect("/login")
 
         except KeyError:
             if "user" in session:
                 return redirect( "/" )
             else:
-                #return render( "/derived/login.mako" )
                 return redirect('/')
 
     @login_required
     def logout(self):
         """ Action will logout the user. """
-        try:
-            #return_url = session['return_to']
-            return_url = '/'
-        except:
-            return_url = '/'
+        return_url = '/'
         username = session['user']
         log.info( "Successful logout by - " + username )
         session.delete()
-        #h.flash( "Goodbye " + username +" !", "success" )
         return redirect( return_url )
 
     def forgot(self):
@@ -112,11 +104,11 @@ class LoginController(BaseController):
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
         email = request.params["email"].lower()
-        user = get_user_by_email( email ) 
+        user = userLib.getUserByEmail( email ) 
         if user:
             if email != config['app_conf']['admin.email']:
                 password = generatePassword() 
-                changePassword( user, password )
+                userLib.changePassword( user, password )
                 commit( user ) # commit database change
 
                 toEmail = user['email']
@@ -127,7 +119,7 @@ class LoginController(BaseController):
                 You can change your password to something you prefer on your profile page.\n\n
                 We have reset your password to: ''' + password
 
-                send( toEmail, frEmail, subject, message )
+                mailLib.send( toEmail, frEmail, subject, message )
 
                 log.info( "Successful forgot password for " + email )
                 splashMsg['type'] = 'success'
@@ -175,9 +167,10 @@ class LoginController(BaseController):
         c.title = c.heading = "Change password for " + user  
         return render( "/derived/changepass.mako" )
 
+    """ This code deprecated
     @login_required
     def changepass_handler(self):
-        user = get_user( session['user'] )
+        user = userLib.get_user( session['user'] )
         c.title = c.heading = "Change password for " + user.name  
         try:
             password1 = request.params["password1"]
@@ -196,8 +189,24 @@ class LoginController(BaseController):
             h.flash( "Please fill all fields", "warning" )
             
         return render("/derived/changepass.mako" )
+    """ 
 
-    def loginDisplay(self):
+    def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
+        if workshopCode != 'None' and workshopURL != 'None':
+            afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
+            if thing != 'None':
+                afterLoginURL += "/" + thing
+                if thingCode != 'None' and thingURL != 'None':
+                    afterLoginURL += "/%s/%s"%(thingCode, thingURL)
+            session['afterLoginURL'] = afterLoginURL
+            session.save()
+            log.info('loginDisplay afterLoginURL is %s'%afterLoginURL)
+        
+        if 'splashMsg' in session:
+            c.splashMsg = session['splashMsg']
+            session.pop('splashMsg')
+            session.save()
+            
         return render("/derived/login.bootstrap")
 
     def forgotPassword(self):

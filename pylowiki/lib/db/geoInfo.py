@@ -6,6 +6,7 @@ from sqlalchemy import orm
 from pylowiki.model import Thing, Data, meta
 from pylowiki.lib.utils import urlify
 from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
+import generic
 
 import time, datetime
 import logging
@@ -19,11 +20,20 @@ def geoDeurlify( something ):
     deurl = something.replace('-', ' ')
     return deurl 
 
-def getPostalInfo( postal, country ):
+def getPostalInfo( postal ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s""",(postal,))
+    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s""",(postal))
     rlist = c.fetchone()
+    c.close()
+    db.close()
+    return rlist
+    
+def getPostalList( country, state, county, city ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT DISTINCT ZipCode from US_Postal WHERE StateFullName = %s and County = %s and City = %s""",(state, county.upper(), city.upper()))
+    rlist = c.fetchall()
     c.close()
     db.close()
     return rlist
@@ -36,6 +46,15 @@ def getCityInfo( city, state, country ):
     c.close()
     db.close()
     return rlist
+    
+def getCityList( country, state, county ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT City from US_City WHERE StateFullName = %s and County = %s""",(state, county))
+    rlist = c.fetchall()
+    c.close()
+    db.close()
+    return rlist
 
 def getCountyInfo( county, state, country ):
     db = getDB()
@@ -45,12 +64,31 @@ def getCountyInfo( county, state, country ):
     c.close()
     db.close()
     return rlist
+    
+def getCountyList( county, state ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT County from US_County WHERE StateFullName = %s""",(state))
+    rlist = c.fetchall()
+    c.close()
+    db.close()
+    return rlist
+
 
 def getStateInfo( state, country ):
     db = getDB()
     c = db.cursor()
     c.execute("""SELECT * from US_State WHERE StateFullName = %s""",(state,))
     rlist = c.fetchone()
+    c.close()
+    db.close()
+    return rlist
+    
+def getStateList( country ):
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT StateFullName from US_State""")
+    rlist = c.fetchall()
     c.close()
     db.close()
     return rlist
@@ -106,39 +144,78 @@ def getUserScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
     ## format of scope attribute ||country||state||county||city|zip
-    ##log.info('geoInfo is %s' % geoInfo)
-    #searchScope = geoInfo[0]['scope']
     scopeLevel = int(scopeLevel) + 1
     try:
         sList = searchScope.split('|')
-        ##log.info('sList is %s' % len(sList))
         sList = sList[:int(scopeLevel)]
         searchScope = "|".join(sList)
         searchScope = searchScope + '%'
-        ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
-        return meta.Session.query(Thing).filter_by(objType = 'geo').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'geo')\
+                .filter(Thing.data.any(wc('deactivated', '0000-00-00')))\
+                .filter(Thing.data.any(wcl('scope', searchScope, 1)))\
+                .all()
     except sa.orm.exc.NoResultFound:
         return False
 
+def getWScopeByWorkshop(workshop, deleted = '0'):
+    try:
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'wscope')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))\
+                .one()
+    except sa.orm.exc.NoResultFound:
+        return False
+        
 def getWorkshopScopes(searchScope, scopeLevel):
     ## geoInfo: a geo object from a user
     ## scopeLevel: country = 3, state = 5, county = 7, city = 9, zip = 10
     ## format of scope attribute ||country||state||county||city|zip
-    ##log.info('geoInfo is %s' % geoInfo)
-    ##log.info('searchScope is %s scopeLevel is %s' %(searchScope, scopeLevel))
-    #searchScope = geoInfo[0]['scope']
     scopeLevel = int(scopeLevel) + 0
     try:
         sList = searchScope.split('|')
-        ##log.info('sList is %s' % len(sList))
         sList = sList[:int(scopeLevel)]
         searchScope = "|".join(sList)
         searchScope = searchScope + '%'
-        ##log.info('searchScope is %s and scopeLevel is %s' % (searchScope,scopeLevel))
-        return meta.Session.query(Thing).filter_by(objType = 'wscope').filter(Thing.data.any(wc('deactivated', '0000-00-00'))).filter(Thing.data.any(wcl('scope', searchScope, 1))).all()
+        log.info(searchScope)
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'wscope')\
+                .filter(Thing.data.any(wc('deleted', '0')))\
+                .filter(Thing.data.any(wcl('scope', searchScope, 1)))\
+                .all()
     except sa.orm.exc.NoResultFound:
         return False
 
+# this is exclusive
+def getWorkshopsInScope(country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
+    try:
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'wscope')\
+            .filter(Thing.data.any(wc('country', country)))\
+            .filter(Thing.data.any(wc('state', state)))\
+            .filter(Thing.data.any(wc('county', county)))\
+            .filter(Thing.data.any(wc('city', city)))\
+            .filter(Thing.data.any(wc('postalCode', postalCode)))\
+            .all()
+    except:
+        return False
+
+
+def editWorkshopScope(wscope, geoTagString):
+    try:
+        wscope['scope'] = geoTagString
+        geoTags = geoTagString.split('|')
+        wscope['country'] = geoTags[2]
+        wscope['state'] = geoTags[4]
+        wscope['county'] = geoTags[6]
+        wscope['city'] = geoTags[8]
+        wscope['postalCode'] = geoTags[9]
+        commit(wscope)
+        return wscope
+    except:
+        return False
+    
 def getGeoInfo(ownerID):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'geo').filter_by(owner = ownerID).all()
@@ -170,16 +247,50 @@ def getScopeTitle(postalCode, country, scope):
        return 'Planet Earth'
     else:
        return 'hmmm, I dunno'
-        
+
+def getPublicScope(workshop):
+    scope = getWScopeByWorkshop(workshop)
+    if scope:
+        scope = scope['scope'].split('|')
+        if scope[9] != '0':
+            scopeLevel = 'postalCode'
+            scopeName  = scope[9]
+        elif scope[8] != '0':
+            scopeLevel = 'city'
+            scopeName  = scope[8]
+        elif scope[6] != '0':
+            scopeLevel = 'county'
+            scopeName  = scope[6]
+        elif scope[4] != '0':
+            scopeLevel = 'state'
+            scopeName  = scope[4]
+        elif scope[2] != '0':
+            scopeLevel = 'country'
+            scopeName  = scope[2]
+        else:
+            scopeLevel = 'earth'
+            scopeName  = 'earth'
+    else:
+        scopeLevel = 'earth'
+        scopeName  = 'earth'
+    return {'level':scopeLevel, 'name':scopeName}
+
 class WorkshopScope(object):
-    def __init__(self, postalCode, country, workshopID, ownerID):
-        w = Thing('wscope', ownerID)
-        w['postalCode'] = postalCode
-        w['country'] = country
-        w['workshopID'] = workshopID
-        w['deactivated'] = '0000-00-00'
-        w['scope'] = getGeoScope(postalCode, country)
-        commit(w)
+    def __init__(self, workshop, scope):
+        wscope = Thing('wscope')
+        wscope['deleted'] = '0'
+        wscope['scope'] = scope
+        
+        geoTags = scope.split('|')
+        wscope['country'] = geoTags[2]
+        wscope['state'] = geoTags[4]
+        wscope['county'] = geoTags[6]
+        wscope['city'] = geoTags[8]
+        wscope['postalCode'] = geoTags[9]
+        
+        commit(wscope)
+        wscope = generic.linkChildToParent(wscope, workshop)
+        commit(wscope)
 
 class SurveyScope(object):
     def __init__(self, postalCode, country, survey, owner):
@@ -192,45 +303,44 @@ class SurveyScope(object):
         commit(s)
         return s
 
-class GeoInfo(object):
-    def __init__(self, postalCode, country, ownerID ):
-        g = Thing('geo', ownerID)
-        
-        g['disabled'] = '0'
-        g['postalCode'] = postalCode
-        g['deactivated'] = '0000-00-00'
-
-        db = getDB()
-        c = db.cursor()
-        c.execute("""SELECT ZipCode, CityMixedCase, County, StateFullName from US_Postal WHERE ZipCode = %s""",(postalCode,))
-        rlist = c.fetchone()
-        c.close()
-        db.close()
-        city = rlist['CityMixedCase']
-        county = rlist['County']
-        state = rlist['StateFullName']
-
-        g['countryTitle'] = country.title()
-        g['countryURL'] = '/geo/country/united-states'
-        g['countryFlag'] = '/images/flags/country/united-states/united-states.gif'
-        g['countryFlagThumb'] = '/images/flags/country/united-states/united-states_thumb.gif'
-#
-        g['stateTitle'] = state.title()
-        g['stateURL'] = '/geo/state/united-states/' + urlify(state)
-        g['stateFlag'] = '/images/flags/country/united-states/states/' + urlify(state) + '.gif'
-        g['stateFlagThumb'] = '/images/flags/country/united-states/states/' + urlify(state) + '_thumb.gif'
-        g['countyTitle'] = county.title()
-        g['countyURL'] = '/geo/county/united-states/' + urlify(state) + '/' + urlify(county)
-        g['countyFlag'] = '/images/flags/country/united-states/county.gif'
-        g['countyFlagThumb'] = '/images/flags/country/united-states/county_thumb.png'
-        g['cityTitle'] = city.title()
-        g['cityURL'] = '/geo/city/united-states/' + urlify(state) + '/' + urlify(city)
-        g['cityFlag'] = '/images/flags/country/united-states/city.gif'
-        g['cityFlagThumb'] = '/images/flags/country/united-states/city_thumb.png'
-        g['postalTitle'] = 'Zip Code ' + postalCode
-        g['postalURL'] = '/geo/postal/united-states/' + postalCode
-        g['postalFlag'] = '/images/flags/country/united-states/postal.gif'
-        g['postalFlagThumb'] = '/images/flags/country/united-states/postal_thumb.gif'
-        g['scope'] ='||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
-        commit(g)
-
+def GeoInfo(postalCode, country, ownerID ):
+    """
+        Geo URL schema for workshop listings:   /workshops/geo/earth/country/state/county/city/postalCode
+        location flag:                          /images/flags/country/united-states/united-states.gif
+                                                /images/flags/country/united-states/united-states_thumb.gif
+                                                /images/flags/country/united-states/states/{state-name}{(_thumb)?}.gif
+                                                /images/flags/country/united-states/county.gif
+                                                /images/flags/country/united-states/county_thumb.png
+                                                /images/flags/country/united-states/city.gif
+                                                /images/flags/country/united-states/city_thumb.png
+                                                /images/flags/country/united-states/postal.gif
+                                                /images/flags/country/united-states/postal_thumb.gif
+    """
+    g = Thing('geo', ownerID)
+    
+    g['disabled'] = '0'
+    g['postalCode'] = postalCode
+    g['deactivated'] = '0000-00-00'
+    
+    db = getDB()
+    c = db.cursor()
+    c.execute("""SELECT ZipCode, CityMixedCase, County, StateFullName from US_Postal WHERE ZipCode = %s""",(postalCode,))
+    rlist = c.fetchone()
+    c.close()
+    db.close()
+    city = rlist['CityMixedCase']
+    county = rlist['County']
+    state = rlist['StateFullName']
+    
+    g['countryTitle'] = country.title()
+    g['countryURL'] = 'united-states'
+    g['stateTitle'] = state.title()
+    g['stateURL'] = urlify(state)
+    g['countyTitle'] = county.title()
+    g['countyURL'] = urlify(county)
+    g['cityTitle'] = city.title()
+    g['cityURL'] = urlify(city)
+    g['postalCodeTitle'] = postalCode
+    g['postalCodeURL'] = postalCode
+    g['scope'] ='||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
+    commit(g)

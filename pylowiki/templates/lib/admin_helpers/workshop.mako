@@ -1,129 +1,235 @@
 <%!
-    from pylowiki.lib.db.flag import checkFlagged, getFlags
-    from pylowiki.lib.db.event import getParentEvents
-    from pylowiki.lib.db.user import getUserByID
-    from pylowiki.lib.db.comment import getPureFlaggedDiscussionComments, getComment, getDisabledComments, getDeletedComments
+    import pylowiki.lib.db.discussion       as discussionLib
+    import pylowiki.lib.db.idea             as ideaLib
+    import pylowiki.lib.db.comment          as commentLib
+    import pylowiki.lib.db.flag             as flagLib
+    import pylowiki.lib.db.user             as userLib
+    import pylowiki.lib.db.event            as eventLib
+    import pylowiki.lib.db.workshop         as workshopLib
 %>  
-
-<%def name="banner_name()">
-    <h1><a href = "/workshop/${c.w['urlCode']}/${c.w['url']}">${c.title}</a></h1>
-</%def>
-
-<%def name="admin_show()">
-        <br />
-	<div class="left well">
-	<form name="admin_issue" id="admin_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/adminWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <strong>Message to Participants:</strong>
-    <br />
-    <textarea name="motd" rows="5" cols="50">${c.motd['data']}</textarea>
-    <br />
-    <% 
-      if c.motd['enabled'] == '1':
-        pChecked = 'checked'
-        uChecked = ''
-      else:
-        pChecked = ''
-        uChecked = 'checked'
-    %>
-    <input type=radio name="enableMOTD" value="1" ${pChecked}> Publish Message&nbsp;&nbsp;&nbsp;<input type=radio name="enableMOTD" value="0" ${uChecked}> Unpublish Message
-    <br /><br />
-    <br /><br />
-    % if c.w['deleted'] == '1':
-       <strong>Enable Workshop</strong>
-       <% eAction = 'Enable' %>
-    % else:
-       <strong>Disable Workshop</strong>
-       <% eAction = 'Disable' %>
-    % endif
-    <br />
-    Reason: <input type=text name=eventReason id=eventReason>
-    <br />
-    <input type=radio name="enableWorkshop" value="1"> ${eAction}&nbsp;&nbsp;&nbsp;<input type=radio name="verifyEnableWorkshop" value="0"> Verify ${eAction}
-    <br /><br />
-    <br /><br />
-    <button type="submit" class="btn btn-warning">Save Changes</button>
-    </form>
-    </div>
-</%def>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <%def name="admin_event_log()">
-    <% wEvents = getParentEvents(c.w) %>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-bookmark"></i>Workshop Events</th></tr>
-    </thead>
-    <tbody>
-    % if wEvents:
-        <br /><br />
-        % for wE in wEvents:
-            <tr><td><strong>${wE.date} ${wE['title']}</strong> ${wE['data']}</td></tr>
-        % endfor
-    % endif
-    </tbody>
-    </table>
+    <div class="row-fluid">
+        <div class="section-wrapper">
+            <div class="browse">
+                <h4 class="section-header smaller">Event Log</h4>
+                A record of configuration and administrative changes to the workshop.<br />
+                <% wEvents = eventLib.getParentEvents(c.w) %>
+                <table class="table table-bordered">
+                <thead>
+                <tr><th>Workshop Events</th></tr>
+                </thead>
+                <tbody>
+                % if wEvents:
+                    % for wE in wEvents:
+                        <tr><td><strong>${wE.date} ${wE['title']}</strong> ${wE['data']}</td></tr>
+                    % endfor
+                % endif
+                </tbody>
+                </table>
+            </div><!-- browse -->
+        </div><!-- section-wrapper -->
+    </div><!-- row-fluid -->
 </%def>
 
+<%def name="admin()">
+    <div class="row-fluid" ng-controller="adminController">
+        <div class="section-wrapper">
+            <div class="browse">
+                <h4 class="section-header smaller">Civ Admin Panel</h4>
+                <form class="form-horizontal" ng-init="code='${c.w['urlCode']}'">
+                    <div class="control-group">
+                        <label class="control-label" for="setDemo">Set as demo?</label>
+                        <div class="controls">
+                            <a id="setDemo" class="btn btn-primary" ng-click="setDemo()" href="#">Do it</a>
+                            <span class="help-block" ng-show="showResponse">{{response}}</span>
+                        </div>
+                    </div>
+                </form>
+            </div><!-- browse -->
+        </div><!-- section-wrapper -->
+    <div><!-- row-fluid -->
+</%def>
 
 <%def name="admin_facilitators()">
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-user"></i>Current Facilitators</th></tr>
-    </thead>
-    <tbody>
-    % for f in c.f:
-       <% fUser = getUserByID(f.owner) %>
-       <% fEvents = getParentEvents(f) %>
-       <% fPending = "" %>
-       % if pending in f and f['pending'] == '1':
-          <% fPending = "(Pending)" %>
-       % endif
-       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
-       % if fEvents:
-          % for fE in fEvents:
-          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
-          % endfor
-       % endif
-       % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
-           <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
-               &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
-               <button type="submit" class="gold" value="Resign">Resign</button>
-           <br />
-           </form>
-       % endif
-       </td></tr>
-    % endfor
-    </tbody>
-    </table>
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-user"></i>Disabled Facilitators</th></tr>
-    </thead>
-    <tbody>
-    % for f in c.df:
-       <% fUser = getUserByID(f.owner) %>
-       <% fEvents = getParentEvents(f) %>
-       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
-       % if fEvents:
-          % for fE in fEvents:
-          &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
-          % endfor
-       % endif
-       </tr></td>
-    % endfor
-    </tbody>
-    </table>
-
+    % if c.w['public_private'] != 'trial':
+       <p>To invite a member to be a listener of, or co-facilitate this workshop, visit their Civinomics profile page and look for the "Invite ..." button!</p>
+        <table class="table table-bordered table-condensed" ng-controller="facilitatorController">
+            <thead>
+                <tr>
+                    <th>Facilitators</th>
+                    <th>Email on new items</th>
+                    <th>Email on flagging</th>
+                </tr>
+            </thead>
+            <tbody>
+            % for f in c.f:
+                <%
+                    fUser = userLib.getUserByID(f.owner)
+                    fEvents = eventLib.getParentEvents(f)
+                    fPending = ""
+                    if pending in f and f['pending'] == '1':
+                        fPending = "(Pending)"
+                %>
+                <tr>
+                    <td>
+                        <%
+                            lib_6.userImage(fUser, className = 'avatar small-avatar')
+                            lib_6.userLink(fUser)
+                        %>
+                        ${fPending}
+                    </td>
+                    % if (f['pending'] != '1' and fUser.id == c.authuser.id) or c.privs['admin']:
+                        <%
+                            itemsChecked = ''
+                            flagsChecked = ''
+                            if 'itemAlerts' in f and f['itemAlerts'] == '1':
+                                itemsChecked = 'checked'
+                            if 'flagAlerts' in f and f['flagAlerts'] == '1':
+                                flagsChecked = 'checked'
+                        %>
+                        <td>
+                            <form ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${fUser['urlCode']}'" class="no-bottom">
+                                <input type="checkbox" name="flagAlerts" value="flags" ng-click="emailOnAdded()" ${itemsChecked}>
+                                <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
+                            </form>
+                        </td>
+                        <td>
+                            <form ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${fUser['urlCode']}'" class="no-bottom">
+                                <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnFlagged()" ${flagsChecked}>
+                                <span ng-show="emailOnFlaggedShow">{{emailOnFlaggedResponse}}</span>
+                            </form>
+                        </td>
+                    % else:
+                        <td>${fPending}</td>
+                        <td>${fPending}</td>
+                    % endif
+                    % if len(c.f) > 1 and fUser.id == c.authuser.id:
+                        </tr><tr><td colspan=3>
+                        <form class="form-inline" id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
+                            Resign as facilitator? &nbsp;&nbsp;Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+                            <button type="submit" class="btn btn-warning" value="Resign">Resign</button>
+                            <br />
+                        </form>
+                        </td>
+                    % endif
+                </tr>
+            % endfor
+            </tbody>
+        </table>
+        % if len(c.df) > 0:
+            <table class="table table-bordered">
+            <thead>
+            <tr><th>Disabled Facilitators</th></tr>
+            </thead>
+            <tbody>
+            % for f in c.df:
+                <tr><td>
+                <% 
+                    fUser = userLib.getUserByID(f.owner)
+                    fEvents = eventLib.getParentEvents(f) 
+                    lib_6.userImage(fUser, className = 'avatar small-avatar')
+                    lib_6.userLink(fUser)
+                %>
+                <br />
+                % if fEvents:
+                    % for fE in fEvents:
+                        <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
+                    % endfor
+                % endif
+                </tr></td>
+            % endfor
+            </tbody>
+            </table>
+        % endif
+    % endif
 </%def>
 
+<%def name="admin_listeners()">
+    % if c.w['public_private'] != 'trial':
+        <table class="table table-bordered">
+        <thead>
+        <tr><th>Current Listeners</th></tr>
+        </thead>
+        <tbody>
+        % for listener in c.listeners:
+            <tr><td>
+            <%
+                lPending = ""
+                if listener['pending'] == '1':
+                    lPending = "(Pending)"
+                lUser = userLib.getUserByCode(listener['userCode'])
+                lEvents = eventLib.getParentEvents(listener)
+                lib_6.userImage(lUser, className = 'avatar small-avatar')
+                lib_6.userLink(lUser)
+
+            %>
+            ${lPending}<br />
+            <form id="resignListener" class="form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
+            Disable litener:<br />
+            Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
+            <input type="hidden" name="userCode" value="${lUser['urlCode']}">
+            <button type="submit" class="btn btn-warning" value="Resign">Disable</button>
+            <br />
+            </form><br />
+            <form id="titleListener" class="form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
+            Add a job title to listener (60 characters max):<br />
+            <% 
+                if 'title' in listener:
+                    ltitle = listener['title']
+                else:
+                    ltitle = ""
+            %>
+            Title: <input type="text" name="listenerTitle" value="${ltitle}" size="60" maxlength="60"> &nbsp;&nbsp;&nbsp;
+            <input type="hidden" name="userCode" value="${lUser['urlCode']}">
+            <button type="submit" class="btn btn-warning">Save Title</button>
+            <br />
+            </form><br />
+
+            % if lEvents:
+                % for lE in lEvents:
+                    <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
+                % endfor
+            % endif
+            </td></tr>
+        % endfor
+        </tbody>
+        </table>
+        % if len(c.disabledListeners) > 0:
+            <table class="table table-bordered">
+            <thead>
+            <tr><th>Disabled Listeners</th></tr>
+            </thead>
+            <tbody>
+            % for listener in c.disabledListeners:
+                <tr><td>
+                <%
+                    lUser = userLib.getUserByCode(listener['userCode'])
+                    lEvents = eventLib.getParentEvents(listener)
+                    lib_6.userImage(lUser, className = 'avatar small-avatar')
+                    lib_6.userLink(lUser)
+
+                %>
+                <br />
+                % if lEvents:
+                    % for lE in lEvents:
+                        <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
+                    % endfor
+                % endif
+                </tr></td>
+            % endfor
+            </tbody>
+            </table>
+        % endif
+    % endif
+</%def>
 
 <%def name="admin_info()">
-    <% wEvents = getParentEvents(c.w) %>
-    <br /><br />
+    <% wEvents = eventLib.getParentEvents(c.w) %>
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-bookmark"></i>Workshop Events</th></tr>
+    <tr><th>Workshop Events</th></tr>
     </thead>
     <tbody>
     % if wEvents:
@@ -138,41 +244,43 @@
     <br /><br />
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-user"></i>Current Facilitators</th></tr>
+    <tr><th>Current Facilitators</th></tr>
     </thead>
     <tbody>
     % for f in c.f:
-       <% fUser = getUserByID(f.owner) %>
-       <% fEvents = getParentEvents(f) %>
-       <% fPending = "" %>
-       % if pending in f and f['pending'] == '1':
-          <% fPending = "(Pending)" %>
-       % endif
-       <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
-       % if fEvents:
+        <% 
+            fUser = userLib.getUserByID(f.owner)
+            fEvents = eventLib.getParentEvents(f)
+            fPending = "" 
+        
+            if pending in f and f['pending'] == '1':
+                fPending = "(Pending)"
+        %>
+        <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> ${fPending}<br />
+        % if fEvents:
           % for fE in fEvents:
           &nbsp; &nbsp; &nbsp; <strong>${fE.date} ${fE['title']}</strong>  ${fE['data']}<br />
           % endfor
-       % endif
-       % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
+        % endif
+        % if c.authuser.id == f.owner and c.authuser.id != c.w.owner:
            <form id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/resignFacilitator" method="post">
-               &nbsp; &nbsp; &nbsp;Note: <input type=text name=resignReason> &nbsp;&nbsp;&nbsp;
+               &nbsp; &nbsp; &nbsp;Note: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
                <button type="submit" class="gold" value="Resign">Resign</button>
            <br />
            </form>
-       % endif
-       </td></tr>
+        % endif
+        </td></tr>
     % endfor
     </tbody>
     </table>
     <table class="table table-bordered">
     <thead>
-    <tr><th><i class="icon-user"></i>Disabled Facilitators</th></tr>
+    <tr><th>Disabled Facilitators</th></tr>
     </thead>
     <tbody>
     % for f in c.df:
-       <% fUser = getUserByID(f.owner) %>
-       <% fEvents = getParentEvents(f) %>
+       <% fUser = userLib.getUserByID(f.owner) %>
+       <% fEvents = eventLib.getParentEvents(f) %>
        <tr><td><a href="/profile/${fUser['urlCode']}/${fUser['url']}">${fUser['name']}</a> (Disabled)<br />
        % if fEvents:
           % for fE in fEvents:
@@ -186,599 +294,97 @@
     <br /><br />
 </%def>
 
-<%def name="admin_flagged()">
-	<br />
-
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-flag"></i>Flagged Background Comments</th</tr>
-    </thead>
-    <tbody>
-    <% cList = getPureFlaggedDiscussionComments(c.w['backgroundDiscussion_id']) %>
-    % if cList:
-        <% 
-          cFlagCount = len(cList)
-          if cFlagCount > 1:
-              cString = 'Comments'
-          else:
-              cString = 'Comment'
-        %>
-        <tr><td>${cString} In <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></br>
-        % for comID in cList:
-            <% com = getComment(comID) %>
-            &nbsp&nbsp&nbsp&nbsp&nbsp
-            % if int(com['numFlags']) is 1:
-                ${com['numFlags']} flag:
+<%def name="marked_items()">
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header smaller">Manage Workshop</h4>
+            <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/publish/handler" method=POST class="well">
+            % if workshopLib.isPublished(c.w):
+                <button type="submit" class="btn btn-warning" value="unpublish">Unpublish Workshop</button> This will temporarily unpublish your workshop, removing it from listings and activity streams.
             % else:
-                ${com['numFlags']} flags:
+                <button type="submit" class="btn btn-warning" value="publish">Publish Workshop</button> Republishes your workshop, making it visible in listings and activity streams.
             % endif
-            % if len(com['data']) > 20:
-                <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-            % else:
-                <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-            % endif
-            <br />
-        % endfor
-        </td></tr>
-    % endif
-    </tbody>
-    </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-flag"></i>Flagged Resources and Comments</th</tr>
-    </thead>
-    <tbody>
-    % if c.r:
-       % for r in c.r:
-          % if checkFlagged(r) and r['disabled'] == '0' and r['deleted'] == '0': 
-			  <tr><td>${r['numFlags']}
-	          % if int(r['numFlags']) > 1:
-	          	 Flags:
-	          % else:
-	             Flag:
-	          % endif
-             Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a>
-             <a class="btn btn-mini" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modResource/"> Admin Resource </a><br />
-              </td></tr>
-          % endif
-          <% cList = getPureFlaggedDiscussionComments(r['discussion_id']) %>
-          % if cList:
-             <% cFlagCount = len(cList) %>
-             % if cFlagCount > 1:
-                <% cString = 'Comments' %> 
-             % else:
-                <% cString = 'Comment' %> 
-             % endif
-             <tr><td>${cString} In Resource <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r["title"]}</a></br>
-		 	 % for comID in cList:
-			      <% com = getComment(comID) %>
-			      &nbsp&nbsp&nbsp&nbsp&nbsp
-			      % if int(com['numFlags']) is 1:
-				      ${com['numFlags']} flag:
-				  % else:
-				      ${com['numFlags']} flags:
-				  % endif
-			      % if len(com['data']) > 20:
-					  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-				  % else:
-					  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-			      % endif
-	             <br />
-          	 % endfor
-                </td></tr>
-          % endif
-       % endfor
-    % endif
-    </tbody>
-    </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-flag"></i>Flagged Suggestions and Comments:</td><tr>
-    </thead>
-    <tbody>
-    % for s in c.s:
-       % if checkFlagged(s) and s['disabled'] == '0' and s['deleted'] == '0': 
-		 <tr><td>${s['numFlags']}
-          % if int(s['numFlags']) > 1:
-          	 Flags:
-          % else:
-             Flag:
-          % endif
-          Suggestion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a>
-          <a class="btn btn-mini" href="/modSuggestion/${s['urlCode']}/${s['url']}/">Admin Suggestion </a><br />
-          </td></tr>
-       % endif
-       <% cList = getPureFlaggedDiscussionComments(s['discussion_id']) %>
-       % if cList:
-          <% cFlagCount = len(cList) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Suggestion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a></br>
-		  % for comID in cList:
-		      <% com = getComment(comID) %>
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-		      % if int(com['numFlags']) is 1:
-			      ${com['numFlags']} Flag:
-			  % else:
-			      ${com['numFlags']} Flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-             <br />
-          % endfor
-          </td></tr>
-       % endif
-    % endfor
-    </tbody>
-    </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-flag"></i>Flagged Discussions and Comments:</td><tr>
-    </thead>
-    <tbody>
-    % for d in c.d:
-       % if d and checkFlagged(d): 
-          <tr><td>${len(getFlags(d))}
-          % if int(len(getFlags(d))) > 1:
-          	 Flags:
-          % else:
-             Flag:
-          % endif
-          Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a>
-          <a class="btn btn-mini" href="/adminDiscussion/${d['urlCode']}/${d['url']}/">Admin Discussion </a><br />
-          </td></tr>
-       % endif
-       <% cList = getPureFlaggedDiscussionComments(d.id) %>
-       % if cList:
-          <% cFlagCount = len(cList) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>
-		  % for comID in cList:
-		      <% com = getComment(comID) %>
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-		      % if int(com['numFlags']) == 1:
-			      ${com['numFlags']} Flag:
-			  % else:
-			      ${com['numFlags']} Flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-             <br />
-          % endfor
-          </td></tr>
-       % endif
-    % endfor
-    </tbody>
-    </table>
+            </form>
+            <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
+            ${flaggedItems(c.flaggedItems)}
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
 </%def>
 
-<%def name="admin_disabled()">
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-ban-circle"></i>Disabled Background Comments</tr></th>
-    </thead>
-    <tbody>
-    <% disabledComments = getDisabledComments(c.w['backgroundDiscussion_id']) %>
-    % if disabledComments:
-        <% cFlagCount = len(disabledComments) %>
-        % if cFlagCount > 1:
-            <% cString = 'Comments' %> 
+<%def name="flaggedItems(items)">
+    <%
+        thisClass = 'tab-pane'
+        if active == True:
+            thisClass += ' active'
+        objectMapping = {'comment': 'Comment', 'discussion':'Conversation', 'idea':'Idea', 'resource':'Resource'}
+    %>
+    <div class="${thisClass}">
+        % if not items:
+            <p class="centered">There doesn't appear to be anything here.  Hooray!</p>
+        % elif len(items) == 0:
+            <p class="centered">There doesn't appear to be anything here.  Hooray!</p>
         % else:
-            <% cString = 'Comment' %> 
+            <table class="table table-bordered table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>Flags</th>
+                        <th>Author</th>
+                        <th>Item</th>
+                        <th>Content</th>
+                        <th>Action</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    % for item in items:
+                        <%
+                            rowClass = ''
+                            if item['deleted'] == '1' and not c.privs['admin']:
+                                continue
+                            elif item['deleted'] == '1' and c.privs['admin']:
+                                rowClass = 'error'
+                                action = 'deleted'
+                            elif item['disabled'] == '1':
+                                rowClass = 'warning'
+                                action = 'disabled'
+                            else:
+                                action = 'enabled'
+                            event = eventLib.getEventForThingWithAction(item, action)
+                            if action == 'enabled' and event:
+                                rowClass = 'success'
+                        %>
+                        <tr class="${rowClass}">
+                            <td> ${flagLib.getNumFlags(item)} </td>
+                            <td>
+                                <% 
+                                    owner = userLib.getUserByID(item.owner)
+                                    lib_6.userImage(owner, className = 'avatar small-avatar')
+                                    lib_6.userLink(owner)
+                                %>
+                            </td>
+                            <td> ${objectMapping[item.objType]} </td>
+                            <td>
+                                % if item.objType != 'comment':
+                                    <a ${lib_6.thingLinkRouter(item, c.w)} class="expandable">${item['title']}</a>
+                                % else:
+                                    <a ${lib_6.thingLinkRouter(item, c.w, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a>
+                                % endif
+                            </td>
+                            <td>
+                                % if event:
+                                    <p>
+                                    <%
+                                        owner = userLib.getUserByID(event.owner)
+                                        lib_6.userImage(owner, className = 'avatar small-avatar')
+                                        lib_6.userLink(owner)
+                                    %>
+                                    : ${event['reason']}
+                                    </p>
+                                % endif
+                            </td>
+                        </tr>
+                    % endfor
+                </tbody>
+            </table>
         % endif
-        <tr><td>${cString} In <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></br>    	    
-        % for comID in disabledComments:
-            <% com = getComment(comID) %>
-            &nbsp&nbsp&nbsp&nbsp&nbsp
-            % if checkFlagged(com):
-                % if int(com['numFlags']) == 1:
-                    ${com['numFlags']} flag:
-                % else:
-                    ${com['numFlags']} flags:
-                % endif
-            % else:
-                0 flags:
-            % endif
-            % if len(com['data']) > 20:
-                <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-            % else:
-                <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-            % endif
-            </br>
-        % endfor
-        </td></tr>
-    % endif
-    </tbody>
-    </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-ban-circle"></i>Disabled Resources and Comments</tr></th>
-    </thead>
-    <tbody>
-    % if c.disabledRes:
-       % for r in c.disabledRes:
-	      % if checkFlagged(r): 
-			  ${r['numFlags']}
-	          % if int(r['numFlags']) > 1:
-	          	 <tr><td>Flags:
-	          % else:
-	             Flag:
-	          % endif
-          % endif
-         Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a>
-         <a class="btn btn-mini" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modResource/"> Admin Resource </a><br />
-         </td></tr>
-       % endfor
-    % endif
-	% for r in c.r:
-    	<% disabledComments = getDisabledComments(r['discussion_id']) %>
-    	% if disabledComments:
-          <% cFlagCount = len(disabledComments) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Resource <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r["title"]}</a></br>    	    
-	    	% for comID in disabledComments:
-	    	  <% com = getComment(comID) %>
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) is 1:
-				      ${com['numFlags']} flag:
-				  % else:
-				      ${com['numFlags']} flags:
-				  % endif
-			  % else:
-			  	  0 flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-	          </br>
-			% endfor
-                </td></tr>
-		% endif
-	% endfor
-        </tbody>
-        </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-ban-circle"></i>Disabled Suggestions and Comments:</th></tr>
-    </thead>
-    <tbody>
-    % if c.disabledSug:
-       % for s in c.disabledSug:
-	      % if checkFlagged(s): 
-			  <tr><td>${s['numFlags']}
-	          % if int(s['numFlags']) > 1:
-	          	 Flags:
-	          % else:
-	             Flag:
-	          % endif
-          % endif
-         Suggestion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a>
-         <a class="btn btn-mini" href="/modSuggestion/${s['urlCode']}/${s['url']}/">Admin Suggestion </a><br />
-         </td></tr>
-       % endfor
-    % endif
-    % for s in c.s:
-    	<% disabledComments = getDisabledComments(s['discussion_id']) %>
-    	% if disabledComments:
-          <% cFlagCount = len(disabledComments) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Suggestion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a></br>    	    
-	    	% for comID in disabledComments:
-	    	  <% com = getComment(comID) %>
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) is 1:
-				      ${com['numFlags']} flag:
-				  % else:
-				      ${com['numFlags']} flags:
-				  % endif
-			  % else:
-			  	  0 flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-	          </br>
-			% endfor
-                  </td></tr>
-		% endif
-	% endfor
-        </tbody>
-        </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-ban-circle"></i>Disabled Discussions and Comments:</th></tr>
-    </thead>
-    <tbody>
-    % if c.disabledDisc:
-       % for d in c.disabledDisc:
-              <tr><td>
-	      % if checkFlagged(d): 
-			  ${len(getFlags(d))}
-	          % if len(getFlags(d)) > 1:
-	          	 Flags:
-	          % else:
-	             Flag:
-	          % endif
-          % endif
-         Discussion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a>
-         <a class="btn btn-mini" href="/adminDiscussion/${d['urlCode']}/${d['url']}/">Admin Discussion </a><br />
-         </td></tr>
-       % endfor
-    % endif
-    % for d in c.d:
-    	<% disabledComments = getDisabledComments(d.id) %>
-    	% if disabledComments:
-          <% cFlagCount = len(disabledComments) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>    	    
-	    	% for comID in disabledComments:
-	    	  <% com = getComment(comID) %>
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) is 1:
-				      ${com['numFlags']} flag:
-				  % else:
-				      ${com['numFlags']} flags:
-				  % endif
-			  % else:
-			  	  0 flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-	          </br>
-			% endfor
-                  </td></tr>
-		% endif
-	% endfor
-        </tbody>
-        </table>
-</%def>
-
-<%def name="admin_deleted()">
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-ban-circle"></i>Deleted Background Comments</tr></th>
-    </thead>
-    <tbody>
-    <% deletedComments = getDeletedComments(c.w['backgroundDiscussion_id']) %>
-    % if deletedComments:
-        <% cFlagCount = len(deletedComments) %>
-        % if cFlagCount > 1:
-            <% cString = 'Comments' %> 
-        % else:
-            <% cString = 'Comment' %> 
-        % endif
-        <tr><td>${cString} In <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/background">Background</a></br>    	    
-        % for comID in deletedComments:
-            <% com = getComment(comID) %>
-            &nbsp&nbsp&nbsp&nbsp&nbsp
-            % if checkFlagged(com):
-                % if int(com['numFlags']) is 1:
-                    ${com['numFlags']} flag:
-                % else:
-                    ${com['numFlags']} flags:
-                % endif
-            % else:
-                0 flags:
-            % endif
-            % if len(com['data']) > 20:
-                <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-            % else:
-                <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-            % endif
-            </br>
-        % endfor
-        </td></tr>
-    % endif
-    </tbody>
-    </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-trash"></i>Deleted Resources and Comments</th></tr>
-    </thead>
-    <tbody>
-    % if c.deletedRes:
-       % for r in c.deletedRes:
-	      % if checkFlagged(r): 
-			  <tr><td>${r['numFlags']}
-	          % if int(r['numFlags']) > 1:
-	          	 Flags:
-	          % else:
-	             Flag:
-	          % endif
-          % endif
-         Resource: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r['title']}</a>
-         <a class="btn btn-mini" href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}/modResource/"> Admin Resource </a><br />
-         </td></tr>
-       % endfor
-    % endif
-	% for r in c.r:
-     
-    	<% deletedComments = getDeletedComments(r['discussion_id']) %>
-    	% if deletedComments:
-          <% cFlagCount = len(deletedComments) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Suggestion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/resource/${r['urlCode']}/${r['url']}">${r["title"]}</a></br>    	    
-	    	% for comID in deletedComments:
-	    	  <% com = getComment(comID) %>
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) == 1:
-				      ${com['numFlags']} flag:
-				  % else:
-				      ${com['numFlags']} flags:
-				  % endif
-			  % else:
-			  	  0 flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-	          </br>
-			% endfor
-                   </td></tr>
-		% endif
-	% endfor
-        </tbody>
-        </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-trash"></i>Deleted Suggestions and Comments</th></tr>
-    </thead>
-    <tbody>
-    % if c.deletedSug:
-       % for s in c.deletedSug:
-	      % if checkFlagged(s): 
-			  <tr><td>${s['numFlags']}
-	          % if int(s['numFlags']) > 1:
-	          	 Flags:
-	          % else:
-	             Flag:
-	          % endif
-          % endif
-         Suggestion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a>
-         <a class="btn btn-mini" href="/modSuggestion/${s['urlCode']}/${s['url']}/">Admin Suggestion </a><br />
-         </td></tr>
-       % endfor
-    % endif
-    % for s in c.s:
-    	<% deletedComments = getDeletedComments(s['discussion_id']) %>
-    	% if deletedComments:
-          <% cFlagCount = len(deletedComments) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Suggestion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/suggestion/${s['urlCode']}/${s['url']}">${s["title"]}</a></br>    	    
-	    	% for comID in deletedComments:
-	    	  <% com = getComment(comID) %>
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) == 1:
-				      ${com['numFlags']} flag:
-				  % else:
-				      ${com['numFlags']} flags:
-				  % endif
-			  % else:
-			  	  0 flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-	          </br>
-			% endfor
-                        </td></tr>
-		% endif
-	% endfor
-        </tbody>
-        </table>
-    <br /><br />
-    <table class="table table-bordered">
-    <thead>
-    <tr><th><i class="icon-trash"></i>Deleted Discussions and Comments</th></tr>
-    </thead>
-    <tbody>
-    % if c.deletedDisc:
-       % for d in c.deletedDisc:
-              <tr><td>
-	      % if checkFlagged(d): 
-			  ${len(getFlags(d))}
-	          % if len(getFlags(d)) > 1:
-	          	 Flags:
-	          % else:
-	             Flag:
-	          % endif
-          % endif
-         Discussion: <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a>
-         <a class="btn btn-mini" href="/adminDiscussion/${d['urlCode']}/${d['url']}/">Admin Discussion </a><br />
-         </td></tr>
-       % endfor
-    % endif
-    % for d in c.d:
-    	<% deletedComments = getDeletedComments(d.id) %>
-    	% if deletedComments:
-          <% cFlagCount = len(deletedComments) %>
-          % if cFlagCount > 1:
-             <% cString = 'Comments' %> 
-          % else:
-             <% cString = 'Comment' %> 
-          % endif
-          <tr><td>${cString} In Discussion <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/discussion/${d['urlCode']}/${d['url']}">${d["title"]}</a></br>    	    
-	    	% for comID in deletedComments:
-	    	  <% com = getComment(comID) %>
-		      &nbsp&nbsp&nbsp&nbsp&nbsp
-	    	  % if checkFlagged(com):
-			      % if int(com['numFlags']) == 1:
-				      ${com['numFlags']} flag:
-				  % else:
-				      ${com['numFlags']} flags:
-				  % endif
-			  % else:
-			  	  0 flags:
-			  % endif
-		      % if len(com['data']) > 20:
-				  <a href="/adminComment/${com['urlCode']}">${com['data'][:20]}...</a>
-			  % else:
-				  <a href="/adminComment/${com['urlCode']}">${com['data']}</a>
-		      % endif
-	          </br>
-			% endfor
-                        </td></tr>
-		% endif
-	% endfor
-        </tbody>
-        </table>
+    </div>
 </%def>

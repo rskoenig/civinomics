@@ -1,7 +1,7 @@
 (function() {
   var curImgCount, every, fadespeed, getCurImgNum, getNextImgNum, imgDirectory, numImages, showImage;
 
-  numImages = 3;
+  numImages = 5;
 
   imgDirectory = '/images/splash/';
 

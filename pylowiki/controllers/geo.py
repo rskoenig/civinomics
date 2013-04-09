@@ -1,285 +1,163 @@
 import logging
 
-from pylons import request, response, session, tmpl_context as c
-from string import capwords
-from pylowiki.lib.utils import urlify
-from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
-from pylowiki.lib.db.workshop import getWorkshopByID
-
+from pylons import request, response, session, tmpl_context as c, config
+from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
-import webhelpers.paginate as paginate
 import pylowiki.lib.helpers as h
 
-import simplejson as json
+import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.activity     as activityLib
+import webhelpers.feedgenerator     as feedgenerator
+import pylowiki.lib.db.user         as userLib
 
+from string import capwords
+import simplejson as json
 import re
 
 log = logging.getLogger(__name__)
 
 class GeoController(BaseController):
 
-    def showPostalInfo(self, id1, id2):
-        c.country = geoDeurlify(id1)
-        c.postal = id2
+    def __before__(self, action, country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
+        if action != 'workshopSearch' and action != 'rss':
+            # We aren't rendering a page, and instead are drilling down geo scope for workshop config
+            return
+        c.title = c.heading = 'Public workshops in '
+            
+        c.rssURL = "/workshops/rss/earth"
+        if country == '0':
+            c.scope = {'level':'earth', 'name':'earth'}
+            location = 'earth'
+        elif state == '0':
+            c.scope = {'level':'country', 'name':country}
+            location = country
+            c.rssURL += '/%s'%country
+        elif county == '0':
+            c.scope = {'level':'state', 'name':state}
+            location = state
+            c.rssURL += '/%s/%s'%(country, state)
+        elif city == '0':
+            c.scope = {'level':'county', 'name':county}
+            location = county
+            c.rssURL += '/%s/%s/%s'%(country, state, county)
+        elif postalCode == '0':
+            c.scope = {'level':'city', 'name':city}
+            location = city
+            c.rssURL += '/%s/%s/%s/%s'%(country, state, county, city)
+        else:
+            c.scope = {'level':'postalCode', 'name':postalCode}
+            location = postalCode
+            c.rssURL += '/%s/%s/%s/%s/%s'%(country, state, county, city, postalCode)
+            
+        c.scopeTitle = capwords(geoInfoLib.geoDeurlify(location))
+        c.title += capwords(geoInfoLib.geoDeurlify(location))
+        c.heading += capwords(geoInfoLib.geoDeurlify(location))
+        c.workshopTitlebar = capwords(geoInfoLib.geoDeurlify(location)) + ' workshops'
         
-        c.heading = "Workshops in Postal Code " + c.postal
-        c.geoType = 'postal'
-        c.geoInfo = getPostalInfo(c.postal, c.country)
-        c.city = capwords(c.geoInfo['City'])
-        c.cityFlag = '/images/flags/country/united-states/city_thumb.png'
-        c.cityLink = '/geo/city/' + c.country + '/' + urlify(c.geoInfo['StateFullName']) + '/' + urlify(c.geoInfo['City']) 
-        c.county = capwords(c.geoInfo['County'])
-        c.countyFlag = '/images/flags/country/united-states/county_thumb.png'
-        c.countyLink = '/geo/county/' + c.country + '/' + urlify(c.geoInfo['StateFullName']) + '/' + urlify(c.geoInfo['County']) 
-        c.state = capwords(c.geoInfo['StateFullName'])
-        c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
-        c.stateLink = '/geo/state/' + c.country + '/' + urlify(c.geoInfo['StateFullName'])
-        c.countryLink = '/geo/country/' + urlify(c.country)
-        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
-        c.country = capwords(c.country)
-        c.population = c.geoInfo['Population']
-        c.medianAge = c.geoInfo['MedianAge']
-        c.numberHouseholds = c.geoInfo['HouseholdsPerZipCode']
-        c.personsHousehold = c.geoInfo['PersonsPerHousehold']
-        scope = getGeoScope(c.postal, c.country)
-        scopeLevel = '10'
-        wscopes = getWorkshopScopes(scope, scopeLevel)
+        # Find all workshops within the filtered area
+        scopeList = geoInfoLib.getWorkshopsInScope(country = country, state = state, county = county, city = city, postalCode = postalCode)
         c.list = []
-        for s in wscopes:
-           wID = s['workshopID']
-           w = getWorkshopByID(wID)
-           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
-               if w not in c.list:
-                      doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
+        workshopCodes = []
+        for scopeObj in scopeList:
+            workshop = workshopLib.getActiveWorkshopByCode(scopeObj['workshopCode'])
+            if workshop:
+                if workshop['public_private'] == 'public':
+                    c.list.append(workshop)
+                    workshopCodes.append(workshop['urlCode'])
+        c.activity = activityLib.getActivityForWorkshops(workshopCodes)
 
-                      if doit:
-                          offset = 10 - int(scopeLevel)
-                          offset = offset * -1
-                          wTest = s['scope'].split('|')
-                          sTest = scope.split('|')
-                          ##log.info('offset is %s'%offset)
-                          if wTest[:offset] == sTest[:offset]:
-                              c.list.append(w)
+    def workshopSearch(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
+        return render('derived/6_main_listing.bootstrap')
 
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
+    def rss(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
+        feed = feedgenerator.Rss201rev2Feed(
+            title=u"Civinomics Public Workshop Activity",
+            link=u"http://www.civinomics.com",
+            description=u'The most recent activity in Civinomics public workshops scoped to %s.'%c.scopeTitle,
+            language=u"en"
         )
-        return render('/derived/list_geo.bootstrap')
+        for item in c.activity:
+            w = workshopLib.getWorkshopByCode(item['workshopCode'])
+            wURL = config['site_base_url'] + "/workshop/" + w['urlCode'] + "/" + w['url'] + "/"
+            
+            thisUser = userLib.getUserByID(item.owner)
+            activityStr = thisUser['name'] + " "
+            if item.objType == 'resource':
+               activityStr += 'added the resource '
+            elif item.objType == 'discussion':
+               activityStr += 'started the discussion '
+            elif item.objType == 'idea':
+                activityStr += 'posed the idea '
 
-    def showCityInfo(self, id1, id2, id3):
-        c.country = geoDeurlify(id1)
-        c.state = geoDeurlify(id2)
-        c.city = geoDeurlify(id3)
-        
-        c.heading = "List Workshops: City of " + capwords(c.city)
-        c.geoType = 'city'
-        
-        c.geoInfo = getCityInfo(c.city, c.state, c.country)
-        c.city = capwords(c.city)
-        c.cityFlag = '/images/flags/country/united-states/city_thumb.png'
-        c.cityLink = '/geo/city/' + c.country + '/' + c.geoInfo['StateFullName'] + '/' + c.geoInfo['City'] 
-        c.county = capwords(c.geoInfo['County'])
-        c.countyFlag = '/images/flags/country/united-states/county_thumb.png'
-        c.countyLink = '/geo/county/' + c.country + '/' + c.geoInfo['StateFullName'] + '/' + c.geoInfo['County'] 
-        c.state = capwords(c.geoInfo['StateFullName'])
-        c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
-        c.stateLink = '/geo/state/' + c.country + '/' + c.geoInfo['StateFullName']
-        c.countryLink = '/geo/country/' + urlify(c.country)
-        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
-        c.country = capwords(c.country)
-        c.population = c.geoInfo['Population']
-        c.medianAge = c.geoInfo['Population_Median']
-        c.numberHouseholds = c.geoInfo['Total_Households']
-        c.personsHousehold = c.geoInfo['Average_Household_Size']
-        scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + urlify(c.county) + '||' + urlify(c.city) + '|' +  '00000'
-        scopeLevel = "09"
-        wscopes = getWorkshopScopes(scope, scopeLevel)
-        c.list = []
-        for s in wscopes:
-           wID = s['workshopID']
-           w = getWorkshopByID(wID)
-           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
-               if w not in c.list:
-                      doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
+            activityStr += '"' + item['title'] + '"'
+            wURL += item.objType + "/" + item['urlCode'] + "/" + item['url']
+            feed.add_item(title=activityStr, link=wURL, guid=wURL, description='')
+            
+        response.content_type = 'application/xml'
 
-                      if doit:
-                          offset = 10 - int(scopeLevel)
-                          offset = offset * -1
-                          wTest = s['scope'].split('|')
-                          sTest = scope.split('|')
-                          ##log.info('offset is %s'%offset)
-                          if wTest[:offset] == sTest[:offset]:
-                              c.list.append(w)
+        return feed.writeString('utf-8')
 
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
+    ######################################################################
+    # 
+    # Used for drilling down geographic scope when selecting scope in workshop config
+    # 
+    ######################################################################
 
-        return render('/derived/list_geo.bootstrap')
-
-    def showCountyInfo(self, id1, id2, id3):
-        c.country = geoDeurlify(id1)
-        c.state = geoDeurlify(id2)
-        c.county = geoDeurlify(id3)
-        
-        c.heading = "List Workshops: County of " + capwords(c.county)
-        c.geoType = 'county'
-        
-        c.geoInfo = getCountyInfo(c.county, c.state, c.country)
-        c.county = capwords(c.geoInfo['County'])
-        c.countyFlag = '/images/flags/country/united-states/county_thumb.png'
-        c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
-        c.stateLink = '/geo/state/' + c.country + '/' + c.geoInfo['StateFullName']
-        c.countryLink = '/geo/country/' + urlify(c.country)
-        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
-        c.country = capwords(c.country)
-        c.state = capwords(c.geoInfo['StateFullName'])
-        c.population = c.geoInfo['Population']
-        c.medianAge = c.geoInfo['Population_Median']
-        c.numberHouseholds = c.geoInfo['Total_Households']
-        c.personsHousehold = c.geoInfo['Average_Household_Size']
-        scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + urlify(c.county) + '||' + 'LaLaLa|00000'
-        scopeLevel = "07"
-        wscopes = getWorkshopScopes(scope, scopeLevel)
-        c.list = []
-        for s in wscopes:
-           wID = s['workshopID']
-           w = getWorkshopByID(wID)
-           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
-               if w not in c.list:
-                      doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
-
-                      if doit:
-                          offset = 10 - int(scopeLevel)
-                          offset = offset * -1
-                          wTest = s['scope'].split('|')
-                          sTest = scope.split('|')
-                          ##log.info('offset is %s'%offset)
-                          if wTest[:offset] == sTest[:offset]:
-                              c.list.append(w)
-
-
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
-
-        return render('/derived/list_geo.bootstrap')
-
-    def showStateInfo(self, id1, id2):
-        c.country = geoDeurlify(id1)
-        c.state = geoDeurlify(id2)
-        
-        c.heading = "List Workshops: State of " + capwords(c.state)
-        c.geoType = 'state'
-
-        c.geoInfo = getStateInfo(c.state, c.country)
-        c.stateFlag = '/images/flags/country/united-states/states/' + urlify(c.state) + '_thumb.gif'
-        c.countryLink = '/geo/country/' + urlify(c.country)
-        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
-        c.country = capwords(c.country)
-        c.state = capwords(c.geoInfo['StateFullName'])
-        c.population = c.geoInfo['Population']
-        c.medianAge = c.geoInfo['Population_Median']
-        c.numberHouseholds = c.geoInfo['Total_Households']
-        c.personsHousehold = c.geoInfo['Average_Household_Size']
-        scope = '||' + urlify(c.country) + '||' + urlify(c.state) + '||' + 'LaLaLa||LaLaLa|00000'
-        scopeLevel = "05"
-        wscopes = getWorkshopScopes(scope, scopeLevel)
-        c.list = []
-        for s in wscopes:
-           wID = s['workshopID']
-           w = getWorkshopByID(wID)
-           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
-               if w not in c.list:
-                      doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
-
-                      if doit:
-                          offset = 10 - int(scopeLevel)
-                          offset = offset * -1
-                          wTest = s['scope'].split('|')
-                          sTest = scope.split('|')
-                          ##log.info('offset is %s'%offset)
-                          if wTest[:offset] == sTest[:offset]:
-                              c.list.append(w)
-
-
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
-
-        return render('/derived/list_geo.bootstrap')
-
-    def showCountryInfo(self, id1):
-        c.country = id1
-        
-        c.geoType = 'country'
-        log.info('c.country is %s'%c.country)
-
-        c.geoInfo = getCountryInfo(c.country)
-        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
-        c.country = capwords(c.geoInfo['Country_title'])
-        c.heading = "List Workshops: Country of " + capwords(c.country)
-        c.population = c.geoInfo['Country_population']
-        c.medianAge = c.geoInfo['Country_median_age']
-        c.numberHouseholds = c.geoInfo['Country_number_households']
-        c.personsHousehold = c.geoInfo['Country_persons_per_household']
-        c.countryLink = '/geo/country/' + urlify(c.country)
-        c.countryFlag = '/images/flags/country/' + urlify(c.country) + '/' + urlify(c.country) + '_thumb.gif'
-        c.country = capwords(c.country)
-        scope = '||' + urlify(c.country) + '||LaLa||LaLaLa||LaLaLa|00000'
-        scopeLevel = "03"
-        wscopes = getWorkshopScopes(scope, scopeLevel)
-        c.list = []
-        for s in wscopes:
-           wID = s['workshopID']
-           w = getWorkshopByID(wID)
-           if w['deleted'] != '1' and w['startTime'] != '0000-00-00':
-               if w not in c.list:
-                      doit = 1
-                      if w['scopeMethod'] == 'publicScope' and int(w['publicScope']) < int(scopeLevel):
-                             doit = 0
-
-                      if doit:
-                          offset = 10 - int(scopeLevel)
-                          offset = offset * -1
-                          wTest = s['scope'].split('|')
-                          sTest = scope.split('|')
-                          ##log.info('offset is %s'%offset)
-                          if wTest[:offset] == sTest[:offset]:
-                              c.list.append(w)
-
-
-        c.count = len( c.list )
-        c.paginator = paginate.Page(
-            c.list, page=int(request.params.get('page', 1)),
-            items_per_page = 15, item_count = c.count
-        )
-
-        return render('/derived/list_geo.bootstrap')
-
-    ##@h.login_required
     def geoHandler(self, id1, id2):
         country = id1
         postalCode = id2
-        ##log.info('geoHandler %s %s' % (postalCode, country))
 
-        titles = getGeoTitles(postalCode, country)
-        ##log.info('geoHandler titles %s' % titles)
+        titles = geoInfoLib.getGeoTitles(postalCode, country)
         return json.dumps({'result':titles})
+        
+    def geoStateHandler(self, id1):
+        country = id1
+
+        states = geoInfoLib.getStateList(country)
+        sList = ""
+        for state in states:
+            if state['StateFullName'] != 'District of Columbia':
+                sList = sList + state['StateFullName'] + '|'
+        return json.dumps({'result':sList})
+
+    def geoCountyHandler(self, id1, id2):
+        country = id1
+        state = geoInfoLib.geoDeurlify(id2)
+        state = state.title()
+
+        counties = geoInfoLib.getCountyList(country, state)
+        cList = ""
+        for county in counties:
+            cList = cList + county['County'].title() + '|'
+        return json.dumps({'result':cList})
+
+
+    def geoCityHandler(self, id1, id2, id3):
+        country = id1
+        state = geoInfoLib.geoDeurlify(id2)
+        state = state.title()
+        county = geoInfoLib.geoDeurlify(id3)
+        county = county.upper()
+
+        cities = geoInfoLib.getCityList(country, state, county)
+        cList = ""
+        for city in cities:
+            cList = cList + city['City'].title() + '|'
+        return json.dumps({'result':cList})
+
+    def geoPostalHandler(self, id1, id2, id3, id4):
+        country = id1
+        state = geoInfoLib.geoDeurlify(id2)
+        state = state.title()
+        county = geoInfoLib.geoDeurlify(id3)
+        county = county.upper()
+        city = geoInfoLib.geoDeurlify(id4)
+        city = city.upper()
+
+        postalCodes = geoInfoLib.getPostalList(country, state, county, city)
+        pList = ""
+        for postal in postalCodes:
+            pList = pList + str(postal['ZipCode']) + '|'
+        return json.dumps({'result':pList})
 

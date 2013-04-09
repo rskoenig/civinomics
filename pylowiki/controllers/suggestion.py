@@ -4,7 +4,7 @@ from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.db.event import Event, getParentEvents
-from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByID, isScoped
+from pylowiki.lib.db.workshop import getWorkshop, getWorkshopByCode, getWorkshopByID, isScoped
 from pylowiki.lib.db.suggestion import Suggestion, getSuggestion, getSuggestionByID, getSuggestionsForWorkshop, getActiveSuggestionsForWorkshop
 from pylowiki.lib.db.user import getUserByID, isAdmin
 from pylowiki.lib.db.resource import getActiveResourcesByParentID
@@ -36,6 +36,10 @@ class SuggestionController(BaseController):
         revisionURL = id5
         
         c.w = getWorkshop(workshopCode, urlify(workshopURL))
+        if c.w['public_private'] != 'public':
+            if 'user' not in session or not isScoped(c.authuser, c.w):
+                    return render('/derived/404.bootstrap')
+                    
         c.s = getSuggestion(suggestionCode, urlify(suggestionURL))
         # for comment disable
         if 'allowComments' not in c.s:
@@ -45,7 +49,7 @@ class SuggestionController(BaseController):
         else:
             c.commentsDisabled = 0
         c.events = getParentEvents(c.s)
-        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode, workshopURL)
+        c.suggestions = getActiveSuggestionsForWorkshop(workshopCode)
         c.resources = getActiveResourcesByParentID(c.s.id)
         for i in range(len(c.suggestions)):
             suggestion = c.suggestions[i]
@@ -111,7 +115,7 @@ class SuggestionController(BaseController):
         s = isScoped(c.authuser, c.w)
         if (s and c.w['allowSuggestions'] == '1') or a or f:
             c.s = False
-            c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+            c.suggestions = getActiveSuggestionsForWorkshop(code)
 
             return render('/derived/suggestion_edit.bootstrap')
         else:
@@ -164,7 +168,7 @@ class SuggestionController(BaseController):
             serrorMsg = 'Allow comments or not?'
 
         s = getSuggestion(code, urlify(url))
-        w = getWorkshop(s['workshopCode'], urlify(s['workshopURL']))
+        w = getWorkshopByCode(s['workshopCode'])
         
         a = isAdmin(c.authuser.id)
         f =  isFacilitator(c.authuser.id, w.id)
@@ -203,7 +207,7 @@ class SuggestionController(BaseController):
            session.save()
 
         
-        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(s['workshopCode'], urlify(s['workshopURL']), code, url))
+        return redirect('/workshop/%s/%s/suggestion/%s/%s'%(w['urlCode'], urlify(w['url']), code, url))
 
     @h.login_required
     def addSuggestion(self, id1, id2):
@@ -252,7 +256,7 @@ class SuggestionController(BaseController):
             c.suggestionTitle = title
             c.suggestionData = data
             c.suggestionAllowComments = allowComments
-            c.suggestions = getActiveSuggestionsForWorkshop(code, urlify(url))
+            c.suggestions = getActiveSuggestionsForWorkshop(code)
             return render('/derived/suggestion_edit.bootstrap')
 
         else:

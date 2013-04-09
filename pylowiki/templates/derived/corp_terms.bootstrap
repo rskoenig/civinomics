@@ -4,13 +4,9 @@
 </%def>
 
 <%def name="display_body_right_content()">
-    <div class="span8">
-        </br>
+    <div class="row-fluid">
         <h1>Terms of Use</h1>
-        </br>
-        <p>
-        These Terms of Service ("Terms") govern your access to and use of the services and Civinomics's websites (the "Services"), and any information, text, graphics, or other materials uploaded, downloaded or appearing on the Services (collectively referred to as "Content"). Your access to and use of the Services is conditioned on your acceptance of and compliance with these Terms. By accessing or using the Services you agree to be bound by these Terms.
-        </p>
+        <p class="lead">These Terms of Service ("Terms") govern your access to and use of the services and Civinomics's websites (the "Services"), and any information, text, graphics, or other materials uploaded, downloaded or appearing on the Services (collectively referred to as "Content"). Your access to and use of the Services is conditioned on your acceptance of and compliance with these Terms. By accessing or using the Services you agree to be bound by these Terms.</p>
         <h2>Basic Terms</h2>
         <p>You are responsible for your use of the Services, for any content you post to the Services, and for any consequences thereof. The Content you submit, post, or display may be able to be viewed by other users of the Services and through third party services and websites. You should only provide Content that you are comfortable sharing with others under these Terms.
         </p>
@@ -100,7 +96,7 @@
             </br>
             Santa Cruz, CA 95060
             </br>
-            info@Civinomics.com
+            info @ civinomics.com
         </address>
         <h2>The Services are Available "AS-IS"</h2>
         Your access to and use of the Services or any Content is at your own risk. You understand and agree that the Services is provided to you on an "AS IS" and "AS AVAILABLE" basis. Without limiting the foregoing, CIVINOMICS AND ITS PARTNERS DISCLAIM ANY WARRANTIES, EXPRESS OR IMPLIED, OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT. We make no warranty and disclaim all responsibility and liability for the completeness, accuracy, availability, timeliness, security or reliability of the Services or any content thereon. Civinomics will not be responsible or liable for any harm to your computer system, loss of data, or other harm that results from your access to or use of the Services, or any Content. You also agree that Civinomics has no responsibility or liability for the deletion of, or the failure to store or to transmit, any Content and other communications maintained by the Services. We make no warranty that the Services will meet your requirements or be available on an uninterrupted, secure, or error-free basis. No advice or information, whether oral or written, obtained from Civinomics or through the Services, will create any warranty not expressly made herein.
@@ -134,14 +130,13 @@
             </br>
             Santa Cruz, CA 95060
             </br>
-            info AT Civinomics DOT com
+            info @ civinomics.com
         </address>
         </br>
         <h3>Effective: May 5, 2012</h3>
         </br>
         </br>
 
-    </div><!--/.span 6-->
+    </div><!-- row-fluid -->
 
 </%def>
-<%def name="display_body_bottom_content()"></%def>

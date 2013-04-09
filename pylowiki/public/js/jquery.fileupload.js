@@ -582,6 +582,7 @@
                 this._trigger('stop');
                 // Reset the global progress values:
                 this._loaded = this._total = 0;
+                document.location.reload(true);
             }
         },
 

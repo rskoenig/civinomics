@@ -419,7 +419,7 @@
 <%def name="nav_thing(page)">
     <%
         if 'user' in session:
-	       pages = OrderedDict([("home",""), ("configure", "configure"), ("administrate", "administrate"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])
+	       pages = OrderedDict([("home",""), ("dashboard", "dashboard"), ("background", "background"), ("leaderboard", "leaderboard"), ("discussion", "discussion")])
         else:
 	       pages = OrderedDict([("home",""), ("background", "background"), ("discussion", "discussion")])
     %>
@@ -430,7 +430,7 @@
 		% if page == li:
             <% lclass="current" %>
         % endif
-        % if li == 'configure' or li == 'administrate':
+        % if li == 'dashboard':
             % if c.conf['read_only.value'] == 'true':
                 <% continue %>
             % endif
@@ -559,10 +559,6 @@
             <h1><a href="/workshop/${c.w['urlCode']}/${c.w['url']}">${c.w['title']}</a></h1>
             <br/>
             ${nav_thing(page)}
-            <!--
-            <img src="/images/glyphicons_pro/glyphicons_halflings/png/glyphicons_halflings_134_globe.png"> ${c.w['publicScopeTitle']} &nbsp; &nbsp; 
-            <i class="icon icon-cog"></i> ${c.w['goals']}
-            -->
         </div><!-- span9 -->
    </div><!-- row-fluid -->
 </%def>

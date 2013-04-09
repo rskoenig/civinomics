@@ -6,6 +6,8 @@ import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic as wc
 from pylowiki.lib.utils import urlify, toBase62
 from time import time
+import pylowiki.lib.db.generic as generic
+import pylowiki.lib.db.revision as revisionLib
 
 log = logging.getLogger(__name__)
 
@@ -15,42 +17,59 @@ def getDiscussionByID(id):
     except:
         return False
 
-def getDiscussion(code, url):
+def getDiscussion(code, deleted = u'0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('urlCode', code))).filter(Thing.data.any(wc('url', url))).one()
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'discussion')\
+                .filter(Thing.data.any(wc('urlCode', code)))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .one()
     except:
         return False
 
-def getDiscussions():
+def getDiscussions(disabled = '0', deleted = '0', discType = 'general'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'discussion')\
+            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('discType', discType)))\
+            .all()
     except:
         return False
     
-def getActiveDiscussionsForWorkshop(code, url, discType = 'general'):
+def getDiscussionForThing(parent):
+    if parent.objType == 'discussion':
+        return parent
+    thisKey = '%sCode' % parent.objType
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
     except:
         return False
-    
-def getAllActiveDiscussionsForWorkshop(code, url):
+
+def getDiscussionsForWorkshop(code, discType = 'general', disabled = '0', deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('disabled', '0'))).filter(Thing.data.any(wc('deleted', '0'))).all()
+        return meta.Session.query(Thing).filter_by(objType = 'discussion')\
+        .filter(Thing.data.any(wc('workshopCode', code)))\
+        .filter(Thing.data.any(wc('discType', discType)))\
+        .filter(Thing.data.any(wc('disabled', disabled)))\
+        .filter(Thing.data.any(wc('deleted', deleted)))\
+        .all()
     except:
         return False
-    
-def getDisabledDiscussionsForWorkshop(code, url, discType = 'general'):
+
+def editDiscussion(discussion, title, text, owner):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('disabled', '1'))).all()
+        revisionLib.Revision(owner, discussion)
+        discussion['title'] = title
+        discussion['text'] = text
+        discussion['url'] = urlify(title)
+        commit(discussion)
+        return True
     except:
+        log.error('ERROR: Failed to edit discussion')
         return False
-    
-def getDeletedDiscussionsForWorkshop(code, url, discType = 'general'):
-    try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).filter(Thing.data.any(wc('discType', discType))).filter(Thing.data.any(wc('deleted', '1'))).all()
-    except:
-        return False
-    
+        
 class Discussion(object):
     # If the owner is None, the discussion is a system generated discussion, like the comments in the background wiki.
     # If the owner is not None, then the discussion was actively created by some user.
@@ -62,64 +81,42 @@ class Discussion(object):
                     title                ->    The title of the discussion, in string format
                     attachedThing        ->    The Thing to which we are attaching this discussion
                     discType             ->    Used to determine special properties, like a background discussion or a feedback discussion in a workshop
-                    workshop             ->    Used for creating the 'workshopCode' and 'workshopURL' linkbacks if the discussion isn't tied directly to a workshop
+                    workshop             ->    Links the discussion to the workshop.  The discussion type is used to differentiate between a discussion 
+                                               linked to, say, an idea, and a discussion linked directly to the workshop.
+                    privs                ->    The c.privs object describing what the authuser's role is
+                    (optional)
+                    text                 ->    Some extra description, if provided
+                    role                 ->    The role used to indicate how the discussion was added (admin, facilitator, listener, etc...)  If not provided,
+                                               this is automatically set from the privs dict.
         """
         if 'owner' not in kwargs.keys():
             d = Thing('discussion')
         else:
             d = Thing('discussion', kwargs['owner'].id)
+        if 'role' not in kwargs.keys():
+            role = None
+        else:
+            role = kwargs['role']
         title = kwargs['title']
         discType = kwargs['discType']
-        d['discType'] = discType # Used in determining the linkbacks
-        if 'attachedThing' in kwargs.keys():
-            attachedThing = kwargs['attachedThing']
-            d['attachedThing_id'] = attachedThing.id
-            if attachedThing.objType == 'workshop':
-                d['workshopCode'] = attachedThing['urlCode']
-                d['workshopURL'] = attachedThing['url']
-                if discType == 'general':
-                    d['text'] = kwargs['text']
-                    d['ups'] = '0'
-                    d['downs'] = '0'
-                    d['disabled'] = '0'
-                    d['deleted'] = '0'
-            elif attachedThing.objType == 'suggestion':
-                d['workshopCode'] = kwargs['workshop']['urlCode']
-                d['workshopURL'] = kwargs['workshop']['url']
-                d['suggestionCode'] = attachedThing['urlCode']
-                d['suggestionURL'] = attachedThing['url']
-            elif attachedThing.objType == 'resource':
-                d['workshopCode'] = kwargs['workshop']['urlCode']
-                d['workshopURL'] = kwargs['workshop']['url']
-                d['resourceCode'] = attachedThing['urlCode']
-                d['resourceURL'] = attachedThing['url']
-            elif attachedThing.objType == 'sresource':
-                d['workshopCode'] = kwargs['workshop']['urlCode']
-                d['workshopURL'] = kwargs['workshop']['url']
-                d['resourceCode'] = attachedThing['urlCode']
-                d['resourceURL'] = attachedThing['url']
-                sID = attachedThing['parent_id']
-                s = getThingByID(sID)
-                d['suggestionCode'] = s['urlCode']
-                d['suggestionURL'] = s['url']     
-        else:
-            d['workshopCode'] = kwargs['workshop']['urlCode']
-            d['workshopURL'] = kwargs['workshop']['url']
-            if discType == 'general':
-                d['text'] = kwargs['text']
-                d['ups'] = '0'
-                d['downs'] = '0'
-                d['disabled'] = '0'
-                d['deleted'] = '0'
+        workshop = kwargs['workshop']
+        d['discType'] = discType
+        d['disabled'] = '0'
+        d['deleted'] = '0'
+        d['ups'] = '0'
+        d['downs'] = '0'
         d['title'] = title
         d['url'] = urlify(title)
-        d['numComments'] = '0'
+        d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
+        d = generic.linkChildToParent(d, workshop)
+        d = generic.addedItemAs(d, kwargs['privs'], role)
+        # Optional arguments
+        if 'text' in kwargs:
+            d['text'] = kwargs['text']
+        if 'attachedThing' in kwargs.keys():
+            d = generic.linkChildToParent(d, kwargs['attachedThing'])
         commit(d)
         d['urlCode'] = toBase62(d)
         commit(d)
-
-        if attachedThing.objType != 'workshop':
-            attachedThing['discussion_id'] = d.id
-            commit(attachedThing)
         
         self.d = d

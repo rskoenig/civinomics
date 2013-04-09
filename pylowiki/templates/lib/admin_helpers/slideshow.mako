@@ -11,74 +11,88 @@
  */
 -->
 
+<%def name="admin_slideshow()">    
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header smaller">Images and Slideshow</h4>
+            ${add_slides()}
+            ${edit_slideshow()}
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
+</%def>
+
 <%def name="add_slides()">
+    <!-- The file upload form used as target for the file upload widget -->
+    <form id="fileupload" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
+    <p><strong>Add images</strong></p>
+    <ul>
+        <li>Slideshow looks best with 6 or more images</li>
+        <li>Make sure you have permission to use the images</li>
+        <li>Avoid images smaller than 640 pixels wide by 480 pixels high</li>
+    </ul>
+    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+    <div class="row-fluid">
+        <div class="span7 offset1 fileupload-buttonbar">
+            <!-- The fileinput-button span is used to style the file input field as button -->
+            <span class="btn btn-success fileinput-button">
+                <i class="icon-plus icon-white"></i>
+                <span>Add images...</span>
+                <input type="file" name="files[]" multiple>
+            </span>
+            <button type="submit" class="btn btn-primary start">
+                <i class="icon-upload icon-white"></i>
+                <span>Start upload</span>
+            </button>
+            <button type="reset" class="btn btn-warning cancel">
+                <i class="icon-ban-circle icon-white"></i>
+                <span>Cancel upload</span>
+            </button>
+        </div><!-- span7 -->
+        <div class="span4">
+            <!-- The global progress bar -->
+            <div class="progress progress-success progress-striped active fade">
+                <div class="bar" style="width:0%;"></div>
+            </div><!-- progress -->
+        </div><!-- span4 -->
+    </div><!-- row-fluid -->
+    <div class="row-fluid">
+        <div class="span12">
+            <!-- The loading indicator is shown during image processing -->
+            <div class="fileupload-loading"></div>
+            <br>
+            <!-- The table listing the files available for upload/download -->
+            <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+            <br />
+        </div><!-- span12 -->
+    </div><!-- row-fluid -->
 
-   <div class="container-fluid clr left">
-   <!-- The file upload form used as target for the file upload widget -->
-   <form id="fileupload" class="well" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
-        <p><strong>Add slides to slideshow</strong></p>
-        <p>You may only upload images you own or have permission to upload to this site.<p>
-        <p>Make sure to upload images larger than 640 pixels wide by 480 pixels high! Small images or thumbnails will look terrible in the slide show! Images oriented in "landscape" mode (wider than higher) are best.</p>
-        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-        <div class="row fileupload-buttonbar">
-            <div class="span7">
-                <!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-success fileinput-button">
-                    <i class="icon-plus icon-white"></i>
-                    <span>Add files...</span>
-                    <input type="file" name="files[]" multiple>
-                </span>
-                <button type="submit" class="btn btn-primary start">
-                    <i class="icon-upload icon-white"></i>
-                    <span>Start upload</span>
-                </button>
-                <button type="reset" class="btn btn-warning cancel">
-                    <i class="icon-ban-circle icon-white"></i>
-                    <span>Cancel upload</span>
-                </button>
-            </div>
-            <div class="span5">
-                <!-- The global progress bar -->
-                <div class="progress progress-success progress-striped active fade">
-                    <div class="bar" style="width:0%;"></div>
-                </div>
-            </div>
-        </div><!-- file upload button bar -->
-        <!-- The loading indicator is shown during image processing -->
-        <div class="fileupload-loading"></div>
-        <br>
-        <!-- The table listing the files available for upload/download -->
-        <table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody></table>
+    <!-- modal-gallery is the modal dialog used for the image gallery -->
+    <div id="modal-gallery" class="modal modal-gallery hide fade">
+        <div class="modal-header">
+            <a class="close" data-dismiss="modal">&times;</a>
+            <h3 class="modal-title"></h3>
+        </div><!-- modal-header -->
+        <div class="modal-body"><div class="modal-image"></div></div>
+        <div class="modal-footer">
+            <a class="btn modal-download" target="_blank">
+                <i class="icon-download"></i>
+                <span>Download</span>
+            </a>
+            <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000">
+                <i class="icon-play icon-white"></i>
+                <span>Slideshow</span>
+            </a>
+            <a class="btn btn-info modal-prev">
+                <i class="icon-arrow-left icon-white"></i>
+                <span>Previous</span>
+            </a>
+            <a class="btn btn-primary modal-next">
+                <span>Next</span>
+                <i class="icon-arrow-right icon-white"></i>
+            </a>
+        </div><!-- modal-footer -->
+    </div><!-- modal-gallery -->
     </form>
-    <br />
-</div><!-- container-fluid -->
-
-<!-- modal-gallery is the modal dialog used for the image gallery -->
-<div id="modal-gallery" class="modal modal-gallery hide fade">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
-        <h3 class="modal-title"></h3>
-    </div><!-- modal-header -->
-    <div class="modal-body"><div class="modal-image"></div></div>
-    <div class="modal-footer">
-        <a class="btn modal-download" target="_blank">
-            <i class="icon-download"></i>
-            <span>Download</span>
-        </a>
-        <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000">
-            <i class="icon-play icon-white"></i>
-            <span>Slideshow</span>
-        </a>
-        <a class="btn btn-info modal-prev">
-            <i class="icon-arrow-left icon-white"></i>
-            <span>Previous</span>
-        </a>
-        <a class="btn btn-primary modal-next">
-            <span>Next</span>
-            <i class="icon-arrow-right icon-white"></i>
-        </a>
-    </div><!-- modal-footer -->
-</div><!-- modal-gallery -->
 
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
@@ -111,6 +125,7 @@
     </tr>
 {% } %}
 </script>
+
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
@@ -140,89 +155,57 @@
     </tr>
 {% } %}
 </script>
+
 </%def>
 
 <%def name="edit_slideshow()">
-    <div class="container-fluid">
-    <table class="table table-bordered" >
-    <thead>
-    <tr><td>
-    <div class="container-fluid">
-    <script language="javascript">
-    $(function() {
-       
-        $(".column").sortable(
-            { items: ".portlet" },
-            { connectWith: ".column" },
-            { update: function(event, ui) {
-                $.post("/slideshow/editPosition", { slides: $(this).sortable('serialize') + "_" + $(this).attr('id')} );
-            }
-        });
-
-        $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
-            .find( ".portlet-header" )
-                .addClass( "ui-widget-header ui-corner-all" )
-                .prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
-                .end()
-            .find( ".portlet-content" );
-
-        $( ".portlet-title .ui-icon" ).click(function() {
-            $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
-            $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
-        });
-
-    });
-    </script>
-   <p><strong>Edit Slideshow</strong></p>
-<p>Click and drag to re-arrange a slideshow's orde.  </p>
-<br />
-<p>Click on a title or a caption to edit it.  Press enter to save your title or caption
-    edits, press escape to cancel an edit.</p>
-<div class="demo">
-
-<div class="column" id="published">
-        <h2 style="text-align:center;">Published slides</h2>
-    % for slide in c.published_slides:
-        % if int(slide['deleted']) == 0:
-            <div class="portlet" id = "portlet_${slide.id}">
-                <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
-                <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
-                <div class = "portlet-image">
-                    % if slide['pictureHash'] == 'supDawg':
-                        <img src = "/images/slide/thumbnail/supDawg.thumbnail">
-                    % else:
-                        <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.thumbnail">
+    <div class="row-fluid">
+        <p><strong>Create Slideshow</strong></p>
+        <ul>
+            <li>Click and drag to rearrange images</li>
+            <li>Add captions</li>
+            <li>Store unused images under Unpublished Slides</li>
+        </ul>
+        <div class="demo">
+            <div class="column" id="published">
+                <h4 class="centered">Published slides</h4 >
+                % for slide in c.published_slides:
+                    % if int(slide['deleted']) == 0:
+                        <div class="portlet" id = "portlet_${slide.id}">
+                            <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
+                            <div class = "portlet-image">
+                                % if slide['pictureHash'] == 'supDawg':
+                                    <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                                % else:
+                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
+                                % endif
+                            </div><!-- portlet-image -->
+                        </div><!-- portlet -->
                     % endif
-                </div>
-            </div>
-        % endif
-    % endfor
-</div>
-
-<div class="column" id="unpublished">
-    <h2 style="text-align:center;" class="unsortable">Unpublished slides</h2>
-    % for slide in c.slideshow:
-        % if int(slide['deleted']) == 1:
-            <div class="portlet" id = "portlet_${slide.id}">
-                <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
-                <div class = "portlet-caption edit" id = "${slide.id}_caption">${slide['caption']}</div>
-                <div class = "portlet-image">
-                    % if slide['pictureHash'] == 'supDawg':
-                        <img src = "/images/slide/thumbnail/supDawg.thumbnail">
-                    % else:
-                        <img src = "/images/slide/${slide['directoryNumber']}/thumbnail/${slide['pictureHash']}.thumbnail">
+                % endfor
+            </div><!-- column -->
+            <div class="column" id="unpublished">
+                <h4 class="unsortable centered">Unpublished slides</h4>
+                % for slide in c.slideshow:
+                    % if int(slide['deleted']) == 1:
+                        <div class="portlet" id = "portlet_${slide.id}">
+                            <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
+                            <div class = "portlet-image">
+                                % if slide['pictureHash'] == 'supDawg':
+                                    <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                                % else:
+                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
+                                % endif
+                            </div><!-- portlet-image -->
+                        </div><!-- portlet -->
                     % endif
-                </div>
-            </div>
+                % endfor
+            </div><!-- column -->
+        </div><!-- End demo -->
+        % if c.w['startTime'] == '0000-00-00':
+            <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
+                <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
+            </form>
         % endif
-    % endfor
-</div>
-
-</div><!-- End demo -->
-</div><!-- container -->
-</td></tr>
-</thead>
-</table>
-</div><!-- container -->
-
+    </div><!-- row-fluid -->
 </%def>
