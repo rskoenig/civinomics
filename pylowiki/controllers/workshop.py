@@ -590,7 +590,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
-        return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
+            return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         c.title = "Configure Workshop"
 
