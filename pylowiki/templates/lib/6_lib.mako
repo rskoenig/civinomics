@@ -97,11 +97,11 @@
    <%
       if isReadOnly():
          readOnlyMessage(thing)
-         return False
-      if c.w['allowResources'] == '0' and thing == 'resources' and (not c.privs['admin'] and not c.privs['facilitator']):
-         return False
-      if c.w['allowIdeas'] == '0' and thing == 'ideas' and (not c.privs['admin'] and not c.privs['facilitator']):
-         return False
+         return
+      if c.w['allowResources'] == '0' and thing == 'resources' and not (c.privs['admin'] or c.privs['facilitator']):
+         return
+      if c.w['allowIdeas'] == '0' and thing == 'ideas' and not (c.privs['admin'] or c.privs['facilitator']):
+         return
 
       printStr = ''
       
