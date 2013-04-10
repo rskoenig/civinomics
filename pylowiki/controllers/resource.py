@@ -89,7 +89,7 @@ class ResourceController(BaseController):
         return render('/derived/6_item_in_listing.bootstrap')
 
     def addResource(self, workshopCode, workshopURL):
-        if (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin']) and c.w['allowResources'] == '1':
+        if (c.privs['participant'] and c.w['allowResources'] == '1') or c.privs['facilitator'] or c.privs['admin']:
             c.listingType = 'resource'
             return render('/derived/6_add_to_listing.bootstrap')
         elif c.privs['guest']:

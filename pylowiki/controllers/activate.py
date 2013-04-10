@@ -20,7 +20,7 @@ class ActivateController(BaseController):
     def index(self, id):
         hash, sep, email = id.partition('__')
         user = userLib.getUserByEmail(email)
-        message = {}
+        splashMsg = {}
         if user:
             if user['activated'] == '0':
                 if user['activationHash'] == hash:
@@ -47,21 +47,22 @@ class ActivateController(BaseController):
                                 returnURL = '/workshop/%s/%s#guider=tour_welcome' %(demo['urlCode'], demo['url'])
                         return redirect(returnURL)
                     else:
-                        message['type'] = 'error'
-                        message['title'] = 'Error: '
-                        message['content'] = 'Unknown error in activating %s.' % email
+                        splashMsg['type'] = 'error'
+                        splashMsg['title'] = 'Error: '
+                        splashMsg['content'] = 'Unknown error in activating %s.' % email
                         log.debug('Commit error on activating %s' % email)
                 else:
-                    message['type'] = 'error'
-                    message['title'] = 'Error: '
-                    message['content'] = 'Incorrect activation string given.  Please check link and try again.'
+                    splashMsg['type'] = 'error'
+                    splashMsg['title'] = 'Error: '
+                    splashMsg['content'] = 'Incorrect activation string given.  Please check link and try again.'
             else:
-                message['type'] = ''
-                message['title'] = 'Warning: '
-                message['content'] = '%s is already marked as active!' % email
+                splashMsg['type'] = ''
+                splashMsg['title'] = 'Warning: '
+                splashMsg['content'] = '%s is already marked as active! Please use the form to login.' % email
         else:
-            message['type'] = ''
-            message['title'] = 'Error: '
-            message['content'] = 'Specified user not found!'
-        c.splashMsg = message
-        return render('/derived/login.bootstrap')
+            splashMsg['type'] = ''
+            splashMsg['title'] = 'Error: '
+            splashMsg['content'] = 'Specified user not found!'
+        session['splashMsg'] = splashMsg
+        session.save()
+        return redirect('/login')
