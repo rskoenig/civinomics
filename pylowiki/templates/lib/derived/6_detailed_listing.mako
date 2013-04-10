@@ -2,6 +2,7 @@
    import pylowiki.lib.db.user          as userLib
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.event         as eventLib
+   import pylowiki.lib.db.facilitator   as facilitatorLib
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -28,7 +29,7 @@
                author = userLib.getUserByID(item.owner)
                if not c.privs['admin']:
                   if 'user' in session:
-                     if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                     if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                         continue
                   else:
                      if author['accessLevel'] != '300':
