@@ -1,7 +1,6 @@
 $(document).ready(function()
 {
     $('.unread-message').click(function(event){
-        event.preventDefault();
         var code = $(this).attr('data-code');
         var thisMessage = $(this);
         $.post('/message/' + code + '/mark/read', 

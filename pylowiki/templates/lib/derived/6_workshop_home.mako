@@ -2,6 +2,7 @@
    import pylowiki.lib.db.slideshow as slideshowLib
    from pylowiki.lib.db.user import getUserByID
    import pylowiki.lib.db.activity as activityLib
+   import pylowiki.lib.db.facilitator   as facilitatorLib
    import misaka as m
    
    import logging
@@ -54,7 +55,7 @@
                     author = getUserByID(item.owner)
                     if not c.privs['admin']:
                         if 'user' in session:
-                            if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                            if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                                 continue
                         else:
                             if author['accessLevel'] != '300':
@@ -122,7 +123,7 @@
             author = getUserByID(item.owner)
             if not c.privs['admin']:
                if 'user' in session:
-                  if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                  if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                      continue
                else:
                   if author['accessLevel'] != '300':
