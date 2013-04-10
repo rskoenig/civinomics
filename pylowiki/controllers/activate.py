@@ -55,14 +55,17 @@ class ActivateController(BaseController):
                     splashMsg['type'] = 'error'
                     splashMsg['title'] = 'Error: '
                     splashMsg['content'] = 'Incorrect activation string given.  Please check link and try again.'
+                    log.debug('User %s provided an incorrect activation string.' % email)
             else:
                 splashMsg['type'] = ''
                 splashMsg['title'] = 'Warning: '
                 splashMsg['content'] = '%s is already marked as active! Please use the form to login.' % email
+                log.debug('User %s attempted to activate an active account.' % email)
         else:
             splashMsg['type'] = ''
             splashMsg['title'] = 'Error: '
             splashMsg['content'] = 'Specified user not found!'
+            log.debug('User %s not found' % email)
         session['splashMsg'] = splashMsg
         session.save()
         return redirect('/login')
