@@ -142,6 +142,13 @@
                         return
                 else:
                     return
+            if c.demo:
+                if 'user' in session:
+                    if ((author['accessLevel'] != '300' and not isFacilitator(author, c.w)) and author.id != c.authuser.id):
+                        return
+                else:
+                    if author['accessLevel'] != '300' and not isFacilitator(author, c.w):
+                        return
         else:
             return
         accordionID = 'accordion-%s' % comment['urlCode']

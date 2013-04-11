@@ -58,7 +58,7 @@
                             if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                                 continue
                         else:
-                            if author['accessLevel'] != '300':
+                            if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
                                 continue
                 if shownItems >= numItems:
                     break
@@ -126,7 +126,7 @@
                   if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                      continue
                else:
-                  if author['accessLevel'] != '300':
+                  if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
                      continue
          
          if item.objType == 'discussion':

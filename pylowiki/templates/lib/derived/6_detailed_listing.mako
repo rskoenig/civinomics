@@ -32,7 +32,7 @@
                      if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                         continue
                   else:
-                     if author['accessLevel'] != '300':
+                     if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
                         continue
             author = userLib.getUserByID(item.owner)
          %>
@@ -99,7 +99,11 @@
                                 comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
                             %>
-                            See ${comments | n} (${numComments})
+                            % if c.demo:
+                                See ${comments | n}
+                            % else:
+                                See ${comments | n} (${numComments})
+                            % endif
                     </div><!--/.span9-->
                 </div><!--/.row-fluid-->
             % endif
