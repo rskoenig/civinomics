@@ -99,7 +99,11 @@
                                 comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
                             %>
-                            See ${comments | n} (${numComments})
+                            % if c.demo:
+                                See ${comments | n}
+                            % else:
+                                See ${comments | n} (${numComments})
+                            % endif
                     </div><!--/.span9-->
                 </div><!--/.row-fluid-->
             % endif
