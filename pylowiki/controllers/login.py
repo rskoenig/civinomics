@@ -78,10 +78,7 @@ class LoginController(BaseController):
             return redirect("/login")
 
         except KeyError:
-            if "user" in session:
-                return redirect( "/" )
-            else:
-                return redirect('/')
+            return redirect('/')
 
     @login_required
     def logout(self):
@@ -91,11 +88,6 @@ class LoginController(BaseController):
         log.info( "Successful logout by - " + username )
         session.delete()
         return redirect( return_url )
-
-    def forgot(self):
-        """ Action will display a forgot password form. """
-        c.title = c.heading = "Forgot password"  
-        return render( "/derived/forgot.mako" )
 
     def forgot_handler(self):
         c.title = c.heading = "Forgot Password"
@@ -107,7 +99,7 @@ class LoginController(BaseController):
         user = userLib.getUserByEmail( email ) 
         if user:
             if email != config['app_conf']['admin.email']:
-                password = generatePassword() 
+                password = userLib.generatePassword() 
                 userLib.changePassword( user, password )
                 commit( user ) # commit database change
 
@@ -125,40 +117,21 @@ class LoginController(BaseController):
                 splashMsg['type'] = 'success'
                 splashMsg['title'] = 'Success'
                 splashMsg['content'] = '''A new password was emailed to you.'''
-                c.splashMsg = splashMsg
-                return render('/derived/forgotPassword.bootstrap')
+                session['alert'] = splashMsg
+                session.save()
+                return redirect('/forgotPassword')
             else:
                 log.info( "Failed forgot password for " + email )
-                splashMsg['content'] = "Sorry email not found!"
-                c.splashMsg = splashMsg 
-                return render('/derived/forgotPassword.bootstrap')
+                splashMsg['content'] = "Email not found or account has been disabled or deleted."
+                session['alert'] = splashMsg
+                session.save()
+                return redirect('/forgotPassword')
         else:
             log.info( "Failed forgot password for " + email )
-            splashMsg['content'] = "Sorry email not found!"
-            c.splashMsg = splashMsg 
-            return render('/derived/forgotPassword.bootstrap')
-
-    """ This code moved to controllers/activate.py/activate()
-    def activateHandler(self):
-        email = request.params["email"].lower()
-        user = get_user_by_email( email)
-        if user:
-            password = user.generate_password()
-            user.change_password(password)
-            activateHash = user.generateActivationHash()
-            user.activationHash = activateHash
-            commit(user)
-
-            toEmail = user.email
-            frEmail = c.conf['contact.email']
-            url = 'http://www.greenocracy.org/activate/%s__%s' % (activateHash, email)
-            subject = "Account Activation"
-            message = '''Please click on the following link to activate your account: \n\n
-            %s''' %(url)
-            send(toEmail, frEmail, subject, message)
-            log.info("Successful password reset and account creation (deactivated) for %s" %(email))
-            return redirect('/')
-    """
+            splashMsg['content'] = "Email not found or account has been disabled or deleted."
+            session['alert'] = splashMsg
+            session.save()
+            return redirect('/forgotPassword')
 
     @login_required
     def changepass(self):
@@ -166,30 +139,6 @@ class LoginController(BaseController):
         user = session['user']
         c.title = c.heading = "Change password for " + user  
         return render( "/derived/changepass.mako" )
-
-    """ This code deprecated
-    @login_required
-    def changepass_handler(self):
-        user = userLib.get_user( session['user'] )
-        c.title = c.heading = "Change password for " + user.name  
-        try:
-            password1 = request.params["password1"]
-            password2 = request.params["password2"]
-            
-            if password1 == password2 and password1 != '':
-                user.change_password( password1 )
-                commit( user )
-                log.info( "Successful password change for " + user.name )
-                h.flash( "Password change successful! ", "success" )
-                return redirect(session['return_to'])
-            else:
-                h.flash( "The password and confirmation do not match", "warning" )
- 
-        except KeyError:
-            h.flash( "Please fill all fields", "warning" )
-            
-        return render("/derived/changepass.mako" )
-    """ 
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
         if workshopCode != 'None' and workshopURL != 'None':
