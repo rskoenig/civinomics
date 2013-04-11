@@ -104,12 +104,15 @@ class LoginController(BaseController):
                 commit( user ) # commit database change
 
                 toEmail = user['email']
-                frEmail = c.conf['contact.email'] 
+                frEmail = 'Civinomics Helpdesk <helpdesk@civinomics.com>' 
                 subject = 'Password Recovery'
                 message = '''We have created a new password for you.\n\n 
-                Please use this password to login.\n\n
-                You can change your password to something you prefer on your profile page.\n\n
-                We have reset your password to: ''' + password
+Your password has been reset to: ''' + password
+                message += '''
+Please use this password to login at the Civinomics login page:\n
+https://civinomics.com/login.\n\n
+You can change your password to something you prefer on your profile page.\n\n'''
+
 
                 mailLib.send( toEmail, frEmail, subject, message )
 
