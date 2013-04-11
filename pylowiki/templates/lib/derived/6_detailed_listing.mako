@@ -32,7 +32,7 @@
                      if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                         continue
                   else:
-                     if author['accessLevel'] != '300':
+                     if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
                         continue
             author = userLib.getUserByID(item.owner)
          %>
