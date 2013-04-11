@@ -590,7 +590,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             session.save()
             
-        return redirect('/workshop/%s/%s'%(c.w['urlCode'], c.w['url']))
+            return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         c.title = "Configure Workshop"
 
@@ -885,7 +885,6 @@ class WorkshopController(BaseController):
         c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
         c.information = pageLib.getInformation(c.w)
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-        print c.activity
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
         c.goals = goalLib.getGoalsForWorkshop(c.w)
