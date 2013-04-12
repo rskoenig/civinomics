@@ -83,8 +83,19 @@
     ${rules[ruleNum] | n}
 </%def>
 
-<%def name="sortComments(commentList)">
-    <% return commentList %>
+<%def name="sortComments(commentIDs)">
+    <%
+        commentList = [getComment(commentID) for commentID in commentIDs]
+        return sorted(commentList, cmp = commentComparison)
+    %>
+</%def>
+
+<%def name="commentComparison(com1, com2)">
+    <%
+        rating1 = int(com1['ups']) - int(com1['downs'])
+        rating2 = int(com2['ups']) - int(com2['downs'])
+        return rating2 - rating1
+    %>
 </%def>
 
 <%def name="displayDiscussion(thing, discussion)">
@@ -133,7 +144,6 @@
 
 <%def name="displayComment(comment, commentType, maxDepth, curDepth, parent = None)">
     <%
-        comment = getComment(comment)
         if comment:
             author = getUserByID(comment.owner)
             if comment['deleted'] == u'1':
