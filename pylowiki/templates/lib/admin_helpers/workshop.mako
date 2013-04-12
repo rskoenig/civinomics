@@ -167,7 +167,7 @@
             %>
             ${lPending}<br />
             <form id="resignListener" class="form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
-            Disable litener:<br />
+            Disable listener:<br />
             Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
             <button type="submit" class="btn btn-warning" value="Resign">Disable</button>
