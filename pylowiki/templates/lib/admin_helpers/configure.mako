@@ -246,7 +246,7 @@
     <!--
     <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     -->
-
+    % if c.w['public_private'] != 'public':
         <div class="container-fluid well">
             <strong>Invite People To Your Workshop</strong><br>
             <div class="row-fluid">
@@ -264,8 +264,8 @@
             </div><!-- row-fluid -->
             <br /><button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
         </div><!-- container-fluid -->
-
-    % if c.pmembers:
+    % endif
+    % if c.pmembers and c.w['public_private'] != 'public':
         <div class="container-fluid well">
             <div class="row-fluid">
                 <div class="span5">
