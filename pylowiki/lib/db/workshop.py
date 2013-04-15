@@ -266,7 +266,9 @@ def setWorkshopPrivs(workshop):
     if 'user' in session:
         c.privs['admin'] = userLib.isAdmin(c.authuser.id)
         c.privs['facilitator'] = facilitatorLib.isFacilitator(c.authuser, workshop)
-        c.privs['listener'] = listenerLib.getListener(c.authuser, workshop)
+        testL = listenerLib.getListener(c.authuser, workshop)
+        if testL and testL['pending'] != '1':
+            c.privs['listener'] = True
         c.privs['participant'] = isScoped(c.authuser, workshop)
         c.privs['guest'] = False
         c.privs['visitor'] = False
