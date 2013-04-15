@@ -693,6 +693,18 @@ class CorpController(BaseController):
 
         c.articles=[]
         article={}
+        article['title']="Civinomics: A new kind of civic participation for the social media world"
+        article['link']='http://santacruznews.org/people/civinomics-a-new-kind-of-civic-participation-for-the-social-media-world/'
+        article['date']='4.12.2013'
+        article['source']='SantaCruzNews.org'
+        c.articles.append(article)
+        article={}
+        article['title']="Civinomics' ceremony attracts Santa Cruz leaders"
+        article['link']='http://www.santacruzsentinel.com/localnews/ci_23008123/civinomics-ceremony-attracts-santa-cruz-leaders'
+        article['date']='4.11.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
         article['title']="Civinomics to launch community workshops online, seeking public safety solutions"
         article['link']='http://www.santacruzsentinel.com/localnews/ci_22826816/civinomics-launch-community-workshops-online-seeking-public-safety'
         article['date']='3.19.2013'
