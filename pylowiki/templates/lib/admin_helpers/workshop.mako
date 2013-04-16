@@ -64,6 +64,12 @@
                 </tr>
             </thead>
             <tbody>
+            <% 
+                activeFacilitators = 0
+                for f in c.f:
+                    if f['disabled'] == '0' and f['pending'] == '0':
+                        activeFacilitators += 1
+            %>
             % for f in c.f:
                 <%
                     fUser = userLib.getUserByID(f.owner)
@@ -105,7 +111,7 @@
                         <td>${fPending}</td>
                         <td>${fPending}</td>
                     % endif
-                    % if len(c.f) > 1 and fUser.id == c.authuser.id:
+                    % if activeFacilitators > 1 and fUser.id == c.authuser.id:
                         </tr><tr><td colspan=3>
                         <form class="form-inline" id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
                             Resign as facilitator? &nbsp;&nbsp;Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
@@ -167,7 +173,7 @@
             %>
             ${lPending}<br />
             <form id="resignListener" class="form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
-            Disable litener:<br />
+            Disable listener:<br />
             Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
             <button type="submit" class="btn btn-warning" value="Resign">Disable</button>

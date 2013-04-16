@@ -182,11 +182,14 @@ class User(object):
         u['numSuggestions'] = 0
         u['numReadResources'] = 0
         u['accessLevel'] = 0
-        if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
-            self.generateActivationHash(u)
         commit(u)
         u['urlCode'] = toBase62(u)
         commit(u)
+        if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
+            self.generateActivationHash(u)
+        commit(u)
+ 
+
         self.u = u
         g = GeoInfo(postalCode, country, u.id)
         

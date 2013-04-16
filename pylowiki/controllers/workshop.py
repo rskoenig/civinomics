@@ -968,9 +968,7 @@ class WorkshopController(BaseController):
         c.listeners = listenerLib.getListenersForWorkshop(c.w, disabled = '0')
         c.disabledListeners = listenerLib.getListenersForWorkshop(c.w, disabled = '1')
 
-
-        if c.w['public_private'] != 'public':
-            c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
+        c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
         
         
         c.accounts = accountLib.getAccountsForWorkshop(c.w, deleted = '0')
