@@ -46,7 +46,7 @@
                                 <h4 class="media-heading"><a class="green green-hover" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
                                 <p>{{w.description}}</p>
                                 <p> Tags:
-                                    <span ng-repeat="tag in w.tags" class="label">{{tag}}</span>
+                                    <span ng-repeat="tag in w.tags" class="label workshop-tag">{{tag}}</span>
                                 </p>
                                 <p>
                                     <span>
