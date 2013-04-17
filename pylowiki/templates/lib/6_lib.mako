@@ -691,18 +691,18 @@
     % endif
 </%def>
 
-<%def name="revisionHistory(revisions)">
+<%def name="revisionHistory(revisions, parent)">
     % if revisions:
         <div class="row-fluid">
             <div class="span6 offset1">
                 <div class="accordion" id="revision-wrapper">
                     <div class="accordion-group no-border">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable">
+                            <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
                                 Click to show revisions
                             </a>
                         </div>
-                        <div id="revisionsTable" class="accordion-body collapse">
+                        <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
                             <div class="accordion-inner no-border">
                                 <table class="table table-hover table-condensed">
                                     <tr>

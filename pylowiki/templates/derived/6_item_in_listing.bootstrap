@@ -38,7 +38,7 @@
                 if c.thing['disabled'] == '1':
                     helpers.showDisabledMessage(c.thing)
                 helpers.extraText(c.thing)
-                lib_6.revisionHistory(c.revisions)
+                lib_6.revisionHistory(c.revisions, c.thing)
                 helpers.moderationPanel(c.thing)
             %>
             % if c.thing.objType != 'revision':

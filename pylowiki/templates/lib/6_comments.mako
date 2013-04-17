@@ -234,7 +234,7 @@
             </div> <!--/.row-fluid-->
             <%
                 revisions = revisionLib.getRevisionsForThing(comment)
-                lib_6.revisionHistory(revisions)
+                lib_6.revisionHistory(revisions, comment)
                 if 'user' in session:
                     if c.thing['disabled'] == '0':
                         commentFooter(comment, author)
