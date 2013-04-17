@@ -306,18 +306,151 @@ class TestProfileController(TestController):
         
         #: finally, make sure these don't show up for other roles types.
 
+    def runFollowingTests(self, followingPage, names = [], roles = []):
+        """ make sure each of these names are on the following page
+        also that this is visible to each of the roles provided """
+        authorization.logout(self)
+        for role in roles:
+            authorization.login(self, role)
+            for name in names:
+                assert name in followingPage, "logged in as "+role['name']+", can't find "+name +" on the following page"
+            authorization.logout(self)
+        return True
+
     def test_following(self):
-        """     - [ Following ]
+        """ Make sure that the people you are following are listed in the following list
+        * activated users can be user, facilitator of public, facilitator of private and admin
+        
+        - [ Following ]
         visitors that can see who this person is following
         - everyone (public, guest, nonmember, member, facilitator, admin)
-
-        create a person, create others: plain user, member of public workshop, member of private 
-        workshop. follow these peeps, make sure they are listed in the user's following list
-
         """
+        #: create the people we need for this and get a hold of their profile pages
+        user1 = registration.create_and_activate_a_user(self, postal='92007', name='User One')
+        profileUser1 = profile.loginGetProfilePageLogout(self, user1)
+        #: second user
+        user2 = registration.create_and_activate_a_user(self, postal='92007', name='User Two')
+        profileUser2 = profile.loginGetProfilePageLogout(self, user2)
+        #: this user is a facilitator of a public workshop
+        facpub1 = registration.create_and_activate_a_user(self, postal='92007', name='FacilitatorPublic One')
+        workshop1 = workshop.create_new_workshop(self, facpub1, title=facpub1['name'])
+        pubWorkshop1 = workshop.setPublic(self, workshop1, facpub1)
+        profileFacpub1 = profile.loginGetProfilePageLogout(self, facpub1, login=False)
+        #: this user is a facilitator of a public workshop
+        facpub2 = registration.create_and_activate_a_user(self, postal='92007', name='FacilitatorPublic Two')
+        workshop2 = workshop.create_new_workshop(self, facpub2, title=facpub2['name'])
+        pubWorkshop2 = workshop.setPublic(self, workshop2, facpub2)
+        profileFacpub2 = profile.loginGetProfilePageLogout(self, facpub2, login=False)
+        #: this user is a facilitator of a private workshop
+        facpriv1 = registration.create_and_activate_a_user(self, postal='92007', name='FacilitatorPrivate One')
+        privWorkshop1 = workshop.create_new_workshop(self, facpriv1, title=facpriv1['name'])
+        profileFacpriv1 = profile.loginGetProfilePageLogout(self, facpriv1, login=False)
+        #: this user is a facilitator of a private workshop
+        facpriv2 = registration.create_and_activate_a_user(self, postal='92007', name='FacilitatorPrivate Two')
+        privWorkshop2 = workshop.create_new_workshop(self, facpriv2, title=facpriv2['name'])
+        profileFacpriv2 = profile.loginGetProfilePageLogout(self, facpriv2, login=False)
+        #: this user is an admin
+        admin1 = registration.create_and_activate_a_user(self, postal='92007', name='Admin One', accessLevel='200')
+        profileAdmin1 = profile.loginGetProfilePageLogout(self, admin1)
+        #: this user is a second admin
+        admin2 = registration.create_and_activate_a_user(self, postal='92007', name='Admin Two', accessLevel='200')
+        profileAdmin2 = profile.loginGetProfilePageLogout(self, admin2)
+
+        #: create following scenarios
+        #: first batch - can a user follow all these people?
+        authorization.login(self, user1)
+        followThese = [profileUser2, profileFacpub1, profileFacpriv1, profileAdmin1]
+        profile.followThesePeople(self, followThese)
+        #: now that this user has followed all these people, check they list on the following page
+        userFollowing = profile.getFollowingPage(self, profileUser1)
+        names = [user2['name'], facpub1['name'], facpriv1['name'], admin1['name']]
+        #: every role should be able to see these followed users listed, so we only need
+        #: to define this once
+        roles = [user1, user2, facpub1, facpub2, facpriv1, facpriv2, admin1, admin2]
+        weGood = TestProfileController.runFollowingTests(
+            self,
+            userFollowing,
+            names,
+            roles
+        )
+        authorization.logout(self)
+        #: next batch - can a public workshop facilitator do this as well?
+        authorization.login(self, facpub1)
+        followThese = [profileUser2, profileFacpub2, profileFacpriv2, profileAdmin2]
+        profile.followThesePeople(self, followThese)
+        #: now that this user has followed all these people, check they list on the following page
+        userFollowing = profile.getFollowingPage(self, profileFacpub1)
+        """ every role should be able to see this """
+        names = [user2['name'], facpub2['name'], facpriv2['name'], admin2['name']]
+        weGood = TestProfileController.runFollowingTests(
+            self,
+            userFollowing,
+            names,
+            roles
+        )
+        authorization.logout(self)
+        #: next batch - can a private workshop facilitator do this as well?
+        authorization.login(self, facpriv1)
+        followThese = [profileUser1, profileFacpub1, profileFacpriv2, profileAdmin1]
+        profile.followThesePeople(self, followThese)
+        #: now that this user has followed all these people, check they list on the following page
+        userFollowing = profile.getFollowingPage(self, profileFacpriv1)
+        """ every role should be able to see this """
+        names = [user1['name'], facpub1['name'], facpriv2['name'], admin1['name']]
+        weGood = TestProfileController.runFollowingTests(
+            self,
+            userFollowing,
+            names,
+            roles
+        )
+        authorization.logout(self)
+        #: next batch - can an admin do this as well?
+        authorization.login(self, admin1)
+        followThese = [profileUser1, profileFacpub1, profileFacpriv1, profileAdmin2]
+        profile.followThesePeople(self, followThese)
+        #: now that this user has followed all these people, check they list on the following page
+        userFollowing = profile.getFollowingPage(self, profileAdmin1)
+        """ every role should be able to see this """
+        names = [user1['name'], facpub1['name'], facpriv1['name'], admin2['name']]
+        weGood = TestProfileController.runFollowingTests(
+            self,
+            userFollowing,
+            names,
+            roles
+        )
+        authorization.logout(self)
+        """
+        * user->user
+        * user->facpub
+        * user->facpriv
+        * user->admin
+        * facpub->user
+        * facpub->facpub
+        * facpub->facpriv
+        * facpub->admin
+        * facpriv->user
+        * facpriv->facpub
+        * facpriv->facpriv
+        * facpriv->admin
+        *admin->user
+        *admin->facpub
+        *admin->facpriv
+        *admin->admin"""
+        #: when to check on who's following who?
+
+        # find the follow button and post to a url built from the button tag's data-url-list info
+        # e.g. http://todd.civinomics.org/profile/4ICd/todd-anderson/follow/handler
+        # e.g. profile_4ICg_andree-toddeoroas
+
+        # find the button, break it into pieces:
+        # 1 profile
+        # 2 code
+        # 3 username
+        # add follow/handler
 
     def test_followed(self):
-        """      - [ Followed ]
+        """ If you are being followed, you should see who it is that is following you.
+             - [ Followed ]
         visitors that can see who is following this person
         - everyone (public, guest, nonmember, member, facilitator, admin)
         

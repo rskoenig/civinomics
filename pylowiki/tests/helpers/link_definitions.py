@@ -78,6 +78,9 @@ def profilePage():
 def profileEditPage():
     return profile_edit()
 
+def profileFollowingPage():
+    return 'following'
+
 def profile_edit():
     return 'Edit Profile'
 

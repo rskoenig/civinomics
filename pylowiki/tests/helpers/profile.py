@@ -2,21 +2,16 @@
 from pylowiki.tests import *
 import re
 
+import pylowiki.tests.helpers.authorization as authorization
 import pylowiki.tests.helpers.content as content
 import pylowiki.tests.helpers.link_definitions as linkDefs
+import pylowiki.tests.helpers.page_definitions as pageDefs
 
 import logging
 log = logging.getLogger(__name__)
 
-
-def conversationDeletedMessage():
-    return 'Successfully deleted'
-
-def conversationDisabledMessage():
-    return 'This discussion has been disabled'
-
-def conversationEnabledMessage():
-    return 'Successfully enabled'
+def assertFollowing():
+    return 'Following'
 
 def editProfile(self, params, **kwargs):
     #: set the profile's edit form's parameters and return the parameters
@@ -77,6 +72,43 @@ def editProfile(self, params, **kwargs):
     ).follow()
     return profileUpdated
 
+def followThesePeople(self, followThese = []):
+    for followThis in followThese:
+        atThisUser = self.app.get(url=followThis.request.url)
+        followResponse = followUser(self, atThisUser)
+        itWorked = self.app.get(url=atThisUser.request.url)
+        assert assertFollowing() in itWorked, "couldn't follow a user"
+
+def followUser(self, profile):
+    """ how best to find this button?
+    find the text 'Follow' in the span tag
+    find followButton in class of button tag, it remains constant
+        <span class="button_container">
+        <button data-URL-list="profile_4ICj_user-two" class="btn round pull-right followButton unfollow">
+        btn round pull-right followButton unfollow
+        btn round pull-right followButton unfollow following
+        <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
+        <span> Follow </span>
+        </button>
+    </span>
+    post example http://todd.civinomics.org/profile/4ICd/todd-anderson/follow/handler
+    data example profile_4ICg_andree-toddeoroas
+    """
+    profileSoup = profile.html
+    followUrl = None
+    followButton = profileSoup.find('button', attrs={'class' : re.compile("followButton")})
+    log.info("found follow data: "+str(followButton['data-url-list']))
+    #: post to the form's url to disable the conversation
+    if followButton is not None:
+        followData = str(followButton['data-url-list'])
+        followUrl = makeFollowUrl(followData)
+        followResponse = self.app.post(
+            url=str(followUrl)            
+        )
+        return followResponse
+    else:
+        return False
+
 def getResources(self, profilePage):
     return profilePage.click(description=linkDefs.profileResources(), index=0)
 
@@ -92,44 +124,31 @@ def getObjectsPage(self, profilePage):
 
 def getEditPage(self, profilePage):
     """ return the profile editing page """
-    return profilePage.click(description=linkDefs.profileEditPage())
+    return profilePage.click(description=linkDefs.profileEditPage(), index=0)
+
+def getFollowingPage(self, profilePage):
+    """ return the following page """
+    return profilePage.click(description=linkDefs.profileFollowingPage(), index=0)
 
 def getProfilePage(self, aPage):
     """ Returns the profile page by clicking on the profile link up top. """
     return aPage.click(description=linkDefs.profilePage())
 
-def immunify(self, conversation, **kwargs):
-    """ immunify a conversation, or return the url needed for doing so """
-    #: go through the conversation page's forms and look for the one with disable in its action
-    convoForms = conversation.forms__get()
-    immunifyUrl = None
-    for formIndex in convoForms:
-        #: does it have 'disable' in the action?
-        if convoForms[formIndex].action.find('immunify') >= 0:
-            immunifyUrl = convoForms[formIndex].action
-
-    #: post to the form's url to disable the conversation
-    if immunifyUrl is not None:
-        if 'dontSubmit' in kwargs:
-            if kwargs['dontSubmit'] == True:
-                return immunifyUrl
-            else:
-                immunifyResponse = self.app.post(url=str(immunifyUrl))
-                return immunifyResponse
-        else:
-            immunifyResponse = self.app.post(url=str(immunifyUrl))
-            return immunifyResponse
+def loginGetProfilePageLogout(self, user, **kwargs):
+    """ returns the profile page for this user """
+    if 'login' in kwargs:
+        if kwargs['login'] == True:
+            authorization.login(self, user)
     else:
-        return False
+        #: if there's no mention of this parameter, the default action is to log the user in
+        authorization.login(self, user)
+    mainPage = self.app.get(pageDefs.allWorkshops())
+    userProfile = getProfilePage(self, mainPage)
+    authorization.logout(self)
+    return userProfile
 
-
-
-
-
-
-
-
-
-
-
+def makeFollowUrl(followData):
+    """ takes the data from the follow button """
+    dataParts = followData.split('_')
+    return '/'+dataParts[0]+'/'+dataParts[1]+'/'+dataParts[2]+'/follow/handler'
 
