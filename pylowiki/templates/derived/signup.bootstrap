@@ -56,14 +56,14 @@
                                     <label class="control-label" for="name"> Full name: </label>
                                     <div class="controls">
                                         <input type="text" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
-                                        <span class="error help-block" ng-show="signupForm.name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
+                                        <span class="error help-block ng-cloak" ng-show="signupForm.name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
                                     </div>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label" for="email"> Email: </label>
                                     <div class="controls">
                                         <input type="email" name="email" id="email" ng-model="email" ng-click="clearEmail()" required>
-                                        <span class="error help-block" ng-show="signupForm.email.$error.email">Not a valid email!</span>
+                                        <span class="error help-block ng-cloak" ng-show="signupForm.email.$error.email">Not a valid email!</span>
                                     </div>
                                 </div>
                                 <div class="control-group">
