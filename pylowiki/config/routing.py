@@ -62,7 +62,7 @@ def make_map():
     map.connect('/moderation/{id1}/{id2}', controller = 'moderation', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/rating', controller = 'rating', action = 'index')
     map.connect('/admin', controller = 'admin', action = 'index')
-    map.connect('/suggestion/rate', controller = 'suggestion', action = 'rate')
+    #map.connect('/suggestion/rate', controller = 'suggestion', action = 'rate')
     map.connect('/slideshow/edit', controller = 'slideshow', action = 'edit')
 
     # Geo stuff
@@ -76,6 +76,7 @@ def make_map():
     map.connect('/geo/stateList/{id1}', controller = 'geo', action = 'geoStateHandler', id1 = '{id1}')
     map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/geo/cityState/{id1}{end:/?}', controller = 'geo', action = 'geoCityStateHandler', id1 = '{id1}')
     map.connect('/geo/postalList/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
 
     # Geo rss stuff
@@ -141,6 +142,7 @@ def make_map():
     map.connect('/account/{accountCode}/close/{handler:handler/?}', controller = 'account', action = 'closeHandler', accountCode = '{accountCode}')
 
     # suggestions
+    """
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{suggestions:suggestions?/?}', controller = 'workshop', action = 'displayAllSuggestions', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/addSuggestion/{id1}/{id2}{end:/?}', controller = 'suggestion', action = 'addSuggestion', id1 = '{id1}', id2 = '{id2}')
     map.connect('/newSuggestion/{id1}/{id2}{end:/?}', controller = 'suggestion', action = 'newSuggestion', id1 = '{id1}', id2 = '{id2}')
@@ -155,6 +157,7 @@ def make_map():
     map.connect('/{modSuggestionHandler:modSuggestionHandler/?}', controller = 'suggestion', action = 'modSuggestionHandler')
     map.connect('/{adoptSuggestionHandler:adoptSuggestionHandler/?}', controller = 'suggestion', action = 'adoptSuggestionHandler')
     map.connect('/{noteSuggestionHandler:noteSuggestionHandler/?}', controller = 'suggestion', action = 'noteSuggestionHandler')
+    """
     
     # resources
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
@@ -200,7 +203,7 @@ def make_map():
     # map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/thread/{commentCode}{end:/?}', controller = 'comment', action = 'showThread')
 
     # Ratings
-    map.connect('/rate/suggestion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateSuggestion', code = '{code}', url = '{url}', amount = '{amount}')
+    #map.connect('/rate/suggestion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateSuggestion', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rateFacilitation/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateFacilitation', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/resource/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateResource', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/discussion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateDiscussion', code = '{code}', url = '{url}', amount = '{amount}')
@@ -279,7 +282,7 @@ def make_map():
     # User profile
     map.connect('/profile/{id1}/{id2}{end:/?}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '')
     map.connect('/profile/{id1}/{id2}/revision/{id3}{end:/?}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/profile/{id1}/{id2}/{suggestions:suggestions/?}', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/profile/{id1}/{id2}/{suggestions:suggestions/?}', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{resources:resources/?}', controller = 'profile', action = 'showUserResources', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{discussions:discussions/?}', controller = 'profile', action = 'showUserDiscussions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{ideas:ideas/?}', controller = 'profile', action = 'showUserIdeas', id1 = '{id1}', id2 = '{id2}')

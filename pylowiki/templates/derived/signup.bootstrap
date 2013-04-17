@@ -7,6 +7,7 @@
 <%def name="headScripts()">
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
     <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+    <script src="/js/geo.js" type="text/javascript"></script>
 </%def>
 
 <div id="bg">
@@ -82,8 +83,9 @@
                                 <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} ">
                                     <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Postal Code: </label>
                                     <div class="controls">
-                                        <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" required>
+                                        <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
                                         <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
+                                        <div id="postalCodeResult"></div>
                                     </div>
                                 </div>
                                 <div class="control-group">

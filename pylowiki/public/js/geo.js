@@ -179,3 +179,19 @@ $('.geoTagCountry').change(function(e){
     }
 });
 
+function geoCheckPostalCode(){
+    var postalCode = document.getElementById("postalCode").value;
+    document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = "";
+    if (postalCode.length === 5) {
+        var checkURL = "/geo/cityState/" + postalCode
+        var checkResult = $.ajax({
+            type : 'POST',
+            async : false,
+            url  : checkURL
+        }).responseText;
+        var gobj = jQuery.parseJSON(checkResult);
+        document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = gobj.result;
+    }
+    
+}
+

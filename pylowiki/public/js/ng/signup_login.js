@@ -6,4 +6,5 @@ function signupController($scope) {
     $scope.clearEmail = function() {
         $scope.email = '';
     }
+
 }
