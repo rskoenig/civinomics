@@ -14,7 +14,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.peopleURL = '/search/people'
     var searchQuery = window.location.search;
     $scope.searchQuery = searchQuery;
-    $scope.searchQueryPretty = searchQuery.substr(13, searchQuery.length)
+    $scope.searchQueryPretty = $("#search-input").val();
     $scope.showingWorkshops = {'class': 'active', 'show': false};
     $scope.showingPeople = {'class': '', 'show': false};
     $scope.loading = true;
