@@ -1,0 +1,121 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile_edit.mako" name="helpers" />
+
+<%
+
+    tab1active = ""
+    tab2active = ""
+    tab3active = ""
+    tab4active = ""
+    tab5active = ""
+                
+    if c.tab == "tab1":
+        tab1active = "active"
+    elif c.tab == "tab2":
+        tab2active = "active"
+    elif c.tab == "tab3":
+        tab3active = "active"
+    elif c.tab == "tab4":
+        tab4active = "active"
+    elif c.tab == "tab5":
+        tab5active = "active"
+    else:
+        tab1active = "active"
+
+    msgString = ''
+    if c.messages:
+        msgString = ' (' + str(c.messages) + ')'
+%>
+
+<div class="row-fluid">
+   <div class="span2">
+      ${lib_6.userImage(c.user, className = "avatar")}
+   </div>
+   <div class="span10">
+      <h1 class="centered">${lib_6.userLink(c.user)}</h1>
+   </div>
+</div>
+<div class="row-fluid">
+    % if c.conf['read_only.value'] == 'true':
+        <h1> Sorry, Civinomics is in read only mode right now </h1>
+    % else:
+        <div class="tabbable">
+            <div class="span3">
+                <div class="section-wrapper">
+                    <div class="browse">
+                        <div style="text-align: center">
+                            <h4 class="section-header"><br />Edit Profile</h4>
+                            For the periodic upkeep of your Civinomics profile.<br /><br />
+                        </div><!-- center -->
+                        <ul class="nav nav-pills nav-stacked">
+                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Update your profile info
+                        </a></li>
+                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">2. Invitations & Notifications${msgString}
+                        </a></li>
+                        <li class="${tab4active}"><a href="#tab4" data-toggle="tab">3. Change your password<br />
+                        </a></li>
+                        % if c.admin:
+                        <li class="${tab5active}"><a href="#tab5" data-toggle="tab">4. Administrate<br />
+                        Admin only - shhh!.</a></li>
+                        % endif
+                        </ul>
+                        <div style="text-align: center">
+                            <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/display/create/form">
+                            <br />
+                            <button type="submit" class="btn btn-warning">Create a Workshop!</button>
+                            <br /><br />
+                            </form>
+                        </div><!-- center -->
+                    </div><!-- browse -->
+                </div><!-- section-wrapper -->
+            </div> <!-- /.span3 -->
+            <div class="span9">
+                ${lib_6.fields_alert()}
+                % if c.conf['read_only.value'] == 'true':
+                    <!-- read only -->
+                % else:
+                    <div class="tab-content">
+                        <div class="tab-pane ${tab1active}" id="tab1">
+                            ${helpers.profileInfo()}
+                        </div><!-- tab1 -->
+                        <div class="tab-pane ${tab3active}" id="tab3">
+                            ${helpers.profileMessages()}
+                        </div><!-- tab3 -->
+                        <div class="tab-pane ${tab4active}" id="tab4">
+                            ${helpers.changePassword()}
+                        </div><!-- tab4 -->
+                        % if c.admin:
+                            <div class="tab-pane ${tab5active}" id="tab5">
+                                ${helpers.memberAdmin()}
+                                ${helpers.memberEvents()}
+                            </div><!-- tab5 -->
+                        % endif
+                    </div><!-- tab-content -->
+                % endif
+            </div> <!-- /.span9 -->
+        </div><!-- tabbable -->
+    % endif
+</div> <!-- /.row-fluid -->
+</div><!-- container-fluid -->
+
+<%def name = 'extraStyles()'>
+    <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
+    <link type="text/css" rel="stylesheet" href="${h.url_for('/styles/jquery.fileupload-ui.css')}" />
+    <link rel="stylesheet" href="/styles/ui-lightness/jquery-ui-1.8.18.custom.css">
+</%def>
+
+<%def name = 'extraScripts()'>
+    <script src="/js/jquery-ui-1.8.22.custom.min.js" type="text/javascript"></script>
+    <script src="/js/vendor/jquery.ui.widget.js"></script>
+    <script src="http://blueimp.github.com/JavaScript-Templates/tmpl.min.js"></script>
+    <script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>
+    <script src="http://blueimp.github.com/JavaScript-Canvas-to-Blob/canvas-to-blob.min.js"></script>
+    <script src="/js/jquery.iframe-transport.js"></script>
+    <script src="/js/jquery.fileupload.js"></script>
+    <script src="/js/jquery.fileupload-ip.js"></script>
+    <script src="/js/jquery.fileupload-ui.js"></script>
+    <script src="${lib_6.fingerprintFile('/js/locale.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/main.js')}"></script>
+</%def>
