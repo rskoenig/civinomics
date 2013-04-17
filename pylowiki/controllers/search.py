@@ -13,6 +13,7 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.tag          as tagLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers as h
 
@@ -103,6 +104,8 @@ class SearchController(BaseController):
             entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
+            tags = tagLib.getWorkshopTags(w)
+            entry['tags'] = [tag['title'] for tag in tags]
             result.append(entry)
         return json.dumps({'statusCode':0, 'result':result})
         

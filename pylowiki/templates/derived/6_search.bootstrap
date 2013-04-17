@@ -45,6 +45,9 @@
                             <div class="media-body">
                                 <h4 class="media-heading"><a class="green green-hover" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
                                 <p>{{w.description}}</p>
+                                <p> Tags:
+                                    <span ng-repeat="tag in w.tags" class="label">{{tag}}</span>
+                                </p>
                                 <p>
                                     <span>
                                         {{w.bookmarks}} <img class="small-bookmark" bs-tooltip="tooltip.bookmark" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
