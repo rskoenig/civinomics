@@ -161,3 +161,15 @@ class GeoController(BaseController):
             pList = pList + str(postal['ZipCode']) + '|'
         return json.dumps({'result':pList})
 
+    def geoCityStateHandler(self, id1):
+        postalInfo = geoInfoLib.getPostalInfo(id1)
+        if postalInfo:
+            city = postalInfo['City'].title()
+            state = postalInfo['StateFullName']
+            result = city + ", " + state
+            statusCode = 0
+        else:
+            statusCode = 2
+            result = "No such zipcode."
+        log.info("result is %s"%result)
+        return json.dumps({'statusCode':statusCode, 'result':result})
