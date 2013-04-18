@@ -5,7 +5,7 @@ from pylons import tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl
 from discussion import Discussion
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.flag import checkFlagged
@@ -140,6 +140,24 @@ def getAllResources(deleted = '0', disabled = '0'):
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .all()
     except:
+        return False
+
+def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False):
+    try:
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        m = map(wcl, keys, values)
+        q = meta.Session.query(Thing)\
+                .filter_by(objType = 'resource')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(reduce(sa.or_, m)))
+        if count:
+            return q.count()
+        return q.all()
+    except Exception as e:
+        print e
         return False
 
 # setters

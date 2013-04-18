@@ -16,6 +16,18 @@
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
+            <li ng-class="showingResources.class">
+                <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
+                    <span class="pull-left">Resources</span>
+                    <span class="pull-right">(${c.numResources})</span>
+                </a>
+            </li>
+            <li ng-class="showingDiscussions.class">
+                <a href="#ideas" class = "green green-hover" ng-click="searchDiscussions()">
+                    <span class="pull-left">Discussions</span>
+                    <span class="pull-right">(${c.numDiscussions})</span>
+                </a>
+            </li>
             <li ng-class="showingIdeas.class">
                 <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
                     <span class="pull-left">Ideas</span>
@@ -77,6 +89,45 @@
                             <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
                             <p>from <a href="{{p.cityURL}}" class="green green-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="green green-hover">{{p.stateTitle}}</a></p>
                         </div>
+                    </td></tr>
+                </table>
+            </div>
+            <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
+                <table class="table table-condensed table-hover">
+                    <tr ng-repeat = "resource in resources"><td>
+                        <div class="media">
+                            <div class="pull-left">
+                                <a href="/profile/{{resource.authorCode}}/{{resource.authorURL}}" class="media-object">
+                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{resource.authorHash}}?r=pg&d=identicon&s=200" alt="{{resource.authorName}}" title="{{resource.authorName}}">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <a class="green green-hover" href="/profile/{{resource.authorCode}}/{{resource.authorURL}}">
+                                    {{resource.authorName}}
+                                </a>
+                                added the resource
+                                <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
+                                    {{resource.title}}
+                                </a>
+                                in the workshop
+                                <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
+                                    {{resource.workshopTitle}}
+                                </a>
+                                <p>
+                                    Net votes: {{resource.voteCount}}
+                                </p>
+                                <p>
+                                    Comments: {{resource.numComments}}
+                                </p>
+                            </div>
+                        </div>
+                    </td></tr>
+                </table>
+            </div>
+            <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
+                <table class="table table-condensed table-hover">
+                    <tr ng-repeat = "discussion in discussions"><td>
+                        Hi
                     </td></tr>
                 </table>
             </div>

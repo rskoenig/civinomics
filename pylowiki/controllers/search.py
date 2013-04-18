@@ -11,6 +11,7 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
@@ -58,6 +59,8 @@ class SearchController(BaseController):
             return self._noSearch()
         c.numUsers = userLib.searchUsers('name', self.query, count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description'], [self.query, self.query], count = True)
+        c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
+        c.numDiscussions = 0
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.searchQuery = self.query
         return render('/derived/6_search.bootstrap')
@@ -113,6 +116,53 @@ class SearchController(BaseController):
             result.append(entry)
         return json.dumps({'statusCode':0, 'result':result})
     
+    def searchResources(self):
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
+        result = []
+        keys = ['title', 'text', 'link']
+        values = [self.query, self.query, self.query]
+        resources = resourceLib.searchResources(keys, values)
+        for r in resources:
+            w = generic.getThing(r['workshopCode'])
+            if w['public_private'] != u'public':
+                continue
+            elif w['published'] != u'1':
+                continue
+            entry = {}
+            #entry['link'] = r['link']
+            entry['title'] = r['title']
+            entry['text'] = r['text']
+            entry['urlCode'] = r['urlCode']
+            entry['url'] = r['url']
+            entry['addedAs'] = r['addedAs']
+            #entry['domain'] = r['domain']
+            #entry['tld'] = r['tld']
+            entry['voteCount'] = int(r['ups']) - int(r['downs'])
+            entry['numComments'] = discussionLib.getDiscussionForThing(r)['numComments']
+            entry['workshopCode'] = w['urlCode']
+            entry['workshopURL'] = w['url']
+            entry['workshopTitle'] = w['title']
+            u = userLib.getUserByID(r.owner)
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            result.append(entry)
+        return json.dumps({'statusCode':0, 'result':result})
+    
+    def searchDiscussions(self):
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
+        result = []
+        return json.dumps({'statusCode':2})
+    
     def searchIdeas(self):
         if self.noQuery:
             return json.dumps({'statusCode': 1})
@@ -124,6 +174,11 @@ class SearchController(BaseController):
         if len(ideas) == 0:
             return json.dumps({'statusCode':2})
         for idea in ideas:
+            w = generic.getThing(idea['workshopCode'])
+            if w['public_private'] != u'public':
+                continue
+            elif w['published'] != u'1':
+                continue
             entry = {}
             entry['title'] = idea['title']
             entry['voteCount'] = int(idea['ups']) - int(idea['downs'])
@@ -131,7 +186,6 @@ class SearchController(BaseController):
             entry['url'] = idea['url']
             entry['addedAs'] = idea['addedAs']
             entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
-            w = generic.getThing(idea['workshopCode'])
             entry['workshopCode'] = w['urlCode']
             entry['workshopURL'] = w['url']
             entry['workshopTitle'] = w['title']
