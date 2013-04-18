@@ -42,7 +42,7 @@ html,body{
    right:12px;
 }
 .civ-search > .nav.nav-tabs > li > a{
-    min-width:100px;
+    min-width:150px;
 }
 .civ-search > .nav-tabs > .active > a, .civ-search > .nav-tabs > .active > a:hover{
     border:3px solid #075D00;
@@ -479,6 +479,9 @@ img.watch{
 }
 .workshop-nav-icon{
    max-height:16px;
+}
+.workshop-search-icon{
+    max-width:15px;
 }
 
 .summary{

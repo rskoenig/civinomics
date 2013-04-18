@@ -6,31 +6,31 @@
         <ul class="nav nav-tabs">
             <li ng-class="showingWorkshops.class">
                 <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
-                    <span class="pull-left">Workshops</span>
+                    <span class="pull-left"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_061_keynote.png" class="workshop-search-icon"> Workshops </span>
                     <span class="pull-right">(${c.numWorkshops})</span>
                 </a>
             </li>
             <li ng-class="showingPeople.class">
                 <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                    <span class="pull-left">People</span>
+                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png"> People </span>
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
             <li ng-class="showingResources.class">
                 <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
-                    <span class="pull-left">Resources</span>
+                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources </span>
                     <span class="pull-right">(${c.numResources})</span>
                 </a>
             </li>
             <li ng-class="showingDiscussions.class">
                 <a href="#ideas" class = "green green-hover" ng-click="searchDiscussions()">
-                    <span class="pull-left">Discussions</span>
+                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussions </span>
                     <span class="pull-right">(${c.numDiscussions})</span>
                 </a>
             </li>
             <li ng-class="showingIdeas.class">
                 <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
-                    <span class="pull-left">Ideas</span>
+                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas </span>
                     <span class="pull-right">(${c.numIdeas})</span>
                 </a>
             </li>
