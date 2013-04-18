@@ -60,7 +60,7 @@ class SearchController(BaseController):
         c.numUsers = userLib.searchUsers('name', self.query, count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description'], [self.query, self.query], count = True)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
-        c.numDiscussions = 0
+        c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.searchQuery = self.query
         return render('/derived/6_search.bootstrap')
@@ -99,6 +99,8 @@ class SearchController(BaseController):
         keys = ['title', 'description']
         values = [self.query, self.query]
         workshops = workshopLib.searchWorkshops(keys, values)
+        if not workshops:
+            return json.dumps({'statusCode':2})
         if len(workshops) == 0:
             return json.dumps({'statusCode':2})
         for w in workshops:
@@ -126,6 +128,10 @@ class SearchController(BaseController):
         keys = ['title', 'text', 'link']
         values = [self.query, self.query, self.query]
         resources = resourceLib.searchResources(keys, values)
+        if not resources:
+            return json.dumps({'statusCode':2})
+        if len(resources) == 0:
+            return json.dumps({'statusCode':2})
         for r in resources:
             w = generic.getThing(r['workshopCode'])
             if w['public_private'] != u'public':
@@ -161,7 +167,37 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        return json.dumps({'statusCode':2})
+        keys = ['title', 'text']
+        values = [self.query, self.query]
+        discussions = discussionLib.searchDiscussions(keys, values)
+        if not discussions:
+            return json.dumps({'statusCode':2})
+        if len(discussions) == 0:
+            return json.dumps({'statusCode':2})
+        for d in discussions:
+            w = generic.getThing(d['workshopCode'])
+            if w['public_private'] != u'public':
+                continue
+            elif w['published'] != u'1':
+                continue
+            entry = {}
+            entry['title'] = d['title']
+            entry['text'] = d['text']
+            entry['urlCode'] = d['urlCode']
+            entry['url'] = d['url']
+            entry['addedAs'] = d['addedAs']
+            entry['voteCount'] = int(d['ups']) - int(d['downs'])
+            entry['numComments'] = d['numComments']
+            entry['workshopCode'] = w['urlCode']
+            entry['workshopURL'] = w['url']
+            entry['workshopTitle'] = w['title']
+            u = userLib.getUserByID(d.owner)
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            result.append(entry)
+        return json.dumps({'statusCode':0, 'result':result})
     
     def searchIdeas(self):
         if self.noQuery:
@@ -171,6 +207,8 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         result = []
         ideas = ideaLib.searchIdeas('title', self.query)
+        if not ideas:
+            return json.dumps({'statusCode':2})
         if len(ideas) == 0:
             return json.dumps({'statusCode':2})
         for idea in ideas:

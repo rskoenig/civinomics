@@ -127,7 +127,32 @@
             <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
                 <table class="table table-condensed table-hover">
                     <tr ng-repeat = "discussion in discussions"><td>
-                        Hi
+                        <div class="media">
+                            <div class="pull-left">
+                                <a href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}" class="media-object">
+                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{discussion.authorHash}}?r=pg&d=identicon&s=200" alt="{{discussion.authorName}}" title="{{discussion.authorName}}">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <a class="green green-hover" href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}">
+                                    {{discussion.authorName}}
+                                </a>
+                                added the discussion
+                                <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}/discussion/{{discussion.urlCode}}/{{discussion.url}}">
+                                    {{discussion.title}}
+                                </a>
+                                in the workshop
+                                <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}">
+                                    {{discussion.workshopTitle}}
+                                </a>
+                                <p>
+                                    Net votes: {{discussion.voteCount}}
+                                </p>
+                                <p>
+                                    Comments: {{discussion.numComments}}
+                                </p>
+                            </div>
+                        </div>
                     </td></tr>
                 </table>
             </div>
