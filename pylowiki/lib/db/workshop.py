@@ -60,7 +60,10 @@ def searchWorkshops( keys, values, deleted = u'0', published = u'1', public_priv
                 .filter(Thing.data.any(reduce(or_, map_workshop)))
         if mapTags:
             q2 = meta.Session.query(Thing)\
-                .filter(Thing.data.any(reduce(or_, map_tag)))
+                .filter(Thing.data.any(reduce(or_, map_tag)))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('published', published)))\
+                .filter(Thing.data.any(wc('public_private', public_private)))
             q = q.union(q2)
         if count:
             return q.count()
