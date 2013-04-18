@@ -9,11 +9,14 @@ from pylowiki.lib.base import BaseController, render
 
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.idea         as ideaLib
+import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.tag          as tagLib
+import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers as h
 
@@ -55,6 +58,7 @@ class SearchController(BaseController):
             return self._noSearch()
         c.numUsers = userLib.searchUsers('name', self.query, count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description'], [self.query, self.query], count = True)
+        c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.searchQuery = self.query
         return render('/derived/6_search.bootstrap')
     
@@ -108,7 +112,37 @@ class SearchController(BaseController):
             entry['tags'] = [tag['title'] for tag in tags]
             result.append(entry)
         return json.dumps({'statusCode':0, 'result':result})
-        
+    
+    def searchIdeas(self):
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
+        result = []
+        ideas = ideaLib.searchIdeas('title', self.query)
+        if len(ideas) == 0:
+            return json.dumps({'statusCode':2})
+        for idea in ideas:
+            entry = {}
+            entry['title'] = idea['title']
+            entry['voteCount'] = int(idea['ups']) - int(idea['downs'])
+            entry['urlCode'] = idea['urlCode']
+            entry['url'] = idea['url']
+            entry['addedAs'] = idea['addedAs']
+            entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
+            w = generic.getThing(idea['workshopCode'])
+            entry['workshopCode'] = w['urlCode']
+            entry['workshopURL'] = w['url']
+            entry['workshopTitle'] = w['title']
+            u = userLib.getUserByID(idea.owner)
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            result.append(entry)
+        return json.dumps({'statusCode':0, 'result':result})
+    
     def searchItemGeo(self, id1, id2):
         if 'memberButton' in request.params:
             searchItem = "users"

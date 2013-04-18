@@ -16,6 +16,12 @@
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
+            <li ng-class="showingIdeas.class">
+                <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
+                    <span class="pull-left">Ideas</span>
+                    <span class="pull-right">(${c.numIdeas})</span>
+                </a>
+            </li>
         </ul>
         <div class="tab-content">
             <div class="loading-civ" ng-show="loading" ng-cloak>
@@ -70,6 +76,38 @@
                             </a>
                             <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
                             <p>from <a href="{{p.cityURL}}" class="green green-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="green green-hover">{{p.stateTitle}}</a></p>
+                        </div>
+                    </td></tr>
+                </table>
+            </div>
+            <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
+                <table class="table table-condensed table-hover">
+                    <tr ng-repeat = "idea in ideas"><td>
+                        <div class="media">
+                            <div class="pull-left">
+                                <a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}" class="media-object">
+                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">
+                                    {{idea.authorName}}
+                                </a>
+                                posed the idea
+                                <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
+                                    {{idea.title}}
+                                </a>
+                                in the workshop
+                                <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}">
+                                    {{idea.workshopTitle}}
+                                </a>
+                                <p>
+                                    Net votes: {{idea.voteCount}}
+                                </p>
+                                <p>
+                                    Comments: {{idea.numComments}}
+                                </p>
+                            </div>
                         </div>
                     </td></tr>
                 </table>

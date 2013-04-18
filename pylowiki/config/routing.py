@@ -334,6 +334,7 @@ def make_map():
     map.connect('/search{end:/?}', controller = 'search', action = 'search')
     map.connect('/search/workshops{end:/?}', controller = 'search', action = 'searchWorkshops')
     map.connect('/search/people{end:/?}', controller = 'search', action = 'searchPeople')
+    map.connect('/search/ideas{end:/?}', controller = 'search', action = 'searchIdeas')
     ################
     # Application  #
     ################
