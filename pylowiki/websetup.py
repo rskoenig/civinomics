@@ -18,18 +18,14 @@ def setup_app(command, conf, vars):
     load_environment(conf.global_conf, conf.local_conf)
 
 
-    # If test.ini drop all existing tables
+    # If config file is set to wipe the DB by default (e.g. test files)
     filename = os.path.split(conf.filename)[-1]
-    if filename == 'developmentSandbox.ini':    
+    autoDeleteConfigs = ['developmentSandbox.ini', 'test.ini', 'test-edolfo.ini', 'dev-edolfo.ini']
+    if filename in autoDeleteConfigs:
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
-    if filename == 'test.ini':    
-        log.info("Dropping existing tables...")
-        meta.metadata.drop_all(bind=meta.engine)
-
     #Create the tables if they don't already exist
     meta.metadata.create_all(bind=meta.engine)
-
     
     # We are only working with this part of the config list
     conf = config['app_conf']

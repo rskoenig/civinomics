@@ -39,19 +39,37 @@ def getDemoWorkshops():
 def searchWorkshops( keys, values, deleted = u'0', published = u'1', public_private = u'public', count = False):
     try:
         if type(keys) != type([]):
-            keys = [keys]
-            values = [values]
-        m = map(wcl, keys, values)
+            w_keys = [keys]
+            w_values = [values]
+        else:
+            w_keys = keys
+            w_values = values
+        tags = tagLib.searchTags(w_values[0])
+        mapTags = False
+        if len(tags) != 0:
+            mapTags = True
+            t_values = [tag['workshopCode'] for tag in tags]
+            t_keys = ['urlCode' for code in t_values]
+            map_tag = map(wc, t_keys, t_values)
+        map_workshop = map(wcl, w_keys, w_values)
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'workshop')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('published', published)))\
+                .filter(Thing.data.any(wc('public_private', public_private)))\
+                .filter(Thing.data.any(reduce(or_, map_workshop)))
+        if mapTags:
+            q2 = meta.Session.query(Thing)\
+                .filter(Thing.data.any(reduce(or_, map_tag)))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('published', published)))\
                 .filter(Thing.data.any(wc('public_private', public_private)))
-        rows = q.filter(Thing.data.any(reduce(or_, m)))
+            q = q.union(q2)
         if count:
-            return rows.count()
-        return rows.all()
-    except:
+            return q.count()
+        return q.all()
+    except Exception as e:
+        print e
         return False
 
 def getActiveWorkshops( deleted = '0'):

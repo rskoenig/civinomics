@@ -59,6 +59,18 @@ def isAdopted(idea):
         
     return False
 
+def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0'):
+    try:
+        q = meta.Session.query(Thing).filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wcl(key, value)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))
+        if count:
+            return q.count()
+        return q.all()
+    except:
+        return False
+
 def Idea(user, title, workshop, privs, role = None):
     """
         user    ->  The user Thing creating the idea

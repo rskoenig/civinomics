@@ -9,10 +9,15 @@ from pylowiki.lib.base import BaseController, render
 
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
+import pylowiki.lib.db.idea         as ideaLib
+import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
+import pylowiki.lib.db.tag          as tagLib
+import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers as h
 
@@ -54,6 +59,9 @@ class SearchController(BaseController):
             return self._noSearch()
         c.numUsers = userLib.searchUsers('name', self.query, count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description'], [self.query, self.query], count = True)
+        c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
+        c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
+        c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.searchQuery = self.query
         return render('/derived/6_search.bootstrap')
     
@@ -91,6 +99,8 @@ class SearchController(BaseController):
         keys = ['title', 'description']
         values = [self.query, self.query]
         workshops = workshopLib.searchWorkshops(keys, values)
+        if not workshops:
+            return json.dumps({'statusCode':2})
         if len(workshops) == 0:
             return json.dumps({'statusCode':2})
         for w in workshops:
@@ -103,9 +113,128 @@ class SearchController(BaseController):
             entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
+            tags = tagLib.getWorkshopTags(w)
+            entry['tags'] = [tag['title'] for tag in tags]
             result.append(entry)
         return json.dumps({'statusCode':0, 'result':result})
-        
+    
+    def searchResources(self):
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
+        result = []
+        keys = ['title', 'text', 'link']
+        values = [self.query, self.query, self.query]
+        resources = resourceLib.searchResources(keys, values)
+        if not resources:
+            return json.dumps({'statusCode':2})
+        if len(resources) == 0:
+            return json.dumps({'statusCode':2})
+        for r in resources:
+            w = generic.getThing(r['workshopCode'])
+            if w['public_private'] != u'public':
+                continue
+            elif w['published'] != u'1':
+                continue
+            entry = {}
+            #entry['link'] = r['link']
+            entry['title'] = r['title']
+            entry['text'] = r['text']
+            entry['urlCode'] = r['urlCode']
+            entry['url'] = r['url']
+            entry['addedAs'] = r['addedAs']
+            #entry['domain'] = r['domain']
+            #entry['tld'] = r['tld']
+            entry['voteCount'] = int(r['ups']) - int(r['downs'])
+            entry['numComments'] = discussionLib.getDiscussionForThing(r)['numComments']
+            entry['workshopCode'] = w['urlCode']
+            entry['workshopURL'] = w['url']
+            entry['workshopTitle'] = w['title']
+            u = userLib.getUserByID(r.owner)
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            result.append(entry)
+        return json.dumps({'statusCode':0, 'result':result})
+    
+    def searchDiscussions(self):
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
+        result = []
+        keys = ['title', 'text']
+        values = [self.query, self.query]
+        discussions = discussionLib.searchDiscussions(keys, values)
+        if not discussions:
+            return json.dumps({'statusCode':2})
+        if len(discussions) == 0:
+            return json.dumps({'statusCode':2})
+        for d in discussions:
+            w = generic.getThing(d['workshopCode'])
+            if w['public_private'] != u'public':
+                continue
+            elif w['published'] != u'1':
+                continue
+            entry = {}
+            entry['title'] = d['title']
+            entry['text'] = d['text']
+            entry['urlCode'] = d['urlCode']
+            entry['url'] = d['url']
+            entry['addedAs'] = d['addedAs']
+            entry['voteCount'] = int(d['ups']) - int(d['downs'])
+            entry['numComments'] = d['numComments']
+            entry['workshopCode'] = w['urlCode']
+            entry['workshopURL'] = w['url']
+            entry['workshopTitle'] = w['title']
+            u = userLib.getUserByID(d.owner)
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            result.append(entry)
+        return json.dumps({'statusCode':0, 'result':result})
+    
+    def searchIdeas(self):
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
+        result = []
+        ideas = ideaLib.searchIdeas('title', self.query)
+        if not ideas:
+            return json.dumps({'statusCode':2})
+        if len(ideas) == 0:
+            return json.dumps({'statusCode':2})
+        for idea in ideas:
+            w = generic.getThing(idea['workshopCode'])
+            if w['public_private'] != u'public':
+                continue
+            elif w['published'] != u'1':
+                continue
+            entry = {}
+            entry['title'] = idea['title']
+            entry['voteCount'] = int(idea['ups']) - int(idea['downs'])
+            entry['urlCode'] = idea['urlCode']
+            entry['url'] = idea['url']
+            entry['addedAs'] = idea['addedAs']
+            entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
+            entry['workshopCode'] = w['urlCode']
+            entry['workshopURL'] = w['url']
+            entry['workshopTitle'] = w['title']
+            u = userLib.getUserByID(idea.owner)
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            result.append(entry)
+        return json.dumps({'statusCode':0, 'result':result})
+    
     def searchItemGeo(self, id1, id2):
         if 'memberButton' in request.params:
             searchItem = "users"
