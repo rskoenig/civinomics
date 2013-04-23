@@ -39,7 +39,6 @@ def getThing(code, keys = None, values = None):
         q = q.filter(Thing.data.any(reduce(sa.and_, m)))
         return q.one()
     except Exception as e:
-        log.info(e)
         return False
         
 def getThingByID(thingID):

@@ -53,16 +53,24 @@ class TestSearchController(TestController):
                                 'ideaTitles': 'ideas',
                                 'discussionTitles': 'discussions',
                                 'discussionTexts': 'discussions'}
+        # Ensure we get no results, since nothing is published...except for users
+        log.info("\n\n\n===============DB seeded, now searching===============\n")
         for key in seededValues.keys():
             searchType = searchTypeMapping[key]
+            log.info('\n-----searching for %s-----\n' % searchType)
             for value in seededValues[key]:
                 response = self.searchPrototype(searchType, value)
-                if response.status_int == 200:
-                    statusCode = json.loads(response.body)
-                    if statusCode != 0:
-                        return False
+                assert response.status_int == 200
+                statusCode = json.loads(response.body)['statusCode']
+                log.info('Searched for %s, result was %s' %(value, response.body))
+                if searchType == 'people':
+                    assert statusCode == 0
                 else:
-                    return False
+                    assert statusCode != 0
+        # Now publish one workshop as public, search for the items within
+        
+        # Now publish one workshop as private, search for the items within
+        
         return True
     
     def _seedDB(self):
