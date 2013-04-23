@@ -87,6 +87,8 @@ class SearchController(BaseController):
             entry['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
             entry['stateTitle'] = userGeo['stateTitle']
             result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchWorkshops(self):
@@ -116,6 +118,8 @@ class SearchController(BaseController):
             tags = tagLib.getWorkshopTags(w)
             entry['tags'] = [tag['title'] for tag in tags]
             result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchResources(self):
@@ -158,6 +162,8 @@ class SearchController(BaseController):
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
             result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchDiscussions(self):
@@ -197,6 +203,8 @@ class SearchController(BaseController):
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
             result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchIdeas(self):
@@ -233,6 +241,8 @@ class SearchController(BaseController):
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
             result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchItemGeo(self, id1, id2):

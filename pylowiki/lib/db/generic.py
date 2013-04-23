@@ -2,6 +2,7 @@ import logging
 log = logging.getLogger(__name__)
 
 from pylowiki.model import Thing, Data, meta
+import sqlalchemy as sa
 from dbHelpers import with_characteristic as wc
 
 def linkChildToParent(child, parent):
@@ -25,10 +26,18 @@ def linkChildToParent(child, parent):
     child[key] = code
     return child
     
-def getThing(code):
+def getThing(code, keys = None, values = None):
     try:
-        return meta.Session.query(Thing)\
-            .filter(Thing.data.any(wc('urlCode', code))).one()
+        q = meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc('urlCode', code)))
+        if keys is None:
+            return q.one()
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        m = map(wc, keys, values)
+        q = q.filter(Thing.data.any(reduce(sa.and_, m)))
+        return q.one()
     except Exception as e:
         log.info(e)
         return False

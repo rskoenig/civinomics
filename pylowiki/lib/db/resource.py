@@ -153,9 +153,20 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
+        # Because of the vertical model, it doesn't look like we can look at the linked workshop's status
+        # and apply that as an additional filter within the database level.
+        rows = q.all()
+        keys = ['deleted', 'disabled', 'published', 'public_private']
+        values = [u'0', u'0', u'1', u'public']
+        resources = []
+        for row in rows:
+            w = generic.getThing(row['workshopCode'], keys = keys, values = values)
+            if not w:
+                continue
+            resources.append(row)
         if count:
-            return q.count()
-        return q.all()
+            return len(resources)
+        return resources
     except Exception as e:
         print e
         return False
