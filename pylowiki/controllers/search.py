@@ -115,8 +115,17 @@ class SearchController(BaseController):
             entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
+            
             tags = tagLib.getWorkshopTags(w)
-            entry['tags'] = [tag['title'] for tag in tags]
+            tagTitles = [tag['title'] for tag in tags]
+            titleToColourMapping = tagLib.getWorkshopTagColouring()
+            tagList = []
+            for title in tagTitles:
+                tagMapping = {}
+                tagMapping['title'] = title
+                tagMapping['colour'] = titleToColourMapping[title]
+                tagList.append(tagMapping)
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})

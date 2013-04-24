@@ -62,9 +62,25 @@ html,body{
 }
 .workshop-tag{
     margin-left:5px;
+}
+.green-tag{
     background-color: #075D00;
 }
-
+.orange-tag{
+    background-color: #D15D00;
+}
+.blue-tag{
+    background-color: #3a87ad;
+}
+.grey-tag{
+    background-color: #999999;
+}
+.black-tag{
+    background-color: #333333;
+}
+.red-tag{
+    background-color: #b94a48;
+}
 .well.footer{
    background: white;
    border-color: transparent;
