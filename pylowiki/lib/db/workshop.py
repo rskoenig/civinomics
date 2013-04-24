@@ -69,7 +69,7 @@ def searchWorkshops( keys, values, deleted = u'0', published = u'1', public_priv
             return q.count()
         return q.all()
     except Exception as e:
-        print e
+        log.error(e)
         return False
 
 def getActiveWorkshops( deleted = '0'):

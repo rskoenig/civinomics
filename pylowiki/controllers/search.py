@@ -105,6 +105,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(workshops) == 0:
             return json.dumps({'statusCode':2})
+        titleToColourMapping = tagLib.getWorkshopTagColouring()
         for w in workshops:
             entry = {}
             entry['title'] = w['title']
@@ -118,7 +119,6 @@ class SearchController(BaseController):
             
             tags = tagLib.getWorkshopTags(w)
             tagTitles = [tag['title'] for tag in tags]
-            titleToColourMapping = tagLib.getWorkshopTagColouring()
             tagList = []
             for title in tagTitles:
                 tagMapping = {}
