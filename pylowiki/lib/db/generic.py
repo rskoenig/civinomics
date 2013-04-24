@@ -27,6 +27,8 @@ def linkChildToParent(child, parent):
     return child
     
 def getThing(code, keys = None, values = None):
+    # Having some trouble doing this through map/reduce...for loop seems to work.  In looking at the debug
+    # output, it looks like the difference between SQLAlchemy making multiple sessions and a single session.
     try:
         q = meta.Session.query(Thing)\
             .filter(Thing.data.any(wc('urlCode', code)))
@@ -35,8 +37,8 @@ def getThing(code, keys = None, values = None):
         if type(keys) != type([]):
             keys = [keys]
             values = [values]
-        m = map(wc, keys, values)
-        q = q.filter(Thing.data.any(reduce(sa.and_, m)))
+        for i in range(len(keys)):
+            q = q.filter(Thing.data.any(wc(keys[i], values[i])))
         return q.one()
     except Exception as e:
         return False

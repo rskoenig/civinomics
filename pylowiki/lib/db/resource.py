@@ -168,7 +168,7 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
             return len(resources)
         return resources
     except Exception as e:
-        print e
+        log.error(e)
         return False
 
 # setters
