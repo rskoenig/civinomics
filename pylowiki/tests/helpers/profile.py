@@ -28,6 +28,10 @@ def editProfile(self, params, **kwargs):
         email = kwargs['email']
     else:
         email = content.generateText(6) + '@' + content.generateText(7) + '.com'
+    if 'postalCode' in kwargs:
+        postalCode = kwargs['postalCode']
+    else:
+        postalCode = '92007'
     if 'greeting' in kwargs:
         greeting = kwargs['greeting']
     else:
@@ -43,6 +47,7 @@ def editProfile(self, params, **kwargs):
     #: put these new values in the profile parameters
     params['member_name'] = name
     params['email'] = email
+    params['postalCode'] = postalCode
     params['greetingMsg'] = greeting
     params['websiteLink'] = website
     params['websiteDesc'] = websiteDesc
@@ -61,7 +66,7 @@ def editProfile(self, params, **kwargs):
                 params=params,
                 status=404,
                 expect_errors=True
-            ).follow()
+            )
             return profileNotUpdated
         else:
             #: update the profile

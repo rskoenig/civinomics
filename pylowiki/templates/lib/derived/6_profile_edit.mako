@@ -35,7 +35,7 @@
                 <div class="control-group">
 				    <label for="postalCode" class="control-label">Postal code:</label>
 				    <div class="controls">
-					    <input type="text" id="postalCode" name="postalCode" maxlength="5" size="5" value="${c.user['postalCode']}" onBlur="geoCheckPostalCode()">
+					    <input type="text" id="postalCode" name="postalCode"  value="${c.user['postalCode']}" onBlur="geoCheckPostalCode()">
 					    <span class="help-inline"><span class="label label-important">Required</span></span><br />
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.controls -->

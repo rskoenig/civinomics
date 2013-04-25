@@ -23,7 +23,7 @@ def setup_app(command, conf, vars):
     if filename == 'developmentSandbox.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
-    if filename == 'test.ini':    
+    if filename == 'ccntest.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
 
