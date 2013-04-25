@@ -2,22 +2,26 @@
 <%namespace name="helpers" file="/lib/derived/6_help.mako" />
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<div class="container-fluid">
-    <div>
-        <div class="browse">
-            <h3 class="summary"><a href="/help">Help Center</a></h3>
-        </div><!-- browse -->
-            % if c.subSection == 'helpCenter':
-                    ${helpers.helpCenter()}
-            % elif c.subSection == 'facilitatorGuide':
-                    ${helpers.facilitatorGuide()}
-            % elif c.subSection == 'faq':
-                    ${helpers.faq()}
-            % elif c.subSection == 'reportIssue':
-                    ${helpers.reportIssue()}
-            % elif c.subSection == 'reportAbuse':
-                    ${helpers.reportAbuse()}
-            % endif
+<div class="row">
+    <div class="span12">
+        <div class="section wrapper">
+            <div class="browse">
+                <h3 class="summary"><a href="/help">Help Center</a></h3>
+                <div class="row-fluid">
+                    % if c.subSection == 'helpCenter':
+                            ${helpers.helpCenter()}
+                    % elif c.subSection == 'facilitatorGuide':
+                            ${helpers.facilitatorGuide()}
+                    % elif c.subSection == 'faq':
+                            ${helpers.faq()}
+                    % elif c.subSection == 'reportIssue':
+                            ${helpers.reportIssue()}
+                    % elif c.subSection == 'reportAbuse':
+                            ${helpers.reportAbuse()}
+                    % endif
+                </div>
+            </div><!-- browse -->
+        </div> 
     </div>
 </div><!-- container-fluid -->
 

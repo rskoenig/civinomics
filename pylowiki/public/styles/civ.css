@@ -542,6 +542,30 @@ img.watch{
     width: 31.6%;
 }
 
+@media (max-width: 767px){
+  .span4.well.help{
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    height: auto;
+  }
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+  .span4.well.help{
+    width: 48.5%;
+  }
+  .row-fluid [class*="span"]:nth-child(2n+1).help{
+    margin-left:0px;
+  }
+}
+
+@media (min-width: 980px) {
+  .row-fluid [class*="span"]:nth-child(3n+1).help{
+     margin-left:0px;
+  }
+}
+
 .alert.workshop-admin{
   margin: 10px 0 0 0;
 } 
