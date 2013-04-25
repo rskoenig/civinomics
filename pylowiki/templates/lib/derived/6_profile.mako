@@ -257,7 +257,7 @@
     % else:
         <span class="button_container">
         % if c.isFollowing:
-            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton following">
+            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn round pull-right followButton following">
             <span><i class="icon-user icon-white"></i> Following </span>
             </button>
         % else:
