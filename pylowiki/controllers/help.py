@@ -44,7 +44,7 @@ class HelpController(BaseController):
 
     def feedbackWorkshop( self ):
         # set feedback workshop here, by default it is left blank
-        feedbackURL = '/'
+        feedbackURL = '/workshops/4IGH/improve-civinomics'
         return redirect(feedbackURL)
 
     def abuseHandler( self ):
