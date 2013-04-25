@@ -87,7 +87,7 @@ class SlideshowController(BaseController):
                 mainImageLib.setMainImage(c.authuser, c.w, slide)
             aTitle = 'Upload complete. Please add a caption to new images.'
             if not isPublished(c.w):
-                aTitle += ' Preview your changes by clicking on the workshop name above.'
+                aTitle += ' See your changes by clicking on the preview button above.'
             session['confTab'] = "tab4"
             alert = {'type':'success'}
             alert['title'] = aTitle

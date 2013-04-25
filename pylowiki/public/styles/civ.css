@@ -301,6 +301,10 @@ ul.activity{
    padding-right: 10px;
 }
 
+.nav.nav-pills.nav-stacked > li > a{
+   display: block;
+}
+
 .nav.nav-tabs.nav-stacked > li.active > a{
    background-color: #0b9000;
    color: #ffffff;
@@ -538,6 +542,10 @@ img.watch{
     width: 31.6%;
 }
 
+.alert.workshop-admin{
+  margin: 10px 0 0 0;
+} 
+
 .link-span{
   position:absolute; 
   width:100%;
@@ -660,7 +668,7 @@ ul.listeners > li {
 }
 
 .btn.round.followButton{
-  line-height: 17px;
+  line-height: 15px;
 }
 
 .btn.followButton{
