@@ -304,13 +304,6 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Manage Workshop</h4>
-            <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/publish/handler" method=POST class="well">
-            % if workshopLib.isPublished(c.w):
-                <button type="submit" class="btn btn-warning" value="unpublish">Unpublish Workshop</button> This will temporarily unpublish your workshop, removing it from listings and activity streams.
-            % else:
-                <button type="submit" class="btn btn-warning" value="publish">Publish Workshop</button> Republishes your workshop, making it visible in listings and activity streams.
-            % endif
-            </form>
             <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
             ${flaggedItems(c.flaggedItems)}
         </div><!-- browse -->

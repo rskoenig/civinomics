@@ -12,11 +12,17 @@ app.controller('SearchCtrl', function($scope, $http){
     */
     $scope.workshopsURL = '/search/workshops'
     $scope.peopleURL = '/search/people'
+    $scope.resourcesURL = '/search/resources'
+    $scope.discussionsURL = '/search/discussions'
+    $scope.ideasURL = '/search/ideas'
     var searchQuery = window.location.search;
     $scope.searchQuery = searchQuery;
-    $scope.searchQueryPretty = searchQuery.substr(13, searchQuery.length)
+    $scope.searchQueryPretty = $("#search-input").val();
     $scope.showingWorkshops = {'class': 'active', 'show': false};
     $scope.showingPeople = {'class': '', 'show': false};
+    $scope.showingResources = {'class': '', 'show': false};
+    $scope.showingDiscussions = {'class': '', 'show': false};
+    $scope.showingIdeas = {'class': '', 'show': false};
     $scope.loading = true;
     $scope.noResult = false;
     $scope.noQuery = false;
@@ -47,6 +53,9 @@ app.controller('SearchCtrl', function($scope, $http){
     
     $scope.searchWorkshops = function() {
         $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingResources = {'class': '', 'show': false};
+        $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingIdeas = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -76,6 +85,9 @@ app.controller('SearchCtrl', function($scope, $http){
     
     $scope.searchPeople = function() {
         $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingResources = {'class': '', 'show': false};
+        $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingIdeas = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -98,6 +110,102 @@ app.controller('SearchCtrl', function($scope, $http){
             {
                 $scope.people = data.result;
                 $scope.showingPeople = {'class': 'active', 'show': true};
+            }
+            $scope.loading = false;
+        })
+    }
+    
+    $scope.searchResources = function() {
+        $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
+        $scope.loading = true;
+        $scope.objType = 'resources';
+        $http.get($scope.resourcesURL + $scope.searchQuery).success(function(data){
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingResources = {'class': 'active', 'show': false};
+                $scope.resources = null;
+            }
+            else if (data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingResources = {'class': 'active', 'show': false};
+                $scope.resources = null;
+            }
+            else if (data.statusCode == 0)
+            {
+                $scope.resources = data.result;
+                $scope.showingResources = {'class': 'active', 'show': true};
+            }
+            $scope.loading = false;
+        })
+    }
+    
+    $scope.searchDiscussions = function() {
+        $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingResources = {'class': '', 'show': false};
+        $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
+        $scope.loading = true;
+        $scope.objType = 'discussions';
+        $http.get($scope.discussionsURL + $scope.searchQuery).success(function(data){
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingDiscussions = {'class': 'active', 'show': false};
+                $scope.discussions = null;
+            }
+            else if (data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingDiscussions = {'class': 'active', 'show': false};
+                $scope.discussions = null;
+            }
+            else if (data.statusCode == 0)
+            {
+                $scope.discussions = data.result;
+                $scope.showingDiscussions = {'class': 'active', 'show': true};
+            }
+            $scope.loading = false;
+        })
+    }
+    
+    $scope.searchIdeas = function() {
+        $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingResources = {'class': '', 'show': false};
+        $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
+        $scope.loading = true;
+        $scope.objType = 'ideas';
+        $http.get($scope.ideasURL + $scope.searchQuery).success(function(data){
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingIdeas = {'class': 'active', 'show': false};
+                $scope.ideas = null;
+            }
+            else if (data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingIdeas = {'class': 'active', 'show': false};
+                $scope.ideas = null;
+            }
+            else if (data.statusCode == 0)
+            {
+                $scope.ideas = data.result;
+                $scope.showingIdeas = {'class': 'active', 'show': true};
             }
             $scope.loading = false;
         })

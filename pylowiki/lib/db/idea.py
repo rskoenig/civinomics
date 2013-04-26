@@ -59,6 +59,29 @@ def isAdopted(idea):
         
     return False
 
+def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0'):
+    try:
+        q = meta.Session.query(Thing).filter_by(objType = 'idea')\
+            .filter(Thing.data.any(wcl(key, value)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .filter(Thing.data.any(wc('disabled', disabled)))
+        # Because of the vertical model, it doesn't look like we can look at the linked workshop's status
+        # and apply that as an additional filter within the database level.
+        rows = q.all()
+        keys = ['deleted', 'disabled', 'published', 'public_private']
+        values = [u'0', u'0', u'1', u'public']
+        ideas = []
+        for row in rows:
+            w = generic.getThing(row['workshopCode'], keys = keys, values = values)
+            if not w:
+                continue
+            ideas.append(row)
+        if count:
+            return len(ideas)
+        return ideas
+    except:
+        return False
+
 def Idea(user, title, workshop, privs, role = None):
     """
         user    ->  The user Thing creating the idea

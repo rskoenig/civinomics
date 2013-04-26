@@ -227,7 +227,7 @@ class WorkshopController(BaseController):
             weventMsg += "Changes saved."
             
         if not workshopLib.isPublished(c.w):
-            weventMsg += ' Preview your changes by clicking on the workshop name above.'
+            weventMsg += ' See your changes by clicking on the preview button above.'
 
         if werror:
             alert = {'type':'error'}
@@ -283,7 +283,7 @@ class WorkshopController(BaseController):
                 weventMsg +=  "Updated category tags."
                 
             if not workshopLib.isPublished(c.w):
-                weventMsg += ' Preview your changes by clicking on the workshop name above.'
+                weventMsg += ' See your changes by clicking on the preview button above.'
                 
         else:
             werror = 1

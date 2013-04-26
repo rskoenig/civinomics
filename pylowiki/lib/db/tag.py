@@ -62,6 +62,40 @@ def getWorkshopTagCategories():
     workshopTags.append('Other')
     return workshopTags
 
+def getWorkshopTagColouring():
+    mapping = { 'Civil Rights':         'red-tag',
+                'Health' :              'red-tag',
+                'Safety' :              'red-tag',
+                'Justice':              'red-tag',
+                'Land Use':             'green-tag',
+                'Environment':          'green-tag',
+                'Arts':                 'orange-tag',
+                'Entertainment':        'orange-tag',
+                'Sports':               'orange-tag',
+                'Family':               'orange-tag',
+                'Community':            'orange-tag',
+                'Other':                'orange-tag',
+                'Business':             'black-tag',
+                'Economy':              'black-tag',
+                'Employment':           'black-tag',
+                'Education':            'black-tag',
+                'Housing':              'black-tag',
+                'Transportation':       'blue-tag',
+                'Infrastructure':       'blue-tag',
+                'Municipal Services':   'blue-tag',
+                'Government':           'grey-tag',
+                'NonProfit':            'grey-tag',
+                'Policy':               'grey-tag'}
+    
+    #mapping = { 'red-tag': ['Civil Rights', 'Health', 'Safety', 'Justice'],
+    #            'green-tag': ['Land Use', 'Environment'],
+    #            'orange-tag':['Arts', 'Entertainment', 'Sports', 'Family', 'Community', 'Other'],
+    #            'black-tag': ['Business', 'Economy', 'Employment', 'Education', 'Housing'],
+    #            'blue-tag': ['Transportation', 'Infrastructure', 'Municipal Services'],
+    #            'grey-tag': ['Government', 'NonProfit', 'Policy']
+    #            }
+    return mapping
+
 def getCategoryTagCount():
     categories = getWorkshopTagCategories()
     tagDict = dict()

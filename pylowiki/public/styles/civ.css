@@ -42,7 +42,7 @@ html,body{
    right:12px;
 }
 .civ-search > .nav.nav-tabs > li > a{
-    min-width:100px;
+    min-width:150px;
 }
 .civ-search > .nav-tabs > .active > a, .civ-search > .nav-tabs > .active > a:hover{
     border:3px solid #075D00;
@@ -59,6 +59,27 @@ html,body{
 .loading-civ{
     margin-top:10%;
     margin-left:35%;
+}
+.workshop-tag{
+    margin-left:5px;
+}
+.green-tag{
+    background-color: #075D00;
+}
+.orange-tag{
+    background-color: #D15D00;
+}
+.blue-tag{
+    background-color: #3a87ad;
+}
+.grey-tag{
+    background-color: #999999;
+}
+.black-tag{
+    background-color: #333333;
+}
+.red-tag{
+    background-color: #b94a48;
 }
 .well.footer{
    background: white;
@@ -280,6 +301,10 @@ ul.activity{
    padding-right: 10px;
 }
 
+.nav.nav-pills.nav-stacked > li > a{
+   display: block;
+}
+
 .nav.nav-tabs.nav-stacked > li.active > a{
    background-color: #0b9000;
    color: #ffffff;
@@ -287,7 +312,6 @@ ul.activity{
 
 .nav.nav-tabs.nav-stacked{
    margin-top: 10px;
-   margin-left: -30px;
    width: 250px;
 }
 
@@ -475,6 +499,9 @@ img.watch{
 .workshop-nav-icon{
    max-height:16px;
 }
+.workshop-search-icon{
+    max-width:15px;
+}
 
 .summary{
    background: whiteSmoke;
@@ -513,6 +540,34 @@ img.watch{
 .span4.well.help {
     width: 31.6%;
 }
+
+@media (max-width: 767px){
+  .span4.well.help{
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    height: auto;
+  }
+}
+
+@media (max-width: 979px) and (min-width: 768px) {
+  .span4.well.help{
+    width: 48.5%;
+  }
+  .row-fluid [class*="span"]:nth-child(2n+1).help{
+    margin-left:0px;
+  }
+}
+
+@media (min-width: 980px) {
+  .row-fluid [class*="span"]:nth-child(3n+1).help{
+     margin-left:0px;
+  }
+}
+
+.alert.workshop-admin{
+  margin: 10px 0 0 0;
+} 
 
 .link-span{
   position:absolute; 
@@ -636,7 +691,7 @@ ul.listeners > li {
 }
 
 .btn.round.followButton{
-  line-height: 17px;
+  line-height: 15px;
 }
 
 .btn.followButton{
