@@ -70,12 +70,13 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('.expandable').expander({
-                slicePoint: 35,
+                slicePoint: 55,
                 widow: 2,
                 expandText: ' ...->',
                 expandPrefix: '',
                 userCollapseText: ' <-',
-                userCollapsePrefix: ''
+                userCollapsePrefix: '',
+                preserveWords: true
             });
         });
     </script>

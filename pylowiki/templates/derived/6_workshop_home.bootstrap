@@ -57,7 +57,8 @@
                 expandText: '... (more)',
                 expandPrefix: '',
                 userCollapseText: ' (less)',
-                userCollapsePrefix: ''
+                userCollapsePrefix: '',
+                preserveWords: true
             });
         });
     </script>
