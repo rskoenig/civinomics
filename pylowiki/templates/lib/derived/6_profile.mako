@@ -322,7 +322,7 @@
         % for item in activity:
             <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
             % if workshop['public_private'] == 'public' or (c.browser == False or c.isAdmin == True): 
-                <tr><td>${lib_6.showItemInActivity(item, workshop)}</td></tr>
+                <tr><td>${lib_6.showItemInActivity(item, workshop, expandable = True)}</td></tr>
             % endif
         % endfor
         </tbody>
