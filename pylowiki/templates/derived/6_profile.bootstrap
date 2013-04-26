@@ -66,7 +66,7 @@
 
 <%def name = 'extraScripts()'>
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
-    <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('.expandable').expander({
