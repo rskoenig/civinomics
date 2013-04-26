@@ -725,7 +725,7 @@
     % endif
 </%def>
 
-<%def name="showItemInActivity(item, w)">
+<%def name="showItemInActivity(item, w, **kwargs)">
     <%
         thisUser = userLib.getUserByID(item.owner)
         actionMapping = {   'resource': 'added the resource',
@@ -736,10 +736,22 @@
                             'discussion':'conversation',
                             'idea':'idea',
                             'comment':'comment'}
-        if item.objType == 'comment':
-            title = ellipsisIZE(item['data'], 40)
+        if 'expandable' in kwargs:
+            if kwargs['expandable']:
+                if item.objType == 'comment':
+                    title = item['data']
+                else:
+                    title = item['title']
+            else:
+                if item.objType == 'comment':
+                    title = ellipsisIZE(item['data'], 40)
+                else:
+                    title = ellipsisIZE(item['title'], 40)
         else:
-            title = ellipsisIZE(item['title'], 40)
+            if item.objType == 'comment':
+                title = ellipsisIZE(item['data'], 40)
+            else:
+                title = ellipsisIZE(item['title'], 40)
         
         activityStr = actionMapping[item.objType]
         if item.objType == 'comment':
@@ -753,9 +765,21 @@
             elif 'discussionCode' in item.keys():
                 activityStr += objTypeMapping['discussion']
             activityStr += '</a>, saying '
-            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
+            if 'expandable' in kwargs:
+                if kwargs['expandable']:
+                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + ' class="expandable">' + title + '</a>'
+                else:
+                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
+            else:
+                activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
         else:
-            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
+            if 'expandable' in kwargs:
+                if kwargs['expandable']:
+                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + ' class="expandable">' + title + '</a>'
+                else:
+                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
+            else:
+                activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
     %>
     ${activityStr | n}
 </%def>

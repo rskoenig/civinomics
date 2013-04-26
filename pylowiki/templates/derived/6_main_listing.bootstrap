@@ -56,4 +56,17 @@
        $(".small-bulb, .small-bookmark").tooltip({delay:500});
    });
    </script>
+   
+   <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: ' ...->',
+                expandPrefix: '',
+                userCollapseText: ' <-',
+                userCollapsePrefix: ''
+            });
+        });
+    </script>
 </%def>
