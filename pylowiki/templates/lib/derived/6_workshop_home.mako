@@ -67,7 +67,7 @@
                 <%
                     lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")
                     lib_6.userLink(item.owner, className = "green green-hover")
-                    lib_6.showItemInActivity(item, c.w)
+                    lib_6.showItemInActivity(item, c.w, expandable = True)
                 %>
             </li>
         % endfor
