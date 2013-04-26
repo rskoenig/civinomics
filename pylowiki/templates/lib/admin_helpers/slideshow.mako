@@ -14,7 +14,7 @@
 <%def name="admin_slideshow()">    
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Images and Slideshow</h4>
+            <h4 class="section-header smaller">Slideshow</h4>
             ${add_slides()}
             ${edit_slideshow()}
         </div><!-- browse -->

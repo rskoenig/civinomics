@@ -3,12 +3,13 @@
     from pylowiki.lib.db.geoInfo import getGeoTitles, getStateList, getCountyList, getCityList, getPostalList
     from pylowiki.lib.db.user import getUserByEmail
     from pylowiki.lib.db.tag import getWorkshopTagCategories
+    import pylowiki.lib.db.workshop         as workshopLib
 %>
 
 <%def name="fields_alert()">
 	% if 'alert' in session:
 		<% alert = session['alert'] %> 
-        <div class="alert alert-${alert['type']}">
+        <div class="alert alert-${alert['type']} workshop-admin">
             ## bad char: ×
             ## good char: x
             <button data-dismiss="alert" class="close">x</button>
@@ -40,7 +41,7 @@
     %>
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Setup Your Workshop</h4>
+            <h4 class="section-header smaller">Basic Info</h4>
             <div class="row-fluid">
                 <div class="span6">
                     <form name="edit_issue" id="edit_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
@@ -138,7 +139,7 @@
         
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Workshop Scope</h4>
+            <h4 class="section-header smaller">Participants</h4>
             Specifiy if the workshop is public or private, and who may participate.<br /><br />
              ${change_scope()}
             <div class="tabbable">
@@ -158,7 +159,7 @@
 <%def name="tags()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Category Tags</h4>
+            <h4 class="section-header smaller">Tags</h4>
             Tags are descriptive key words used to categorize your workshop.<br />
             <form name="workshop_tags" id="workshop_tags" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureTagsWorkshopHandler" enctype="multipart/form-data" method="post" >
             <div class="row-fluid">
@@ -200,7 +201,7 @@
 <%def name="edit_background()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Workshop Information</h4>
+            <h4 class="section-header smaller">Background</h4>
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
                <textarea rows="10" id="data" name="data" class="span12">${c.page['data']}</textarea>
                <div class="background-edit-wrapper">
@@ -301,6 +302,11 @@
 </%def>
 
 <%def name="public()">
+    % if c.w['type'] == 'personal':
+        <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST">
+        <li><button type="submit" class="btn btn-warning">Upgrade to Professional</button></li>
+        </form>
+    % endif
     <ul>
     <li>Public workshops are visible to everyone!</li> 
     <li>Residents of the specificied geographic area are encouraged to participate.</li>
@@ -451,10 +457,23 @@
 
 <%def name="publish()">
     % if not c.started and c.basicConfig and c.slideConfig and c.backConfig and c.tagConfig:
-        <div class="well">
-            <form name="edit_issue" id="edit_issue" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
-            <strong>Your workshop is ready to publish: </strong> <button type="submit" class="btn btn-warning" name="startWorkshop" value="Start" >Publish Workshop</button>
+        <div>
+            <form name="edit_issue" id="edit_issue" class="left form-inline no-bottom" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureStartWorkshopHandler" enctype="multipart/form-data" method="post" >
+            <button type="submit" class="btn btn-warning btn-block btn-large" name="startWorkshop" value="Start" >Publish Workshop</button>
             </form>
-        </div><!-- well -->
+        </div>
+
+    % elif c.w['startTime'] == '0000-00-00':
+        <button class="btn btn-warning btn-block btn-large disabled publishButton" rel="tooltip" data-placement="bottom" data-original-title="You must complete all steps before publishing your workshop">Publish Workshop</button>
+
+    % else:
+        <form class="no-bottom" action="/workshop/${c.w['urlCode']}/${c.w['url']}/publish/handler" method=POST>
+            % if workshopLib.isPublished(c.w):
+                <button type="submit" class="btn btn-warning btn-block btn-large publishButton" value="unpublish" rel="tooltip" data-placement="bottom" data-original-title="This will temporarily unpublish your workshop, removing it from listings and activity streams.">Unpublish Workshop</button>
+            % else:
+                <button type="submit" class="btn btn-warning btn-block btn-large publishButton" value="publish" rel="tooltip" data-placement="bottom" data-original-title="Republishes your workshop, making it visible in listings and activity streams.">Publish Workshop</button>
+            % endif
+        </form>
+
     % endif
 </%def>
