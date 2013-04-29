@@ -1,0 +1,85 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="lib" file="/lib/mako_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_item_in_listing.mako"/>
+<%namespace file="/lib/6_comments.mako" import="comments" />
+
+<%
+    lib.return_to()
+    d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea'}
+%>
+
+<div class="spacer" style="height:20px;"></div>
+
+<div class="row-fluid">
+  <div class="span12">
+     <div class="section-wrapper">
+        <div class="browse">
+            <h3 class="section-header"> ${d[c.listingType]} </h3>
+            % if c.thing.objType == 'revision':
+                <div class="row-fluid">
+                    <div class="span10 offset1">
+                        <div class="alert alert-error">
+                            <h4>Warning!</h4>
+                            You are looking at a previous version (dated ${c.thing.date} PST), kept in the interests of transparency and history.
+                        </div>
+                    </div>
+                </div>
+            % endif
+            <div class="row-fluid">
+                <%
+                    helpers.showItemTitle(c.thing)
+                %>
+            </div><!--/.row-fluid-->
+            <div class="row-fluid">
+                ${helpers.showItemOwner(c.thing)}
+            </div><!--/.row-fluid-->
+            <%
+                if c.thing['disabled'] == '1':
+                    helpers.showDisabledMessage(c.thing)
+                helpers.extraText(c.thing)
+                lib_6.revisionHistory(c.revisions, c.thing)
+                helpers.moderationPanel(c.thing)
+            %>
+            % if c.thing.objType != 'revision':
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <div class="span11 offset1">
+                            <%
+                                if c.rootComment != '':
+                                    comments(c.thing, c.rootComment)
+                                else:
+                                    comments(c.thing, c.discussion)
+                            %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            % endif
+        </div><!--/.browse-->
+     </div><!--/.section-wrapper-->
+  </div><!--/.span12-->
+</div><!--/.row-fluid-->
+
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.nullvote').tooltip();
+    </script>
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+        % if c.privs['admin'] or c.privs['facilitator'] or c.authuser.id == c.thing.owner:
+            <script type="text/javascript" src="/js/vendor/charCount.js"></script>
+            <script>
+                $("#title").charCount({
+                    allowed:120,
+                    warning:20,
+                    css: 'counter green pull-right',
+                    counterElement: 'strong'
+                });
+            </script>
+        % endif
+    % endif
+</%def>
