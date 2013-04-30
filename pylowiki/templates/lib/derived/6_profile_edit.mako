@@ -15,7 +15,7 @@
 <%def name="profileInfo()">
     <div class="section-wrapper">
         <div class="browse">
-	        <form action="/profile/${c.user['urlCode']}/${c.user['url']}/info/edit/handler" id="infoEdit" name="infoEdit" ng-controller="ProfileEditController" enctype="multipart/form-data" method="post" class="form-horizontal">
+	        <form id="infoEdit" name="infoEdit" ng-controller="ProfileEditController" enctype="multipart/form-data" method="post" class="form-horizontal" ng-submit="submitProfileEdit()">
     		    <h4 class="section-header" style="text-align: center"><br />Update Your Profile Information</h4><br />
                 <fieldset>
 			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">
@@ -31,10 +31,11 @@
 					    <input type="text" id="email" name="email" value="${c.user['email']}" ng-model="email" ng-init="email='${c.user['email']}'" required>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-                <div class="control-group">
+                <div ng-class=" {'control-group': true, 'error': infoEdit.postalCode.$error.pattern} ">
 				    <label for="postalCode" class="control-label">Postal code:</label>
-				    <div class="controls">
-					    <input type="text" id="postalCode" name="postalCode"  value="${c.user['postalCode']}" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" required><br />
+                    <div class="controls">
+					    <input type="text" id="postalCode" name="postalCode"  value="${c.user['postalCode']}" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required><br />
+                        <span class="error help-block" ng-show="infoEdit.postalCode.$error.pattern">Use only numbers.</span>
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
@@ -65,7 +66,8 @@
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
 		        </fieldset>
-                <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+                <button type="submit" class="btn btn-warning" name="submit">Save Changes</button><br />
+                <span id="submitResult"></span>
 	        </form>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
