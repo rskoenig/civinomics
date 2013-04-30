@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, response, session, config, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
@@ -436,14 +436,20 @@ class ProfileController(BaseController):
                 session.save()
                 c.authuser = c.user
             log.info('Changed name')
+        #returnURL = config['app_conf']['site_base_url']
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
         if anyChange and perror == 0:
             dbHelpers.commit(c.user)
             eventLib.Event('Profile updated.', changeMsg, c.user, c.authuser)
             revisionLib.Revision(c.authuser, c.user)
-            return json.dumps({'statusCode':'0', 'result':changeMsg})
+            if nameChange:
+                statusCode = 2
+            else:
+                statusCode = 0
+            return json.dumps({'statusCode':statusCode, 'result':changeMsg, 'returnURL':returnURL})
 
         elif perror == 1:
-            return json.dumps({'statusCode':'1', 'result':perrorMsg})
+            return json.dumps({'statusCode':'1', 'result':perrorMsg, 'returnURL':returnURL})
         else:
             if 'alert' not in session:
                  return json.dumps({'statusCode':'1', 'result':'No changes submitted.'})

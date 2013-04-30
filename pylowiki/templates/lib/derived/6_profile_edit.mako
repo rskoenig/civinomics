@@ -28,13 +28,13 @@
 			    <div class="control-group">
 				    <label for="email" class="control-label">Email:</label>
 				    <div class="controls">
-					    <input type="text" id="email" name="email" value="${c.user['email']}" ng-model="email" ng-init="email='${c.user['email']}'" required>
+					    <input type="text" id="email" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
                 <div ng-class=" {'control-group': true, 'error': infoEdit.postalCode.$error.pattern} ">
 				    <label for="postalCode" class="control-label">Postal code:</label>
                     <div class="controls">
-					    <input type="text" id="postalCode" name="postalCode"  value="${c.user['postalCode']}" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required><br />
+					    <input type="text" id="postalCode" name="postalCode" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required><br />
                         <span class="error help-block" ng-show="infoEdit.postalCode.$error.pattern">Use only numbers.</span>
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.controls -->
@@ -50,19 +50,19 @@
         	    <div class="control-group">
 				    <label for="greetingMsg" class="control-label">Enter a greeting message for visitors to your profile:</label>
 				    <div class="controls">
-                        <textarea name="greetingMsg" rows=4 cols=50>${c.user['greetingMsg']}</textarea>
+                        <textarea name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 cols=50></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
 				    <label for="orgLink" class="control-label">Enter the URL to your website:</label>
     			    <div class="controls">
-                        <input type="text" name="websiteLink" value="${c.user['websiteLink']}">
+                        <input type="text" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
 				    <label for="orgLinkMsg" class="control-label">Enter a description of your website:</label>
 				    <div class="controls">
-                        <textarea name="websiteDesc" rows=4 cols=50>${c.user['websiteDesc']}</textarea>
+                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 cols=50></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
 		        </fieldset>

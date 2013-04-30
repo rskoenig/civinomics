@@ -8,6 +8,9 @@ function ProfileEditController($scope, $http) {
         $http.post(submitURL, thisForm).success(function(data){
             document.getElementById("submitResult").innerText = document.getElementById("submitResult").textContent = '';
             document.getElementById("submitResult").innerText = document.getElementById("submitResult").textContent = data.result;
+            if(data.statusCode == '2'){
+                location.pathname = data.returnURL;
+            }
       });
     }
 };
