@@ -92,7 +92,7 @@
                     else:
                         sender = userLib.getUserByCode(message['sender'])
                 %>
-                <td>
+                <td class="message-avatar">
                     % if sender == 'Civinomics':
                         <img src="/images/handdove_medium.png" title="Civinomics" alt="Civinomics">
                         <p>Civinomics</p>
@@ -101,7 +101,7 @@
                         <p>${lib_6.userLink(sender)}</p>
                     % endif
                 </td>
-                <td> 
+                <td class="message-content"> 
                     % if 'extraInfo' in message.keys():
                         % if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
                             <% 

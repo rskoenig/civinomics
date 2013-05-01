@@ -96,6 +96,10 @@ html,body{
     margin-top:20px;
 }
 
+.message-avatar{
+    min-width: 70px;
+}
+
 .fullWidth{ width:100%; }
 
 .horizontal-list> li {
