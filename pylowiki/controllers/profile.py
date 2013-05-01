@@ -338,7 +338,6 @@ class ProfileController(BaseController):
         session.save()
         
         payload = json.loads(request.body)
-        log.info(payload)
 
         if 'member_name' in payload:
             name = payload['member_name']
@@ -436,7 +435,7 @@ class ProfileController(BaseController):
                 session.save()
                 c.authuser = c.user
             log.info('Changed name')
-        #returnURL = config['app_conf']['site_base_url']
+            
         returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
         if anyChange and perror == 0:
             dbHelpers.commit(c.user)
@@ -451,12 +450,8 @@ class ProfileController(BaseController):
         elif perror == 1:
             return json.dumps({'statusCode':'1', 'result':perrorMsg, 'returnURL':returnURL})
         else:
-            if 'alert' not in session:
-                 return json.dumps({'statusCode':'1', 'result':'No changes submitted.'})
-               
-        #returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
-        #return redirect(returnURL)
-        #return json.dumps({'statusCode':'0', 'result':'Saved.'})
+            return json.dumps({'statusCode':'1', 'result':'No changes submitted.'})
+
         
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):

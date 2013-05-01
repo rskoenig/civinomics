@@ -9,6 +9,7 @@ function ProfileEditController($scope, $http) {
             document.getElementById("submitResult").innerText = document.getElementById("submitResult").textContent = '';
             document.getElementById("submitResult").innerText = document.getElementById("submitResult").textContent = data.result;
             if(data.statusCode == '2'){
+                location.hash = 'tab-edit'
                 location.pathname = data.returnURL;
             }
       });
