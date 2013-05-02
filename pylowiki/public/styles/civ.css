@@ -95,15 +95,12 @@ html,body{
 .message-workshop-image{
     margin-top:20px;
 }
-
 .message-avatar{
     min-width: 70px;
 }
-
 .message-content{
-    max-width:680px;
+    max-width:650px;
 }
-
 .fullWidth{ width:100%; }
 
 .horizontal-list> li {
