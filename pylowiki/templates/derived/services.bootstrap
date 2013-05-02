@@ -1,0 +1,43 @@
+<%inherit file="/base/template.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/services/helpers.mako" />
+
+% if c.message:
+    <div class="row">
+        <div class="span8 offset2">
+            <div class="alert alert-${c.message['type']}">
+                <button data-dismiss="alert" class="close">×</button>
+                <strong>${c.message['title']}</strong> ${c.message['content']}
+            </div>
+        </div>
+    </div>
+% endif
+
+<div class="row-fluid">
+    ${helpers.showTitle()}
+    ${helpers.spacer()}
+</div>
+
+<div class="row">
+    <div class="container">
+    ${helpers.inlineSpacer(3)}
+        <ul class="thumbnails span7">
+            <li class="span3">
+                ${helpers.workshopItem()}
+            </li>
+            <li class="span3">
+                ${helpers.surveyItem()}
+            </li>
+        </ul>
+    </div>
+</div>
+
+<%def name = 'extraStyles()'>
+    
+</%def>
+<%def name = 'extraHTML()'>
+    
+</%def>
+<%def name = 'extraScripts()'>
+    
+</%def>
