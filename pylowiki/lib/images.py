@@ -85,7 +85,7 @@ def saveImage(image, filename, identifier, thing):
     
     try:
         im = Image.open(image)
-        im.save(fullpath, "JPEG")
+        im.convert('RGB').save(fullpath, 'JPEG')
         return hash
     except:
         log.error('Unable to save to %s with hash %s' % (fullpath, hash))
