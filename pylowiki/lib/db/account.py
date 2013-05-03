@@ -48,7 +48,7 @@ def isComp(account):
 def Account(billingName, billingEmail, stripeToken, workshop, plan, coupon = 'None'):
     stripe.api_key = config['app_conf']['stripePrivateKey'].strip()
     description = "Civinomics account for customer " + billingName + " " + billingEmail + " workshop code " + workshop['urlCode']
-    plan = "PRO"
+    plan = "BETAPRO1"
     error = 0
     errorTitle = 'There was error an processing your payment information.'
     errorMsg = ''
