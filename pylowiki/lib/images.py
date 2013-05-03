@@ -71,14 +71,8 @@ def saveImage(image, filename, identifier, thing):
     
     i['numImages'] = unicode(int(i['numImages']) + 1)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
-    
-    # Save the original
     pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig')
-    filename = filename.split('.')
-    if len(filename) > 1:
-        savename = hash + '.' + filename[-1]
-    else:
-        savename = hash
+    savename = hash + '.png'
     if not os.path.exists(pathname):
         os.makedirs(pathname)
     
