@@ -68,24 +68,22 @@ class SlideshowController(BaseController):
                     st = os.stat(newPath)
                     size = st.st_size
             except IOError:
-                log.info('aborting 500')
                 abort(500)
             l = []
             d = {}
             d['name'] = savename
             d['size'] = size
-            log.info(size)
             if 'site_base_url' in config:
                 siteURL = config['site_base_url']
             else:
                 siteURL = 'http://civinomics.com'
             
-            d['url'] = '%s/images/%s/%s/orig/%s.jpg' % (siteURL, identifier, directoryNumber, hash)
-            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.jpg' % (siteURL, identifier, directoryNumber, hash)
+            d['url'] = '%s/images/%s/%s/orig/%s.png' % (siteURL, identifier, directoryNumber, hash)
+            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.png' % (siteURL, identifier, directoryNumber, hash)
             d['delete_url'] = '%s/workshop/%s/%s/slideshow/delete/%s' %(siteURL, c.w['urlCode'], c.w['url'], hash)
             d['delete_type'] = "DELETE"
             d['-'] = hash
-            d['type'] = 'image/jpg'
+            d['type'] = 'image/png'
             l.append(d)
             
             if len(allSlides) == 1:

@@ -24,7 +24,7 @@ def resizeImage(identifier, hash, x, y, postfix, **kwargs):
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
     
     origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber,'orig')
-    origFullpath = origPathname + '/%s.jpg' %(hash)
+    origFullpath = origPathname + '/%s.png' %(hash)
     
     try:
         im = Image.open(origFullpath)
@@ -44,8 +44,7 @@ def resizeImage(identifier, hash, x, y, postfix, **kwargs):
         if not os.path.exists(pathname):
             os.makedirs(pathname)
         
-        quality = 80
-        im.save(pathname + '/' + hash + '.jpg' , 'JPEG', quality=quality)
+        im.save(pathname + '/' + hash + '.png' , 'PNG')
         return True
     except:
         return False
