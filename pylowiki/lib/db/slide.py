@@ -61,5 +61,6 @@ def Slide(owner, slideshow, title, filename, image, newSlide = '0'):
     s['filename'] = filename
     s['deleted'] = u'0'
     s['disabled'] = u'0'
+    s['format'] = u'png'
     commit(s)
     return s

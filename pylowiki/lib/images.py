@@ -66,7 +66,6 @@ def getImageLocation(slide):
 # directory (via integer division), we create a new directory and save images in there.
 def saveImage(image, filename, identifier, thing):
     hash = _generateHash(filename, thing)
-
     i = getImageIdentifier(identifier)
     if not i:
         i = ImageIdentifier(identifier)
@@ -74,8 +73,13 @@ def saveImage(image, filename, identifier, thing):
     i['numImages'] = unicode(int(i['numImages']) + 1)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
     
+    # Save the original
     pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig')
-    savename = hash + '.jpg'
+    filename = filename.split('.')
+    if len(filename) > 1:
+        savename = hash + '.' + filename[-1]
+    else:
+        savename = hash
     if not os.path.exists(pathname):
         os.makedirs(pathname)
     
@@ -83,9 +87,20 @@ def saveImage(image, filename, identifier, thing):
     thing['directoryNum'] = directoryNumber
     commit(thing)
     
+    # Now convert and save
+    # only gif conversions seem to give trouble.
+    # tested formats:   tiff (lzw/packbits/no compression, alpha/no-alpha)
+    #                   jpeg
+    #                   png
+    #                   tga
+    #                   bmp
+    #                   gif
     try:
         im = Image.open(image)
-        im.convert('RGB').save(fullpath, 'JPEG')
+        if im.format == 'GIF':
+            transparency = im.info['transparency']
+            im.save(fullpath, 'PNG', transparency=transparency)
+        im.save(fullpath, 'PNG')
         return hash
     except:
         log.error('Unable to save to %s with hash %s' % (fullpath, hash))

@@ -58,17 +58,27 @@ class SlideshowController(BaseController):
             i = getImageIdentifier(identifier)
             directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
             hash = slide['pictureHash']
-            savename = hash + '.jpg'
-            newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
-            st = os.stat(newPath)
+            savename = hash + '.png'
+            # This bit is a bit wonky to avoid a security-based race condition wherein we check if the file exists (it does),
+            # it gets modified, and then we use the file, still assuming it's the same.
+            size = 0
+            try:
+                newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
+                with open(newPath):
+                    st = os.stat(newPath)
+                    size = st.st_size
+            except IOError:
+                log.info('aborting 500')
+                abort(500)
             l = []
             d = {}
             d['name'] = savename
-            d['size'] = st.st_size
+            d['size'] = size
+            log.info(size)
             if 'site_base_url' in config:
                 siteURL = config['site_base_url']
             else:
-                siteURL = 'http://www.civinomics.com'
+                siteURL = 'http://civinomics.com'
             
             d['url'] = '%s/images/%s/%s/orig/%s.jpg' % (siteURL, identifier, directoryNumber, hash)
             d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.jpg' % (siteURL, identifier, directoryNumber, hash)
