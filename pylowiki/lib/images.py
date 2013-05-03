@@ -55,7 +55,10 @@ def getImageLocation(slide):
     identifier = getImageIdentifier('slide')
     directoryNumber = str(int(identifier['numImages']) / numImagesInDirectory)
     origPathname = os.path.join(config['app_conf']['imageDirectory'], 'slide', directoryNumber,'orig')
-    origFullpath = origPathname + '/%s.jpg' %(imgHash)
+    if 'format' in slide.keys():
+        origFullpath = origPathname + '/%s.%s' %(imgHash, slide['format'])
+    else:
+        origFullpath = origPathname + '/%s.jpg' %(imgHash)
     return origFullpath, directoryNumber
 
 # Save an image to disk

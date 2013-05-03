@@ -50,6 +50,7 @@ def setMainImage(user, workshop, slide):
         imgHash = u'supDawg'
         directoryNum = u'0'
     mainImage['pictureHash'] = imgHash
+    mainImage['format'] = u'png'
     # Possible edge case: orig is in directory 0, thumbnail in directory 1.  But all three get processed 
     # in the same function, so this *shouldn't* happen
     mainImage['directoryNum'] = directoryNum

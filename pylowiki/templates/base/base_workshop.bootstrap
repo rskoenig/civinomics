@@ -73,6 +73,8 @@
    <%
       if c.mainImage['pictureHash'] == 'supDawg':
          backgroundImage = '"/images/slide/slideshow/supDawg.slideshow"'
+      elif 'format' in c.mainImage.keys():
+         backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
       else:
          backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
    %>

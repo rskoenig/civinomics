@@ -33,6 +33,8 @@
          <% 
             if mainImage['pictureHash'] == 'supDawg':
                imgSrc="/images/slide/thumbnail/supDawg.thumbnail"
+            elif 'format' in mainImage.keys():
+                imgSrc="/images/mainImage/%s/listing/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
             else:
                imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
          %>

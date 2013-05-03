@@ -184,6 +184,8 @@
          if kwargs['raw'] == True:
             if mainImage['pictureHash'] == 'supDawg':
                return "/images/slide/thumbnail/supDawg.thumbnail"
+            elif 'format' in mainImage.keys():
+                return "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
             else:
                return "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
                
@@ -194,6 +196,8 @@
       imgStr += '">'
       if mainImage['pictureHash'] == 'supDawg':
          picturePath = "/images/slide/thumbnail/supDawg.thumbnail"
+      elif 'format' in mainImage.keys():
+         picturePath = "/images/mainImage/%s/thumbnail/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
       else:
          picturePath = "/images/mainImage/%s/thumbnail/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
       title = w['title']

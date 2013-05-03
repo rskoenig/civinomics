@@ -204,6 +204,10 @@
          <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
             <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
          </a>
+      % elif 'format' in slide.keys():
+         <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
+            <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}" data-caption="${slide['title']}"/>
+         </a>
       % else:
          <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
             <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
