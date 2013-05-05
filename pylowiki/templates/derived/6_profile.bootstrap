@@ -5,7 +5,7 @@
 <%!
     from pylowiki.lib.db.user import isAdmin
 %>
-<div class="row-fluid">
+<div class="row-fluid" ng-controller="ProfileEditController">
     <div class="span8">
         <div class="tabbable"> <!-- Only required for left/right tabs -->
             <ul class="nav nav-tabs" id="profileTabs">
@@ -83,8 +83,9 @@
     % if 'user' in session:
         % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
             <script src="${lib_6.fingerprintFile('/js/geo.js')}" type="text/javascript"></script>
-        % endif
+        % endif 
     % endif
+
 </%def>
 
 <%def name="headScripts()">

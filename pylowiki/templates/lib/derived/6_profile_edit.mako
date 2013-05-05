@@ -15,7 +15,7 @@
 <%def name="profileInfo()">
     <div class="section-wrapper">
         <div class="browse">
-	        <form id="infoEdit" name="infoEdit" ng-controller="ProfileEditController" enctype="multipart/form-data" method="post" class="form-horizontal" ng-submit="submitProfileEdit()">
+	        <form id="infoEdit" name="infoEdit" enctype="multipart/form-data" method="post" class="form-horizontal" ng-submit="submitProfileEdit()">
     		    <h4 class="section-header" style="text-align: center"><br />Update Your Profile Information</h4><br />
                 <fieldset>
 			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">

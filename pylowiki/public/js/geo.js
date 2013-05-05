@@ -182,7 +182,7 @@ $('.geoTagCountry').change(function(e){
 function geoCheckPostalCode(){
     var postalCode = document.getElementById("postalCode").value;
     document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = "";
-    var checkURL = "/geo/cityState/" + postalCode
+    var checkURL = "/geo/cityStateCountry/" + postalCode
     var checkResult = $.ajax({
         type : 'POST',
         async : false,

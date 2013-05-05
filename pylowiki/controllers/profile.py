@@ -37,11 +37,18 @@ class ProfileController(BaseController):
     def __before__(self, action, id1 = None, id2 = None):
         if action not in ['hashPicture']:
             if id1 is not None and id2 is not None:
-                c.user = userLib.get_user(id1, id2)
+                c.user = userLib.getUserByCode(id1)
                 if not c.user:
                     abort(404)
             else:
                 abort(404)
+
+            c.geoInfo = []
+            gList = geoInfoLib.getGeoInfo(c.user.id)
+            for g in gList:
+                if g['disabled'] == '0':
+                    c.geoInfo.append(g)
+                
             c.isAdmin = False
             if 'user' in session:
                 if userLib.isAdmin(c.authuser.id):
@@ -60,13 +67,7 @@ class ProfileController(BaseController):
 
         c.revisions = revisionLib.getParentRevisions(c.user.id)
         c.title = c.user['name']
-        #c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
-        c.geoInfo = []
-        gList = geoInfoLib.getGeoInfo(c.user.id)
-        for g in gList:
-            if g['disabled'] == '0':
-                c.geoInfo.append(g)
-                
+               
         c.isFollowing = False
         c.isUser = False
         c.browse = False
@@ -318,6 +319,7 @@ class ProfileController(BaseController):
         perrorMsg = ""
         changeMsg = ""
         nameChange = False
+        postalChange = False
         anyChange = False
         name = False
         email = False
@@ -411,7 +413,9 @@ class ProfileController(BaseController):
                     
             # make a new one
             g = geoInfoLib.GeoInfo(postalCode, 'United States', c.user.id)
-                    
+            c.geoInfo = []
+            c.geoInfo.append(g)
+            postalChange = True
             
         if greetingMsg and greetingMsg != '' and greetingMsg != c.user['greetingMsg']:
             c.user['greetingMsg'] = greetingMsg
@@ -441,7 +445,7 @@ class ProfileController(BaseController):
             dbHelpers.commit(c.user)
             eventLib.Event('Profile updated.', changeMsg, c.user, c.authuser)
             revisionLib.Revision(c.authuser, c.user)
-            if nameChange:
+            if postalChange:
                 statusCode = 2
             else:
                 statusCode = 0

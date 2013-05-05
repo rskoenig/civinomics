@@ -13,11 +13,30 @@ function ProfileEditController($scope, $http) {
             var alertHTML = '<div class="alert ' + alertClass + '"><button type="button" class="close" data-dismiss="alert">&times;</button>' + data.result + '</div>'
             document.getElementById("submitResult").innerText = document.getElementById("submitResult").textContent = '';
             document.getElementById("submitResult").innerHTML = alertHTML;
-            if(data.statusCode == '2'){
-                location.hash = 'tab-edit'
-                location.pathname = data.returnURL;
+            window.history.replaceState('Object', 'Title', data.returnURL);
+            $scope.dashboardFullName = $scope.fullName;
+            $scope.dashboardGreetingMsg = $scope.greetingMsg;
+            $scope.dashboardWebsiteLink = $scope.websiteLink;
+            $scope.dashboardWebsiteDesc = $scope.websiteDesc;
+            if(data.statusCode == '2') {
+                $scope.updateGeoLinks();
             }
       });
+    }
+    $scope.updateGeoLinks = function(){
+        var submitURL = "/geo/cityStateCountryLink/" + $scope.postalCode
+        $http.get(submitURL).success(function(data){
+            if(data.statusCode == '0'){
+                $scope.cityTitle = data.cityTitle;
+                $scope.cityURL = data.cityURL;
+                $scope.stateTitle = data.stateTitle;
+                $scope.stateURL = data.stateURL;
+                $scope.countryTitle = data.countryTitle;
+                $scope.countryURL = data.countryURL;
+            }
+      });
+        
+        
     }
 };
 
