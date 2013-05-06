@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, response, session, config, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
@@ -27,6 +27,7 @@ import pylowiki.lib.db.tag              as tagLib
 import pylowiki.lib.utils               as utils
 
 import time, datetime
+import simplejson as json
 
 
 log = logging.getLogger(__name__)
@@ -36,11 +37,18 @@ class ProfileController(BaseController):
     def __before__(self, action, id1 = None, id2 = None):
         if action not in ['hashPicture']:
             if id1 is not None and id2 is not None:
-                c.user = userLib.get_user(id1, id2)
+                c.user = userLib.getUserByCode(id1)
                 if not c.user:
                     abort(404)
             else:
                 abort(404)
+
+            c.geoInfo = []
+            gList = geoInfoLib.getGeoInfo(c.user.id)
+            for g in gList:
+                if g['disabled'] == '0':
+                    c.geoInfo.append(g)
+                
             c.isAdmin = False
             if 'user' in session:
                 if userLib.isAdmin(c.authuser.id):
@@ -59,13 +67,7 @@ class ProfileController(BaseController):
 
         c.revisions = revisionLib.getParentRevisions(c.user.id)
         c.title = c.user['name']
-        #c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
-        c.geoInfo = []
-        gList = geoInfoLib.getGeoInfo(c.user.id)
-        for g in gList:
-            if g['disabled'] == '0':
-                c.geoInfo.append(g)
-                
+               
         c.isFollowing = False
         c.isUser = False
         c.browse = False
@@ -317,6 +319,7 @@ class ProfileController(BaseController):
         perrorMsg = ""
         changeMsg = ""
         nameChange = False
+        postalChange = False
         anyChange = False
         name = False
         email = False
@@ -335,17 +338,19 @@ class ProfileController(BaseController):
             
         session['confTab'] = "tab1"
         session.save()
+        
+        payload = json.loads(request.body)
 
-        if 'member_name' in request.params:
-            name = request.params['member_name']
+        if 'member_name' in payload:
+            name = payload['member_name']
             if name == '':
                name = False
         if not name:
             perror = 1
             perrorMsg = perrorMsg + ' Member name required.'
 
-        if 'email' in request.params:
-            email = request.params['email']
+        if 'email' in payload:
+            email = payload['email']
             if email == '':
                 email = False
             elif email != c.user['email']:
@@ -358,8 +363,8 @@ class ProfileController(BaseController):
             perror = 1
             perrorMsg = perrorMsg + ' Email required.'
         
-        if 'postalCode' in request.params:
-            postalCode = request.params['postalCode']
+        if 'postalCode' in payload:
+            postalCode = payload['postalCode']
             if postalCode == '':
                 postalCode = False
             elif postalCode != c.user['postalCode']:
@@ -374,15 +379,15 @@ class ProfileController(BaseController):
             perror = 1
             perrorMsg = perrorMsg + ' Postal code required.'
 
-        if 'greetingMsg' in request.params:
-            greetingMsg = request.params['greetingMsg']
+        if 'greetingMsg' in payload:
+            greetingMsg = payload['greetingMsg']
 
 
-        if 'websiteLink' in request.params:
-            websiteLink = request.params['websiteLink']
+        if 'websiteLink' in payload:
+            websiteLink = payload['websiteLink']
 
-        if 'websiteDesc' in request.params:
-            websiteDesc = request.params['websiteDesc']
+        if 'websiteDesc' in payload:
+            websiteDesc = payload['websiteDesc']
 
         if name and name != '' and name != c.user['name']:
             c.user['name'] = name
@@ -393,7 +398,7 @@ class ProfileController(BaseController):
             c.user['email'] = email
             anyChange = True
             changeMsg = changeMsg + "Member email updated. "
-        if postalCode and postalCode != '' and email != c.user['postalCode']:
+        if postalCode and postalCode != '' and postalCode != c.user['postalCode']:
             c.user['postalCode'] = postalCode
             anyChange = True
             changeMsg = changeMsg + "Postal code updated. "
@@ -404,10 +409,13 @@ class ProfileController(BaseController):
                 if g['disabled'] == u'0':
                     g['disabled'] = u'1'
                     g['deactivated'] = SQLtoday
+                    dbHelpers.commit(g)
                     
             # make a new one
             g = geoInfoLib.GeoInfo(postalCode, 'United States', c.user.id)
-                    
+            c.geoInfo = []
+            c.geoInfo.append(g)
+            postalChange = True
             
         if greetingMsg and greetingMsg != '' and greetingMsg != c.user['greetingMsg']:
             c.user['greetingMsg'] = greetingMsg
@@ -431,33 +439,23 @@ class ProfileController(BaseController):
                 session.save()
                 c.authuser = c.user
             log.info('Changed name')
+            
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
         if anyChange and perror == 0:
             dbHelpers.commit(c.user)
             eventLib.Event('Profile updated.', changeMsg, c.user, c.authuser)
             revisionLib.Revision(c.authuser, c.user)
-            alert = {'type':'success'}
-            alert['title'] = changeMsg
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
+            if postalChange:
+                statusCode = 2
+            else:
+                statusCode = 0
+            return json.dumps({'statusCode':statusCode, 'result':changeMsg, 'returnURL':returnURL})
 
         elif perror == 1:
-            alert = {'type':'error'}
-            alert['title'] = perrorMsg 
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-
+            return json.dumps({'statusCode':'1', 'result':perrorMsg, 'returnURL':returnURL})
         else:
-            if 'alert' not in session:
-                alert = {'type':'error'}
-                alert['title'] = 'No changes submitted.'
-                alert['content'] = ''
-                session['alert'] = alert
-                session.save()
-               
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
-        return redirect(returnURL)
+            return json.dumps({'statusCode':'1', 'result':'No changes submitted.'})
+
         
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):

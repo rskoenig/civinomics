@@ -275,16 +275,40 @@
     </div>
     <div class="section-wrapper">
         <div class="browse">
-            <h3 class="section-header">${c.user['name']}</h3>
-            <p>${lib_6.userGeoLink(c.user)}</p>
+            %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                <div ng-init="updateGeoLinks(); dashboardFullName='${c.user['name']}'">
+                    <h3 class="section-header">{{dashboardFullName}}</h3>
+                    <p><a href="{{cityURL}}">{{cityTitle}}</a>, <a href="{{stateURL}}">{{stateTitle}}</a>, <a href="{{countryURL}}">{{countryTitle}}</a>
+                </div>
+            %else:
+                <h3 class="section-header">${c.user['name']}</h3>
+                <p>${lib_6.userGeoLink(c.user)}</p>
+            %endif
+            
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
             % if c.user['greetingMsg'] != '':
-                <small class="muted expandable">${c.user['greetingMsg']}</small>
+                %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                    <div ng-init="dashboardGreetingMsg='${c.user['greetingMsg']}'">
+                    <small class="muted expandable">{{dashboardGreetingMsg}}</small>
+                %else:
+                    <small class="muted expandable">${c.user['greetingMsg']}</small>
+                %endif
             % endif
             % if c.user['websiteLink'] != '':
-                <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
+                %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                    <div ng-init="dashboardWebsiteLink='${c.user['websiteLink']}'">
+                    <p class = "expandable no-bottom"><a href="{{dashboardWebsiteLink}}" target="_blank">{{dashboardWebsiteLink}}</a></p>
+                %else:
+                    <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
+                % endif
                 % if c.user['websiteDesc'] != '':
-                    <small class="muted expandable">${c.user['websiteDesc']}</small>
+                    %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                        <div ng-init="dashboardWebsiteDesc='${c.user['websiteDesc']}'">
+                            <small class="muted expandable">{{dashboardWebsiteDesc}}</small>
+                        </div>
+                    %else:
+                        <small class="muted expandable">${c.user['websiteDesc']}</small>
+                    %endif
                 % endif
             % endif
             <hr>

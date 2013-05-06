@@ -15,28 +15,27 @@
 <%def name="profileInfo()">
     <div class="section-wrapper">
         <div class="browse">
-	        <form action="/profile/${c.user['urlCode']}/${c.user['url']}/info/edit/handler" id="infoEdit" enctype="multipart/form-data" method="post" class="form-horizontal">
+	        <form id="infoEdit" name="infoEdit" enctype="multipart/form-data" method="post" class="form-horizontal" ng-submit="submitProfileEdit()">
     		    <h4 class="section-header" style="text-align: center"><br />Update Your Profile Information</h4><br />
                 <fieldset>
-			    <div class="control-group">
-				    <label for="member-name" class="control-label">Name:</label>
+			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">
+				    <label for="member-name" class="control-label">Your Name:</label>
 				    <div class="controls">
-					    <input type="text" id="member-name" name="member_name" value="${c.user['name']}">
-					    <span class="help-inline"><span class="label label-important">Required</span></span>
+					    <input type="text" id="member-name" name="member_name" value="${c.user['name']}" ng-model="fullName" ng-init="fullName='${c.user['name']}'" ng-pattern="fullNameRegex" required>
+                        <span class="error help-block" ng-show="infoEdit.member_name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
 			    <div class="control-group">
 				    <label for="email" class="control-label">Email:</label>
 				    <div class="controls">
-					    <input type="text" id="email" name="email" value="${c.user['email']}">
-					    <span class="help-inline"><span class="label label-important">Required</span> (not displayed)</span>
+					    <input type="text" id="email" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-                <div class="control-group">
+                <div ng-class=" {'control-group': true, 'error': infoEdit.postalCode.$error.pattern} ">
 				    <label for="postalCode" class="control-label">Postal code:</label>
-				    <div class="controls">
-					    <input type="text" id="postalCode" name="postalCode"  value="${c.user['postalCode']}" onBlur="geoCheckPostalCode()">
-					    <span class="help-inline"><span class="label label-important">Required</span></span><br />
+                    <div class="controls">
+					    <input type="text" id="postalCode" name="postalCode" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required><br />
+                        <span class="error help-block" ng-show="infoEdit.postalCode.$error.pattern">Use only numbers.</span>
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
@@ -51,23 +50,24 @@
         	    <div class="control-group">
 				    <label for="greetingMsg" class="control-label">Enter a greeting message for visitors to your profile:</label>
 				    <div class="controls">
-                        <textarea name="greetingMsg" rows=4 cols=50>${c.user['greetingMsg']}</textarea>
+                        <textarea name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 cols=50></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
 				    <label for="orgLink" class="control-label">Enter the URL to your website:</label>
     			    <div class="controls">
-                        <input type="text" name="websiteLink" value="${c.user['websiteLink']}">
+                        <input type="text" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
 				    <label for="orgLinkMsg" class="control-label">Enter a description of your website:</label>
 				    <div class="controls">
-                        <textarea name="websiteDesc" rows=4 cols=50>${c.user['websiteDesc']}</textarea>
+                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 cols=50></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
 		        </fieldset>
-                <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+                <button type="submit" class="btn btn-warning" name="submit">Save Changes</button><br />
+                <span id="submitResult"></span>
 	        </form>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
