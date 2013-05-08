@@ -647,19 +647,27 @@ ul.listeners > li {
 .orange{
     color:#D15D00;
 }
-
 .purple{
     color:#56005D;
 }
-
 .black{
     color:#333333;
 }
-
 .green-hover:hover{
     color:#075D00;
 }
-
+.light-green{
+    background-color:#dff0d8;
+}
+.light-red{
+    background-color:#f2dede;
+}
+.light-yellow{
+    background-color:#fcf8e3;
+}
+.light-blue{
+    background-color:#d9edf7;
+}
 .profile-workshop{
     padding-right:5px;
 }
@@ -1047,4 +1055,14 @@ li.thumbnail-gallery{
     padding-top:5px;
     padding-bottom:10px;
     padding-left:10px;
+}
+
+#infoEdit{
+    margin-bottom:0;
+}
+.form-actions.save-profile{
+    padding-left:190px;
+    margin-left:-10px;
+    margin-right:-10px;
+    margin-bottom:-20px;
 }

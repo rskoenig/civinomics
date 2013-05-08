@@ -435,24 +435,21 @@
                     <div class="section-wrapper">
                         <div class="browse">
                             <div style="text-align: center">
-                                <h4 class="section-header"><br />Edit Profile</h4>
-                                For the periodic upkeep of your Civinomics profile.<br /><br />
+                                <h4 class="section-header smaller">Edit Profile</h4>
                             </div><!-- center -->
                             <ul class="nav nav-pills nav-stacked">
-                            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Update your profile info
+                            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Info
                             </a></li>
-                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">2. Change your password<br />
+                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">2. Password
                             </a></li>
                             % if c.admin:
-                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">3. Administrate<br />
+                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">3. Administrate
                             Admin only - shhh!.</a></li>
                             % endif
                             </ul>
-                            <div style="text-align: center">
+                            <div>
                                 <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/display/create/form">
-                                <br />
                                 <button type="submit" class="btn btn-warning">Create a Workshop!</button>
-                                <br /><br />
                                 </form>
                             </div><!-- center -->
                         </div><!-- browse -->

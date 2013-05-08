@@ -1,6 +1,8 @@
 function ProfileEditController($scope, $http) {
     $scope.fullNameRegex = /^([A-Za-z0-9-_\s])+$/;
     $scope.postalCodeRegex = /^\d*$/;
+    $scope.formState = 'light-blue';
+    $scope.formStateMessage = 'No changes';
     
     $scope.submitProfileEdit = function(){
         var submitURL = location.pathname + "/info/edit/handler"

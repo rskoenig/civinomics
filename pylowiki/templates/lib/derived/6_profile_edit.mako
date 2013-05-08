@@ -15,59 +15,78 @@
 <%def name="profileInfo()">
     <div class="section-wrapper">
         <div class="browse">
-	        <form id="infoEdit" name="infoEdit" enctype="multipart/form-data" method="post" class="form-horizontal" ng-submit="submitProfileEdit()">
-    		    <h4 class="section-header" style="text-align: center"><br />Update Your Profile Information</h4><br />
+	        <form id="infoEdit" name="infoEdit" enctype="multipart/form-data" method="post" class="form-horizontal edit-profile" ng-submit="submitProfileEdit()">
+    		    <h4 class="section-header smaller">Update Your Profile Information</h4>
                 <fieldset>
 			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">
 				    <label for="member-name" class="control-label">Your Name:</label>
 				    <div class="controls">
-					    <input type="text" id="member-name" name="member_name" value="${c.user['name']}" ng-model="fullName" ng-init="fullName='${c.user['name']}'" ng-pattern="fullNameRegex" required>
+					    <input type="text" id="member-name" class="span10" name="member_name" value="${c.user['name']}" ng-model="fullName" ng-init="fullName='${c.user['name']}'" ng-pattern="fullNameRegex" required>
                         <span class="error help-block" ng-show="infoEdit.member_name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
 			    <div class="control-group">
 				    <label for="email" class="control-label">Email:</label>
 				    <div class="controls">
-					    <input type="text" id="email" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
+					    <input type="text" id="email" class="span10" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
                 <div ng-class=" {'control-group': true, 'error': infoEdit.postalCode.$error.pattern} ">
 				    <label for="postalCode" class="control-label">Postal code:</label>
                     <div class="controls">
-					    <input type="text" id="postalCode" name="postalCode" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required><br />
+					    <input type="text" id="postalCode" class="span10" name="postalCode" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required>
+                        <br />
                         <span class="error help-block" ng-show="infoEdit.postalCode.$error.pattern">Use only numbers.</span>
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
              <div class="control-group">
-                <label for="image" class="control-label">Image:</label>
+                <label for="image" class="control-label">Avatar:</label>
                 <div class="controls">
-                    <span id="image" class="help-inline">
-                        Change and manage your profile picture at <a href="http://www.gravatar.com" target="_blank">Gravatar</a>
-                    </span>
+                    <label class="radio">
+                        <input type="radio" name="radioAvatar" id="radioAvatarGravatar" value="gravatar" checked>
+                        Change and manage your avatar at <a href="http://www.gravatar.com" target="_blank">Gravatar</a>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="radioAvatar" id="radioAvatarCiv" value="civ">
+                        Upload an image: <input type="file" name="image-avatar">
+                    </label>
                 </div>
              </div>
         	    <div class="control-group">
-				    <label for="greetingMsg" class="control-label">Enter a greeting message for visitors to your profile:</label>
+				    <label for="greetingMsg" class="control-label">A greeting message:</label>
 				    <div class="controls">
-                        <textarea name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 cols=50></textarea>
+                        <textarea name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="span10"></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
-				    <label for="orgLink" class="control-label">Enter the URL to your website:</label>
+				    <label for="orgLink" class="control-label">Your website:</label>
     			    <div class="controls">
-                        <input type="text" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
+                        <input type="text" class="span10" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
-				    <label for="orgLinkMsg" class="control-label">Enter a description of your website:</label>
+				    <label for="orgLinkMsg" class="control-label">A description of your website:</label>
 				    <div class="controls">
-                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 cols=50></textarea>
+                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="span10"></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-		        </fieldset>
-                <button type="submit" class="btn btn-warning" name="submit">Save Changes</button><br />
-                <span id="submitResult"></span>
+                <%doc>
+                <div class="control-group">
+                    <label for="submitResult">
+                        <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+                    </label>
+                    <div class="controls">
+                        <span id="submitResult"></span>
+                        <span class="help-inline" id="submitResult">Inline help text</span>
+                    </div> <!--/.controls-->
+                </div> <!--/.control-group -->
+                </%doc>
+                <div class="form-actions save-profile" ng-class="formState">
+                    <button type="submit" class="btn btn-primary" ng-class="{disabled:!infoEdit.$dirty}">Save changes</button>
+                    <span class="help-inline" id="submitResult" ng-cloak>{{formStateMessage}}</span>
+                </div>
+                </fieldset>
 	        </form>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
@@ -210,7 +229,7 @@
 <%def name="changePassword()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Change Your Password</h4><br />
+            <h4 class="section-header smaller">Change Your Password</h4>
             <form action="/profile/${c.user['urlCode']}/${c.user['url']}/password/update/handler" enctype="multipart/form-data" method="post" class="form-horizontal">
 		    <fieldset>
             <div class="control-group">
