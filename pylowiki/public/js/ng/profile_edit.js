@@ -9,6 +9,9 @@ function ProfileEditController($scope, $http) {
     $scope.submitStatus = '-1';
     
     $scope.submitProfileEdit = function(){
+        if (!$scope.infoEdit.$dirty){
+            return false;
+        }
         var submitURL = location.pathname + "/info/edit/handler"
         var thisForm = {member_name:$scope.fullName, email:$scope.email, postalCode:$scope.postalCode, greetingMsg:$scope.greetingMsg, websiteLink:$scope.websiteLink, websiteDesc:$scope.websiteDesc};
         $http.post(submitURL, thisForm).success(function(data){
