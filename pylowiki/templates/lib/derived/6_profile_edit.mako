@@ -82,9 +82,12 @@
                     </div> <!--/.controls-->
                 </div> <!--/.control-group -->
                 </%doc>
-                <div class="form-actions save-profile" ng-class="formState">
-                    <button type="submit" class="btn btn-primary" ng-class="{disabled:!infoEdit.$dirty}">Save changes</button>
-                    <span class="help-inline" id="submitResult" ng-cloak>{{formStateMessage}}</span>
+                <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
+                    <button type="submit" class="btn btn-primary" ng-class="{'disabled':!infoEdit.$dirty}">Save changes</button>
+                    <span class="help-inline" ng-show="infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
+                    <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
+                    <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
+                    <span class="help-inline" ng-show="submitStatus == 1" ng-cloak>Error saving changes</span>
                 </div>
                 </fieldset>
 	        </form>
