@@ -21,7 +21,7 @@
             <div class="span6">
                 <ul class="pricing-table">
                     <li class="title">Pro</li>
-                    <li class="price">$100 per month</li>
+                    <li class="price">$15 per month</li>
                     <li class="description"> Best for community builders </li>
                     <li class="bullet-item"> Private or public </li>
                     <li class="bullet-item"> Unlimited members </li>
