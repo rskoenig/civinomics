@@ -1,4 +1,9 @@
 function ProfileEditController($scope, $http) {
+    /*
+    * submitStatus: 0   ->  Successfully submitted, like with Unix status codes
+    *               1   ->  Error
+    *               -1  ->  Not yet submitted
+    */
     $scope.fullNameRegex = /^([A-Za-z0-9-_\s])+$/;
     $scope.postalCodeRegex = /^\d*$/;
     $scope.submitStatus = '-1';

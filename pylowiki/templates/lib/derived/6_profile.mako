@@ -277,7 +277,7 @@
         <div class="browse">
             %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
                 <div ng-init="updateGeoLinks(); dashboardFullName='${c.user['name']}'">
-                    <h3 class="section-header">{{dashboardFullName}}</h3>
+                    <h3 class="section-header">{{fullName}}</h3>
                     <p><a href="{{cityURL}}">{{cityTitle}}</a>, <a href="{{stateURL}}">{{stateTitle}}</a>, <a href="{{countryURL}}">{{countryTitle}}</a>
                 </div>
             %else:
@@ -289,7 +289,7 @@
             % if c.user['greetingMsg'] != '':
                 %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
                     <div ng-init="dashboardGreetingMsg='${c.user['greetingMsg']}'">
-                    <small class="muted expandable">{{dashboardGreetingMsg}}</small>
+                    <small class="muted expandable">{{greetingMsg}}</small>
                 %else:
                     <small class="muted expandable">${c.user['greetingMsg']}</small>
                 %endif
@@ -304,7 +304,7 @@
                 % if c.user['websiteDesc'] != '':
                     %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
                         <div ng-init="dashboardWebsiteDesc='${c.user['websiteDesc']}'">
-                            <small class="muted expandable">{{dashboardWebsiteDesc}}</small>
+                            <small class="muted expandable">{{websiteDesc}}</small>
                         </div>
                     %else:
                         <small class="muted expandable">${c.user['websiteDesc']}</small>
