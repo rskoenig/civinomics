@@ -126,5 +126,6 @@
 
 <%def name="extraStyles()">
     <link rel="stylesheet" href="/styles/vendor/jquery.Jcrop.css">
+    <link rel="stylesheet" href="/styles/vendor/blueimp.css">
 </%def>
 

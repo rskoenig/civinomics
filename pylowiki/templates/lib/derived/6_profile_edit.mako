@@ -99,77 +99,61 @@
 <%def name="profilePicture()">
      <div class="section-wrapper">
         <div class="browse">
-            <div class="row-fluid">
-                <h4 class="section-header smaller">Add or Change Your Pictures</h4>
-                <form id="fileupload" action="#" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
-                    <!-- Redirect browsers with JavaScript disabled to the origin page -->
-                    <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
-                    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-                    <div class="row fileupload-buttonbar">
-                        <div class="span7">
-                            <!-- The fileinput-button span is used to style the file input field as button -->
-                            <span class="btn btn-success fileinput-button">
-                                <i class="icon-plus icon-white"></i>
-                                <span>Add files...</span>
-                                <input type="file" name="files[]" multiple="">
-                            </span>
-                            <button type="button" class="btn btn-primary start" data-ng-click="submit()">
-                                <i class="icon-upload icon-white"></i>
-                                <span>Start upload</span>
-                            </button>
-                            <button type="button" class="btn btn-warning cancel" data-ng-click="cancel()">
-                                <i class="icon-ban-circle icon-white"></i>
-                                <span>Cancel upload</span>
-                            </button>
-                            <!-- The loading indicator is shown during file processing -->
-                            <div class="fileupload-loading"></div>
-                        </div>
-                        <!-- The global progress information -->
-                        <div class="span5 fade" data-ng-class="{true: 'in'}[!!active()]">
-                            <!-- The global progress bar -->
-                            <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
-                            <!-- The extended global progress information -->
-                            <div class="progress-extended">&nbsp;</div>
-                        </div>
+            <h4 class="section-header smaller">Add or Change Your Pictures</h4>
+            <form id="fileupload" action="#" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
+                <!-- Redirect browsers with JavaScript disabled to the origin page -->
+                <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
+                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                <div class="row-fluid fileupload-buttonbar">
+                    <div class="span10 offset1">
+                        <!-- The fileinput-button span is used to style the file input field as button -->
+                        <span class="btn btn-success fileinput-button span6 offset3">
+                            <i class="icon-plus icon-white"></i>
+                            <span>Select your picture</span>
+                            <input type="file" name="files[]">
+                        </span>
+                        <!-- The loading indicator is shown during file processing -->
+                        <div class="fileupload-loading"></div>
                     </div>
-                    <!-- The table listing the files available for upload/download -->
-                    <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
-                        <tbody><tr data-ng-repeat="file in queue">
-                            <td data-ng-switch="" on="!!file.thumbnail_url">
-                                <div class="preview" data-ng-switch-when="true">
-                                    <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
-                                </div>
-                                <div class="preview" data-ng-switch-default="" data-preview="file"></div>
-                            </td>
-                            <td>
-                                <p class="name" data-ng-switch="" on="!!file.url">
-                                    <a data-ng-switch-when="true" data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}">{{file.name}}</a>
-                                    <span data-ng-switch-default="">{{file.name}}</span>
-                                </p>
-                                <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
-                            </td>
-                            <td>
-                                <p class="size">{{file.size | formatFileSize}}</p>
-                                <div class="progress progress-success progress-striped active fade" data-ng-class="{pending: 'in'}[file.$state()]" data-progress="file.$progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
-                                    <i class="icon-upload icon-white"></i>
-                                    <span>Start</span>
-                                </button>
-                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
-                                    <i class="icon-ban-circle icon-white"></i>
-                                    <span>Cancel</span>
-                                </button>
-                                <button data-ng-controller="FileDestroyController" type="button" class="btn btn-danger destroy" data-ng-click="file.$destroy()" data-ng-hide="!file.$destroy">
-                                    <i class="icon-ban-circle icon-white"></i>
-                                    <span>Delete</span>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody></table>
-                </form>
-            </div>
+                    <!-- The global progress information -->
+                </div>
+                <div class="row-fluid">
+                    <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
+                        <!-- The global progress bar -->
+                        <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
+                        <!-- The extended global progress information -->
+                        <div class="progress-extended">&nbsp;</div>
+                    </div>
+                </div>
+                <!-- The table listing the files available for upload/download -->
+                <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+                    <tbody><tr data-ng-repeat="file in queue">
+                        <td data-ng-switch="" on="!!file.thumbnail_url">
+                            <div class="preview" data-ng-switch-when="true">
+                                <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
+                            </div>
+                            <div class="preview" data-ng-switch-default="" data-preview="file"></div>
+                        </td>
+                        <td>
+                            <p class="name" data-ng-switch="" on="!!file.url">
+                                <a data-ng-switch-when="true" data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}">{{file.name}}</a>
+                                <span data-ng-switch-default="">{{file.name}}</span>
+                            </p>
+                            <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                                <i class="icon-upload icon-white"></i>
+                                <span>Start</span>
+                            </button>
+                            <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
+                                <i class="icon-ban-circle icon-white"></i>
+                                <span>Cancel</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </form>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
     
