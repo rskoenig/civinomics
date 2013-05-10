@@ -408,6 +408,7 @@
         tab3active = ""
         tab4active = ""
         tab5active = ""
+        tab6active = ''
                     
         if c.tab == "tab1":
             tab1active = "active"
@@ -419,6 +420,8 @@
             tab4active = "active"
         elif c.tab == "tab5":
             tab5active = "active"
+        elif c.tab == 'tab6':
+            tab6active = 'tab6'
         else:
             tab1active = "active"
     
@@ -440,10 +443,12 @@
                             <ul class="nav nav-pills nav-stacked">
                             <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Info
                             </a></li>
-                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">2. Password
+                            <li class="${tab6active}"><a href="#tab6" data-toggle="tab">2. Picture
+                            </a></li>
+                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">3. Password
                             </a></li>
                             % if c.admin:
-                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">3. Administrate
+                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">4. Administrate
                             Admin only - shhh!.</a></li>
                             % endif
                             </ul>
@@ -466,6 +471,9 @@
                             </div><!-- tab1 -->
                             <div class="tab-pane ${tab4active}" id="tab4">
                                 ${helpersEdit.changePassword()}
+                            </div><!-- tab4 -->
+                            <div class="tab-pane ${tab6active}" id="tab6">
+                                ${helpersEdit.profilePicture()}
                             </div><!-- tab4 -->
                             % if c.admin:
                                 <div class="tab-pane ${tab5active}" id="tab5">

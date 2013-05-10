@@ -15,7 +15,7 @@
 <%def name="profileInfo()">
     <div class="section-wrapper">
         <div class="browse">
-	        <form id="infoEdit" name="infoEdit" enctype="multipart/form-data" method="post" class="form-horizontal edit-profile" ng-submit="submitProfileEdit()">
+	        <form id="infoEdit" name="infoEdit" class="form-horizontal edit-profile" action="/info/edit/handler">
     		    <h4 class="section-header smaller">Update Your Profile Information</h4>
                 <fieldset>
 			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">
@@ -49,8 +49,9 @@
                     </label>
                     <label class="radio">
                         <input type="radio" name="radioAvatar" id="radioAvatarCiv" value="civ">
-                        Upload an image: <input type="file" name="image-avatar">
+                        Upload an image: <input type="file" name="image-avatar" id="image-avatar">
                     </label>
+                    <span><img src="" id="avatarUploadImage"></span>
                 </div>
              </div>
         	    <div class="control-group">
@@ -83,7 +84,7 @@
                 </div> <!--/.control-group -->
                 </%doc>
                 <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
-                    <button type="submit" class="btn btn-warning" ng-class="{'disabled':!infoEdit.$dirty}">Save changes</button>
+                    <input type="submit" class="btn btn-warning" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes"></input>
                     <span class="help-inline" ng-show="infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
                     <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
                     <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
@@ -93,6 +94,110 @@
 	        </form>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
+</%def>
+
+<%def name="profilePicture()">
+     <div class="section-wrapper">
+        <div class="browse">
+            <div class="row-fluid">
+                <h4 class="section-header smaller">Add or Change Your Pictures</h4>
+                <form id="fileupload" action="#" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
+                    <!-- Redirect browsers with JavaScript disabled to the origin page -->
+                    <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
+                    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                    <div class="row fileupload-buttonbar">
+                        <div class="span7">
+                            <!-- The fileinput-button span is used to style the file input field as button -->
+                            <span class="btn btn-success fileinput-button">
+                                <i class="icon-plus icon-white"></i>
+                                <span>Add files...</span>
+                                <input type="file" name="files[]" multiple="">
+                            </span>
+                            <button type="button" class="btn btn-primary start" data-ng-click="submit()">
+                                <i class="icon-upload icon-white"></i>
+                                <span>Start upload</span>
+                            </button>
+                            <button type="button" class="btn btn-warning cancel" data-ng-click="cancel()">
+                                <i class="icon-ban-circle icon-white"></i>
+                                <span>Cancel upload</span>
+                            </button>
+                            <!-- The loading indicator is shown during file processing -->
+                            <div class="fileupload-loading"></div>
+                        </div>
+                        <!-- The global progress information -->
+                        <div class="span5 fade" data-ng-class="{true: 'in'}[!!active()]">
+                            <!-- The global progress bar -->
+                            <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
+                            <!-- The extended global progress information -->
+                            <div class="progress-extended">&nbsp;</div>
+                        </div>
+                    </div>
+                    <!-- The table listing the files available for upload/download -->
+                    <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+                        <tbody><tr data-ng-repeat="file in queue">
+                            <td data-ng-switch="" on="!!file.thumbnail_url">
+                                <div class="preview" data-ng-switch-when="true">
+                                    <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
+                                </div>
+                                <div class="preview" data-ng-switch-default="" data-preview="file"></div>
+                            </td>
+                            <td>
+                                <p class="name" data-ng-switch="" on="!!file.url">
+                                    <a data-ng-switch-when="true" data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}">{{file.name}}</a>
+                                    <span data-ng-switch-default="">{{file.name}}</span>
+                                </p>
+                                <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
+                            </td>
+                            <td>
+                                <p class="size">{{file.size | formatFileSize}}</p>
+                                <div class="progress progress-success progress-striped active fade" data-ng-class="{pending: 'in'}[file.$state()]" data-progress="file.$progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                                    <i class="icon-upload icon-white"></i>
+                                    <span>Start</span>
+                                </button>
+                                <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
+                                    <i class="icon-ban-circle icon-white"></i>
+                                    <span>Cancel</span>
+                                </button>
+                                <button data-ng-controller="FileDestroyController" type="button" class="btn btn-danger destroy" data-ng-click="file.$destroy()" data-ng-hide="!file.$destroy">
+                                    <i class="icon-ban-circle icon-white"></i>
+                                    <span>Delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody></table>
+                </form>
+            </div>
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
+    
+    <div id="modal-gallery" class="modal modal-gallery hide fade" data-filter=":odd" tabindex="-1">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">&times;</a>
+        <h3 class="modal-title"></h3>
+    </div>
+    <div class="modal-body"><div class="modal-image"></div></div>
+    <div class="modal-footer">
+        <a class="btn modal-download" target="_blank">
+            <i class="icon-download"></i>
+            <span>Download</span>
+        </a>
+        <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000">
+            <i class="icon-play icon-white"></i>
+            <span>Slideshow</span>
+        </a>
+        <a class="btn btn-info modal-prev">
+            <i class="icon-arrow-left icon-white"></i>
+            <span>Previous</span>
+        </a>
+        <a class="btn btn-primary modal-next">
+            <span>Next</span>
+            <i class="icon-arrow-right icon-white"></i>
+        </a>
+    </div>
+</div>
 </%def>
 
 <%def name="profileMessages()">
