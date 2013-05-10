@@ -135,10 +135,6 @@
                             <div class="preview" data-ng-switch-default="" data-preview="file"></div>
                         </td>
                         <td>
-                            <p class="name" data-ng-switch="" on="!!file.url">
-                                <a data-ng-switch-when="true" data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}">{{file.name}}</a>
-                                <span data-ng-switch-default="">{{file.name}}</span>
-                            </p>
                             <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
                         </td>
                         <td>

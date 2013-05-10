@@ -92,13 +92,13 @@
             // Disable the resize image functionality by default:
             disableImageResize: true,
             // The maximum width of the preview images:
-            previewMaxWidth: 80,
+            previewMaxWidth: 300,
             // The maximum height of the preview images:
-            previewMaxHeight: 80,
+            previewMaxHeight: 300,
             // Define if preview images should be cropped or only scaled:
             previewCrop: false,
             // Define if preview images should be resized as canvas elements:
-            previewAsCanvas: true
+            previewAsCanvas: false
         },
 
         processActions: {
