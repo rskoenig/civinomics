@@ -156,7 +156,9 @@
                 </div>
             % endif
 
-            Specifiy if the workshop is public or private, and who may participate.<br /><br />
+            Specifiy if the workshop is public or private, and who may participate.
+            <br>
+            <br>
              ${change_scope()}
             <div class="tabbable">
                 <ul class="nav nav-tabs" id="scopeTab">
@@ -232,7 +234,7 @@
 </%def>
 
 <%def name="change_scope()">
-    <div class="span1"></div>
+    <div class="span3"><strong>Current Scope:</strong></div>
         <%
             if c.w['public_private'] == 'public':
                 currentScope = 'Public'
@@ -283,10 +285,10 @@
     <li>Private workshops are invitation only.</li>
     </ul>
     <form name="private" id="private" class="left form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <br /><strong>Manage Workshop Participants List</strong><br />
-    % if c.pmembers:        
-        <br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
-    % endif
+    <br>
+    <strong>Manage Workshop Members</strong>
+    <br>
+    <br>
     <!--
     <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     -->
@@ -313,7 +315,13 @@
             <div class="row-fluid">
                 <div class="span6">
 
-                    <strong>Workshop Members</strong>
+                    <strong>Workshop Members
+
+                    % if c.pmembers:
+                        (${len(c.pmembers)})
+                    % endif
+
+                    </strong>
                     <hr>
                     % for pmember in c.pmembers:
                         <label class="checkbox">
