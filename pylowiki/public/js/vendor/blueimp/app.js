@@ -16,7 +16,8 @@
 
     var isOnGitHub = window.location.hostname === 'blueimp.github.com' ||
             window.location.hostname === 'blueimp.github.io',
-        url = isOnGitHub ? '//jquery-file-upload.appspot.com/' : 'server/php/';
+        url = isOnGitHub ? '//jquery-file-upload.appspot.com/' : '/picture/upload/handler';
+        
 
     angular.module('civ', [
         'blueimp.fileupload'
@@ -50,7 +51,7 @@
                 if (!isOnGitHub) {
                     $scope.loadingFiles = true;
                     $scope.options = {
-                        url: url
+                        url: '/profile/' + $scope.code + '/' + $scope.url + url
                     };
                     $http.get(url)
                         .then(

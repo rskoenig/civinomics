@@ -17,9 +17,26 @@ def isImage(imgFile):
     except:
         return False
 
-# Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
-# Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.jpg
 def resizeImage(identifier, hash, x, y, postfix, **kwargs):
+    """
+        Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
+        Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.jpg
+        
+        optional arguments:
+        preserveAspectRatio         ->      Exactly as it sounds.  Boolean value.
+        crop                        ->      Boolean value.  Assumes the presence of a variable called 'cropOptions'
+        cropOptions                 ->      {'square': boolean,
+                                            'x': int,
+                                            'y': int,
+                                            'width': int,
+                                            'height': int}
+                                            If the 'square' option is set to True, then it will ignore x,y,width,height params and crop the image to a square
+                                            based on the smallest dimension.
+        
+        Note that so far, 'preserveAspectRatio' and 'crop' should not be called in the same function call.  However, if done so, the function will attempt to 
+        resize with a preserved aspect ratio first, and then crop.
+    """
+    
     i = getImageIdentifier(identifier)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
     
@@ -39,12 +56,51 @@ def resizeImage(identifier, hash, x, y, postfix, **kwargs):
                 width, height = im.size
                 ratio = min(float(maxwidth)/width, float(maxheight)/height)
                 dims = (int(im.size[0] * ratio), int(im.size[1] * ratio))
-        im = im.resize(dims, Image.ANTIALIAS)
+        if 'crop' in kwargs:
+            if kwargs['crop']:
+                if kwargs['cropOptions']['square']:
+                    minDim = min(im.size[0], im.size[1])
+                    box = (0, 0, minDim, minDim)
+                    im = im.crop(box)
+                else:
+                    opts = kwargs['cropOptions']
+                    box = (opts['x'], opts['y'], opts['width'], opts['height'])
+                    im = im.crop(box)
+            else:        
+                im = im.resize(dims, Image.ANTIALIAS)
+        else:        
+            im = im.resize(dims, Image.ANTIALIAS)
         pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
         if not os.path.exists(pathname):
             os.makedirs(pathname)
         
         im.save(pathname + '/' + hash + '.png' , 'PNG')
+        return True
+    except:
+        return False
+        
+def cropImage(identifier, hash, x, y, width, height, **kwargs):
+    i = getImageIdentifier(identifier)
+    directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
+    origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber,'orig')
+    origFullpath = origPathname + '/%s.png' %(hash)
+    
+    try:
+        im = Image.open(origFullpath)
+        box = (x, y, width, height)
+        if 'square' in kwargs:
+            if kwargs['square']:
+                imgWidth = im.size[0]
+                imgHeight = im.size[1]
+                minDimension = min(imgWidth, imgHeight)
+                box = (0, 0, minDimension, minDimension)
+        region = im.crop(box)
+        
+        pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
+        if not os.path.exists(pathname):
+            os.makedirs(pathname)
+        
+        region.save(pathname + '/' + hash + '.png' , 'PNG')
         return True
     except:
         return False

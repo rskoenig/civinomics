@@ -97,7 +97,8 @@
 </%def>
 
 <%def name="profilePicture()">
-     <div class="section-wrapper">
+    ## ng-init here is hacky and unclean
+     <div class="section-wrapper" ng-init="code='${c.user['urlCode']}'; url='${c.user['url']}'">
         <div class="browse">
             <h4 class="section-header smaller">Add or Change Your Pictures</h4>
             <form id="fileupload" action="#" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">

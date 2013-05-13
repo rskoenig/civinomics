@@ -25,6 +25,7 @@ import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.tag              as tagLib
 import pylowiki.lib.utils               as utils
+import pylowiki.lib.images              as imageLib
 
 import time, datetime
 import simplejson as json
@@ -456,6 +457,18 @@ class ProfileController(BaseController):
         else:
             return json.dumps({'statusCode':'1', 'result':'No changes submitted.'})
 
+    @h.login_required
+    def pictureUploadHandler(self, id1, id2):
+        if c.authuser.id != c.user.id:
+            abort(404)
+        file = request.params['files[]']
+        filename = file.filename
+        file = file.file
+        imageHash = imageLib.saveImage(file, filename, 'avatar', c.authuser)
+        c.authuser['pictureHash'] = imageHash
+        #imageLib.resizeImage('slide', hash, 99999, 99999, 'avatar') # don't resize, but antialias and save appropriately
+        imageLib.resizeImage('avatar', imageHash, 200, 200, 'avatar', crop=True, square=True)
+        return "OK"
         
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):
