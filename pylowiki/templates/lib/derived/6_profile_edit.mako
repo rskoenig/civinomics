@@ -85,8 +85,8 @@
                 </%doc>
                 <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
                     <input type="submit" class="btn btn-warning" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes"></input>
-                    <span class="help-inline" ng-show="infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
-                    <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
+                    <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
+                    <span class="help-inline" ng-show="infoEdit.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
                     <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
                     <span class="help-inline" ng-show="submitStatus == 1" ng-cloak>Error saving changes</span>
                 </div>
