@@ -461,14 +461,18 @@ class ProfileController(BaseController):
     def pictureUploadHandler(self, id1, id2):
         if c.authuser.id != c.user.id:
             abort(404)
-        file = request.params['files[]']
-        filename = file.filename
-        file = file.file
-        imageHash = imageLib.saveImage(file, filename, 'avatar', c.authuser)
-        c.authuser['pictureHash'] = imageHash
-        #imageLib.resizeImage('slide', hash, 99999, 99999, 'avatar') # don't resize, but antialias and save appropriately
-        imageLib.resizeImage('avatar', imageHash, 200, 200, 'avatar', crop=True, square=True)
-        return "OK"
+        
+        if 'files[]' in request.params.keys():
+            file = request.params['files[]']
+            filename = file.filename
+            file = file.file
+            imageHash = imageLib.saveImage(file, filename, 'avatar', c.authuser)
+            c.authuser['pictureHash'] = imageHash
+            imageLib.resizeImage('avatar', imageHash, 200, 200, 'avatar', crop=True, square=True)
+            utils.commit(c.authuser)
+            return "OK"
+        else:
+            abort(404)
         
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):
