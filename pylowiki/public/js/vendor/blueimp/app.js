@@ -53,7 +53,7 @@
                     $scope.options = {
                         url: '/profile/' + $scope.code + '/' + $scope.url + url
                     };
-                    $http.get(url)
+                    $http.get($scope.options.url)
                         .then(
                             function (response) {
                                 $scope.loadingFiles = false;

@@ -472,7 +472,7 @@ class ProfileController(BaseController):
             utils.commit(c.authuser)
             return "OK"
         else:
-            abort(404)
+            return json.dumps("OK")
         
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):
