@@ -41,6 +41,7 @@
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
              <div class="control-group">
+                <%doc>
                 <label for="image" class="control-label">Avatar:</label>
                 <div class="controls">
                     <label class="radio">
@@ -53,6 +54,7 @@
                     </label>
                     <span><img src="" id="avatarUploadImage"></span>
                 </div>
+                </%doc>
              </div>
         	    <div class="control-group">
 				    <label for="greetingMsg" class="control-label">A greeting message:</label>
@@ -101,7 +103,8 @@
      <div class="section-wrapper" ng-init="code='${c.user['urlCode']}'; url='${c.user['url']}'">
         <div class="browse">
             <h4 class="section-header smaller">Add or Change Your Pictures</h4>
-            <form id="fileupload" action="#" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
+            ##<form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
+            <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
                 <!-- Redirect browsers with JavaScript disabled to the origin page -->
                 <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
                 <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
@@ -153,32 +156,6 @@
             </form>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
-    
-    <div id="modal-gallery" class="modal modal-gallery hide fade" data-filter=":odd" tabindex="-1">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
-        <h3 class="modal-title"></h3>
-    </div>
-    <div class="modal-body"><div class="modal-image"></div></div>
-    <div class="modal-footer">
-        <a class="btn modal-download" target="_blank">
-            <i class="icon-download"></i>
-            <span>Download</span>
-        </a>
-        <a class="btn btn-success modal-play modal-slideshow" data-slideshow="5000">
-            <i class="icon-play icon-white"></i>
-            <span>Slideshow</span>
-        </a>
-        <a class="btn btn-info modal-prev">
-            <i class="icon-arrow-left icon-white"></i>
-            <span>Previous</span>
-        </a>
-        <a class="btn btn-primary modal-next">
-            <span>Next</span>
-            <i class="icon-arrow-right icon-white"></i>
-        </a>
-    </div>
-</div>
 </%def>
 
 <%def name="profileMessages()">

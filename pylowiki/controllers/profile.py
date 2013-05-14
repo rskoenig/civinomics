@@ -459,6 +459,28 @@ class ProfileController(BaseController):
 
     @h.login_required
     def pictureUploadHandler(self, id1, id2):
+        """
+            Expects a json-encoded string with the following format:
+            
+            {"files": [
+              {
+                "name": "picture1.jpg",
+                "size": 902604,
+                "url": "http:\/\/example.org\/files\/picture1.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture1.jpg",
+                "delete_type": "DELETE"
+              },
+              {
+                "name": "picture2.jpg",
+                "size": 841946,
+                "url": "http:\/\/example.org\/files\/picture2.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture2.jpg",
+                "delete_type": "DELETE"
+              }
+            ]}
+        """
         if c.authuser.id != c.user.id:
             abort(404)
         
@@ -467,12 +489,18 @@ class ProfileController(BaseController):
             filename = file.filename
             file = file.file
             imageHash = imageLib.saveImage(file, filename, 'avatar', c.authuser)
-            c.authuser['pictureHash'] = imageHash
+            c.authuser['pictureHash_avatar'] = imageHash
             imageLib.resizeImage('avatar', imageHash, 200, 200, 'avatar', crop=True, square=True)
-            utils.commit(c.authuser)
-            return "OK"
+            dbHelpers.commit(c.authuser)
+            jsonResponse =  {'files': [
+                                {
+                                    'name':filename,
+                                    'thumbnail_url':'/images/avatar/%s/orig/%s.png' %(c.authuser['directoryNum_avatar'], imageHash)
+                                }
+                            ]}
+            return json.dumps(jsonResponse)
         else:
-            return json.dumps("OK")
+            abort(404)
         
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):

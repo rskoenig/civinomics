@@ -15,8 +15,8 @@
     'use strict';
 
     var isOnGitHub = window.location.hostname === 'blueimp.github.com' ||
-            window.location.hostname === 'blueimp.github.io',
-        url = isOnGitHub ? '//jquery-file-upload.appspot.com/' : '/picture/upload/handler';
+            window.location.hostname === 'blueimp.github.io';
+        //url = isOnGitHub ? '//jquery-file-upload.appspot.com/' : '/picture/upload/handler';
         
 
     angular.module('civ', [
@@ -44,14 +44,15 @@
                 }
             }
         ])
-
+/*
         .controller('DemoFileUploadController', [
             '$scope', '$http',
             function ($scope, $http) {
                 if (!isOnGitHub) {
                     $scope.loadingFiles = true;
                     $scope.options = {
-                        url: '/profile/' + $scope.code + '/' + $scope.url + url
+                        //url: '/profile/' + $scope.code + '/' + $scope.url + url
+                        url: url
                     };
                     $http.get($scope.options.url)
                         .then(
@@ -66,7 +67,7 @@
                 }
             }
         ])
-
+*/
         .controller('FileDestroyController', [
             '$scope', '$http',
             function ($scope, $http) {

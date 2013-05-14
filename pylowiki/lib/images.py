@@ -137,6 +137,8 @@ def saveImage(image, filename, identifier, thing):
     
     fullpath = os.path.join(pathname, savename)
     thing['directoryNum'] = directoryNumber
+    directoryNumIdentifier = 'directoryNum_' + identifier
+    thing[directoryNumIdentifier] = directoryNumber
     commit(thing)
     
     # Now convert and save
