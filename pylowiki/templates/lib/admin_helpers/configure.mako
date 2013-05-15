@@ -140,25 +140,7 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Participants</h4>
-
-            % if c.w['type'] == 'personal':
-                <div class="alert alert-success">
-                    <div class="row-fluid">
-                        <div class="span9">
-                            You are running a Free workshop. To invite more than 20 private members or to add your workshop to public listings...
-                        </div>
-                        <div class="span3">
-                            <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST" class="no-bottom">
-                                <button type="submit" class="btn btn-large btn-civ pull-right">Upgrade to Pro</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            % endif
-
-            Specifiy if the workshop is public or private, and who may participate.
-            <br>
-            <br>
+            Specifiy if the workshop is public or private, and who may participate.<br /><br />
              ${change_scope()}
             <div class="tabbable">
                 <ul class="nav nav-tabs" id="scopeTab">
@@ -234,7 +216,7 @@
 </%def>
 
 <%def name="change_scope()">
-    <div class="span3"><strong>Current Scope:</strong></div>
+    % if c.w['type'] == 'professional':
         <%
             if c.w['public_private'] == 'public':
                 currentScope = 'Public'
@@ -244,36 +226,9 @@
                 newScope = 'Public'
         %>
         <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configure${newScope}WorkshopHandler" enctype="multipart/form-data" method="post" >
-            <div class="row-fluid">
-                <div class="span2">
-                    <label class="radio">
-                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="Private" 
-                        % if currentScope == 'Private':
-                            checked
-                        % endif
-                        disabled>
-                        Private  <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_024_parents.png">
-                    </label>
-                </div>
-                <div class="span2">
-                    <label class="radio">
-                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="Public"
-                        % if currentScope == 'Public':
-                            checked
-                        % endif
-                        disabled>
-                        Public  <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png">
-                    </label>
-                </div>
-                <div class="span3">
-                    % if c.w['type'] == 'professional':
-                        <button type="submit" class="btn btn-warning" name="changeScope">Change Scope</button>
-                    % else:
-                        <button class="disabled btn btn-warning">Change Scope</button>
-                    % endif
-                </div> 
-            </div>  
+        Current scope: ${currentScope}  <button type="submit" class="btn btn-mini btn-warning" name="changeScope">Change to ${newScope}</button>     
         </form>
+    % endif
 </%def>
 
 <%def name="private()">
@@ -285,10 +240,10 @@
     <li>Private workshops are invitation only.</li>
     </ul>
     <form name="private" id="private" class="left form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <br>
-    <strong>Manage Workshop Members</strong>
-    <br>
-    <br>
+    <br /><strong>Manage Workshop Participants List</strong><br />
+    % if c.pmembers:        
+        <br />${len(c.pmembers)} Private Members in This Workshop &bull; <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/listPrivateMembersHandler" target="_blank">Show List of Private Members</a><br /><br />
+    % endif
     <!--
     <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
     -->
@@ -296,44 +251,44 @@
         <div class="container-fluid well">
             <strong>Invite People To Your Workshop</strong><br>
             <div class="row-fluid">
-                <label for="newMember">Enter the email addresses of people to invite, separated by commas.</label>
-                <textarea class="input-block-level" rows=2 name="newMember"/></textarea>
-            </div><!-- row-fluid -->
-            <br>
-            <div class="row-fluid">
-                <label for="inviteMsg">Add optional message to email invitation:</label>
-                <textarea class="input-block-level" rows=3 name="inviteMsg"/></textarea><br />
+                <div class="span6">
+                Enter the email addresses of people to invite, one per line.<br />
+                <textarea rows=6 cols=50 name="newMember"/></textarea>
+                </div><!-- span6 -->
+                <div class="span6">
+                Add optional message to email invitation: <textarea rows=2 cols=50 name="inviteMsg"/></textarea><br />
                 <!-- 
                 <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
                 -->
+
+                </div><!-- span6 -->
             </div><!-- row-fluid -->
-            <br /><button type="submit" class="btn btn-primary" name="addMember"><i class="icon-envelope icon-white"></i> Send Invites</button>
+            <br /><button type="submit" class="btn btn-warning" name="addMember">Add Member to List</button>
         </div><!-- container-fluid -->
     % endif
     % if c.pmembers and c.w['public_private'] != 'public':
         <div class="container-fluid well">
             <div class="row-fluid">
-                <div class="span6">
-
-                    <strong>Workshop Members
-
-                    % if c.pmembers:
-                        (${len(c.pmembers)})
-                    % endif
-
-                    </strong>
-                    <hr>
+                <div class="span5">
+                    <strong>Delete People From Your Workshop</strong><br>
+                    Choose email address to delete:<br />
+                    <select name="removeMember">
                     % for pmember in c.pmembers:
-                        <label class="checkbox">
-                            <input type="checkbox" name="selected_members" value="${pmember['email']}">${pmember['email']}
-                        </label><br>                            
+                        <option value="${pmember['email']}">${pmember['email']}</option>
                     % endfor
-                    <br>
-                    <hr>
-                    <button type="submit" class="btn" name="resendInvites"><i class="icon-envelope"></i> Resend Invites</button>
-                    <button type="submit" class="btn btn-danger" name="deleteMembers"><i class="icon-trash icon-white"></i> Delete Members</button><br>
-
-                </div><!-- span6 -->
+                    </select><br />
+                    <br /><button type="submit" class="btn btn-warning" name="deleteMember">Delete Member from List</button>
+                </div><!-- span5 -->
+                <div class="span5">
+                    <strong>Resend Invitation Email</strong><br>
+                    Choose email address to resend:<br />
+                    <select name="inviteMember">
+                    % for pmember in c.pmembers:
+                        <option value="${pmember['email']}">${pmember['email']}</option>
+                    % endfor
+                    </select><br />
+                    <br /><button type="submit" class="btn btn-warning" name="sendInvitation">Resend Invitation</button>
+                </div><!-- span5 -->
             </div><!-- row-fluid -->
         </div><!-- container-fluid -->
     % endif
@@ -347,6 +302,11 @@
 </%def>
 
 <%def name="public()">
+    % if c.w['type'] == 'personal':
+        <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST">
+        <li><button type="submit" class="btn btn-warning">Upgrade to Professional</button></li>
+        </form>
+    % endif
     <ul>
     <li>Public workshops are visible to everyone!</li> 
     <li>Residents of the specificied geographic area are encouraged to participate.</li>
