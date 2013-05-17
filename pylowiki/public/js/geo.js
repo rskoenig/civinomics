@@ -181,14 +181,22 @@ $('.geoTagCountry').change(function(e){
 
 function geoCheckPostalCode(){
     var postalCode = document.getElementById("postalCode").value;
-    document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = "";
-    var checkURL = "/geo/cityState/" + postalCode
-    var checkResult = $.ajax({
-        type : 'POST',
-        async : false,
-        url  : checkURL
-    }).responseText;
-    var gobj = jQuery.parseJSON(checkResult);
-    document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = gobj.result;
+    if(postalCode != '' && /^\d+$/.test(postalCode)) {
+        document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = "";
+        var checkURL = "/geo/cityState/" + postalCode
+        var checkResult = $.ajax({
+            type : 'POST',
+            async : false,
+            url  : checkURL
+        }).responseText;
+        var gobj = jQuery.parseJSON(checkResult);
+        if(gobj.statusCode != '0') {
+           document.getElementById("postalCode").value = ''; 
+        }
+        document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = gobj.result;
+    } else {
+        document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = postalCode + " Not valid. Enter a valid postal code."
+        document.getElementById("postalCode").value = '';
+    }
 }
 

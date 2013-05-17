@@ -170,6 +170,6 @@ class GeoController(BaseController):
             statusCode = 0
         else:
             statusCode = 2
-            result = "No such zipcode."
+            result = "No such zipcode: " + id1
         log.info("result is %s"%result)
         return json.dumps({'statusCode':statusCode, 'result':result})
