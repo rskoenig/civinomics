@@ -49,7 +49,7 @@
                         <h1> Sorry, Civinomics is in read only mode right now </h1>
                     % else:
                         <div class="login-body" style="border-bottom:none;">
-                            <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" ng-submit="submitForm()">
+                            <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
                                 <input type="hidden" name="country" value="United States">
                                 <input type="hidden" name="memberType" value="professional">
 
