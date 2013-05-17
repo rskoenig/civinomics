@@ -97,11 +97,11 @@
    <%
       if isReadOnly():
          readOnlyMessage(thing)
-         return False
-      if c.w['allowResources'] == '0' and thing == 'resources' and (not c.privs['admin'] and not c.privs['facilitator']):
-         return False
-      if c.w['allowIdeas'] == '0' and thing == 'ideas' and (not c.privs['admin'] and not c.privs['facilitator']):
-         return False
+         return
+      if c.w['allowResources'] == '0' and thing == 'resources' and not (c.privs['admin'] or c.privs['facilitator']):
+         return
+      if c.w['allowIdeas'] == '0' and thing == 'ideas' and not (c.privs['admin'] or c.privs['facilitator']):
+         return
 
       printStr = ''
       
@@ -304,11 +304,20 @@
             if thing.objType == 'revision':
                 return commentLink(thing, workshop, **kwargs)
             if 'ideaCode' in thing.keys():
-                return ideaLink(ideaLib.getIdea(thing['ideaCode']), workshop, **kwargs)
+                idea = ideaLib.getIdea(thing['ideaCode'])
+                if not idea:
+                    return False
+                return ideaLink(idea, workshop, **kwargs)
             elif 'resourceCode' in thing.keys():
-                return resourceLink(resourceLib.getResourceByCode(thing['resourceCode']), workshop, **kwargs)
+                resource = resourceLib.getResourceByCode(thing['resourceCode'])
+                if not resource:
+                    return False
+                return resourceLink(resource, workshop, **kwargs)
             else:
-                return discussionLink(discussionLib.getDiscussion(thing['discussionCode']), workshop, **kwargs)
+                discussion = discussionLib.getDiscussion(thing['discussionCode'])
+                if not discussion:
+                    return False
+                return discussionLink(discussion, workshop, **kwargs)
     %>
 </%def>
 
@@ -573,7 +582,12 @@
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
                 % elif thing.objType == 'discussion':
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
-                    <textarea name="text" rows="12" class="input-block-level">${thing['text']}</textarea>
+                    <% 
+                        text = ''
+                        if 'text' in thing.keys():
+                            text = thing['text']
+                    %>
+                    <textarea name="text" rows="12" class="input-block-level">${text}</textarea>
                 % elif thing.objType == 'resource':
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
                     <input type="text" class="input-block-level" name="link" value = "${thing['link']}">
@@ -682,18 +696,18 @@
     % endif
 </%def>
 
-<%def name="revisionHistory(revisions)">
+<%def name="revisionHistory(revisions, parent)">
     % if revisions:
         <div class="row-fluid">
             <div class="span6 offset1">
                 <div class="accordion" id="revision-wrapper">
                     <div class="accordion-group no-border">
                         <div class="accordion-heading">
-                            <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable">
+                            <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
                                 Click to show revisions
                             </a>
                         </div>
-                        <div id="revisionsTable" class="accordion-body collapse">
+                        <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
                             <div class="accordion-inner no-border">
                                 <table class="table table-hover table-condensed">
                                     <tr>
@@ -716,7 +730,7 @@
     % endif
 </%def>
 
-<%def name="showItemInActivity(item, w)">
+<%def name="showItemInActivity(item, w, **kwargs)">
     <%
         thisUser = userLib.getUserByID(item.owner)
         actionMapping = {   'resource': 'added the resource',
@@ -727,10 +741,22 @@
                             'discussion':'conversation',
                             'idea':'idea',
                             'comment':'comment'}
-        if item.objType == 'comment':
-            title = ellipsisIZE(item['data'], 40)
+        if 'expandable' in kwargs:
+            if kwargs['expandable']:
+                if item.objType == 'comment':
+                    title = item['data']
+                else:
+                    title = item['title']
+            else:
+                if item.objType == 'comment':
+                    title = ellipsisIZE(item['data'], 40)
+                else:
+                    title = ellipsisIZE(item['title'], 40)
         else:
-            title = ellipsisIZE(item['title'], 40)
+            if item.objType == 'comment':
+                title = ellipsisIZE(item['data'], 40)
+            else:
+                title = ellipsisIZE(item['title'], 40)
         
         activityStr = actionMapping[item.objType]
         if item.objType == 'comment':
@@ -744,9 +770,21 @@
             elif 'discussionCode' in item.keys():
                 activityStr += objTypeMapping['discussion']
             activityStr += '</a>, saying '
-            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
+            if 'expandable' in kwargs:
+                if kwargs['expandable']:
+                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + ' class="expandable">' + title + '</a>'
+                else:
+                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
+            else:
+                activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
         else:
-            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
+            if 'expandable' in kwargs:
+                if kwargs['expandable']:
+                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + ' class="expandable">' + title + '</a>'
+                else:
+                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
+            else:
+                activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
     %>
     ${activityStr | n}
 </%def>

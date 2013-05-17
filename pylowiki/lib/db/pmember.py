@@ -20,7 +20,7 @@ def getPrivateMembers(workshopCode, deleted = '0'):
 
 def getPrivateMember(workshopCode, email, deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'pmember').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('email', email))).filter(Thing.data.any(wc('deleted', deleted))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'pmember').filter(Thing.data.any(wc('workshopCode', workshopCode))).filter(Thing.data.any(wc('email', email.lower()))).filter(Thing.data.any(wc('deleted', deleted))).one()
     except:
         return False
         
@@ -32,7 +32,7 @@ def getPrivateMemberByCode(code):
         
 def getPrivateMemberWorkshopsByEmail(email, deleted = '0'):
     try:
-            return meta.Session.query(Thing).filter_by(objType = 'pmember').filter(Thing.data.any(wc('email', email))).filter(Thing.data.any(wc('type', 'A'))).filter(Thing.data.any(wc('deleted', deleted))).all()
+            return meta.Session.query(Thing).filter_by(objType = 'pmember').filter(Thing.data.any(wc('email', email.lower()))).filter(Thing.data.any(wc('type', 'A'))).filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
         return False
 
@@ -54,7 +54,7 @@ def getPrivateMemberWorkshops(user, deleted = '0'):
 def PMember(workshopCode, email, type, owner, user = None):
     p = Thing('pmember', owner.id)
     p['workshopCode'] = workshopCode
-    p['email'] = email
+    p['email'] = email.lower()
     # type - one of A for address or D for domain
     p['type'] = type
     p['deleted'] = u'0'

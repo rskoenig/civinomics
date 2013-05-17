@@ -2,6 +2,7 @@
    import pylowiki.lib.db.slideshow as slideshowLib
    from pylowiki.lib.db.user import getUserByID
    import pylowiki.lib.db.activity as activityLib
+   import pylowiki.lib.db.facilitator   as facilitatorLib
    import misaka as m
    
    import logging
@@ -54,10 +55,10 @@
                     author = getUserByID(item.owner)
                     if not c.privs['admin']:
                         if 'user' in session:
-                            if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                            if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                                 continue
                         else:
-                            if author['accessLevel'] != '300':
+                            if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
                                 continue
                 if shownItems >= numItems:
                     break
@@ -66,7 +67,7 @@
                 <%
                     lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")
                     lib_6.userLink(item.owner, className = "green green-hover")
-                    lib_6.showItemInActivity(item, c.w)
+                    lib_6.showItemInActivity(item, c.w, expandable = True)
                 %>
             </li>
         % endfor
@@ -77,13 +78,11 @@
     % if 'user' in session:
         % if c.isFollowing:
             <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-            <span><i class="icon-user icon-white"></i>
-             Following </span>
+            <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
             </button>
         % else:
             <button class="btn round pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-             <span><i class="icon-user"></i>
-            Follow </span>
+             <span><i class="icon-bookmark pull-left"></i> Bookmark </span>
             </button>
         % endif
     % endif
@@ -91,9 +90,15 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <a class="btn round btn-civ pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration">
-      <span><i class="icon-wrench icon-white"></i>Admin</span>
-   </a>
+   <a class="btn round btn-civ pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i>Admin</span></a>
+</%def>
+
+<%def name="previewButton()">
+  <a class="btn round btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> Preview </span></a>
+</%def>
+
+<%def name="viewButton()">
+  <a class="btn round btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> View </span></a>
 </%def>
 
 <%def name="workshopNavButton(workshop, count, objType, active = False)">
@@ -124,10 +129,10 @@
             author = getUserByID(item.owner)
             if not c.privs['admin']:
                if 'user' in session:
-                  if (author['accessLevel'] != '300' and author.id != c.authuser.id):
+                  if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
                      continue
                else:
-                  if author['accessLevel'] != '300':
+                  if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
                      continue
          
          if item.objType == 'discussion':

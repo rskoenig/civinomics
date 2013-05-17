@@ -624,7 +624,7 @@ class CorpController(BaseController):
         ajBurleson={}
         ajBurleson["name"]="AJ Burleson"
         ajBurleson['title']='Public Outreach Manager '
-        ajBurleson['bio']="AJ grew up on the streets of Hunter's Point, one of San Francisco's most violent neighborhoods. This gave him a deep desire to see the world adhere to just principles. As a Co-Producer at 6West Productions he helped to distribute \"Straight Out of Hunter's Point\" an award winning documentary about his neighborhood. Working as a Manager at Cafe Roma and Organic Coffee further ingrained in him the keen sense of community building that he brings to Civinomics."
+        ajBurleson['bio']="AJ grew up on the streets of Hunter's Point, one of San Francisco's most violent neighborhoods. This gave him a deep desire to see the world adhere to just principles. After leaving college the first time he helped to promote and distribute \"Straight Outta Hunters Point\" an award winning documentary about his neighborhood, which had enlightened him about the environmental and social injustices in San Francisco.  He later returned to SFSU where he received his degree in International Relations.  His voyage through academia, included a year abroad at the University of Amsterdam. For his thesis he choose to write about his experiences at home and abroad. \"The United States and The Netherlands: Two Constructions of Changing Drug Policies\", is a testimony to the perceptions and stereotypes about drug use in the United States and abroad.  AJ's untraditional journey gives him the keen sense of community building that he brings to Civinomics."
         ajBurleson['photo']='aj_burleson.jpg'
         c.team.append(ajBurleson)
         noelleDaley={}
@@ -692,6 +692,18 @@ class CorpController(BaseController):
         c.pagetype="news" 
 
         c.articles=[]
+        article={}
+        article['title']="Civinomics: A new kind of civic participation for the social media world"
+        article['link']='http://santacruznews.org/people/civinomics-a-new-kind-of-civic-participation-for-the-social-media-world/'
+        article['date']='4.12.2013'
+        article['source']='SantaCruzNews.org'
+        c.articles.append(article)
+        article={}
+        article['title']="Civinomics' ceremony attracts Santa Cruz leaders"
+        article['link']='http://www.santacruzsentinel.com/localnews/ci_23008123/civinomics-ceremony-attracts-santa-cruz-leaders'
+        article['date']='4.11.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
         article={}
         article['title']="Civinomics to launch community workshops online, seeking public safety solutions"
         article['link']='http://www.santacruzsentinel.com/localnews/ci_22826816/civinomics-launch-community-workshops-online-seeking-public-safety'

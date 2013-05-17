@@ -3,7 +3,7 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic as wc
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
 from pylowiki.lib.utils import urlify, toBase62
 from time import time
 import pylowiki.lib.db.generic as generic
@@ -17,9 +17,13 @@ def getDiscussionByID(id):
     except:
         return False
 
-def getDiscussion(code):
+def getDiscussion(code, deleted = u'0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc('urlCode', code))).one()
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'discussion')\
+                .filter(Thing.data.any(wc('urlCode', code)))\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .one()
     except:
         return False
 
@@ -65,7 +69,38 @@ def editDiscussion(discussion, title, text, owner):
     except:
         log.error('ERROR: Failed to edit discussion')
         return False
-        
+
+def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = False, rootDiscussions = True):
+    try:
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        m = map(wcl, keys, values)
+        q = meta.Session.query(Thing)\
+                .filter_by(objType = 'discussion')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(reduce(sa.or_, m)))
+        if rootDiscussions:
+            q = q.filter(Thing.data.any(wc('discType', 'general')))
+        # Because of the vertical model, it doesn't look like we can look at the linked workshop's status
+        # and apply that as an additional filter within the database level.
+        rows = q.all()
+        keys = ['deleted', 'disabled', 'published', 'public_private']
+        values = [u'0', u'0', u'1', u'public']
+        discussions = []
+        for row in rows:
+            w = generic.getThing(row['workshopCode'], keys = keys, values = values)
+            if not w:
+                continue
+            discussions.append(row)
+        if count:
+            return len(discussions)
+        return discussions
+    except Exception as e:
+        print e
+        return False
+
 class Discussion(object):
     # If the owner is None, the discussion is a system generated discussion, like the comments in the background wiki.
     # If the owner is not None, then the discussion was actively created by some user.

@@ -64,6 +64,12 @@
                 </tr>
             </thead>
             <tbody>
+            <% 
+                activeFacilitators = 0
+                for f in c.f:
+                    if f['disabled'] == '0' and f['pending'] == '0':
+                        activeFacilitators += 1
+            %>
             % for f in c.f:
                 <%
                     fUser = userLib.getUserByID(f.owner)
@@ -105,7 +111,7 @@
                         <td>${fPending}</td>
                         <td>${fPending}</td>
                     % endif
-                    % if len(c.f) > 1 and fUser.id == c.authuser.id:
+                    % if activeFacilitators > 1 and fUser.id == c.authuser.id:
                         </tr><tr><td colspan=3>
                         <form class="form-inline" id="resignFacilitator" name="resignFacilitator" action="/workshop/${c.w['urlCode']}/${c.w['url']}/facilitate/resign/handler/" method="post">
                             Resign as facilitator? &nbsp;&nbsp;Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
@@ -167,7 +173,7 @@
             %>
             ${lPending}<br />
             <form id="resignListener" class="form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
-            Disable litener:<br />
+            Disable listener:<br />
             Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
             <input type="hidden" name="userCode" value="${lUser['urlCode']}">
             <button type="submit" class="btn btn-warning" value="Resign">Disable</button>
@@ -298,13 +304,6 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Manage Workshop</h4>
-            <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/publish/handler" method=POST class="well">
-            % if workshopLib.isPublished(c.w):
-                <button type="submit" class="btn btn-warning" value="unpublish">Unpublish Workshop</button> This will temporarily unpublish your workshop, removing it from listings and activity streams.
-            % else:
-                <button type="submit" class="btn btn-warning" value="publish">Publish Workshop</button> Republishes your workshop, making it visible in listings and activity streams.
-            % endif
-            </form>
             <p>Items that have been flagged, <span class="badge badge-warning">disabled</span>, or <span class="badge badge-success">enabled</span></p>
             ${flaggedItems(c.flaggedItems)}
         </div><!-- browse -->

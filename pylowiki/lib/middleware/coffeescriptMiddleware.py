@@ -32,7 +32,10 @@ class CoffeeScriptMiddleware(object):
                     self.minify = False
         
         try:
-            coffee = subprocess.Popen(['coffee', '--version'], stdout=subprocess.PIPE)
+            if config['app_conf']['production'] == 'true':
+                coffee = subprocess.Popen(['/usr/local/bin/coffee', '--version'], stdout=subprocess.PIPE)
+            else:
+                coffee = subprocess.Popen(['coffee', '--version'], stdout=subprocess.PIPE)
         except OSError:
             pass
             #return

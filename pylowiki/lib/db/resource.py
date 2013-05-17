@@ -5,7 +5,7 @@ from pylons import tmpl_context as c
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import commit
-from dbHelpers import with_characteristic as wc
+from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl
 from discussion import Discussion
 from pylowiki.lib.utils import urlify, toBase62
 from pylowiki.lib.db.flag import checkFlagged
@@ -35,7 +35,6 @@ def getResourceByCode(urlCode, disabled = '0', deleted = '0'):
         return meta.Session.query(Thing)\
             .filter_by(objType = 'resource')\
             .filter(Thing.data.any(wc('urlCode', urlCode)))\
-            .filter(Thing.data.any(wc('disabled', disabled)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .one()
     except:
@@ -141,6 +140,35 @@ def getAllResources(deleted = '0', disabled = '0'):
             .filter(Thing.data.any(wc('disabled', disabled)))\
             .all()
     except:
+        return False
+
+def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False):
+    try:
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        m = map(wcl, keys, values)
+        q = meta.Session.query(Thing)\
+                .filter_by(objType = 'resource')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(reduce(sa.or_, m)))
+        # Because of the vertical model, it doesn't look like we can look at the linked workshop's status
+        # and apply that as an additional filter within the database level.
+        rows = q.all()
+        keys = ['deleted', 'disabled', 'published', 'public_private']
+        values = [u'0', u'0', u'1', u'public']
+        resources = []
+        for row in rows:
+            w = generic.getThing(row['workshopCode'], keys = keys, values = values)
+            if not w:
+                continue
+            resources.append(row)
+        if count:
+            return len(resources)
+        return resources
+    except Exception as e:
+        log.error(e)
         return False
 
 # setters

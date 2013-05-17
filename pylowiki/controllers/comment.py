@@ -12,6 +12,7 @@ import pylowiki.lib.db.comment      as  commentLib
 import pylowiki.lib.db.message      as  messageLib
 import pylowiki.lib.db.discussion   as  discussionLib 
 import pylowiki.lib.db.revision     as  revisionLib
+import pylowiki.lib.db.geoInfo      as  geoInfoLib
 import pylowiki.lib.db.generic      as  genericLib
 import pylowiki.lib.db.mainImage    as  mainImageLib
 import pylowiki.lib.db.dbHelpers    as  dbHelpers
@@ -85,6 +86,8 @@ class CommentController(BaseController):
     
     def permalink(self, workshopCode, workshopURL, revisionCode):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
+        if c.w['public_private'] == 'public':
+            c.scope = geoInfoLib.getPublicScope(c.w)
         return render('/derived/6_permaComment.bootstrap')
         
     ####################################################

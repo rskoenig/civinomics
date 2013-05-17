@@ -10,7 +10,7 @@ import pylowiki.lib.helpers as h
 
 from pylowiki.lib.db.user import User, getUserByEmail, getActiveUsers
 from pylowiki.lib.db.pmember import getPrivateMemberByCode
-from pylowiki.lib.db.workshop import getWorkshopByCode
+from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.db.mainImage    as mainImageLib
@@ -42,6 +42,7 @@ class RegisterController(BaseController):
         if 'guestCode' in session and 'workshopCode' in session:
                 c.w = getWorkshopByCode(session['workshopCode'])
                 if c.w:
+                    setWorkshopPrivs(c.w)
                     c.mainImage = mainImageLib.getMainImage(c.w)
                     c.title = c.w['title']
                     c.listingType = False
@@ -88,7 +89,6 @@ class RegisterController(BaseController):
         if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
             workshopCode = request.params['workshopCode']
             pmember = getPrivateMemberByCode(session['guestCode'])
-            log.info("got guestCode and workshopCode")
             if pmember and pmember['workshopCode'] == workshopCode:
                 email = pmember['email']
                 log.info('got pmember email %s '%email)
@@ -181,6 +181,7 @@ class RegisterController(BaseController):
                     splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
                     session['splashMsg'] = splashMsg
                     session.save()
+                    # if they are a guest signing up, activate and log them in
                     if c.w:
                         user = u.u
                         if 'laston' in user:
@@ -188,6 +189,7 @@ class RegisterController(BaseController):
                             user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
                             
                         user['laston'] = time.time()
+                        user['activated'] = u'1'
                         loginTime = time.localtime(float(user['laston']))
                         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
                         commit(user)
@@ -199,7 +201,7 @@ class RegisterController(BaseController):
                         log.info('%s logged in %s' % (user['name'], loginTime))
                         c.authuser = user
                         
-                        log.info( "Successful login attempt with credentials - " + email )
+                        log.info( "Successful guest activation with credentials - " + email )
                         returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
                         if c.listingType:
                             returnPage += "/add/" + c.listingType

@@ -1,3 +1,7 @@
+<%!
+    import pylowiki.lib.db.workshop         as workshopLib
+%>
+
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
@@ -11,13 +15,29 @@
                     outOfScope = lib_6.geoBreadcrumbs()
             %>
          </div><!-- /geographic breadcrumbs -->
-         <div class="span3"> <!-- watch button -->
-            <%
-                helpers.watchButton()
-                if c.privs['admin'] or c.privs['facilitator']:
-                    helpers.configButton(c.w)
-           %>
-         </div><!-- /watch button -->
+
+         % if workshopLib.isPublished(c.w):
+           <div class="span3"> <!-- watch button -->
+                  ${helpers.watchButton()}
+                  % if c.privs['admin'] or c.privs['facilitator']: 
+                    % if c.adminPanel:
+                      ${helpers.viewButton()} 
+                    % else:
+                      ${helpers.configButton(c.w)}
+                    % endif
+                  % endif
+           </div><!-- /watch button -->
+
+         % else:
+           % if c.adminPanel:
+              ${helpers.previewButton()}
+           % else:
+              ${helpers.configButton(c.w)}
+           % endif
+
+         % endif
+
+
       </div> <!-- /.row-fluid -->
      <%
         if c.w['public_private'] == 'public':
@@ -61,6 +81,7 @@
    <script type="text/javascript">
       $(".followButton").tooltip();
       $(".preferencesLink").tooltip();
+      $(".publishButton").tooltip();
    </script>
 
 </%def>

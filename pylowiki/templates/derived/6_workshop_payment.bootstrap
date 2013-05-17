@@ -8,7 +8,7 @@
     % else:
         <h4 class="section-header" style="text-align: center"><br />New Professional Workshop Payment</h4><br />
     % endif
-    $99 per month will be charged to your credit card. You may unpublish your workshop and cancel at any time.<br />
+    $15 per month will be charged to your credit card. You may unpublish your workshop and cancel at any time.<br />
     % if c.conf['read_only.value'] == 'true':
         <!-- read only -->
     % else:

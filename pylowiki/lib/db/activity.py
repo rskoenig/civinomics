@@ -79,7 +79,6 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
         initialActivityList = meta.Session.query(Thing)\
             .filter(Thing.objType.in_(objTypes))\
             .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
-            .filter(Thing.data.any(wc('disabled', disabled)))\
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .order_by('-date')\
             .all()
@@ -89,17 +88,13 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
                 continue
             elif activity.objType == 'comment':
                 if 'resourceCode' in activity.keys():
-                    resource = generic.getThing(activity['resourceCode'])
-                    if resource['deleted'] == u'1' or resource['disabled'] == u'1':
-                        continue
+                    thing = generic.getThing(activity['resourceCode'])
                 elif 'ideaCode' in activity.keys():
-                    idea = generic.getThing(activity['ideaCode'])
-                    if idea['deleted'] == u'1' or idea['disabled'] == u'1':
-                        continue
+                    thing = generic.getThing(activity['ideaCode'])
                 else:
-                    discussion = discussionLib.getDiscussion(activity['discussionCode'])
-                    if discussion['deleted'] == u'1' or discussion['disabled'] == u'1':
-                        continue
+                    thing = generic.getThing(activity['discussionCode'])
+                if thing['deleted'] == u'1':
+                    continue
                 finalActivityList.append(activity)
             else:
                 finalActivityList.append(activity)

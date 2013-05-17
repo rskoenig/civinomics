@@ -4,6 +4,7 @@ from urllib import quote
 from zlib import adler32
 from pylons import session, tmpl_context as c
 import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.db.generic      as generic
 
 log = logging.getLogger(__name__)
 
@@ -62,7 +63,17 @@ def isWatching(user, workshop):
    c.isFollowing = followLib.isFollowing(user, workshop)
   
 def thingURL(workshop, thing):
-    return "/workshop/%s/%s/%s/%s/%s" %(workshop['urlCode'], workshop['url'], thing.objType, thing['urlCode'], thing['url'])
+    baseURL = '/workshop/%s/%s' % (workshop['urlCode'], workshop['url'])
+    if thing.objType == 'comment':
+        if 'ideaCode' in thing.keys():
+            thing = generic.getThing(thing['ideaCode'])
+        elif 'resourceCode' in thing.keys():
+            thing = generic.getThing(thing['resourceCode'])
+        elif 'discussionCode' in thing.keys():
+            thing = generic.getThing(thing['discussionCode'])
+        else:
+            return baseURL
+    return baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
     
 def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:

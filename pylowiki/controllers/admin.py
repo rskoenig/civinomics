@@ -25,6 +25,7 @@ import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.demo             as demoLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.alerts              as alertsLib
+import pylowiki.lib.utils               as utils
 
 import simplejson as json
 log = logging.getLogger(__name__)
@@ -189,7 +190,7 @@ class AdminController(BaseController):
                 alert['content'] = 'Failed to edit resource.'
         session['alert'] = alert
         session.save()
-        return redirect(session['return_to'])
+        return redirect(utils.thingURL(c.w, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):
         eventTitle = '%s %s' % (action.title(), thing.objType)

@@ -14,6 +14,7 @@ import pylowiki.lib.db.user         as userLib
 from string import capwords
 import simplejson as json
 import re
+from pylowiki.lib.utils import urlify
 
 log = logging.getLogger(__name__)
 
@@ -160,4 +161,33 @@ class GeoController(BaseController):
         for postal in postalCodes:
             pList = pList + str(postal['ZipCode']) + '|'
         return json.dumps({'result':pList})
+
+    def geoCityStateCountryHandler(self, id1):
+        postalInfo = geoInfoLib.getPostalInfo(id1)
+        if postalInfo:
+            city = postalInfo['City'].title()
+            state = postalInfo['StateFullName']
+            result = city + ", " + state + ', United States'
+            statusCode = 0
+        else:
+            statusCode = 2
+            result = "No such zipcode."
+        return json.dumps({'statusCode':statusCode, 'result':result})
+        
+    def geoCityStateCountryLinkHandler(self, id1):
+        postalInfo = geoInfoLib.getPostalInfo(id1)
+        if postalInfo:
+            countryTitle = "United States"
+            countryURL = "/workshops/geo/earth/united-states"
+            stateTitle = postalInfo['StateFullName'].title()
+            stateURL = countryURL + "/" + urlify(stateTitle)
+            countyURL = stateURL + "/" + urlify(postalInfo['County'])
+            cityTitle = postalInfo['City'].title()
+            cityURL = countyURL + "/" + urlify(cityTitle)
+            statusCode = 0
+        else:
+            statusCode = 2
+            result = "No such zipcode."
+        return json.dumps({'statusCode':statusCode, 'cityTitle':cityTitle, 'cityURL':cityURL, 'stateTitle':stateTitle, 'stateURL':stateURL, 'countryTitle':countryTitle, 'countryURL':countryURL})
+
 

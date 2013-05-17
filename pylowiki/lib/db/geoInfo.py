@@ -216,9 +216,12 @@ def editWorkshopScope(wscope, geoTagString):
     except:
         return False
     
-def getGeoInfo(ownerID):
+def getGeoInfo(ownerID, disabled = 0):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'geo').filter_by(owner = ownerID).all()
+        return meta.Session.query(Thing)\
+            .filter_by(objType = 'geo')\
+            .filter_by(owner = ownerID)\
+            .filter(Thing.data.any(wc('disabled', disabled))).all()
     except sa.orm.exc.NoResultFound:
         return False
 

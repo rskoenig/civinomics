@@ -65,6 +65,9 @@
                             <li class="${tab10active}"><a href="#tab10" data-toggle="tab">${tabCount}. Event Log
                             <% tabCount += 1 %>
                             </a></li>
+                            % if c.w['type'] == 'professional' and c.accounts:
+                            <li><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/manage/account/">4. Account Management</a></li>
+                            % endif
                             % if c.privs['admin']:
                             <li><a href="#admin" data-toggle="tab">Civ admin</a></li>
                             % endif
@@ -76,50 +79,33 @@
                 <div class="browse">
                     <h4 class="section-header smaller">Configure</h4>
                     <ul class="nav nav-pills nav-stacked">
-                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Set it up
+                        <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Basic Info
                         % if c.basicConfig:
-                            <i class="icon-ok"></i>
+                            <i class="icon-ok pull-right"></i>
                         % endif
-                        <br />
-                        What's your workshop?
                         </a></li>
-                        <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Scope it
+                        <li class="${tab2active}"><a href="#tab2" data-toggle="tab">2. Participants
                         % if c.w['public_private'] == 'personal' or c.w['public_private'] == 'private' or (c.w['public_private'] == 'public'):
-                            <i class="icon-ok"></i>
+                            <i class="icon-ok pull-right"></i>
                         % endif
-                        <br />
-                        Who can participate?
                         </a></li>
-                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Tag it
+                        <li class="${tab3active}"><a href="#tab3" data-toggle="tab">3. Tags
                         % if c.tagConfig:
-                            <i class="icon-ok"></i>
+                            <i class="icon-ok pull-right"></i>
                         % endif
-                        <br />
-                        Make it easy to find.
                         </a></li>
-                        <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Add an image 
+                        <li class="${tab4active}"><a href="#tab4" data-toggle="tab">4. Slideshow
                         % if c.slideConfig:
-                            <i class="icon-ok"></i>
+                            <i class="icon-ok pull-right"></i>
                         % endif
-                        <br />
-                        Or a whole slideshow.
                         </a></li>
-                        <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Introduction 
+                        <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Background
                         % if c.backConfig:
-                            <i class="icon-ok"></i>
+                            <i class="icon-ok pull-right"></i>
                         % endif
-                        <br />
-                        Summarize the issue.
                         </a></li>
-                        % if c.w['type'] == 'personal':
-                            <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST">
-                            <li><button type="submit" class="btn btn-warning">Upgrade to Professional</button></li>
-                            </form>
-                        % endif
                     </ul>
-                    % if c.w['type'] == 'professional' and c.accounts:
-                        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/manage/account/">Account Management</a>
-                    % endif
+                    ${helpers.publish()}
                 </div><!-- browse -->
             </div><!-- section-wrapper -->
         </div><!-- span3 -->
@@ -127,7 +113,6 @@
             % if c.conf['read_only.value'] == 'true':
                 <!-- read only -->
             % else:
-            ${helpers.publish()}
             ${helpers.fields_alert()}
             <div class="tab-content">
                 <div class="tab-pane ${tab1active}" id="tab1">
@@ -143,7 +128,7 @@
                     ${slide_helpers.admin_slideshow()}
                 </div><!-- tab-pane template tab4 -->
                 <div class="tab-pane ${tab5active}" id="tab5">
-                ${helpers.edit_background()}
+                    ${helpers.edit_background()}
                 </div><!-- tab-pane template tab5 -->
                 <div class="tab-pane ${tab6active}" id="tab6">
                     <div class="section-wrapper">

@@ -83,8 +83,19 @@
     ${rules[ruleNum] | n}
 </%def>
 
-<%def name="sortComments(commentList)">
-    <% return commentList %>
+<%def name="sortComments(commentIDs)">
+    <%
+        commentList = [getComment(commentID) for commentID in commentIDs]
+        return sorted(commentList, cmp = commentComparison)
+    %>
+</%def>
+
+<%def name="commentComparison(com1, com2)">
+    <%
+        rating1 = int(com1['ups']) - int(com1['downs'])
+        rating2 = int(com2['ups']) - int(com2['downs'])
+        return rating2 - rating1
+    %>
 </%def>
 
 <%def name="displayDiscussion(thing, discussion)">
@@ -133,7 +144,6 @@
 
 <%def name="displayComment(comment, commentType, maxDepth, curDepth, parent = None)">
     <%
-        comment = getComment(comment)
         if comment:
             author = getUserByID(comment.owner)
             if comment['deleted'] == u'1':
@@ -142,6 +152,13 @@
                         return
                 else:
                     return
+            if c.demo:
+                if 'user' in session:
+                    if ((author['accessLevel'] != '300' and not isFacilitator(author, c.w)) and author.id != c.authuser.id):
+                        return
+                else:
+                    if author['accessLevel'] != '300' and not isFacilitator(author, c.w):
+                        return
         else:
             return
         accordionID = 'accordion-%s' % comment['urlCode']
@@ -227,7 +244,7 @@
             </div> <!--/.row-fluid-->
             <%
                 revisions = revisionLib.getRevisionsForThing(comment)
-                lib_6.revisionHistory(revisions)
+                lib_6.revisionHistory(revisions, comment)
                 if 'user' in session:
                     if c.thing['disabled'] == '0':
                         commentFooter(comment, author)

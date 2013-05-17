@@ -51,9 +51,8 @@
                                 <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${profileTitle}</a>
                             </li>
                             % if 'user' in session:
-                                <li><a href="/stream/${c.authuser['urlCode']}/${c.authuser['url']}">Stream</a></li>
                                 <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Workshops<b class="caret"></b></a>
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">workshops<b class="caret"></b></a>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                                         <li><a tabindex="-1" href="/workshops">show</a></li>
                                         <li><a tabindex="-1" href="/workshop/display/create/form">create!</a></li>

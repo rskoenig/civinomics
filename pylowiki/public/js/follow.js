@@ -12,11 +12,12 @@ $('button.followButton').click(function(e){
         });
         
         $button.removeClass('following');
+        $button.removeClass('btn-civ');
         $button.removeClass('unfollow');
         if(urlList[0] == 'profile'){
-            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Follow </span>';
+            var bText = '<span><i class="icon-user"></i> Follow </span>';
         } else {
-            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png"> <span> Bookmark </span>';            
+            var bText = '<span><i class="icon-bookmark pull-left"></i> Bookmark </span>';            
         }
         $button.html(bText);
     } else {
@@ -29,10 +30,11 @@ $('button.followButton').click(function(e){
         });
                    
         $button.addClass('following');
+        $button.addClass('btn-civ');
         if(urlList[0] == 'profile'){
-            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png"> <span> Unfollow </span>';
+            var bText = '<span><i class="icon-user icon-white"></i> Following </span>';
         } else {
-            var bText = '<img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png"> <span> Un-bookmark </span>';
+            var bText = '<span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>';
         }
         $button.html(bText);
     }

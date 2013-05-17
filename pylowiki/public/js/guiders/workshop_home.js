@@ -160,9 +160,9 @@
         
         guiders.createGuider({
             buttons: [{name:"close"}],
-            description: "Now that you've taken the tour, go start or find workshops that fit your interests and work with other people make something better.",
+            description: "Now go find interesting workshops or start some of your own!<br>Use Civinomics to improve your world.",
             id: "tour_close",
-            title: "Make Things Better",
+            title: "Thanks for taking the tour!",
             closeOnEscape: true,
             autoFocus: true,
             overlay: "true",

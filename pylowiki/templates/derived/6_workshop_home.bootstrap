@@ -48,4 +48,18 @@
          $.fn.foundationClearing         ? $doc.foundationClearing() : null;
       });
     </script>
+    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: '... (more)',
+                expandPrefix: '',
+                userCollapseText: ' (less)',
+                userCollapsePrefix: '',
+                preserveWords: true
+            });
+        });
+    </script>
 </%def>

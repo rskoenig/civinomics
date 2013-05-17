@@ -2,10 +2,10 @@
 
 <%def name="display_body_right_content()">
     <div class="row-fluid">
-        <h1>About Us</h1>
+        <h1>About</h1>
         </br>
-        <p class="lead">Our mission is to improve social decision making the collective creativity of communities.</p>
-        <p>We enable an iterative process of citizen collaboration to fix problems. This starts with 140 character long ideas collected online or through a tablet outreach campaign. These ideas are then developed into full fledged proposals online as participants improve them, link information resources, and conduct more rigorous cost benefit analysis. Participants vote for the best proposals via personal computer or tablet. Elected representatives and other listeners adopt proposals that reach critical-mass support. 
+        <p class="lead">Our mission is to improve social decision making through the collective creativity of communities.</p>
+        <p>We enable an iterative process of citizen collaboration to fix problems. This starts with 120 character long ideas collected online or through a tablet outreach campaign. These ideas are then developed into full fledged proposals online as participants improve them, link information resources, and conduct more rigorous cost benefit analysis. Participants vote for the best proposals via personal computer or tablet. Elected representatives and other listeners adopt proposals that achieve critical-mass support. 
         </p>
         </br>
         <div class="centered">
@@ -17,7 +17,7 @@
                 <p>We always hear about the rights of democracy, but the major responsibility of it is participation.</p>
                 <small>Wynton Marsalis</small>
             </blockquote>
-        <p>We facilitate tablet based scientific polling and program outreach for governments, ngos, schools and generally anyone whos stands for stakeholder education instead of advocacy. Participation is vital to the health of all our civic groups and institutions. Facilitating that partipatiion is essential to our mission.</p>
+        <p>We facilitate tablet based scientific polling and program outreach for governments, NGOs, schools and anyone else who wants greater stakeholder engagement. We do not facilitate advocacy. Participation is vital to the health of all our civic groups and institutions. Increasing that partipatiion is essential to our mission.</p>
         </br>
         <div class="centered">
             <iframe src="http://player.vimeo.com/video/42731448" width="600" height="375" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>

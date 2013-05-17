@@ -227,7 +227,7 @@ class WorkshopController(BaseController):
             weventMsg += "Changes saved."
             
         if not workshopLib.isPublished(c.w):
-            weventMsg += ' Preview your changes by clicking on the workshop name above.'
+            weventMsg += ' See your changes by clicking on the preview button above.'
 
         if werror:
             alert = {'type':'error'}
@@ -283,7 +283,7 @@ class WorkshopController(BaseController):
                 weventMsg +=  "Updated category tags."
                 
             if not workshopLib.isPublished(c.w):
-                weventMsg += ' Preview your changes by clicking on the workshop name above.'
+                weventMsg += ' See your changes by clicking on the preview button above.'
                 
         else:
             werror = 1
@@ -368,13 +368,7 @@ class WorkshopController(BaseController):
             geoTagPostal = request.params['geoTagPostal']
         else:
             geoTagPostal = "0"
-            
-        # CCN kludge to enforce SC County top level workshops, remove to unconstrain
-        geoTagCountry = "United States"
-        geoTagState = "California"
-        geoTagCounty = "Santa Cruz"
-        
-            
+ 
         # assemble a workshop scope string 
         # ||country||state||county||city|zip
         geoTagString = "||" + utils.urlify(geoTagCountry) + "||" + utils.urlify(geoTagState) + "||" + utils.urlify(geoTagCounty) + "||" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
@@ -583,6 +577,15 @@ class WorkshopController(BaseController):
 
     @h.login_required
     def configureStartWorkshopHandler(self, workshopCode, workshopURL):
+        if not self.checkPreferences():
+            alert = {'type':'error'}
+            alert['title'] = 'Workshop not started'
+            alert['content'] = ' !'
+            session['alert'] = alert
+            session.save()
+            
+            return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
+            
         c.title = "Configure Workshop"
 
         werror = 0
@@ -884,26 +887,60 @@ class WorkshopController(BaseController):
         
         # Demo workshop status
         c.demo = workshopLib.isDemo(c.w)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
+        c.adminPanel = False
         
         return render('/derived/6_workshop_home.bootstrap')
-    
-    @h.login_required
-    def preferences(self, workshopCode, workshopURL):
+   
+    def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)
-        if testGoals:
+        if testGoals and c.w['description'] and c.w['description'] != '':
             c.basicConfig = 1
         else:
             c.basicConfig = 0
+        
+        tags = tagLib.getWorkshopTags(c.w)
+        if len(tags):
+            c.tagConfig = 1
+        else:
+            c.tagConfig = 0
+            
+        slides = slideshowLib.getSlideshow(c.w)
+        slideshow = slideshowLib.getAllSlides(slides)
+        published = 0
+        slide_ids = [int(item) for item in slides['slideshow_order'].split(',')]
+        for id in slide_ids:
+            s = slideLib.getSlide(id) # Don't grab deleted slides
+            if s:
+                published += 1
+        if len(slideshow) > 1 and published > 0:
+            c.slideConfig = 1
+        else:
+            c.slideConfig = 0
+       
+        page = pageLib.getInformation(c.w)
+        if page and 'data' in page:
+            background = page['data']
+        if background and background != '':
+            c.backConfig = 1
+        else:
+            c.backConfig = 0
+            
+        if c.basicConfig and c.tagConfig and c.slideConfig and c.backConfig:
+            return True
+        
+        return False
+                       
+            
+    @h.login_required
+    def preferences(self, workshopCode, workshopURL):
+        readyToStart = self.checkPreferences()
         
         c.tags = tagLib.getWorkshopTags(c.w)
         c.categories = []
         for tag in c.tags:
             c.categories.append(tag['title'])
-        
-        if c.categories:
-            c.tagConfig = 1
-        else:
-            c.tagConfig = 0
             
         if 'confTab' in session:
             c.tab = session['confTab']
@@ -921,10 +958,6 @@ class WorkshopController(BaseController):
             s = slideLib.getSlide(id) # Don't grab deleted slides
             if s:
                 c.published_slides.append(s)
-        if len(c.slideshow) > 1 and len(c.published_slides) > 0:
-            c.slideConfig = 1
-        else:
-            c.slideConfig = 0
             
         c.slides = c.published_slides
             
@@ -932,9 +965,7 @@ class WorkshopController(BaseController):
         c.listeners = listenerLib.getListenersForWorkshop(c.w, disabled = '0')
         c.disabledListeners = listenerLib.getListenersForWorkshop(c.w, disabled = '1')
 
-
-        if c.w['public_private'] != 'public':
-            c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
+        c.pmembers = pMemberLib.getPrivateMembers(workshopCode)
         
         
         c.accounts = accountLib.getAccountsForWorkshop(c.w, deleted = '0')
@@ -943,10 +974,6 @@ class WorkshopController(BaseController):
                 c.accounts = []
         
         c.page = pageLib.getInformation(c.w)
-        if c.page and 'data' in c.page and c.page['data'] != "No workshop summary set yet":
-            c.backConfig = 1
-        else:
-            c.backConfig = 0
         
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
@@ -964,11 +991,7 @@ class WorkshopController(BaseController):
             c.county = "0"
             c.city = "0"
             c.postal = "0"
-            
-        # temporary kludge CCN
-        c.country = "United States"
-        c.state = "California"
-        c.county = "Santa Cruz"
+
             
         c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
@@ -979,6 +1002,10 @@ class WorkshopController(BaseController):
         
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
+        c.adminPanel = True
+
         return render('/derived/6_workshop_preferences.bootstrap')
         
     @h.login_required

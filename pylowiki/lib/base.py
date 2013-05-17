@@ -34,7 +34,11 @@ class BaseController(WSGIController):
             if not c.authuser:
                session.delete()
             else:
-               c.authuser_geo = getGeoInfo(c.authuser.id)[0]
+               gList = getGeoInfo(c.authuser.id)
+               c.authuser_geo = False
+               for g in gList:
+                   if g['disabled'] == u'0':
+                       c.authuser_geo = g
             
         try:
             spamremark = request.params['sremark']

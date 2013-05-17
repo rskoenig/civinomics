@@ -2,6 +2,7 @@ import logging
 log = logging.getLogger(__name__)
 
 from pylowiki.model import Thing, Data, meta
+import sqlalchemy as sa
 from dbHelpers import with_characteristic as wc
 
 def linkChildToParent(child, parent):
@@ -25,12 +26,21 @@ def linkChildToParent(child, parent):
     child[key] = code
     return child
     
-def getThing(code):
+def getThing(code, keys = None, values = None):
+    # Having some trouble doing this through map/reduce...for loop seems to work.  In looking at the debug
+    # output, it looks like the difference between SQLAlchemy making multiple sessions and a single session.
     try:
-        return meta.Session.query(Thing)\
-            .filter(Thing.data.any(wc('urlCode', code))).one()
+        q = meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc('urlCode', code)))
+        if keys is None:
+            return q.one()
+        if type(keys) != type([]):
+            keys = [keys]
+            values = [values]
+        for i in range(len(keys)):
+            q = q.filter(Thing.data.any(wc(keys[i], values[i])))
+        return q.one()
     except Exception as e:
-        log.info(e)
         return False
         
 def getThingByID(thingID):

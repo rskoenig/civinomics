@@ -99,6 +99,10 @@
 </div> <!-- /.row-fluid -->
 </div><!-- container-fluid -->
 
+<%def name="headScripts()">
+    <script src="/js/geo.js" type="text/javascript"></script>
+</%def>
+
 <%def name = 'extraStyles()'>
     <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">
     <link rel="stylesheet" href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">

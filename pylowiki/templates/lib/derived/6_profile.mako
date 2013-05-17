@@ -257,14 +257,12 @@
     % else:
         <span class="button_container">
         % if c.isFollowing:
-            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton following">
-            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
-            <span> Unfollow </span>
+            <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn-civ btn round pull-right followButton following">
+            <span><i class="icon-user icon-white"></i> Following </span>
             </button>
         % else:
             <button data-URL-list="profile_${c.user['urlCode']}_${c.user['url']}" class="btn round pull-right followButton unfollow">
-            <img class="watch" src="/images/glyphicons_pro/glyphicons/png/glyphicons_051_eye_open.png">
-            <span> Follow </span>
+            <span><i class="icon-user"></i> Follow </span>
             </button>
         % endif
         </span>
@@ -277,16 +275,40 @@
     </div>
     <div class="section-wrapper">
         <div class="browse">
-            <h3 class="section-header">${c.user['name']}</h3>
-            <p>${lib_6.userGeoLink(c.user)}</p>
+            %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                <div ng-init="updateGeoLinks(); dashboardFullName='${c.user['name']}'">
+                    <h3 class="section-header">{{dashboardFullName}}</h3>
+                    <p><a href="{{cityURL}}">{{cityTitle}}</a>, <a href="{{stateURL}}">{{stateTitle}}</a>, <a href="{{countryURL}}">{{countryTitle}}</a>
+                </div>
+            %else:
+                <h3 class="section-header">${c.user['name']}</h3>
+                <p>${lib_6.userGeoLink(c.user)}</p>
+            %endif
+            
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
             % if c.user['greetingMsg'] != '':
-                <small class="muted expandable">${c.user['greetingMsg']}</small>
+                %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                    <div ng-init="dashboardGreetingMsg='${c.user['greetingMsg']}'">
+                    <small class="muted expandable">{{dashboardGreetingMsg}}</small>
+                %else:
+                    <small class="muted expandable">${c.user['greetingMsg']}</small>
+                %endif
             % endif
             % if c.user['websiteLink'] != '':
-                <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
+                %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                    <div ng-init="dashboardWebsiteLink='${c.user['websiteLink']}'">
+                    <p class = "expandable no-bottom"><a href="{{dashboardWebsiteLink}}" target="_blank">{{dashboardWebsiteLink}}</a></p>
+                %else:
+                    <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
+                % endif
                 % if c.user['websiteDesc'] != '':
-                    <small class="muted expandable">${c.user['websiteDesc']}</small>
+                    %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                        <div ng-init="dashboardWebsiteDesc='${c.user['websiteDesc']}'">
+                            <small class="muted expandable">{{dashboardWebsiteDesc}}</small>
+                        </div>
+                    %else:
+                        <small class="muted expandable">${c.user['websiteDesc']}</small>
+                    %endif
                 % endif
             % endif
             <hr>
@@ -306,11 +328,11 @@
                 <div class="span4">
                     ${thingCount(c.user, c.followers, 'followers')}
                 </div>
-                <!-- users might ultimately be integrated in as one of the things you follow <div class="span4">
-                    ${thingCount(c.user, c.following, 'users')}
-                </div> -->
                 <div class="span4">
-                    ${thingCount(c.user, c.watching, 'following')}
+                    ${thingCount(c.user, c.following, 'following')}
+                </div>
+                <div class="span4">
+                    ${thingCount(c.user, c.watching, 'bookmarks')}
                 </div>
             </div> <!--/.row-fluid-->
         </div><!--/.browse-->
@@ -324,7 +346,7 @@
         % for item in activity:
             <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
             % if workshop['public_private'] == 'public' or (c.browser == False or c.isAdmin == True): 
-                <tr><td>${lib_6.showItemInActivity(item, workshop)}</td></tr>
+                <tr><td>${lib_6.showItemInActivity(item, workshop, expandable = True)}</td></tr>
             % endif
         % endfor
         </tbody>

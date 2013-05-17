@@ -51,7 +51,7 @@
          <span class="pull-right orange workshop-listing-info-icons"> 
             <a ${lib_6.workshopLink(w)}> <!-- Num watchers -->
                ${len(followLib.getWorkshopFollowers(w))}
-               <img class="small-bookmark" data-toggle="tooltip" title="Followers" src="/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png">
+               <img class="small-bookmark" data-toggle="tooltip" title="Followers" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             </a> <!-- /Num watchers -->
             <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
                ${len(activityLib.getActivityForWorkshop(w['urlCode']))}
@@ -61,7 +61,7 @@
       </div>
 </%def>
 
-<%def name="showActivity(item)">
+<%def name="showActivity(item, **kwargs)">
    <div class="media">
       <%
          w = workshopLib.getWorkshopByCode(item['workshopCode'])
@@ -70,7 +70,7 @@
       <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar', linkClass = 'media-object')}</div> 
       <div class="media-body">
          ${lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)} 
-         ${lib_6.showItemInActivity(item, w)}
+         ${lib_6.showItemInActivity(item, w, **kwargs)}
       </div>
    </div>
 </%def>
