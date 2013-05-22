@@ -20,7 +20,7 @@
             </div> <!-- /.span6 -->
             <div class="span6">
                 <ul class="well purple pricing-table ">
-                    <li class="title"><h3>Pro</h3><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe@2x.png" alt="globe icon"></li>
+                    <li class="title"><h3>Pro</h3><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_043_group@2x.png" alt="group icon"><em class="lead" style="padding: 0 10px;">   or   </em><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe@2x.png" alt="globe icon"></li>
                     <li class="price">$15 per month</li>
                     <li class="description"> Best for community builders </li>
                     <li class="bullet-item"> Public or private</li>

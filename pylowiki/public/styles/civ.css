@@ -443,6 +443,11 @@ a.name{
 .crop{
    width:100%; height:190px; background-repeat:no-repeat; background-size:cover; background-position:center;
 }
+
+a.btn{
+  margin-bottom: 8px;
+}
+
 .btn.round{
    border-radius:20px;
    padding:10px;

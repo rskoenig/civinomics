@@ -18,6 +18,7 @@
     tab8active = ""
     tab9active = ""
     tab10active = ""
+    tabInvitesactive = ""
 
 
     if c.tab == "tab1":
@@ -40,6 +41,8 @@
         tab9active = "active"
     elif c.tab == "tab10":
         tab10active = "active"
+    elif c.tab == "tabInvites":
+        tabInvitesactive = "active"
     else:
         if c.w['startTime'] == '0000-00-00':
             tab1active = "active"
@@ -104,10 +107,27 @@
                             <i class="icon-ok pull-right"></i>
                         % endif
                         </a></li>
+                        <li class="${tabInvitesactive}"><a href="#tabInvites" data-toggle="tab">6. Promote
+                        </a></li>
                     </ul>
                     ${helpers.publish()}
                 </div><!-- browse -->
             </div><!-- section-wrapper -->
+
+            % if c.w['type'] == 'personal':
+                <div class="section-wrapper alert-success">
+                    <div class="browse" style="overflow">
+                        <div>
+                            <p>To invite more than 20 people or add your workshop to public listings...</p>
+                            <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST" class="no-bottom">
+                                <button type="submit" class="btn btn-block btn-large btn-civ pull-right">Upgrade to Pro</button>
+                            </form>
+                        </div>
+                    </div>
+                </div><!-- section-wrapper -->
+            % endif
+
+
         </div><!-- span3 -->
         <div class="span9">
             % if c.conf['read_only.value'] == 'true':
@@ -129,6 +149,9 @@
                 </div><!-- tab-pane template tab4 -->
                 <div class="tab-pane ${tab5active}" id="tab5">
                     ${helpers.edit_background()}
+                </div><!-- tab-pane template tab5 -->
+                <div class="tab-pane ${tabInvitesactive}" id="tabInvites">
+                    ${helpers.invites()}
                 </div><!-- tab-pane template tab5 -->
                 <div class="tab-pane ${tab6active}" id="tab6">
                     <div class="section-wrapper">

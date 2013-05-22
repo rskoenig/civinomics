@@ -47,6 +47,13 @@
                 <p>Help make Civinomics more effective.</p>
             </a>
         </li>
+        <li class="span4 well help">
+            <a href="help/markdownGuide">
+                <span class="link-span"></span><!-- used to make entire div a link -->
+                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_114_list.png">  Markdown Syntax Guide</h3>
+                <p>For text throughout the site.</p>
+            </a>
+        </li>
     </ul><!-- thumbnails -->
 </%def>
 
@@ -541,3 +548,16 @@
         </div><!-- longText -->
     </div><!-- span9 -->
 </%def>
+
+<%def name="markdownGuide()">
+    <div class="span12">
+        <textarea rows="10" id="data" name="data" class="span12">${c.guide}</textarea>
+        <div class="preview-information-wrapper" id="live_preview">
+           hi
+        </div>
+    </div>
+
+</%def>
+
+
+

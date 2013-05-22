@@ -140,39 +140,83 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Participants</h4>
-
-            % if c.w['type'] == 'personal':
-                <div class="alert alert-success">
-                    <div class="row-fluid">
-                        <div class="span9">
-                            You are running a Free workshop. To invite more than 20 private members or to add your workshop to public listings...
-                        </div>
-                        <div class="span3">
-                            <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST" class="no-bottom">
-                                <button type="submit" class="btn btn-large btn-civ pull-right">Upgrade to Pro</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            % endif
-
             Specifiy if the workshop is public or private, and who may participate.
             <br>
             <br>
              ${change_scope()}
-            <div class="tabbable">
-                <ul class="nav nav-tabs" id="scopeTab">
-                <li class="${privateActive}"><a href="#private" data-toggle="tab">Private Workshop</a></li>
-                <li class="${publicActive}"><a href="#public" data-toggle="tab">Public Workhop</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane ${privateActive}" id="private">${private()}</div>
-                    <div class="tab-pane ${publicActive}" id="public">${public()}</div>
-                </div><!-- tab-content -->
-            </div><!-- tabbable -->
+
+             % if c.w['public_private'] == 'private':
+                <div class="tab-pane ${privateActive}" id="private">${private()}</div>
+            % elif c.w['public_private'] == 'public':
+                <div class="tab-pane ${publicActive}" id="public">${public()}</div>
+            % endif
+
         </div><!-- browse -->
     </div><!-- section-wrapper -->              
 </%def>
+
+<%def name="invites()">
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header smaller">Promote</h4>
+            <strong>Share this Link</strong>
+            <input></input>
+            <br>
+            <br>
+            <strong>Share on Facebook; Tweet</strong>
+            <br>
+            <br>
+            <form name="private" id="private" class="left form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+            % if c.w['public_private'] != 'public':
+                <strong>Invite People To Your Workshop</strong><br>
+                <div class="row-fluid">
+                    <label for="newMember">Enter the email addresses of people to invite, separated by commas.</label>
+                    <textarea class="input-block-level" rows=2 name="newMember"/></textarea>
+                </div><!-- row-fluid -->
+                <br>
+                <div class="row-fluid">
+                    <label for="inviteMsg">Add optional message to email invitation:</label>
+                    <textarea class="input-block-level" rows=3 name="inviteMsg"/></textarea><br />
+                    <!-- 
+                    <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
+                    -->
+                </div><!-- row-fluid -->
+                <br /><button type="submit" class="btn btn-primary" name="addMember"><i class="icon-envelope icon-white"></i> Send Invites</button>
+            % endif
+            % if c.pmembers and c.w['public_private'] != 'public':
+                <div class="container-fluid well">
+                    <div class="row-fluid">
+                        <div class="span6">
+
+                            <strong>Workshop Members
+
+                            % if c.pmembers:
+                                (${len(c.pmembers)})
+                            % endif
+
+                            </strong>
+                            <hr>
+                            % for pmember in c.pmembers:
+                                <label class="checkbox">
+                                    <input type="checkbox" name="selected_members" value="${pmember['email']}">${pmember['email']}
+                                </label><br>                            
+                            % endfor
+                            <br>
+                            <hr>
+                            <button type="submit" class="btn" name="resendInvites"><i class="icon-envelope"></i> Resend Invites</button>
+                            <button type="submit" class="btn btn-danger" name="deleteMembers"><i class="icon-trash icon-white"></i> Delete Members</button><br>
+
+                        </div><!-- span6 -->
+                    </div><!-- row-fluid -->
+                </div><!-- container-fluid -->
+            % endif  
+            </form>
+        </div><!-- section-wrapper -->
+    </div><!-- browse -->
+
+</%def>
+
+
 
 <%def name="tags()">
     <div class="section-wrapper">
@@ -220,7 +264,9 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Background</h4>
+            
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
+                <a class="btn" href="/help/markdownGuide" target="_blank"><i class="icon icon-th-list"></i> Quick Markdown Syntax Guide</a>
                <textarea rows="10" id="data" name="data" class="span12">${c.page['data']}</textarea>
                <div class="background-edit-wrapper">
                   <button type="submit" class="btn btn-warning pull-right" name="submit">Save Changes</button>
@@ -277,68 +323,58 @@
 </%def>
 
 <%def name="private()">
-    <ul>
-    % if c.w['type'] == 'personal':
-        <li>Free workshops are private and limited to 20 participants.</li>
-    % endif
-    <li>Private workshops are not visible to the public.</li>
-    <li>Private workshops are invitation only.</li>
-    </ul>
-    <form name="private" id="private" class="left form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-    <br>
-    <strong>Manage Workshop Members</strong>
-    <br>
-    <br>
-    <!--
-    <form name="private" id="private" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
-    -->
+
     % if c.w['public_private'] != 'public':
         <div class="container-fluid well">
-            <strong>Invite People To Your Workshop</strong><br>
             <div class="row-fluid">
-                <label for="newMember">Enter the email addresses of people to invite, separated by commas.</label>
-                <textarea class="input-block-level" rows=2 name="newMember"/></textarea>
-            </div><!-- row-fluid -->
-            <br>
-            <div class="row-fluid">
-                <label for="inviteMsg">Add optional message to email invitation:</label>
-                <textarea class="input-block-level" rows=3 name="inviteMsg"/></textarea><br />
-                <!-- 
-                <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
-                -->
-            </div><!-- row-fluid -->
-            <br /><button type="submit" class="btn btn-primary" name="addMember"><i class="icon-envelope icon-white"></i> Send Invites</button>
-        </div><!-- container-fluid -->
-    % endif
-    % if c.pmembers and c.w['public_private'] != 'public':
-        <div class="container-fluid well">
-            <div class="row-fluid">
-                <div class="span6">
-
-                    <strong>Workshop Members
+                <strong>Workshop Members (${len(c.pmembers)})</strong><br>
+                <br>
+                <strong>Add people:</strong><br>
+                <form name="private" id="private" class="left form-inline" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configurePrivateWorkshopHandler" enctype="multipart/form-data" method="post" >
+                    <div class="row-fluid">
+                        <label for="newMember">Enter the email addresses of people to invite, separated by commas <em>OR</em> cut and paste from Excel.</label>
+                        <textarea class="input-block-level" rows=1 name="newMember"/></textarea>
+                    </div><!-- row-fluid -->
+                    <div class="row-fluid">
+                        <label for="inviteMsg">Optional: include a personal message.</label>
+                        <textarea class="input-block-level" rows=1 name="inviteMsg"/></textarea>
+                        <!-- 
+                        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/previewInvitation" target="_blank">Preview Invitation</a> (will open in a new window)<br />
+                        -->
+                        <br>
+                        <br>
+                        <button type="submit" class="btn btn-primary" name="addMember"><i class="icon-envelope icon-white"></i> Send Invites</button>
+                    </div><!-- row-fluid -->
+                    <br>
 
                     % if c.pmembers:
-                        (${len(c.pmembers)})
+                        <hr>
+                        <strong>Manage members:</strong><br>
+                        <br>
+                        <button type="submit" class="btn" name="resendInvites"><i class="icon-envelope"></i> Resend Invites</button>
+                        <button type="submit" class="btn btn-danger" name="deleteMembers"><i class="icon-trash icon-white"></i> Delete Members</button><br>
+                        <br>
+                        <% 
+                            memberList = []
+                            for pmember in c.pmembers:
+                                memberList.append(pmember['email'])
+                            memberList.sort()
+                        %>
+                        % for member in memberList:
+                            <label class="checkbox">
+                                <input type="checkbox" name="selected_members" value="${member}">${member}
+                            </label><br>                         
+                        % endfor
                     % endif
 
-                    </strong>
-                    <hr>
-                    % for pmember in c.pmembers:
-                        <label class="checkbox">
-                            <input type="checkbox" name="selected_members" value="${pmember['email']}">${pmember['email']}
-                        </label><br>                            
-                    % endfor
-                    <br>
-                    <hr>
-                    <button type="submit" class="btn" name="resendInvites"><i class="icon-envelope"></i> Resend Invites</button>
-                    <button type="submit" class="btn btn-danger" name="deleteMembers"><i class="icon-trash icon-white"></i> Delete Members</button><br>
-
-                </div><!-- span6 -->
+                </form>
+                <br>
             </div><!-- row-fluid -->
         </div><!-- container-fluid -->
     % endif
+    
     % if not c.published:
-        <div class="container-fluid well">
+        <div class="container-fluid well centered">
             <button type="submit" class="btn btn-warning" name="continueToNext">Continue to Next Step</button>
         </div><!-- container-fluid -->
     % endif
@@ -347,140 +383,146 @@
 </%def>
 
 <%def name="public()">
-    <ul>
-    <li>Public workshops are visible to everyone!</li> 
-    <li>Residents of the specificied geographic area are encouraged to participate.</li>
-    <li>Unlimited participants!</li>
-    </ul>
-    <br />
-    <p>Specify the geographic area associated with your workshop: <span class="label label-important">Required</span></span>:</p>
-    <% 
-        countrySelected = ""
-        countyMessage = ""
-        cityMessage = ""
-        postalMessage = ""
-        underPostalMessage = ""
-        if c.country!= "0":
-            countrySelected = "selected"
-            states = getStateList("united-states")
-            countyMessage = "or leave blank if your workshop is specific to the entire country."
-        else:
+    <div class="container-fluid well">
+        <strong>Geographic Scope</strong><br> 
+        <br>
+        <p>Specify the geographic area associated with your workshop:</p>
+        <% 
             countrySelected = ""
-        endif
-    %>
-    <br />
-    <form name="scope" id="scope" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePublicWorkshopHandler" enctype="multipart/form-data" method="post" >  
-    <div class="row-fluid"><span id="countrySelect">
-        <div class="span1"></div><div class="span2">Country:</div>
-        <div class="span9">
-            <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
-            <option value="0">Select a country</option>
-            <option value="United States" ${countrySelected}>United States</option>
-            </select>
-        </div><!-- span9 -->
-    </span><!-- countrySelect -->
-    </div><!-- row-fluid -->
-    <div class="row-fluid"><span id="stateSelect">
-        % if c.country != "0":
-            <div class="span1"></div><div class="span2">State:</div><div class="span9">
-            <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
-            <option value="0">Select a state</option>
-            % for state in states:
-                % if state != 'District of Columbia':
-                    % if c.state == state['StateFullName']:
-                        <% stateSelected = "selected" %>
-                    % else:
-                        <% stateSelected = "" %>
-                    % endif
-                    <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
-                % endif
-            % endfor
-            </select>
+            countyMessage = ""
+            cityMessage = ""
+            postalMessage = ""
+            underPostalMessage = ""
+            if c.country!= "0":
+                countrySelected = "selected"
+                states = getStateList("united-states")
+                countyMessage = "or leave blank if your workshop is specific to the entire country."
+            else:
+                countrySelected = ""
+            endif
+        %>
+        <form name="scope" id="scope" class="left" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configurePublicWorkshopHandler" enctype="multipart/form-data" method="post" >  
+        <div class="row-fluid"><span id="planetSelect">
+            <div class="span1"></div><div class="span2">Planet:</div>
+            <div class="span9">
+                <select name="geoTagPlanet" id="geoTagPlanet" class="geoTagCountry">
+                    <option value="0">Earth</option>
+                </select>
             </div><!-- span9 -->
-        % else:
-            or leave blank if your workshop is specific to the entire planet.
-        % endif
-    </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="countySelect">
-        % if c.state != "0":
-            <% counties = getCountyList("united-states", c.state) %>
-            <% cityMessage = "or leave blank if your workshop is specific to the entire state." %>
-            <div class="span1"></div><div class="span2">County:</div><div class="span9">
-            <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
-                <option value="0">Select a county</option>
-                % for county in counties:
-                    % if c.county == county['County'].title():
-                        <% countySelected = "selected" %>
-                    % else:
-                        <% countySelected = "" %>
+        </span><!-- countrySelect -->
+        </div><!-- row-fluid -->     
+        <div class="row-fluid"><span id="countrySelect">
+            <div class="span1"></div><div class="span2">Country:</div>
+            <div class="span9">
+                <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+                    <option value="0">Select a country</option>
+                    <option value="United States" ${countrySelected}>United States</option>
+                </select>
+            </div><!-- span9 -->
+        </span><!-- countrySelect -->
+        </div><!-- row-fluid -->
+        <div class="row-fluid"><span id="stateSelect">
+            % if c.country != "0":
+                <div class="span1"></div><div class="span2">State:</div><div class="span9">
+                <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
+                <option value="0">Select a state</option>
+                % for state in states:
+                    % if state != 'District of Columbia':
+                        % if c.state == state['StateFullName']:
+                            <% stateSelected = "selected" %>
+                        % else:
+                            <% stateSelected = "" %>
+                        % endif
+                        <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
                     % endif
-                    <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
                 % endfor
-            </select>
-            </div><!-- span9 -->
-        % else:
-            <% cityMessage = "" %>
-            ${countyMessage}
-        % endif
-    </span></div><!-- row -->
-    <div class="row-fluid"><span id="citySelect">
-        % if c.county != "0":
-            <% cities = getCityList("united-states", c.state, c.county) %>
-            <% postalMessage = "or leave blank if your workshop is specific to the entire county." %>
-            <div class="span1"></div><div class="span2">City:</div><div class="span9">
-            <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
-            <option value="0">Select a city</option>
-                % for city in cities:
-                    % if c.city == city['City'].title():
-                        <% citySelected = "selected" %>
-                    % else:
-                        <% citySelected = "" %>
-                    % endif
-                    <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
-                % endfor
-            </select>
-            </div><!-- span9 -->
-        % else:
-            <% postalMessage = "" %>
-            ${cityMessage}
-        % endif
+                </select>
+                </div><!-- span9 -->
+            % else:
+                or leave blank if your workshop is specific to the entire planet.
+            % endif
         </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="postalSelect">
-        % if c.city != "0":
-            <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
-            <% underPostalMessage = "or leave blank if your workshop is specific to the entire city." %>
-            <div class="span1"></div><div class="span2">Postal Code:</div><div class="span9">
-            <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
-            <option value="0">Select a postal code</option>
-                % for pCode in postalCodes:
-                    % if c.postal == str(pCode['ZipCode']):
-                        <% postalSelected = "selected" %>
-                    % else:
-                        <% postalSelected = "" %>
-                    % endif
-                    <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
-                % endfor
-            </select>
-            </div><!-- span9 -->
-        % else:
-            <% underPostalMessage = "" %>
-            ${postalMessage}
-        % endif
-        </span></div><!-- row-fluid -->
-    <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
-    <br />
-    <% 
-        if not c.published:
-            buttonMsg = "Save And Continue To Next Step"
-        else:
-            buttonMsg = "Save Geographic Area"
-    %>
-    <div class="row-fluid">
-        <div class="well">
-            <button type="submit" class="btn btn-warning">${buttonMsg}</button>
-        </div><!-- well -->
-    </div><!-- row -->
-    </form>
+        <div class="row-fluid"><span id="countySelect">
+            % if c.state != "0":
+                <% counties = getCountyList("united-states", c.state) %>
+                <% cityMessage = "or leave blank if your workshop is specific to the entire state." %>
+                <div class="span1"></div><div class="span2">County:</div><div class="span9">
+                <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
+                    <option value="0">Select a county</option>
+                    % for county in counties:
+                        % if c.county == county['County'].title():
+                            <% countySelected = "selected" %>
+                        % else:
+                            <% countySelected = "" %>
+                        % endif
+                        <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
+                    % endfor
+                </select>
+                </div><!-- span9 -->
+            % else:
+                <% cityMessage = "" %>
+                ${countyMessage}
+            % endif
+        </span></div><!-- row -->
+        <div class="row-fluid"><span id="citySelect">
+            % if c.county != "0":
+                <% cities = getCityList("united-states", c.state, c.county) %>
+                <% postalMessage = "or leave blank if your workshop is specific to the entire county." %>
+                <div class="span1"></div><div class="span2">City:</div><div class="span9">
+                <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+                <option value="0">Select a city</option>
+                    % for city in cities:
+                        % if c.city == city['City'].title():
+                            <% citySelected = "selected" %>
+                        % else:
+                            <% citySelected = "" %>
+                        % endif
+                        <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
+                    % endfor
+                </select>
+                </div><!-- span9 -->
+            % else:
+                <% postalMessage = "" %>
+                ${cityMessage}
+            % endif
+            </span></div><!-- row-fluid -->
+        <div class="row-fluid"><span id="postalSelect">
+            % if c.city != "0":
+                <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
+                <% underPostalMessage = "or leave blank if your workshop is specific to the entire city." %>
+                <div class="span1"></div><div class="span2">Postal Code:</div><div class="span9">
+                <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
+                <option value="0">Select a postal code</option>
+                    % for pCode in postalCodes:
+                        % if c.postal == str(pCode['ZipCode']):
+                            <% postalSelected = "selected" %>
+                        % else:
+                            <% postalSelected = "" %>
+                        % endif
+                        <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
+                    % endfor
+                </select>
+                </div><!-- span9 -->
+            % else:
+                <% underPostalMessage = "" %>
+                ${postalMessage}
+            % endif
+            </span></div><!-- row-fluid -->
+        <div class="row-fluid"><span id="underPostal">${underPostalMessage}</span><br /></div><!-- row -->
+        <br />
+        <% 
+            if not c.published:
+                buttonMsg = "Save And Continue To Next Step"
+            else:
+                buttonMsg = "Save Geographic Area"
+        %>
+        <div class="row-fluid">
+            <div class="well">
+                <button type="submit" class="btn btn-warning">${buttonMsg}</button>
+            </div><!-- well -->
+        </div><!-- row -->
+        </form>
+    </div>
 </%def>
 
 <%def name="publish()">

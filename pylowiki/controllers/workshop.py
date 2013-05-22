@@ -426,7 +426,11 @@ class WorkshopController(BaseController):
                 else:
                     newMember = request.params['newMember']
                     counter = 0
-                    mList = newMember.split(',')
+                    # clean the list to enable separation by either comma or return
+                    cList = newMember.replace(',', '\n')
+                    cList.strip()
+                    mList = cList.split('\n')
+
                     if c.w['type'] == 'personal' and (len(pList) + len(mList) > 20):
                         werror = 1
                         werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, Free workshops are limited to a maximum of 20 participants.'
