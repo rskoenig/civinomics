@@ -504,7 +504,7 @@ class ProfileController(BaseController):
                 abort(404)
             imageHash = imageLib.generateHash(filename, c.authuser)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'orig', thing = c.authuser)
-            maxDim = max(image.size)
+            maxDim = min(image.size)
             dims = {'x': 0, 
                     'y': 0, 
                     'width':maxDim,

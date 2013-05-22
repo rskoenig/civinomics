@@ -78,7 +78,6 @@ def cropImage(image, imageHash, dims, **kwargs):
         outputs:
             image       ->  The modified Image object that was passed in.
     """
-    
     try:
         x = dims['x']
         y = dims['y']
