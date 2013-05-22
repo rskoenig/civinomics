@@ -59,7 +59,7 @@ def resizeImage(image, imageHash, width, height, **kwargs):
         
         return image
     except Exception as e:
-        log.error('Error resizing image with hash %s, error given was %s', %(imageHash, e))
+        log.error('Error resizing image with hash %s, error given was %s' %(imageHash, e))
         return False
         
 def cropImage(image, imageHash, dims, **kwargs):
@@ -131,7 +131,7 @@ def openImage(file):
         return False
 
 def generateHash(filename, thing):
-    s = '%s_%s_%f' %(filename, thing['urlCode'], time.time())
+    s = '%s_%s_%f' %(filename, thing['urlCode'], time())
     return md5(s).hexdigest()
 
 def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
@@ -148,9 +148,10 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
             identifier      ->  The general function of this image (e.g. 'avatar', 'background', 'slide', etc...)
             subIdentifier   ->  The specific function of this image (e.g. 'thumbnail', 'orig', etc...)
             
-            kwargs
-                thing       ->  A Thing object.  If we are saving the image for the first time, then this needs to be
-                                passed in so that we can store the directory number in that Thing.
+        Optional:
+            thing           ->  A Thing object.  This needs to be passed in so that we can store the directory number in the Thing.
+                                Only needs to be passed in once...this 'should' be when we are saving the 'orig' subidentifier.
+            
         Outputs:
             If successful, returns the PIL.Image object.
             If unsuccessful, returns False.

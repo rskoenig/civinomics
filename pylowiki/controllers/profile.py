@@ -510,13 +510,14 @@ class ProfileController(BaseController):
                     'width':maxDim,
                     'height':maxDim}
             image = imageLib.cropImage(image, imageHash, dims)
-            image = imageLib.resizeImage()
-            imageLib.cropImage('avatar', imageHash, dims)
-            imageLib.resizeImage('avatar', imageHash, 200, 200, 'avatar', crop=True, square=True)
+            image = imageLib.resizeImage(image, imageHash, 200, 200)
+            image = imageLib.saveImage(image, imageHash, 'avatar', 'avatar')
+            image = imageLib.resizeImage(image, imageHash, 100, 100)
+            image = imageLib.saveImage(image, imageHash, 'avatar', 'thumbnail')
             jsonResponse =  {'files': [
                                 {
                                     'name':filename,
-                                    'thumbnail_url':'/images/avatar/%s/orig/%s.png' %(c.authuser['directoryNum_avatar'], imageHash)
+                                    'thumbnail_url':'/images/avatar/%s/avatar/%s.png' %(c.authuser['directoryNum_avatar'], imageHash)
                                 }
                             ]}
             return json.dumps(jsonResponse)
