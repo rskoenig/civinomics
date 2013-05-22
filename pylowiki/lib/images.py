@@ -14,10 +14,11 @@ numImagesInDirectory = 30000
     General workflow for new images:
     1)  Given a file 'file', open image with openImage(file).  
         This checks that the file is indeed an image, and returns a PIL.Image object.  Call this object 'imObj'
-    2)  Save original image with saveImage(imObj).  The identifier will depend on the overall function (e.g. 'avatar', 'background', 'slide', etc...)
+    2)  Generate the hash associated with this image through use of generateHash().
+    3)  Save original image with saveImage(imObj).  The identifier will depend on the overall function (e.g. 'avatar', 'background', 'slide', etc...)
         The sub identifier depends on the specific function (e.g. 'thumbnail', 'orig', 'slideshow').  Here you will want to save as 'orig'.
-    3)  Process imgObj as necessary with resizeImage() and cropImage()
-    4)  Save the modified imgObj with the same identifier, but different sub identifier (e.g. identifier = 'avatar', sub identifier = 'thumbnail')
+    4)  Process imgObj as necessary with cropImage() and resizeImage()
+    5)  Save the modified imgObj with the same identifier, but different sub identifier (e.g. identifier = 'avatar', sub identifier = 'thumbnail')
 
 """
 
@@ -87,6 +88,18 @@ def cropImage(image, imageHash, dims, **kwargs):
         log.error('lib/images/cropImage(): dims dict was lacking key %s' % e)
         return False
     
+    # Some validation.
+    # Here, image.size is a tuple of the form (width, height)
+    imageDims = image.size
+    if x > imageDims[0]:
+        x = 0
+    if y > imageDims[1]:
+        y = 0
+    if x + width > imageDims[0]:
+        width = imageDims[0] - x
+    if y + height > imageDims[1]:
+        height = imageDims[1] - y
+    
     try:
         box = (x, y, width, height)
         region = image.crop(box)
@@ -118,7 +131,7 @@ def openImage(file):
         return False
 
 def generateHash(filename, thing):
-    s = '%s_%s' %(filename, thing['urlCode'])
+    s = '%s_%s_%f' %(filename, thing['urlCode'], time.time())
     return md5(s).hexdigest()
 
 def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
@@ -139,7 +152,8 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
                 thing       ->  A Thing object.  If we are saving the image for the first time, then this needs to be
                                 passed in so that we can store the directory number in that Thing.
         Outputs:
-            True or False, depending on success or failure (respectively)
+            If successful, returns the PIL.Image object.
+            If unsuccessful, returns False.
     """
     i = getImageIdentifier(identifier)
     if not i:
@@ -158,7 +172,9 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
         thing = kwargs['thing']
         thing['directoryNum'] = directoryNumber
         directoryNumIdentifier = 'directoryNum_' + identifier
+        imageHashIdentifier = 'pictureHash_' + identifier
         thing[directoryNumIdentifier] = directoryNumber
+        thing[imageHashIdentifier] = imageHash
         commit(thing)
     
     # Now convert and save
@@ -175,7 +191,7 @@ def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
             image.save(fullpath, 'PNG', transparency=transparency)
         else:
             image.save(fullpath, 'PNG')
-        return True
+        return image
     except:
         log.error('Unable to save to %s with hash %s' % (fullpath, imageHash))
         return False

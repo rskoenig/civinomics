@@ -499,13 +499,18 @@ class ProfileController(BaseController):
             file = request.params['files[]']
             filename = file.filename
             file = file.file
-            if not imageLib.isImage(file):
+            image = imageLib.openImage(file)
+            if not image:
                 abort(404)
-            imageHash = imageLib.saveImage(file, filename, 'avatar', c.authuser)
-            c.authuser['pictureHash_avatar'] = imageHash
-            dbHelpers.commit(c.authuser)
-            
-            #def cropImage(identifier, hash, x, y, width, height, **kwargs):
+            imageHash = imageLib.generateHash(filename, c.authuser)
+            image = imageLib.saveImage(image, imageHash, 'avatar', 'orig', thing = c.authuser)
+            maxDim = max(image.size)
+            dims = {'x': 0, 
+                    'y': 0, 
+                    'width':maxDim,
+                    'height':maxDim}
+            image = imageLib.cropImage(image, imageHash, dims)
+            image = imageLib.resizeImage()
             imageLib.cropImage('avatar', imageHash, dims)
             imageLib.resizeImage('avatar', imageHash, 200, 200, 'avatar', crop=True, square=True)
             jsonResponse =  {'files': [
