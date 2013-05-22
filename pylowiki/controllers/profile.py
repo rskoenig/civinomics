@@ -460,7 +460,18 @@ class ProfileController(BaseController):
     @h.login_required
     def pictureUploadHandler(self, id1, id2):
         """
-            Expects a json-encoded string with the following format:
+            Ideally:  
+            1) User selects image, gets presented with aspect-ratio constrained selection.
+            2) User adjusts centering and dimensions, hits 'start'
+            3) Process image - detailed below
+        
+            Grab the uploaded file.  Hash and save the original first.  Then process.
+            Processing means:
+            1) Check to ensure it is an image (should be done in the hash + save step)
+            2) Check for square dimensions.  If not square, crop.  Do not save the image here, just pass on the image object.
+            3) If necessary, resize the dimensions of the image to 200px x 200px.  Save the final image here.
+            
+            The client expects a json-encoded string with the following format:
             
             {"files": [
               {
@@ -488,10 +499,15 @@ class ProfileController(BaseController):
             file = request.params['files[]']
             filename = file.filename
             file = file.file
+            if not imageLib.isImage(file):
+                abort(404)
             imageHash = imageLib.saveImage(file, filename, 'avatar', c.authuser)
             c.authuser['pictureHash_avatar'] = imageHash
-            imageLib.resizeImage('avatar', imageHash, 200, 200, 'avatar', crop=True, square=True)
             dbHelpers.commit(c.authuser)
+            
+            #def cropImage(identifier, hash, x, y, width, height, **kwargs):
+            imageLib.cropImage('avatar', imageHash, dims)
+            imageLib.resizeImage('avatar', imageHash, 200, 200, 'avatar', crop=True, square=True)
             jsonResponse =  {'files': [
                                 {
                                     'name':filename,
