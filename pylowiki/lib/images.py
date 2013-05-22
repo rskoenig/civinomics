@@ -22,42 +22,43 @@ numImagesInDirectory = 30000
 """
 
 
-def resizeImage(identifier, hash, x, y, postfix, **kwargs):
+def resizeImage(image, imageHash, width, height, **kwargs):
     """
-        Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
-        Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.jpg
+        Given an object of type PIL.Image, resize that object and return it.
         
-        optional arguments:
-        preserveAspectRatio         ->      Exactly as it sounds.  Boolean value.
+        Inputs:
+            image       ->  An object of type PIL.Image
+            imageHash   ->  A string, this is the unique identifier for this image.  Used for debugging and logging purposes.
+            width       ->  An int, exactly as titled.  However, if set to the string 'max', then this is the width of the image.
+            height      ->  An int, exactly as titled.  However, if set to the string 'max', then this is the height of the image.
+        
+        Optional inputs:
+            preserveAspectRatio ->  Exactly as it sounds.  Boolean value.
+        
+        Outputs:
+            image       ->  An object of type PIL.Image, now resized.
         
     """
-    
-    i = getImageIdentifier(identifier)
-    directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
-    
-    origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber,'orig')
-    origFullpath = origPathname + '/%s.png' %(hash)
     
     try:
-        im = Image.open(origFullpath)
         ratio = 1
-        dims = (x, y)
-        if x == 99999 and y == 99999:
-            dims = im.size
+        if width == 'max':
+            width = image.size[0]
+        if height == 'max':
+            height = image.size[1]
+        dims = (width, height)
         if 'preserveAspectRatio' in kwargs:
             if kwargs['preserveAspectRatio'] == True:
-                maxwidth = x
-                maxheight = y
+                maxwidth = width
+                maxheight = height
                 width, height = im.size
                 ratio = min(float(maxwidth)/width, float(maxheight)/height)
                 dims = (int(im.size[0] * ratio), int(im.size[1] * ratio))
-        pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
-        if not os.path.exists(pathname):
-            os.makedirs(pathname)
+        image = image.resize(dims, Image.ANTIALIAS)
         
-        im.save(pathname + '/' + hash + '.png' , 'PNG')
-        return True
-    except:
+        return image
+    except Exception as e:
+        log.error('Error resizing image with hash %s, error given was %s', %(imageHash, e))
         return False
         
 def cropImage(image, imageHash, dims, **kwargs):
@@ -106,36 +107,49 @@ def getImageLocation(slide):
         origFullpath = origPathname + '/%s.jpg' %(imgHash)
     return origFullpath, directoryNumber
 
-def isImage(imgFile):
+def openImage(file):
+    """
+        The PIL.Image.open() function will also verify that the passed in file actually is an image.
+    """
     try:
-        im = Image.open(imgFile)
-        return im
+        image = Image.open(file)
+        return image
     except:
         return False
 
-def openImage(file):
-    image = isImage(file)
-    if not image:
-        return False
-    return image
+def generateHash(filename, thing):
+    s = '%s_%s' %(filename, thing['urlCode'])
+    return md5(s).hexdigest()
 
-def saveImage(image, identifier, **kwargs):
+def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
     """
         Save an image to disk
         Directories are created based on the identifier that gets passed in
         Each identifier object contains an 'imageNum' field that is a running tally of
         all images that have the same identifier.  When we get to 30k images in a
         directory (via integer division), we create a new directory and save images in there.
+        
+        Inputs:
+            image           ->  The PIL.Image object
+            imageHash       ->  Obtained by calling generateHash()
+            identifier      ->  The general function of this image (e.g. 'avatar', 'background', 'slide', etc...)
+            subIdentifier   ->  The specific function of this image (e.g. 'thumbnail', 'orig', etc...)
+            
+            kwargs
+                thing       ->  A Thing object.  If we are saving the image for the first time, then this needs to be
+                                passed in so that we can store the directory number in that Thing.
+        Outputs:
+            True or False, depending on success or failure (respectively)
     """
-    hash = _generateHash(filename, thing)
     i = getImageIdentifier(identifier)
     if not i:
         i = ImageIdentifier(identifier)
     
     i['numImages'] = unicode(int(i['numImages']) + 1)
+    commit(i)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
-    pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig')
-    savename = hash + '.png'
+    pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, subIdentifier)
+    savename = imageHash + '.png'
     if not os.path.exists(pathname):
         os.makedirs(pathname)
     
@@ -156,19 +170,15 @@ def saveImage(image, identifier, **kwargs):
     #                   bmp
     #                   gif
     try:
-        im = Image.open(image)
-        if im.format == 'GIF':
-            transparency = im.info['transparency']
-            im.save(fullpath, 'PNG', transparency=transparency)
-        im.save(fullpath, 'PNG')
-        return hash
+        if image.format == 'GIF':
+            transparency = image.info['transparency']
+            image.save(fullpath, 'PNG', transparency=transparency)
+        else:
+            image.save(fullpath, 'PNG')
+        return True
     except:
-        log.error('Unable to save to %s with hash %s' % (fullpath, hash))
+        log.error('Unable to save to %s with hash %s' % (fullpath, imageHash))
         return False
-
-def _generateHash(filename, thing):
-    s = '%s_%s' %(filename, thing['urlCode'])
-    return md5(s).hexdigest()
     
 def makeSurveyThumbnail(filename, directory, x, y, postfix):
     """
