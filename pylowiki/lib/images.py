@@ -52,9 +52,9 @@ def resizeImage(image, imageHash, width, height, **kwargs):
             if kwargs['preserveAspectRatio'] == True:
                 maxwidth = width
                 maxheight = height
-                width, height = im.size
+                width, height = image.size
                 ratio = min(float(maxwidth)/width, float(maxheight)/height)
-                dims = (int(im.size[0] * ratio), int(im.size[1] * ratio))
+                dims = (int(image.size[0] * ratio), int(image.size[1] * ratio))
         image = image.resize(dims, Image.ANTIALIAS)
         
         return image

@@ -15,7 +15,7 @@ import pylowiki.lib.db.slideshow        as slideshowLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 from pylowiki.lib.db.imageIdentifier import getImageIdentifier
 
-from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory, isImage
+from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory
 
 log = logging.getLogger(__name__)
 
@@ -49,10 +49,6 @@ class SlideshowController(BaseController):
             filename = file.filename
             identifier = 'slide'
             
-            if not isImage(imageFile):
-                abort(404)
-            imageFile.seek(0)
-
             slide = Slide(c.authuser, c.slideshow, 'Sample caption', filename, imageFile, '1')
             
             i = getImageIdentifier(identifier)
