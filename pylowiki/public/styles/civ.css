@@ -461,6 +461,19 @@ img.watch{
    text-align: center;
 }
 
+.boxOffsetParent{
+  position: relative;
+}
+
+td.scope-icon{
+  width: 70px;
+}
+  td.scope-icon > img {
+    position: absolute;
+    top: 10px;
+    left: 0px;
+  }
+
 .btn.workshopNav{
     font-size:17px;
 }

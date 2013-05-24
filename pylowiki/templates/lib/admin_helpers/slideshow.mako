@@ -204,7 +204,7 @@
         </div><!-- End demo -->
         % if c.w['startTime'] == '0000-00-00':
             <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
-                <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
+                <button type="submit" class="btn btn-warning" name="continueToNext">Save Slideshow and Continue</button>
             </form>
         % endif
     </div><!-- row-fluid -->
