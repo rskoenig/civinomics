@@ -1,12 +1,12 @@
-    
+
     var workshopURL = document.getElementById("workshopTitle").href;
-    var ideasURL = workshopURL + '/ideas#guider=tour_ideas';
+    var ideasURL = workshopURL + '/ideas#guider=tour_vote';
     $(document).ready(function() {
         guiders.createGuider({
             buttons: [{name: "next"}],
-            description: "Welcome to the Civinomics tour!<br>You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit the tutorial at any time. ",
+            description: "You may press escape on your keyboard or click the 'x' in the upper left hand corner of this box to exit this tour at any time. ",
             id: "tour_welcome",
-            next: "tour_logo",
+            next: "tour_info",
             title: "Welcome!",
             closeOnEscape: true,
             autoFocus: true,
@@ -15,18 +15,72 @@
         });
 
         guiders.createGuider({
-            attachTo: "#civinomicsLogo",
+            attachTo: "#workshopInformation",
             buttons: [{name: "next"}],
-            description: "<br><h1 class=guiders_title>Civinomics home</h1></p><p>Click on the Civinomics logo if you want to go back to the Civinomics main page where all workshops are listed.</p> ",
-            id: "tour_logo",
-            next: "tour_name",
+            description: "This section provides background about the topic of the workshop.",
+            id: "tour_info",
+            next: "tour_talk",
+            title: "Get Informed",
             closeOnEscape: true,
             autoFocus: true,
-            highlight: "#civinomicsLogo",
+            highlight: "#workshopInformation",
             overlay: "true",
             xButton: true,
-            position: 3
+            position: 12
         });
+
+
+        guiders.createGuider({
+            attachTo: "#discussionButton",
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
+            description: "The Talk section is for questions and answers, or discussion about the information.",
+            id: "tour_talk",
+            prev: "tour_info",
+            next: "tour_vote",
+            title: "Have a Civic Debate",
+            closeOnEscape: true,
+            autoFocus: true,
+            highlight: "#discussionButton",
+            overlay: "true",
+            xButton: true,
+            position: 6
+        });
+
+
+        guiders.createGuider({
+            attachTo: "#ideaButton",
+            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=ideasURL;}}],
+            description: "Ready to help decide what to do? Go check out proposals in the Vote section.",
+            id: "tour_vote",
+            prev: "tour_talk",
+            title: "Now for a solution...",
+            closeOnEscape: true,
+            autoFocus: true,
+            highlight: "#ideaButton",
+            overlay: "true",
+            xButton: true,
+            position: 6
+        });
+
+
+        guiders.createGuider({
+            buttons: [{name:"close"}],
+            description: "Now go find interesting workshops or start some of your own!<br>Use Civinomics to improve your world.",
+            id: "tour_close",
+            title: "Thanks for taking the tour!",
+            closeOnEscape: true,
+            autoFocus: true,
+            overlay: "true",
+            xButton: true,
+            position: 6
+        });
+        
+    });
+
+/*
+
+
+
         
         guiders.createGuider({
             attachTo: "#workshopTitle",
@@ -76,24 +130,7 @@
             position: 9
         });
         
-        guiders.createGuider({
-            attachTo: "#workshopInformation",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "Along with the slideshow, this section provides background information about the topic of the workshop.",
-            id: "tour_info",
-            prev: "tour_notables",
-            next: "tour_slideshow",
-            title: "Background",
-            closeOnEscape: true,
-            autoFocus: true,
-            highlight: "#workshopInformation",
-            overlay: "true",
-            xButton: true,
-            position: 12
-        });
         
-        
-      
         guiders.createGuider({
             attachTo: "#workshopSlideshow",
             buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
@@ -127,47 +164,4 @@
             position: 6
         });
         
-        guiders.createGuider({
-            attachTo: "#discussionButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next"}],
-            description: "The Talk section of the workshop is for questions and answers, longer discussions/debates, and general feedback to the workshop facilitators and listeners.",
-            id: "tour_talk",
-            prev: "tour_learn",
-            next: "tour_vote",
-            title: "Talk",
-            closeOnEscape: true,
-            autoFocus: true,
-            highlight: "#discussionButton",
-            overlay: "true",
-            xButton: true,
-            position: 6
-        });
-        
-        guiders.createGuider({
-            attachTo: "#ideaButton",
-            buttons: [{name:"prev", onclick: guiders.prev}, {name: "next", onclick: function() { window.location.href=ideasURL;}}],
-            description: "Vote on existing ideas or add new ideas. Ideas are short and should directly address the workshop's goals.",
-            id: "tour_vote",
-            prev: "tour_talk",
-            title: "Vote",
-            closeOnEscape: true,
-            autoFocus: true,
-            highlight: "#ideaButton",
-            overlay: "true",
-            xButton: true,
-            position: 6
-        });
-        
-        guiders.createGuider({
-            buttons: [{name:"close"}],
-            description: "Now go find interesting workshops or start some of your own!<br>Use Civinomics to improve your world.",
-            id: "tour_close",
-            title: "Thanks for taking the tour!",
-            closeOnEscape: true,
-            autoFocus: true,
-            overlay: "true",
-            xButton: true,
-            position: 6
-        });
-        
-    });
+*/
