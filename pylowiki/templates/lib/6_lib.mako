@@ -792,14 +792,20 @@
 
 <%def name="public_tags()">
   <% pTags = getCategoryTagCount() %>
-  <ul class="unstyled">
-    % for pT in sorted(pTags.keys(), reverse=True):
-      % if pTags[pT] > 0:
-        <% fixedpT = pT.replace(" ", "_") %>
-        <li><a href="/searchTags/${fixedpT}/" title="Click to view workshops with this tag">${pT}</a>: ${pTags[pT]}</li>
-      % endif
-    % endfor
-  </ul> <!-- /.unstyled -->
+    <div class="btn-group">
+      <button class="btn dropdown-toggle" data-toggle="dropdown">
+        Category
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        % for pT in sorted(pTags.keys()):
+          % if pTags[pT] > 0:
+            <% fixedpT = pT.replace(" ", "_") %>
+            <li><a href="/searchTags/${fixedpT}/" title="Click to view workshops with this tag">${pT}: ${pTags[pT]}</a></li>
+          % endif
+        % endfor
+      </ul> <!-- /.unstyled -->
+    </div>
 </%def>
 
 <%def name="member_tags()">
