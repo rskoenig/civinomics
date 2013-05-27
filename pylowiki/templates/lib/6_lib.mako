@@ -1,5 +1,6 @@
 <%!
    from pylowiki.lib.db.geoInfo import getGeoInfo
+   from pylowiki.lib.db.tag import getCategoryTagCount
    
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
@@ -787,6 +788,32 @@
                 activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
     %>
     ${activityStr | n}
+</%def>
+
+<%def name="public_tags()">
+  <% pTags = getCategoryTagCount() %>
+  <ul class="unstyled">
+    % for pT in sorted(pTags.keys(), reverse=True):
+      % if pTags[pT] > 0:
+        <% fixedpT = pT.replace(" ", "_") %>
+        <li><a href="/searchTags/${fixedpT}/" title="Click to view workshops with this tag">${pT}</a>: ${pTags[pT]}</li>
+      % endif
+    % endfor
+  </ul> <!-- /.unstyled -->
+</%def>
+
+<%def name="member_tags()">
+  <% mTags = getMemberTagCount() %>
+  % if len(mTags.keys()) > 0:
+    <ul class="unstyled">
+      % for mT in sorted(mTags.keys()):
+        <% fixedmT = mT.replace(" ", "_") %>
+        <li><a href="/searchTags/${fixedmT}/" title="Click to view workshops with this tag">${mT}</a>: ${mTags[mT]}</li>
+      % endfor
+    </ul>
+  % else:
+    <p>No member tags.</p>
+  % endif
 </%def>
 
 <%def name="fingerprintFile(path)">
