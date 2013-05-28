@@ -23,7 +23,7 @@ def geoDeurlify( something ):
 def getPostalInfo( postal ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s""",(postal))
+    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s ORDER BY ZipCode""",(postal))
     rlist = c.fetchone()
     c.close()
     db.close()
@@ -32,7 +32,7 @@ def getPostalInfo( postal ):
 def getPostalList( country, state, county, city ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT DISTINCT ZipCode from US_Postal WHERE StateFullName = %s and County = %s and City = %s""",(state, county.upper(), city.upper()))
+    c.execute("""SELECT DISTINCT ZipCode from US_Postal WHERE StateFullName = %s and County = %s and City = %s ORDER BY ZipCode""",(state, county.upper(), city.upper()))
     rlist = c.fetchall()
     c.close()
     db.close()
@@ -50,7 +50,7 @@ def getCityInfo( city, state, country ):
 def getCityList( country, state, county ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT City from US_City WHERE StateFullName = %s and County = %s""",(state, county))
+    c.execute("""SELECT City from US_City WHERE StateFullName = %s and County = %s ORDER BY City""",(state, county))
     rlist = c.fetchall()
     c.close()
     db.close()
@@ -68,7 +68,7 @@ def getCountyInfo( county, state, country ):
 def getCountyList( county, state ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT County from US_County WHERE StateFullName = %s""",(state))
+    c.execute("""SELECT County from US_County WHERE StateFullName = %s ORDER BY County""",(state))
     rlist = c.fetchall()
     c.close()
     db.close()
@@ -87,7 +87,7 @@ def getStateInfo( state, country ):
 def getStateList( country ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT StateFullName from US_State""")
+    c.execute("""SELECT StateFullName from US_State ORDER BY StateFullName""")
     rlist = c.fetchall()
     c.close()
     db.close()
