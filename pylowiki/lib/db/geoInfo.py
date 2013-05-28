@@ -23,7 +23,7 @@ def geoDeurlify( something ):
 def getPostalInfo( postal ):
     db = getDB()
     c = db.cursor()
-    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s ORDER BY ZipCode""",(postal))
+    c.execute("""SELECT * from US_Postal WHERE ZipCode = %s""",(postal))
     rlist = c.fetchone()
     c.close()
     db.close()
