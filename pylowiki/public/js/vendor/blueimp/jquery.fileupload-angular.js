@@ -307,10 +307,18 @@
                     file = fn($scope);
                 if (file.preview) {
                     $element.append(file.preview);
+                    var height = $element[0].clientHeight; // what the user sees
+                    var width = $element[0].clientWidth; // what the user sees
+                    var selectedWidth = 100; // The default selection width
+                    var selectedHeight = 100; // The default selection height
+                    var startX = (width/2) - (selectedWidth/2);
+                    var startY = (height/2) - (selectedHeight/2);
                     $element.Jcrop({
                         bgColor:     'black',
                         bgOpacity:   0.4,
                         aspectRatio: 1,
+                        setSelect:   [ startX, startY, startX + selectedWidth, startY + selectedHeight ], //array [ x, y, x2, y2 ]
+                        // this setSelect is actually a bit off due to the $element getting resized once the image is in place.
                         onChange: function(c){
                             /*
                             * c.w   ->  width
@@ -320,9 +328,6 @@
                             * c.y   ->  x coordinate of lower-right corner
                             * c.y2  ->  y coordinate of lower-right corner
                             */
-                            $scope.width = c.w;
-                            $scope.x = c.x;
-                            $scope.y = c.y;
                             file.width = c.w;
                             file.x = c.x;
                             file.y = c.y;

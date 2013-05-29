@@ -136,7 +136,7 @@
                             <div class="preview" data-ng-switch-when="true">
                                 <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
                             </div>
-                            <div class="preview" id="cropPicture" data-ng-switch-default="" data-preview="file"></div>
+                            <div class="preview" data-ng-switch-default="" data-preview="file"></div>
                         </td>
                         <td>
                             <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>

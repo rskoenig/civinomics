@@ -459,7 +459,6 @@ class ProfileController(BaseController):
 
     @h.login_required
     def pictureUploadHandler(self, id1, id2):
-        fail()
         """
             Ideally:  
             1) User selects image, gets presented with aspect-ratio constrained selection.
@@ -496,7 +495,8 @@ class ProfileController(BaseController):
         if c.authuser.id != c.user.id:
             abort(404)
         
-        if 'files[]' in request.params.keys():
+        requestKeys = request.params.keys()
+        if 'files[]' in requestKeys:
             file = request.params['files[]']
             filename = file.filename
             file = file.file
@@ -505,11 +505,20 @@ class ProfileController(BaseController):
                 abort(404)
             imageHash = imageLib.generateHash(filename, c.authuser)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'orig', thing = c.authuser)
-            maxDim = min(image.size)
-            dims = {'x': 0, 
-                    'y': 0, 
-                    'width':maxDim,
-                    'height':maxDim}
+            
+            width = min(image.size)
+            x = 0
+            y = 0
+            if 'width' in requestKeys:
+                width = int(request.params['width'])
+            if 'x' in requestKeys:
+                x = int(request.params['x'])
+            if 'y' in requestKeys:
+                y = int(request.params['y'])
+            dims = {'x': x, 
+                    'y': y, 
+                    'width':width,
+                    'height':width}
             image = imageLib.cropImage(image, imageHash, dims)
             image = imageLib.resizeImage(image, imageHash, 200, 200)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'avatar')
