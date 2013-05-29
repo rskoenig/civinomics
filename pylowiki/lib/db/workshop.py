@@ -150,9 +150,6 @@ def getParticipantsByID(id):
     except:
         return False
 
-# NB: this is here instead of lib/db/activity.py to avoid the cyclical dependencies.
-# This function needs getWorkshopByCode from lib/db/workshop.py, which also imports
-# lib/db/activity.py so it can't go into lib/db/activity.py
 def getRecentMemberPosts(number, publicPrivate = 'public'):
         counter = 0
         limit = number * 5
