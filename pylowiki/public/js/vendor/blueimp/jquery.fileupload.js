@@ -168,10 +168,13 @@
             // Callback for the submit event of each file upload:
             submit: function (e, data) {
                 var $this = $(this);
+                var img = $("#cropPicture");
                 data.formData = {
                     width: data.files[0].width,
                     x: data.files[0].x,
-                    y: data.files[0].y
+                    y: data.files[0].y,
+                    clientWidth: img.width(),
+                    clientHeight: img.height()
                 };
                 $this.fileupload('send', data);
                 return false;

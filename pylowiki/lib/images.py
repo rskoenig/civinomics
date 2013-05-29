@@ -90,6 +90,20 @@ def cropImage(image, imageHash, dims, **kwargs):
     # Some validation.
     # Here, image.size is a tuple of the form (width, height)
     imageDims = image.size
+    if 'clientWidth' in kwargs:
+        clientWidth = kwargs['clientWidth']
+        if clientWidth != -1:
+            ratio = float(clientWidth) / imageDims[0]
+            width /= ratio
+            x /= ratio
+        
+    if 'clientHeight' in kwargs:
+        clientHeight = kwargs['clientHeight']
+        if clientHeight != -1:
+            ratio = float(clientHeight) / imageDims[1]
+            height /= ratio
+            y /= ratio
+    
     if x > imageDims[0]:
         x = 0
     if y > imageDims[1]:
@@ -100,7 +114,8 @@ def cropImage(image, imageHash, dims, **kwargs):
         height = imageDims[1] - y
     
     try:
-        box = (x, y, width, height)
+        # The box is a 4-tuple defining the left, upper, right, and lower pixel coordinate.
+        box = (x, y, x + width, y + height)
         region = image.crop(box)
         return region
     except Exception as e:

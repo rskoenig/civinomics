@@ -519,7 +519,14 @@ class ProfileController(BaseController):
                     'y': y, 
                     'width':width,
                     'height':width}
-            image = imageLib.cropImage(image, imageHash, dims)
+            clientWidth = -1
+            clientHeight = -1
+            if 'clientWidth' in requestKeys:
+                clientWidth = request.params['clientWidth']
+            if 'clientHeight' in requestKeys:
+                clientHeight = request.params['clientHeight']
+            log.info(request.params)
+            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
             image = imageLib.resizeImage(image, imageHash, 200, 200)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'avatar')
             image = imageLib.resizeImage(image, imageHash, 100, 100)
