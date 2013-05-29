@@ -150,32 +150,6 @@ def getParticipantsByID(id):
     except:
         return False
 
-def getRecentMemberPosts(number, publicPrivate = 'public'):
-        counter = 0
-        limit = number * 5
-        returnList = []
-        postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion']))\
-            .filter(Thing.data.any(and_(Data.key == u'workshopCode')))\
-            .filter(Thing.data.any(wc('disabled', u'0')))\
-            .filter(Thing.data.any(wc('deleted', u'0')))\
-            .order_by('-date')\
-            .limit(limit)
-        for item in postList:
-            w = getWorkshopByCode(item['workshopCode'])
-            if item.objType == 'discussion' and item['discType'] != 'general':
-                continue
-
-            if w and w['published'] == '1' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
-                returnList.append(item)
-                counter += 1
- 
-            if counter > number:
-                break
-
-        return returnList
-
-
 def getWorkshopPostsSince(code, url, memberDatetime):
         postList = meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).order_by('-date').all()
         discussionList = discussionLib.getDiscussionsForWorkshop(code)
