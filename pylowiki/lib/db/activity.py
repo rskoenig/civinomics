@@ -145,7 +145,7 @@ def getRecentActivity(number, publicPrivate = 'public'):
             if item.objType == 'discussion' and item['discType'] != 'general':
                 continue
 
-            if w and w['published'] == '1' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
+            if w:
                 returnList.append(item)
                 counter += 1
  
