@@ -42,9 +42,10 @@
                     data.process(function () {
                         return scope.process(data);
                     }).always(
-                        function () {
+                        function () {                            
                             var file = data.files[0],
                                 submit = function () {
+                                    console.log(data);
                                     return data.submit();
                                 };
                             file.$cancel = function () {
@@ -309,7 +310,23 @@
                     $element.Jcrop({
                         bgColor:     'black',
                         bgOpacity:   0.4,
-                        aspectRatio: 1
+                        aspectRatio: 1,
+                        onChange: function(c){
+                            /*
+                            * c.w   ->  width
+                            * c.h   ->  length
+                            * c.x   ->  x coordinate of upper-left corner
+                            * c.x2  ->  y coordinate of upper-left corner
+                            * c.y   ->  x coordinate of lower-right corner
+                            * c.y2  ->  y coordinate of lower-right corner
+                            */
+                            $scope.width = c.w;
+                            $scope.x = c.x;
+                            $scope.y = c.y;
+                            file.width = c.w;
+                            file.x = c.x;
+                            file.y = c.y;
+                        }
                     });
                 }
             }

@@ -459,6 +459,7 @@ class ProfileController(BaseController):
 
     @h.login_required
     def pictureUploadHandler(self, id1, id2):
+        fail()
         """
             Ideally:  
             1) User selects image, gets presented with aspect-ratio constrained selection.

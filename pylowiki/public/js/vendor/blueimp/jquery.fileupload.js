@@ -166,10 +166,25 @@
             // Other callbacks:
 
             // Callback for the submit event of each file upload:
-            // submit: function (e, data) {}, // .bind('fileuploadsubmit', func);
+            submit: function (e, data) {
+                var $this = $(this);
+                data.formData = {
+                    width: data.files[0].width,
+                    x: data.files[0].x,
+                    y: data.files[0].y
+                };
+                $this.fileupload('send', data);
+                return false;
+            }, // .bind('fileuploadsubmit', func);
 
             // Callback for the start of each file upload request:
-            // send: function (e, data) {}, // .bind('fileuploadsend', func);
+            //send: function (e, data) {
+            //    data.formData = {
+            //        width: data.files[0].width,
+            //        x: data.files[0].x,
+            //        y: data.files[0].y
+            //    }; // files[0].width; files[0].x; files[0].y;
+            //}, // .bind('fileuploadsend', func);
 
             // Callback for successful uploads:
             // done: function (e, data) {}, // .bind('fileuploaddone', func);
