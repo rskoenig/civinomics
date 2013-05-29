@@ -306,6 +306,11 @@
                     file = fn($scope);
                 if (file.preview) {
                     $element.append(file.preview);
+                    $element.Jcrop({
+                        bgColor:     'black',
+                        bgOpacity:   0.4,
+                        aspectRatio: 1
+                    });
                 }
             }
         ])

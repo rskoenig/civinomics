@@ -98,7 +98,12 @@
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-validate.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-angular.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/app.js')}"></script>
-            
+            <script src="${lib_6.fingerprintFile('/js/vendor/jquery.Jcrop.js')}"></script>
+            <script language="Javascript">
+                jQuery(function($) {
+                    $('#cropPicture').Jcrop();
+                });
+            </script>
         % endif 
     % endif
 
