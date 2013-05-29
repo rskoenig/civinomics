@@ -149,38 +149,35 @@ def getParticipantsByID(id):
         return meta.Session.query(Thing).filter_by(id = id).one()['participants']
     except:
         return False
-    
+
+# NB: this is here instead of lib/db/activity.py to avoid the cyclical dependencies.
+# This function needs getWorkshopByCode from lib/db/workshop.py, which also imports
+# lib/db/activity.py so it can't go into lib/db/activity.py
 def getRecentMemberPosts(number, publicPrivate = 'public'):
         counter = 0
+        limit = number * 5
         returnList = []
         postList = meta.Session.query(Thing)\
-            .filter(Thing.objType.in_(['idea', 'resource', 'discussion', 'event']))\
+            .filter(Thing.objType.in_(['idea', 'resource', 'discussion']))\
             .filter(Thing.data.any(and_(Data.key == u'workshopCode')))\
-            .order_by('-date').all()
+            .filter(Thing.data.any(wc('disabled', u'0')))\
+            .filter(Thing.data.any(wc('deleted', u'0')))\
+            .order_by('-date')\
+            .limit(limit)
         for item in postList:
-           w = False
-           if item.objType == 'idea':
-               w = getWorkshopByCode(item['workshopCode'])
-           elif item.objType == 'resource':
-               w = getWorkshopByCode(item['workshopCode'])
-           elif item.objType == 'discussion':
-               w = getWorkshopByCode(item['workshopCode'])
-               if item['discType'] != 'general':
-                  continue
-           elif item.objType == 'event':
-               if item['title'] == 'Suggestion Adopted':
-                   returnList.append(item)
-                   counter += 1
+            w = getWorkshopByCode(item['workshopCode'])
+            if item.objType == 'discussion' and item['discType'] != 'general':
+                continue
 
-           if w and w['published'] == '1' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
-               if item['deleted'] != '1' and item['disabled'] != '1':
-                   returnList.append(item)
-                   counter += 1
+            if w and w['published'] == '1' and w['deleted'] != '1' and w['public_private'] == publicPrivate:
+                returnList.append(item)
+                counter += 1
  
-           if counter > number:
-               break
+            if counter > number:
+                break
 
         return returnList
+
 
 def getWorkshopPostsSince(code, url, memberDatetime):
         postList = meta.Session.query(Thing).filter(Thing.date > memberDatetime).filter(Thing.objType.in_(['suggestion', 'resource', 'discussion'])).filter(Thing.data.any(wc('workshopCode', code))).filter(Thing.data.any(wc('workshopURL', url))).order_by('-date').all()

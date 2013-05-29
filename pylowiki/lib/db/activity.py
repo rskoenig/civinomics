@@ -126,3 +126,4 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
         return finalActivityList
     except:
         return False
+        
