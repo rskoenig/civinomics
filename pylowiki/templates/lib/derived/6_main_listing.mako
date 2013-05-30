@@ -16,18 +16,12 @@
    <div class="viewport">
       <a ${lib_6.workshopLink(w)}>
          <span class="dark-background">
-            % if not goals:
-               This workshop has no goals!
+            % if not w['description']:
+               <em>this workshop has no description</em>
             % else:
-               <ul>
-               % for goal in goals:
-                  % if goal['status'] == u'100':
-                     <li class="done-true">${goal['title']}</li>
-                  % else:
-                     <li>${goal['title']}</li>
-                  % endif
-               % endfor
-               </ul>
+               <small>
+                  ${lib_6.ellipsisIZE(w['description'], 100)}
+               </small>
             % endif
          </span>
          <% 
@@ -39,24 +33,21 @@
          <div style="width:100%; height:190px; background-image:url('${imgSrc}'); background-repeat:no-repeat; background-size:cover; background-position:center;"></div>
       </a>
    </div>
-      <p class="orange centered">
-         <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 50)} </a></strong>
-      </p>
+      <div class="span workshop-listingTitle">
+         <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 60)} </a></strong>
+      </div>
       <div class="workshop-listing-info">
-         <span>
-            <small>
-                ${lib_6.ellipsisIZE(w['description'], 100)}
-            </small>
-         </span>
-         <span class="pull-right orange workshop-listing-info-icons"> 
+         <span class="orange workshop-listing-info-icons"> 
+            <img class="small-bookmark" data-toggle="tooltip" title="Followers" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             <a ${lib_6.workshopLink(w)}> <!-- Num watchers -->
-               ${len(followLib.getWorkshopFollowers(w))}
-               <img class="small-bookmark" data-toggle="tooltip" title="Followers" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
-            </a> <!-- /Num watchers -->
+               <strong>${len(followLib.getWorkshopFollowers(w))}</strong>
+            </a><span>BOOKMARKS</span> <!-- /Num watchers -->
+         </span>
+         <span class="orange workshop-listing-info-icons"> 
+            <img class="small-bulb" data-toggle="tooltip" title="Ideas, conversations, resources, comments" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
             <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
-               ${len(activityLib.getActivityForWorkshop(w['urlCode']))}
-               <img class="small-bulb" data-toggle="tooltip" title="Ideas, conversations, resources, comments" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
-            </a> <!-- /Num inputs -->
+               <strong>${len(activityLib.getActivityForWorkshop(w['urlCode']))}</strong>
+            </a><span>OBJECTS</span> <!-- /Num inputs -->
          </span>
       </div>
 </%def>

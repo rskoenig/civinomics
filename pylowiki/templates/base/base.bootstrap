@@ -56,7 +56,7 @@
          % else:
             <div id="wrap">
                ${helpers.mainNavbar()}
-               <div class="container main">
+               <div class="container-fluid">
                   ${next.body()}
                </div>
             </div><!-- close wrap -->

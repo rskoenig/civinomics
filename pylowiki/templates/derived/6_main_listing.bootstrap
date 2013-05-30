@@ -11,43 +11,25 @@
                 if outOfScope and c.scope['level'] != 'earth':
                     lib_6.outOfScope()
         %>
-        ${lib_6.public_tags()}
+        <div class="span">
+          ${lib_6.public_tags()}
+          <button class="btn btn-civ"><i class="icon-white icon-plus"></i> New Workshop</button>
+        </div>
    </div><!--/.span12-->
 </div><!-- /.row-->
 <div class="row">
-   <div class="span8"> <!-- listings -->
-      <div class="section-wrapper">
-         <div class="browse">
-            <h3 class="section-header"> ${c.workshopTitlebar} </h3>
-            <div class="row-fluid"><!--navigation row-->
-                <ul class="thumbnails">
-                    % for item in c.list:
-                        <li class="span6 wrap-workshop"> ${helpers.show_workshop(item)} </li>
-                    % endfor
-                </ul>
-            </div><!--/navigation row-->
-         </div><!--/.browse-->
-      </div><!--/.section-wrapper-->
-   </div> <!-- /listings -->
-   <div class="span4"> <!-- Activity Stream -->
-      <div class="section-wrapper">
-         <div class="activity">
-            <h3 class="section-header">Tags </h3>
-            ${lib_6.public_tags()}
-          </div>
-         <div class="activity">
-            <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
-            <% 
-               numItems = 10
-               for i in range(len(c.activity)):
-                  thisActivity = c.activity[i]
-                  helpers.showActivity(thisActivity, expandable=True)
-                  if i > numItems:
-                     break
-            %>
-         </div>
-      </div>
-   </div> <!-- /Activity Stream -->
+   <div class="span section-wrapper">
+    <div class="browse">
+      <h3 class="section-header"> ${c.workshopTitlebar} </h3>
+      <div class="row-fluid"><!--navigation row-->
+          <ul class="thumbnails">
+              % for item in c.list:
+                  <li id="wrapworkshop" class="span wrap-workshop"> ${helpers.show_workshop(item)} </li>
+              % endfor
+          </ul>
+      </div><!--/navigation row-->
+    </div><!--/.browse-->
+ </div><!-- span -->
 </div>
 
 <%def name="extraScripts()">

@@ -5,68 +5,69 @@
 <%inherit file="/base/base.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+<div class="container main">
+  <div class="row-fluid" ng-app="civ">
+     <div class="span12 well workshop-panel">
+        <div class="row-fluid">
+           <div class="span9" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
+              <%
+                  if c.w['public_private'] == 'public':
+                      outOfScope = lib_6.geoBreadcrumbs()
+              %>
+           </div><!-- /geographic breadcrumbs -->
 
-<div class="row-fluid" ng-app="civ">
-   <div class="span12 well workshop-panel">
-      <div class="row-fluid">
-         <div class="span9" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
-            <%
-                if c.w['public_private'] == 'public':
-                    outOfScope = lib_6.geoBreadcrumbs()
-            %>
-         </div><!-- /geographic breadcrumbs -->
-
-         % if workshopLib.isPublished(c.w):
-           <div class="span3"> <!-- watch button -->
-                  ${helpers.watchButton()}
-                  % if c.privs['admin'] or c.privs['facilitator']: 
-                    % if c.adminPanel:
-                      ${helpers.viewButton()} 
-                    % else:
-                      ${helpers.configButton(c.w)}
+           % if workshopLib.isPublished(c.w):
+             <div class="span3"> <!-- watch button -->
+                    ${helpers.watchButton()}
+                    % if c.privs['admin'] or c.privs['facilitator']: 
+                      % if c.adminPanel:
+                        ${helpers.viewButton()} 
+                      % else:
+                        ${helpers.configButton(c.w)}
+                      % endif
                     % endif
-                  % endif
-           </div><!-- /watch button -->
+             </div><!-- /watch button -->
 
-         % else:
-           % if c.adminPanel:
-              ${helpers.previewButton()}
            % else:
-              ${helpers.configButton(c.w)}
+             % if c.adminPanel:
+                ${helpers.previewButton()}
+             % else:
+                ${helpers.configButton(c.w)}
+             % endif
+
            % endif
 
-         % endif
 
-
-      </div> <!-- /.row-fluid -->
-     <%
-        if c.w['public_private'] == 'public':
-            if outOfScope:
-                lib_6.outOfScope()
-     %>
-      <div class="row-fluid">
-         <div class="span12">
-            <h1 class="centered workshop-title"> 
-               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
-                  {{workshopTitle}}
-               </a>
-            </h1>
-         </div>
-      </div>
-      <div class="row-fluid">
-         <div class="span12">
-            <%
-               if c.listingType != '':
-                  listingType = c.listingType
-               else:
-                  listingType = None
-            %>
-            ${helpers.workshopNav(c.w, listingType)}
-         </div>
-      </div> <!-- /.row-fluid -->
-      ${next.body()}
-   </div><!-- /.span12.well -->
-</div><!--/.row-->
+        </div> <!-- /.row-fluid -->
+       <%
+          if c.w['public_private'] == 'public':
+              if outOfScope:
+                  lib_6.outOfScope()
+       %>
+        <div class="row-fluid">
+           <div class="span12">
+              <h1 class="centered workshop-title"> 
+                 <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
+                    {{workshopTitle}}
+                 </a>
+              </h1>
+           </div>
+        </div>
+        <div class="row-fluid">
+           <div class="span12">
+              <%
+                 if c.listingType != '':
+                    listingType = c.listingType
+                 else:
+                    listingType = None
+              %>
+              ${helpers.workshopNav(c.w, listingType)}
+           </div>
+        </div> <!-- /.row-fluid -->
+        ${next.body()}
+     </div><!-- /.span12.well -->
+  </div><!--/.row-->
+</div><!-- container-main -->
 
 <%def name="extraScripts()">
    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
