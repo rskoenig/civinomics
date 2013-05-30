@@ -40,22 +40,6 @@
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-             <div class="control-group">
-                <%doc>
-                <label for="image" class="control-label">Avatar:</label>
-                <div class="controls">
-                    <label class="radio">
-                        <input type="radio" name="radioAvatar" id="radioAvatarGravatar" value="gravatar" checked>
-                        Change and manage your avatar at <a href="http://www.gravatar.com" target="_blank">Gravatar</a>
-                    </label>
-                    <label class="radio">
-                        <input type="radio" name="radioAvatar" id="radioAvatarCiv" value="civ">
-                        Upload an image: <input type="file" name="image-avatar" id="image-avatar">
-                    </label>
-                    <span><img src="" id="avatarUploadImage"></span>
-                </div>
-                </%doc>
-             </div>
         	    <div class="control-group">
 				    <label for="greetingMsg" class="control-label">A greeting message:</label>
 				    <div class="controls">
@@ -103,8 +87,41 @@
      <div class="section-wrapper" ng-init="code='${c.user['urlCode']}'; url='${c.user['url']}'">
         <div class="browse">
             <h4 class="section-header smaller">Add or Change Your Pictures</h4>
+            <form class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="avatarType">
+                        ${lib_6.userImage(c.user, className="avatar avatar-small")}
+                    </label>
+                    <div class="controls chooseAvatar">
+                        <label class="radio">
+                            <input type="radio" value="gravatar" name="avatarType" id="avatarType" ng-click="uploadImage = false">
+                                Use your 
+                                <a href="http://gravatar.com" target="_blank">gravatar</a> 
+                                image
+                            </input>
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="avatarType">
+                        ${lib_6.userImage(c.user, className="avatar avatar-small")}
+                    </label>
+                    <div class="controls chooseAvatar">
+                        <label class="radio">
+                            <input type="radio" value="upload" name="avatarType" id="avatarType" ng-click="uploadImage = true">
+                                Use your uploaded image
+                            </input>
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-success">Save</button>
+                    </div>
+                </div>
+            </form>
             ##<form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
-            <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
+            <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" ng-show="uploadImage">
                 <!-- Redirect browsers with JavaScript disabled to the origin page -->
                 <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
                 <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->

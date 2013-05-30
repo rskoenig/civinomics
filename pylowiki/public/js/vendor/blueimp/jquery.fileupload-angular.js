@@ -157,6 +157,7 @@
             function ($scope, $element, $attrs, fileUpload) {
                 $scope.disabled = angular.element('<input type="file">')
                     .prop('disabled');
+                $scope.uploadImage = false;
                 $scope.queue = $scope.queue || [];
                 $scope.clear = function (files) {
                     var queue = this.queue,
