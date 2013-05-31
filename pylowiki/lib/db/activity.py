@@ -102,6 +102,31 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
     except:
         return False
         
+def getActivityCountForWorkshop(workshopCode, disabled = '0', deleted = '0'):
+    """
+        Activity inside a single workshop
+        Should be rewritten to return a count if that's all we want, and to do the discussion filtering on the db level
+    """
+    objTypes = ['resource', 'discussion', 'idea']
+    finalActivityList = []
+    initialActivityList = meta.Session.query(Thing)\
+            .filter(Thing.objType.in_(objTypes))\
+            .filter(Thing.data.any(wc('workshopCode', workshopCode)))\
+            .filter(Thing.data.any(wc('deleted', deleted)))\
+            .order_by('-date')\
+            .all()
+        # Messy
+    count = 0
+    for activity in initialActivityList:
+        if activity.objType == 'discussion':
+            if activity['discType'] == 'general':
+                count += 1
+            count += int(activity['numComments'])
+        else:
+            count += 1
+    return count
+
+        
 def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
     """
         Activity inside multiple workshops, given a list of workshop codes

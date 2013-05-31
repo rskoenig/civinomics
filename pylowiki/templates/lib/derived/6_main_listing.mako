@@ -54,7 +54,7 @@
                <img class="small-bookmark" data-toggle="tooltip" title="Followers" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
             </a> <!-- /Num watchers -->
             <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
-               ${len(activityLib.getActivityForWorkshop(w['urlCode']))}
+               ${activityLib.getActivityCountForWorkshop(w['urlCode'])}
                <img class="small-bulb" data-toggle="tooltip" title="Ideas, conversations, resources, comments" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
             </a> <!-- /Num inputs -->
          </span>
