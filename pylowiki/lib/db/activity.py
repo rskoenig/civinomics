@@ -115,7 +115,7 @@ def getActivityCountForWorkshop(workshopCode, disabled = '0', deleted = '0'):
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .order_by('-date')\
             .all()
-        # Messy
+    # Messy
     count = 0
     for activity in initialActivityList:
         if activity.objType == 'discussion':
@@ -153,8 +153,7 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
         return False
 
 def getRecentActivity(number, publicPrivate = 'public'):
-        counter = 0
-        limit = number * 5
+        limit = number * 15
         returnList = []
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
@@ -169,12 +168,10 @@ def getRecentActivity(number, publicPrivate = 'public'):
             w = generic.getThing(item['workshopCode'], keys = keys, values = values)
             if item.objType == 'discussion' and item['discType'] != 'general':
                 continue
-
+            
             if w:
                 returnList.append(item)
-                counter += 1
- 
-            if counter > number:
-                break
+                if len(returnList) == number:
+                    return returnList
 
         return returnList
