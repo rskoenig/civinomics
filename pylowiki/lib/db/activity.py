@@ -7,7 +7,10 @@ from dbHelpers import commit
 from pylowiki.lib.utils import urlify
 
 def getMemberPosts(user, disabled = '0', deleted = '0'):
-    activityTypes = ['suggestion', 'resource', 'comment', 'discussion', 'idea']
+    activityTypes = ['resource', 'comment', 'discussion', 'idea']
+    codes = ['resourceCode', 'ideaCode', 'discussionCode']
+    keys = ['deleted', 'disabled']
+    values = [u'0', u'0']
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
@@ -20,19 +23,12 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
             elif activity.objType == 'comment':
-                if 'resourceCode' in activity.keys():
-                    resource = generic.getThing(activity['resourceCode'])
-                    if resource['deleted'] == u'1' or resource['disabled'] == u'1':
-                        continue
-                elif 'ideaCode' in activity.keys():
-                    idea = generic.getThing(activity['ideaCode'])
-                    if idea['deleted'] == u'1' or idea['disabled'] == u'1':
-                        continue
-                else:
-                    discussion = generic.getThing(activity['discussionCode'])
-                    if discussion['deleted'] == u'1' or discussion['disabled'] == u'1':
-                        continue
-            finalActivityList.append(activity)
+                parentCode = [i for i in codes if i in activity.keys()]
+                thing = generic.getThing(activity[parentCode[0]], keys, values)
+                if thing:
+                    finalActivityList.append(activity)
+            else:                
+                finalActivityList.append(activity)
         return finalActivityList
     except:
         return False
