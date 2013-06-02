@@ -7,7 +7,10 @@ from dbHelpers import commit
 from pylowiki.lib.utils import urlify
 
 def getMemberPosts(user, disabled = '0', deleted = '0'):
-    activityTypes = ['suggestion', 'resource', 'comment', 'discussion', 'idea']
+    activityTypes = ['resource', 'comment', 'discussion', 'idea']
+    codes = ['resourceCode', 'ideaCode', 'discussionCode']
+    keys = ['deleted', 'disabled']
+    values = [deleted, disabled]
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
@@ -20,19 +23,13 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
             elif activity.objType == 'comment':
-                if 'resourceCode' in activity.keys():
-                    resource = generic.getThing(activity['resourceCode'])
-                    if resource['deleted'] == u'1' or resource['disabled'] == u'1':
-                        continue
-                elif 'ideaCode' in activity.keys():
-                    idea = generic.getThing(activity['ideaCode'])
-                    if idea['deleted'] == u'1' or idea['disabled'] == u'1':
-                        continue
-                else:
-                    discussion = generic.getThing(activity['discussionCode'])
-                    if discussion['deleted'] == u'1' or discussion['disabled'] == u'1':
-                        continue
-            finalActivityList.append(activity)
+                parentCode = [i for i in codes if i in activity.keys()]
+                thing = generic.getThing(activity[parentCode[0]], keys, values)
+                if thing:
+                    activity['parentObj'] = thing
+                    finalActivityList.append(activity)
+            else:                
+                finalActivityList.append(activity)
         return finalActivityList
     except:
         return False
@@ -74,6 +71,9 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
         Should be rewritten to return a count if that's all we want, and to do the discussion filtering on the db level
     """
     objTypes = ['resource', 'discussion', 'idea', 'comment']
+    codes = ['resourceCode', 'ideaCode', 'discussionCode']
+    keys = ['deleted', 'disabled']
+    values = [deleted, disabled]
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing)\
@@ -87,16 +87,12 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
             elif activity.objType == 'comment':
-                if 'resourceCode' in activity.keys():
-                    thing = generic.getThing(activity['resourceCode'])
-                elif 'ideaCode' in activity.keys():
-                    thing = generic.getThing(activity['ideaCode'])
-                else:
-                    thing = generic.getThing(activity['discussionCode'])
-                if thing['deleted'] == u'1':
-                    continue
-                finalActivityList.append(activity)
-            else:
+                parentCode = [i for i in codes if i in activity.keys()]
+                thing = generic.getThing(activity[parentCode[0]], keys, values)
+                if thing:
+                    activity['parentObj'] = thing
+                    finalActivityList.append(activity)
+            else:                
                 finalActivityList.append(activity)
         return finalActivityList
     except:
@@ -115,7 +111,7 @@ def getActivityCountForWorkshop(workshopCode, disabled = '0', deleted = '0'):
             .filter(Thing.data.any(wc('deleted', deleted)))\
             .order_by('-date')\
             .all()
-        # Messy
+    # Messy
     count = 0
     for activity in initialActivityList:
         if activity.objType == 'discussion':
@@ -153,8 +149,7 @@ def getActivityForWorkshops(workshopCodes, disabled = '0', deleted = '0'):
         return False
 
 def getRecentActivity(number, publicPrivate = 'public'):
-        counter = 0
-        limit = number * 5
+        limit = number * 15
         returnList = []
         keys = ['deleted', 'disabled', 'published', 'public_private']
         values = [u'0', u'0', u'1', u'public']
@@ -169,12 +164,10 @@ def getRecentActivity(number, publicPrivate = 'public'):
             w = generic.getThing(item['workshopCode'], keys = keys, values = values)
             if item.objType == 'discussion' and item['discType'] != 'general':
                 continue
-
+            
             if w:
                 returnList.append(item)
-                counter += 1
- 
-            if counter > number:
-                break
+                if len(returnList) == number:
+                    return returnList
 
         return returnList

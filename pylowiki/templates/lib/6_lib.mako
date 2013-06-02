@@ -221,6 +221,26 @@
     %>
 </%def>
 
+<%def name="parentLink(p, w, **kwargs)">
+   <%
+        if 'directLink' in kwargs:
+            if kwargs['directLink'] == True:
+                parentStr = 'href="%s' %(p['link'])
+            else:
+                parentStr = 'href="/workshop/%s/%s/%s/%s/%s' %(w["urlCode"], w["url"], p.objType, p["urlCode"], p["url"])
+        else:
+            parentStr = 'href="/workshop/%s/%s/%s/%s/%s' %(w["urlCode"], w["url"], p.objType, p["urlCode"], p["url"])
+        
+        parentStr += commentLinkAppender(**kwargs)
+        parentStr += '"'
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return parentStr
+   %>
+   ${parentStr | n}
+</%def>
+
+
 <%def name="resourceLink(r, w, **kwargs)">
    <%
         if 'directLink' in kwargs:
@@ -231,18 +251,6 @@
         else:
             resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
         
-        resourceStr += commentLinkAppender(**kwargs)
-        resourceStr += '"'
-        if 'embed' in kwargs:
-            if kwargs['embed'] == True:
-                return resourceStr
-   %>
-   ${resourceStr | n}
-</%def>
-
-<%def name="suggestionLink(s, w, **kwargs)">
-   <%
-        resourceStr = 'href="/workshop/%s/%s/suggestion/%s/%s' %(w["urlCode"], w["url"], s["urlCode"], s["url"])
         resourceStr += commentLinkAppender(**kwargs)
         resourceStr += '"'
         if 'embed' in kwargs:
@@ -266,14 +274,14 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
     <%
-        resourceStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
-        resourceStr += commentLinkAppender(**kwargs)
-        resourceStr += '"'
+        discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+        discussionStr += commentLinkAppender(**kwargs)
+        discussionStr += '"'
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
-                return resourceStr
+                return discussionStr
     %>
-    ${resourceStr | n}
+    ${discussionStr | n}
 </%def>
 
 <%def name="commentLink(comment, w, **kwargs)">
@@ -294,8 +302,6 @@
             objType = thing.objType
         if objType == 'discussion':
             return discussionLink(thing, workshop, **kwargs)
-        elif objType == 'suggestion':
-            return suggestionLink(thing, workshop, **kwargs)
         elif objType == 'resource':
             return resourceLink(thing, workshop, **kwargs)
         elif objType == 'idea':
@@ -303,7 +309,11 @@
         elif objType == 'comment':
             if thing.objType == 'revision':
                 return commentLink(thing, workshop, **kwargs)
-            if 'ideaCode' in thing.keys():
+            # set up for member activity feeds in profile.py getMemberPosts
+            if 'parentObj' in thing.keys() and thing['parentObj']:
+                parentObj = thing['parentObj']
+                return parentLink(parentObj, workshop, **kwargs)  
+            elif 'ideaCode' in thing.keys():
                 idea = ideaLib.getIdea(thing['ideaCode'])
                 if not idea:
                     return False
@@ -741,8 +751,10 @@
                             'discussion':'conversation',
                             'idea':'idea',
                             'comment':'comment'}
+        eclass = ""
         if 'expandable' in kwargs:
             if kwargs['expandable']:
+                eclass=' class="expandable"'
                 if item.objType == 'comment':
                     title = item['data']
                 else:
@@ -759,32 +771,22 @@
                 title = ellipsisIZE(item['title'], 40)
         
         activityStr = actionMapping[item.objType]
+        # used for string mapping below
+        objType = item.objType
         if item.objType == 'comment':
             if 'ideaCode' in item.keys():
                 activityStr += 'n'
-            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>'
-            if 'ideaCode' in item.keys():
-                activityStr += objTypeMapping['idea']
+                objType = 'idea'
             elif 'resourceCode' in item.keys():
-                activityStr += objTypeMapping['resource']
-            elif 'discussionCode' in item.keys():
-                activityStr += objTypeMapping['discussion']
+                objType = 'resource'
+            elif item.keys():
+                objType = 'discussion'
+            
+            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + objTypeMapping[objType]
             activityStr += '</a>, saying '
-            if 'expandable' in kwargs:
-                if kwargs['expandable']:
-                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + ' class="expandable">' + title + '</a>'
-                else:
-                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
-            else:
-                activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + '>' + title + '</a>'
+            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True, commentCode=item['urlCode']) + eclass + '>' + title + '</a>'
         else:
-            if 'expandable' in kwargs:
-                if kwargs['expandable']:
-                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + ' class="expandable">' + title + '</a>'
-                else:
-                    activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
-            else:
-                activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + '>' + title + '</a>'
+            activityStr += ' <a ' + thingLinkRouter(item, w, embed = True) + eclass + '>' + title + '</a>'
     %>
     ${activityStr | n}
 </%def>
