@@ -10,7 +10,7 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
     activityTypes = ['resource', 'comment', 'discussion', 'idea']
     codes = ['resourceCode', 'ideaCode', 'discussionCode']
     keys = ['deleted', 'disabled']
-    values = [u'0', u'0']
+    values = [deleted, disabled]
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
@@ -26,6 +26,7 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
                 parentCode = [i for i in codes if i in activity.keys()]
                 thing = generic.getThing(activity[parentCode[0]], keys, values)
                 if thing:
+                    activity['parentObj'] = thing
                     finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
@@ -70,6 +71,9 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
         Should be rewritten to return a count if that's all we want, and to do the discussion filtering on the db level
     """
     objTypes = ['resource', 'discussion', 'idea', 'comment']
+    codes = ['resourceCode', 'ideaCode', 'discussionCode']
+    keys = ['deleted', 'disabled']
+    values = [deleted, disabled]
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing)\
@@ -83,16 +87,12 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
             elif activity.objType == 'comment':
-                if 'resourceCode' in activity.keys():
-                    thing = generic.getThing(activity['resourceCode'])
-                elif 'ideaCode' in activity.keys():
-                    thing = generic.getThing(activity['ideaCode'])
-                else:
-                    thing = generic.getThing(activity['discussionCode'])
-                if thing['deleted'] == u'1':
-                    continue
-                finalActivityList.append(activity)
-            else:
+                parentCode = [i for i in codes if i in activity.keys()]
+                thing = generic.getThing(activity[parentCode[0]], keys, values)
+                if thing:
+                    activity['parentObj'] = thing
+                    finalActivityList.append(activity)
+            else:                
                 finalActivityList.append(activity)
         return finalActivityList
     except:
