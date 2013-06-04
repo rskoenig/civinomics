@@ -52,9 +52,9 @@ def getAllUsers(disabled = '0', deleted = '0'):
     except:
         return False
 
-def getUserByEmail(email):
+def getUserByEmail(email, disabled = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('email', email))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('email', email.lower()))).filter(Thing.data.any(wc('disabled', disabled))).one()
     except:
         return False
 
@@ -167,7 +167,7 @@ class User(object):
         u['greetingMsg'] = ''
         u['websiteLink'] = ''
         u['websiteDesc'] = ''
-        u['email'] = email
+        u['email'] = email.lower()
         u['name'] = name
         u['activated'] = '0'
         u['disabled'] = '0'

@@ -368,13 +368,7 @@ class WorkshopController(BaseController):
             geoTagPostal = request.params['geoTagPostal']
         else:
             geoTagPostal = "0"
-            
-        # CCN kludge to enforce SC County top level workshops, remove to unconstrain
-        geoTagCountry = "United States"
-        geoTagState = "California"
-        geoTagCounty = "Santa Cruz"
-        
-            
+ 
         # assemble a workshop scope string 
         # ||country||state||county||city|zip
         geoTagString = "||" + utils.urlify(geoTagCountry) + "||" + utils.urlify(geoTagState) + "||" + utils.urlify(geoTagCounty) + "||" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
@@ -893,6 +887,9 @@ class WorkshopController(BaseController):
         
         # Demo workshop status
         c.demo = workshopLib.isDemo(c.w)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
+        c.adminPanel = False
         
         return render('/derived/6_workshop_home.bootstrap')
    
@@ -994,11 +991,7 @@ class WorkshopController(BaseController):
             c.county = "0"
             c.city = "0"
             c.postal = "0"
-            
-        # temporary kludge CCN
-        c.country = "United States"
-        c.state = "California"
-        c.county = "Santa Cruz"
+
             
         c.motd = motdLib.getMessage(c.w.id)
         if c.w['startTime'] != '0000-00-00':
@@ -1009,6 +1002,10 @@ class WorkshopController(BaseController):
         
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
+        c.adminPanel = True
+
         return render('/derived/6_workshop_preferences.bootstrap')
         
     @h.login_required
