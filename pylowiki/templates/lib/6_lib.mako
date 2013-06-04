@@ -375,7 +375,10 @@
       if 'forceSource' in kwargs:
          if kwargs['forceSource'] == 'civ':
             gravatar = False
-            source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+            if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+               source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+            else:
+               source = '/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png'
       else:
          if 'avatarSource' in user.keys():
             if user['avatarSource'] == 'civ':

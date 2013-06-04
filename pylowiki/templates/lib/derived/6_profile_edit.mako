@@ -79,7 +79,7 @@
             <form class="form-horizontal" id="setImageSourceForm" name="setImageSourceForm">
                 <div class="control-group">
                     <label class="control-label" for="avatarType">
-                        ${lib_6.userImage(c.user, className="avatar avatar-small")}
+                        ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="gravatar")}
                     </label>
                     <div class="controls chooseAvatar">
                         <label class="radio">
@@ -93,7 +93,7 @@
                 </div>
                 <div class="control-group">
                     <label class="control-label" for="avatarType">
-                        ${lib_6.userImage(c.user, className="avatar avatar-small")}
+                        ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="civ")}
                     </label>
                     <div class="controls chooseAvatar">
                         <label class="radio">
@@ -110,15 +110,8 @@
                     <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
                     <span class="help-inline" ng-show="submitStatus == 1" ng-cloak>Error saving changes</span>
                 </div>
-                <%doc>
-                <div class="control-group">
-                    <div class="controls">
-                        <button type="submit" class="btn btn-success" ng-click="setImageSource()">Save</button>
-                    </div>
-                </div>
-                </%doc>
             </form>
-            <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" ng-show="uploadImage">
+            <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="uploadImage">
                 <!-- Redirect browsers with JavaScript disabled to the origin page -->
                 <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
                 <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
