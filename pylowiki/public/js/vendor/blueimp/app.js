@@ -36,10 +36,12 @@
                 }
                 else {
                     angular.extend(fileUploadProvider.defaults, {
-                        disableImageResize: false,
+                        disableImageResize: true,
                         maxFileSize: 1000000, // 1MB
                         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-                        maxNumberOfFiles: 1
+                        maxNumberOfFiles: 1,
+                        previewMaxWidth: 400,
+                        imageMaxWidth: 400,
                     });
                 }
             }

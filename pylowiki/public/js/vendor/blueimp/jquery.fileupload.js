@@ -168,7 +168,7 @@
             // Callback for the submit event of each file upload:
             submit: function (e, data) {
                 var $this = $(this);
-                var img = $("#cropPicture");
+                var img = $("#preview").children(); // messy
                 data.formData = {
                     width: data.files[0].width,
                     x: data.files[0].x,

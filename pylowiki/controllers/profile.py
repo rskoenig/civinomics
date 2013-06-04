@@ -341,7 +341,6 @@ class ProfileController(BaseController):
         session.save()
         
         payload = json.loads(request.body)
-        print payload
         if 'member_name' in payload:
             name = payload['member_name']
             if name == '':

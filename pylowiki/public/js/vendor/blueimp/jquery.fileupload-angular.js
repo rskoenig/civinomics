@@ -328,10 +328,13 @@
                     var selectedHeight = 100; // The default selection height
                     var startX = (width/2) - (selectedWidth/2);
                     var startY = (height/2) - (selectedHeight/2);
+                    //var maxDims = [$("#setImageSourceForm").width(), $("#setImageSourceForm").width()];
                     $element.Jcrop({
-                        bgColor:     'black',
+                        //bgColor:     'black',
                         bgOpacity:   0.4,
                         aspectRatio: 1,
+                        boxWidth:   400,
+                        //boxHeight:  $("#setImageSourceForm").width(),
                         setSelect:   [ startX, startY, startX + selectedWidth, startY + selectedHeight ], //array [ x, y, x2, y2 ]
                         // this setSelect is actually a bit off due to the $element getting resized once the image is in place.
                         onChange: function(c){
