@@ -502,7 +502,7 @@ class ProfileController(BaseController):
             file = file.file
             image = imageLib.openImage(file)
             if not image:
-                abort(404)
+                abort(404) # Maybe make this a json response instead
             imageHash = imageLib.generateHash(filename, c.authuser)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'orig', thing = c.authuser)
             
@@ -525,12 +525,12 @@ class ProfileController(BaseController):
                 clientWidth = request.params['clientWidth']
             if 'clientHeight' in requestKeys:
                 clientHeight = request.params['clientHeight']
-            log.info(request.params)
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
             image = imageLib.resizeImage(image, imageHash, 200, 200)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'avatar')
             image = imageLib.resizeImage(image, imageHash, 100, 100)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'thumbnail')
+            
             jsonResponse =  {'files': [
                                 {
                                     'name':filename,
@@ -541,6 +541,18 @@ class ProfileController(BaseController):
         else:
             abort(404)
         
+    @h.login_required
+    def setImageSource(self, id1, id2):
+        try:
+            payload = json.loads(request.body)
+            source = payload['source']
+        except:
+            log.error("User %s tried to set a profile image source for user %s with an unknown source.  Body was %s." %(c.authuser.id, c.user.id, request.body))
+            return json.dumps({"statusCode": 1})
+        c.user['avatarSource'] = source
+        dbHelpers.commit(c.user)
+        return json.dumps({"statusCode": 0})
+    
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):
         perror = 0

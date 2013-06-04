@@ -153,12 +153,26 @@
         })
 
         .controller('FileUploadController', [
-            '$scope', '$element', '$attrs', 'fileUpload',
-            function ($scope, $element, $attrs, fileUpload) {
+            '$scope', '$element', '$attrs', 'fileUpload', '$http',
+            function ($scope, $element, $attrs, fileUpload, $http) {
                 $scope.disabled = angular.element('<input type="file">')
                     .prop('disabled');
                 $scope.uploadImage = false;
+                $scope.submitStatus = '-1';
                 $scope.queue = $scope.queue || [];
+                $scope.setImageSource = function () {
+                    var data = {'source': $scope.imageSource};
+                    $http.post("/profile/" + $scope.code + "/" + $scope.url + "/picture/set/image/source", data)
+                        .success(function(result){
+                            if (result.statusCode === 1){
+                                $scope.submitStatus = 1;
+                            }
+                            else{
+                                $scope.submitStatus = 0;
+                            }
+                        }
+                    );
+                };
                 $scope.clear = function (files) {
                     var queue = this.queue,
                         i = queue.length,

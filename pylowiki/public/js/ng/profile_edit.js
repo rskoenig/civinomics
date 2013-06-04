@@ -15,7 +15,7 @@ function ProfileEditController($scope, $http) {
         if (!$scope.infoEdit.$dirty){
             return false;
         }
-        var submitURL = location.pathname + "/info/edit/handler"
+        var submitURL = location.pathname + "/info/edit/handler";
         var thisForm = {member_name:$scope.fullName, email:$scope.email, postalCode:$scope.postalCode, greetingMsg:$scope.greetingMsg, websiteLink:$scope.websiteLink, websiteDesc:$scope.websiteDesc};
         $http.post(submitURL, thisForm).success(function(data){
             var alertClass = 'alert-success';
@@ -23,7 +23,9 @@ function ProfileEditController($scope, $http) {
                 alertClass = 'alert-error';
                 $scope.submitStatus = 1;
             }
-            $scope.submitStatus = 0;
+            else{
+                $scope.submitStatus = 0;
+            }
             document.title = $scope.fullName;
             /*
             var alertHTML = '<div class="alert ' + alertClass + '"><button type="button" class="close" data-dismiss="alert">&times;</button>' + data.result + '</div>'
@@ -39,9 +41,9 @@ function ProfileEditController($scope, $http) {
                 $scope.updateGeoLinks();
             }
       });
-    }
+    };
     $scope.updateGeoLinks = function(){
-        var submitURL = "/geo/cityStateCountryLink/" + $scope.postalCode
+        var submitURL = "/geo/cityStateCountryLink/" + $scope.postalCode;
         $http.get(submitURL).success(function(data){
             if(data.statusCode == '0'){
                 $scope.cityTitle = data.cityTitle;

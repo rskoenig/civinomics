@@ -58,17 +58,6 @@
                         <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="span10"></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-                <%doc>
-                <div class="control-group">
-                    <label for="submitResult">
-                        <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
-                    </label>
-                    <div class="controls">
-                        <span id="submitResult"></span>
-                        <span class="help-inline" id="submitResult">Inline help text</span>
-                    </div> <!--/.controls-->
-                </div> <!--/.control-group -->
-                </%doc>
                 <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
                     <input type="submit" class="btn btn-warning" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes"></input>
                     <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
@@ -87,14 +76,14 @@
      <div class="section-wrapper" ng-init="code='${c.user['urlCode']}'; url='${c.user['url']}'">
         <div class="browse">
             <h4 class="section-header smaller">Add or Change Your Pictures</h4>
-            <form class="form-horizontal">
+            <form class="form-horizontal" id="setImageSourceForm" name="setImageSourceForm">
                 <div class="control-group">
                     <label class="control-label" for="avatarType">
                         ${lib_6.userImage(c.user, className="avatar avatar-small")}
                     </label>
                     <div class="controls chooseAvatar">
                         <label class="radio">
-                            <input type="radio" value="gravatar" name="avatarType" id="avatarType" ng-click="uploadImage = false">
+                            <input type="radio" value="gravatar" name="avatarType" id="avatarType" ng-click="uploadImage = false" ng-model="imageSource">
                                 Use your 
                                 <a href="http://gravatar.com" target="_blank">gravatar</a> 
                                 image
@@ -108,19 +97,27 @@
                     </label>
                     <div class="controls chooseAvatar">
                         <label class="radio">
-                            <input type="radio" value="upload" name="avatarType" id="avatarType" ng-click="uploadImage = true">
+                            <input type="radio" value="civ" name="avatarType" id="avatarType" ng-click="uploadImage = true" ng-model="imageSource">
                                 Use your uploaded image
                             </input>
                         </label>
                     </div>
                 </div>
+                <div class="form-actions save-profile" ng-class="{'light-yellow':setImageSourceForm.$dirty && submitStatus == -1, 'light-blue':!setImageSourceForm.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
+                    <input type="submit" class="btn btn-warning" ng-class="{'disabled':!setImageSourceForm.$dirty}" value="Save changes" ng-click="setImageSource()"></input>
+                    <span class="help-inline" ng-show="!setImageSourceForm.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
+                    <span class="help-inline" ng-show="setImageSourceForm.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
+                    <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
+                    <span class="help-inline" ng-show="submitStatus == 1" ng-cloak>Error saving changes</span>
+                </div>
+                <%doc>
                 <div class="control-group">
                     <div class="controls">
-                        <button type="submit" class="btn btn-success">Save</button>
+                        <button type="submit" class="btn btn-success" ng-click="setImageSource()">Save</button>
                     </div>
                 </div>
+                </%doc>
             </form>
-            ##<form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-ng-controller="DemoFileUploadController" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]">
             <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" ng-show="uploadImage">
                 <!-- Redirect browsers with JavaScript disabled to the origin page -->
                 <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
