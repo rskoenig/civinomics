@@ -221,26 +221,6 @@
     %>
 </%def>
 
-<%def name="parentLink(p, w, **kwargs)">
-   <%
-        if 'directLink' in kwargs:
-            if kwargs['directLink'] == True:
-                parentStr = 'href="%s' %(p['link'])
-            else:
-                parentStr = 'href="/workshop/%s/%s/%s/%s/%s' %(w["urlCode"], w["url"], p.objType, p["urlCode"], p["url"])
-        else:
-            parentStr = 'href="/workshop/%s/%s/%s/%s/%s' %(w["urlCode"], w["url"], p.objType, p["urlCode"], p["url"])
-        
-        parentStr += commentLinkAppender(**kwargs)
-        parentStr += '"'
-        if 'embed' in kwargs:
-            if kwargs['embed'] == True:
-                return parentStr
-   %>
-   ${parentStr | n}
-</%def>
-
-
 <%def name="resourceLink(r, w, **kwargs)">
    <%
         if 'directLink' in kwargs:
@@ -310,10 +290,7 @@
             if thing.objType == 'revision':
                 return commentLink(thing, workshop, **kwargs)
             # set up for member activity feeds in profile.py getMemberPosts
-            if 'parentObj' in thing.keys() and thing['parentObj']:
-                parentObj = thing['parentObj']
-                return parentLink(parentObj, workshop, **kwargs)  
-            elif 'ideaCode' in thing.keys():
+            if 'ideaCode' in thing.keys():
                 idea = ideaLib.getIdea(thing['ideaCode'])
                 if not idea:
                     return False

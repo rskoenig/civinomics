@@ -3,7 +3,6 @@ from sqlalchemy import and_
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.generic      as generic
-from dbHelpers import commit
 from pylowiki.lib.utils import urlify
 
 def getMemberPosts(user, disabled = '0', deleted = '0'):
@@ -26,7 +25,6 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
                 parentCode = [i for i in codes if i in activity.keys()]
                 thing = generic.getThing(activity[parentCode[0]], keys, values)
                 if thing:
-                    activity['parentObj'] = thing
                     finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
@@ -90,7 +88,6 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
                 parentCode = [i for i in codes if i in activity.keys()]
                 thing = generic.getThing(activity[parentCode[0]], keys, values)
                 if thing:
-                    activity['parentObj'] = thing
                     finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
