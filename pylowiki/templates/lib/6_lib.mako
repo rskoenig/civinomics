@@ -347,14 +347,9 @@
          title = revision['data']
       else:
          title = user['name']
-      if 'className' in kwargs:
-         if 'avatar-large' in kwargs['className']:
-            imgStr += '<img src="http://www.gravatar.com/avatar/%s?r=pg&d=identicon&s=200" alt="%s" title="%s"' %(md5(user['email']).hexdigest(), title, title)
-         else:
-            imgStr += '<img src="http://www.gravatar.com/avatar/%s?r=pg&d=identicon" alt="%s" title="%s"' %(md5(user['email']).hexdigest(), title, title)
-      else:   
-         imgStr += '<img src="http://www.gravatar.com/avatar/%s?r=pg&d=identicon" alt="%s" title="%s"' %(md5(user['email']).hexdigest(), title, title)
-         
+            
+      imageSource = _userImageSource(user, **kwargs)
+      imgStr += '<img src="%s" alt="%s" title="%s"' %(imageSource, title, title)
       if 'className' in kwargs:
          imgStr += ' class="%s"' % kwargs['className']
       if 'placement' in kwargs:
@@ -363,6 +358,33 @@
       imgStr += '></a>'
    %>
    ${imgStr | n}
+</%def>
+
+<%def name="_userImageSource(user, **kwargs)">
+   <%
+      # Assumes 'user' is a Thing.
+      # Defaults to a gravatar source
+      # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+      #                          we return a source based on the value given here (civ/gravatar)
+      source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+      large = False
+      gravatar = True
+      if 'className' in kwargs:
+         if 'avatar-large' in kwargs['className']:
+            large = True
+      if 'forceSource' in kwargs:
+         if kwargs['forceSource'] == 'civ':
+            gravatar = False
+            source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+      else:
+         if 'avatarSource' in user.keys():
+            if user['avatarSource'] == 'civ':
+               gravatar = False
+               source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+      if large and gravatar:
+         source += '&s=200'
+      return source
+   %>
 </%def>
 
 <%def name="geoBreadcrumbs()">
