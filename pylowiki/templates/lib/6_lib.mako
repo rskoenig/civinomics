@@ -289,7 +289,7 @@
         elif objType == 'comment':
             if thing.objType == 'revision':
                 return commentLink(thing, workshop, **kwargs)
-            # set up for member activity feeds in profile.py getMemberPosts
+            # set up for member activity feeds in profile.py getMemberPosts  
             if 'ideaCode' in thing.keys():
                 idea = ideaLib.getIdea(thing['ideaCode'])
                 if not idea:

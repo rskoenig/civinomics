@@ -143,8 +143,9 @@ class ProfileController(BaseController):
         c.comments = []
         c.ideas = []
         
-        posts = activityLib.getMemberPosts(c.user)
-        for p in posts:
+        c.rawActivity = activityLib.getMemberActivity(c.user)
+        
+        for p in c.activity:
             # ony active objects
             if p['deleted'] == '0' and p['disabled'] == '0' and 'workshopCode' in p:
                 # only public objects unless author or admin
