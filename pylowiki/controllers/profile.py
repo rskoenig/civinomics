@@ -135,7 +135,8 @@ class ProfileController(BaseController):
 
         followers = followLib.getUserFollowers(c.user)
         c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
-          
+
+        # this still needs to be optimized so we don't get the activity twice
         c.activity = activityLib.getMemberPosts(c.user)
         c.suggestions = []
         c.resources = []
@@ -151,9 +152,7 @@ class ProfileController(BaseController):
                 # only public objects unless author or admin
                 w = workshopLib.getWorkshopByCode(p['workshopCode'])
                 if workshopLib.isPublished(w) and w['public_private'] == 'public' or (c.isUser or c.isAdmin):
-                    if p.objType == 'suggestion':
-                        c.suggestions.append(p)
-                    elif p.objType == 'resource':
+                    if p.objType == 'resource':
                         c.resources.append(p)
                     elif p.objType == 'discussion':
                         c.discussions.append(p)
