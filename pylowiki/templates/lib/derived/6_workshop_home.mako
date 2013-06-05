@@ -19,8 +19,6 @@
     %>
     <h4 class="section-header smaller section-header-inner"> Notables </h4>
     <ul class="media-list centered" id="workshopNotables">
-    ##<table class="table" style="margin-left:-10px; margin-right:-10px; margin-top:-10px; margin-bottom:-20px;">
-    ##    <tbody>
         % for person in people:
             <%
                 if person.objType == 'facilitator':
@@ -30,19 +28,6 @@
                     personTitle = person['title']
                     personClass = 'listener'
             %>
-            <%doc>
-            <tr class="media ${personClass}">
-                <td class="media-body">
-                    ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
-                    <h4 class="media-heading">${lib_6.userLink(person, className="green green-hover")}</h4>
-                    % if personClass == 'listener':
-                        <span><small>(listener)</small></span>
-                    % endif
-                    ${personTitle}
-                </td>
-            </tr>
-            </%doc>
-            
             <li class="media ${personClass} notables-item">
                 ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
                 <div class="media-body">
@@ -55,8 +40,6 @@
             </li>
             
         % endfor
-    ##    </tbody>
-    ##</table>    
     </ul>
 </%def>
 
