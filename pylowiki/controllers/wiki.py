@@ -50,4 +50,4 @@ class WikiController(BaseController):
             
         session['alert'] = alert
         session.save()
-        return redirect(session['return_to'])
+        return redirect('/workshop/%s/%s/preferences' %(c.w['urlCode'], c.w['url']))
