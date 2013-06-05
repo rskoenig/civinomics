@@ -35,6 +35,18 @@
                      if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
                         continue
             author = userLib.getUserByID(item.owner)
+            
+            authorClass = 'row-fluid list-item'
+            addedAs = ''
+            if item['addedAs'] == 'admin':
+                authorClass += ' admin'
+                addedAs += '(admin) '
+            if item['addedAs'] == 'facilitator':
+                authorClass += ' facilitator'
+                addedAs += '(facilitator) '
+            if item['addedAs'] == 'listener':
+                authorClass += ' listener'
+                addedAs += '(listener) '
          %>
          <li>
             % if item['disabled'] == '1':
@@ -53,6 +65,27 @@
                                     <div class="span2 offset1">
                                         ${lib_6.userImage(author, className = 'avatar')}
                                     </div> <!--/.span2-->
+                                    <div class="span9 list-item-text" id="content_${itemCounter}">
+                                        <% itemTitle = '<h5 class="no-bottom"><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
+                                        ${itemTitle | n}
+                                        <p>
+                                            <% itemTitle = '<small>(<a %s>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 75)) %>
+                                            ${itemTitle | n}
+                                        </p>
+                                        <p class="no-bottom">
+                                            Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}
+                                        </p>
+                                            <% 
+                                                comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
+                                                numComments = discussionLib.getDiscussionForThing(item)['numComments']
+                                            %>
+                                            % if c.demo:
+                                                See ${comments | n}
+                                            % else:
+                                                See ${comments | n} (${numComments})
+                                            % endif
+                                    </div><!--/.span9-->
+                                    <%doc>
                                     <div class="span9 list-item-text">
                                         <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
                                         ${itemTitle | n}
@@ -64,25 +97,13 @@
                                             %>
                                             See ${comments | n} (${numComments})
                                     </div><!--/.span9-->
+                                    </%doc>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             % else:
-                <%
-                    authorClass = 'row-fluid list-item'
-                    addedAs = ''
-                    if item['addedAs'] == 'admin':
-                        authorClass += ' admin'
-                        addedAs += '(admin) '
-                    if item['addedAs'] == 'facilitator':
-                        authorClass += ' facilitator'
-                        addedAs += '(facilitator) '
-                    if item['addedAs'] == 'listener':
-                        authorClass += ' listener'
-                        addedAs += '(listener) '
-                %>
                 <div class="${authorClass}">
                     <div class="span1 voteBlock" id="vote_${itemCounter}">
                         ${lib_6.upDownVote(item)}
@@ -94,7 +115,7 @@
                         <% itemTitle = '<h5 class="no-bottom"><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                         ${itemTitle | n}
                         <p>
-                            <% itemTitle = '<small>(<a %s>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 150)) %>
+                            <% itemTitle = '<small>(<a %s>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 75)) %>
                             ${itemTitle | n}
                         </p>
                         <p class="no-bottom">
