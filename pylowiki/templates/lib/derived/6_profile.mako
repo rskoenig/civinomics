@@ -315,13 +315,69 @@
     </div><!--/.section-wrapper-->
 </%def>
 
+<%def name="showMemberActivity(activity)">
+    <%
+        actionMapping = {   'resource': 'added the resource',
+                            'discussion': 'started the conversation',
+                            'idea': 'posed the idea',
+                            'comment': 'commented on a'}
+        objTypeMapping = {  'resource':'resource',
+                            'discussion':'conversation',
+                            'idea':'idea',
+                            'comment':'comment'}
+    %>
+    <table class="table table-hover table-condensed">
+        <tbody>
+        
+        % for itemCode in activity['itemList']:
+            <% 
+                workshopCode = activity['items'][itemCode]['workshopCode']
+                workshopLink = "/workshop/" + activity['workshops'][workshopCode]['urlCode'] + "/" + activity['workshops'][workshopCode]['url']
+                parent = False
+                if activity['items'][itemCode]['objType'] == 'comment':
+                    parentCode = activity['items'][itemCode]['parentCode']
+                    parentObjType = activity['parents'][parentCode]['objType']
+                    parentLink = workshopLink + "/" + parentObjType + "/" + activity['parents'][parentCode]['urlCode'] + "/" + activity['parents'][parentCode]['url']
+                    title = lib_6.ellipsisIZE(activity['items'][itemCode]['data'], 40)
+                    itemLink = parentLink + '?comment=' + itemCode
+                else:
+                    parentCode = False
+                    title = lib_6.ellipsisIZE(activity['items'][itemCode]['title'], 40)
+                    itemLink = workshopLink + "/" + activity['items'][itemCode]['objType'] + "/" + activity['items'][itemCode]['urlCode'] + "/" + activity['items'][itemCode]['url']
+
+                
+            %>
+            % if activity['workshops'][workshopCode]['public_private'] == 'public' or (c.browser == False or c.isAdmin == True or c.isUser == True):
+                % if activity['items'][itemCode]['deleted'] == '0':
+                    <% 
+                        if parentCode and activity['parents'][parentCode]['deleted'] == '1':
+                            continue
+                            
+                        objType = activity['items'][itemCode]['objType']
+                        activityStr = actionMapping[objType]
+                        if objType == 'comment':
+                            if parentObjType == 'idea':
+                                activityStr += 'n'
+                            activityStr += ' <a href="' + parentLink + '">' + objTypeMapping[parentObjType] + '</a>, saying'
+                            activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                        else:
+                            activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                    %>
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % endif
+        % endfor
+        </tbody>
+    </table>
+</%def>
+
 <%def name="showActivity(activity)">
     <table class="table table-hover table-condensed">
         <tbody>
         
         % for item in activity:
             <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
-            % if workshop['public_private'] == 'public' or (c.browser == False or c.isAdmin == True): 
+            % if workshop['public_private'] == 'public' or (c.browser == False or c.isAdmin == True or c.isUser == True): 
                 <tr><td>${lib_6.showItemInActivity(item, workshop, expandable = True)}</td></tr>
             % endif
         % endfor

@@ -3,8 +3,9 @@ from sqlalchemy import and_
 from dbHelpers import with_characteristic as wc, with_characteristic_like as wcl, greaterThan_characteristic as gtc
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.generic      as generic
-from dbHelpers import commit
 from pylowiki.lib.utils import urlify
+import logging
+log = logging.getLogger(__name__)
 
 def getMemberPosts(user, disabled = '0', deleted = '0'):
     activityTypes = ['resource', 'comment', 'discussion', 'idea']
@@ -26,13 +27,82 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
                 parentCode = [i for i in codes if i in activity.keys()]
                 thing = generic.getThing(activity[parentCode[0]], keys, values)
                 if thing:
-                    activity['parentObj'] = thing
                     finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
         return finalActivityList
     except:
         return False
+        
+def getMemberActivity(user):
+    activityTypes = ['resource', 'comment', 'discussion', 'idea']
+    codes = ['resourceCode', 'ideaCode', 'discussionCode']
+    workshopKeys = ['deleted', 'disabled', 'public_private', 'urlCode', 'url',  'title']
+    itemKeys = ['deleted', 'disabled', 'urlCode', 'workshopCode']
+    
+    # we want to only lookup each item once from the database, so we save it in these dicts.
+    activityDict = {}
+    itemList = []
+    itemDict = {}
+    workshopDict = {}
+    parentDict = {}
+    
+    initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
+        .filter_by(owner = user.id)\
+        .order_by('-date').all()
+    # Messy
+    for activity in initialActivityList:
+        if activity.objType == 'discussion' and activity['discType'] != 'general':
+            continue
+            
+        # load the itemDict for this item
+        itemCode = activity['urlCode']
+        itemList.append(itemCode)
+        itemDict[itemCode] = {}
+        itemDict[itemCode]['objType'] = activity.objType
+        for key in itemKeys:
+            itemDict[itemCode][key] = activity[key]
+                
+        if activity.objType == 'comment':
+            key = 'data'
+            # comprehensions return a list
+            parentCodeList = [i for i in codes if i in activity.keys()]
+            parentCodeField = parentCodeList[0]
+            parentCode = activity[parentCodeField]
+            itemDict[itemCode]['parentCode'] = parentCode
+            # see if this item is already in the parentDict, if not, fetch it and add it
+            if parentCode not in parentDict.keys():
+                parent = generic.getThing(activity[parentCodeField])
+                parentDict[parentCode] = {}
+                parentDict[parentCode]['objType'] = parent.objType
+                for pkey in itemKeys:
+                    parentDict[parentCode][pkey] = parent[pkey]
+                if parent.objType == 'comment':
+                    pkey = 'data'
+                else:
+                    parentDict[parentCode]['url'] = parent['url']
+                    pkey = 'title'
+                    
+                parentDict[parentCode][pkey] = parent[pkey]
+                
+        else:
+            itemDict[itemCode]['url'] = activity['url']
+            key = 'title'
+                
+        itemDict[itemCode][key] = activity[key]
+            
+        # see if we need to lookup the workshop and add it to the workshopDict
+        if activity['workshopCode'] not in workshopDict:
+            workshopCode = activity['workshopCode']
+            workshop = generic.getThing(workshopCode)
+            workshopDict[workshopCode] = {}
+            for key in workshopKeys:
+                workshopDict[workshopCode][key] = workshop[key]
+    activityDict['itemList'] = itemList
+    activityDict['items'] = itemDict
+    activityDict['workshops'] = workshopDict
+    activityDict['parents'] = parentDict
+    return activityDict
 
 def getAllMemberPosts(user):
     activityTypes = ['suggestion', 'resource', 'comment', 'discussion', 'idea']
@@ -90,7 +160,6 @@ def getActivityForWorkshop(workshopCode, disabled = '0', deleted = '0'):
                 parentCode = [i for i in codes if i in activity.keys()]
                 thing = generic.getThing(activity[parentCode[0]], keys, values)
                 if thing:
-                    activity['parentObj'] = thing
                     finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
