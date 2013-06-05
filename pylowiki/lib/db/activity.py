@@ -37,7 +37,7 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
 def getMemberActivity(user):
     activityTypes = ['resource', 'comment', 'discussion', 'idea']
     codes = ['resourceCode', 'ideaCode', 'discussionCode']
-    workshopKeys = ['deleted', 'disabled', 'public_private', 'urlCode', 'url',  'title']
+    workshopKeys = ['deleted', 'disabled', 'public_private', 'urlCode', 'url',  'title', 'published']
     itemKeys = ['deleted', 'disabled', 'urlCode', 'workshopCode']
     
     # we want to only lookup each item once from the database, so we save it in these dicts.

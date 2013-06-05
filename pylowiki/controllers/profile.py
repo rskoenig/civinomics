@@ -137,8 +137,6 @@ class ProfileController(BaseController):
         c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
 
         # this still needs to be optimized so we don't get the activity twice
-        c.activity = activityLib.getMemberPosts(c.user)
-        c.suggestions = []
         c.resources = []
         c.discussions = []
         c.comments = []
@@ -146,21 +144,21 @@ class ProfileController(BaseController):
         
         c.rawActivity = activityLib.getMemberActivity(c.user)
         
-        for p in c.activity:
+        for itemCode in c.rawActivity['itemList']:
             # ony active objects
-            if p['deleted'] == '0' and p['disabled'] == '0' and 'workshopCode' in p:
+            if c.rawActivity['items'][itemCode]['deleted'] == '0' and c.rawActivity['items'][itemCode]['disabled'] == '0':
                 # only public objects unless author or admin
-                w = workshopLib.getWorkshopByCode(p['workshopCode'])
-                if workshopLib.isPublished(w) and w['public_private'] == 'public' or (c.isUser or c.isAdmin):
-                    if p.objType == 'resource':
-                        c.resources.append(p)
-                    elif p.objType == 'discussion':
-                        c.discussions.append(p)
-                    elif p.objType == 'idea':
-                        c.ideas.append(p)
-                    elif p.objType == 'comment':
-                        c.comments.append(p)
-        
+                workshopCode = c.rawActivity['items'][itemCode]['workshopCode']
+                if c.rawActivity['workshops'][workshopCode]['deleted'] == '0' and c.rawActivity['workshops'][workshopCode]['published'] == '1' and c.rawActivity['workshops'][workshopCode]['public_private'] == 'public' or (c.isUser or c.isAdmin):
+                    if c.rawActivity['items'][itemCode]['objType'] == 'resource':
+                        c.resources.append(c.rawActivity['items'][itemCode])
+                    elif c.rawActivity['items'][itemCode]['objType'] == 'discussion':
+                        c.discussions.append(c.rawActivity['items'][itemCode])
+                    elif c.rawActivity['items'][itemCode]['objType'] == 'idea':
+                        c.ideas.append(c.rawActivity['items'][itemCode])
+                    elif c.rawActivity['items'][itemCode]['objType'] == 'comment':
+                        c.comments.append(c.rawActivity['items'][itemCode])
+
         return render("/derived/6_profile.bootstrap")
     
     def showUserResources(self, id1, id2):
