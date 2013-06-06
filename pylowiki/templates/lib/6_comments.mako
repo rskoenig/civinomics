@@ -7,7 +7,9 @@
     import logging, random
     from datetime import datetime
     import misaka as misaka
+    
     log = logging.getLogger(__name__)
+    
 %>
 
 <%namespace name="lib" file="/lib/mako_lib.mako" />
@@ -237,8 +239,7 @@
                     %>
                 </div> <!--/.span1-->
                 <div class="span11 comment-data">
-                    ##${comment['data']}
-                    ${misaka.html(comment['data']) | n}
+                    ${misaka.html(comment['data'], extensions=misaka.EXT_AUTOLINK) | n}
                     % if curDepth + 1 == maxDepth and comment['children'] != '0':
                         ${continueThread(comment)}
                     % endif
