@@ -74,8 +74,17 @@ def emailAlerts(thing):
         fp = open(txtFile, 'r')
         textMessage = fp.read()
         fp.close()
-                
+         
+        viewMessage = "To view the new " +  newThing
+        if workshop['public_private'] == 'public':
+            viewMessage += ", use your browser to view it here:\n"
+        else:
+            viewMessage += ", use your browser to login to Civinomics and view it here:\n"
+            
+        viewMessage += thingURL
+            
         # do the substitutions
+        textMessage = textMessage.replace('${c.viewMessage}', viewMessage)
         textMessage = textMessage.replace('${c.thingType}', newThing)
         textMessage = textMessage.replace('${c.thingOwner}', thingOwner)
         textMessage = textMessage.replace('${c.workshopURL}', workshopURL)
@@ -98,6 +107,7 @@ def emailAlerts(thing):
             fp.close()
                 
             # do the substitutions
+            textMessage = textMessage.replace('${c.viewMessage}', viewMessage)
             textMessage = textMessage.replace('${c.thingType}', newThing)
             textMessage = textMessage.replace('${c.thingOwner}', thingOwner)
             textMessage = textMessage.replace('${c.workshopURL}', workshopURL)

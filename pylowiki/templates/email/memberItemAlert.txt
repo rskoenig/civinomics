@@ -6,8 +6,7 @@ Civinomics member ${c.thingOwner} has added a new ${c.thingType} to
 a workshop you are monitoring:
 ${c.workshopName}.
 
-To view the new ${c.thingType}, use your browser to view it here:
-${c.thingURL}
+${c.viewMessage}
 
 --------------------------------------------------------------------
 You've configured your Civinomics profile 'My Workshop' to
