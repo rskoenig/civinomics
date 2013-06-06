@@ -6,6 +6,7 @@
     from pylowiki.lib.db.comment import getComment
     import logging, random
     from datetime import datetime
+    import misaka as misaka
     log = logging.getLogger(__name__)
 %>
 
@@ -235,8 +236,9 @@
                             lib_6.upDownVote(comment)
                     %>
                 </div> <!--/.span1-->
-                <div class="span11">
-                    ${comment['data']}
+                <div class="span11 comment-data">
+                    ##${comment['data']}
+                    ${misaka.html(comment['data']) | n}
                     % if curDepth + 1 == maxDepth and comment['children'] != '0':
                         ${continueThread(comment)}
                     % endif

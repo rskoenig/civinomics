@@ -1073,3 +1073,8 @@ li.thumbnail-gallery{
 .civAvatarUploadForm{
    margin-top:40px;
 }
+
+.comment-data h1{
+    font-size: 20px;
+    line-height: 20px;
+}
