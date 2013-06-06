@@ -17,6 +17,7 @@ import pylowiki.lib.db.generic      as  genericLib
 import pylowiki.lib.db.mainImage    as  mainImageLib
 import pylowiki.lib.db.dbHelpers    as  dbHelpers
 import pylowiki.lib.utils           as  utils
+import pylowiki.lib.alerts          as alertsLib
 
 log = logging.getLogger(__name__)
 import pylowiki.lib.helpers as h
@@ -77,6 +78,7 @@ class CommentController(BaseController):
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
             message = genericLib.linkChildToParent(message, comment.c)
             dbHelpers.commit(message)
+            alertsLib.emailAlerts(comment)
             return redirect(utils.thingURL(workshop, thing))
                 
         except KeyError:
