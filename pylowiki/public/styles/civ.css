@@ -1,3 +1,9 @@
+font-family: 'Petit Formal Script', cursive;
+font-family: 'Marcellus', serif;
+font-family: 'Herr Von Muellerhoff', cursive;
+font-family: 'Pinyon Script', cursive;
+
+
 html,body{
    font-family: 'Open Sans', sans-serif;
    font-weight: normal;
@@ -55,6 +61,10 @@ html,body{
 }
 .civ-search.tabs-left > .nav-tabs{
     border-right:3px solid #075D00;
+}
+.fancy{
+  font-family: 'Petit Formal Script', cursive;
+  font-size: 24px;
 }
 .loading-civ{
     margin-top:10%;
@@ -824,7 +834,7 @@ ul[data-clearing] li.clearing-feature ~ li { display: none; }
 .clearing-assembled .clearing-container ul[data-clearing] li img { cursor: pointer !important; min-width: 100% !important; }
 .clearing-assembled .clearing-container ul[data-clearing] li.visible { border-top: 4px solid white; }
 .gallery-wrapper{
-   width:35%; float:left; margin-right:35px; border:solid 2px green; padding:2px;
+  float:left; margin-right:35px; border:solid 2px green; padding:2px;
 }
 ul.gallery{
    overflow: hidden;

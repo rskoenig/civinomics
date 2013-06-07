@@ -4,21 +4,20 @@
 
 <div class="row-fluid">
    <div class="span8">
-      <div class="section-wrapper" id="workshopInformation">
+      <div class="section-wrapper" style="background-color:#000;" id="workshopInformation">
          <div class="browse">
             <h4 class="section-header smaller"> Information </h4>
-               <div class="gallery-wrapper" id="workshopSlideshow">
+               <div id="workshopSlideshow">
                   <div>
                   ${helpers.slideshow(c.w)}
                   </div>
-                  <div>
-                     <strong><small>Click image(s) above for slideshow</small></strong>
-                  </div>
                </div>
+               <!--
                <div>
                   ${helpers.showTags()}
                   ${helpers.showInfo(c.w)}
                </div>
+               -->
          </div> <!-- /.browse -->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span8 -->
@@ -28,6 +27,7 @@
             <h4 class="section-header smaller"> 
             Goals
             </h4> 
+            <span class="fancy">$508,000,000,900</span>
             ${helpers.showGoals(c.goals)}
             ${helpers.whoListening()}
             ${helpers.showActivity(c.activity)}

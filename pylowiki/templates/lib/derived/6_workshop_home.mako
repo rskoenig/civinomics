@@ -173,15 +173,18 @@
       slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
       slideNum = 0
    %>
-   <ul class="gallery thumbnails" data-clearing>
-      <% 
-         numSlides = len(slides)
-         for slide in slides:
-            if slide['deleted'] != '1':
-               _slide(slide, slideNum, numSlides)
-               slideNum += 1
-      %>
-   </ul>
+  <div class="span12">
+     <ul class="gallery thumbnails" data-clearing>
+
+        <% 
+           numSlides = len(slides)
+           for slide in slides:
+              if slide['deleted'] != '1':
+                 _slide(slide, slideNum, numSlides)
+                 slideNum += 1
+        %>
+     </ul>
+   </div>
 </%def>
 
 <%def name="_slide(slide, slideNum, numSlides)">
@@ -189,6 +192,7 @@
       if slideNum == 0:
          spanX = "span12"
       else:
+        '''
          if slideNum <= 3:
             if numSlides == 2:
                spanX = "span4 offset4 thumbnail-gallery"
@@ -196,22 +200,28 @@
                spanX = "span4 offset1 thumbnail-gallery"
             elif numSlides >= 4:
                spanX = "span4 thumbnail-gallery"
+
          else:
-            spanX = "noShow"
+          '''
+        spanX = "noShow"
    %>
       <li class="${spanX}">
-      % if slide['pictureHash'] == 'supDawg':
-         <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
-            <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
-         </a>
-      % else:
-         <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
-            <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
-         </a>
-      % endif
-      % if slideNum == 0:
-         <small class="centered">${slide['title']}</small>
-      % endif
+        <div class="span8">
+        % if slide['pictureHash'] == 'supDawg':
+           <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
+              <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
+           </a>
+        % else:
+           <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
+              <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
+           </a>
+        % endif
+        </div>
+        <div class="span4">
+        % if slideNum == 0:
+              <p class="centered" style="float:right; color: #FFF;">${slide['title']}</p>
+        % endif
+      </div>
    </li>
 </%def>
 
