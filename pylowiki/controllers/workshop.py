@@ -159,7 +159,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configureBasicWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        session['confTab'] = "tab1"
+        session['confTab'] = "basicInfo"
         session.save()
 
         slideshow = slideshowLib.getSlideshow(c.w)
@@ -241,7 +241,7 @@ class WorkshopController(BaseController):
             session['alert'] = alert
             # to reload at the next tab
             if not workshopLib.isPublished(c.w):
-                session['confTab'] = "tab2"
+                session['confTab'] = "tags"
             session.save()
 
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
@@ -255,7 +255,7 @@ class WorkshopController(BaseController):
             for tag in c.tags:
                 currentTags.append(tag['title'])
                 
-        session['confTab'] = "tab3"
+        session['confTab'] = "tags"
         session.save()
             
         werror = 0
@@ -307,7 +307,7 @@ class WorkshopController(BaseController):
             alert['title'] = weventMsg
             session['alert'] = alert
             if c.w['startTime'] == '0000-00-00':
-                session['confTab'] = "tab4"
+                session['confTab'] = "slideshow"
             session.save()
 
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
@@ -315,7 +315,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configurePublicWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        session['confTab'] = "tab2"
+        session['confTab'] = "participants"
         session.save()
         
         werror = 0
@@ -325,7 +325,7 @@ class WorkshopController(BaseController):
            
         if c.w['type'] == 'personal':
             alert = {'type':'error'}
-            alert['title'] = 'In order to switch from private to public, you must upgrade this workshop from Free to Professional. Click on the Upgrade to Professional button to upgrade this workshop.'
+            alert['title'] = 'You must upgrade to a Professional workshop in order to change the scope to public.'
             session['alert'] = alert
             session.save()
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
@@ -400,7 +400,7 @@ class WorkshopController(BaseController):
             session.save()
             
         if c.w['startTime'] == '0000-00-00':
-            session['confTab'] = "tab3"
+            session['confTab'] = "participants"
             session.save()
             
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url'])) 
@@ -408,7 +408,7 @@ class WorkshopController(BaseController):
     @h.login_required
     def configurePrivateWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        session['confTab'] = "tab2"
+        session['confTab'] = "participants"
         session.save()
             
         werror = 0
@@ -426,7 +426,11 @@ class WorkshopController(BaseController):
                 else:
                     newMember = request.params['newMember']
                     counter = 0
-                    mList = newMember.split('\n')
+                    # clean the list to enable separation by either comma or return
+                    cList = newMember.replace(',', '\n')
+                    cList.strip()
+                    mList = cList.split('\n')
+
                     if c.w['type'] == 'personal' and (len(pList) + len(mList) > 20):
                         werror = 1
                         werrMsg += 'There are already ' + str(len(pList)) + ' participants. You cannot add ' + str(len(mList)) + ' more, Free workshops are limited to a maximum of 20 participants.'
@@ -475,39 +479,62 @@ class WorkshopController(BaseController):
                 werror = 1
                 werrMsg += 'No email address entered.'
 
-                
-        if 'deleteMember' in request.params:
-            if 'removeMember' in request.params and request.params['removeMember'] != '':
-                removeMember = request.params['removeMember']
-                pTest = pMemberLib.getPrivateMember(workshopCode, removeMember)
-                if pTest:
-                    pTest['deleted'] = '1'
-                    dbHelpers.commit(pTest)
-                    # see if they have the workshop bookmarked
-                    user = userLib.getUserByEmail(pTest['email'])
-                    follow = followLib.getFollow(user, c.w)
-                    if follow:
-                        follow['disabled'] = '1'
-                        dbHelpers.commit(follow)
-                    weventMsg += 'Member removed: ' +  removeMember
+
+
+        if 'deleteMembers' in request.params:
+            if 'selected_members' in request.params and request.params['selected_members'] != '':
+                selected_members = request.params.getall('selected_members')
+                counter = 0
+
+                for member in selected_members:    
+                    pTest = pMemberLib.getPrivateMember(workshopCode, member)
+                    if pTest:
+                        pTest['deleted'] = '1'
+                        dbHelpers.commit(pTest)
+                        # see if they have the workshop bookmarked
+                        user = userLib.getUserByEmail(pTest['email'])
+                        follow = followLib.getFollow(user, c.w)
+                        if follow:
+                            follow['disabled'] = '1'
+                            dbHelpers.commit(follow)
+                        counter += 1
+                    else:
+                        werror = 1
+                        werrMsg += 'No current member email: %s. ' % member
+                if counter > 1:
+                    weventMsg += '%s members removed. ' % counter
                 else:
-                    werror = 1
-                    werrMsg += 'No current member email: ' +  removeMember
+                    weventMsg += "1 member removed. "
                 
             else:
                 werror = 1
                 werrMsg += 'No email address entered.'
-                
-        if 'sendInvitation' in request.params:
-            if 'inviteMember' in request.params and request.params['inviteMember'] != '':
-                inviteMember = request.params['inviteMember']
+
+
+        if 'resendInvites' in request.params:
+            if 'selected_members' in request.params and request.params['selected_members'] != '':
+                selected_members = request.params.getall('selected_members')
+                counter = 0
+
                 inviteMsg = ''
                 if 'inviteMsg' in request.params:
                     inviteMsg = request.params['inviteMsg']
                 myURL = config['app_conf']['site_base_url']
                 browseURL = '%s/workshop/%s/%s'%(myURL, c.w['urlCode'], c.w['url'])
-                mailLib.sendPMemberInvite(c.w['title'], c.authuser['name'], inviteMember, inviteMsg, browseURL)
-                weventMsg += ' An email invitation has been resent.'
+
+                for member in selected_members:                        
+                    mailLib.sendPMemberInvite(c.w['title'], c.authuser['name'], member, inviteMsg, browseURL)
+                    counter += 1
+
+                if counter > 1:
+                    weventMsg += '%s invitations have been resent. ' % counter
+                else:
+                    weventMsg += "1 invitation has been resent. "
+                
+            else:
+                werror = 1
+                werrMsg += 'No email address entered.'
+
 
         if c.w['public_private'] == 'public' and 'changeScope' in request.params:
             weventMsg = 'Workshop scope changed from public to private.'
@@ -515,7 +542,7 @@ class WorkshopController(BaseController):
             dbHelpers.commit(c.w)
             
         if 'continueToNext' in request.params:
-            session['confTab'] = "tab3"
+            session['confTab'] = "participants"
             session.save()
         else:
             if werror:
@@ -552,7 +579,7 @@ class WorkshopController(BaseController):
         c.title = "Configure Workshop"
 
         c.title = "Configure Workshop"
-        session['confTab'] = "tab2"
+        session['confTab'] = "participants"
         session.save()
         
         if c.w['public_private'] == 'public' and 'changeScopeToPrivate' in request.params:
@@ -721,7 +748,7 @@ class WorkshopController(BaseController):
                 c.stripeKey = config['app_conf']['stripePublicKey'].strip()
                 return render('/derived/6_workshop_payment.bootstrap')
                 
-        w = workshopLib.Workshop('replace with a real workshop name!', c.authuser, 'private', wType)
+        w = workshopLib.Workshop('New Workshop', c.authuser, 'private', wType)
         c.workshop_id = w.id # TEST
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.id, w.id)
@@ -927,7 +954,16 @@ class WorkshopController(BaseController):
         else:
             c.backConfig = 0
             
-        if c.basicConfig and c.tagConfig and c.slideConfig and c.backConfig:
+        pList = pMemberLib.getPrivateMembers(c.w['urlCode'], "0")
+        if c.w['public_private'] == 'private' and len(pList) != 0:
+            c.participantsConfig = 1
+        elif c.w['public_private'] == 'public':
+            c.participantsConfig = 1
+        else:
+            c.participantsConfig = 0
+
+
+        if c.basicConfig and c.tagConfig and c.slideConfig and c.backConfig and c.participantsConfig:
             return True
         
         return False
@@ -946,9 +982,9 @@ class WorkshopController(BaseController):
             c.tab = session['confTab']
             session.pop('confTab')
             session.save()
-        # hack for continue button in tab4 of configure
+        # hack for continue button in slideshow tab of configure
         if 'continueToNext' in request.params:
-            c.tab = 'tab5'
+            c.tab = 'background'
             
         slideshow = slideshowLib.getSlideshow(c.w)
         c.slideshow = slideshowLib.getAllSlides(slideshow)
@@ -1002,6 +1038,9 @@ class WorkshopController(BaseController):
         
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
+
+        myURL = config['app_conf']['site_base_url']
+        c.shareURL = '%s/workshop/%s/%s'%(myURL, c.w['urlCode'], c.w['url'])
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = True

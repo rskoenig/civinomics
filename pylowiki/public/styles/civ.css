@@ -448,6 +448,10 @@ a.name{
    padding:10px;
 }
 
+a.btn{
+  margin-bottom: 8px;
+}
+
 img.watch{
    height:12px;
 }
@@ -455,6 +459,19 @@ img.watch{
 .centered{
    text-align: center;
 }
+
+.boxOffsetParent{
+  position: relative;
+}
+
+td.scope-icon{
+  width: 70px;
+}
+  td.scope-icon > img {
+    position: absolute;
+    top: 10px;
+    left: 0px;
+  }
 
 .btn.workshopNav{
     font-size:17px;
@@ -854,41 +871,49 @@ li.thumbnail-gallery{
     list-style: none;
     line-height: 1; }
   .pricing-table .title {
-    background-color: #dddddd;
     padding: 0.9375em 1.25em;
     text-align: center;
     color: #333333;
     font-weight: bold;
     font-size: 1em; }
   .pricing-table .price {
-    background-color: #eeeeee;
     padding: 0.9375em 1.25em;
     text-align: center;
     color: #333333;
     font-weight: normal;
     font-size: 1.25em; }
   .pricing-table .description {
-    background-color: white;
     padding: 0.9375em;
     text-align: center;
     color: #777777;
-    font-size: 0.75em;
+    font-size: 0.9em;
     font-weight: normal;
     line-height: 1.4;
-    border-bottom: dotted 1px #dddddd; }
+  }
   .pricing-table .bullet-item {
-    background-color: white;
     padding: 0.9375em;
     text-align: center;
     color: #333333;
-    font-size: 0.875em;
+    font-size: 0.9em;
     font-weight: normal;
-    border-bottom: dotted 1px #dddddd; }
+  }
   .pricing-table .cta-button {
-    background-color: whitesmoke;
     text-align: center;
     padding: 1.25em 1.25em 1.25em;
-    }
+  }
+
+.well.pricing-table{
+  padding: 0px;
+}
+.well.orange{
+  background-color: #fff0e5;
+  border-color: #ffdbbd;
+}
+.well.purple{
+  background-color: #efe4ff;
+  border-color: #d9bdff;
+}
+
 
   /* guiders */
   

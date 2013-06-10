@@ -92,7 +92,7 @@ class SlideshowController(BaseController):
             aTitle = 'Upload complete. Please add a caption to new images.'
             if not isPublished(c.w):
                 aTitle += ' See your changes by clicking on the preview button above.'
-            session['confTab'] = "tab4"
+            session['confTab'] = "slideshow"
             alert = {'type':'success'}
             alert['title'] = aTitle
             session['alert'] = alert
