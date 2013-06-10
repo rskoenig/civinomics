@@ -15,7 +15,7 @@
 <%def name="profileInfo()">
     <div class="section-wrapper">
         <div class="browse">
-	        <form id="infoEdit" name="infoEdit" class="form-horizontal edit-profile" action="/info/edit/handler">
+	        <form id="infoEdit" name="infoEdit" class="form-horizontal edit-profile">
     		    <h4 class="section-header smaller">Update Your Profile Information</h4>
                 <fieldset>
 			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">
@@ -59,7 +59,7 @@
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
                 <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
-                    <input type="submit" class="btn btn-warning" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes"></input>
+                    <input type="submit" class="btn btn-warning" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes" ng-click="submitProfileEdit()"></input>
                     <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
                     <span class="help-inline" ng-show="infoEdit.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
                     <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
