@@ -185,7 +185,7 @@ class LoginController(BaseController):
         #    if kwargs['fbLogin'] is True:
         #        return loginURL
         return redirect(loginURL)
-        
+
     def loginHandler(self):
         """ Display and Handle Login """
         c.title = c.heading = "Login"  
@@ -212,26 +212,10 @@ class LoginController(BaseController):
                     elif user['disabled'] == '1':
                         log.warning("disabled account attempting to login - " + email )
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
-                    elif userLib.checkPassword( user, password ): # if pass is True
-                        # todo logic to see if pass change on next login, display reset page
-                        user['laston'] = time.time()
-                        loginTime = time.localtime(float(user['laston']))
-                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                        commit(user)
-                        session["user"] = user['name']
-                        session["userCode"] = user['urlCode']
-                        session["userURL"] = user['url']
-                        session.save()
-                        
-                        if 'afterLoginURL' in session:
-                            # look for accelerator cases: workshop home, item listing, item home
-                            loginURL = session['afterLoginURL']
-                            session.pop('afterLoginURL')
-                            session.save()
-                        else:
-                            loginURL = "/"
-                        
-                        return redirect(loginURL)
+                    elif userLib.checkPassword( user, password ): 
+                        # if pass is True
+                        LoginController.logUserIn(self, user)
+
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
