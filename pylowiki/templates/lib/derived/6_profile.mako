@@ -361,11 +361,11 @@
             wListL = []
             for f in fList:
                 w = workshopLib.getWorkshopByCode(f['workshopCode'])
-                if w['deleted'] == '0' and w['type'] != 'personal':
+                if w['deleted'] == '0':
                     wlisten = listenerLib.getListener(c.user, w)
                     if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
                         wListF.append(w)
-                    if not wlisten or wlisten['disabled'] == '1':
+                    if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
                         wListL.append(w)
                         
         %>
