@@ -155,8 +155,12 @@
                // present button that will create/activate/login an account
                // -> fbSignupActivateLogin
              } else {
-               // replace current button with returned result
-               $('#fbLoginButton').html(result);
+               if ($('#fbLoggingIn').length) {
+                 window.location = '/fbLoggingIn';
+               } else {
+                 // replace current button with returned result
+                 $('#fbLoginButton').html(result); 
+               }
              }
              console.log('result: ' + result);
              // ? store name, email, username then redirect so server can handle this guy

@@ -157,10 +157,17 @@ class LoginController(BaseController):
             #splashMsg['content'] = 'incorrect facebook login credentials'
         
     def fbLoggingIn(self):
-        c.accessToken = session['fbAccessToken']
-        c.email = session['fbEmail']
-        
-        
+        # this page has already confirmed we're authd and logged in, just need to 
+        # log this person in now
+        accessToken = session['fbAccessToken']
+        email = session['fbEmail']
+        # get user
+        user = userLib.getUserByEmail( email )
+        if user:
+            LoginController.logUserIn(self, user)
+        #else:
+            # somehow this flow got mixed up and now there's not an account yet
+            # create new account flow from here? what are the possible cases?
 
     def logUserIn(self, user, **kwargs):
         # todo logic to see if pass change on next login, display reset page

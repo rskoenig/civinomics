@@ -280,6 +280,7 @@ def make_map():
     # external authentication routes
     map.connect('/{flogin:flogin/?}', controller = 'flogin', action = 'login')
     map.connect('/fbLogin{end:/?}', controller = 'login', action = 'fbLoginHandler')
+    map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoggingIn')
     # for ajax request from page after pinging fb for auth info
     map.connect('/extauth/fbEmail/{id1}{end:/?}', controller = 'login', action = 'fbAuthCheckEmail', id1 = '{id1}')
 
