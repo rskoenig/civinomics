@@ -76,7 +76,8 @@ def make_map():
     map.connect('/geo/stateList/{id1}', controller = 'geo', action = 'geoStateHandler', id1 = '{id1}')
     map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/cityList/{id1}/{id2}/{id3}', controller = 'geo', action = 'geoCityHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    map.connect('/geo/cityState/{id1}{end:/?}', controller = 'geo', action = 'geoCityStateHandler', id1 = '{id1}')
+    map.connect('/geo/cityStateCountry/{id1}{end:/?}', controller = 'geo', action = 'geoCityStateCountryHandler', id1 = '{id1}')
+    map.connect('/geo/cityStateCountryLink/{id1}{end:/?}', controller = 'geo', action = 'geoCityStateCountryLinkHandler', id1 = '{id1}')
     map.connect('/geo/postalList/{id1}/{id2}/{id3}/{id4}', controller = 'geo', action = 'geoPostalHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
 
     # Geo rss stuff
@@ -290,8 +291,8 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/{comments:comments/?}', controller = 'profile', action = 'showUserComments', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{followers:followers/?}', controller = 'profile', action = 'showUserFollowers', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{following:following/?}', controller = 'profile', action = 'showUserFollows', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/stats.json', controller = 'profile', action = 'stats', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/stats.csv', controller = 'profile', action = 'statsCSV', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/profile/{id1}/{id2}/stats.json', controller = 'profile', action = 'stats', id1 = '{id1}', id2 = '{id2}')
+    #map.connect('/profile/{id1}/{id2}/stats.csv', controller = 'profile', action = 'statsCSV', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{code}/{id2}/follow/{handler:handler/?}', controller = 'follow', action = 'followHandler', code = '{code}')
     map.connect('/profile/{id1}/{id2}/enable/{handler:handler/?}', controller = 'profile', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/privs/{handler:handler/?}', controller = 'profile', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
@@ -301,6 +302,7 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/{edit:edit/?}', controller = 'profile', action = 'edit', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/info/edit/{handler:handler/?}', controller = 'profile', action = 'infoEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/picture/upload/{handler:handler/?}', controller = 'profile', action = 'pictureUploadHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/picture/set/image/source{end:/?}', controller = 'profile', action = 'setImageSource')
     map.connect('/profile/{id1}/{id2}/password/update/{handler:handler/?}', controller = 'profile', action = 'passwordUpdateHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     

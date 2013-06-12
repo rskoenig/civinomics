@@ -20,7 +20,7 @@
            <div class="span3"> <!-- watch button -->
                   ${helpers.watchButton()}
                   % if c.privs['admin'] or c.privs['facilitator']: 
-                    % if "preferences" in session._environ['PATH_INFO'] :
+                    % if c.adminPanel:
                       ${helpers.viewButton()} 
                     % else:
                       ${helpers.configButton(c.w)}
@@ -29,7 +29,7 @@
            </div><!-- /watch button -->
 
          % else:
-           % if "preferences" in session._environ['PATH_INFO']:
+           % if c.adminPanel:
               ${helpers.previewButton()}
            % else:
               ${helpers.configButton(c.w)}
@@ -73,6 +73,8 @@
    <%
       if c.mainImage['pictureHash'] == 'supDawg':
          backgroundImage = '"/images/slide/slideshow/supDawg.slideshow"'
+      elif 'format' in c.mainImage.keys():
+         backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
       else:
          backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
    %>

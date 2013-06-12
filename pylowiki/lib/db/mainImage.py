@@ -42,16 +42,25 @@ def setMainImage(user, workshop, slide):
     if slide['pictureHash'] != 'supDawg':
         imageLocation, directoryNum = imageLib.getImageLocation(slide)
         image = open(imageLocation, 'rb')
-        imgHash = imageLib.saveImage(image, slide['pictureHash'], 'mainImage', mainImage)
-        imageLib.resizeImage('mainImage', imgHash, 128, 128, 'thumbnail', preserveAspectRatio = True)
-        imageLib.resizeImage('mainImage', imgHash, 400, 400, 'listing', preserveAspectRatio = True)
-        image.close()
+        image = imageLib.openImage(image)
+        if not image:
+            abort(404)
+        
+        imageHash = slide['pictureHash']
+        image = imageLib.saveImage(image, imageHash, 'mainImage', 'orig', thing = mainImage)
+        image = imageLib.resizeImage(image, imageHash, 400, 400, preserveAspectRatio = True)
+        image = imageLib.saveImage(image, imageHash, 'mainImage', 'listing')
+        image = imageLib.resizeImage(image, imageHash, 128, 128, preserveAspectRatio = True)
+        image = imageLib.saveImage(image, imageHash, 'mainImage', 'thumbnail')
+        
     else:
-        imgHash = u'supDawg'
+        imageHash = u'supDawg'
         directoryNum = u'0'
-    mainImage['pictureHash'] = imgHash
+    mainImage['pictureHash'] = imageHash
+    mainImage['format'] = u'png'
     # Possible edge case: orig is in directory 0, thumbnail in directory 1.  But all three get processed 
     # in the same function, so this *shouldn't* happen
     mainImage['directoryNum'] = directoryNum
     commit(mainImage)
     return mainImage
+    

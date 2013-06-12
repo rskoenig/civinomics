@@ -9,45 +9,117 @@ from pylowiki.lib.db.imageIdentifier import ImageIdentifier, getImageIdentifier
 
 log = logging.getLogger(__name__)
 numImagesInDirectory = 30000
-   
-def isImage(imgFile):
-    try:
-        im = Image.open(imgFile)
-        return True
-    except:
-        return False
 
-# Save images into a subdirectory identified primarily by the identifier and secondarily by the postfix
-# Example: identifier = 'slide', postfix = 'thumbnail'.  The directory is /.../images/slide/thumbnail/filename.jpg
-def resizeImage(identifier, hash, x, y, postfix, **kwargs):
-    i = getImageIdentifier(identifier)
-    directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
-    
-    origPathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber,'orig')
-    origFullpath = origPathname + '/%s.jpg' %(hash)
+"""
+    General workflow for new images:
+    1)  Given a file 'file', open image with openImage(file).  
+        This checks that the file is indeed an image, and returns a PIL.Image object.  Call this object 'imObj'
+    2)  Generate the hash associated with this image through use of generateHash().
+    3)  Save original image with saveImage(imObj).  The identifier will depend on the overall function (e.g. 'avatar', 'background', 'slide', etc...)
+        The sub identifier depends on the specific function (e.g. 'thumbnail', 'orig', 'slideshow').  Here you will want to save as 'orig'.
+    4)  Process imgObj as necessary with cropImage() and resizeImage()
+    5)  Save the modified imgObj with the same identifier, but different sub identifier (e.g. identifier = 'avatar', sub identifier = 'thumbnail')
+
+"""
+
+
+def resizeImage(image, imageHash, width, height, **kwargs):
+    """
+        Given an object of type PIL.Image, resize that object and return it.
+        
+        Inputs:
+            image       ->  An object of type PIL.Image
+            imageHash   ->  A string, this is the unique identifier for this image.  Used for debugging and logging purposes.
+            width       ->  An int, exactly as titled.  However, if set to the string 'max', then this is the width of the image.
+            height      ->  An int, exactly as titled.  However, if set to the string 'max', then this is the height of the image.
+        
+        Optional inputs:
+            preserveAspectRatio ->  Exactly as it sounds.  Boolean value.
+        
+        Outputs:
+            image       ->  An object of type PIL.Image, now resized.
+        
+    """
     
     try:
-        im = Image.open(origFullpath)
         ratio = 1
-        dims = (x, y)
-        if x == 99999 and y == 99999:
-            dims = im.size
+        if width == 'max':
+            width = image.size[0]
+        if height == 'max':
+            height = image.size[1]
+        dims = (width, height)
         if 'preserveAspectRatio' in kwargs:
             if kwargs['preserveAspectRatio'] == True:
-                maxwidth = x
-                maxheight = y
-                width, height = im.size
+                maxwidth = width
+                maxheight = height
+                width, height = image.size
                 ratio = min(float(maxwidth)/width, float(maxheight)/height)
-                dims = (int(im.size[0] * ratio), int(im.size[1] * ratio))
-        im = im.resize(dims, Image.ANTIALIAS)
-        pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, postfix)
-        if not os.path.exists(pathname):
-            os.makedirs(pathname)
+                dims = (int(image.size[0] * ratio), int(image.size[1] * ratio))
+        image = image.resize(dims, Image.ANTIALIAS)
         
-        quality = 80
-        im.save(pathname + '/' + hash + '.jpg' , 'JPEG', quality=quality)
-        return True
-    except:
+        return image
+    except Exception as e:
+        log.error('Error resizing image with hash %s, error given was %s' %(imageHash, e))
+        return False
+        
+def cropImage(image, imageHash, dims, **kwargs):
+    """
+        If cropImage() fails at any step, it will return False.
+        
+        inputs:
+            image       ->  An Image object obtained by opening the image as PIL.Image.open()
+            imageHash   ->  A unique identifier for each image.  Used here for logging and debugging purposes
+            dims        ->  A dictionary in the following format:
+                            {'x': int,
+                            'y': int,
+                            'width': int,
+                            'height': int}
+                            The 'x' and 'y' values indicate the top-left corner where the cropping starts.
+        outputs:
+            image       ->  The modified Image object that was passed in.
+    """
+    try:
+        x = dims['x']
+        y = dims['y']
+        width = dims['width']
+        height = dims['height']
+    except KeyError as e:
+        log.error('lib/images/cropImage(): dims dict was lacking key %s' % e)
+        return False
+    
+    # Some validation.
+    # Here, image.size is a tuple of the form (width, height)
+    imageDims = image.size
+    if 'clientWidth' in kwargs:
+        clientWidth = kwargs['clientWidth']
+        if clientWidth != -1:
+            ratio = float(clientWidth) / imageDims[0]
+            width /= ratio
+            x /= ratio
+        
+    if 'clientHeight' in kwargs:
+        clientHeight = kwargs['clientHeight']
+        if clientHeight != -1:
+            ratio = float(clientHeight) / imageDims[1]
+            height /= ratio
+            y /= ratio
+    
+    if x > imageDims[0]:
+        x = 0
+    if y > imageDims[1]:
+        y = 0
+    if x + width > imageDims[0]:
+        width = imageDims[0] - x
+    if y + height > imageDims[1]:
+        height = imageDims[1] - y
+    
+    try:
+        # The box is a 4-tuple defining the left, upper, right, and lower pixel coordinate.
+        box = (x, y, x + width, y + height)
+        region = image.crop(box)
+        return region
+    except Exception as e:
+        log.error('lib/images/cropImage(): unable to crop image with hash %s; error given was %s' % (imageHash, e))
         return False
     
 def getImageLocation(slide):
@@ -56,44 +128,88 @@ def getImageLocation(slide):
     identifier = getImageIdentifier('slide')
     directoryNumber = str(int(identifier['numImages']) / numImagesInDirectory)
     origPathname = os.path.join(config['app_conf']['imageDirectory'], 'slide', directoryNumber,'orig')
-    origFullpath = origPathname + '/%s.jpg' %(imgHash)
+    if 'format' in slide.keys():
+        origFullpath = origPathname + '/%s.%s' %(imgHash, slide['format'])
+    else:
+        origFullpath = origPathname + '/%s.jpg' %(imgHash)
     return origFullpath, directoryNumber
 
-# Save an image to disk
-# Directories are created based on the identifier that gets passed in
-# Each identifier object contains an 'imageNum' field that is a running tally of
-# all images that have the same identifier.  When we get to 30k images in a
-# directory (via integer division), we create a new directory and save images in there.
-def saveImage(image, filename, identifier, thing):
-    hash = _generateHash(filename, thing)
+def openImage(file):
+    """
+        The PIL.Image.open() function will also verify that the passed in file actually is an image.
+    """
+    try:
+        image = Image.open(file)
+        return image
+    except:
+        return False
 
+def generateHash(filename, thing):
+    s = '%s_%s_%f' %(filename, thing['urlCode'], time())
+    return md5(s).hexdigest()
+
+def saveImage(image, imageHash, identifier, subIdentifier, **kwargs):
+    """
+        Save an image to disk
+        Directories are created based on the identifier that gets passed in
+        Each identifier object contains an 'imageNum' field that is a running tally of
+        all images that have the same identifier.  When we get to 30k images in a
+        directory (via integer division), we create a new directory and save images in there.
+        
+        Inputs:
+            image           ->  The PIL.Image object
+            imageHash       ->  Obtained by calling generateHash()
+            identifier      ->  The general function of this image (e.g. 'avatar', 'background', 'slide', etc...)
+            subIdentifier   ->  The specific function of this image (e.g. 'thumbnail', 'orig', etc...)
+            
+        Optional:
+            thing           ->  A Thing object.  This needs to be passed in so that we can store the directory number in the Thing.
+                                Only needs to be passed in once...this 'should' be when we are saving the 'orig' subidentifier.
+            
+        Outputs:
+            If successful, returns the PIL.Image object.
+            If unsuccessful, returns False.
+    """
     i = getImageIdentifier(identifier)
     if not i:
         i = ImageIdentifier(identifier)
     
     i['numImages'] = unicode(int(i['numImages']) + 1)
+    commit(i)
     directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
-    
-    pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig')
-    savename = hash + '.jpg'
+    pathname = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, subIdentifier)
+    savename = imageHash + '.png'
     if not os.path.exists(pathname):
         os.makedirs(pathname)
     
     fullpath = os.path.join(pathname, savename)
-    thing['directoryNum'] = directoryNumber
-    commit(thing)
+    if 'thing' in kwargs:
+        thing = kwargs['thing']
+        thing['directoryNum'] = directoryNumber
+        directoryNumIdentifier = 'directoryNum_' + identifier
+        imageHashIdentifier = 'pictureHash_' + identifier
+        thing[directoryNumIdentifier] = directoryNumber
+        thing[imageHashIdentifier] = imageHash
+        commit(thing)
     
+    # Now convert and save
+    # only gif conversions seem to give trouble.
+    # tested formats:   tiff (lzw/packbits/no compression, alpha/no-alpha)
+    #                   jpeg
+    #                   png
+    #                   tga
+    #                   bmp
+    #                   gif
     try:
-        im = Image.open(image)
-        im.save(fullpath, "JPEG")
-        return hash
+        if image.format == 'GIF':
+            transparency = image.info['transparency']
+            image.save(fullpath, 'PNG', transparency=transparency)
+        else:
+            image.save(fullpath, 'PNG')
+        return image
     except:
-        log.error('Unable to save to %s with hash %s' % (fullpath, hash))
+        log.error('Unable to save to %s with hash %s' % (fullpath, imageHash))
         return False
-
-def _generateHash(filename, thing):
-    s = '%s_%s' %(filename, thing['urlCode'])
-    return md5(s).hexdigest()
     
 def makeSurveyThumbnail(filename, directory, x, y, postfix):
     """
