@@ -7,7 +7,8 @@ from pylons.controllers.util import abort, redirect
 from pylowiki.lib.base import BaseController, render
 
 from pylowiki.lib.db.page import get_all_pages
-from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID, getWorkshopByCode, getRecentMemberPosts
+from pylowiki.lib.db.workshop import getActiveWorkshops, searchWorkshops, getWorkshopByID, getWorkshopByCode
+from pylowiki.lib.db.activity import getRecentActivity
 from pylowiki.lib.db.survey import getActiveSurveys, getSurveyByID
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
@@ -33,7 +34,7 @@ class ActionlistController(BaseController):
         """Valid actions: edit, revision, delete, restore, sitemap """
         c.title = c.heading = c.workshopTitlebar = 'All Workshops'
         c.list = getActiveWorkshops()
-        c.activity = getRecentMemberPosts(10)
+        c.activity = getRecentActivity(10)
         c.scope = {'level':'earth', 'name':'all'}
         c.rssURL = "/activity/rss"
         return render('derived/6_main_listing.bootstrap')
@@ -82,7 +83,7 @@ class ActionlistController(BaseController):
         return render('/derived/list_surveys.bootstrap')
     
     def rss( self ):
-        c.activity = getRecentMemberPosts(30)
+        c.activity = getRecentActivity(30)
         feed = feedgenerator.Rss201rev2Feed(
             title=u"Civinomics Workshop Activity Feed",
             link=u"http://www.civinomics.com",

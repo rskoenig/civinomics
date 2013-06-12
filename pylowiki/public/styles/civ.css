@@ -1101,3 +1101,22 @@ li.thumbnail-gallery{
 .comment-data blockquote p{
     font-size:13px;
 }
+.notables-item{
+    margin-left: -10px;
+    margin-right:-10px;
+    margin-top:-5px;
+    margin-bottom:-5px;
+    padding-right:10px;
+    padding-bottom:10px;
+    padding-top:10px;
+    border-bottom: 1px gray solid;
+    border-top: 1px gray solid;
+}
+.notables-item:first-child{
+    border-top: none;
+    margin-top:-10px;
+}
+.notables-item:last-child{
+    border-bottom:none;
+    margin-bottom:-20px;
+}

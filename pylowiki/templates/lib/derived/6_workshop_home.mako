@@ -23,16 +23,22 @@
             <%
                 if person.objType == 'facilitator':
                     personTitle = 'Workshop Facilitator'
+                    personClass = 'facilitator'
                 else:
                     personTitle = person['title']
+                    personClass = 'listener'
             %>
-            <li class="media">
+            <li class="media ${personClass} notables-item">
                 ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
                 <div class="media-body">
                     <h4 class="media-heading">${lib_6.userLink(person, className="green green-hover")}</h4>
+                    % if personClass == 'listener':
+                        <p class="no-bottom"><small>(listener)</small></p>
+                    % endif
                     ${personTitle}
                 </div>
             </li>
+            
         % endfor
     </ul>
 </%def>
