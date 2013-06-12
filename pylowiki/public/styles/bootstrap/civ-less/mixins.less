@@ -1,0 +1,175 @@
+// Mixins
+// ------------
+// Remember to recompile ../civinomics.less
+// after you're done editing this file
+// ------------
+// All mixins should be placed into this file
+// and preferably namespaced to prevent clashes.
+
+#Headers {
+	.text() {
+		font-size: 10.8px;
+		line-height: 16px;
+		font-weight: normal;
+		text-transform: uppercase;
+		letter-spacing: .4em;		
+	}
+	.col-border() {
+		padding: 5px;
+		#Borders > .vert;
+	}
+	.main-border() {
+		position: relative;
+		.col-border;
+		#Borders > .horiz;
+		&:after { // slanted right border on big headers
+			content: url('civ-img/slash.png');
+			position: absolute;
+			right: -26px;
+			top: -1px;
+		}
+	}
+}
+
+// BOX MODEL
+
+#Padding {
+	.top(@p: @civ-padding) {padding-top: @p;}
+	.right(@p: @civ-padding) {padding-right: @p;}
+	.bottom(@p: @civ-padding) {padding-bottom: @p;}
+	.left(@p: @civ-padding) {padding-left: @p;}
+	.horiz(@p: @civ-padding) {
+		.left(@p);
+		.right(@p);
+	}
+	.vert(@p: @civ-padding) {
+		.top(@p);
+		.bottom(@p);
+	}
+	.not-top(@p: @civ-padding) {
+		.horiz(@p);
+		.bottom(@p);
+	}
+	.not-bottom(@p: @civ-padding) {
+		.horiz(@p);
+		.top(@p);
+	}
+	.not-right(@p: @civ-padding) {
+		.vert(@p);
+		.left(@p);
+	}
+	.not-left(@p: @civ-padding) {
+		.vert(@p);
+		.right(@p);
+	}
+	.top-right(@p: @civ-padding) {
+		.top(@p);
+		.right(@p);
+	}
+	.top-left(@p: @civ-padding) {
+		.top(@p);
+		.left(@p);
+	}
+	.bottom-right(@p: @civ-padding) {
+		.bottom(@p);
+		.right(@p);
+	}
+	.bottom-left(@p: @civ-padding) {
+		.bottom(@p);
+		.left(@p);
+	}
+}
+
+#Borders {	
+	.top(@border: @civ-border) {border-top: @border;}
+	.right(@border: @civ-border) {border-right: @border;}
+	.bottom(@border: @civ-border) {border-bottom: @border;}
+	.left(@border: @civ-border) {border-left: @border;}
+	.horiz(@border: @civ-border) {
+		.right;
+		.left;
+	}
+	.vert(@border: @civ-border) {
+		.top(@border);
+		.bottom(@border);
+	}
+	.not-top(@border: @civ-border) {
+		.horiz(@border);
+		.bottom(@border);
+	}
+	.not-bottom(@border: @civ-border) {
+		.horiz(@border);
+		.top(@border);
+	}
+	.not-right(@border: @civ-border) {
+		.vert(@border);
+		.left(@border);
+	}
+	.not-left(@border: @civ-border) {
+		.vert(@border);
+		.right(@border);
+	}
+	.top-right(@border: @civ-border) {
+		.top(@border);
+		.right(@border);
+	}
+	.top-left(@border: @civ-border) {
+		.top(@border);
+		.left(@border);
+	}
+	.bottom-right(@border: @civ-border) {
+		.bottom(@border);
+		.right(@border);
+	}
+	.bottom-left(@border: @civ-border) {
+		.bottom(@border);
+		.left(@border);
+	}
+}
+
+#Margins {
+	.top(@m: @civ-margin) {margin-top: @m;}
+	.right(@m: @civ-margin) {margin-right: @m;}
+	.bottom(@m: @civ-margin) {margin-bottom: @m;}
+	.left(@m: @civ-margin) {margin-left: @m;}
+	.horiz(@m: @civ-margin) {
+		.left(@m);
+		.right(@m);
+	}
+	.vert(@m: @civ-margin) {
+		.top(@m);
+		.bottom(@m);
+	}
+	.not-top(@m: @civ-margin) {
+		.horiz(@m);
+		.bottom(@m);
+	}
+	.not-right(@m: @civ-margin) {
+		.vert(@m);
+		.left(@m);
+	}
+	.not-bottom(@m: @civ-margin) {
+		.horiz(@m);
+		.top(@m);
+	}
+	.not-left(@m: @civ-margin) {
+		.vert(@m);
+		.right(@m);
+	}
+	.top-right(@m: @civ-margin) {
+		.top(@m);
+		.right(@m);
+	}
+	.top-left(@m: @civ-margin) {
+		.top(@m);
+		.left(@m);
+	}
+	.bottom-right(@m: @civ-margin) {
+		.bottom(@m);
+		.right(@m);
+	}
+	.bottom-left(@m: @civ-margin) {
+		.bottom(@m);
+		.left(@m);
+	}
+}
