@@ -238,7 +238,7 @@
     <!-- 
     
     -->
-    <li id="fbLoginButton"><fb:login-button show-faces="false" width="200" max-rows="1"></fb:login-button></li>
+    <li id="fbLoginButton"><fb:login-button show-faces="false" width="200" max-rows="1" scope="user_location, user_hometown, read_stream, publish_stream, email"></fb:login-button></li>
     <!--
     <button id="fbLogin" name="createPersonal" class="btn btn-warning">FB Login</button>
     -->

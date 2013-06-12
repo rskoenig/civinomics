@@ -60,7 +60,7 @@ class LoginController(BaseController):
         # this receives an email from the fb javascript auth checker, figures out what to do
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
-        email, access, expires, signed, userid = id1.split("&")
+        name, email, access, expires, signed, userid = id1.split("&")
         #info = id1.split("&")
         #for inf in info:
         #    log.info("in login controller: %s" % inf)
@@ -90,39 +90,21 @@ class LoginController(BaseController):
         if user:
             #- fb checker finds I'm logged in and auth'd
             #    - civ finds there's already a linked account
-            #        * present login button that will log me in
-            #            - do I save the access token? the code? the email in session?
-            #                - however it is standard to work with fb when logged in
-            # try using the access token and our ap token with an ajax roundy for the next button
-            # signal - this will be a server-side way to check if the user's still cool with us/fb
-            # GET graph.facebook.com/debug_token?
-            #       input_token={token-to-inspect}
-            #       &access_token={app-token-or-admin-token}
-            # return a button to be created on the page that will simply log the user in
-            # code example for what next button will execute after pinging fb with above code:
-            #  loginURL = LoginController.logUserIn(self, user, fbLogin=True)
-            #log.info("adding accessToken to session['fbAccessToken']: %s"%access)
             session['fbAccessToken'] = access
             session['fbEmail'] = email
             session.save()
             newButton = '<li><a href="/fbLogin">Login with Facebook</a></li>'
-            return newButton
-            # if so, is it linked to an fb account by this email yet?
-            # ! seeIfUserFbAuth
-            
-            # ! here is where I either tap into the normal login flow, or 
-            # tap into the signup/registration/activation flow
-
-            # will need to figure out if I have ot do anything to pass along the 'afterLoginURL'
-            # - just look at how people can land on the site from invites, and press this fb login
-            # button instead of pressing the normal signup or login link.
-
-            #if so, log in
-            # ! go look at how the login controller logs you in
-            # likely a redirect to the workshop page
-        # from geo fx
-        #return json.dumps({'statusCode':statusCode, 'cityTitle':cityTitle, 'cityURL':cityURL, 'stateTitle':stateTitle, 'stateURL':stateURL, 'countryTitle':countryTitle, 'countryURL':countryURL})
+            return newButton            
         else:
+            # load session with the info we need to create an account for this user if they decide
+            # to 'log in with facebook'
+            session['fbName'] = name
+            session['fbEmail'] = email
+            session['fbAccessToken'] = access
+            #session['fbPostalCode'] # look up a postal code based on the city they're in
+            session['fbCountry'] = 'United States'
+            session['fbMemberType'] = 'professional'
+            session['fbCheckTOS'] = True
             #- civ finds there's not yet an account or it is not yet linked
             #* present login button that prompts:
             #    - do you have an account on civinomics already? enter the email/password you use for this account, and we'll link it to your facebook info so you can login with this button in one click next time.
@@ -152,9 +134,11 @@ class LoginController(BaseController):
             # if this user is auth'd
             return render("/derived/fbLoggingIn.bootstrap")
             #LoginController.logUserIn(self, user)
-        #else:
-            #log.warning("incorrect facebook login credentials")
-            #splashMsg['content'] = 'incorrect facebook login credentials'
+        else:
+            # unexpected - this user's account does not already exist - render a
+            # page made just for signing this person up by asking facebook one more time
+            # if this user is auth'd and there is no account
+            return render("/derived/fbSigningUp.bootstrap")
         
     def fbLoggingIn(self):
         # this page has already confirmed we're authd and logged in, just need to 
