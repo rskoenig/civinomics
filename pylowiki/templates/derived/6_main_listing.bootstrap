@@ -12,12 +12,22 @@
         %>
    </div><!--/.span12-->
 </div><!-- /.row-->
-<div class="row">
+<div class="row" ng-controller="workshopController">
    <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
          <div class="browse">
             <h3 class="section-header"> ${c.workshopTitlebar} </h3>
             <div class="row-fluid"><!--navigation row-->
+                <div class="alert alert-success centered" ng-hide="'{workshops.length === 0}'" ng-cloak>
+                    <p>Be the first to add a public workshop here!</p>
+                    <a class="btn btn-success" href="/workshop/display/create/form">Let's do it!</a>
+                </div>
+                <ul class="thumbnails" ng-cloak>
+                    <li ng-repeat="workshop in workshops">
+                        <p> {{workshop.title}} </p>
+                    </li>
+                </ul>
+                <%doc>
                 % if len(c.list) != 0:
                     <ul class="thumbnails">
                         % for item in c.list:
@@ -30,6 +40,7 @@
                         <a class="btn btn-success" href="/workshop/display/create/form">Let's do it!</a>
                     </div>
                 % endif
+                </%doc>
             </div><!--/navigation row-->
          </div><!--/.browse-->
       </div><!--/.section-wrapper-->
@@ -38,6 +49,10 @@
       <div class="section-wrapper">
          <div class="activity">
             <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
+            <div class="alert alert-info centered" ng-hide="'{activity.length === 0}'" ng-cloak>
+                Oops, there doesn't seem to be any activity here...yet.
+            </div>
+            <%doc>
             % if len(c.activity) != 0:
             <% 
                numItems = 10
@@ -50,6 +65,7 @@
             % else:
                 <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
             % endif
+            </%doc>
          </div>
       </div>
    </div> <!-- /Activity Stream -->
@@ -68,6 +84,7 @@
    });
    </script>
    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+   <script src="${lib_6.fingerprintFile('/js/ng/workshop_listing.js')}" type="text/javascript"></script>
    <script type="text/javascript">
         $(document).ready(function() {
             $('.expandable').expander({

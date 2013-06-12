@@ -10,12 +10,15 @@ log = logging.getLogger(__name__)
 
 # Getters
 # Who is following the workshop
-def getWorkshopFollowers( workshop, disabled = '0'):
+def getWorkshopFollowers( workshop, disabled = '0', count = False):
     try:
-        return meta.Session.query(Thing)\
+        query = meta.Session.query(Thing)\
             .filter_by(objType = 'follow')\
             .filter(Thing.data.any(wc('disabled', disabled)))\
-            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode']))).all()
+            .filter(Thing.data.any(wc('workshopCode', workshop['urlCode'])))
+        if count:
+            return query.count()
+        return query.all()
     except:
         return False
 

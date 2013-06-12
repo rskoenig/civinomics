@@ -31,7 +31,13 @@ def make_map():
     map.connect('/{systemAdmin:systemAdmin/?}', controller = 'systemAdmin', action = 'index')
     map.connect('/systemAdmin/{handler:handler/?}', controller = 'systemAdmin', action = 'handler')
     map.connect('/admin/show/{objectType}{end:s/?}', controller = 'admin')
-    
+
+    #####################
+    # Workshop listings #
+    #####################
+    map.connect('/workshops/get{end:/?}', controller="actionlist", action = 'getWorkshops')
+    map.connect('/workshops/activity/get{end:/?}', controller="actionlist", action = 'getActivity')
+
     ########################################################################################################
     # 
     # Corporate routes
@@ -62,7 +68,6 @@ def make_map():
     map.connect('/moderation/{id1}/{id2}', controller = 'moderation', action = 'index', id1 = '{id1}', id2 = '{id2}')
     map.connect('/rating', controller = 'rating', action = 'index')
     map.connect('/admin', controller = 'admin', action = 'index')
-    #map.connect('/suggestion/rate', controller = 'suggestion', action = 'rate')
     map.connect('/slideshow/edit', controller = 'slideshow', action = 'edit')
 
     # Geo stuff
@@ -225,7 +230,7 @@ def make_map():
     # Online Survey specific routes
     # 
     ########################################################################################################
-
+    """
     # Surveys
     map.connect('/{survey:surveys?}/{id1}/{id2}/page/{id3}{end:/?}', controller = 'survey', action = 'display', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
     map.connect('/{showSurveys:showSurveys/?}', controller = 'survey', action = 'showSurveys')
@@ -259,6 +264,7 @@ def make_map():
     map.connect('/survey/submit/slider/{id1}/{id2}/{id3}/{id4}{end:/?}', controller = 'survey', action = 'submitSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/survey/submit/multiSlider/{id1}/{id2}/{id3}/{id4}{end:/?}', controller = 'survey', action = 'submitMultiSlider', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}', id4 = '{id4}')
     map.connect('/survey/submit/itemRank/{id1}/{id2}/page/{id3}{end:/?}', controller = 'survey', action = 'submitItemRank', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    """
     
     ########################################################################################################
     # 
@@ -283,7 +289,6 @@ def make_map():
     # User profile
     map.connect('/profile/{id1}/{id2}{end:/?}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '')
     map.connect('/profile/{id1}/{id2}/revision/{id3}{end:/?}', controller = 'profile', action = 'showUserPage', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
-    #map.connect('/profile/{id1}/{id2}/{suggestions:suggestions/?}', controller = 'profile', action = 'showUserSuggestions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{resources:resources/?}', controller = 'profile', action = 'showUserResources', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{discussions:discussions/?}', controller = 'profile', action = 'showUserDiscussions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{ideas:ideas/?}', controller = 'profile', action = 'showUserIdeas', id1 = '{id1}', id2 = '{id2}')
@@ -291,8 +296,6 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/{comments:comments/?}', controller = 'profile', action = 'showUserComments', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{followers:followers/?}', controller = 'profile', action = 'showUserFollowers', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{following:following/?}', controller = 'profile', action = 'showUserFollows', id1 = '{id1}', id2 = '{id2}')
-    #map.connect('/profile/{id1}/{id2}/stats.json', controller = 'profile', action = 'stats', id1 = '{id1}', id2 = '{id2}')
-    #map.connect('/profile/{id1}/{id2}/stats.csv', controller = 'profile', action = 'statsCSV', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{code}/{id2}/follow/{handler:handler/?}', controller = 'follow', action = 'followHandler', code = '{code}')
     map.connect('/profile/{id1}/{id2}/enable/{handler:handler/?}', controller = 'profile', action = 'enableHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/privs/{handler:handler/?}', controller = 'profile', action = 'privsHandler', id1 = '{id1}', id2 = '{id2}')
