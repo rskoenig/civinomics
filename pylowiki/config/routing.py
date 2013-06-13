@@ -49,6 +49,7 @@ def make_map():
     map.connect('/corp/caseStudies/{id}', controller = 'corp', action = 'displayCaseStudy', id = '{id}')
     map.connect('/corp/caseStudies', controller = 'corp', action = 'caseStudies')
     map.connect('/corp/polling', controller = 'corp', action = 'polling')
+    map.connect('/corp/blog', controller = 'corp', action = 'blog')
 
     ########################################################################################################
     # 

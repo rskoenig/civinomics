@@ -1,0 +1,11 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+
+<%def name="display_body_right_content()">
+    <div class="row-fluid" ng-controller="blogController">
+        <h1>{{blog.name}}</h1>
+    </div>
+</%def>
+
+<%def name="extraScripts2()">
+    <script type="text/javascript" src="/js/ng/corp_blog.js"></script>
+</%def>

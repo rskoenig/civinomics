@@ -21,6 +21,10 @@ class CorpController(BaseController):
         c.pagetype="about" 
         return render('/derived/corp_about.bootstrap')
 
+    def blog(self):
+        c.title = c.pagetype = 'Blog'
+        return render('/derived/corp_blog.bootstrap')
+
     def caseStudies(self):
         c.pagetype="caseStudies"  
         c.title="Case Studies"
