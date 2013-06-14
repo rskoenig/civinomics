@@ -440,7 +440,7 @@
 
 <%def name="outOfScope()">
     <%
-        scopeName = c.scope['level']
+        scopeName = c.scope['level'].title()
 
         # More mapping for the postal code, this time to display Postal Code instead of just Postal.
         # The real fix for this is through use of message catalogs, which we will need to implement
@@ -454,10 +454,9 @@
                         .replace('-', ' ')\
                         .title()
     %>
-    <div class="alert alert-info span6 offset3">
-        <button type="button" class="close" data-dismiss="alert">x</button>
-        This page is scoped for the ${scopeName}
-    </div>
+    <ul class="nav nav-pills pull-left geo-breadcrumbs">
+      <li class="active"><a href="#">${scopeName}</a></li>
+    </ul>
 </%def>
 
 <%def name="userGeoLink(user, **kwargs)">

@@ -168,20 +168,62 @@
    </div>
 </%def>
 
-<%def name="slideshow(w)">
+<%def name="slideshow(w, size)">
    <% 
       slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
       slideNum = 0
    %>
-   <ul class="gallery thumbnails" data-clearing>
+   <div class="span8">
+     <ul class="gallery thumbnails no-bottom" data-clearing>
+        <% 
+           numSlides = len(slides)
+
+           for slide in slides:
+              if slide['deleted'] != '1':
+                if size == 'large':
+                  _slideLarge(slide, slideNum)
+                  if slideNum == 0:
+                    slideCaption = slide['title']
+                else:
+                  _slide(slide, slideNum, numSlides)
+                slideNum += 1
+        %>
+
+     </ul>
+   </div>
+   % if size == 'large':
+     <div class="span4">
+        <p style="color: #FFF; padding-top: 15px;"><i class="icon-play-circle icon-white"></i><strong> Slideshow (1 of ${slideNum})</strong><br> 
+        <br><small>${lib_6.ellipsisIZE(slideCaption, 214)}</small><br></p>
+     </div>
+   % endif
+   
+</%def>
+
+<%def name="_slideLarge(showSlide, slideNum)">
       <% 
-         numSlides = len(slides)
-         for slide in slides:
-            if slide['deleted'] != '1':
-               _slide(slide, slideNum, numSlides)
-               slideNum += 1
-      %>
-   </ul>
+        if slideNum == 0:
+          spanX = "span12"
+        else:
+          spanX = "noShow"
+     %>
+
+      <li class="${spanX} no-bottom">
+
+          % if showSlide['pictureHash'] == 'supDawg':
+            <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
+              <div style="width:100%; height:240px; background-image:url('/images/slide/slideshow/${showSlide['pictureHash']}.slideshow'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
+            </a>
+          % else:
+            <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.png">
+              <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+              <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.png" data-caption="${showSlide['title']}"/>
+              <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+              <div style="width:100%; height:240px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.png'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
+            </a>
+          % endif
+      </li>
+
 </%def>
 
 <%def name="_slide(slide, slideNum, numSlides)">
@@ -219,6 +261,7 @@
    </li>
 </%def>
 
+
 <%def name="showInfo(workshop)">
     <div>
     % if c.information and 'data' in c.information:
@@ -249,7 +292,7 @@
     <% 
         if c.tags:
             tagList = []
-            tagString = "Tags: "
+            tagString = ""
             for tag in c.tags:
                 tagList.append(tag['title'])
             

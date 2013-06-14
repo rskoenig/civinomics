@@ -60,6 +60,15 @@ html,body{
     margin-top:10%;
     margin-left:35%;
 }
+
+.tagList{
+  margin-top: 2px;
+  margin-bottom: 2px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 14px;
+}
+
 .workshop-tag{
     margin-left:5px;
 }
@@ -225,6 +234,21 @@ form.addGoal{
 .section-wrapper .activity {
   padding: 10px;
 }
+
+.section-wrapper.slideshow{
+  background-color:#000; 
+  padding-bottom: 0px; 
+  position: relative;
+}
+
+.carousel{
+  margin-bottom: 0;
+}
+
+.thumbnails > li.no-bottom {
+  margin-bottom: 0;
+}
+
 ul.activity{
     list-style-type: none;
     margin:0;
@@ -728,6 +752,22 @@ ul.listeners > li {
 
 .geoLink, .geoLink:hover{
    color: #075D00;
+}
+
+.mainGeo > .nav.nav-pills.pull-left.geo-breadcrumbs > li{
+    display: none;
+}
+
+.mainGeo > .nav.nav-pills.pull-left.geo-breadcrumbs > li > span.divider{
+    display: none;
+}
+
+.mainGeo > .nav.nav-pills.pull-left.geo-breadcrumbs > li.active {
+    display: inline;
+}
+
+.mainGeo > .alert {
+    display: inline;
 }
 
 .listed-item-title{

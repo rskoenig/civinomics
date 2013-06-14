@@ -4,21 +4,18 @@
 
 <div class="row-fluid">
    <div class="span8">
+      <div class="section-wrapper slideshow">
+        <div id="workshopSlideshow">
+          <div>
+            ${helpers.slideshow(c.w, 'large')}
+          </div>
+        </div>
+      </div> <!-- /.section-wrapper -->
+
       <div class="section-wrapper" id="workshopInformation">
          <div class="browse">
             <h4 class="section-header smaller"> Information </h4>
-               <div class="gallery-wrapper" id="workshopSlideshow">
-                  <div>
-                  ${helpers.slideshow(c.w)}
-                  </div>
-                  <div>
-                     <strong><small>Click image(s) above for slideshow</small></strong>
-                  </div>
-               </div>
-               <div>
-                  ${helpers.showTags()}
-                  ${helpers.showInfo(c.w)}
-               </div>
+              ${helpers.showInfo(c.w)}
          </div> <!-- /.browse -->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span8 -->
@@ -29,6 +26,23 @@
             Goals
             </h4> 
             ${helpers.showGoals(c.goals)}
+            <h4 class="section-header smaller section-header-inner">
+            Tags
+            </h4>
+            <span class="mainGeo" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
+              <%
+                  if c.w['public_private'] == 'public':
+                      outOfScope = lib_6.geoBreadcrumbs()
+              %>
+            </span><!-- /geographic breadcrumbs -->
+            <%
+              if c.w['public_private'] == 'public':
+                  if outOfScope:
+                      lib_6.outOfScope()
+            %>
+            <br>
+            <br>
+            ${helpers.showTags()}
             ${helpers.whoListening()}
             ${helpers.showActivity(c.activity)}
          </div> <!--/.browse-->
