@@ -60,10 +60,12 @@ class LoginController(BaseController):
         # this receives an email from the fb javascript auth checker, figures out what to do
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
-        name, email, access, expires, signed, userid = id1.split("&")
+        location, name, email, access, expires, signed, userid = id1.split("&")
         #info = id1.split("&")
         #for inf in info:
         #    log.info("in login controller: %s" % inf)
+        log.info("in login controller email: %s" % location)
+        log.info("in login controller email: %s" % name)
         log.info("in login controller email: %s" % email)
         log.info("in login controller access: %s" % access)
         log.info("in login controller expires: %s" % expires)
@@ -101,10 +103,12 @@ class LoginController(BaseController):
             session['fbName'] = name
             session['fbEmail'] = email
             session['fbAccessToken'] = access
+            session['fbLocation'] = location
             #session['fbPostalCode'] # look up a postal code based on the city they're in
             session['fbCountry'] = 'United States'
             session['fbMemberType'] = 'professional'
             session['fbCheckTOS'] = True
+            session.save()
             #- civ finds there's not yet an account or it is not yet linked
             #* present login button that prompts:
             #    - do you have an account on civinomics already? enter the email/password you use for this account, and we'll link it to your facebook info so you can login with this button in one click next time.

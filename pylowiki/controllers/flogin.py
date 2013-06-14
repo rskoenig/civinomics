@@ -20,6 +20,10 @@ import simplejson as json
 
 log = logging.getLogger(__name__)
 
+def getPostalFromFacebookLocation(location):
+    # need to take a string like "Santa Cruz, California" and get a postal code out of it
+    return '95060'
+
 def getFcbkPermissions():
     return 'email'
 
