@@ -160,6 +160,9 @@ def make_map():
     map.connect('/{noteSuggestionHandler:noteSuggestionHandler/?}', controller = 'suggestion', action = 'noteSuggestionHandler')
     """
     
+    # info
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{info:info?/?}', controller = 'workshop', action = 'info', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
+
     # resources
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{resources:resources?/?}', controller = 'resource', action = 'listing') 
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/add/{resource:resource/?}', controller = 'resource', action = 'addResource') 

@@ -107,13 +107,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'displayAllResources']
+        scoped = ['display', 'info', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -903,7 +903,49 @@ class WorkshopController(BaseController):
 
         
         return render('/derived/6_workshop_home.bootstrap')
+
+
+    def info(self, workshopCode, workshopURL):
+        c.title = c.w['title']
+
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
+              
+        c.slides = []
+        c.slideshow = slideshowLib.getSlideshow(c.w)
+        slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
+        for id in slide_ids:
+            s = slideLib.getSlide(id) # Don't grab deleted slides
+            if s:
+                c.slides.append(s)
+
+        c.motd = motdLib.getMessage(c.w.id)
+        # kludge for now
+        if c.motd == False:
+           c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+
+        c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+        c.information = pageLib.getInformation(c.w)
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        if c.w['public_private'] == 'public':
+            c.scope = geoInfoLib.getPublicScope(c.w)
+        c.goals = goalLib.getGoalsForWorkshop(c.w)
+        if not c.goals:
+            c.goals = []
+        
+        # Demo workshop status
+        c.demo = workshopLib.isDemo(c.w)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
+        c.adminPanel = False
+
+        c.listingType = 'info'
+
+        
+        return render('/derived/6_workshop_info.bootstrap')
    
+
     def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)
         if testGoals and c.w['description'] and c.w['description'] != '':

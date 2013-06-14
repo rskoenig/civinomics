@@ -5,46 +5,25 @@
 
 <div class="row-fluid">
    <div class="span8">
-      <div class="section-wrapper slideshow">
-        <div id="workshopSlideshow">
+      <div class="section-wrapper">
+        <div class="browse">
           <div>
-            ${helpers.slideshow(c.w, 'large')}
+            <h4 class="section-header smaller">
+            Background
+            </h4>
+            ${helpers.showInfo(c.w)}
           </div>
         </div>
       </div> <!-- /.section-wrapper -->
-
-      <div class="section-wrapper">
-          <div class="browse">
-             <h4 class="section-header smaller"> Vote ${lib_6.createNew(c.listingType, 'small')}</h4>
-             ${listingHelpers.showListing(c.listingType)}
-          </div><!--/.browse-->
-      </div><!--/.section-wrapper-->
 
    </div> <!-- /.span8 -->
    <div class="span4">
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 
-            Goals
+            Images
             </h4> 
-            ${helpers.showGoals(c.goals)}
-            <h4 class="section-header smaller section-header-inner">
-            Tags
-            </h4>
-            <span class="mainGeo" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
-              <%
-                  if c.w['public_private'] == 'public':
-                      outOfScope = lib_6.geoBreadcrumbs(mainGeo)
-              %>
-            </span><!-- /geographic breadcrumbs -->
-            <%
-              if c.w['public_private'] == 'public':
-                  if outOfScope:
-                      lib_6.outOfScope()
-            %>
-            ${helpers.showTags()}
-            ${helpers.whoListening()}
-            ${helpers.showActivity(c.activity)}
+            ${helpers.slideshow(c.w, 'listing')}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->

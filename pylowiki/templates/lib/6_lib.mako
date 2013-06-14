@@ -128,7 +128,10 @@
             printStr += 'Add a resource'
         printStr += '</a>'
       else:
-        printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right btn btn-large btn-success" type="button" id="addButton">Login to Participate</a>'
+        if 'small' in args:
+          printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right right-space btn btn-small btn-civ" type="button" id="addButton">Login to Participate</a>'
+        else: 
+          printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right btn btn-large btn-civ" type="button" id="addButton">Login to Participate</a>'
 
    %>
    ${printStr | n}
@@ -396,7 +399,7 @@
    %>
 </%def>
 
-<%def name="geoBreadcrumbs()">
+<%def name="geoBreadcrumbs(*args)">
     <%
         outOfScope = False
         if 'user' in session:
@@ -438,6 +441,10 @@
                 </li>
             % endfor
         </ul>
+        % if mainGeo in args:
+          <br>
+          <br>
+        % endif
     % endif
     <% 
         return outOfScope
@@ -463,6 +470,8 @@
     <ul class="nav nav-pills pull-left geo-breadcrumbs">
       <li class="active"><a href="#">${scopeName}</a></li>
     </ul>
+    <br>
+    <br>
 </%def>
 
 <%def name="userGeoLink(user, **kwargs)">

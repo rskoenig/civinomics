@@ -105,17 +105,28 @@
    <%
       imageMap = {'discussion':'/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png',
                   'idea':'/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png',
-                  'resource':'/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png'}
-      titleMap = {'discussion':' Talk',
+                  'resource':'/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png',
+                  'home':'/images/glyphicons_pro/glyphicons/png/glyphicons_020_home.png',
+                  'info':'/images/glyphicons_pro/glyphicons/png/glyphicons_318_more_items.png'}
+      titleMap = {'discussion':' Forum',
                   'idea':' Vote',
-                  'resource':' Learn'}
-      linkHref = lib_6.workshopLink(workshop, embed = True, raw = True) + '/' + objType
+                  'resource':' Links',
+                  'home':' Home',
+                  'info':' Info'}
+
+      linkHref = lib_6.workshopLink(workshop, embed = True, raw = True)
+      if objType != 'home':
+        linkHref += '/' + objType
       linkClass = 'btn workshopNav'
       if active:
          linkClass += ' selected-nav'
       linkID = objType + 'Button'
    %>
-   <a class="${linkClass}" id="${linkID}" href = "${linkHref | n}"> <img class="workshop-nav-icon" src="${imageMap[objType] | n}">${titleMap[objType]} (${count})</a>
+   <a class="${linkClass}" id="${linkID}" href = "${linkHref | n}"> <img class="workshop-nav-icon" src="${imageMap[objType] | n}">${titleMap[objType]} 
+   % if objType != 'info':
+      (${count})
+   % endif
+    </a>
 </%def>
 
 <%def name="workshopNav(w, listingType)">
@@ -148,22 +159,30 @@
    %>
    <div class="btn-group four-up">
    <% 
-      if listingType == None:
+      if listingType == 'info':
+         workshopNavButton(w, ideaCount, 'home')
+         workshopNavButton(w, 0, 'info', active = True)
          workshopNavButton(w, resourceCount, 'resource')
          workshopNavButton(w, discussionCount, 'discussion')
-         workshopNavButton(w, ideaCount, 'idea')
+         #workshopNavButton(w, ideaCount, 'idea')
       elif listingType == 'discussion':
+         workshopNavButton(w, ideaCount, 'home')
+         workshopNavButton(w, 0, 'info')
          workshopNavButton(w, resourceCount, 'resource')
          workshopNavButton(w, discussionCount, 'discussion', active = True)
-         workshopNavButton(w, ideaCount, 'idea')
+         #workshopNavButton(w, ideaCount, 'idea')
       elif listingType == 'ideas' or listingType == 'idea':
+         workshopNavButton(w, ideaCount, 'home', active = True)
+         workshopNavButton(w, 0, 'info')
          workshopNavButton(w, resourceCount, 'resource')
          workshopNavButton(w, discussionCount, 'discussion')
-         workshopNavButton(w, ideaCount, 'idea', active = True)
+         #workshopNavButton(w, ideaCount, 'idea', active = True)
       elif listingType == 'resources' or listingType == 'resource':
+         workshopNavButton(w, ideaCount, 'home')
+         workshopNavButton(w, 0, 'info')
          workshopNavButton(w, resourceCount, 'resource', active = True)
          workshopNavButton(w, discussionCount, 'discussion')
-         workshopNavButton(w, ideaCount, 'idea')
+         #workshopNavButton(w, ideaCount, 'idea')
    %>
    </div>
 </%def>
@@ -172,8 +191,13 @@
    <% 
       slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
       slideNum = 0
+
+      if 'large' in args:
+        spanX = "span8"
+      else:
+        spanX = "span12"
    %>
-   <div class="span8">
+   <div class="${spanX}">
      <ul class="gallery thumbnails no-bottom" data-clearing>
         <% 
            numSlides = len(slides)
@@ -184,6 +208,8 @@
                   _slideLarge(slide, slideNum)
                   if slideNum == 0:
                     slideCaption = slide['title']
+                elif 'listing' in args:
+                  _slideListing(slide, slideNum, numSlides)
                 else:
                   _slide(slide, slideNum, numSlides)
                 slideNum += 1
@@ -259,6 +285,24 @@
          <small class="centered">${slide['title']}</small>
       % endif
    </li>
+</%def>
+
+<%def name="_slideListing(slide, slideNum, numSlides)">
+  <li class="span4 slideListing">
+    % if slide['pictureHash'] == 'supDawg':
+       <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
+          <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
+       </a>
+    % elif 'format' in slide.keys():
+       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
+          <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}" data-caption="${slide['title']}"/>
+       </a>
+    % else:
+       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
+          <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
+       </a>
+    % endif
+  </li>
 </%def>
 
 
