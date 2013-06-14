@@ -168,7 +168,7 @@
    </div>
 </%def>
 
-<%def name="slideshow(w, size)">
+<%def name="slideshow(w, *args)">
    <% 
       slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
       slideNum = 0
@@ -180,7 +180,7 @@
 
            for slide in slides:
               if slide['deleted'] != '1':
-                if size == 'large':
+                if 'large' in args:
                   _slideLarge(slide, slideNum)
                   if slideNum == 0:
                     slideCaption = slide['title']
@@ -191,7 +191,7 @@
 
      </ul>
    </div>
-   % if size == 'large':
+   % if 'large' in args:
      <div class="span4">
         <p style="color: #FFF; padding-top: 15px;"><i class="icon-play-circle icon-white"></i><strong> Slideshow (1 of ${slideNum})</strong><br> 
         <br><small>${lib_6.ellipsisIZE(slideCaption, 214)}</small><br></p>

@@ -1118,3 +1118,7 @@ li.thumbnail-gallery{
     font-size: 20px;
     line-height: 20px;
 }
+
+.right-space{
+  margin-right: 4px;
+}

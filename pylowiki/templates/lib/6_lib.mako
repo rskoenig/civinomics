@@ -93,7 +93,7 @@
    %>
 </%def>
 
-<%def name="createNew(thing)">
+<%def name="createNew(thing, *args)">
    <%
       if isReadOnly():
          readOnlyMessage(thing)
@@ -113,11 +113,17 @@
             printStr += 'resource" title="Click to add a resource to this workshop"'
         elif thing == 'ideas':
             printStr += 'idea" title="Click to add an idea to this workshop"'
-        printStr += ' class="pull-right btn btn-large btn-success" type="button">'
+        if 'small' in args:
+          printStr += ' class="pull-right btn btn-small btn-civ right-space" type="button">'
+        else:  
+          printStr += ' class="pull-right btn btn-large btn-civ" type="button">'
         if thing == 'discussion':
             printStr += 'Add a conversation'
         elif thing == 'ideas':
-            printStr += 'Add an idea'
+            if 'small' in args:
+              printStr += '<i class="icon-white icon-plus"></i> Idea'
+            else:
+              printStr += 'Add an idea'
         elif thing == 'resources':
             printStr += 'Add a resource'
         printStr += '</a>'

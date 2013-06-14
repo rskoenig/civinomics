@@ -890,6 +890,17 @@ class WorkshopController(BaseController):
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = False
+
+        ideas = ideaLib.getIdeasInWorkshop(workshopCode)
+        if not ideas:
+            c.ideas = []
+        else:
+            c.ideas = sort.sortBinaryByTopPop(ideas)
+        disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
+        if disabled:
+            c.ideas = c.ideas + disabled
+        c.listingType = 'ideas'
+
         
         return render('/derived/6_workshop_home.bootstrap')
    

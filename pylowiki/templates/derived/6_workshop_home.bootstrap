@@ -1,6 +1,7 @@
 <%inherit file="/base/base_workshop.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+<%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
 
 <div class="row-fluid">
    <div class="span8">
@@ -12,12 +13,13 @@
         </div>
       </div> <!-- /.section-wrapper -->
 
-      <div class="section-wrapper" id="workshopInformation">
-         <div class="browse">
-            <h4 class="section-header smaller"> Information </h4>
-              ${helpers.showInfo(c.w)}
-         </div> <!-- /.browse -->
-      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper">
+          <div class="browse">
+             <h4 class="section-header smaller"> Vote ${lib_6.createNew(c.listingType, 'small')}</h4>
+             ${listingHelpers.showListing(c.listingType)}
+          </div><!--/.browse-->
+      </div><!--/.section-wrapper-->
+
    </div> <!-- /.span8 -->
    <div class="span4">
       <div class="section-wrapper overview">
