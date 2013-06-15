@@ -190,7 +190,7 @@
                  // it's found there's no matching account. if this link is pressed this process
                  // will activate again, but this time an account will be created, activated and 
                  // the user will be logged in
-                 var newAccountHtml = '<li><a href="/fbSignupActivateLogin">Login with Facebook and agree to our terms</a></li>';
+                 var newAccountHtml = '<li><a href="/fbSigningUp">Login with Facebook and agree to our terms</a></li>';
                  $('#fbLoginButton').html(newAccountHtml);
                }
              } else {

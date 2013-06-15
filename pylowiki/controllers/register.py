@@ -75,6 +75,14 @@ class RegisterController(BaseController):
             # if this user is auth'd and there is no account
             return render("/derived/fbSigningUp.bootstrap")
 
+    def generatePassword(*length):
+        """Return a system generated hash for randomization of user params"""
+        from string import letters, digits
+        from random import choice
+        pool, size = letters + digits, length or 10
+        hash =  ''.join([choice(pool) for i in range(size)])
+        return hash.lower()
+
     def fbSigningUp( self ):
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
@@ -187,6 +195,8 @@ class RegisterController(BaseController):
             username = name
             if getUserByEmail( email ) == False:
                 # NOTE - generate password here.
+                #password = RegisterController.generatePassword()
+                password = 'awesomepass18'
                 u = User(email, name, password, country, memberType, postalCode)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True
@@ -196,7 +206,7 @@ class RegisterController(BaseController):
                 log.info( message )
                 splashMsg['type'] = 'success'
                 splashMsg['title'] = 'Success'
-                splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
+                splashMsg['content'] = "You now have an identity to use on our site."
                 session['splashMsg'] = splashMsg
                 session.save()
                 # if they are a guest signing up, activate and log them in
@@ -224,17 +234,37 @@ class RegisterController(BaseController):
                     if c.listingType:
                         returnPage += "/add/" + c.listingType
                     return redirect(returnPage)
-
                 else:
-                    splashMsg['content'] = "The password and confirmation do not match"
-                    session['splashMsg'] = splashMsg
-                    session.save() 
+                    # not a guest, just a new faceboook signup. activate and login
+                    user = u.u
+                    if 'laston' in user:
+                        t = time.localtime(float(user['laston']))
+                        user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                        
+                    user['laston'] = time.time()
+                    user['activated'] = u'1'
+                    loginTime = time.localtime(float(user['laston']))
+                    loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                    commit(user)
+                    session["user"] = user['name']
+                    session["userCode"] = user['urlCode']
+                    session["userURL"] = user['url']
+                    session.save()
+                    log.info('session of user: %s' % session['user'])
+                    log.info('%s logged in %s' % (user['name'], loginTime))
+                    c.authuser = user
+                    
+                    log.info( "Successful facebook signup with email - " + email )
+                    returnPage = "/"
+                    return redirect(returnPage)
             else:
-                splashMsg['content'] = "The email '" + email + "' is already in use"
+                # NOTE this is a case where a user on site has now tried logging in with
+                # the facebook button. This should be caught in controllers/login.fbAuthCheckEmail
+                splashMsg['content'] = "You should have been logged in already"
                 session['splashMsg'] = splashMsg
                 session.save() 
         else:
-            splashMsg['content'] = "Please fill all fields"
+            splashMsg['content'] = "Some required info is missing from the facebook data."
             session['splashMsg'] = splashMsg
             session.save() 
    
