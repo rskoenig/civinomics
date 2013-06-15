@@ -51,11 +51,27 @@
                                 <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${profileTitle}</a>
                             </li>
                             % if 'user' in session:
+                                <%
+                                    country = c.authuser_geo['countryTitle']
+                                    countryURL = c.authuser_geo['countryURL']
+                                    state = c.authuser_geo['stateTitle']
+                                    stateURL = c.authuser_geo['stateURL']
+                                    county = c.authuser_geo['countyTitle']
+                                    countyURL = c.authuser_geo['countyURL']
+                                    city = c.authuser_geo['cityTitle']
+                                    cityURL = c.authuser_geo['cityURL']
+                                    postalCode = c.authuser_geo['postalCodeURL']
+                                %>
                                 <li class="dropdown">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">workshops<b class="caret"></b></a>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                        <li><a tabindex="-1" href="/workshops">show</a></li>
-                                        <li><a tabindex="-1" href="/workshop/display/create/form">create!</a></li>
+                                        <li><a tabindex="-1" href="/workshop/display/create/form">start a new workshop!</a></li>
+                                        <li><a tabindex="-1" href="/workshops">show all workshops</a></li>
+                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/">- ${country}</a></li>
+                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/${stateURL}/">- State of ${state}</a></li>
+                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/${stateURL}/${countyURL}/">- County of ${county}</a></li>
+                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/${stateURL}/${countyURL}/${cityURL}/">- City of ${city}</a></li>
+                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/${stateURL}/${countyURL}/${cityURL}/${postalCode}">- Postal Code of ${postalCode}</a></li>
                                     </ul>
                                 </li>
                             % else:
