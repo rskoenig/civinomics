@@ -17,7 +17,11 @@
         if c.listeners:
             people += c.listeners
     %>
-    <h4 class="section-header smaller section-header-inner"> Notables </h4>
+    <h4 class="section-header smaller section-header-inner"> Participants & Activity 
+    % if c.w['public_private'] == 'public':
+        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
+    %endif
+    </h4>
     <ul class="media-list centered" id="workshopNotables">
         % for person in people:
             <%
@@ -44,11 +48,6 @@
 </%def>
 
 <%def name="showActivity(activity)">
-    <h4 class="section-header smaller section-header-inner"> Activity 
-        % if c.w['public_private'] == 'public':
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
-        %endif            
-    </h4>
     <%
         numItems = 5
         shownItems = 0
