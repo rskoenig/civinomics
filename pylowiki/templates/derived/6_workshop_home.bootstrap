@@ -17,6 +17,9 @@
                </div>
                <div>
                   ${helpers.showTags()}
+                  % if c.w['public_private'] == 'public':
+                    ${helpers.showScope()}
+                  % endif
                   ${helpers.showInfo(c.w)}
                </div>
          </div> <!-- /.browse -->

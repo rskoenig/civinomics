@@ -265,3 +265,26 @@
         ${tagString}<br />
     % endif
 </%def>
+
+<%def name="showScope()">
+    <%
+        scopeName = c.scope['level']
+        scopeString = 'This workshop is scoped for '
+        if scopeName == 'earth':
+            scopeString += 'the entire planet Earth.'
+        else:
+            # More mapping for the postal code, this time to display Postal Code instead of just Postal.
+            # The real fix for this is through use of message catalogs, which we will need to implement
+            # when we support multiple languages in the interface, so for right now this kludge is
+            # "good enough"
+            scopeString += 'the '
+            if scopeName == 'postalCode':
+                scopeNeme = 'Postal Code '
+
+            scopeString += "the " + scopeName + " of "
+            scopeString += c.scope['name']\
+                        .replace('-', ' ')\
+                        .title()
+    %>
+    ${scopeString | n}
+</%def>

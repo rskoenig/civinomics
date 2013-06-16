@@ -3,16 +3,6 @@
 <%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
 
 <div class="row">
-   <div class = "span12">
-        <%
-            if 'user' in session:
-                outOfScope = lib_6.geoBreadcrumbs()
-                if outOfScope and c.scope['level'] != 'earth':
-                    lib_6.outOfScope()
-        %>
-   </div><!--/.span12-->
-</div><!-- /.row-->
-<div class="row">
    <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
          <div class="browse">
