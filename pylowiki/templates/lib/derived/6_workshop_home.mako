@@ -265,3 +265,22 @@
         ${tagString}<br />
     % endif
 </%def>
+
+<%def name="showScope()">
+    <%
+        scopeName = c.scope['level']
+
+        # More mapping for the postal code, this time to display Postal Code instead of just Postal.
+        # The real fix for this is through use of message catalogs, which we will need to implement
+        # when we support multiple languages in the interface, so for right now this kludge is
+        # "good enough" 
+        if scopeName == 'postalCode':
+            scopeName = 'Postal Code'
+
+        scopeName += " of "
+        scopeName += c.scope['name']\
+                        .replace('-', ' ')\
+                        .title()
+    %>
+    This workshop is scoped for the ${scopeName}
+</%def>

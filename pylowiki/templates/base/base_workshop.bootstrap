@@ -9,13 +9,8 @@
 <div class="row-fluid" ng-app="civ">
    <div class="span12 well workshop-panel">
       <div class="row-fluid">
-         <div class="span9" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
-            <%
-                if c.w['public_private'] == 'public':
-                    outOfScope = lib_6.geoBreadcrumbs()
-            %>
-         </div><!-- /geographic breadcrumbs -->
-
+         <div class="span9">
+         </div>
          % if workshopLib.isPublished(c.w):
            <div class="span3"> <!-- watch button -->
                   ${helpers.watchButton()}
@@ -27,7 +22,6 @@
                     % endif
                   % endif
            </div><!-- /watch button -->
-
          % else:
            % if c.adminPanel:
               ${helpers.previewButton()}
