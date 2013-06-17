@@ -196,7 +196,11 @@ class RegisterController(BaseController):
             if getUserByEmail( email ) == False:
                 # NOTE - generate password here.
                 #password = RegisterController.generatePassword()
-                password = 'awesomepass18'
+                from string import letters, digits
+                from random import choice
+                pool, size = letters + digits, 11
+                hash =  ''.join([choice(pool) for i in range(size)])
+                password hash.lower()
                 u = User(email, name, password, country, memberType, postalCode)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True
