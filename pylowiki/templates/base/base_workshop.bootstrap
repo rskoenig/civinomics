@@ -19,7 +19,7 @@
                 <li>Add information <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/resource">resources</a></li>
                 <li>Engage in <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/discussion">conversations</a></li>
                 <li>Share your <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/idea">ideas</a></li>
-                <li>Vote items up or down</li>
+                <li>Vote all items up or down</li>
                 </ul>
                 </div>
             % endif

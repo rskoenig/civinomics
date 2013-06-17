@@ -42,7 +42,7 @@
                             <li>
                                 ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", linkClass="topbar-avatar-link")}
                                 <%
-                                    profileTitle = 'profile'
+                                    profileTitle = 'my profile'
                                     numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
                                     if numMessages:
                                         if numMessages > 0:
