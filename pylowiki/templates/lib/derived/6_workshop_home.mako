@@ -111,9 +111,9 @@
       imageMap = {'discussion':'/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png',
                   'idea':'/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png',
                   'resource':'/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png'}
-      titleMap = {'discussion':' Talk',
-                  'idea':' Vote',
-                  'resource':' Learn'}
+      titleMap = {'discussion':' Conversations',
+                  'idea':' Ideas',
+                  'resource':' Resources'}
       linkHref = lib_6.workshopLink(workshop, embed = True, raw = True) + '/' + objType
       linkClass = 'btn workshopNav'
       if active:
