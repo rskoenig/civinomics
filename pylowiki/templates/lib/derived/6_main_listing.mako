@@ -42,7 +42,7 @@
       </a>
    </div>
       <p class="orange centered">
-         <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 50)} </a></strong>
+         <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 60)} </a></strong>
       </p>
       <div class="workshop-listing-info">
          <span>
