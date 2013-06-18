@@ -6,7 +6,10 @@
     from pylowiki.lib.db.comment import getComment
     import logging, random
     from datetime import datetime
+    import misaka as misaka
+    
     log = logging.getLogger(__name__)
+    
 %>
 
 <%namespace name="lib" file="/lib/mako_lib.mako" />
@@ -59,7 +62,7 @@
                 <fieldset>
                     <legend>Add comment</legend>
                     <textarea rows="4" class="span12" name="comment-textarea"></textarea>
-                    <span class="help-block">${commentClubRule()}</span>
+                    <span class="help-block">Please keep comments civil and on-topic.</span>
                     <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
                 </fieldset>
             </form>
@@ -235,8 +238,8 @@
                             lib_6.upDownVote(comment)
                     %>
                 </div> <!--/.span1-->
-                <div class="span11">
-                    ${comment['data']}
+                <div class="span11 comment-data">
+                    ${misaka.html(comment['data'], extensions=misaka.EXT_AUTOLINK, render_flags = misaka.HTML_SKIP_IMAGES) | n}
                     % if curDepth + 1 == maxDepth and comment['children'] != '0':
                         ${continueThread(comment)}
                     % endif

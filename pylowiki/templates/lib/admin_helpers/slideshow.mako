@@ -176,6 +176,8 @@
                             <div class = "portlet-image">
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                                % elif 'format' in slide.keys():
+                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.${slide['format']}" class="image-thumbnail">
                                 % else:
                                     <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
                                 % endif
@@ -193,6 +195,8 @@
                             <div class = "portlet-image">
                                 % if slide['pictureHash'] == 'supDawg':
                                     <img src = "/images/slide/thumbnail/supDawg.thumbnail">
+                                % elif 'format' in slide.keys():
+                                    <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.${slide['format']}" class="image-thumbnail">
                                 % else:
                                     <img src = "/images/slide/${slide['directoryNum']}/thumbnail/${slide['pictureHash']}.jpg" class="image-thumbnail">
                                 % endif

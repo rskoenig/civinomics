@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import request, response, session, config, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 
 from pylowiki.lib.base import BaseController, render
@@ -25,8 +25,10 @@ import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.db.tag              as tagLib
 import pylowiki.lib.utils               as utils
+import pylowiki.lib.images              as imageLib
 
 import time, datetime
+import simplejson as json
 
 
 log = logging.getLogger(__name__)
@@ -36,11 +38,18 @@ class ProfileController(BaseController):
     def __before__(self, action, id1 = None, id2 = None):
         if action not in ['hashPicture']:
             if id1 is not None and id2 is not None:
-                c.user = userLib.get_user(id1, id2)
+                c.user = userLib.getUserByCode(id1)
                 if not c.user:
                     abort(404)
             else:
                 abort(404)
+
+            c.geoInfo = []
+            gList = geoInfoLib.getGeoInfo(c.user.id)
+            for g in gList:
+                if g['disabled'] == '0':
+                    c.geoInfo.append(g)
+                
             c.isAdmin = False
             if 'user' in session:
                 if userLib.isAdmin(c.authuser.id):
@@ -59,13 +68,7 @@ class ProfileController(BaseController):
 
         c.revisions = revisionLib.getParentRevisions(c.user.id)
         c.title = c.user['name']
-        #c.geoInfo = geoInfoLib.getGeoInfo(c.user.id)
-        c.geoInfo = []
-        gList = geoInfoLib.getGeoInfo(c.user.id)
-        for g in gList:
-            if g['disabled'] == '0':
-                c.geoInfo.append(g)
-                
+               
         c.isFollowing = False
         c.isUser = False
         c.browse = False
@@ -315,6 +318,7 @@ class ProfileController(BaseController):
         perrorMsg = ""
         changeMsg = ""
         nameChange = False
+        postalChange = False
         anyChange = False
         name = False
         email = False
@@ -333,17 +337,18 @@ class ProfileController(BaseController):
             
         session['confTab'] = "tab1"
         session.save()
-
-        if 'member_name' in request.params:
-            name = request.params['member_name']
+        
+        payload = json.loads(request.body)
+        if 'member_name' in payload:
+            name = payload['member_name']
             if name == '':
                name = False
         if not name:
             perror = 1
             perrorMsg = perrorMsg + ' Member name required.'
 
-        if 'email' in request.params:
-            email = request.params['email']
+        if 'email' in payload:
+            email = payload['email']
             if email == '':
                 email = False
             elif email != c.user['email']:
@@ -356,8 +361,8 @@ class ProfileController(BaseController):
             perror = 1
             perrorMsg = perrorMsg + ' Email required.'
         
-        if 'postalCode' in request.params:
-            postalCode = request.params['postalCode']
+        if 'postalCode' in payload:
+            postalCode = payload['postalCode']
             if postalCode == '':
                 postalCode = False
             elif postalCode != c.user['postalCode']:
@@ -372,15 +377,15 @@ class ProfileController(BaseController):
             perror = 1
             perrorMsg = perrorMsg + ' Postal code required.'
 
-        if 'greetingMsg' in request.params:
-            greetingMsg = request.params['greetingMsg']
+        if 'greetingMsg' in payload:
+            greetingMsg = payload['greetingMsg']
 
 
-        if 'websiteLink' in request.params:
-            websiteLink = request.params['websiteLink']
+        if 'websiteLink' in payload:
+            websiteLink = payload['websiteLink']
 
-        if 'websiteDesc' in request.params:
-            websiteDesc = request.params['websiteDesc']
+        if 'websiteDesc' in payload:
+            websiteDesc = payload['websiteDesc']
 
         if name and name != '' and name != c.user['name']:
             c.user['name'] = name
@@ -391,7 +396,7 @@ class ProfileController(BaseController):
             c.user['email'] = email
             anyChange = True
             changeMsg = changeMsg + "Member email updated. "
-        if postalCode and postalCode != '' and email != c.user['postalCode']:
+        if postalCode and postalCode != '' and postalCode != c.user['postalCode']:
             c.user['postalCode'] = postalCode
             anyChange = True
             changeMsg = changeMsg + "Postal code updated. "
@@ -402,10 +407,13 @@ class ProfileController(BaseController):
                 if g['disabled'] == u'0':
                     g['disabled'] = u'1'
                     g['deactivated'] = SQLtoday
+                    dbHelpers.commit(g)
                     
             # make a new one
             g = geoInfoLib.GeoInfo(postalCode, 'United States', c.user.id)
-                    
+            c.geoInfo = []
+            c.geoInfo.append(g)
+            postalChange = True
             
         if greetingMsg and greetingMsg != '' and greetingMsg != c.user['greetingMsg']:
             c.user['greetingMsg'] = greetingMsg
@@ -429,34 +437,119 @@ class ProfileController(BaseController):
                 session.save()
                 c.authuser = c.user
             log.info('Changed name')
+            
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
         if anyChange and perror == 0:
             dbHelpers.commit(c.user)
             eventLib.Event('Profile updated.', changeMsg, c.user, c.authuser)
             revisionLib.Revision(c.authuser, c.user)
-            alert = {'type':'success'}
-            alert['title'] = changeMsg
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
+            if postalChange:
+                statusCode = 2
+            else:
+                statusCode = 0
+            return json.dumps({'statusCode':statusCode, 'result':changeMsg, 'returnURL':returnURL})
 
         elif perror == 1:
-            alert = {'type':'error'}
-            alert['title'] = perrorMsg 
-            alert['content'] = ''
-            session['alert'] = alert
-            session.save()
-
+            return json.dumps({'statusCode':'1', 'result':perrorMsg, 'returnURL':returnURL})
         else:
-            if 'alert' not in session:
-                alert = {'type':'error'}
-                alert['title'] = 'No changes submitted.'
-                alert['content'] = ''
-                session['alert'] = alert
-                session.save()
-               
-        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url']
-        return redirect(returnURL)
+            return json.dumps({'statusCode':'1', 'result':'No changes submitted.'})
+
+    @h.login_required
+    def pictureUploadHandler(self, id1, id2):
+        """
+            Ideally:  
+            1) User selects image, gets presented with aspect-ratio constrained selection.
+            2) User adjusts centering and dimensions, hits 'start'
+            3) Process image - detailed below
         
+            Grab the uploaded file.  Hash and save the original first.  Then process.
+            Processing means:
+            1) Check to ensure it is an image (should be done in the hash + save step)
+            2) Check for square dimensions.  If not square, crop.  Do not save the image here, just pass on the image object.
+            3) If necessary, resize the dimensions of the image to 200px x 200px.  Save the final image here.
+            
+            The client expects a json-encoded string with the following format:
+            
+            {"files": [
+              {
+                "name": "picture1.jpg",
+                "size": 902604,
+                "url": "http:\/\/example.org\/files\/picture1.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture1.jpg",
+                "delete_type": "DELETE"
+              },
+              {
+                "name": "picture2.jpg",
+                "size": 841946,
+                "url": "http:\/\/example.org\/files\/picture2.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture2.jpg",
+                "delete_type": "DELETE"
+              }
+            ]}
+        """
+        if c.authuser.id != c.user.id:
+            abort(404)
+        
+        requestKeys = request.params.keys()
+        if 'files[]' in requestKeys:
+            file = request.params['files[]']
+            filename = file.filename
+            file = file.file
+            image = imageLib.openImage(file)
+            if not image:
+                abort(404) # Maybe make this a json response instead
+            imageHash = imageLib.generateHash(filename, c.authuser)
+            image = imageLib.saveImage(image, imageHash, 'avatar', 'orig', thing = c.authuser)
+            
+            width = min(image.size)
+            x = 0
+            y = 0
+            if 'width' in requestKeys:
+                width = int(request.params['width'])
+            if 'x' in requestKeys:
+                x = int(request.params['x'])
+            if 'y' in requestKeys:
+                y = int(request.params['y'])
+            dims = {'x': x, 
+                    'y': y, 
+                    'width':width,
+                    'height':width}
+            clientWidth = -1
+            clientHeight = -1
+            if 'clientWidth' in requestKeys:
+                clientWidth = request.params['clientWidth']
+            if 'clientHeight' in requestKeys:
+                clientHeight = request.params['clientHeight']
+            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
+            image = imageLib.resizeImage(image, imageHash, 200, 200)
+            image = imageLib.saveImage(image, imageHash, 'avatar', 'avatar')
+            image = imageLib.resizeImage(image, imageHash, 100, 100)
+            image = imageLib.saveImage(image, imageHash, 'avatar', 'thumbnail')
+            
+            jsonResponse =  {'files': [
+                                {
+                                    'name':filename,
+                                    'thumbnail_url':'/images/avatar/%s/avatar/%s.png' %(c.authuser['directoryNum_avatar'], imageHash)
+                                }
+                            ]}
+            return json.dumps(jsonResponse)
+        else:
+            abort(404)
+        
+    @h.login_required
+    def setImageSource(self, id1, id2):
+        try:
+            payload = json.loads(request.body)
+            source = payload['source']
+        except:
+            log.error("User %s tried to set a profile image source for user %s with an unknown source.  Body was %s." %(c.authuser.id, c.user.id, request.body))
+            return json.dumps({"statusCode": 1})
+        c.user['avatarSource'] = source
+        dbHelpers.commit(c.user)
+        return json.dumps({"statusCode": 0})
+    
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):
         perror = 0

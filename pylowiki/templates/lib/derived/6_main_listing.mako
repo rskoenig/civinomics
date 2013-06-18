@@ -33,6 +33,8 @@
          <% 
             if mainImage['pictureHash'] == 'supDawg':
                imgSrc="/images/slide/thumbnail/supDawg.thumbnail"
+            elif 'format' in mainImage.keys():
+                imgSrc="/images/mainImage/%s/listing/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
             else:
                imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
          %>
@@ -40,7 +42,7 @@
       </a>
    </div>
       <p class="orange centered">
-         <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 50)} </a></strong>
+         <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 60)} </a></strong>
       </p>
       <div class="workshop-listing-info">
          <span>

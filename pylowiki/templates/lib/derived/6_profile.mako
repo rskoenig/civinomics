@@ -275,16 +275,40 @@
     </div>
     <div class="section-wrapper">
         <div class="browse">
-            <h3 class="section-header">${c.user['name']}</h3>
-            <p>${lib_6.userGeoLink(c.user)}</p>
+            %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                <div ng-init="updateGeoLinks(); dashboardFullName='${c.user['name']}'">
+                    <h3 class="section-header">{{fullName}}</h3>
+                    <p><a href="{{cityURL}}">{{cityTitle}}</a>, <a href="{{stateURL}}">{{stateTitle}}</a>, <a href="{{countryURL}}">{{countryTitle}}</a>
+                </div>
+            %else:
+                <h3 class="section-header">${c.user['name']}</h3>
+                <p>${lib_6.userGeoLink(c.user)}</p>
+            %endif
+            
             <p>Joined ${c.user.date.strftime('%b %d, %Y')}</p>
             % if c.user['greetingMsg'] != '':
-                <small class="muted expandable">${c.user['greetingMsg']}</small>
+                %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                    <div ng-init="dashboardGreetingMsg='${c.user['greetingMsg']}'">
+                    <small class="muted expandable">{{greetingMsg}}</small>
+                %else:
+                    <small class="muted expandable">${c.user['greetingMsg']}</small>
+                %endif
             % endif
             % if c.user['websiteLink'] != '':
-                <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
+                %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                    <div ng-init="dashboardWebsiteLink='${c.user['websiteLink']}'">
+                    <p class = "expandable no-bottom"><a href="{{dashboardWebsiteLink}}" target="_blank">{{dashboardWebsiteLink}}</a></p>
+                %else:
+                    <p class = "expandable no-bottom"><a href="${c.user['websiteLink']}" target="_blank">${c.user['websiteLink']}</a></p>
+                % endif
                 % if c.user['websiteDesc'] != '':
-                    <small class="muted expandable">${c.user['websiteDesc']}</small>
+                    %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
+                        <div ng-init="dashboardWebsiteDesc='${c.user['websiteDesc']}'">
+                            <small class="muted expandable">{{websiteDesc}}</small>
+                        </div>
+                    %else:
+                        <small class="muted expandable">${c.user['websiteDesc']}</small>
+                    %endif
                 % endif
             % endif
             <hr>
@@ -393,11 +417,11 @@
             wListL = []
             for f in fList:
                 w = workshopLib.getWorkshopByCode(f['workshopCode'])
-                if w['deleted'] == '0' and w['type'] != 'personal':
+                if w['deleted'] == '0':
                     wlisten = listenerLib.getListener(c.user, w)
                     if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
                         wListF.append(w)
-                    if not wlisten or wlisten['disabled'] == '1':
+                    if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
                         wListL.append(w)
                         
         %>
@@ -440,6 +464,7 @@
         tab3active = ""
         tab4active = ""
         tab5active = ""
+        tab6active = ''
                     
         if c.tab == "tab1":
             tab1active = "active"
@@ -451,6 +476,8 @@
             tab4active = "active"
         elif c.tab == "tab5":
             tab5active = "active"
+        elif c.tab == 'tab6':
+            tab6active = 'tab6'
         else:
             tab1active = "active"
     
@@ -467,24 +494,23 @@
                     <div class="section-wrapper">
                         <div class="browse">
                             <div style="text-align: center">
-                                <h4 class="section-header"><br />Edit Profile</h4>
-                                For the periodic upkeep of your Civinomics profile.<br /><br />
+                                <h4 class="section-header smaller">Edit Profile</h4>
                             </div><!-- center -->
                             <ul class="nav nav-pills nav-stacked">
-                            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Update your profile info
+                            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Info
                             </a></li>
-                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">2. Change your password<br />
+                            <li class="${tab6active}"><a href="#tab6" data-toggle="tab">2. Picture
+                            </a></li>
+                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">3. Password
                             </a></li>
                             % if c.admin:
-                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">3. Administrate<br />
+                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">4. Administrate
                             Admin only - shhh!.</a></li>
                             % endif
                             </ul>
-                            <div style="text-align: center">
+                            <div>
                                 <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/display/create/form">
-                                <br />
                                 <button type="submit" class="btn btn-warning">Create a Workshop!</button>
-                                <br /><br />
                                 </form>
                             </div><!-- center -->
                         </div><!-- browse -->
@@ -501,6 +527,9 @@
                             </div><!-- tab1 -->
                             <div class="tab-pane ${tab4active}" id="tab4">
                                 ${helpersEdit.changePassword()}
+                            </div><!-- tab4 -->
+                            <div class="tab-pane ${tab6active}" id="tab6">
+                                ${helpersEdit.profilePicture()}
                             </div><!-- tab4 -->
                             % if c.admin:
                                 <div class="tab-pane ${tab5active}" id="tab5">

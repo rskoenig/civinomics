@@ -887,6 +887,9 @@ class WorkshopController(BaseController):
         
         # Demo workshop status
         c.demo = workshopLib.isDemo(c.w)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
+        c.adminPanel = False
         
         return render('/derived/6_workshop_home.bootstrap')
    
@@ -999,6 +1002,10 @@ class WorkshopController(BaseController):
         
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
+        c.adminPanel = True
+
         return render('/derived/6_workshop_preferences.bootstrap')
         
     @h.login_required

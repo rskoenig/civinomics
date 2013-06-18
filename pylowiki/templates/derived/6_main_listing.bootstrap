@@ -3,26 +3,30 @@
 <%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
 
 <div class="row">
-   <div class = "span12">
-        <%
-            if 'user' in session:
-                outOfScope = lib_6.geoBreadcrumbs()
-                if outOfScope and c.scope['level'] != 'earth':
-                    lib_6.outOfScope()
-        %>
-   </div><!--/.span12-->
-</div><!-- /.row-->
+    <div class="span12">
+        <div class="alert alert-info section-header">
+            <h5>Participate in workshops to improve your world. Don't see a workshop listed for your community? Become a member and start one today!</p></h5>
+        </div>
+    </div><!-- span12 -->
+</div><!-- row -->
 <div class="row">
    <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
          <div class="browse">
             <h3 class="section-header"> ${c.workshopTitlebar} </h3>
             <div class="row-fluid"><!--navigation row-->
-                <ul class="thumbnails">
-                    % for item in c.list:
-                        <li class="span6 wrap-workshop"> ${helpers.show_workshop(item)} </li>
-                    % endfor
-                </ul>
+                % if len(c.list) != 0:
+                    <ul class="thumbnails">
+                        % for item in c.list:
+                            <li class="span6 wrap-workshop"> ${helpers.show_workshop(item)} </li>
+                        % endfor
+                    </ul>
+                % else:
+                    <div class="alert alert-success centered">
+                        <p>Be the first to add a public workshop here!</p>
+                        <a class="btn btn-success" href="/workshop/display/create/form">Let's do it!</a>
+                    </div>
+                % endif
             </div><!--/navigation row-->
          </div><!--/.browse-->
       </div><!--/.section-wrapper-->
@@ -31,6 +35,7 @@
       <div class="section-wrapper">
          <div class="activity">
             <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
+            % if len(c.activity) != 0:
             <% 
                numItems = 10
                for i in range(len(c.activity)):
@@ -39,6 +44,9 @@
                   if i > numItems:
                      break
             %>
+            % else:
+                <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
+            % endif
          </div>
       </div>
    </div> <!-- /Activity Stream -->

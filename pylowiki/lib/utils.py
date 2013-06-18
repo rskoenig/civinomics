@@ -79,11 +79,15 @@ def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:
         if mainImage['pictureHash'] == 'supDawg':
             return '/images/slide/thumbnail/supDawg.thumbnail'
+        elif 'format' in mainImage.keys():
+            return '/images/mainImage/%s/thumbnail/%s.%s' %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
         else:
             return '/images/mainImage/%s/thumbnail/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
     else:
         if mainImage['pictureHash'] == 'supDawg':
             return '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in mainImage.keys():
+            return '/images/mainImage/%s/listing/%s.%s' %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
         else:
             return '/images/mainImage/%s/listing/%s.jpg' %(mainImage['directoryNum'], mainImage['pictureHash'])
             
