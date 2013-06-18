@@ -39,27 +39,34 @@ def undeleteSlide( slide ):
 # If newSlide is False, then we are dealing with the initialization of a workshop, in which case we do not need to save the image.
 def Slide(owner, slideshow, title, filename, image, newSlide = '0'):
     if newSlide != '0':
+        image = imageLib.openImage(image)
+        if not image:
+            abort(404)
         s = Thing('slide', owner.id)
         generic.linkChildToParent(s, slideshow)
         commit(s)
         s['urlCode'] = utils.toBase62(s)
-        hash = imageLib.saveImage(image, filename, 'slide', s)
         slideshow['slideshow_order'] = slideshow['slideshow_order'] + ',' + str(s.id)
-        # identifier, hash, x, y, postfix
-        imageLib.resizeImage('slide', hash, 1200, 1200, 'slideshow', preserveAspectRatio = True)
-        imageLib.resizeImage('slide', hash, 128, 128, 'thumbnail', preserveAspectRatio = True)
+        
+        imageHash = imageLib.generateHash(filename, s)
+        image = imageLib.saveImage(image, imageHash, 'slide', 'orig', thing = s)
+        image = imageLib.resizeImage(image, imageHash, 1200, 1200, preserveAspectRatio = True)
+        image = imageLib.saveImage(image, imageHash, 'slide', 'slideshow')
+        image = imageLib.resizeImage(image, imageHash, 128, 128, preserveAspectRatio = True)
+        image = imageLib.saveImage(image, imageHash, 'slide', 'thumbnail')
     else:
         s = Thing('slide', owner.id)
         commit(s)
         s['urlCode'] = utils.toBase62(s)
-        hash = 'supDawg'
+        imageHash = 'supDawg'
         generic.linkChildToParent(s, slideshow)
         
     # finally
-    s['pictureHash'] = hash
+    s['pictureHash'] = imageHash
     s['title'] = title
     s['filename'] = filename
     s['deleted'] = u'0'
     s['disabled'] = u'0'
+    s['format'] = u'png'
     commit(s)
     return s

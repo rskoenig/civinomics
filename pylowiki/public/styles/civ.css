@@ -647,19 +647,27 @@ ul.listeners > li {
 .orange{
     color:#D15D00;
 }
-
 .purple{
     color:#56005D;
 }
-
 .black{
     color:#333333;
 }
-
 .green-hover:hover{
     color:#075D00;
 }
-
+.light-green{
+    background-color:#dff0d8;
+}
+.light-red{
+    background-color:#f2dede;
+}
+.light-yellow{
+    background-color:#fcf8e3;
+}
+.light-blue{
+    background-color:#d9edf7;
+}
 .profile-workshop{
     padding-right:5px;
 }
@@ -1049,6 +1057,50 @@ li.thumbnail-gallery{
     padding-left:10px;
 }
 
+#infoEdit{
+    margin-bottom:0;
+}
+.form-actions.save-profile{
+    padding-left:190px;
+    margin-left:-10px;
+    margin-right:-10px;
+    margin-bottom:-20px;
+}
+
+.controls.chooseAvatar{
+    margin-top:30px;
+}
+.civAvatarUploadForm{
+   margin-top:40px;
+}
+
+.comment-data h1{
+    font-size: 28px;
+    line-height: 28px;
+}
+.comment-data h2{
+    font-size: 25px;
+    line-height: 25px;
+}
+.comment-data h3{
+    font-size: 22px;
+    line-height: 22px;
+}
+.comment-data h4{
+    font-size: 19px;
+    line-height: 19px;
+}
+.comment-data h5{
+    font-size: 16px;
+    line-height: 16px;
+}
+.comment-data h6{
+    font-size: 13px;
+    line-height: 13px;
+}
+.comment-data blockquote p{
+    font-size:13px;
+}
 .notables-item{
     margin-left: -10px;
     margin-right:-10px;

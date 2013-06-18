@@ -43,16 +43,19 @@
     <div class="span11">
         <h4>
             <% 
+                link = ''
+                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
                 if thing.objType == 'resource':
-                    link = '<a href="%s" class="listed-item-title" target="_blank">%s</a>' %(thing['link'], thing['title'])
+                    link = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['link'], 75))
                 elif thing.objType == 'revision':
                     if thing['objType'] == 'resource':
-                        link = '<a href="%s" class="listed-item-title" target="_blank">%s</a>' %(thing['link'], thing['title'])
+                        title = '<a href="%s" class="listed-item-title" target="_blank">%s</a>' %(thing['link'], thing['title'])
                     else:
-                        link = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+                        title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
                 else:
-                    link = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+                    title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
             %>
+            ${title | n}<br>
             ${link | n}
         </h4>
     </div>

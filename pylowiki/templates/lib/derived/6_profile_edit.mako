@@ -15,60 +15,152 @@
 <%def name="profileInfo()">
     <div class="section-wrapper">
         <div class="browse">
-	        <form action="/profile/${c.user['urlCode']}/${c.user['url']}/info/edit/handler" id="infoEdit" enctype="multipart/form-data" method="post" class="form-horizontal">
-    		    <h4 class="section-header" style="text-align: center"><br />Update Your Profile Information</h4><br />
+	        <form id="infoEdit" name="infoEdit" class="form-horizontal edit-profile">
+    		    <h4 class="section-header smaller">Update Your Profile Information</h4>
                 <fieldset>
-			    <div class="control-group">
-				    <label for="member-name" class="control-label">Name:</label>
+			    <div ng-class=" {'control-group': true, 'error': infoEdit.member_name.$error.pattern} ">
+				    <label for="member-name" class="control-label">Your Name:</label>
 				    <div class="controls">
-					    <input type="text" id="member-name" name="member_name" value="${c.user['name']}">
-					    <span class="help-inline"><span class="label label-important">Required</span></span>
+					    <input type="text" id="member-name" class="span10" name="member_name" value="${c.user['name']}" ng-model="fullName" ng-init="fullName='${c.user['name']}'" ng-pattern="fullNameRegex" required>
+                        <span class="error help-block" ng-show="infoEdit.member_name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
 			    <div class="control-group">
 				    <label for="email" class="control-label">Email:</label>
 				    <div class="controls">
-					    <input type="text" id="email" name="email" value="${c.user['email']}">
-					    <span class="help-inline"><span class="label label-important">Required</span> (not displayed)</span>
+					    <input type="text" id="email" class="span10" name="email" ng-model="email" ng-init="email='${c.user['email']}'" required>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-                <div class="control-group">
+                <div ng-class=" {'control-group': true, 'error': infoEdit.postalCode.$error.pattern} ">
 				    <label for="postalCode" class="control-label">Postal code:</label>
-				    <div class="controls">
-					    <input type="text" id="postalCode" name="postalCode"  value="${c.user['postalCode']}" onBlur="geoCheckPostalCode()">
-					    <span class="help-inline"><span class="label label-important">Required</span></span><br />
+                    <div class="controls">
+					    <input type="text" id="postalCode" class="span10" name="postalCode" onBlur="geoCheckPostalCode()" ng-model="postalCode" ng-init="postalCode='${c.user['postalCode']}'" ng-pattern="postalCodeRegex" required>
+                        <br />
+                        <span class="error help-block" ng-show="infoEdit.postalCode.$error.pattern">Use only numbers.</span>
                         <span id="postalCodeResult"></span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-             <div class="control-group">
-                <label for="image" class="control-label">Image:</label>
-                <div class="controls">
-                    <span id="image" class="help-inline">
-                        Change and manage your profile picture at <a href="http://www.gravatar.com" target="_blank">Gravatar</a>
-                    </span>
-                </div>
-             </div>
         	    <div class="control-group">
-				    <label for="greetingMsg" class="control-label">Enter a greeting message for visitors to your profile:</label>
+				    <label for="greetingMsg" class="control-label">A greeting message:</label>
 				    <div class="controls">
-                        <textarea name="greetingMsg" rows=4 cols=50>${c.user['greetingMsg']}</textarea>
+                        <textarea name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="span10"></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
-				    <label for="orgLink" class="control-label">Enter the URL to your website:</label>
+				    <label for="orgLink" class="control-label">Your website:</label>
     			    <div class="controls">
-                        <input type="text" name="websiteLink" value="${c.user['websiteLink']}">
+                        <input type="text" class="span10" name="websiteLink" ng-model="websiteLink" ng-init="websiteLink='${c.user['websiteLink']}'">
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
-				    <label for="orgLinkMsg" class="control-label">Enter a description of your website:</label>
+				    <label for="orgLinkMsg" class="control-label">A description of your website:</label>
 				    <div class="controls">
-                        <textarea name="websiteDesc" rows=4 cols=50>${c.user['websiteDesc']}</textarea>
+                        <textarea name="websiteDesc" ng-model="websiteDesc" ng-init="websiteDesc='${c.user['websiteDesc']}'" rows=4 class="span10"></textarea>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
-		        </fieldset>
-                <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
+                <div class="form-actions save-profile" ng-class="{'light-yellow':infoEdit.$dirty && submitStatus == -1, 'light-blue':!infoEdit.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
+                    <input type="submit" class="btn btn-warning" ng-class="{'disabled':!infoEdit.$dirty}" value="Save changes" ng-click="submitProfileEdit()"></input>
+                    <span class="help-inline" ng-show="!infoEdit.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
+                    <span class="help-inline" ng-show="infoEdit.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
+                    <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
+                    <span class="help-inline" ng-show="submitStatus == 1" ng-cloak>Error saving changes</span>
+                </div>
+                </fieldset>
 	        </form>
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
+</%def>
+
+<%def name="profilePicture()">
+    ## ng-init here is hacky and unclean
+     <div class="section-wrapper" ng-init="code='${c.user['urlCode']}'; url='${c.user['url']}'">
+        <div class="browse">
+            <h4 class="section-header smaller">Add or Change Your Pictures</h4>
+            <form class="form-horizontal" id="setImageSourceForm" name="setImageSourceForm">
+                <div class="control-group">
+                    <label class="control-label" for="avatarType">
+                        ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="gravatar")}
+                    </label>
+                    <div class="controls chooseAvatar">
+                        <label class="radio">
+                            <input type="radio" value="gravatar" name="avatarType" id="avatarType" ng-click="uploadImage = false" ng-model="imageSource">
+                                Use your 
+                                <a href="http://gravatar.com" target="_blank">gravatar</a> 
+                                image
+                            </input>
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="avatarType">
+                        ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="civ")}
+                    </label>
+                    <div class="controls chooseAvatar">
+                        <label class="radio">
+                            <input type="radio" value="civ" name="avatarType" id="avatarType" ng-click="uploadImage = true" ng-model="imageSource">
+                                Use your uploaded image
+                            </input>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-actions save-profile" ng-class="{'light-yellow':setImageSourceForm.$dirty && submitStatus == -1, 'light-blue':!setImageSourceForm.$dirty && submitStatus == -1, 'light-green':submitStatus == 0, 'light-red':submitStatus == 1}">
+                    <input type="submit" class="btn btn-warning" ng-class="{'disabled':!setImageSourceForm.$dirty}" value="Save changes" ng-click="setImageSource()"></input>
+                    <span class="help-inline" ng-show="!setImageSourceForm.$dirty && submitStatus == -1" ng-cloak>No Changes</span>
+                    <span class="help-inline" ng-show="setImageSourceForm.$dirty && submitStatus == -1" ng-cloak>Unsaved Changes</span>
+                    <span class="help-inline" ng-show="submitStatus == 0" ng-cloak>Successfully saved changes</span>
+                    <span class="help-inline" ng-show="submitStatus == 1" ng-cloak>Error saving changes</span>
+                </div>
+            </form>
+            <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="uploadImage">
+                <!-- Redirect browsers with JavaScript disabled to the origin page -->
+                <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
+                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                <div class="row-fluid fileupload-buttonbar">
+                    <div class="span10 offset1">
+                        <!-- The fileinput-button span is used to style the file input field as button -->
+                        <span class="btn btn-success fileinput-button span6 offset3">
+                            <i class="icon-plus icon-white"></i>
+                            <span>Select your picture</span>
+                            <input type="file" name="files[]">
+                        </span>
+                        <!-- The loading indicator is shown during file processing -->
+                        <div class="fileupload-loading"></div>
+                    </div>
+                    <!-- The global progress information -->
+                </div>
+                <div class="row-fluid">
+                    <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
+                        <!-- The global progress bar -->
+                        <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
+                        <!-- The extended global progress information -->
+                        <div class="progress-extended">&nbsp;</div>
+                    </div>
+                </div>
+                <!-- The table listing the files available for upload/download -->
+                <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+                    <tbody><tr data-ng-repeat="file in queue">
+                        <td data-ng-switch="" on="!!file.thumbnail_url">
+                            <div class="preview" data-ng-switch-when="true">
+                                <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
+                            </div>
+                            <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
+                        </td>
+                        <td>
+                            <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                                <i class="icon-upload icon-white"></i>
+                                <span>Start</span>
+                            </button>
+                            <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
+                                <i class="icon-ban-circle icon-white"></i>
+                                <span>Cancel</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </form>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
@@ -210,7 +302,7 @@
 <%def name="changePassword()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header" style="text-align: center"><br />Change Your Password</h4><br />
+            <h4 class="section-header smaller">Change Your Password</h4>
             <form action="/profile/${c.user['urlCode']}/${c.user['url']}/password/update/handler" enctype="multipart/form-data" method="post" class="form-horizontal">
 		    <fieldset>
             <div class="control-group">

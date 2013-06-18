@@ -15,7 +15,7 @@ import pylowiki.lib.db.slideshow        as slideshowLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 from pylowiki.lib.db.imageIdentifier import getImageIdentifier
 
-from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory, isImage
+from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory
 
 log = logging.getLogger(__name__)
 
@@ -49,33 +49,37 @@ class SlideshowController(BaseController):
             filename = file.filename
             identifier = 'slide'
             
-            if not isImage(imageFile):
-                abort(404)
-            imageFile.seek(0)
-
             slide = Slide(c.authuser, c.slideshow, 'Sample caption', filename, imageFile, '1')
             
             i = getImageIdentifier(identifier)
             directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
             hash = slide['pictureHash']
-            savename = hash + '.jpg'
-            newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
-            st = os.stat(newPath)
+            savename = hash + '.png'
+            # This bit is a bit wonky to avoid a security-based race condition wherein we check if the file exists (it does),
+            # it gets modified, and then we use the file, still assuming it's the same.
+            size = 0
+            try:
+                newPath = os.path.join(config['app_conf']['imageDirectory'], identifier, directoryNumber, 'orig', savename)
+                with open(newPath):
+                    st = os.stat(newPath)
+                    size = st.st_size
+            except IOError:
+                abort(500)
             l = []
             d = {}
             d['name'] = savename
-            d['size'] = st.st_size
+            d['size'] = size
             if 'site_base_url' in config:
                 siteURL = config['site_base_url']
             else:
-                siteURL = 'http://www.civinomics.com'
+                siteURL = 'http://civinomics.com'
             
-            d['url'] = '%s/images/%s/%s/orig/%s.jpg' % (siteURL, identifier, directoryNumber, hash)
-            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.jpg' % (siteURL, identifier, directoryNumber, hash)
+            d['url'] = '%s/images/%s/%s/orig/%s.png' % (siteURL, identifier, directoryNumber, hash)
+            d['thumbnail_url'] = '%s/images/%s/%s/thumbnail/%s.png' % (siteURL, identifier, directoryNumber, hash)
             d['delete_url'] = '%s/workshop/%s/%s/slideshow/delete/%s' %(siteURL, c.w['urlCode'], c.w['url'], hash)
             d['delete_type'] = "DELETE"
             d['-'] = hash
-            d['type'] = 'image/jpg'
+            d['type'] = 'image/png'
             l.append(d)
             
             if len(allSlides) == 1:

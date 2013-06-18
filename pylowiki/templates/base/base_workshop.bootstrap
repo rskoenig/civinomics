@@ -1,5 +1,6 @@
 <%!
     import pylowiki.lib.db.workshop         as workshopLib
+    import cgi
 %>
 
 <%inherit file="/base/base.bootstrap"/>
@@ -9,27 +10,40 @@
 <div class="row-fluid" ng-app="civ">
    <div class="span12 well workshop-panel">
       <div class="row-fluid">
-         <div class="span9" id="workshopBreadcrumbs"> <!-- geographic breadcrumbs -->
-            <%
-                if c.w['public_private'] == 'public':
-                    outOfScope = lib_6.geoBreadcrumbs()
-            %>
-         </div><!-- /geographic breadcrumbs -->
-
+         <div class="span3">
+            <% path = request.environ['PATH_INFO'] %>
+            % if path == "/workshop/" + c.w['urlCode'] + "/" + c.w['url'] or path == "/workshops/" + c.w['urlCode'] + "/" + c.w['url']:
+                <div class="alert alert-info">
+                <strong>Participate!</strong>
+                <ul>
+                <li>Add information <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/resource">resources</a></li>
+                <li>Engage in <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/discussion">conversations</a></li>
+                <li>Share your <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/idea">ideas</a></li>
+                <li>Vote all items up or down</li>
+                </ul>
+                </div>
+            % endif
+         </div>
+         <div class="span6">
+            <h1 class="centered workshop-title"> 
+            <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
+            {{workshopTitle}}
+            </a>
+            </h1>
+         </div>
          % if workshopLib.isPublished(c.w):
-           <div class="span3"> <!-- watch button -->
+           <div class="span3">
                   ${helpers.watchButton()}
                   % if c.privs['admin'] or c.privs['facilitator']: 
-                    % if "preferences" in session._environ['PATH_INFO'] :
+                    % if c.adminPanel:
                       ${helpers.viewButton()} 
                     % else:
                       ${helpers.configButton(c.w)}
                     % endif
                   % endif
-           </div><!-- /watch button -->
-
+           </div>
          % else:
-           % if "preferences" in session._environ['PATH_INFO']:
+           % if c.adminPanel:
               ${helpers.previewButton()}
            % else:
               ${helpers.configButton(c.w)}
@@ -39,20 +53,6 @@
 
 
       </div> <!-- /.row-fluid -->
-     <%
-        if c.w['public_private'] == 'public':
-            if outOfScope:
-                lib_6.outOfScope()
-     %>
-      <div class="row-fluid">
-         <div class="span12">
-            <h1 class="centered workshop-title"> 
-               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
-                  {{workshopTitle}}
-               </a>
-            </h1>
-         </div>
-      </div>
       <div class="row-fluid">
          <div class="span12">
             <%
@@ -73,6 +73,8 @@
    <%
       if c.mainImage['pictureHash'] == 'supDawg':
          backgroundImage = '"/images/slide/slideshow/supDawg.slideshow"'
+      elif 'format' in c.mainImage.keys():
+         backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
       else:
          backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
    %>
