@@ -60,11 +60,11 @@ class LoginController(BaseController):
         # this receives an email from the fb javascript auth checker, figures out what to do
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
-        location, name, email, access, expires, signed, userid = id1.split("&")
+        name, email, access, expires, signed, userid = id1.split("&")
         #info = id1.split("&")
         #for inf in info:
         #    log.info("in login controller: %s" % inf)
-        log.info("in login controller email: %s" % location)
+        #log.info("in login controller email: %s" % location)
         log.info("in login controller email: %s" % name)
         log.info("in login controller email: %s" % email)
         log.info("in login controller access: %s" % access)
@@ -103,7 +103,7 @@ class LoginController(BaseController):
             session['fbName'] = name
             session['fbEmail'] = email
             session['fbAccessToken'] = access
-            session['fbLocation'] = location
+            #session['fbLocation'] = location
             #session['fbPostalCode'] # look up a postal code based on the city they're in
             session['fbCountry'] = 'United States'
             session['fbMemberType'] = 'professional'

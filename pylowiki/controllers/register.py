@@ -133,12 +133,12 @@ class RegisterController(BaseController):
                 log.info('facebook email missing')
             else:
                 email = session['fbEmail']
-        if  'fbLocation' not in session:
-            log.info('facebook location missing')
-        else:
+        #if  'fbLocation' not in session:
+        #    log.info('facebook location missing')
+        #else:
             #location = session['fbLocation']
             #postalCode = getPostalFromFacebookLocation(location)
-            postalCode = '95060'
+        postalCode = '95060'
         #if  'country' not in request.params:
         #    log.info('country missing')
         #else:

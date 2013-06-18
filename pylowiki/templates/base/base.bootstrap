@@ -103,7 +103,7 @@
                 // * store the auth token and exp time in this person's session
                 // * change the fb button into a button that will ask the server to 'log in'
                 // by confirming it's ok with fb
-                console.log('token: ' + response.authResponse.accessToken);
+                //console.log('token: ' + response.authResponse.accessToken);
                 // we can use fb to login to the site. at this point store the token and exp
                 fbConnected(response.authResponse);
               } else if (response.status === 'not_authorized') {
@@ -154,45 +154,17 @@
          function fbConnected(authResponse) {
            
            FB.api('/me', function(response) {
-             
-             var str = "";
-             for(var k in response) {
-               if (response.hasOwnProperty(k)) {
-                 var t = typeof(response[k]);
-                 if (t == "object") {
-                   var innerObj = response[k]
-                   for(var j in innerObj) {
-                     var t = typeof(innerObj[j]);
-                     str += "response[" + k + "][" + j + "] *= " + innerObj[j] + " <- type: " + t + "\n";
-                   }
-                 } else {
-                   str += k + " = " + response[k] + " <- type: " + t + "\n";
-                 }
-               }
-             }
-             
-             console.log(str)
-             //console.log('name: ' + response.name + '.email: ' + response.email + '.username: ' + response.username + '.user_location' + response.user_location + '.user_hometown' +  response.user_hometown + '.');
              // check for account
              var result = fbCheckAccount(response, authResponse);
              // fbCheckAccount will verify a spoof is not happening then determine if there's
              // a matching account on site yet. if so, result will contain html for visiting a 
              // page that will log this user in.
              if (result == "not found") {
-               
                // no account on site yet.
-               // present button that will create/activate/login an account
-               // -> fbSignupActivateLogin
-               if ($('#fbSigningUp').length) {
-                 // login w facebook clicked, time to make the account and log them in
-                 window.location = '/fbSigningUp/';
-               } else {
-                 // it's found there's no matching account. if this link is pressed this process
-                 // will activate again, but this time an account will be created, activated and 
-                 // the user will be logged in
-                 var newAccountHtml = '<li class="nav-item"><a href="/fbSigningUp">Login with Facebook and agree to our terms</a></li>';
-                 $('#fbLoginButton').html(newAccountHtml);
-               }
+               // this is a unique situation where the person has authorized us to use their
+               // fb identity, but hasn't created an account yet. This assumes that's what they
+               // want to do and redirects once this situation is recognized.
+               window.location = '/fbSigningUp/';
              } else {
                if ($('#fbLoggingIn').length) {
                  // this element is only found on a page meant to be used as a redirect when
@@ -203,9 +175,6 @@
                  $('#fbLoginButton').html(result); 
                }
              }
-             console.log('result: ' + result);
-             // ? store name, email, username then redirect so server can handle this guy
-
            });
          }
        //})
