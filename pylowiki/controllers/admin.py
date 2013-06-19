@@ -148,9 +148,10 @@ class AdminController(BaseController):
                 eventLib.Event('Comment edited by %s'%c.authuser['name'], c.thing, c.authuser)
         elif c.thing.objType == 'idea':
             title = request.params['title']
+            text = request.params['text']
             if title.strip() == '':
                 title = blankText
-            if ideaLib.editIdea(c.thing, title, c.authuser):
+            if ideaLib.editIdea(c.thing, title, text, c.authuser):
                 alert = {'type':'success'}
                 alert['title'] = 'Idea edit.'
                 alert['content'] = 'Idea edit successful.'
