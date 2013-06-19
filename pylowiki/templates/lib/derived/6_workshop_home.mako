@@ -250,9 +250,9 @@
             </a>
 
           % else:
-            <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.png">
+            <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.jpg">
               <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
-              <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.png" data-caption="${showSlide['title']}"/>
+              <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.jpg" data-caption="${showSlide['title']}"/>
               <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
               <div style="width:100%; height:240px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.jpg'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
             </a>
