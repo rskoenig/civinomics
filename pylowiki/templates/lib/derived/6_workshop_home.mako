@@ -240,12 +240,21 @@
             <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
               <div style="width:100%; height:240px; background-image:url('/images/slide/slideshow/${showSlide['pictureHash']}.slideshow'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
             </a>
+
+          % elif 'format' in showSlide.keys():
+            <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${showSlide['format']}">
+              <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+              <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${showSlide['format']}" data-caption="${showSlide['title']}"/>
+              <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+              <div style="width:100%; height:240px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${showSlide['format']}'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
+            </a>
+
           % else:
             <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.png">
               <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
               <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.png" data-caption="${showSlide['title']}"/>
               <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
-              <div style="width:100%; height:240px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.png'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
+              <div style="width:100%; height:240px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.jpg'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
             </a>
           % endif
       </li>
