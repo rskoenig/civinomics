@@ -74,11 +74,12 @@ class IdeaController(BaseController):
         if 'submit' not in request.params or 'title' not in request.params:
             return redirect(session['return_to'])
         title = request.params['title'].strip()
+        text = request.params['text']
         if title == '':
             return redirect(session['return_to'])
         if len(title) > 120:
             title = title[:120]
-        newIdea = ideaLib.Idea(c.authuser, title, c.w, c.privs)
+        newIdea = ideaLib.Idea(c.authuser, title, text, c.w, c.privs)
         alertsLib.emailAlerts(newIdea)
         return redirect(utils.thingURL(c.w, newIdea))
     
