@@ -39,12 +39,13 @@ class ActivateController(BaseController):
                             session.save()
                         else:
                             # Send to the demo workshop
-                            demo = demoLib.getDemo()
-                            if not demo:
-                                log.info('not demo')
-                                returnURL = '/'
-                            else:
-                                returnURL = '/workshop/%s/%s#guider=tour_welcome' %(demo['urlCode'], demo['url'])
+                            #demo = demoLib.getDemo()
+                            #if not demo:
+                                #log.info('not demo')
+                                #returnURL = '/'
+                            #else:
+                                #returnURL = '/workshop/%s/%s#guider=tour_welcome' %(demo['urlCode'], demo['url'])
+                            returnURL = '/'
                         return redirect(returnURL)
                     else:
                         splashMsg['type'] = 'error'

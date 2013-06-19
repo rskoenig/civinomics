@@ -74,6 +74,7 @@
             </li>
          </ul>
       </fieldset>
+      ${self.additionalInfo(name="text")}
       ${self.submitButton()}
    </form>
 </%def>
@@ -87,7 +88,7 @@
 <%def name="additionalInfo(name='text')">
    <fieldset>
       <label>Additional information</label>
-      <textarea name="${name}" rows="12" class="input-block-level"></textarea>
+      <textarea name="${name}" rows="3" class="input-block-level"></textarea>
       <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
    </fieldset>
 </%def>
