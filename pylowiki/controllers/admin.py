@@ -210,6 +210,20 @@ class AdminController(BaseController):
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):
                 flagLib.Flag(thing, user, workshop = c.w)
+                
+    def _adoptEvent(self, user, thing, reason, action):
+        eventTitle = '%s %s' % (action.title(), thing.objType)
+        eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
+        eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
+        
+        title = 'Someone %s an idea you posted' %(action)
+        text = '(This is an automated message)'
+        extraInfo = action
+        parentAuthor = userLib.getUserByID(thing.owner)
+        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
+        eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
+        message = generic.linkChildToParent(message, thing)
+        dbHelpers.commit(message)
 
     def enable(self, thingCode):
         if c.error:
@@ -299,7 +313,8 @@ class AdminController(BaseController):
         ideaLib.adoptIdea(c.thing)
         title = "Adopted idea"
         data = "Idea adopted by " + c.authuser['name'] + ". " + c.reason
-        eventLib.Event(title, data, c.thing, c.authuser, reason = c.reason)
+        action = "adopted"
+        self._adoptEvent(c.authuser, c.thing, c.reason, action)
         result = 'Idea Adopted!'
         return json.dumps({'code':thingCode, 'result':result})
         
