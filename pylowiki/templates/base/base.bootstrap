@@ -164,7 +164,11 @@
                // this is a unique situation where the person has authorized us to use their
                // fb identity, but hasn't created an account yet. This assumes that's what they
                // want to do and redirects once this situation is recognized.
-               window.location = '/fbSigningUp/';
+               if ($('#fbSignUp').length) {
+                 console.log('almost done with new fb signup')
+               } else {
+                 window.location = '/signup/fbSignUp/';
+               }
              } else {
                if ($('#fbLoggingIn').length) {
                  // this element is only found on a page meant to be used as a redirect when

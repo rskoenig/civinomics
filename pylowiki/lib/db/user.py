@@ -58,6 +58,12 @@ def getUserByEmail(email, disabled = '0'):
     except:
         return False
 
+def getUserByFacebookId( userid ):
+    try:
+        return meta.Session.query(Thing).filter_by(userid = facebookId).one()
+    except:
+        return False
+
 def getUserByID(id):
     try:
         return meta.Session.query(Thing).filter_by(id = id).one()

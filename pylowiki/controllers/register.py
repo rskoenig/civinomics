@@ -8,7 +8,7 @@ from pylons import config
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
 
-from pylowiki.lib.db.user import User, getUserByEmail, getActiveUsers
+from pylowiki.lib.db.user import User, getUserByEmail, getUserByFacebookId, getActiveUsers
 from pylowiki.lib.db.pmember import getPrivateMemberByCode
 from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
 from pylowiki.lib.db.geoInfo import getPostalInfo
@@ -83,6 +83,32 @@ class RegisterController(BaseController):
         hash =  ''.join([choice(pool) for i in range(size)])
         return hash.lower()
 
+    def fbSignUpDisplay( self ):
+        """ This is an intermediary page for the signup process when a facebook user first
+        creates an account. """
+        c.numAccounts = 1000
+        c.numUsers = len(getActiveUsers())
+
+        if c.numUsers >= c.numAccounts:
+            splashMsg = {}
+            splashMsg['type'] = 'error'
+            splashMsg['title'] = 'Error:'
+            splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
+            session['splashMsg'] = splashMsg
+            session.save()
+            return redirect('/')
+
+        c.title = c.heading = "Registration using your Facbook Account"
+        c.success = False
+        splashMsg = {}
+        splashMsg['type'] = 'success'
+        splashMsg['title'] = 'Postal code and terms of use.'
+        splashMsg['content'] = 'Before we can sign you in, please provide your zipcode and agree to our use terms.'
+        session['splashMsg'] = splashMsg
+        session.save()
+
+        return render("/derived/fbSignUp.bootstrap")
+
     def fbSigningUp( self ):
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
@@ -102,8 +128,6 @@ class RegisterController(BaseController):
         """ Handler for registration, validates """
         returnPage = "/signup"
         name = False
-        #password = False
-        #password2 = False
         postalCode = False
         checkTOS = False
         c.title = c.heading = "Registration"
@@ -133,26 +157,26 @@ class RegisterController(BaseController):
                 log.info('facebook email missing')
             else:
                 email = session['fbEmail']
-        #if  'fbLocation' not in session:
-        #    log.info('facebook location missing')
-        #else:
-            #location = session['fbLocation']
-            #postalCode = getPostalFromFacebookLocation(location)
-        postalCode = '95060'
-        #if  'country' not in request.params:
-        #    log.info('country missing')
-        #else:
-        #    country = request.params['country']
-        country = "United States"
-        memberType = "professional"
+        if  'postalCode' not in request.params:
+            log.info('postalCode missing')
+        else:
+            postalCode = request.params['postalCode']
+        if  'country' not in request.params:
+            log.info('country missing')
+        else:
+            country = request.params['country']
+        if  'memberType' not in request.params:
+            log.info('memberType missing')
+        else:
+            memberType = request.params['memberType']
         if  'fbName' not in session:
             log.info('facebook name missing')
         else:
             name = session['fbName']
-        if  'fbCheckTOS' not in session:
-            log.info('facebook chkTOS missing')
+        if  'chkTOS' not in request.params:
+            log.info('chkTOS missing')
         else:
-            checkTOS = session['fbCheckTOS']
+            checkTOS = request.params['chkTOS']
 
         schema = plaintextForm()
         try:
@@ -193,7 +217,19 @@ class RegisterController(BaseController):
             if errorFound:
                 return redirect(returnPage)
             username = name
-            if getUserByEmail( email ) == False:
+            if 'facebookId' in session:
+                facebookId = session['facebookId']
+            else:
+                splashMsg['content'] = "Some required info is missing from the facebook data."
+                session['splashMsg'] = splashMsg
+                session.save() 
+                return redirect('/signup')
+            
+            user = getUserByFacebookId( facebookId )
+            if not user:
+                user = getUserByEmail( email )
+
+            if user == False:
                 # NOTE - generate password here.
                 #password = RegisterController.generatePassword()
                 from string import letters, digits
@@ -213,13 +249,24 @@ class RegisterController(BaseController):
                 splashMsg['content'] = "You now have an identity to use on our site."
                 session['splashMsg'] = splashMsg
                 session.save()
+
                 # if they are a guest signing up, activate and log them in
                 if c.w:
                     user = u.u
                     if 'laston' in user:
                         t = time.localtime(float(user['laston']))
                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
-                        
+                    
+                    # add facebook userid to user
+                    user['facebookId'] = facebookId
+                    # set profile pic to be from facebook
+                    user['extSource'] = {}
+                    # whenever the profile pic is needed, facebook will be asked for it
+                    # if a different external profile source becomes the basis for login, all other
+                    # source notices can be set to false by keeping them inside 'extSource'
+                    for extSource in user['extSource']:
+                        user['extSource'][extSource] = False
+                    user['extSource']['facebookSource'] = True
                     user['laston'] = time.time()
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
@@ -245,6 +292,18 @@ class RegisterController(BaseController):
                         t = time.localtime(float(user['laston']))
                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
                         
+                    # add facebook userid to user
+                    user['facebookId'] = facebookId
+                    user['extSource'] = True
+                    user['facebookSource'] = True
+                    # set profile pic to be from facebook
+                    #user['extSource'] = {}
+                    # whenever the profile pic is needed, facebook will be asked for it
+                    # if a different external profile source becomes the basis for login, all other
+                    # source notices can be set to false by keeping them inside 'extSource'
+                    #for extSource in user['extSource']:
+                    #    user['extSource'][extSource] = False
+                    #user['extSource']['facebookSource'] = True
                     user['laston'] = time.time()
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))

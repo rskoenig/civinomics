@@ -279,7 +279,8 @@ def make_map():
 
     # external authentication routes
     map.connect('/fbNewAccount{end:/?}', controller = 'register', action = 'fbNewAccount')
-    map.connect('/fbSigningUp{end:/?}', controller = 'register', action = 'fbSigningUp')
+    map.connect('/signup/fbSignUp{end:/?}', controller = 'register', action = 'fbSignUpDisplay')
+    map.connect('/signup/fbSigningUp{end:/?}', controller = 'register', action = 'fbSigningUp')
     map.connect('/{flogin:flogin/?}', controller = 'flogin', action = 'login')
     map.connect('/fbLogin{end:/?}', controller = 'login', action = 'fbLoginHandler')
     map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoggingIn')

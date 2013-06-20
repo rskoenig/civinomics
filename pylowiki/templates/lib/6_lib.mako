@@ -348,33 +348,45 @@
 </%def>
 
 <%def name="_userImageSource(user, **kwargs)">
-   <%
-      # Assumes 'user' is a Thing.
-      # Defaults to a gravatar source
-      # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
-      #                          we return a source based on the value given here (civ/gravatar)
-      source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
-      large = False
-      gravatar = True
-      if 'className' in kwargs:
-         if 'avatar-large' in kwargs['className']:
-            large = True
-      if 'forceSource' in kwargs:
-         if kwargs['forceSource'] == 'civ':
-            gravatar = False
-            if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
-               source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
-            else:
-               source = '/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png'
-      else:
-         if 'avatarSource' in user.keys():
-            if user['avatarSource'] == 'civ':
-               gravatar = False
-               source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
-      if large and gravatar:
-         source += '&s=200'
-      return source
-   %>
+    <%
+        # Assumes 'user' is a Thing.
+        # Defaults to a gravatar source
+        # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+        #                          we return a source based on the value given here (civ/gravatar)
+        source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+        large = False
+        gravatar = True
+
+        for thisKey in user.keys():
+            log.info("in userImageSource: user[%s] == %s"%(thisKey, user[thisKey]))
+
+        if 'className' in kwargs:
+            if 'avatar-large' in kwargs['className']:
+                large = True
+        if 'forceSource' in kwargs:
+            if kwargs['forceSource'] == 'civ':
+                gravatar = False
+                if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                else:
+                    source = '/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png'
+        elif 'extSource' in user.keys():
+            log.info("in extSource")
+            if 'facebookSource' in user.keys():
+                log.info("in fbSource 1")
+                if user['facebookSource'] == u'1':
+                    log.info("in facebookSource 2")
+                    gravatar = False
+                    source = 'https://sphotos-a.xx.fbcdn.net/hphotos-prn1/1010454_10151688284777847_1331112199_n.jpg'
+        else:
+            if 'avatarSource' in user.keys():
+                if user['avatarSource'] == 'civ':
+                    gravatar = False
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+        if large and gravatar:
+            source += '&s=200'
+        return source
+        %>
 </%def>
 
 <%def name="geoBreadcrumbs()">

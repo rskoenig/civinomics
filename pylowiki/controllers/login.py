@@ -61,53 +61,45 @@ class LoginController(BaseController):
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
         name, email, access, expires, signed, userid = id1.split("&")
-        #info = id1.split("&")
-        #for inf in info:
-        #    log.info("in login controller: %s" % inf)
-        #log.info("in login controller email: %s" % location)
-        log.info("in login controller email: %s" % name)
-        log.info("in login controller email: %s" % email)
-        log.info("in login controller access: %s" % access)
-        log.info("in login controller expires: %s" % expires)
-        log.info("in login controller signed: %s" % signed)
-        log.info("in login controller userid: %s" % userid)
+
+        #log.info("in login controller email: %s" % name)
+        #log.info("in login controller email: %s" % email)
+        #log.info("in login controller access: %s" % access)
+        #log.info("in login controller expires: %s" % expires)
+        #log.info("in login controller signed: %s" % signed)
+        #log.info("in login controller userid: %s" % userid)
 
         data = LoginController.verifyFbSignature(self, signed)
         if data is None:
             log.error('Invalid signature')
             return None
 
-        # we're good, signed request is valid. data we get is:
-        #key: issued_at
-        #data: 1370378594
-        #key: code
-        #data: AQDNf1wHzz..
-        #key: user_id
-        #data: 559612846
-        #key: algorithm
-        #data: HMAC-SHA256
+        user = userLib.getUserByFacebookId( int(userid) )
+        if not user:
+            user = userLib.getUserByEmail( email )
+            log.info("found user by email")
+        else:
+            log.info("found user by fb id")
 
-
-        user = userLib.getUserByEmail( email )
         if user:
             #- fb checker finds I'm logged in and auth'd
             #    - civ finds there's already a linked account
             session['fbAccessToken'] = access
             session['fbEmail'] = email
+            session['facebookId'] = userid
             session.save()
             newButton = '<li class="nav-item"><a href="/fbLogin">Login with Facebook</a></li>'
             return newButton            
         else:
             # load session with the info we need to create an account for this user if they decide
             # to 'log in with facebook'
+            session['facebookId'] = userid
             session['fbName'] = name
             session['fbEmail'] = email
             session['fbAccessToken'] = access
-            #session['fbLocation'] = location
-            #session['fbPostalCode'] # look up a postal code based on the city they're in
             session['fbCountry'] = 'United States'
             session['fbMemberType'] = 'professional'
-            session['fbCheckTOS'] = True
+            session['fbCheckTOS'] = False
             session.save()
             #- civ finds there's not yet an account or it is not yet linked
             #* present login button that prompts:
