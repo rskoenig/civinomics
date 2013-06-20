@@ -4,6 +4,7 @@ function fbCheckAccount(response, authResponse){
     //return newstring;
     var checkURL = "/extauth/fbEmail/" + response.name + "&" + response.email + "&" + authResponse.accessToken + "&" + authResponse.expiresIn + "&" + authResponse.signedRequest + "&" + authResponse.userID
     //var checkURL = "/geo/cityStateCountry/" + postalCode
+    console.log('posting to: ' + checkURL)
     var checkResult = $.ajax({
         type : 'POST',
         async : false,
@@ -20,6 +21,8 @@ function fbSetProfilePicSmall(picLink){
     var encodedLink = encodeURIComponent(picLink)
     console.log('in extauth small pic end: ' + encodedLink);
     var setURL = "/extauth/fbProfSm/" + encodedLink
+    //var setURL = "/extauth/fbEmail/" + encodedLink
+    console.log('posting to: ' + setURL)
     var checkResult = $.ajax({
         type : 'POST',
         async : false,
