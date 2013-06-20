@@ -258,7 +258,7 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
-                        % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted']:
+                        % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
                             <%
                                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
                                 if not event:

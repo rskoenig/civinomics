@@ -116,6 +116,11 @@
                     <div class="span9 list-item-text" id="content_${itemCounter}">
                         <% itemTitle = '<h5 class="no-bottom"><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                         ${itemTitle | n}
+                        % if item.objType == 'idea':
+                            % if item['adopted'] == '1':
+                                <small><i class="icon-star"></i> This idea adopted!</small>
+                            % endif
+                        % endif
                         % if item.objType == 'resource':
                             <p>
                                 <% itemTitle = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 75)) %>
