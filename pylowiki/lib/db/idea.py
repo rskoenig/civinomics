@@ -53,6 +53,11 @@ def editIdea(idea, title, text, owner):
     except:
         log.error('ERROR: unable to edit idea')
         return False
+
+def adoptIdea(idea):
+    idea['adopted'] = '1'
+    commit(idea)
+    return True
         
 def isAdopted(idea):
     if idea['adopted'] == '1':
