@@ -154,6 +154,25 @@
          function fbConnected(authResponse) {
            
            FB.api('/me', function(response) {
+             // the FQL query: Get the link of the image, that is the first in the album "Profile pictures" of this user.
+             var bigPicFql = FB.Data.query('select src_big from photo where pid in (select cover_pid from album where owner={0} and name="Profile Pictures")', response.id);
+             var bigPic = '';
+             bigPicFql.wait(function (rows) {
+               //the big pic link
+               bigPic = rows[0].src_big;
+               // NOTE - need to ajax this into the session on its own
+               //console.log('big pic: ' + bigPic)
+             });
+             //console.log('after big pic')
+             var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
+             var smallPic = '';
+             smallPicFql.wait(function (rows) {
+               //the small pic link
+               smallPic = rows[0].url;
+               // NOTE - need to ajax this into the session on its own
+               console.log('small pic: ' + smallPic)
+             });
+             //console.log('after small pic')
              // check for account
              var result = fbCheckAccount(response, authResponse);
              // fbCheckAccount will verify a spoof is not happening then determine if there's

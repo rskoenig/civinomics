@@ -259,14 +259,11 @@ class RegisterController(BaseController):
                     
                     # add facebook userid to user
                     user['facebookId'] = facebookId
-                    # set profile pic to be from facebook
-                    user['extSource'] = {}
-                    # whenever the profile pic is needed, facebook will be asked for it
-                    # if a different external profile source becomes the basis for login, all other
-                    # source notices can be set to false by keeping them inside 'extSource'
-                    for extSource in user['extSource']:
-                        user['extSource'][extSource] = False
-                    user['extSource']['facebookSource'] = True
+                    user['facebookAccessToken'] = session['fbAccessToken']
+                    user['extSource'] = True
+                    user['facebookSource'] = True
+                    user['facebookProfileSmall'] = session['fbSmallPic']
+                    user['facebookProfileBig'] = session['fbBigPic']
                     user['laston'] = time.time()
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
@@ -294,16 +291,11 @@ class RegisterController(BaseController):
                         
                     # add facebook userid to user
                     user['facebookId'] = facebookId
+                    user['facebookAccessToken'] = session['fbAccessToken']
                     user['extSource'] = True
                     user['facebookSource'] = True
-                    # set profile pic to be from facebook
-                    #user['extSource'] = {}
-                    # whenever the profile pic is needed, facebook will be asked for it
-                    # if a different external profile source becomes the basis for login, all other
-                    # source notices can be set to false by keeping them inside 'extSource'
-                    #for extSource in user['extSource']:
-                    #    user['extSource'][extSource] = False
-                    #user['extSource']['facebookSource'] = True
+                    user['facebookProfileSmall'] = session['fbSmallPic']
+                    user['facebookProfileBig'] = session['fbBigPic']
                     user['laston'] = time.time()
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))

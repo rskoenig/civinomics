@@ -377,7 +377,8 @@
                 if user['facebookSource'] == u'1':
                     log.info("in facebookSource 2")
                     gravatar = False
-                    source = 'https://sphotos-a.xx.fbcdn.net/hphotos-prn1/1010454_10151688284777847_1331112199_n.jpg'
+                    # NOTE - when to provide large or small link?
+                    source = user['facebookProfileSmall']
         else:
             if 'avatarSource' in user.keys():
                 if user['avatarSource'] == 'civ':

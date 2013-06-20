@@ -81,34 +81,23 @@ class LoginController(BaseController):
         else:
             log.info("found user by fb id")
 
-        if user:
-            #- fb checker finds I'm logged in and auth'd
-            #    - civ finds there's already a linked account
-            session['fbAccessToken'] = access
-            session['fbEmail'] = email
-            session['facebookId'] = userid
-            session.save()
+        session['facebookId'] = userid
+        session['fbEmail'] = email
+        session['fbAccessToken'] = access
+        session['fbName'] = name
+        #session['fbBigPic'] = bigPic
+        #session['fbSmallPic'] = smallPic
+        session.save()
+        if user:           
+            # civ finds there's already a linked account
             newButton = '<li class="nav-item"><a href="/fbLogin">Login with Facebook</a></li>'
             return newButton            
         else:
-            # load session with the info we need to create an account for this user if they decide
-            # to 'log in with facebook'
-            session['facebookId'] = userid
-            session['fbName'] = name
-            session['fbEmail'] = email
-            session['fbAccessToken'] = access
-            session['fbCountry'] = 'United States'
-            session['fbMemberType'] = 'professional'
-            session['fbCheckTOS'] = False
-            session.save()
             #- civ finds there's not yet an account or it is not yet linked
-            #* present login button that prompts:
-            #    - do you have an account on civinomics already? enter the email/password you use for this account, and we'll link it to your facebook info so you can login with this button in one click next time.
-            #    - if you don't already have an account with us, click continue and we will set it up so that you can use our site with your facebook identity, logging in with one click next time
             return "not found"
 
     def fbLoginHandler(self):
-        # NEW ANGLE!
+        # NOTE - find when this function is used compared to the one right before this
         # send user to page where id will be anych tested again - if it agrees with who
         # this process started with, we log them in
         # if not, a message pertaining to the sitch is put on splash and user is redirected to 
@@ -120,10 +109,13 @@ class LoginController(BaseController):
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
         #if 'fbAccessToken' in session and 'fbEmail' in session:
+        facebookId = session['facebookId']
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
         # get user
-        user = userLib.getUserByEmail( email )
+        user = userLib.getUserByFacebookId( facebookId )
+        if not user:
+            user = userLib.getUserByEmail( email )
         if user:
             # confirmed this user's account already exists - render a
             # page made just for logging in by asking facebook one more time
@@ -139,10 +131,12 @@ class LoginController(BaseController):
     def fbLoggingIn(self):
         # this page has already confirmed we're authd and logged in, just need to 
         # log this person in now
-        accessToken = session['fbAccessToken']
         email = session['fbEmail']
+        
         # get user
-        user = userLib.getUserByEmail( email )
+        user = userLib.getUserByFacebookId( facebookId )
+        if not user:
+            user = userLib.getUserByEmail( email )
         if user:
             LoginController.logUserIn(self, user)
         #else:
@@ -150,7 +144,14 @@ class LoginController(BaseController):
             # create new account flow from here? what are the possible cases?
 
     def logUserIn(self, user, **kwargs):
-        # todo logic to see if pass change on next login, display reset page
+        # NOTE - need to store the access token? kee in session or keep on user?
+        # keeping it on the user will allow interaction with user's facebook after they've logged off
+        # and by other people
+        user['facebookAccessToken'] = session['fbAccessToken']
+        user['extSource'] = True
+        user['facebookSource'] = True
+        user['facebookProfileSmall'] = session['fbSmallPic']
+        user['facebookProfileBig'] = session['fbBigPic']
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)

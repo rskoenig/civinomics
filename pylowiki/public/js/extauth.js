@@ -1,4 +1,4 @@
-function fbCheckAccount(response, authResponse){
+function fbCheckAccount(response, authResponse, bigPic, smallPic){
     // console.log('email in extauth: ' + email);
     //var newstring = 'email in extauth: ' + email;
     //return newstring;
