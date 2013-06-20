@@ -200,6 +200,11 @@
                             %>
                             ${showWorkshop(workshop, imageOnly = True)}
                             <a ${thingLink | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a> in workshop <a ${workshopLink | n}> ${workshop['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
+                            % if thing.objType == 'idea':
+                                % if thing['adopted'] == '1':
+                                    <br/><i class="icon-star"></i> This idea adopted!
+                                % endif
+                            % endif
                             <br />
                             Description: ${lib_6.ellipsisIZE(descriptionText, 135)}
                         </td> </tr>
