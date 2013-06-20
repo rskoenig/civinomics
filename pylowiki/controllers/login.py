@@ -67,7 +67,8 @@ class LoginController(BaseController):
         #log.info("in login controller access: %s" % access)
         #log.info("in login controller expires: %s" % expires)
         #log.info("in login controller signed: %s" % signed)
-        #log.info("in login controller userid: %s" % userid)
+        log.info("in login controller userid: %s" % userid)
+        
 
         data = LoginController.verifyFbSignature(self, signed)
         if data is None:
@@ -117,9 +118,13 @@ class LoginController(BaseController):
         if not user:
             user = userLib.getUserByEmail( email )
         if user:
-            # confirmed this user's account already exists - render a
-            # page made just for logging in by asking facebook one more time
-            # if this user is auth'd
+            # we have an active account. set their profile pic to be based on facebook's
+            user['extSource'] = True
+            user['facebookSource'] = True
+            if 'fbSmallPic' in session:
+                user['extSource'] = True
+                user['facebookSource'] = True
+                user['facebookProfileSmall'] = session['fbSmallPic']
             return render("/derived/fbLoggingIn.bootstrap")
             #LoginController.logUserIn(self, user)
         else:

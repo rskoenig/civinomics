@@ -260,10 +260,12 @@ class RegisterController(BaseController):
                     # add facebook userid to user
                     user['facebookId'] = facebookId
                     user['facebookAccessToken'] = session['fbAccessToken']
-                    user['extSource'] = True
-                    user['facebookSource'] = True
-                    user['facebookProfileSmall'] = session['fbSmallPic']
-                    user['facebookProfileBig'] = session['fbBigPic']
+                    if 'fbSmallPic' in session:
+                        user['extSource'] = True
+                        user['facebookSource'] = True
+                        user['facebookProfileSmall'] = session['fbSmallPic']
+                    
+                    #user['facebookProfileBig'] = session['fbBigPic']
                     user['laston'] = time.time()
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
@@ -292,10 +294,11 @@ class RegisterController(BaseController):
                     # add facebook userid to user
                     user['facebookId'] = facebookId
                     user['facebookAccessToken'] = session['fbAccessToken']
-                    user['extSource'] = True
-                    user['facebookSource'] = True
-                    user['facebookProfileSmall'] = session['fbSmallPic']
-                    user['facebookProfileBig'] = session['fbBigPic']
+                    if 'fbSmallPic' in session:
+                        user['extSource'] = True
+                        user['facebookSource'] = True
+                        user['facebookProfileSmall'] = session['fbSmallPic']
+                    #user['facebookProfileBig'] = session['fbBigPic']
                     user['laston'] = time.time()
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))

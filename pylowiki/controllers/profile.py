@@ -58,6 +58,14 @@ class ProfileController(BaseController):
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
     
+    def fbProfSm(self, id1):
+        # called when a user first arrives on the site, their profile pic link is updated
+        log.info("in profile controller smallPic link: %s" % id1)
+        # just set thi in the session. if the user decides to login or signup with facebook,
+        # that is when the user's profile data is updated
+        session['fbSmallPic'] = smallPic
+        return True
+
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
         rev = id3
