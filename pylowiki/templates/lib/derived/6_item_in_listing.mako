@@ -26,6 +26,18 @@
     </div>
 </%def>
 
+<%def name="showAdoptedMessage(thing)">
+    <% event = eventLib.getEventForThingWithAction(thing, 'adopted') %>
+    <div class="row-fluid">
+        <div class="span11 offset1">
+            <% 
+                    eventOwner = userLib.getUserByID(event.owner)
+            %>
+            <small><i class="icon-star"></i> This idea has been adopted by ${lib_6.userLink(eventOwner)} because: ${event['reason']}</small>
+        </div>
+    </div>
+</%def>
+
 <%def name="extraText(thing)">
     % if 'text' in thing.keys():
         <div class="row-fluid">
