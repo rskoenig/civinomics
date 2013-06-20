@@ -37,6 +37,9 @@
             <%
                 if c.thing['disabled'] == '1':
                     helpers.showDisabledMessage(c.thing)
+                if c.thing.objType == 'idea':
+                    if c.thing['adopted'] == '1':
+                        helpers.showAdoptedMessage(c.thing)
                 helpers.extraText(c.thing)
                 lib_6.revisionHistory(c.revisions, c.thing)
                 helpers.moderationPanel(c.thing)
