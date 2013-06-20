@@ -125,7 +125,7 @@
             else:
               printStr += 'Add an idea'
         elif thing == 'resources':
-            printStr += 'Add a resource'
+            printStr += '<i class="icon-white icon-plus"></i> Resource'
         printStr += '</a>'
       else:
         if 'small' in args:

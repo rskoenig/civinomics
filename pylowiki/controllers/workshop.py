@@ -940,7 +940,15 @@ class WorkshopController(BaseController):
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = False
 
-        c.listingType = 'info'
+        resources = resourceLib.getResourcesByWorkshopCode(workshopCode)
+        if not resources:
+            c.resources = []
+        else:
+            c.resources = sort.sortBinaryByTopPop(resources)
+        disabled = resourceLib.getResourcesByWorkshopCode(workshopCode, disabled = '1')
+        if disabled:
+            c.resources = c.resources + disabled
+        c.listingType = 'resources'
 
         
         return render('/derived/6_workshop_info.bootstrap')
