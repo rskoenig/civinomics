@@ -8,7 +8,7 @@ from pylons import config
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
 
-from pylowiki.lib.db.user import User, getUserByEmail, getUserByFacebookId, getActiveUsers
+from pylowiki.lib.db.user import User, getUserByEmail, getUserByFacebookAuthId, getActiveUsers
 from pylowiki.lib.db.pmember import getPrivateMemberByCode
 from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
 from pylowiki.lib.db.geoInfo import getPostalInfo
@@ -217,15 +217,15 @@ class RegisterController(BaseController):
             if errorFound:
                 return redirect(returnPage)
             username = name
-            if 'facebookId' in session:
-                facebookId = session['facebookId']
+            if 'facebookAuthId' in session:
+                facebookAuthId = session['facebookAuthId']
             else:
                 splashMsg['content'] = "Some required info is missing from the facebook data."
                 session['splashMsg'] = splashMsg
                 session.save() 
                 return redirect('/signup')
             
-            user = getUserByFacebookId( facebookId )
+            user = getUserByFacebookAuthId( facebookAuthId )
             if not user:
                 user = getUserByEmail( email )
 
@@ -258,8 +258,9 @@ class RegisterController(BaseController):
                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
                     
                     # add facebook userid to user
-                    user['facebookId'] = facebookId
+                    user['facebookAuthId'] = facebookAuthId
                     user['facebookAccessToken'] = session['fbAccessToken']
+                    user['externalAuthType'] = 'facebook'
                     if 'fbSmallPic' in session:
                         user['extSource'] = True
                         user['facebookSource'] = True
@@ -292,8 +293,9 @@ class RegisterController(BaseController):
                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
                         
                     # add facebook userid to user
-                    user['facebookId'] = facebookId
+                    user['facebookAuthId'] = facebookAuthId
                     user['facebookAccessToken'] = session['fbAccessToken']
+                    user['externalAuthType'] = 'facebook'
                     if 'fbSmallPic' in session:
                         user['extSource'] = True
                         user['facebookSource'] = True

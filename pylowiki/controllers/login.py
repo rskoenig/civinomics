@@ -60,14 +60,14 @@ class LoginController(BaseController):
         # this receives an email from the fb javascript auth checker, figures out what to do
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
-        name, email, access, expires, signed, userid = id1.split("&")
+        name, email, access, expires, signed, facebookAuthId = id1.split("&")
 
         #log.info("in login controller email: %s" % name)
         #log.info("in login controller email: %s" % email)
         #log.info("in login controller access: %s" % access)
         #log.info("in login controller expires: %s" % expires)
         #log.info("in login controller signed: %s" % signed)
-        log.info("in login controller userid: %s" % userid)
+        log.info("in login controller facebookAuthId: %s" % facebookAuthId)
         
 
         data = LoginController.verifyFbSignature(self, signed)
@@ -75,14 +75,14 @@ class LoginController(BaseController):
             log.error('Invalid signature')
             return None
 
-        user = userLib.getUserByFacebookId( int(userid) )
+        user = userLib.getUserByFacebookAuthId( int(facebookAuthId) )
         if not user:
             user = userLib.getUserByEmail( email )
             log.info("found user by email")
         else:
             log.info("found user by fb id")
 
-        session['facebookId'] = userid
+        session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
         session['fbAccessToken'] = access
         session['fbName'] = name
@@ -110,17 +110,15 @@ class LoginController(BaseController):
         # the visitor has decided to log in with their fb id
         # grab the access token, confirm it's still cool with fb, locate user and log in
         #if 'fbAccessToken' in session and 'fbEmail' in session:
-        facebookId = session['facebookId']
+        facebookAuthId = session['facebookAuthId']
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
         # get user
-        user = userLib.getUserByFacebookId( facebookId )
+        user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if not user:
             user = userLib.getUserByEmail( email )
         if user:
             # we have an active account. set their profile pic to be based on facebook's
-            user['extSource'] = True
-            user['facebookSource'] = True
             if 'fbSmallPic' in session:
                 user['extSource'] = True
                 user['facebookSource'] = True
@@ -136,10 +134,11 @@ class LoginController(BaseController):
     def fbLoggingIn(self):
         # this page has already confirmed we're authd and logged in, just need to 
         # log this person in now
+        facebookAuthId = session['facebookAuthId']
         email = session['fbEmail']
         
         # get user
-        user = userLib.getUserByFacebookId( facebookId )
+        user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if not user:
             user = userLib.getUserByEmail( email )
         if user:

@@ -20,7 +20,7 @@ function fbSetProfilePicSmall(picLink){
     console.log('in extauth small pic: ' + picLink);
     var encodedLink = encodeURIComponent(picLink)
     console.log('in extauth small pic end: ' + encodedLink);
-    var setURL = "/extauth/fbProfSm/" + encodedLink
+    var setURL = "/extauth/fbProfilePicSmall/" + encodedLink
     //var setURL = "/extauth/fbEmail/" + encodedLink
     console.log('posting to: ' + setURL)
     var checkResult = $.ajax({
