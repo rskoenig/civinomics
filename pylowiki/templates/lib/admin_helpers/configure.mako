@@ -201,7 +201,7 @@
 <%def name="edit_background()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Background</h4>
+            <h4 class="section-header smaller">Background <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></h4>
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
                <textarea rows="10" id="data" name="data" class="span12">${c.page['data']}</textarea>
                <div class="background-edit-wrapper">
