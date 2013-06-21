@@ -91,8 +91,8 @@ class LoginController(BaseController):
         session.save()
         if user:           
             # civ finds there's already a linked account
-            newButton = '<li class="nav-item"><a href="/fbLogin">Login with Facebook</a></li>'
-            return newButton            
+            newButton = 'found user'
+            return newButton
         else:
             #- civ finds there's not yet an account or it is not yet linked
             return "not found"
@@ -119,10 +119,12 @@ class LoginController(BaseController):
             user = userLib.getUserByEmail( email )
         if user:
             # we have an active account. set their profile pic to be based on facebook's
+            user['externalAuthType'] = 'facebook'
             if 'fbSmallPic' in session:
                 user['extSource'] = True
                 user['facebookSource'] = True
                 user['facebookProfileSmall'] = session['fbSmallPic']
+            commit(user)
             return render("/derived/fbLoggingIn.bootstrap")
             #LoginController.logUserIn(self, user)
         else:
@@ -151,11 +153,14 @@ class LoginController(BaseController):
         # NOTE - need to store the access token? kee in session or keep on user?
         # keeping it on the user will allow interaction with user's facebook after they've logged off
         # and by other people
-        user['facebookAccessToken'] = session['fbAccessToken']
-        user['extSource'] = True
-        user['facebookSource'] = True
-        user['facebookProfileSmall'] = session['fbSmallPic']
-        user['facebookProfileBig'] = session['fbBigPic']
+        if 'externalAuthType' in user.keys():
+            if user['externalAuthType'] == 'facebook':
+                user['facebookAccessToken'] = session['fbAccessToken']
+                if 'fbSmallPic' in session:
+                    user['extSource'] = True
+                    user['facebookSource'] = True
+                    user['facebookProfileSmall'] = session['fbSmallPic']
+                    #user['facebookProfileBig'] = session['fbBigPic']
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)

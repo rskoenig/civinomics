@@ -198,7 +198,8 @@
                  window.location = '/fbLoggingIn/';
                } else {
                  // replace current button with returned result
-                 $('#fbLoginButton').html(result); 
+                 var newButton = '<li class="nav-item"><a href="/fbLogin"><img src="/images/fb_connect.png" class="small-logo"></a></li>'
+                 $('#fbLoginButton').html(newButton); 
                }
              }
            });
