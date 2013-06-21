@@ -108,30 +108,37 @@
       if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:      
         printStr = '<a id="addButton" href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
         if thing == 'discussion':
-            printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'
+            printStr += 'discussion" title="Click to add a topic to this workshop"'
         elif thing == 'resources':
             printStr += 'resource" title="Click to add a resource to this workshop"'
         elif thing == 'ideas':
             printStr += 'idea" title="Click to add an idea to this workshop"'
-        if 'small' in args:
-          printStr += ' class="pull-right btn btn-small btn-civ right-space" type="button">'
-        else:  
-          printStr += ' class="pull-right btn btn-large btn-civ" type="button">'
-        if thing == 'discussion':
-            printStr += 'Add a conversation'
-        elif thing == 'ideas':
-            if 'small' in args:
-              printStr += '<i class="icon-white icon-plus"></i> Idea'
-            else:
-              printStr += 'Add an idea'
-        elif thing == 'resources':
-            printStr += '<i class="icon-white icon-plus"></i> Resource'
-        printStr += '</a>'
+
+      # if not logged in redirect user to login
       else:
-        if 'small' in args:
-          printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right right-space btn btn-small btn-civ" type="button" id="addButton">Login to Participate</a>'
-        else: 
-          printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right btn btn-large btn-civ" type="button" id="addButton">Login to Participate</a>'
+        printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/'
+        if thing == 'ideas':
+          printStr += '"'
+        if thing == 'resources':
+          printStr += 'info"'
+        else:
+          printStr += thing + '"'
+
+      # finish adding button text and icon
+      if 'small' in args:
+        printStr += ' class="pull-right btn btn-small btn-civ right-space" type="button"><i class="icon-white icon-plus"></i>'
+      else:  
+        printStr += ' class="pull-right btn btn-large btn-civ" type="button"><i class="icon-white icon-plus"></i>'
+
+      if thing == 'discussion':
+          printStr += ' Topic'
+      elif thing == 'ideas':
+          printStr += ' Idea'
+      elif thing == 'resources':
+          printStr += ' Resource'
+      printStr += '</a>'
+
+ 
 
    %>
    ${printStr | n}
@@ -415,9 +422,18 @@
                             ('city', city),
                             ('postalCode', c.authuser_geo['postalCode'])
                             ]
+
+        elif mainGeo in args:
+            outOfScope = True
     %>
     % if 'user' in session:
-        <ul class="nav nav-pills pull-left geo-breadcrumbs">
+        <% 
+          if mainGeo in args:
+            spanX = 'btn-block'
+          else:
+            spanX = ''
+        %>
+        <ul class="${spanX} nav nav-pills pull-left geo-breadcrumbs">
             % for scopeLevel in scopeMapping:
                 <%
                     activeClass = ''
@@ -441,10 +457,6 @@
                 </li>
             % endfor
         </ul>
-        % if mainGeo in args:
-          <br>
-          <br>
-        % endif
     % endif
     <% 
         return outOfScope
@@ -453,25 +465,26 @@
 
 <%def name="outOfScope()">
     <%
-        scopeName = c.scope['level'].title()
+        if c.scope['name'] == 'earth':
+          scopeName = c.scope['name'].title()
+        else:
+          scopeName = c.scope['level'].title()
 
-        # More mapping for the postal code, this time to display Postal Code instead of just Postal.
-        # The real fix for this is through use of message catalogs, which we will need to implement
-        # when we support multiple languages in the interface, so for right now this kludge is
-        # "good enough" 
-        if scopeName == 'postalCode':
-            scopeName = 'Postal Code'
+          # More mapping for the postal code, this time to display Postal Code instead of just Postal.
+          # The real fix for this is through use of message catalogs, which we will need to implement
+          # when we support multiple languages in the interface, so for right now this kludge is
+          # "good enough" 
+          if scopeName == 'Postalcode':
+              scopeName = 'Zip Code'
 
-        scopeName += " of "
-        scopeName += c.scope['name']\
-                        .replace('-', ' ')\
-                        .title()
+          scopeName += " of "
+          scopeName += c.scope['name']\
+                          .replace('-', ' ')\
+                          .title()
     %>
-    <ul class="nav nav-pills pull-left geo-breadcrumbs">
+    <ul class="btn-block nav nav-pills pull-left geo-breadcrumbs">
       <li class="active"><a href="#">${scopeName}</a></li>
     </ul>
-    <br>
-    <br>
 </%def>
 
 <%def name="userGeoLink(user, **kwargs)">

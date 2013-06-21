@@ -33,7 +33,7 @@
          ## uses the appropriate navbar, container and footer depending on the page
          ##
 
-         % if session._environ['PATH_INFO'] in ("/", "/signup", "/login", "/forgotPassword") or "activate" in session._environ['PATH_INFO']:
+         % if session._environ['PATH_INFO'] in ("/", "/signup", "/forgotPassword") or "activate" in session._environ['PATH_INFO'] or "/login" in session._environ['PATH_INFO']:
             <div id="wrap">
                ${helpers.splashNavbar()}
                <div>

@@ -3,14 +3,13 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
 
-<div class="spacer" style="height:20px;"></div>
+<div class="spacer"></div>
 
 <% 
    lib.return_to()
    helperText = '<strong class="orange">Vote</strong> existing items <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">), or add your own.'
    if c.listingType == 'discussion':
-      helperText = 'Ask a question, give feedback, join a conversation about the workshop, or add your own.'
-      helperText += '<br /><strong class="orange">Vote</strong> existing conversations <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.'
+      helperText = '<strong class="orange">Vote</strong> existing conversations <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.'
       itemList = c.discussions
 
    elif c.listingType == 'resources':
@@ -28,7 +27,7 @@
 <%def name="showListing(listingType, itemList, helperText)">
    <%
       if listingType == 'discussion':
-         pluralType = 'conversations'
+         pluralType = 'topics'
       elif listingType == 'resources':
          pluralType = 'resources'
       elif listingType == 'ideas':
@@ -40,15 +39,12 @@
             ${helperText | n}
          </span>
       </div><!-- span8 -->
-      <div class="span4">
-         ${lib_6.createNew(listingType)}
-      </div><!--/.span4 -->
    </div><!--/.row-fluid-->
    <div class="row-fluid">
       <div class="span12">
          <div class="section-wrapper">
             <div class="browse">
-               <h3 class="section-header"> ${pluralType.title()} </h3>
+               <h4 class="section-header smaller"> ${pluralType.title()} ${lib_6.createNew(listingType, 'small')}</h4>
                ${helpers.showListing(listingType)}
             </div><!--/.browse-->
          </div><!--/.section-wrapper-->

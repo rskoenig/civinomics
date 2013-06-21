@@ -123,9 +123,7 @@
       linkID = objType + 'Button'
    %>
    <a class="${linkClass}" id="${linkID}" href = "${linkHref | n}"> <img class="workshop-nav-icon" src="${imageMap[objType] | n}">${titleMap[objType]} 
-   % if objType != 'info':
       (${count})
-   % endif
     </a>
 </%def>
 
@@ -159,24 +157,24 @@
    %>
    <div class="btn-group four-up">
    <% 
-      if listingType == 'resources':
+      if listingType == 'resources' or listingType == 'resource':
          workshopNavButton(w, ideaCount, 'home')
-         workshopNavButton(w, 0, 'info', active = True)
+         workshopNavButton(w, resourceCount, 'info', active = True)
          workshopNavButton(w, discussionCount, 'discussion')
          #workshopNavButton(w, ideaCount, 'idea')
       elif listingType == 'discussion':
          workshopNavButton(w, ideaCount, 'home')
-         workshopNavButton(w, 0, 'info')
+         workshopNavButton(w, resourceCount, 'info')
          workshopNavButton(w, discussionCount, 'discussion', active = True)
          #workshopNavButton(w, ideaCount, 'idea')
       elif listingType == 'ideas' or listingType == 'idea':
          workshopNavButton(w, ideaCount, 'home', active = True)
-         workshopNavButton(w, 0, 'info')
+         workshopNavButton(w, resourceCount, 'info')
          workshopNavButton(w, discussionCount, 'discussion')
          #workshopNavButton(w, ideaCount, 'idea', active = True)
-      elif listingType == 'resources' or listingType == 'resource':
+      else:
          workshopNavButton(w, ideaCount, 'home')
-         workshopNavButton(w, 0, 'info')
+         workshopNavButton(w, resourceCount, 'info')
          workshopNavButton(w, discussionCount, 'discussion')
          #workshopNavButton(w, ideaCount, 'idea')
    %>
