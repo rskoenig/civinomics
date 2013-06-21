@@ -1,82 +1,131 @@
-<pre>
-Civinomics Formatting Guide
-
-This guide shows you how to add formatting to your item. 
-Remember, you can edit your item after submitting it, 
+<!DOCTYPE html>
+<html lang="en">
+<link rel="stylesheet" href="/styles/vendor/bootstrap.css">
+<link rel="stylesheet" href="/styles/vendor/bootstrap-responsive.min.css">
+<h2>Civinomics Formatting Guide</h2>
+This guide shows you how to add formatting to your item.
+Remember, you can edit your item after submitting it,
 so don't be afraid to experiment.
 
-Headers
-----------
+<h3>Headers</h3>
+Using hash characters to make H1, H2, H3, H4, H5 or H6 headers:
+<pre>
+# H1
+## H2
+### H3
+#### H4
+##### H5
+###### H6
+</pre>
+<p>
+will render as:
+<div class="well">
+<h1>H1</h1>
+<h2>H2</h2>
+<h3>H3</h3>
+<h4>H4</h4>
+<h5>H5</h5>
+<h6>H6</h6>
+</div>
 
-# Biggest #
-## Big ##
-### Medium-big ###
-#### Medium-small ####
-##### Smaller #####
-###### smallest
+<h3>Links</h3>
+
+<p>Adding links with text like this:</p>
+<div class="well">
+[Visit Civinomics Today](http://civinomics.com)   
+</div>
+will render like this:
+<div class="well">
+<a href="http://civinomics.com">Visit Civinomics Today</a>  
+</div>
 
 
-Links
------
+<h3>Text</h3>
 
-Raw links: <http://civinomics.com>
+<p>Using asterisks or underlines to italisize text like this:</p>
 
-Links with [text](http://civinomics.com).
+<div class="well">You can emphasize text like *this* or like _this_</div>
 
-You can add hover words(which show up under the cursor), 
-[like this](http://civ.io "Hovering text").
+will render like this:
+<div class="well">You can emphasize text like <em>this</em> or like <em>this</em></div>
 
-Text
-------
+<p>Using double asterisks or double underlines to embolden text like this:</p>
 
-There are 2 ways to emphasize text: 
+<div class="well">You can make text bold like **this** or like __this__</div>
 
-*like this* or _like this_ 
+will render like this:
+<div class="well">You can make text bold like <strong>this</strong> or like <strong>this</strong></div>
 
-Blank lines separate paragraphs.
+<p>Blank lines separate paragraphs.</p>
 
 
-Quoting
-----------
-> This is quoted *like email*
-Even though this line doesn't have the '>' character, 
-it's still part of the same paragraph, so it's still quoted.
+<h3>Quoting</h3>
 
-This paragraph is not quoted.
+Blockquotes are handy to emulate a reply to text, like your email app does. Using a
+right angle bracket/greater than sign to add block quotes like this:
+<div class="well">&gt; This is original text to which I want to respond</div>
+will render like this:
+<blockquote>This is original text to which I want to respond</blockquote>
 
-Literal text
-----------------
 
-You can use `*backquotes*` to mark certain sections as literal text 
-(Note it is not italicized)
+<h3>Literal text</h3>
 
-    You can apply this to entire paragraphs by starting with four spaces
-    These two lines start off with four spaces.
+Using backquotes to mark inline literal text like this:
+<div class="well">This is `literal text` and I like it</div>
+will render like this:
+<p>This is <code style="color: black">literal text</code> and I like it</p>
 
-Lists
---------
-Bulleted lists
+<p>You can apply this to entire paragraphs by starting each line with four spaces.</p>
 
-* Asterisks
-* make
-* unordered
-* lists
+<h3>Lists</h3>
 
-Numbered lists
+Using asterisks to make bullet lists like this:
+<p><div class="well">
+* Asterisks<br />
+* make<br />
+* bullet<br />
+* lists<br />
+</div>
+</p>
+will render like this:
+<div class="well">
+<ul>
+<li>Asterisks</li>
+<li>make</li>
+<li>bullet</li>
+<li>lists</li>
+</ul>
+</div>
 
-1. numbers
-2. make
-3. numbered
-4. lists
-1. the number used does not matter
+Using numbers to make numbered lists like this:
+<p>
+<div class="well">
+1. numbers<br />
+2. make<br />
+3. numbered<br />
+4. lists<br />
+1. the number used does not matter<br />
+</div>
+</p>
+will render like this:
+<p>
+<div class="well">
+<ol>
+<li>numbers</li>
+<li>make</li>
+<li>numbered</li>
+<li>lists</li>
+<li>the number used does not matter<br />
+</ol>
+</div>
+</p>
+<h3>Images</h3>
 
-Images
-----------
-You can add inline images hosted elsewhere, with alt text, 
-like this:
+Adding inline images hosted elsewhere, with alt text, like this:
 
-![alt text](https://civinomics.com/images/logo.png "Civinomics Logo")
+<p><div class="well">![The Civinomics Logo](https://civinomics.com/images/logo.png "Civinomics Logo")</div></p>
+will render like this:
+<p><img src="https://civinomics.com/images/logo.png" alt="The Civinomics Logo"></p>
 
 Note that images are not supported in comments.
-
-</pre>
+</html>
