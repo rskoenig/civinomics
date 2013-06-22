@@ -97,7 +97,7 @@
                                 </div>
                                 <div class="control-group">
                                     <div class="controls">
-                                        <button class="btn btn-success disabled" ng-show="signupForm.$invalid">Sign up</button>
+                                        <button class="btn btn-success disabled" ng-show="signupForm.$invalid" onClick="event.preventDefault(); return 0;">Sign up</button>
                                         <button type="submit" class="btn btn-success" ng-show="signupForm.$valid">Sign up</button>
                                     </div>
                                 </div>
