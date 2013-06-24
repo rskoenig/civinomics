@@ -45,4 +45,14 @@ function ProfileEditController($scope, $http) {
             }
       });
     };
+
+    $scope.emailOnComments = function() {
+        $scope.emailOnCommentsShow     = false;
+        var addedURL = '/profile/preferences/' + $scope.code + '/' + $scope.url + '/comments/handler';
+        var postData = {'user':$scope.userCode, 'alert':'comments'};
+        $http.post(addedURL, postData).success(function(data){
+            $scope.emailOnCommentsShow = true;
+            $scope.emailOnCommentsResponse = data;
+        });
+    }
 }
