@@ -178,6 +178,7 @@ class User(object):
         u['memberType'] =  memberType
         u['password'] = self.hashPassword(password)
         u['totalPoints'] = 1
+        u['commentAlerts'] = '1'
         u['url'] = urlify('%s' %name)
         u['numSuggestions'] = 0
         u['numReadResources'] = 0

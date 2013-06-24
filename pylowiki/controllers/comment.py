@@ -17,7 +17,8 @@ import pylowiki.lib.db.generic      as  genericLib
 import pylowiki.lib.db.mainImage    as  mainImageLib
 import pylowiki.lib.db.dbHelpers    as  dbHelpers
 import pylowiki.lib.utils           as  utils
-import pylowiki.lib.alerts          as alertsLib
+import pylowiki.lib.alerts          as  alertsLib
+import pylowiki.lib.mail            as  mailLib
 
 log = logging.getLogger(__name__)
 import pylowiki.lib.helpers as h
@@ -79,6 +80,11 @@ class CommentController(BaseController):
             message = genericLib.linkChildToParent(message, comment.c)
             dbHelpers.commit(message)
             alertsLib.emailAlerts(comment)
+            if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):
+                mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
+                if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
+                    mailLib.sendCommentMail(parentAuthor['email'], parentComment, workshop, data)
+                
             return redirect(utils.thingURL(workshop, thing))
                 
         except KeyError:
