@@ -549,7 +549,37 @@ class ProfileController(BaseController):
         c.user['avatarSource'] = source
         dbHelpers.commit(c.user)
         return json.dumps({"statusCode": 0})
-    
+        
+    @h.login_required
+    def preferencesCommentsHandler(self, id1, id2):
+        # initialize to current value if any, '0' if not set in object
+        cAlerts = '0'
+        eAction = ''
+        if 'itemAlerts' in c.user:
+            cAlerts = c.user['commentAlerts']
+        
+        payload = json.loads(request.body)
+        if 'alert' not in payload:
+            return "Error"
+        alert = payload['alert']
+        if alert == 'comments':
+            if 'commentAlerts' in c.user.keys():
+                if c.user['commentAlerts'] == u'1':
+                    c.user['commentAlerts'] = u'0'
+                    eAction = 'Turned off'
+                else:
+                    c.user['commentAlerts'] = u'1'
+                    eAction = 'Turned on'
+            else:
+                c.user['commentAlerts'] = u'1'
+                eAction = 'Turned on'
+        else:
+            return "Error"   
+        dbHelpers.commit(c.user)
+        if eAction != '':
+            eventLib.Event('Member comment notifications set', eAction, c.user, c.authuser)
+        return eAction      
+  
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):
         perror = 0
