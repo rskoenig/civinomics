@@ -164,44 +164,49 @@
              //});
              //console.log('after big pic')
              console.log('check fql id: ' + response.id)
-              var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
-              var smallPic = '';
-              smallPicFql.wait(function (rows) {
-                //the small pic link
-                smallPic = rows[0].url;
-                var picSet = fbSetProfilePicSmall(smallPic);
-                // NOTE - need to ajax this into the session on its own
-                console.log('small pic: ' + smallPic)
-
-              });
-             //console.log('after small pic')
-             // check for account
-             var result = fbCheckAccount(response, authResponse);
-             //var result = '<li class="nav-item"><a href="/fbLogin">Login with Facebook</a></li>'
-             // fbCheckAccount will verify a spoof is not happening then determine if there's
-             // a matching account on site yet. if so, result will contain html for visiting a 
-             // page that will log this user in.
-             if (result == "not found") {
-               // no account on site yet.
-               // this is a unique situation where the person has authorized us to use their
-               // fb identity, but hasn't created an account yet. This assumes that's what they
-               // want to do and redirects once this situation is recognized.
-               if ($('#fbSignUp').length) {
-                 console.log('almost done with new fb signup')
+             var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
+             var smallPic = '';
+             var holder = 0;
+             smallPicFql.wait(function (rows) {
+               //the small pic link
+               smallPic = rows[0].url;
+               //var picSet = fbSetProfilePicSmall(smallPic);
+               // NOTE - need to ajax this into the session on its own
+               console.log('small pic: ' + smallPic)
+               holder = 1;
+             });
+             var result = ''
+             setTimeout(function(){
+               //where we can also call foo
+               result = fbCheckAccount(response, authResponse, smallPic);
+               console.log('result == ' + result)
+               // check for account
+               //var result = '<li class="nav-item"><a href="/fbLogin">Login with Facebook</a></li>'
+               // fbCheckAccount will verify a spoof is not happening then determine if there's
+               // a matching account on site yet. if so, result will contain html for visiting a 
+               // page that will log this user in.
+               if (result == "not found") {
+                 // no account on site yet.
+                 // this is a unique situation where the person has authorized us to use their
+                 // fb identity, but hasn't created an account yet. This assumes that's what they
+                 // want to do and redirects once this situation is recognized.
+                 if ($('#fbSignUp').length) {
+                   console.log('almost done with new fb signup')
+                 } else {
+                   window.location = '/signup/fbSignUp/';
+                 }
                } else {
-                 window.location = '/signup/fbSignUp/';
+                 if ($('#fbLoggingIn').length) {
+                   // this element is only found on a page meant to be used as a redirect when
+                   // the 'login with facebook' link has been clicked.
+                   window.location = '/fbLoggingIn/';
+                 } else {
+                   // replace current button with returned result
+                   var newButton = '<li class="nav-item"><a href="/fbLogin"><img src="/images/fb_connect.png" class="small-logo"></a></li>'
+                   $('#fbLoginButton').html(newButton); 
+                 }
                }
-             } else {
-               if ($('#fbLoggingIn').length) {
-                 // this element is only found on a page meant to be used as a redirect when
-                 // the 'login with facebook' link has been clicked.
-                 window.location = '/fbLoggingIn/';
-               } else {
-                 // replace current button with returned result
-                 var newButton = '<li class="nav-item"><a href="/fbLogin"><img src="/images/fb_connect.png" class="small-logo"></a></li>'
-                 $('#fbLoginButton').html(newButton); 
-               }
-             }
+             },1000);
            });
          }
        //})

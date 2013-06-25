@@ -60,15 +60,12 @@ class LoginController(BaseController):
         # this receives an email from the fb javascript auth checker, figures out what to do
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
-        name, email, access, expires, signed, facebookAuthId = id1.split("&")
-
-        #log.info("in login controller email: %s" % name)
-        #log.info("in login controller email: %s" % email)
-        #log.info("in login controller access: %s" % access)
-        #log.info("in login controller expires: %s" % expires)
-        #log.info("in login controller signed: %s" % signed)
-        log.info("in login controller facebookAuthId: %s" % facebookAuthId)
+        name, email, access, expires, signed, facebookAuthId, smallPic = id1.split("&")
         
+        # url has been encoded and the % replaced with , in order for extauth.js to be able to 
+        # ajax it over here
+        smallPic = smallPic.replace(",","%")
+        smallPic = urllib2.unquote(smallPic)
 
         data = LoginController.verifyFbSignature(self, signed)
         if data is None:
@@ -78,7 +75,7 @@ class LoginController(BaseController):
         user = userLib.getUserByFacebookAuthId( int(facebookAuthId) )
         if not user:
             user = userLib.getUserByEmail( email )
-            log.info("found user by email")
+            log.info("found user by email " + email)
         else:
             log.info("found user by fb id")
 
@@ -87,14 +84,16 @@ class LoginController(BaseController):
         session['fbAccessToken'] = access
         session['fbName'] = name
         #session['fbBigPic'] = bigPic
-        #session['fbSmallPic'] = smallPic
+        session['fbSmallPic'] = smallPic
         session.save()
         if user:           
             # civ finds there's already a linked account
+            log.info("returning 'found user'")
             newButton = 'found user'
             return newButton
         else:
             #- civ finds there's not yet an account or it is not yet linked
+            log.info("returning 'not found'")
             return "not found"
 
     def fbLoginHandler(self):
