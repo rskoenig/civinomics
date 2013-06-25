@@ -60,12 +60,15 @@ class LoginController(BaseController):
         # this receives an email from the fb javascript auth checker, figures out what to do
         # is there a user with this email?
         # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
-        name, email, access, expires, signed, facebookAuthId, smallPic = id1.split("&")
+        name, email, access, expires, signed, facebookAuthId, smallPic, bigPic = id1.split("&")
         
+
         # url has been encoded and the % replaced with , in order for extauth.js to be able to 
         # ajax it over here
         smallPic = smallPic.replace(",","%")
         smallPic = urllib2.unquote(smallPic)
+        bigPic = bigPic.replace(",","%")
+        bigPic = urllib2.unquote(bigPic)
 
         data = LoginController.verifyFbSignature(self, signed)
         if data is None:
@@ -77,13 +80,13 @@ class LoginController(BaseController):
             user = userLib.getUserByEmail( email )
             log.info("found user by email " + email)
         else:
-            log.info("found user by fb id")
+            log.info("found user by facebook id")
 
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
         session['fbAccessToken'] = access
         session['fbName'] = name
-        #session['fbBigPic'] = bigPic
+        session['fbBigPic'] = bigPic
         session['fbSmallPic'] = smallPic
         session.save()
         if user:           
@@ -123,6 +126,7 @@ class LoginController(BaseController):
                 user['extSource'] = True
                 user['facebookSource'] = True
                 user['facebookProfileSmall'] = session['fbSmallPic']
+                user['facebookProfileBig'] = session['fbBigPic']
             commit(user)
             return render("/derived/fbLoggingIn.bootstrap")
             #LoginController.logUserIn(self, user)

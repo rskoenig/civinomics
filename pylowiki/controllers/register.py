@@ -110,6 +110,7 @@ class RegisterController(BaseController):
         return render("/derived/fbSignUp.bootstrap")
 
     def fbSigningUp( self ):
+        log.info("singing up with fb")
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
@@ -265,8 +266,8 @@ class RegisterController(BaseController):
                         user['extSource'] = True
                         user['facebookSource'] = True
                         user['facebookProfileSmall'] = session['fbSmallPic']
+                        user['facebookProfileBig'] = session['fbBigPic']
                     
-                    #user['facebookProfileBig'] = session['fbBigPic']
                     user['laston'] = time.time()
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
@@ -300,6 +301,7 @@ class RegisterController(BaseController):
                         user['extSource'] = True
                         user['facebookSource'] = True
                         user['facebookProfileSmall'] = session['fbSmallPic']
+                        user['facebookProfileBig'] = session['fbBigPic']
                     #user['facebookProfileBig'] = session['fbBigPic']
                     user['laston'] = time.time()
                     user['activated'] = u'1'
