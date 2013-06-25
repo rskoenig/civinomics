@@ -259,7 +259,7 @@ class RegisterController(BaseController):
                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
                     
                     # add facebook userid to user
-                    user['facebookAuthId'] = facebookAuthId
+                    user['facebookAuthId'] = unicode(facebookAuthId)
                     user['facebookAccessToken'] = session['fbAccessToken']
                     user['externalAuthType'] = 'facebook'
                     if 'fbSmallPic' in session:

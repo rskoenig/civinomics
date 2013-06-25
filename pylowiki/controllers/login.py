@@ -50,9 +50,9 @@ class LoginController(BaseController):
             # we have signature verified data
             # return data
 
-        for piece in data:
-            log.info("signature key: %s" % piece)
-            log.info("signature data: %s" % data[piece])
+        #for piece in data:
+        #    log.info("signature key: %s" % piece)
+        #    log.info("signature data: %s" % data[piece])
 
         return data
 
@@ -75,12 +75,18 @@ class LoginController(BaseController):
             log.error('Invalid signature')
             return None
 
-        user = userLib.getUserByFacebookAuthId( int(facebookAuthId) )
+        user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if not user:
             user = userLib.getUserByEmail( email )
-            log.info("found user by email " + email)
+            if user:
+                log.info("found user by email " + email)
         else:
-            log.info("found user by facebook id")
+            if user:
+                log.info("found user by facebook id")
+
+        if user:
+            for thisKey in user.keys():
+                log.info("user %s == %s"%(thisKey, user[thisKey]))
 
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
@@ -116,7 +122,7 @@ class LoginController(BaseController):
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
         # get user
-        user = userLib.getUserByFacebookAuthId( facebookAuthId )
+        user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
         if not user:
             user = userLib.getUserByEmail( email )
         if user:
