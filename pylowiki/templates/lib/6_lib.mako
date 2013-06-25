@@ -368,13 +368,8 @@
                 else:
                     source = '/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png'
         elif 'extSource' in user.keys():
-            log.info("in extSource")
             if 'facebookSource' in user.keys():
-                for thisKey in user.keys():
-                    log.info("in userImageSource: user[%s] == %s"%(thisKey, user[thisKey]))
-                log.info("in fbSource 1")
                 if user['facebookSource'] == u'1':
-                    log.info("in facebookSource 2")
                     gravatar = False
                     # NOTE - when to provide large or small link?
                     if large:
