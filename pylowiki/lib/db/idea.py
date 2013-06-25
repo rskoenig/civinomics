@@ -42,16 +42,22 @@ def getAllIdeas(deleted = '0', disabled = '0'):
     except:
         return False
 
-def editIdea(idea, title, owner):
+def editIdea(idea, title, text, owner):
     try:
         r = revisionLib.Revision(owner, idea)
         idea['title'] = title
+        idea['text'] = text
         idea['url'] = urlify(title)
         commit(idea)
         return True
     except:
         log.error('ERROR: unable to edit idea')
         return False
+
+def adoptIdea(idea):
+    idea['adopted'] = '1'
+    commit(idea)
+    return True
         
 def isAdopted(idea):
     if idea['adopted'] == '1':
@@ -82,13 +88,15 @@ def searchIdeas(key, value, count = False, deleted = u'0', disabled = u'0'):
     except:
         return False
 
-def Idea(user, title, workshop, privs, role = None):
+def Idea(user, title, text, workshop, privs, role = None):
     """
         user    ->  The user Thing creating the idea
         title   ->  The idea itself, in string format.
+        text   ->   The additional text, in string format
     """
     idea = Thing('idea', user.id)
     idea['title'] = title
+    idea['text'] = text
     idea['disabled'] = '0'
     idea['deleted'] = '0'
     idea['adopted'] = '0'

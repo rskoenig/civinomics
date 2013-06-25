@@ -74,6 +74,7 @@
             </li>
          </ul>
       </fieldset>
+      ${self.additionalInfo(name="text")}
       ${self.submitButton()}
    </form>
 </%def>
@@ -86,8 +87,8 @@
 
 <%def name="additionalInfo(name='text')">
    <fieldset>
-      <label>Additional information</label>
-      <textarea name="${name}" rows="12" class="input-block-level"></textarea>
+      <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+      <textarea name="${name}" rows="3" class="input-block-level"></textarea>
       <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
    </fieldset>
 </%def>

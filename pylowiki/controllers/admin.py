@@ -39,7 +39,7 @@ class AdminController(BaseController):
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         # Actions that require a workshop and a workshop child object
-        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify']:
+        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
@@ -66,7 +66,7 @@ class AdminController(BaseController):
             workshop = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
             if not workshop:
                 return json.dumps({'code':thingCode, 'result':'ERROR'})
-        if action in ['edit', 'enable', 'disable', 'immunify']:
+        if action in ['edit', 'enable', 'disable', 'immunify', 'adopt']:
             # Check if a non-admin is attempting to mess with an item already touched by an admin
             if c.thing['disabled'] == u'1':
                 event = eventLib.getEventsWithAction(c.thing, 'disabled')[0]
@@ -82,10 +82,10 @@ class AdminController(BaseController):
         if action in ['delete', 'setDemo']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
-        if action in ['enable', 'disable', 'immunify']:
+        if action in ['enable', 'disable', 'immunify', 'adopt']:
             if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
-        if action in ['enable', 'disable', 'immunify', 'delete']:
+        if action in ['enable', 'disable', 'immunify', 'delete', 'adopt']:
             # Surely there must be a more elegant way to pass along this common variable
             if 'reason' not in request.params:
                 c.reason = '(No reason given.)'
@@ -148,9 +148,10 @@ class AdminController(BaseController):
                 eventLib.Event('Comment edited by %s'%c.authuser['name'], c.thing, c.authuser)
         elif c.thing.objType == 'idea':
             title = request.params['title']
+            text = request.params['text']
             if title.strip() == '':
                 title = blankText
-            if ideaLib.editIdea(c.thing, title, c.authuser):
+            if ideaLib.editIdea(c.thing, title, text, c.authuser):
                 alert = {'type':'success'}
                 alert['title'] = 'Idea edit.'
                 alert['content'] = 'Idea edit successful.'
@@ -209,6 +210,20 @@ class AdminController(BaseController):
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):
                 flagLib.Flag(thing, user, workshop = c.w)
+                
+    def _adoptEvent(self, user, thing, reason, action):
+        eventTitle = '%s %s' % (action.title(), thing.objType)
+        eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
+        eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
+        
+        title = 'Someone %s an idea you posted' %(action)
+        text = '(This is an automated message)'
+        extraInfo = action
+        parentAuthor = userLib.getUserByID(thing.owner)
+        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
+        eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
+        message = generic.linkChildToParent(message, thing)
+        dbHelpers.commit(message)
 
     def enable(self, thingCode):
         if c.error:
@@ -285,6 +300,22 @@ class AdminController(BaseController):
             return json.dumps({'code':thingCode, 'result':result})
         flagLib.FlagMetaData(c.thing, c.authuser, c.reason)
         result = 'Marked immune!'
+        return json.dumps({'code':thingCode, 'result':result})
+        
+    def adopt(self, thingCode):
+        if c.error:
+            return c.returnDict
+        if ideaLib.isAdopted(c.thing):
+            adoptEvent = eventLib.getEventForThingWithAction(c.thing, 'adopted')
+            author = userLib.getUserByID(adoptEvent.owner)
+            result = 'Already adopted by %s because %s' %(author['name'], adoptEvent['reason'])
+            return json.dumps({'code':thingCode, 'result':result})
+        ideaLib.adoptIdea(c.thing)
+        title = "Adopted idea"
+        data = "Idea adopted by " + c.authuser['name'] + ". " + c.reason
+        action = "adopted"
+        self._adoptEvent(c.authuser, c.thing, c.reason, action)
+        result = 'Idea Adopted!'
         return json.dumps({'code':thingCode, 'result':result})
         
     def setDemo(self, thingCode):

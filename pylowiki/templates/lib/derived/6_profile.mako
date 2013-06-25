@@ -200,6 +200,11 @@
                             %>
                             ${showWorkshop(workshop, imageOnly = True)}
                             <a ${thingLink | n}> ${lib_6.ellipsisIZE(thing['title'], 60)} </a> in workshop <a ${workshopLink | n}> ${workshop['title']} </a> on <span class="green">${thing.date.strftime('%b %d, %Y')}</span>
+                            % if thing.objType == 'idea':
+                                % if thing['adopted'] == '1':
+                                    <br/><i class="icon-star"></i> This idea adopted!
+                                % endif
+                            % endif
                             <br />
                             Description: ${lib_6.ellipsisIZE(descriptionText, 135)}
                         </td> </tr>
@@ -465,6 +470,7 @@
         tab4active = ""
         tab5active = ""
         tab6active = ''
+        prefactive = ''
                     
         if c.tab == "tab1":
             tab1active = "active"
@@ -503,8 +509,10 @@
                             </a></li>
                             <li class="${tab4active}"><a href="#tab4" data-toggle="tab">3. Password
                             </a></li>
+                            <li class="${prefactive}"><a href="#pref" data-toggle="tab">4. Preferences
+                            </a></li>
                             % if c.admin:
-                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">4. Administrate
+                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Administrate
                             Admin only - shhh!.</a></li>
                             % endif
                             </ul>
@@ -531,6 +539,9 @@
                             <div class="tab-pane ${tab6active}" id="tab6">
                                 ${helpersEdit.profilePicture()}
                             </div><!-- tab4 -->
+                            <div class="tab-pane ${prefactive}" id="pref">
+                                ${helpersEdit.preferences()}
+                            </div><!-- preferences -->
                             % if c.admin:
                                 <div class="tab-pane ${tab5active}" id="tab5">
                                     ${helpersEdit.memberAdmin()}

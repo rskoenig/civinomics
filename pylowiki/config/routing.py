@@ -195,6 +195,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/resign/{handler:handler/?}', controller = 'listener', action = 'listenerResignHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/title/{handler:handler/?}', controller = 'listener', action = 'listenerTitleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
+    # Comment notifications
+    map.connect('/profile/preferences/{id1}/{id2}/comments/{handler:handler/?}', controller = 'profile', action = 'preferencesCommentsHandler', id1 = '{id1}', id2 = '{id2}')
+    
     # Listener notifications
     map.connect('/{workshop:workshops?}/{workshopCode}/{url}/listen/{userCode}/notifications/{handler:handler/?}', controller = 'listener', action = 'listenerNotificationHandler', workshopCode = '{workshopCode}', url='{url}', userCode = '{userCode}')
     
@@ -218,6 +221,7 @@ def make_map():
     map.connect('/edit/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'edit')
     map.connect('/flag/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'flag')
     map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
+    map.connect('/adopt/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'adopt')
     map.connect('/demo/set/{thingCode}{end:/?}', controller = 'admin', action='setDemo')
     
     ########################################################################################################

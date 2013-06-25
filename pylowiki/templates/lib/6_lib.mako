@@ -528,6 +528,21 @@
     ${immunifyStr | n}
 </%def>
 
+<%def name="adoptThingLink(thing, **kwargs)">
+    <%
+        adoptStr = '"/adopt/%s/%s"' %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return adoptStr
+                    return 'href = ' + adoptStr
+                return 'href = ' + adoptStr
+        adoptStr = 'href = ' + adoptStr
+    %>
+    ${immunifyStr | n}
+</%def>
+
 <%def name="deleteThingLink(thing, **kwargs)">
     <%
         deleteStr = '"/delete/%s/%s"' %(thing.objType, thing['urlCode'])
@@ -588,6 +603,11 @@
 
 <%def name="editThing(thing, **kwargs)">
     <% editID = 'edit-%s' % thing['urlCode'] %>
+    <% 
+        text = ''
+        if 'text' in thing.keys():
+            text = thing['text']
+    %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
             <form action="${editThingLink(thing, embed=True, raw=True)}" method="post" class="form form-horizontal" id="edit-${thing.objType}">
@@ -596,18 +616,14 @@
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
+                    <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % elif thing.objType == 'discussion':
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
-                    <% 
-                        text = ''
-                        if 'text' in thing.keys():
-                            text = thing['text']
-                    %>
-                    <textarea name="text" rows="12" class="input-block-level">${text}</textarea>
+                    <textarea name="text" rows="3" class="input-block-level">${text}</textarea>
                 % elif thing.objType == 'resource':
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
                     <input type="text" class="input-block-level" name="link" value = "${thing['link']}">
-                    <textarea name="text" rows="12" class="input-block-level">${thing['text']}</textarea>
+                    <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % endif
                 <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
             </form>
@@ -628,6 +644,9 @@
                     <li class="active"><a href="#disable-${adminID}" data-toggle="tab">Disable</a></li>
                     <li><a href="#enable-${adminID}" data-toggle="tab">Enable</a></li>
                     <li><a href="#immunify-${adminID}" data-toggle="tab">Immunify</a></li>
+                    % if thing.objType == 'idea':
+                    <li><a href="#adopt-${adminID}" data-toggle="tab">Adopt</a></li>
+                    % endif
                     % if c.privs['admin']:
                     <li><a href="#delete-${adminID}" data-toggle="tab">Delete</a></li>
                     % endif
@@ -663,6 +682,18 @@
                         </form>
                         <span id="immunifyResponse-${thing['urlCode']}"></span>
                     </div>
+                    % if thing.objType == 'idea':
+                    <div class="tab-pane" id="adopt-${adminID}">
+                        <form class="form-inline" action = ${adoptThingLink(thing, embed=True, raw=True) | n}>
+                            <fieldset>
+                                <label>Reason:</label>
+                                <input type="text" name="reason" class="span8">
+                                <button class="btn adoptButton" type="submit" name="submit" ${adoptThingLink(thing, embed=True) | n}>Submit</button>
+                            </fieldset>
+                        </form>
+                        <span id="adoptResponse-${thing['urlCode']}"></span>
+                    </div>
+                    % endif
                     % if c.privs['admin']:
                     <div class="tab-pane" id="delete-${adminID}">
                         <form class="form-inline" action = ${deleteThingLink(thing, embed=True, raw=True) | n}>

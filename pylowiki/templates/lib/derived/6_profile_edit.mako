@@ -258,7 +258,7 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
-                        % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted']:
+                        % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
                             <%
                                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
                                 if not event:
@@ -326,6 +326,28 @@
             </fieldset>
             <button type="submit" class="btn btn-warning" name="submit">Save Changes</button>
             </form>
+        </div><!-- browse -->
+    </div><!-- section-wrapper-->
+</%def>
+
+<%def name="preferences()">
+    <% 
+        commentsChecked = ''
+        if 'commentAlerts' in c.user and c.user['commentAlerts'] == '1':
+            commentsChecked = 'checked'
+    %>
+    <div class="section-wrapper">
+        <div class="browse">
+            <h4 class="section-header smaller">Preferences</h4>
+            <div class="row-fluid">
+                <div class="span3">Email when:</div>
+                <div class="span6">
+                    <form ng-init="code='${c.user['urlCode']}'; url='${c.user['url']}'" class="no-bottom form-inline">
+                        New comments added to my items: <input type="checkbox" name="commentAlerts" value="comments" ng-click="emailOnComments()" ${commentsChecked}>
+                        <span ng-show="emailOnCommentsShow">{{emailOnCommentsResponse}}</span>
+                    </form>
+                </div><!-- span6 -->
+            </div><!-- row-fluid -->
         </div><!-- browse -->
     </div><!-- section-wrapper-->
 </%def>

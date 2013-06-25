@@ -17,7 +17,11 @@
         if c.listeners:
             people += c.listeners
     %>
-    <h4 class="section-header smaller section-header-inner"> Notables </h4>
+    <h4 class="section-header smaller section-header-inner"> Participants & Activity 
+    % if c.w['public_private'] == 'public':
+        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
+    %endif
+    </h4>
     <ul class="media-list centered" id="workshopNotables">
         % for person in people:
             <%
@@ -44,11 +48,6 @@
 </%def>
 
 <%def name="showActivity(activity)">
-    <h4 class="section-header smaller section-header-inner"> Activity 
-        % if c.w['public_private'] == 'public':
-            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
-        %endif            
-    </h4>
     <%
         numItems = 5
         shownItems = 0
@@ -112,9 +111,9 @@
       imageMap = {'discussion':'/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png',
                   'idea':'/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png',
                   'resource':'/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png'}
-      titleMap = {'discussion':' Talk',
-                  'idea':' Vote',
-                  'resource':' Learn'}
+      titleMap = {'discussion':' Conversations',
+                  'idea':' Ideas',
+                  'resource':' Resources'}
       linkHref = lib_6.workshopLink(workshop, embed = True, raw = True) + '/' + objType
       linkClass = 'btn workshopNav'
       if active:
@@ -264,4 +263,27 @@
     % if c.tags:
         ${tagString}<br />
     % endif
+</%def>
+
+<%def name="showScope()">
+    <%
+        scopeName = c.scope['level']
+        scopeString = 'This workshop is scoped for '
+        if scopeName == 'earth':
+            scopeString += 'the entire planet Earth.'
+        else:
+            # More mapping for the postal code, this time to display Postal Code instead of just Postal.
+            # The real fix for this is through use of message catalogs, which we will need to implement
+            # when we support multiple languages in the interface, so for right now this kludge is
+            # "good enough"
+            scopeString += 'the '
+            if scopeName == 'postalCode':
+                scopeNeme = 'Postal Code '
+
+            scopeString += "the " + scopeName + " of "
+            scopeString += c.scope['name']\
+                        .replace('-', ' ')\
+                        .title()
+    %>
+    ${scopeString | n}
 </%def>
