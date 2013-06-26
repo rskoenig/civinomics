@@ -31,12 +31,10 @@
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 
-            Goals
-            </h4> 
-            ${helpers.showGoals(c.goals)}
-            <h4 class="section-header smaller section-header-inner">
-            Tags
+            Summary
             </h4>
+            ${helpers.showGoals(c.goals)}
+            ${helpers.showFacilitators()}
             ${helpers.showTags()}
             ${helpers.showScope()}
             ${helpers.whoListening()}

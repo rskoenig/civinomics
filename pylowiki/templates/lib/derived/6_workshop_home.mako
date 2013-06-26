@@ -47,6 +47,12 @@
     </ul>
 </%def>
 
+<%def name="showFacilitators()">
+    % for facilitator in c.facilitators:
+        Facilitator: ${lib_6.userLink(facilitator)}<br />
+    % endfor
+</%def>
+
 <%def name="showActivity(activity)">
     <%
         numItems = 5
@@ -75,7 +81,6 @@
                     lib_6.showItemInActivity(item, c.w, expandable = True)
                 %>
             </li>
-            <li></li>
         % endfor
     </ul>
 </%def>
@@ -304,6 +309,7 @@
         <p>This workshop has no goals!</p>
     % else:
         <div id="workshopGoals">
+        Workshop Goals:
         <ul>
         % for goal in goals:
             % if goal['status'] == '100':
@@ -335,7 +341,7 @@
 <%def name="showScope()">
     <%
         scopeName = c.scope['level']
-        scopeString = 'This workshop is scoped for '
+        scopeString = 'Scope: '
         if scopeName == 'earth':
             scopeString += 'the entire planet Earth.'
         else:
@@ -343,7 +349,6 @@
             # The real fix for this is through use of message catalogs, which we will need to implement
             # when we support multiple languages in the interface, so for right now this kludge is
             # "good enough"
-            scopeString += 'the '
             if scopeName == 'postalCode':
                 scopeNeme = 'Postal Code '
 
