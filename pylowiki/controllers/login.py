@@ -123,11 +123,23 @@ class LoginController(BaseController):
         email = session['fbEmail']
         # get user
         user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
+        userEmailOnly = False
         if not user:
             user = userLib.getUserByEmail( email )
+            if user:
+                userEmailOnly = True
         if user:
+            if userEmailOnly:
+                # we have a person that already has an account on site, but hasn't
+                # used the facebook auth to login yet
+                # we need to activate parameters for this person's account
+                user['facebookAuthId'] = facebookAuthId
             # we have an active account. set their profile pic to be based on facebook's
+            user['facebookAccessToken'] = accessToken
             user['externalAuthType'] = 'facebook'
+            # a user's account email can be different from the email on their facebook account.
+            # we should keep track of this, it'll be handy
+            user['fbEmail'] = email
             if 'fbSmallPic' in session:
                 user['extSource'] = True
                 user['facebookSource'] = True

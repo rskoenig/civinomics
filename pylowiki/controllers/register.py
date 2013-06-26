@@ -110,7 +110,7 @@ class RegisterController(BaseController):
         return render("/derived/fbSignUp.bootstrap")
 
     def fbSigningUp( self ):
-        log.info("singing up with fb")
+        log.info("signing up with fb")
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
@@ -260,8 +260,12 @@ class RegisterController(BaseController):
                     
                     # add facebook userid to user
                     user['facebookAuthId'] = facebookAuthId
+                    # this will allow us to use the facebook api in their name
                     user['facebookAccessToken'] = session['fbAccessToken']
                     user['externalAuthType'] = 'facebook'
+                    # a user's account email can be different from the email on their facebook account.
+                    # we should keep track of this, it'll be handy
+                    user['fbEmail'] = email
                     if 'fbSmallPic' in session:
                         user['extSource'] = True
                         user['facebookSource'] = True
@@ -295,8 +299,12 @@ class RegisterController(BaseController):
                         
                     # add facebook userid to user
                     user['facebookAuthId'] = facebookAuthId
+                    # this will allow us to use the facebook api in their name
                     user['facebookAccessToken'] = session['fbAccessToken']
                     user['externalAuthType'] = 'facebook'
+                    # a user's account email can be different from the email on their facebook account.
+                    # we should keep track of this, it'll be handy
+                    user['fbEmail'] = email
                     if 'fbSmallPic' in session:
                         user['extSource'] = True
                         user['facebookSource'] = True

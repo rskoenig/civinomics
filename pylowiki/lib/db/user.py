@@ -62,7 +62,7 @@ def getUserByFacebookAuthId( userid ):
     log.info("getUserByFacebookAuthId: " + userid)
     try:
         #return meta.Session.query(Thing).filter_by(facebookAuthId = userid).one()
-        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc(facebookAuthId = userid))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(facebookAuthId = userid)).one()
     except:
         return False
 
