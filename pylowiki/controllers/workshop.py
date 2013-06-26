@@ -107,13 +107,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'displayAllResources']
+        scoped = ['display', 'info', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -902,6 +902,30 @@ class WorkshopController(BaseController):
         c.listingType = 'ideas'
         
         return render('/derived/6_workshop_home.bootstrap')
+        
+    def info(self, workshopCode, workshopURL):
+        c.title = c.w['title']
+
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
+
+        c.information = pageLib.getInformation(c.w)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
+        c.adminPanel = False
+
+        resources = resourceLib.getResourcesByWorkshopCode(workshopCode)
+        if not resources:
+            c.resources = []
+        else:
+            c.resources = sort.sortBinaryByTopPop(resources)
+        disabled = resourceLib.getResourcesByWorkshopCode(workshopCode, disabled = '1')
+        if disabled:
+            c.resources = c.resources + disabled
+        c.listingType = 'resources'
+
+        return render('/derived/6_workshop_info.bootstrap')
    
     def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)

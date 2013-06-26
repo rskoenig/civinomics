@@ -117,7 +117,7 @@
             elif thing == 'ideas':
                 printStr += 'idea" title="Click to add an idea to this workshop"'
                 
-            printStr += ' class="pull-right btn btn-${btnX} btn-civ right-space" type="button"><i class="icon-white icon-plus"></i>'
+            printStr += ' class="pull-right btn btn-' + btnX + ' btn-civ right-space" type="button"><i class="icon-white icon-plus"></i>'
 
             if thing == 'discussion':
                 printStr += ' Topic'

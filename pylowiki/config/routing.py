@@ -159,7 +159,8 @@ def make_map():
     map.connect('/{adoptSuggestionHandler:adoptSuggestionHandler/?}', controller = 'suggestion', action = 'adoptSuggestionHandler')
     map.connect('/{noteSuggestionHandler:noteSuggestionHandler/?}', controller = 'suggestion', action = 'noteSuggestionHandler')
     """
-        # info
+    
+    # info
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{information:information?/?}', controller = 'workshop', action = 'info', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     
     # resources

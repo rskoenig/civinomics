@@ -18,6 +18,7 @@
           <div class="browse">
              <h4 class="section-header smaller"> Vote ${lib_6.createNew("ideas", 'small')}
              </h4>
+             <p><strong class="orange">Vote</strong> listed ideas <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) for how they address the workshop goals.</p>
              <% 
                 lib.return_to() 
                 listingHelpers.showListing("ideas")
