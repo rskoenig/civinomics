@@ -107,13 +107,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'info', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -926,6 +926,22 @@ class WorkshopController(BaseController):
         c.listingType = 'resources'
 
         return render('/derived/6_workshop_info.bootstrap')
+        
+    def activity(self, workshopCode, workshopURL):
+        c.title = c.w['title']
+
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
+
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
+        c.adminPanel = False
+
+        c.listingType = 'activity'
+
+        return render('/derived/6_detailed_listing.bootstrap')
    
     def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)

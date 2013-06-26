@@ -20,6 +20,7 @@
             target = "_blank"
          elif thing == 'ideas':
             renderList = c.ideas
+            
    %>
    <ul class="unstyled">
       <% itemCounter = 0 %>

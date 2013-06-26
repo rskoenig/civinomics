@@ -2,6 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
+<%namespace name="workshopHelpers" file="/lib/derived/6_workshop_home.mako" />
 
 <div class="spacer" style="height:20px;"></div>
 
@@ -12,7 +13,6 @@
       helperText = 'Ask a question, give feedback, join a conversation about the workshop, or add your own.'
       helperText += '<br /><strong class="orange">Vote</strong> existing conversations <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.'
       itemList = c.discussions
-
    elif c.listingType == 'resources':
       itemList = c.resources
       helperText = 'Link to educational information resources like videos, articles and reports.'
@@ -21,7 +21,10 @@
       itemList = c.ideas
       helperText = 'Add an idea to meet the goals of the workshop!'
       helperText += '<br /><strong class="orange">Vote</strong> existing ideas <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on how well they address the goals.'
-      
+   elif c.listingType == 'activity':
+      itemList = c.activity
+      helperText = ''
+
    self.showListing(c.listingType, itemList, helperText)
 %>
 
@@ -33,23 +36,37 @@
          pluralType = 'resources'
       elif listingType == 'ideas':
          pluralType = 'ideas'
+      elif listingType == 'activity':
+         pluralType = 'activity'
    %>
-   <div class="row-fluid">
-      <div class="span8">
-         <span class = "muted">
-            ${helperText | n}
-         </span>
-      </div><!-- span8 -->
-      <div class="span4">
-         ${lib_6.createNew(listingType)}
-      </div><!--/.span4 -->
-   </div><!--/.row-fluid-->
+   % if listingType != 'activity':
+        <div class="row-fluid">
+            <div class="span8">
+                <span class = "muted">
+                    ${helperText | n}
+                </span>
+            </div><!-- span8 -->
+            <div class="span4">
+                ${lib_6.createNew(listingType)}
+            </div><!--/.span4 -->
+        </div><!--/.row-fluid-->
+   % endif 
    <div class="row-fluid">
       <div class="span12">
          <div class="section-wrapper">
             <div class="browse">
-               <h3 class="section-header"> ${pluralType.title()} </h3>
-               ${helpers.showListing(listingType)}
+               
+               % if listingType == 'activity':
+                   <h3 class="section-header">Activity 
+                   % if c.w['public_private'] == 'public':
+                        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
+                   %endif
+                   </h3>
+                    ${workshopHelpers.showActivity(c.activity)}
+               % else:
+                    <h3 class="section-header"> ${pluralType.title()} </h3>
+                    ${helpers.showListing(listingType)}
+               % endif
             </div><!--/.browse-->
          </div><!--/.section-wrapper-->
       </div><!--/.span12-->

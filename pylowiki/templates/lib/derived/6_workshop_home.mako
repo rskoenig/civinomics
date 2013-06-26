@@ -75,6 +75,7 @@
                     lib_6.showItemInActivity(item, c.w, expandable = True)
                 %>
             </li>
+            <li></li>
         % endfor
     </ul>
 </%def>
@@ -112,12 +113,14 @@
                     'idea':'/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png',
                     'resource':'/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png',
                     'home':'/images/glyphicons_pro/glyphicons/png/glyphicons_020_home.png',
-                    'information':'/images/glyphicons_pro/glyphicons/png/glyphicons_318_more_items.png'}
+                    'information':'/images/glyphicons_pro/glyphicons/png/glyphicons_318_more_items.png',
+                    'activity':'/images/glyphicons_pro/glyphicons/png/glyphicons_057_history.png'}
         titleMap = {'discussion':' Forum',
                     'idea':' Vote',
                     'resource':' Links',
                     'home':' Home',
-                    'information':' Information'}
+                    'information':' Information',
+                    'activity':'Activity'}
         linkHref = lib_6.workshopLink(workshop, embed = True, raw = True)
         if objType != 'home':
             linkHref += '/' + objType
@@ -126,7 +129,7 @@
             linkClass += ' selected-nav'
         linkID = objType + 'Button'
     %>
-    <a class="${linkClass}" id="${linkID}" href = "${linkHref | n}"> <img class="workshop-nav-icon" src="${imageMap[objType] | n}">${titleMap[objType]}
+    <a class="${linkClass}" id="${linkID}" href = "${linkHref | n}"> <img class="workshop-nav-icon" src="${imageMap[objType] | n}"> ${titleMap[objType]}
     (${count})
     </a>
 </%def>
@@ -137,6 +140,7 @@
       discussionCount = 0
       ideaCount = 0
       resourceCount = 0
+      activityCount = len(activity)
       for item in activity:
          if c.demo:
             author = getUserByID(item.owner)
@@ -154,10 +158,6 @@
             ideaCount += 1
          elif item.objType == 'resource':
             resourceCount += 1
-            
-      discussionTitle = 'Talk'
-      ideaTitle = 'Vote'
-      resourceTitle = 'Learn'
    %>
    <div class="btn-group four-up">
    <% 
@@ -165,18 +165,27 @@
          workshopNavButton(w, ideaCount, 'home')
          workshopNavButton(w, resourceCount, 'information', active = True)
          workshopNavButton(w, discussionCount, 'discussion')
+         workshopNavButton(w, activityCount, 'activity')
       elif listingType == 'discussion':
          workshopNavButton(w, ideaCount, 'home')
          workshopNavButton(w, resourceCount, 'information')
          workshopNavButton(w, discussionCount, 'discussion', active = True)
+         workshopNavButton(w, activityCount, 'activity')
       elif listingType == 'ideas' or listingType == 'idea':
          workshopNavButton(w, ideaCount, 'home', active = True)
          workshopNavButton(w, resourceCount, 'information')
          workshopNavButton(w, discussionCount, 'discussion')
+         workshopNavButton(w, activityCount, 'activity')
+      elif listingType == 'activity':
+         workshopNavButton(w, ideaCount, 'home')
+         workshopNavButton(w, resourceCount, 'information')
+         workshopNavButton(w, discussionCount, 'discussion')
+         workshopNavButton(w, activityCount, 'activity', active = True)
       else:
          workshopNavButton(w, ideaCount, 'home')
          workshopNavButton(w, resourceCount, 'infoformation')
          workshopNavButton(w, discussionCount, 'discussion')
+         workshopNavButton(w, activityCount, 'activity')
    %>
    </div>
 </%def>

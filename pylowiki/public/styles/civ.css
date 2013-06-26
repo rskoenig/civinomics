@@ -257,6 +257,11 @@ ul.activity{
     list-style-type: none;
     margin:0;
 }
+
+ul.activity > li {
+    margin-bottom: 15px;
+}
+
 .wrap-workshop{
     border: 5px solid #075D00;
     background-color: gainsboro;
@@ -516,7 +521,7 @@ img.watch{
 }
 
 .btn-group.four-up a.btn {
-   width: 33.3%;
+   width: 25%;
    padding-left:0px;
    padding-right:0px;
    padding-top:10px;
