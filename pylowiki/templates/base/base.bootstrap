@@ -114,10 +114,9 @@
                 // (1) JavaScript created popup windows are blocked by most browsers unless they 
                 // result from direct interaction from people using the app (such as a mouse click)
                 // (2) it is a bad experience to be continually prompted to login upon page load.
-                console.log('not authd');
-                var authSignal = '<div id="authSignal"></div>'
-                $('#fbLoginButton').append(authSignal);
+                console.log('not authd');                
                 FB.login();
+                authSignal();
                 //FB.login(function(response) {
                   // handle the response
                 //}, {scope: 'name, email, user_location, user_hometown'});
@@ -129,8 +128,7 @@
                 // The same caveats as above apply to the FB.login() call here.
                 console.log('else');
                 FB.login();
-                var authSignal = '<div id="authSignal"></div>'
-                $('#fbLoginButton').append(authSignal);
+                authSignal();
                 //FB.login(function(response) {
                   // handle the response
                 //}, {scope: 'name, email, user_location, user_hometown'});
@@ -154,6 +152,10 @@
            FB.api('/me', function(response) {
              console.log('name: ' + response.name + '.email: ' + response.email + '.username: ' + response.username + '.user_location' + response.user_location + '.user_hometown' +  response.user_hometown + '.');
            });
+         }
+         function authSignal() {
+           var authSignal = '<div id="authSignal"></div>'
+           $('#fbLoginButton').append(authSignal);
          }
          function fbConnected(authResponse) {
            FB.api('/me', function(response) {
@@ -191,6 +193,9 @@
                    window.location = '/signup/fbSignUp/';
                  }
                } else {
+                 if ($('#authSignal').length) {
+                   window.location = '/fbLoggingIn/';
+                 }
                  if ($('#fbLoggingIn').length) {
                    // this element is only found on a page meant to be used as a redirect when
                    // the 'login with facebook' link has been clicked.
