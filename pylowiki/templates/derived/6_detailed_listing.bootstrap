@@ -31,7 +31,7 @@
 <%def name="showListing(listingType, itemList, helperText)">
    <%
       if listingType == 'discussion':
-         pluralType = 'conversations'
+         pluralType = 'forum topics'
       elif listingType == 'resources':
          pluralType = 'resources'
       elif listingType == 'ideas':

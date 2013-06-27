@@ -314,7 +314,12 @@
 
 <%def name="showInfo(workshop)">
     <div>
-    % if c.information and 'data' in c.information:  
+    % if c.information and 'data' in c.information: 
+        <p>This introduction was written and is maintained by the workshop facilitator.
+        % if c.w['allowResources'] == '1':
+            You are encouraged to add links to additional information resources.
+        % endif
+        </p>
         ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
     % endif
     </div>
