@@ -1,0 +1,65 @@
+<%inherit file="/base/base.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
+
+<div class="row">
+   <div class = "span8">
+      <div class="section-wrapper">
+         <div class="browse">
+            <h3 class="section-header smaller"> ${c.workshopTitlebar} Activity <a href="${c.rssURL}" target="_blank"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_417_rss.png" title="RSS feed" alt="RSS feed"></a> </h3>
+            <% 
+               numItems = 10
+               for i in range(len(c.activity)):
+                  thisActivity = c.activity[i]
+                  helpers.showActivity(thisActivity, expandable=True)
+                  if i > numItems:
+                     break
+            %>
+         </div>
+      </div>
+   </div><!--/.span8-->
+    <div id="sidebar" class="span4">
+      <ul id="inner-sidebar" class="nav nav-tabs nav-stacked">
+          <li><a href="/feed">All<i class="icon-chevron-left pull-left right-space"></i></a></li>
+          ${lib_6.geoMenu()}
+          <li><a href="#">Most Recent<i class="icon-chevron-left pull-left right-space"></i></a></li>
+          <li><a href="#howDoI">Friends<i class="icon-chevron-left pull-left right-space"></i></a></li>
+      </ul>      
+    </div>
+
+</div><!-- row -->
+
+<%def name="extraScripts()">
+   <script type="text/javascript">
+   $(document).ready(function() {
+       $('.viewport').mouseenter(function(e) {
+           $(this).children('a').children('span').fadeIn(200);
+       }).mouseleave(function(e) {
+           $(this).children('a').children('span').fadeOut(200);
+       });
+       
+       $(".small-bulb, .small-bookmark").tooltip({delay:500});
+   });
+   </script>
+   <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
+   <script type="text/javascript">
+        $(document).ready(function() {
+            $('.expandable').expander({
+                slicePoint: 35,
+                widow: 2,
+                expandText: '... (more)',
+                expandPrefix: '',
+                userCollapseText: ' (less)',
+                userCollapsePrefix: '',
+                preserveWords: true
+            });
+        });
+    </script>
+    <script src="/js/bootstrap/bootstrap-scrollspy.js"></script>
+    <script src="/js/bootstrap/bootstrap-affix.js"></script>
+    <script type="text/javascript"> 
+        $('#inner-sidebar').affix({offset: 130})
+        <!-- $('body').scrollspy({target: '#sidebar'}) -->
+        $(window).scrollspy({wrap: $('#wrap')[0]});
+    </script> 
+</%def>

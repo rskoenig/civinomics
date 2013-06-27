@@ -7,7 +7,8 @@
    import pylowiki.lib.db.user          as userLib
    import pylowiki.lib.db.rating        as ratingLib
    import pylowiki.lib.db.mainImage     as mainImageLib
-   
+
+   from pylowiki.lib.db.tag import getCategoryTagCount
    from hashlib import md5
    import logging, os
    log = logging.getLogger(__name__)
@@ -350,14 +351,16 @@
          user = userLib.getUserByID(user.owner)
       if user.objType == 'listener':
          user = userLib.getUserByCode(user['userCode'])
-      imgStr += '<a href="'
-      imgStr += userLink(user, raw=True)
-      imgStr += '"'
+      if not 'noLink' in kwargs:
+        imgStr += '<a href="'
+        imgStr += userLink(user, raw=True)
+        imgStr += '"'
       if 'linkClass' in kwargs:
          imgStr += ' class="%s"' %(kwargs['linkClass'])
       if 'rel' in kwargs:
          imgStr += ' rel="%s"' %(kwargs['rel'])
-      imgStr += '>'
+      if not 'noLink' in kwargs:
+        imgStr += '>'
       if 'revision' in kwargs:
          revision = kwargs['revision']
          title = revision['data']
@@ -461,6 +464,55 @@
     <% 
         return outOfScope
     %>
+</%def>
+
+<%def name="geoMenu(*args)">
+    <%
+        outOfScope = False
+        if 'user' in session:
+            county = c.authuser_geo['countyTitle']
+            city = c.authuser_geo['cityTitle']
+            if county == city:
+                county = 'County of ' + county
+                city = 'City of ' + city
+            scopeMapping = [    ('earth', 'Earth'),
+                            ('country', c.authuser_geo['countryTitle']),
+                            ('state', c.authuser_geo['stateTitle']),
+                            ('county', county),
+                            ('city', city),
+                            ('postalCode', c.authuser_geo['postalCode'])
+                            ]
+
+        elif mainGeo in args:
+            outOfScope = True
+    %>
+    % if 'user' in session:
+        <% 
+          if mainGeo in args:
+            spanX = 'btn-block'
+          else:
+            spanX = ''
+        %>
+        % for scopeLevel in scopeMapping:
+            <%
+                activeClass = ''
+                    
+                if c.scope['level'] == scopeLevel[0]:
+                    if scopeLevel[0] != 'earth':
+                        scopeKey = '%sURL' % scopeLevel[0] 
+                        userScope = c.authuser_geo[scopeKey]
+                    else:
+                        userScope = 'earth'
+                    if c.scope['name'] == userScope:
+                        activeClass = 'active'
+                    else:
+                        outOfScope = True
+            %>
+            <li class="${activeClass}">
+                <a ${self._geoWorkshopLink(c.authuser_geo, depth = scopeLevel[0]) | n}>${scopeLevel[1]}<i class="icon-chevron-left pull-left right-space"></i></a>
+            </li>
+        % endfor
+    % endif
 </%def>
 
 <%def name="outOfScope()">
@@ -785,6 +837,40 @@
         </div> <!--/.row-fluid-->
     % endif
 </%def>
+
+
+<%def name="public_tags()">
+  <% pTags = getCategoryTagCount() %>
+    <div class="btn-group">
+      <button class="btn dropdown-toggle" data-toggle="dropdown">
+        Category
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu">
+        % for pT in sorted(pTags.keys()):
+          % if pTags[pT] > 0:
+            <% fixedpT = pT.replace(" ", "_") %>
+            <li><a href="/searchTags/${fixedpT}/" title="Click to view workshops with this tag">${pT}: ${pTags[pT]}</a></li>
+          % endif
+        % endfor
+      </ul> <!-- /.unstyled -->
+    </div>
+</%def>
+
+<%def name="member_tags()">
+  <% mTags = getMemberTagCount() %>
+  % if len(mTags.keys()) > 0:
+    <ul class="unstyled">
+      % for mT in sorted(mTags.keys()):
+        <% fixedmT = mT.replace(" ", "_") %>
+        <li><a href="/searchTags/${fixedmT}/" title="Click to view workshops with this tag">${mT}</a>: ${mTags[mT]}</li>
+      % endfor
+    </ul>
+  % else:
+    <p>No member tags.</p>
+  % endif
+</%def>
+
 
 <%def name="showItemInActivity(item, w, **kwargs)">
     <%

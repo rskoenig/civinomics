@@ -28,7 +28,7 @@
 <%def name="showWorkshop(workshop, **kwargs)">
     <div class="media profile-workshop">
         <a class="pull-left" ${lib_6.workshopLink(workshop)}>
-            <img class="media-object" src="${lib_6.workshopImage(workshop, raw=True) | n}">
+            <img class="media-object thumbnail" style="padding: 0px;" src="${lib_6.workshopImage(workshop, raw=True) | n}">
         </a>
         <%
             if 'imageOnly' in kwargs:

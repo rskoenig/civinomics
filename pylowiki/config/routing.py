@@ -72,6 +72,14 @@ def make_map():
     map.connect('/workshops/geo/earth/{country}/{state}/{county}{end:/?}', controller = 'geo', action = 'workshopSearch')
     map.connect('/workshops/geo/earth/{country}/{state}/{county}/{city}{end:/?}', controller = 'geo', action = 'workshopSearch')
     map.connect('/workshops/geo/earth/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'geo', action = 'workshopSearch')
+    
+    map.connect('/workshops/geo/feed/earth{end:/?}', controller = 'geo', action = 'geoFeed')
+    map.connect('/workshops/geo/feed/earth/{country}{end:/?}', controller = 'geo', action = 'geoFeed')
+    map.connect('/workshops/geo/feed/earth/{country}/{state}{end:/?}', controller = 'geo', action = 'geoFeed')
+    map.connect('/workshops/geo/feed/earth/{country}/{state}/{county}{end:/?}', controller = 'geo', action = 'geoFeed')
+    map.connect('/workshops/geo/feed/earth/{country}/{state}/{county}/{city}{end:/?}', controller = 'geo', action = 'geoFeed')
+    map.connect('/workshops/geo/feed/earth/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'geo', action = 'geoFeed')
+
     map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/stateList/{id1}', controller = 'geo', action = 'geoStateHandler', id1 = '{id1}')
     map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
@@ -88,6 +96,9 @@ def make_map():
     map.connect('/workshops/rss/earth/{country}/{state}/{county}/{city}{end:/?}', controller = 'geo', action = 'rss')
     map.connect('/workshops/rss/earth/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'geo', action = 'rss')
     
+    # News Feed
+    map.connect('/feed{end:/?}', controller = 'actionlist', action = 'feed')
+
     # Workshop Base
     map.connect('/{workshop:workshops?}/display/create/{form:form/?}', controller = 'workshop', action = 'displayCreateForm')
     map.connect('/{workshop:workshops?}/create/{handler:handler/?}', controller = 'workshop', action = 'createWorkshopHandler')

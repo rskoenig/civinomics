@@ -11,13 +11,112 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
+<%def name="inviteReps()">
+    <% 
+        posner = {'name' : 'Micah Posner', 'pic' : '/images/SCcouncil/posner.png', 'title' : 'Santa Cruz City Council', 'status': 'active'}
+        terrazus = {'name': 'David Terrazus', 'pic' : '/images/SCcouncil/terrazas.png', 'title': 'Santa cruz City Council', 'status': 'active'}
+        mathews = {'name' : 'Cynthia Mathews', 'pic': '/images/SCcouncil/mathews.png', 'status': 'inactive'}
+        bryant = {'name' : 'Hilary Bryant', 'pic': '/images/SCcouncil/bryant.png', 'status': 'inactive'}
+        lane = {'name': 'Raimanu Sebastien Orion Tamatoa Koenig', 'pic': '/images/SCcouncil/lane.png', 'status': 'inactive'}
+        comstock = {'name': 'Pamela Comstock', 'pic': '/images/SCcouncil/comstock.png', 'status': 'inactive'}
+        robinson = {'name': 'Lynn Robinson', 'pic': '/images/SCcouncil/robinson.png', 'status': 'inactive'}
+
+        council = [posner, terrazus, mathews, bryant, lane, comstock, robinson]
+    %>
+    <h4 class="section-header smaller section-header-inner">Representatives</h4>
+    <ul class="media-list pull-right">
+      % for leader in council:
+        <li class="media">
+          <table>
+            <tr>
+              <td rowspan="2" style="vertical-align:top; width: 30px;">
+                % if leader['status'] == 'active':
+                  <img class="active-dot" src="/images/greenDot.png">
+                % else:
+                  <img class="active-dot" src="/images/redDot.png">
+                % endif:
+              </td>
+              <td style="width:150px;"><a href='#'>${leader['name']}</a></td>
+              <td style="vertical-align:top;" rowspan="2">
+                <img class='med-avatar' src="${leader['pic']}">
+              </td>
+              <td style="width:55px; vertical-align:top;" class="centered" rowspan="2">
+                <button href="#messageLeader" class="btn btn-small pull-right" data-toggle="modal"><i class="icon-envelope"></i></button>
+              </td>
+            </tr>
+            <tr>
+              <td><small>Santa Cruz City Council</small></td>
+            </tr>
+          </table>
+        </li>
+        ${self.messageLeaderModal(leader['name'])}
+      % endfor
+    </ul>
+</%def>
+
+<%def name="addLeaderModal()">
+  <div id="addLeader" class="modal hide fade" style="display: none;" tabindex="-1" role="dialog" aria-labelledby="addLeader" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 id="addLeader">Add a Leader</h3>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <div class="control-group">
+          <label class="control-label">Leader Name</label>
+          <div class="controls">
+            <input type="text" placeholder="Leader Name">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Leader Title</label>
+          <div class="controls">
+            <input type="text" placeholder="Leader Title">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Official Email</label>
+          <div class="controls">
+            <input type="email" placeholder="Official Email">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Leader Photo</label>
+          <div class="controls">
+            <button class="btn btn-primary"><i class="icon-camera icon-white"></i> Add a Photo</button>
+          </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-civ">Submit</button>
+      </form>
+    </div>
+  </div>
+</%def>
+
+<%def name="messageLeaderModal(leaderName)">
+  <div id="messageLeader" class="modal hide fade" style="display: none;" tabindex="-1" role="dialog" aria-labelledby="messageleader" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+        <h3 id="messageLeader">Message Leader</h3>
+    </div>
+    <div class="modal-body">
+      <p>Dear ${leaderName}! You rock leader!</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      <button class="btn btn-civ">Submit</button>
+    </div>
+  </div>
+</%def>
+
 <%def name="whoListening()">
     <%
         people = c.facilitators
         if c.listeners:
             people += c.listeners
     %>
-    <h4 class="section-header smaller section-header-inner"> Notables </h4>
+    <h4 class="section-header smaller section-header-inner"> Facilitators </h4>
     <ul class="media-list centered" id="workshopNotables">
         % for person in people:
             <%
@@ -27,11 +126,22 @@
                     personTitle = person['title']
             %>
             <li class="media">
-                ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
-                <div class="media-body">
-                    <h4 class="media-heading">${lib_6.userLink(person, className="green green-hover")}</h4>
-                    ${personTitle}
-                </div>
+              <table class="pull-right">
+                <tr>
+                  <td rowspan="2" style="vertical-align:top; width: 30px;">
+                  </td>
+                  <td style="width:150px;"><a href='#'>${lib_6.userLink(person)}</a></td>
+                  <td style="vertical-align:top;" rowspan="2">
+                    ${lib_6.userImage(person, className="avatar med-avatar media-object")}
+                  </td>
+                  <td style="width:55px; vertical-align:top;" class="centered" rowspan="2">
+                    <button href="#messageLeader" class="btn btn-small pull-right" data-toggle="modal"><i class="icon-envelope"></i></button>
+                  </td>
+                </tr>
+                <tr>
+                  <td><small>${personTitle}</small></td>
+                </tr>
+              </table>
             </li>
         % endfor
     </ul>
@@ -77,12 +187,12 @@
 <%def name="watchButton()">
     % if 'user' in session:
         % if c.isFollowing:
-            <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-            <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
+            <button class="btn btn-small btn-civ followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+            <span><strong> Following </strong></span>
             </button>
         % else:
-            <button class="btn round pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-             <span><i class="icon-bookmark pull-left"></i> Bookmark </span>
+            <button class="btn btn-small followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+             <span>Follow </strong></span>
             </button>
         % endif
     % endif
@@ -90,15 +200,15 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <a class="btn round btn-civ pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i>Admin</span></a>
+   <a class="btn btn-primary btn-small preferencesLink" style="height:20px" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i></span></a>
 </%def>
 
 <%def name="previewButton()">
-  <a class="btn round btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> Preview </span></a>
+  <a class="btn btn-civ btn-small" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i><strong> Preview </strong></span></a>
 </%def>
 
 <%def name="viewButton()">
-  <a class="btn round btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> View </span></a>
+  <a class="btn btn-civ btn-small" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i><strong> View </strong></span></a>
 </%def>
 
 <%def name="workshopNavButton(workshop, count, objType, active = False)">

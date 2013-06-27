@@ -3,45 +3,33 @@
 <%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
 
 <div class="row">
-   <div class = "span12">
+   <div class = "span10">
         <%
             if 'user' in session:
                 outOfScope = lib_6.geoBreadcrumbs()
                 if outOfScope and c.scope['level'] != 'earth':
                     lib_6.outOfScope()
         %>
-   </div><!--/.span12-->
+      <div class="span">
+        ${lib_6.public_tags()}
+        <a class="btn btn-civ" href="/workshops/display/create/form"><i class="icon-white icon-plus"></i> New Workshop</a>
+      </div>
+   </div><!--/.span10-->
+   
 </div><!-- /.row-->
 <div class="row">
-   <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
          <div class="browse">
             <h3 class="section-header"> ${c.workshopTitlebar} </h3>
             <div class="row-fluid"><!--navigation row-->
                 <ul class="thumbnails">
                     % for item in c.list:
-                        <li class="span6 wrap-workshop"> ${helpers.show_workshop(item)} </li>
+                        <li id="wrapworkshop" class="span wrap-workshop"> ${helpers.show_workshop(item)} </li>
                     % endfor
                 </ul>
             </div><!--/navigation row-->
          </div><!--/.browse-->
       </div><!--/.section-wrapper-->
-   </div> <!-- /listings -->
-   <div class="span4"> <!-- Activity Stream -->
-      <div class="section-wrapper">
-         <div class="activity">
-            <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
-            <% 
-               numItems = 10
-               for i in range(len(c.activity)):
-                  thisActivity = c.activity[i]
-                  helpers.showActivity(thisActivity, expandable=True)
-                  if i > numItems:
-                     break
-            %>
-         </div>
-      </div>
-   </div> <!-- /Activity Stream -->
 </div>
 
 <%def name="extraScripts()">

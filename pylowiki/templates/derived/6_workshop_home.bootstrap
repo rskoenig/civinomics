@@ -49,7 +49,9 @@
             %>
             ${helpers.showTags()}
             ${helpers.whoListening()}
-            ${helpers.showActivity(c.activity)}
+            ${helpers.inviteReps()}
+            ${helpers.addLeaderModal()}
+
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
@@ -80,6 +82,10 @@
                 preserveWords: true
             });
         });
+    </script>
+    <script type="text/javascript">
+      $('#addLeader').modal( 'hide')
+      $('#messageLeader').modal('hide')
     </script>
 
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>

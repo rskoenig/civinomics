@@ -54,7 +54,7 @@ class GeoController(BaseController):
         c.scopeTitle = capwords(geoInfoLib.geoDeurlify(location))
         c.title += capwords(geoInfoLib.geoDeurlify(location))
         c.heading += capwords(geoInfoLib.geoDeurlify(location))
-        c.workshopTitlebar = capwords(geoInfoLib.geoDeurlify(location)) + ' workshops'
+        c.workshopTitlebar = capwords(geoInfoLib.geoDeurlify(location))
         
         # Find all workshops within the filtered area
         scopeList = geoInfoLib.getWorkshopsInScope(country = country, state = state, county = county, city = city, postalCode = postalCode)
@@ -70,6 +70,9 @@ class GeoController(BaseController):
 
     def workshopSearch(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
         return render('derived/6_main_listing.bootstrap')
+
+    def geoFeed(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
+        return render('derived/6_feed.bootstrap')
 
     def rss(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
         feed = feedgenerator.Rss201rev2Feed(

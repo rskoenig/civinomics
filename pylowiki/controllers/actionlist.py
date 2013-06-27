@@ -80,6 +80,64 @@ class ActionlistController(BaseController):
         else:
             c.mainSurvey = []
         return render('/derived/list_surveys.bootstrap')
+
+
+    def feed( self ): 
+        """Create a list of pages with the given action/option """
+        """Valid actions: edit, revision, delete, restore, sitemap """
+        c.title = c.heading = 'News Feed'
+        c.workshopTitlebar = 'All'
+        c.list = getActiveWorkshops()
+        c.activity = getRecentMemberPosts(10)
+        c.scope = {'level':'earth', 'name':'all'}
+        c.rssURL = "/activity/rss"
+        return render('derived/6_feed.bootstrap')
+
+        if c.action == "restore":
+            c.list = get_all_pages(1)
+
+        if 'user' in session:
+            if not c.authuser:
+                session.delete()
+                return redirect('/')
+            items = []
+            userZip = int(c.authuser['postalCode'])
+            for item in c.list:
+                itemZip = map(int, item['publicPostalList'].split(','))
+                if userZip in itemZip:
+                    items.append(item)
+            c.list = items
+            
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+        if len(c.list) >= 1:
+            featuredSurvey = getFeaturedSurvey()
+            if not featuredSurvey:
+                setFeaturedSurvey(c.list[0])
+                c.mainSurvey = c.list[0]
+                c.surveys = c.list[1:]
+            else:
+                featuredSurveyID = int(featuredSurvey['survey'])
+                featuredSurvey = getSurveyByID(featuredSurveyID)
+                log.info(featuredSurvey['active'])
+                if int(featuredSurvey['active']) == 0:
+                    c.mainSurvey = None
+                else:
+                    c.mainSurvey = featuredSurvey
+                for i in range(len(c.list)):
+                    if c.list[i].id == featuredSurveyID:
+                        c.list.pop(i)
+                        break
+                c.surveys = c.list
+        else:
+            c.mainSurvey = []
+        return render('/derived/list_surveys.bootstrap')
+
+
+
     
     def rss( self ):
         c.activity = getRecentMemberPosts(30)
@@ -109,5 +167,30 @@ class ActionlistController(BaseController):
         response.content_type = 'application/xml'
 
         return feed.writeString('utf-8')
+
+
+    def searchTags( self, id1 ):
+        id1 = id1.replace("_", " ")
+        c.title = c.heading = 'Search Workshops by Tag: ' + id1
+        tList = searchTags(id1)
+        c.list = []
+        """return all the thingIDs that are tags with title id1 """
+        for t in tList:
+            """get the workshop that has the """
+            w = getWorkshopByCode(t['workshopCode'])
+            if w['deleted'] == '0' and w['startTime'] != '0000-00-00':
+                c.list.append(getWorkshopByCode(t['workshopCode']))
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        c.activity = getRecentMemberPosts(10)
+        c.scope = {'level':'earth', 'name':'all'}
+        c.rssURL = "/activity/rss"
+
+        return render('/derived/6_main_listing.bootstrap')
 
 
