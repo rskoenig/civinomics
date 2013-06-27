@@ -73,7 +73,7 @@
                                         ${itemTitle | n}
                                         % if item.objType == 'resource':
                                             <p>
-                                            <% itemTitle = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
+                                            <% itemTitle = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 75)) %>
                                             ${itemTitle | n}
                                             </p>
                                             <p class="no-bottom">
