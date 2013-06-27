@@ -202,8 +202,11 @@
                    window.location = '/fbLoggingIn/';
                  } else {
                    // replace current button with returned result
-                   var newButton = '<li class="nav-item"><a href="/fbLogin"><img src="/images/fb_connect.png" class="small-logo"></a></li>'
-                   $('#fbLoginButton').html(newButton); 
+                   var newLiButton = '<li class="nav-item"><a href="/fbLogin"><img src="/images/fb_connect.png" class="small-logo"></a></li>';
+                   var newButton = '<a href="/fbLogin"><img src="/images/fb_connect.png" class="small-logo"></a>'
+                   $('#fbLoginButton').html(newLiButton);
+                   $('#fbLoginButton1').html(newButton);
+                   $('#fbLoginButton2').html(newButton);
                  }
                }
              },1000);

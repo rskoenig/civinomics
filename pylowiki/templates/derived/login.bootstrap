@@ -46,7 +46,7 @@
                                   </div>
                               </div>
                               <div class="control-group">
-                                  <div class="controls">
+                                  <div class="controls" id="fbLoginButton1">
                                       <fb:login-button show-faces="false" size="small" scope="email, user_photos">Connect</fb:login-button>
                                   </div>
                               </div>
