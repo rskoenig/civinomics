@@ -186,7 +186,7 @@
          workshopNavButton(w, activityCount, 'activity', active = True)
       else:
          workshopNavButton(w, ideaCount, 'home')
-         workshopNavButton(w, resourceCount, 'infoformation')
+         workshopNavButton(w, resourceCount, 'information')
          workshopNavButton(w, discussionCount, 'discussion')
          workshopNavButton(w, activityCount, 'activity')
    %>
@@ -314,7 +314,7 @@
 
 <%def name="showInfo(workshop)">
     <div>
-    % if c.information and 'data' in c.information:
+    % if c.information and 'data' in c.information:  
         ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
     % endif
     </div>

@@ -4,30 +4,26 @@
 <%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
+<% numResources = str(len(c.resources)) %>
 <div class="row-fluid">
    <div class="span8">
-      <div class="section-wrapper">
+      <div class="section-wrapper" id="introduction">
         <div class="browse">
-          <div>
             <h4 class="section-header smaller">
-            Background
+            Background Information
             </h4>
-            ${helpers.showInfo(c.w)}
-          </div>
-        </div>
+            <div class="tabbable">
+                <ul class="nav nav-tabs" id="infotab">
+                    <li class="active"><a href="#intro" data-toggle="tab">Introduction</a></li>
+                    <li class="foo"><a href="#moreresources" data-toggle="tab">Additional Resources (${numResources})</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="intro">${helpers.showInfo(c.w)}</div>
+                    <div class="tab-pane foo" id="moreresources">${listingHelpers.showListing(c.listingType)}</div>
+                </div><!-- tab-content -->
+            </div><!-- tabbable -->
+        </div><!-- browse -->
       </div> <!-- /.section-wrapper -->
-
-      <div class="section-wrapper">
-        <div class="browse">
-           <h4 class="section-header smaller"> Resources ${lib_6.createNew(c.listingType, 'small')}
-           </h4>
-           <% 
-              lib.return_to() 
-              listingHelpers.showListing(c.listingType)
-           %>
-        </div><!--/.browse-->
-      </div><!--/.section-wrapper-->
-
    </div> <!-- /.span8 -->
    <div class="span4">
       <div class="section-wrapper overview">
