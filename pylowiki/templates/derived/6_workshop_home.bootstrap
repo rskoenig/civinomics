@@ -38,7 +38,6 @@
             ${helpers.showTags()}
             ${helpers.showScope()}
             ${helpers.whoListening()}
-            ${helpers.showActivity(c.activity)}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->

@@ -13,16 +13,13 @@
 
 <%def name="whoListening()">
     <%
-        people = c.facilitators
+        people = []
         if c.listeners:
             people += c.listeners
     %>
-    <h4 class="section-header smaller section-header-inner"> Participants & Activity 
-    % if c.w['public_private'] == 'public':
-        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
-    %endif
-    </h4>
-    <ul class="media-list centered" id="workshopNotables">
+    % if people:
+        <h4 class="section-header smaller section-header-inner">Who's Listening</h4>
+        <ul class="media-list centered" id="workshopNotables">
         % for person in people:
             <%
                 if person.objType == 'facilitator':
@@ -44,7 +41,8 @@
             </li>
             
         % endfor
-    </ul>
+        </ul>
+     % endif
 </%def>
 
 <%def name="showFacilitators()">
@@ -340,22 +338,25 @@
 
 <%def name="showScope()">
     <%
-        scopeName = c.scope['level']
-        scopeString = 'Scope: '
-        if scopeName == 'earth':
-            scopeString += 'the entire planet Earth.'
-        else:
-            # More mapping for the postal code, this time to display Postal Code instead of just Postal.
-            # The real fix for this is through use of message catalogs, which we will need to implement
-            # when we support multiple languages in the interface, so for right now this kludge is
-            # "good enough"
-            if scopeName == 'postalCode':
-                scopeNeme = 'Postal Code '
+        if c.w['public_private'] == 'public':
+            scopeName = c.scope['level']
+            scopeString = 'Scope: '
+            if scopeName == 'earth':
+                scopeString += 'the entire planet Earth.'
+            else:
+                # More mapping for the postal code, this time to display Postal Code instead of just Postal.
+                # The real fix for this is through use of message catalogs, which we will need to implement
+                # when we support multiple languages in the interface, so for right now this kludge is
+                # "good enough"
+                if scopeName == 'postalCode':
+                    scopeNeme = 'Postal Code '
 
-            scopeString += "the " + scopeName + " of "
-            scopeString += c.scope['name']\
+                scopeString += "the " + scopeName.title() + " of "
+                scopeString += c.scope['name']\
                         .replace('-', ' ')\
                         .title()
+        else:
+            scopeString = "Scope: This is a private workshop."
     %>
     ${scopeString | n}
 </%def>
