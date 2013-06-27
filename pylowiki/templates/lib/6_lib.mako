@@ -43,11 +43,11 @@
                voteImg = '"/images/icons/glyphicons/upVote.png"'
          %>
          % if thing.objType != 'comment':
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
          % else:
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${commentClass}">
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${commentClass}">
          % endif
-            <img src=${voteImg | n} class="vote-icon">
+         <img src=${voteImg | n} class="vote-icon">
          </a>
          <br />
          <div class="centered chevron-score">${rating}</div>
@@ -64,11 +64,11 @@
                voteImg = '"/images/icons/glyphicons/downVote.png"'
          %>
          % if thing.objType != 'comment':
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
          % else:
-         <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
+            <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
          % endif
-            <img src=${voteImg | n} class="vote-icon">
+         <img src=${voteImg | n} class="vote-icon">
          </a>
       % else:
          <a href="#" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
@@ -128,7 +128,7 @@
             printStr += '</a>'
         else:
             # if not logged in redirect user to login
-            printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right btn btn-large btn-success" type="button" id="addButton">Login to Participate</a>'
+            printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right btn btn-' + btnX + ' btn-success" type="button" id="addButton">Login to Participate</a>'
 
     %>
     ${printStr | n}

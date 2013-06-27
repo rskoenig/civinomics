@@ -911,6 +911,14 @@ class WorkshopController(BaseController):
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
 
         c.information = pageLib.getInformation(c.w)
+        
+        c.slides = []
+        c.slideshow = slideshowLib.getSlideshow(c.w)
+        slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
+        for id in slide_ids:
+            s = slideLib.getSlide(id) # Don't grab deleted slides
+            if s:
+                c.slides.append(s)
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
         c.adminPanel = False

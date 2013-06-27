@@ -5,28 +5,40 @@
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
 <div class="row-fluid">
-    <div class="span6">
-        <div class="section-wrapper">
-            <div class="browse">
-                <h4 class="section-header smaller">
-                Introduction
-                </h4>
-                ${helpers.showInfo(c.w)}
-            </div><!-- browse -->
-        </div> <!-- /.section-wrapper -->
-    </div> <!-- /.span6 -->
-    <div class="span6">
-        <div class="section-wrapper">
-            <div class="browse">
-                <h4 class="section-header smaller"> Additional Resources ${lib_6.createNew(c.listingType, 'small')}</h4>
-                <p><strong class="orange">Vote</strong> listed resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) for value or veracity.</p>
-                <% 
-                    lib.return_to() 
-                    listingHelpers.showListing(c.listingType)
-                %>
-            </div><!--/.browse-->
-        </div><!--/.section-wrapper-->
-    </div><!-- span6 -->
+   <div class="span8">
+      <div class="section-wrapper">
+        <div class="browse">
+          <div>
+            <h4 class="section-header smaller">
+            Background
+            </h4>
+            ${helpers.showInfo(c.w)}
+          </div>
+        </div>
+      </div> <!-- /.section-wrapper -->
+
+      <div class="section-wrapper">
+        <div class="browse">
+           <h4 class="section-header smaller"> Resources ${lib_6.createNew(c.listingType, 'small')}
+           </h4>
+           <% 
+              lib.return_to() 
+              listingHelpers.showListing(c.listingType)
+           %>
+        </div><!--/.browse-->
+      </div><!--/.section-wrapper-->
+
+   </div> <!-- /.span8 -->
+   <div class="span4">
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Images
+            </h4> 
+            ${helpers.slideshow(c.w, 'listing')}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+   </div> <!-- /.span4 -->
 </div> <!-- /.row -->
 
 <%def name="extraScripts2()">
