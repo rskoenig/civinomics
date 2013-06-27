@@ -4,7 +4,6 @@
 <%namespace name="listingHelpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="lib" file="/lib/mako_lib.mako" />
 
-<% numResources = str(len(c.resources)) %>
 <div class="row-fluid">
    <div class="span8">
       <div class="section-wrapper" id="introduction">
@@ -15,11 +14,21 @@
             <div class="tabbable">
                 <ul class="nav nav-tabs" id="infotab">
                     <li class="active"><a href="#intro" data-toggle="tab">Introduction</a></li>
-                    <li class="foo"><a href="#moreresources" data-toggle="tab">Additional Resources (${numResources})</a></li>
+                    <li class="foo"><a href="#moreresources" data-toggle="tab">Additional Information Resources</a></li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="intro">${helpers.showInfo(c.w)}</div>
-                    <div class="tab-pane foo" id="moreresources">${listingHelpers.showListing(c.listingType)}</div>
+                    <div class="tab-pane foo" id="moreresources">
+                        <div class="row-fluid">
+                            <div class="span10">
+                                <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.
+                            </div>
+                            <div class="span2 pull-right">
+                                ${lib_6.createNew("resources", 'small')}
+                            </div>
+                        </div>
+                        ${listingHelpers.showListing(c.listingType)}
+                    </div><!-- tab-pane -->
                 </div><!-- tab-content -->
             </div><!-- tabbable -->
         </div><!-- browse -->
