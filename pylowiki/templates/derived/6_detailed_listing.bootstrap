@@ -8,15 +8,14 @@
 
 <% 
    lib.return_to()
-   helperText = '<strong class="orange">Vote</strong> existing items <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">), or add your own.'
    if c.listingType == 'discussion':
-      helperText = 'Ask a question, give feedback, join a conversation about the workshop, or add your own.'
-      helperText += '<br /><strong class="orange">Vote</strong> existing conversations <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.'
       itemList = c.discussions
+      helperText = 'Ask a question, give feedback, join a conversation about the workshop, or add your own.'
+      helperText += '<br /><strong class="orange">Vote</strong> existing forum topics <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on veracity or value.'
    elif c.listingType == 'resources':
       itemList = c.resources
       helperText = 'Link to educational information resources like videos, articles and reports.'
-      helperText += '<br />View and <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.'
+      helperText += '<br />View and <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on veracity or value.'
    elif c.listingType == 'ideas':
       itemList = c.ideas
       helperText = 'Add an idea to meet the goals of the workshop!'
@@ -30,12 +29,19 @@
 
 <%def name="showListing(listingType, itemList, helperText)">
    <%
+      numItems = ''
       if listingType == 'discussion':
          pluralType = 'forum topics'
+         numItems = str(len(c.discussions))
+         itemAlert = '<div class="alert alert-info">There are no forum topics here yet. Be the first to add one!</div>'
       elif listingType == 'resources':
          pluralType = 'resources'
+         numItems = str(len(c.resources))
+         itemAlert = '<div class="alert alert-info">There are no information resources here yet. Be the first to add one!</div>'
       elif listingType == 'ideas':
          pluralType = 'ideas'
+         numItems = str(len(c.ideas))
+         itemAlert = '<div class="alert alert-info">There are no ideas here yet. Be the first to add one!</div>'
       elif listingType == 'activity':
          pluralType = 'activity'
    %>
@@ -64,7 +70,10 @@
                    </h3>
                     ${workshopHelpers.showActivity(c.activity)}
                % else:
-                    <h3 class="section-header"> ${pluralType.title()} </h3>
+                    <h3 class="section-header"> ${pluralType.title()} ${numItems}</h3>
+                    % if numItems == '0':
+                        ${itemAlert | n}
+                    % endif
                     ${helpers.showListing(listingType)}
                % endif
             </div><!--/.browse-->

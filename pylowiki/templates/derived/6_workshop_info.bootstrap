@@ -22,7 +22,13 @@
                     <div class="tab-pane foo" id="moreresources">
                         <div class="row-fluid">
                             <div class="span10">
-                                <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on their veracity or value.
+                                % if numResources == '0' and c.w['allowResources'] == '1':
+                                    <div class="alert alert-info">
+                                    There are no additional information resources here yet. Be the first to add one!
+                                    </div>
+                                % else:
+                                    <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on veracity or value.
+                                % endif
                             </div>
                         </div>
                         ${listingHelpers.showListing(c.listingType)}
