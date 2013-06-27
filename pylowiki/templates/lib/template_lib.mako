@@ -253,7 +253,11 @@
     <!-- Login Button social plugin using JavaScript SDK. -->
     <!-- Triggers the FB.login() function when clicked. -->
     <!-- 
-    
+    <fb:login-button size="small"
+                 onlogin="require('./log').info('onlogin callback')">
+  Connect
+</fb:login-button>
     -->
-    <li class="nav-item" id="fbLoginButton"><fb:login-button show-faces="false" width="200" max-rows="1" scope="email, user_photos"></fb:login-button></li>
+    
+    <li class="nav-item" id="fbLoginButton"><fb:login-button show-faces="false" size="small" scope="email, user_photos" style="padding-top:10px;">Connect</fb:login-button></li>
 </%def>

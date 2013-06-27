@@ -42,9 +42,14 @@
                               <div class="control-group">
                                   <div class="controls">
                                       <button type="submit" class="btn btn-primary"> Log in </button>
+                                      </form>
                                   </div>
                               </div>
-                          </form>
+                              <div class="control-group">
+                                  <div class="controls">
+                                      <fb:login-button show-faces="false" size="small" scope="email, user_photos">Connect</fb:login-button>
+                                  </div>
+                              </div>
                       % endif
                   </div>
                   <div class="login-bottom">
