@@ -18,6 +18,9 @@
             {{workshopTitle}}
             </a>
             </h1>
+            <p class="centered workshop-desc" ng-init="workshopDesc='${c.w['description'].replace("'", "\\'")}' " ng-cloak>
+            {{workshopDesc}}
+            </p>
          </div>
          % if workshopLib.isPublished(c.w):
            <div class="span3">

@@ -316,7 +316,7 @@ ul.activity > li {
 }
 
 .list-item .list-item-text{
-   margin-left:-25px;
+   margin-left: 0;
 }
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
