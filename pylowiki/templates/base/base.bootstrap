@@ -91,8 +91,10 @@
             // for any authentication related change, such as login, logout or session refresh. This means that
             // whenever someone who was previously logged out tries to log in again, the correct case below 
             // will be handled. 
+            console.log('window init');
             FB.Event.subscribe('auth.authResponseChange', function(response) {
               // Here we specify what we do with the response anytime this event occurs. 
+              console.log('above response tree');
               if (response.status === 'connected') {
                 //  We're given the token and other info - good for makig calls to fb
                 // locally, we've found that this person is logged into fb, and has given us 
@@ -105,6 +107,7 @@
                 // by confirming it's ok with fb
                 //console.log('token: ' + response.authResponse.accessToken);
                 // we can use fb to login to the site. at this point store the token and exp
+                console.log('calling fb connected');
                 fbConnected(response.authResponse);
               } else if (response.status === 'not_authorized') {
                 // In this case, the person is logged into Facebook, but not into the app, so we call
@@ -153,10 +156,13 @@
              console.log('name: ' + response.name + '.email: ' + response.email + '.username: ' + response.username + '.user_location' + response.user_location + '.user_hometown' +  response.user_hometown + '.');
            });
          }
+
          function authSignal() {
+           console.log('in auth signal')
            var authSignal = '<div id="authSignal"></div>'
            $('#fbLoginButton').append(authSignal);
          }
+
          function fbConnected(authResponse) {
            FB.api('/me', function(response) {
              // the FQL query: Get the link of the image, that is the first in the album "Profile pictures" of this user.
