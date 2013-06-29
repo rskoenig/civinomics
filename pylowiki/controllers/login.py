@@ -184,7 +184,6 @@ class LoginController(BaseController):
             if user['externalAuthType'] == 'facebook':
                 log.info("login:logUserIn externalAuthType facebook")
                 user['facebookAccessToken'] = session['fbAccessToken']
-                user['fbEmail'] = email
                 if 'fbSmallPic' in session:
                     user['extSource'] = True
                     user['facebookSource'] = True
