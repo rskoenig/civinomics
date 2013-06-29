@@ -92,8 +92,13 @@
             // whenever someone who was previously logged out tries to log in again, the correct case below 
             // will be handled. 
             console.log('window init');
+            FB.Event.subscribe('auth.login', function(response1) {
+              console.log('auth.login fired');
+              authSignal();
+            });
             FB.Event.subscribe('auth.authResponseChange', function(response) {
               // Here we specify what we do with the response anytime this event occurs. 
+              
               console.log('above response tree');
               if (response.status === 'connected') {
                 //  We're given the token and other info - good for makig calls to fb
@@ -119,7 +124,7 @@
                 // (2) it is a bad experience to be continually prompted to login upon page load.
                 console.log('not authd');                
                 FB.login();
-                authSignal();
+                
                 //FB.login(function(response) {
                   // handle the response
                 //}, {scope: 'name, email, user_location, user_hometown'});
@@ -131,7 +136,7 @@
                 // The same caveats as above apply to the FB.login() call here.
                 console.log('else');
                 FB.login();
-                authSignal();
+                
                 //FB.login(function(response) {
                   // handle the response
                 //}, {scope: 'name, email, user_location, user_hometown'});
