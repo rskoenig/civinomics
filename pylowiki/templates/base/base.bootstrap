@@ -205,9 +205,14 @@
                  }
                } else {
                  if ($('#authSignal').length) {
+                   var newLiButton = '<li class="nav-item">Logging In</li>';
+                   var newButton = 'Logging In'
+                   $('#fbLoginButton').html(newLiButton);
+                   $('#fbLoginButton1').html(newButton);
+                   $('#fbLoginButton2').html(newButton);
                    window.location = '/fbLoggingIn/';
                  }
-                 if ($('#fbLoggingIn').length) {
+                 else if ($('#fbLoggingIn').length) {
                    // this element is only found on a page meant to be used as a redirect when
                    // the 'login with facebook' link has been clicked.
                    window.location = '/fbLoggingIn/';
