@@ -13,16 +13,13 @@
 
 <%def name="whoListening()">
     <%
-        people = c.facilitators
+        people = []
         if c.listeners:
             people += c.listeners
     %>
-    <h4 class="section-header smaller section-header-inner"> Participants & Activity 
-    % if c.w['public_private'] == 'public':
-        <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/rss" target="_blank"><img src="/images/feed-icon-14x14.png"></a>
-    %endif
-    </h4>
-    <ul class="media-list centered" id="workshopNotables">
+    % if people:
+        <h4 class="section-header smaller section-header-inner">Who's Listening</h4>
+        <ul class="media-list centered" id="workshopNotables">
         % for person in people:
             <%
                 if person.objType == 'facilitator':
@@ -44,7 +41,14 @@
             </li>
             
         % endfor
-    </ul>
+        </ul>
+     % endif
+</%def>
+
+<%def name="showFacilitators()">
+    % for facilitator in c.facilitators:
+        Facilitator: ${lib_6.userLink(facilitator)}<br />
+    % endfor
 </%def>
 
 <%def name="showActivity(activity)">
@@ -107,20 +111,30 @@
 </%def>
 
 <%def name="workshopNavButton(workshop, count, objType, active = False)">
-   <%
-      imageMap = {'discussion':'/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png',
-                  'idea':'/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png',
-                  'resource':'/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png'}
-      titleMap = {'discussion':' Conversations',
-                  'idea':' Ideas',
-                  'resource':' Resources'}
-      linkHref = lib_6.workshopLink(workshop, embed = True, raw = True) + '/' + objType
-      linkClass = 'btn workshopNav'
-      if active:
-         linkClass += ' selected-nav'
-      linkID = objType + 'Button'
-   %>
-   <a class="${linkClass}" id="${linkID}" href = "${linkHref | n}"> <img class="workshop-nav-icon" src="${imageMap[objType] | n}">${titleMap[objType]} (${count})</a>
+    <%
+        imageMap = {'discussion':'/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png',
+                    'idea':'/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png',
+                    'resource':'/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png',
+                    'home':'/images/glyphicons_pro/glyphicons/png/glyphicons_020_home.png',
+                    'information':'/images/glyphicons_pro/glyphicons/png/glyphicons_318_more_items.png',
+                    'activity':'/images/glyphicons_pro/glyphicons/png/glyphicons_057_history.png'}
+        titleMap = {'discussion':' Forum',
+                    'idea':' Vote',
+                    'resource':' Links',
+                    'home':' Home',
+                    'information':' Information',
+                    'activity':'Activity'}
+        linkHref = lib_6.workshopLink(workshop, embed = True, raw = True)
+        if objType != 'home':
+            linkHref += '/' + objType
+        linkClass = 'btn workshopNav'
+        if active:
+            linkClass += ' selected-nav'
+        linkID = objType + 'Button'
+    %>
+    <a class="${linkClass}" id="${linkID}" href = "${linkHref | n}"> <img class="workshop-nav-icon" src="${imageMap[objType] | n}"> ${titleMap[objType]}
+    (${count})
+    </a>
 </%def>
 
 <%def name="workshopNav(w, listingType)">
@@ -129,6 +143,7 @@
       discussionCount = 0
       ideaCount = 0
       resourceCount = 0
+      activityCount = len(activity)
       for item in activity:
          if c.demo:
             author = getUserByID(item.owner)
@@ -146,48 +161,103 @@
             ideaCount += 1
          elif item.objType == 'resource':
             resourceCount += 1
-            
-      discussionTitle = 'Talk'
-      ideaTitle = 'Vote'
-      resourceTitle = 'Learn'
    %>
    <div class="btn-group four-up">
    <% 
-      if listingType == None:
-         workshopNavButton(w, resourceCount, 'resource')
+      if listingType == 'resources' or listingType == 'resource':
+         workshopNavButton(w, ideaCount, 'home')
+         workshopNavButton(w, resourceCount, 'information', active = True)
          workshopNavButton(w, discussionCount, 'discussion')
-         workshopNavButton(w, ideaCount, 'idea')
+         workshopNavButton(w, activityCount, 'activity')
       elif listingType == 'discussion':
-         workshopNavButton(w, resourceCount, 'resource')
+         workshopNavButton(w, ideaCount, 'home')
+         workshopNavButton(w, resourceCount, 'information')
          workshopNavButton(w, discussionCount, 'discussion', active = True)
-         workshopNavButton(w, ideaCount, 'idea')
+         workshopNavButton(w, activityCount, 'activity')
       elif listingType == 'ideas' or listingType == 'idea':
-         workshopNavButton(w, resourceCount, 'resource')
+         workshopNavButton(w, ideaCount, 'home', active = True)
+         workshopNavButton(w, resourceCount, 'information')
          workshopNavButton(w, discussionCount, 'discussion')
-         workshopNavButton(w, ideaCount, 'idea', active = True)
-      elif listingType == 'resources' or listingType == 'resource':
-         workshopNavButton(w, resourceCount, 'resource', active = True)
+         workshopNavButton(w, activityCount, 'activity')
+      elif listingType == 'activity':
+         workshopNavButton(w, ideaCount, 'home')
+         workshopNavButton(w, resourceCount, 'information')
          workshopNavButton(w, discussionCount, 'discussion')
-         workshopNavButton(w, ideaCount, 'idea')
+         workshopNavButton(w, activityCount, 'activity', active = True)
+      else:
+         workshopNavButton(w, ideaCount, 'home')
+         workshopNavButton(w, resourceCount, 'information')
+         workshopNavButton(w, discussionCount, 'discussion')
+         workshopNavButton(w, activityCount, 'activity')
    %>
    </div>
 </%def>
 
-<%def name="slideshow(w)">
-   <% 
-      slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
-      slideNum = 0
-   %>
-   <ul class="gallery thumbnails" data-clearing>
-      <% 
-         numSlides = len(slides)
-         for slide in slides:
-            if slide['deleted'] != '1':
-               _slide(slide, slideNum, numSlides)
-               slideNum += 1
-      %>
-   </ul>
+<%def name="slideshow(w, *args)">
+    <% 
+        slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
+        slideNum = 0
+      
+        if 'large' in args:
+            spanX = "span8"
+        else:
+            spanX = "span12"
+
+    %>
+    <div class="${spanX}">
+        <ul class="gallery thumbnails no-bottom" data-clearing>
+        <%
+           numSlides = len(slides)
+
+           for slide in slides:
+              if slide['deleted'] != '1':
+                if 'large' in args:
+                  _slideLarge(slide, slideNum)
+                  if slideNum == 0:
+                    slideCaption = slide['title']  
+                elif 'listing' in args:
+                  _slideListing(slide, slideNum, numSlides)
+                else:
+                  _slide(slide, slideNum, numSlides)
+                slideNum += 1
+        %>
+        </ul>
+    </div>
+    % if 'large' in args:
+        <div class="span4">
+            <p style="color: #FFF; padding-top: 15px;"><strong>Click Image To View Slideshow (1 of ${slideNum})</strong><br>
+            <small><br>${lib_6.ellipsisIZE(slideCaption, 214)}</small><br></p>
+        </div>
+    % endif
 </%def>
+
+<%def name="_slideLarge(showSlide, slideNum)">
+    <%
+        if slideNum == 0:
+            spanX = "span12"
+        else:
+            spanX = "noShow"
+        slideFormat = 'jpg'
+        if 'format' in showSlide.keys():
+            slideFormat = showSlide['format']
+    %>
+
+    <li class="${spanX} no-bottom">
+    % if showSlide['pictureHash'] == 'supDawg':
+        <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
+        <div style="width:100%; height:240px; background-image:url('/images/slide/slideshow/${showSlide['pictureHash']}.slideshow'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
+        </a>
+    % else:
+        <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
+        <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+        <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+        <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+        <div style="width:100%; height:240px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
+        </a>
+    % endif
+    </li>
+</%def>
+
 
 <%def name="_slide(slide, slideNum, numSlides)">
    <% 
@@ -224,9 +294,32 @@
    </li>
 </%def>
 
+<%def name="_slideListing(slide, slideNum, numSlides)">
+  <li class="span4 slideListing">
+    % if slide['pictureHash'] == 'supDawg':
+       <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
+          <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
+       </a>
+    % elif 'format' in slide.keys():
+       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
+          <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}" data-caption="${slide['title']}"/>
+       </a>
+    % else:
+       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
+          <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
+       </a>
+    % endif
+  </li>
+</%def>
+
 <%def name="showInfo(workshop)">
     <div>
-    % if c.information and 'data' in c.information:
+    % if c.information and 'data' in c.information: 
+        <p>This introduction was written and is maintained by the workshop facilitator.
+        % if c.w['allowResources'] == '1':
+            You are encouraged to add links to additional information resources.
+        % endif
+        </p>
         ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
     % endif
     </div>
@@ -237,6 +330,7 @@
         <p>This workshop has no goals!</p>
     % else:
         <div id="workshopGoals">
+        Workshop Goals:
         <ul>
         % for goal in goals:
             % if goal['status'] == '100':
@@ -267,23 +361,25 @@
 
 <%def name="showScope()">
     <%
-        scopeName = c.scope['level']
-        scopeString = 'This workshop is scoped for '
-        if scopeName == 'earth':
-            scopeString += 'the entire planet Earth.'
-        else:
-            # More mapping for the postal code, this time to display Postal Code instead of just Postal.
-            # The real fix for this is through use of message catalogs, which we will need to implement
-            # when we support multiple languages in the interface, so for right now this kludge is
-            # "good enough"
-            scopeString += 'the '
-            if scopeName == 'postalCode':
-                scopeNeme = 'Postal Code '
+        if c.w['public_private'] == 'public':
+            scopeName = c.scope['level']
+            scopeString = 'Scope: '
+            if scopeName == 'earth':
+                scopeString += 'the entire planet Earth.'
+            else:
+                # More mapping for the postal code, this time to display Postal Code instead of just Postal.
+                # The real fix for this is through use of message catalogs, which we will need to implement
+                # when we support multiple languages in the interface, so for right now this kludge is
+                # "good enough"
+                if scopeName == 'postalCode':
+                    scopeNeme = 'Postal Code '
 
-            scopeString += "the " + scopeName + " of "
-            scopeString += c.scope['name']\
+                scopeString += "the " + scopeName.title() + " of "
+                scopeString += c.scope['name']\
                         .replace('-', ' ')\
                         .title()
+        else:
+            scopeString = "Scope: This is a private workshop."
     %>
     ${scopeString | n}
 </%def>

@@ -5,7 +5,7 @@
 %>
 
 <%def name="mainNavbar()">
-    <div class="navbar civ-navbar">
+    <div class="navbar civ-navbar navbar-fixed-top" style="margin-bottom: 60px;">
         <div class="navbar-inner"
             % if "corp" in session._environ['PATH_INFO']:
                 id="corpNavbar"

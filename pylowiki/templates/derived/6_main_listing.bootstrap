@@ -3,13 +3,6 @@
 <%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
 
 <div class="row">
-    <div class="span12">
-        <div class="alert alert-info section-header">
-            <h5>Participate in workshops to improve your world. Don't see a workshop listed for your community? Become a member and start one today!</p></h5>
-        </div>
-    </div><!-- span12 -->
-</div><!-- row -->
-<div class="row">
    <div class="span8"> <!-- listings -->
       <div class="section-wrapper">
          <div class="browse">

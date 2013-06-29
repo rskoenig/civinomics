@@ -107,13 +107,13 @@ class WorkshopController(BaseController):
     def __before__(self, action, workshopCode = None):
         setPrivs = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
-        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'displayAllResources', 'preferences', 'upgradeHandler']
+        ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'display', 'info', 'activity', 'displayAllResources', 'preferences', 'upgradeHandler']
         
         adminOrFacilitator = ['configureBasicWorkshopHandler', 'configureTagsWorkshopHandler', 'configurePublicWorkshopHandler'\
         ,'configurePrivateWorkshopHandler', 'listPrivateMembersHandler', 'previewInvitation', 'configureScopeWorkshopHandler'\
         ,'configureStartWorkshopHandler', 'adminWorkshopHandler', 'preferences']
         
-        scoped = ['display', 'displayAllResources']
+        scoped = ['display', 'info', 'activity', 'displayAllResources']
         dontGetWorkshop = ['displayCreateForm', 'displayPaymentForm', 'createWorkshopHandler']
         
         if action in dontGetWorkshop:
@@ -891,7 +891,65 @@ class WorkshopController(BaseController):
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = False
         
+        ideas = ideaLib.getIdeasInWorkshop(workshopCode)
+        if not ideas:
+            c.ideas = []
+        else:
+            c.ideas = sort.sortBinaryByTopPop(ideas)
+        disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
+        if disabled:
+            c.ideas = c.ideas + disabled
+        c.listingType = 'ideas'
+        
         return render('/derived/6_workshop_home.bootstrap')
+        
+    def info(self, workshopCode, workshopURL):
+        c.title = c.w['title']
+
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
+
+        c.information = pageLib.getInformation(c.w)
+        
+        c.slides = []
+        c.slideshow = slideshowLib.getSlideshow(c.w)
+        slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
+        for id in slide_ids:
+            s = slideLib.getSlide(id) # Don't grab deleted slides
+            if s:
+                c.slides.append(s)
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
+        c.adminPanel = False
+
+        resources = resourceLib.getResourcesByWorkshopCode(workshopCode)
+        if not resources:
+            c.resources = []
+        else:
+            c.resources = sort.sortBinaryByTopPop(resources)
+        disabled = resourceLib.getResourcesByWorkshopCode(workshopCode, disabled = '1')
+        if disabled:
+            c.resources = c.resources + disabled
+        c.listingType = 'resources'
+
+        return render('/derived/6_workshop_info.bootstrap')
+        
+    def activity(self, workshopCode, workshopURL):
+        c.title = c.w['title']
+
+        c.isFollowing = False
+        if 'user' in session:
+            c.isFollowing = followLib.isFollowing(c.authuser, c.w)
+
+        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+
+        # determines whether to display 'admin' or 'preview' button. Privs are checked in the template.
+        c.adminPanel = False
+
+        c.listingType = 'activity'
+
+        return render('/derived/6_detailed_listing.bootstrap')
    
     def checkPreferences(self):
         testGoals = goalLib.getGoalsForWorkshop(c.w)

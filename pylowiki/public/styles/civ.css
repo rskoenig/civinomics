@@ -2,6 +2,7 @@ html,body{
    font-family: 'Open Sans', sans-serif;
    font-weight: normal;
    height: 100%;
+   padding-top: 10px;
 }
 
 /* Wrapper for page content to push down footer; */
@@ -60,6 +61,15 @@ html,body{
     margin-top:10%;
     margin-left:35%;
 }
+
+.tagList{
+  margin-top: 2px;
+  margin-bottom: 2px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  line-height: 14px;
+}
+
 .workshop-tag{
     margin-left:5px;
 }
@@ -225,10 +235,35 @@ form.addGoal{
 .section-wrapper .activity {
   padding: 10px;
 }
+
+.section-wrapper.slideshow{
+  background-color:#000; 
+  padding-bottom: 0px; 
+  padding-top: 0px;
+  position: relative;
+}
+
+.row-fluid [class*="span"]:nth-child(3n+1).slideListing{
+    margin-left:0px;
+}
+
+.carousel{
+  margin-bottom: 0;
+}
+
+.thumbnails > li.no-bottom {
+  margin-bottom: 0;
+}
+
 ul.activity{
     list-style-type: none;
     margin:0;
 }
+
+ul.activity > li {
+    margin-bottom: 15px;
+}
+
 .wrap-workshop{
     border: 5px solid #075D00;
     background-color: gainsboro;
@@ -281,7 +316,7 @@ ul.activity{
 }
 
 .list-item .list-item-text{
-   margin-left:-25px;
+   margin-left: 0;
 }
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
@@ -461,7 +496,7 @@ img.watch{
 }
 
 .btn-group.four-up{
-   width: 100%;
+   width: 98%;
 }
 
 .vote-icon{
@@ -488,8 +523,7 @@ img.watch{
 }
 
 .btn-group.four-up a.btn {
-   /*width: 25%;*/
-   width: 33%;
+   width: 25%;
    padding-left:0px;
    padding-right:0px;
    padding-top:10px;
@@ -730,6 +764,22 @@ ul.listeners > li {
    color: #075D00;
 }
 
+.mainGeo > .nav.nav-pills.pull-left.geo-breadcrumbs > li{
+    display: none;
+}
+
+.mainGeo > .nav.nav-pills.pull-left.geo-breadcrumbs > li > span.divider{
+    display: none;
+}
+
+.mainGeo > .nav.nav-pills.pull-left.geo-breadcrumbs > li.active {
+    display: block;
+}
+
+.mainGeo > .alert {
+    display: block;
+}
+
 .listed-item-title{
    color: #333333;
 }
@@ -800,7 +850,7 @@ lines below to support arbitrary height, but know
 that IE7/8 do not support :nth-child.
 -------------------------------------------------- */
 
-.clearing-blackout { background: black; background: rgba(0, 0, 0, 0.8); position: fixed; width: 100%; height: 100%; top: 0; left: 0; z-index: 999; }
+.clearing-blackout { background: black; background: rgba(0, 0, 0, 0.8); position: fixed; width: 100%; height: 100%; top: 40px; left: 0; z-index: 999; }
 .clearing-blackout .clearing-close { display: block; }
 
 .clearing-container { position: relative; z-index: 999; height: 100%; overflow: hidden; }
@@ -1075,48 +1125,10 @@ li.thumbnail-gallery{
 }
 
 .comment-data h1{
-    font-size: 28px;
-    line-height: 28px;
+    font-size: 20px;
+    line-height: 20px;
 }
-.comment-data h2{
-    font-size: 25px;
-    line-height: 25px;
-}
-.comment-data h3{
-    font-size: 22px;
-    line-height: 22px;
-}
-.comment-data h4{
-    font-size: 19px;
-    line-height: 19px;
-}
-.comment-data h5{
-    font-size: 16px;
-    line-height: 16px;
-}
-.comment-data h6{
-    font-size: 13px;
-    line-height: 13px;
-}
-.comment-data blockquote p{
-    font-size:13px;
-}
-.notables-item{
-    margin-left: -10px;
-    margin-right:-10px;
-    margin-top:-5px;
-    margin-bottom:-5px;
-    padding-right:10px;
-    padding-bottom:10px;
-    padding-top:10px;
-    border-bottom: 1px gray solid;
-    border-top: 1px gray solid;
-}
-.notables-item:first-child{
-    border-top: none;
-    margin-top:-10px;
-}
-.notables-item:last-child{
-    border-bottom:none;
-    margin-bottom:-20px;
+
+.right-space{
+  margin-right: 4px;
 }
