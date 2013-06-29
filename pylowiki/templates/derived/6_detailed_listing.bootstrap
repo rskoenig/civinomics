@@ -70,7 +70,7 @@
                    </h3>
                     ${workshopHelpers.showActivity(c.activity)}
                % else:
-                    <h3 class="section-header"> ${pluralType.title()} ${numItems}</h3>
+                    <h3 class="section-header"> ${pluralType.title()}</h3>
                     % if numItems == '0':
                         ${itemAlert | n}
                     % endif

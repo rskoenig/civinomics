@@ -71,15 +71,22 @@
          <img src=${voteImg | n} class="vote-icon">
          </a>
       % else:
+         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
+         <!--
          <a href="#" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
+         -->
          <img src="/images/icons/glyphicons/upVote.png" class="vote-icon">
          </a>
          <br />
          <div class="centered chevron-score"> ${rating} </div>
+         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
+         <!--
          <a href="#" rel="tooltip" data-placement="bottom" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
+         -->
          <img src="/images/icons/glyphicons/downVote.png" class="vote-icon">
          </a>
          <br />
+         <% log.info("vote") %>
       % endif
    </div>
 </%def>
@@ -108,27 +115,27 @@
         if 'small' in args:
             btnX = "small"
       
-        if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:      
+        if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
             printStr = '<a id="addButton" href="/workshop/%s/%s/add/' %(c.w['urlCode'], c.w['url'])
-            if thing == 'discussion':
-                printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'
-            elif thing == 'resources':
-                printStr += 'resource" title="Click to add a resource to this workshop"'
-            elif thing == 'ideas':
-                printStr += 'idea" title="Click to add an idea to this workshop"'
-                
-            printStr += ' class="pull-right btn btn-' + btnX + ' btn-civ right-space" type="button"><i class="icon-white icon-plus"></i>'
-
-            if thing == 'discussion':
-                printStr += ' Topic'
-            elif thing == 'ideas':
-                printStr += ' Idea'
-            elif thing == 'resources':
-                printStr += ' Resource'
-            printStr += '</a>'
         else:
-            # if not logged in redirect user to login
-            printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/' + thing + '" title="Login to participate in this workshop." class="pull-right btn btn-' + btnX + ' btn-success" type="button" id="addButton">Login to Participate</a>'
+            printStr = '<a href="/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/login/'
+            
+        if thing == 'discussion':
+            printStr += 'discussion" title="Click to add a general conversation topic to this workshop"'
+        elif thing == 'resources':
+            printStr += 'resource" title="Click to add a resource to this workshop"'
+        elif thing == 'ideas':
+            printStr += 'idea" title="Click to add an idea to this workshop"'
+                
+        printStr += ' class="pull-right btn btn-' + btnX + ' btn-civ right-space" type="button"><i class="icon-white icon-plus"></i>'
+
+        if thing == 'discussion':
+            printStr += ' Topic'
+        elif thing == 'ideas':
+            printStr += ' Idea'
+        elif thing == 'resources':
+            printStr += ' Resource'
+        printStr += '</a>'
 
     %>
     ${printStr | n}
