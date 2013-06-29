@@ -205,6 +205,8 @@
                  }
                } else {
                  if ($('#authSignal').length) {
+                   // this triggers when a person has arrived but was not yet logged inot facebook or
+                   // had not yet given auth to our app
                    var newLiButton = '<li class="nav-item">Logging In</li>';
                    var newButton = 'Logging In'
                    $('#fbLoginButton').html(newLiButton);
@@ -217,6 +219,8 @@
                    // the 'login with facebook' link has been clicked.
                    window.location = '/fbLoggingIn/';
                  } else {
+                   // this code is used when a person arrives and it is seen that they have 
+                   // auth'd our app and are logged into facebook 
                    // replace current button with returned result
                    var newLiButton = '<li class="nav-item"><a href="/fbLogin"><img src="/images/fb_connect.png" class="small-logo"></a></li>';
                    var newButton = '<a href="/fbLogin"><img src="/images/fb_connect.png" class="small-logo"></a>'

@@ -1,5 +1,5 @@
 function fbCheckAccount(response, authResponse, smallPic, bigPic){
-    console.log('in extauth fbCheckAccount: ' + response.name);
+    console.log('in /public/js/extauth.js fbCheckAccount: ' + response.name);
     //var newstring = 'email in extauth: ' + email;
     //return newstring;
     var encodedSmall = encodeURIComponent(smallPic)

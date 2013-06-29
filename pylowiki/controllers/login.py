@@ -70,10 +70,12 @@ class LoginController(BaseController):
         bigPic = bigPic.replace(",","%")
         bigPic = urllib2.unquote(bigPic)
 
+        log.info("login:fbAuthCheckEmail before verifyFbSignature")
         data = LoginController.verifyFbSignature(self, signed)
         if data is None:
             log.error('Invalid signature')
             return None
+        log.info("login:fbAuthCheckEmail made it past verifyFbSignature")
 
         user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if not user:
@@ -159,14 +161,16 @@ class LoginController(BaseController):
         # log this person in now
         facebookAuthId = session['facebookAuthId']
         email = session['fbEmail']
-        
+        log.info("login:fbLoggingIn")
         # get user
         user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if not user:
             user = userLib.getUserByEmail( email )
         if user:
+            log.info("login:fbLoggingIn found user, logging in")
             LoginController.logUserIn(self, user)
-        #else:
+        else:
+            log.info("login:fbLoggingIn DID NOT FIND USER - DEAD END")
             # somehow this flow got mixed up and now there's not an account yet
             # create new account flow from here? what are the possible cases?
 
@@ -174,23 +178,28 @@ class LoginController(BaseController):
         # NOTE - need to store the access token? kee in session or keep on user?
         # keeping it on the user will allow interaction with user's facebook after they've logged off
         # and by other people
+        log.info("login:logUserIn")
         if 'externalAuthType' in user.keys():
+            log.info("login:logUserIn externalAuthType in user keys")
             if user['externalAuthType'] == 'facebook':
+                log.info("login:logUserIn externalAuthType facebook")
                 user['facebookAccessToken'] = session['fbAccessToken']
+                user['fbEmail'] = email
                 if 'fbSmallPic' in session:
                     user['extSource'] = True
                     user['facebookSource'] = True
                     user['facebookProfileSmall'] = session['fbSmallPic']
-                    #user['facebookProfileBig'] = session['fbBigPic']
+                    user['facebookProfileBig'] = session['fbBigPic']
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
         commit(user)
+        log.info("login:logUserIn commit user")
         session["user"] = user['name']
         session["userCode"] = user['urlCode']
         session["userURL"] = user['url']
         session.save()
-        
+        log.info("login:logUserIn session save")
         if 'afterLoginURL' in session:
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']

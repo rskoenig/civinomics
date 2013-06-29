@@ -110,7 +110,7 @@ class RegisterController(BaseController):
         return render("/derived/fbSignUp.bootstrap")
 
     def fbSigningUp( self ):
-        log.info("signing up with fb")
+        log.info("register:fbSigningUp signing up with fb")
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
         # happens
@@ -154,7 +154,7 @@ class RegisterController(BaseController):
                 if 'addItem' in request.params:
                     c.listingType = request.params['addItem']
         else:
-            if  'fbEmail' not in session:
+            if 'fbEmail' not in session:
                 log.info('facebook email missing')
             else:
                 email = session['fbEmail']
@@ -230,7 +230,10 @@ class RegisterController(BaseController):
             if not user:
                 user = getUserByEmail( email )
 
+
+
             if user == False:
+                log.info("register:fbSigningUp didn't find user, making new account")
                 # NOTE - generate password here.
                 #password = RegisterController.generatePassword()
                 from string import letters, digits
@@ -330,10 +333,12 @@ class RegisterController(BaseController):
             else:
                 # NOTE this is a case where a user on site has now tried logging in with
                 # the facebook button. This should be caught in controllers/login.fbAuthCheckEmail
+                log.info("register:fbSigningUp found user, should have been logged in")
                 splashMsg['content'] = "You should have been logged in already"
                 session['splashMsg'] = splashMsg
                 session.save() 
         else:
+            log.info("register:fbSigningUp found user, required info is missing")
             splashMsg['content'] = "Some required info is missing from the facebook data."
             session['splashMsg'] = splashMsg
             session.save() 
