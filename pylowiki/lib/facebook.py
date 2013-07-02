@@ -29,7 +29,7 @@ def saveFacebookImage(imageLink, **kwargs):
     log.info("in saveFacebookImage %s" % imageLink)
     # retrieve image
     filename = 'facebookAvatar'
-    
+    log.info("c authu: %s" % str(c.authuser) )
     imageHash = imageLib.generateHash(filename, c.authuser)
 
     # need to have a directory for this guy
