@@ -1,5 +1,6 @@
 import os, logging, re
-import urllib2
+
+import urllib
 
 from pylons import request, response, session, config, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -20,14 +21,30 @@ def saveFacebookImage(imageLink, **kwargs):
     function will save cropped versions of it to disk for use as the user's current avatar. """
     # there are various ways to verify this is an image. can we trust the link provided by
     # facebook to be a valid image? 
+    
     #if c.authuser.id != c.user.id:
     #    abort(404)
 
     # this will be called from login or register in the controller folder
     log.info("in saveFacebookImage %s" % imageLink)
-    imgFile = urllib2.urlopen(imageLink).read()
-    image = imageLib.openImage(imgFile)
+    # retrieve image
     filename = 'facebookAvatar'
+    
+    imageHash = imageLib.generateHash(filename, c.authuser)
+
+    # need to have a directory for this guy
+    #fileLocation =('/images/%s.png' % imageHash )
+    fileLocation =('/images/avatar/%s/avatar/%s.png' % (c.authuser['directoryNum_avatar'], imageHash) )
+    #os.chdir('/images/avatar/%s/avatar/%s.png' % (c.authuser['directoryNum_avatar'], imageHash) )
+    
+    os.chdir(fileLocation)
+    testImg = "http://thehomie.com/images/Napali.png"
+
+    imageFile=urllib.URLopener()
+    imageFile.retrieve(testImg,filename)  
+
+    image = imageLib.openImage(imageFile)
+
     if not image:
         abort(404) # Maybe make this a json response instead
 
@@ -37,7 +54,7 @@ def saveFacebookImage(imageLink, **kwargs):
         # with image name it's just that, a name for this image. the image should replace whatever 
         # may already be on this server for the user's profile pic
 
-    imageHash = imageLib.generateHash(filename, c.authuser)
+    
     image = imageLib.saveImage(image, imageHash, 'avatar', 'orig', thing = c.authuser)
     
     width = min(image.size)
@@ -73,4 +90,4 @@ def saveFacebookImage(imageLink, **kwargs):
     #]}
     #return json.dumps(jsonResponse)
     thumbnail_url = '/images/avatar/%s/avatar/%s.png' %(c.authuser['directoryNum_avatar'], imageHash)
-    return thumbnail_url
+    return fileLocation

@@ -144,12 +144,12 @@ class LoginController(BaseController):
             # a user's account email can be different from the email on their facebook account.
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
-            if 'fbSmallPic' in session:
-                user['extSource'] = True
-                user['facebookSource'] = True
-                smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
-                user['facebookProfileSmall'] = smallPic
-                user['facebookProfileBig'] = smallPic
+            #if 'fbSmallPic' in session:
+                #user['extSource'] = True
+                #user['facebookSource'] = True
+                #smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
+                #user['facebookProfileSmall'] = smallPic
+                #user['facebookProfileBig'] = smallPic
             commit(user)
             return render("/derived/fbLoggingIn.bootstrap")
             #LoginController.logUserIn(self, user)
@@ -181,6 +181,12 @@ class LoginController(BaseController):
         # NOTE - need to store the access token? kee in session or keep on user?
         # keeping it on the user will allow interaction with user's facebook after they've logged off
         # and by other people
+        session["user"] = user['name']
+        session["userCode"] = user['urlCode']
+        session["userURL"] = user['url']
+        session.save()
+        log.info("login:logUserIn session save")
+
         log.info("login:logUserIn")
         if 'externalAuthType' in user.keys():
             log.info("login:logUserIn externalAuthType in user keys")
@@ -190,18 +196,16 @@ class LoginController(BaseController):
                 if 'fbSmallPic' in session:
                     user['extSource'] = True
                     user['facebookSource'] = True
-                    user['facebookProfileSmall'] = session['fbSmallPic']
-                    user['facebookProfileBig'] = session['fbBigPic']
+                    smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
+                    user['facebookProfileSmall'] = smallPic
+                    user['facebookProfileBig'] = smallPic
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
         commit(user)
         log.info("login:logUserIn commit user")
-        session["user"] = user['name']
-        session["userCode"] = user['urlCode']
-        session["userURL"] = user['url']
-        session.save()
-        log.info("login:logUserIn session save")
+        
+        
         if 'afterLoginURL' in session:
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']
