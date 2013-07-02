@@ -187,6 +187,8 @@ class LoginController(BaseController):
         session.save()
         log.info("login:logUserIn session save")
 
+        c.authuser = user
+
         log.info("login:logUserIn")
         if 'externalAuthType' in user.keys():
             log.info("login:logUserIn externalAuthType in user keys")

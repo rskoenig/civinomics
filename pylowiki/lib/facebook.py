@@ -2,7 +2,7 @@ import os, logging, re
 
 import urllib
 
-from pylons import request, response, session, config, tmpl_context as c, url
+from pylons import session, config, request, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.images      as imageLib
