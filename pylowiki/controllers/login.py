@@ -7,11 +7,13 @@ from pylons import config
 
 from pylowiki.lib.base import BaseController, render
 
-import pylowiki.lib.helpers as h
-import pylowiki.lib.db.user as userLib
-import pylowiki.lib.mail as mailLib
-from pylowiki.lib.auth import login_required
-from pylowiki.lib.db.dbHelpers import commit
+import pylowiki.lib.facebook    as facebookLib
+import pylowiki.lib.images      as imageLib
+import pylowiki.lib.helpers     as h
+import pylowiki.lib.db.user     as userLib
+import pylowiki.lib.mail        as mailLib
+from pylowiki.lib.auth          import login_required
+from pylowiki.lib.db.dbHelpers  import commit
 
 import requests
 import mechanize
@@ -145,8 +147,9 @@ class LoginController(BaseController):
             if 'fbSmallPic' in session:
                 user['extSource'] = True
                 user['facebookSource'] = True
-                user['facebookProfileSmall'] = session['fbSmallPic']
-                user['facebookProfileBig'] = session['fbBigPic']
+                smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
+                user['facebookProfileSmall'] = smallPic
+                user['facebookProfileBig'] = smallPic
             commit(user)
             return render("/derived/fbLoggingIn.bootstrap")
             #LoginController.logUserIn(self, user)
