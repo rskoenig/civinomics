@@ -172,7 +172,8 @@
            FB.api('/me', function(response) {
              // the FQL query: Get the link of the image, that is the first in the album "Profile pictures" of this user.
 
-             var bigPicFql = FB.Data.query('select src_big from photo where pid in (select cover_pid from album where owner={0} and name="Profile Pictures")', response.id);
+             //var bigPicFql = FB.Data.query('select src_big from photo where pid in (select cover_pid from album where owner={0} and name="Profile Pictures")', response.id);
+             var bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=160 AND height=160', response.id);
              var bigPic = '';
              bigPicFql.wait(function (rows) {
                // the big pic link

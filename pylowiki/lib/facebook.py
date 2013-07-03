@@ -24,7 +24,35 @@ def saveFacebookImage(imageLink, **kwargs):
     
     #if c.authuser.id != c.user.id:
     #    abort(404)
+    log.info("testconf: %s"%config['app_conf']['imageDirectory'])
+    # /glyphicons_pro/glyphicons/png/
+    # glyphicons_003_user.png
 
+    #savename = imageHash = imageLib.generateHash(fileHolderName, c.authuser)
+    #sampleDir = config['app_conf'] .. '/images/glyphicons_pro/glyphicons/png/'
+    #pathname = os.path.join(config['app_conf']['avatarDirectory'])
+    #    fullpath = os.path.join(config['app_conf']['imageDirectory'], savename)
+    #    file = open(fullpath, 'wb')
+    #    shutil.copyfileobj(picture.file, file)
+    #    picture.file.close()
+    #    file.close()
+    
+    log.info("make a place for the image")
+    log.info("current dir %s"%os.path)
+    glyphName = '/glyphicons_pro/glyphicons/png/glyphicons_003_user.png'
+    fullpath = "%s%s"%(config['app_conf']['imageDirectory'], glyphName)
+    log.info("fullPath %s" % fullpath)
+    fileHolder = open(fullpath,"r")
+    image = imageLib.openImage(fileHolder)
+    fileHolderName = "glyphicons_003_user"
+    fileHolderFile = fileHolder.file
+    image = imageLib.openImage(fileHolderFile)
+    if not image:
+        abort(404) # Maybe make this a json response instead
+    imageHash = imageLib.generateHash(fileHolderName, c.authuser)
+    image = imageLib.saveImage(image, imageHash, 'avatar', 'orig', thing = c.authuser)
+    log.info("by saving a copy of our default avatar")
+    log.info("now c.authuser has the directoryNum_avatar key we can work with")
     # this will be called from login or register in the controller folder
     log.info("in saveFacebookImage %s" % imageLink)
     # retrieve image
@@ -42,6 +70,8 @@ def saveFacebookImage(imageLink, **kwargs):
 
     imageFile=urllib.URLopener()
     imageFile.retrieve(testImg,filename)  
+
+
 
     image = imageLib.openImage(imageFile)
 

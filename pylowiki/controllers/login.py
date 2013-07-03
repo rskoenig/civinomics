@@ -198,9 +198,10 @@ class LoginController(BaseController):
                 if 'fbSmallPic' in session:
                     user['extSource'] = True
                     user['facebookSource'] = True
-                    smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
-                    user['facebookProfileSmall'] = smallPic
-                    user['facebookProfileBig'] = smallPic
+                    #smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
+                    # session['fbBigPic']  session['fbSmallPic']
+                    user['facebookProfileSmall'] = session['fbSmallPic']
+                    user['facebookProfileBig'] = session['fbBigPic']
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
