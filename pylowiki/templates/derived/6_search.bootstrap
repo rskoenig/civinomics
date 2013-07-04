@@ -84,8 +84,8 @@
                     <tr ng-repeat = "p in people"><td>
                         <div class="media">
                             <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
-                                <img class="media-object avatar" ng-src="${lib_6.userImage(p.user, className="avatar avatar-large")}" alt="{{p.name}}" title="{{p.name}}">
-                                <!--<img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">-->
+                                <!--<img class="media-object avatar" ng-src="${lib_6.userImage({{p.name}}, className="avatar avatar-large")}" alt="{{p.name}}" title="{{p.name}}">-->
+                                <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
                             </a>
                             <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
                             <p>from <a href="{{p.cityURL}}" class="green green-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="green green-hover">{{p.stateTitle}}</a></p>

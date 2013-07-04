@@ -97,7 +97,6 @@
                         % else:
                             <li><a href="/login">login</a></li>
                             <li><a href="/signup">signup</a></li>
-                            ${self.fbLogin()}
                         % endif
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -128,7 +127,6 @@
             <ul class="nav pull-right">
               <li class="nav-item"><a href="/signup" class="nav-item">Sign Up</a></li>
               <li class="nav-item"><a href="/login" class="nav-item">Log In</a></li>
-              ${self.fbLogin()}
             </ul>
           </div><!--/.nav-collapse -->
         </div>
@@ -247,17 +245,4 @@
             </div>
         </div>
     </div>
-</%def>
-
-<%def name="fbLogin()">
-    <!-- Login Button social plugin using JavaScript SDK. -->
-    <!-- Triggers the FB.login() function when clicked. -->
-    <!-- 
-    <fb:login-button size="small"
-                 onlogin="require('./log').info('onlogin callback')">
-  Connect
-</fb:login-button>
-    -->
-    
-    <li class="nav-item" id="fbLoginButton"><fb:login-button show-faces="false" size="small" scope="email, user_photos" style="padding-top:10px;">Connect</fb:login-button></li>
 </%def>
