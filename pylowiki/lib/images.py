@@ -22,7 +22,6 @@ numImagesInDirectory = 30000
 
 """
 
-
 def resizeImage(image, imageHash, width, height, **kwargs):
     """
         Given an object of type PIL.Image, resize that object and return it.
