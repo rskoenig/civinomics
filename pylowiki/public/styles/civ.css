@@ -23,6 +23,30 @@ html,body{
   margin-bottom: 60px;
 }
 
+.social-sign-in-separator {
+margin: 25px auto;
+max-width: 100%;
+text-align: center;
+background-color:  #DDDDDD;
+height: 1px;
+}
+
+.social-sign-in-separator span {
+padding: 0 10px;
+position: relative;
+top: -9px;
+background-image: url('/images/splash/dust.png');
+font-size: 14px;
+}
+
+.sc-font-light {
+font-weight: 100;
+}
+
+.sc-text-light {
+color: #999;
+}
+
 .form-search{
    margin-bottom:0;
    margin-top:7px;

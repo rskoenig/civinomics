@@ -18,14 +18,22 @@ def setup_app(command, conf, vars):
     load_environment(conf.global_conf, conf.local_conf)
 
 
-    # If config file is set to wipe the DB by default (e.g. test files)
+    # If test.ini drop all existing tables
     filename = os.path.split(conf.filename)[-1]
-    autoDeleteConfigs = ['developmentSandbox.ini', 'test.ini', 'test-edolfo.ini', 'dev-edolfo.ini']
-    if filename in autoDeleteConfigs:
+    if filename == 'developmentTodd.ini':    
         log.info("Dropping existing tables...")
         meta.metadata.drop_all(bind=meta.engine)
+    if filename == 'testTodd.ini':    
+        log.info("Dropping existing tables...")
+        meta.metadata.drop_all(bind=meta.engine)
+    if filename == 'testToddNoReset.ini':    
+        log.info("Keeping existing tables...")
+        
+
     #Create the tables if they don't already exist
-    meta.metadata.create_all(bind=meta.engine)
+    if filename != 'testToddNoReset.ini':    
+        meta.metadata.create_all(bind=meta.engine)
+
     
     # We are only working with this part of the config list
     conf = config['app_conf']
@@ -50,17 +58,18 @@ def setup_app(command, conf, vars):
         memberType = 'professional'
 
         if name != "" and passwd != ""  and email != "" and postalCode != "":
-        
-            # Create the admin user
-            u = User( email, name, passwd, country, memberType, postalCode )
-            u = getUserByEmail(email)
-            u['accessLevel'] = '300'
-            u['activated'] = '1'
-            u['disabled'] = '0'
-            # Create event log entry
-            e = Event("Create", "Auto create admin acct.", u, u)
-            log.info('hi!')
-            commit(u)
+            
+            if filename != 'testToddNoReset.ini':
+                # Create the admin user
+                u = User( email, name, passwd, country, memberType, postalCode )
+                u = getUserByEmail(email)
+                u['accessLevel'] = '300'
+                u['activated'] = '1'
+                u['disabled'] = '0'
+                # Create event log entry
+                e = Event("Create", "Auto create admin acct.", u, u)
+                log.info('hi!')
+                commit(u)
 
     except:
         raise

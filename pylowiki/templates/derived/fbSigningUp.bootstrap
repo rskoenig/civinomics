@@ -26,32 +26,9 @@
                       % if c.conf['read_only.value'] == 'true':
                           <h1> Sorry, Civinomics is in read only mode right now </h1>
                       % else:
-                          <div style="margin-left: 180px;" id="fbLoginButton1">
-                              <fb:login-button show-faces="false" size="xlarge" scope="email, user_photos"><img src="/images/fb_signin.png"></fb:login-button>
+                          <div id="fbSigningUp">
+                            <p>Thank you, we are now signing you up using your Facebook identity.</p>
                           </div>
-                          <div class="social-sign-in-separator sc-font-light sc-text-light">
-                              <span>Or sign in with your email</span>
-                          </div>
-                          <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
-                              <div class="control-group">
-                                  <label class="control-label" for="email"> Email: </label>
-                                  <div class="controls">
-                                      <input type="email" name="email" id="email" required>
-                                  </div>
-                              </div>
-                              <div class="control-group">
-                                  <label class="control-label" for="passphrase"> Password: </label>
-                                  <div class="controls">
-                                      <input type="password" name="password" id="password">
-                                  </div>
-                              </div>
-                              <div class="control-group">
-                                  <div class="controls">
-                                      <button type="submit" class="btn btn-primary"> Log in </button>
-                                      
-                                  </div>
-                              </div>
-                          </form>
                       % endif
                   </div>
                   <div class="login-bottom">
