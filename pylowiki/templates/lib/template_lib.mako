@@ -167,10 +167,10 @@
                         <li><a class="green green-hover" href="/help">Help</a></li>
                         <li><a class="green green-hover" href="#" id="footerFeedbackButton">Feedback</a></li>
                     </ul>
-                </div>
+                </div><!-- span8 -->
                 <div class="span pull-right">
                   © 2013 Civinomics
-                </div>
+                </div><!-- span pull-right -->
             </div><!-- row footer well -->
         </div><!-- footerContainer -->
     </div><!-- baseTemplate_footer -->
