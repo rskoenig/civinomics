@@ -14,6 +14,7 @@ from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.mail            as mailLib
 
 log = logging.getLogger(__name__)
 
@@ -287,6 +288,7 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
+                    mailLib.sendWelcomeMail(user)
                     
                     log.info( "Successful guest activation with credentials - " + email )
                     returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
@@ -326,6 +328,7 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
+                    mailLib.sendWelcomeMail(user)
                     
                     log.info( "Successful facebook signup with email - " + email )
                     returnPage = "/"

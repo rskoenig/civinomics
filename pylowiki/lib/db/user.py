@@ -194,7 +194,7 @@ class User(object):
         commit(u)
         u['urlCode'] = toBase62(u)
         commit(u)
-        if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
+        if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session and 'fbEmail' not in session):
             self.generateActivationHash(u)
         commit(u)
  
