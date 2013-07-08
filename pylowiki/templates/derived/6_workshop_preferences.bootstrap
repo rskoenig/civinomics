@@ -88,7 +88,7 @@
                             <i class="icon-ok pull-right"></i>
                         % endif
                         </a></li>
-                        <li class="${background_active}"><a href="#background" data-toggle="tab">4. Background
+                        <li class="${background_active}"><a href="#background" data-toggle="tab">4. Information
                         % if c.backConfig:
                             <i class="icon-ok pull-right"></i>
                         % endif
@@ -102,20 +102,6 @@
                     ${helpers.publish()}
                 </div><!-- browse -->
             </div><!-- section-wrapper -->
-
-            % if c.w['type'] == 'personal':
-                <div class="section-wrapper alert-success">
-                    <div class="browse" style="overflow">
-                        <div>
-                            <p>To invite more than 20 people or add your workshop to public listings...</p>
-                            <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST" class="no-bottom">
-                                <button type="submit" class="btn btn-block btn-large btn-civ pull-right">Upgrade to Pro</button>
-                            </form>
-                        </div>
-                    </div>
-                </div><!-- section-wrapper -->
-            % endif
-
 
         </div><!-- span3 -->
         <div class="span9">

@@ -324,7 +324,7 @@ class WorkshopController(BaseController):
         werrMsg = ''
            
         if c.w['type'] == 'personal':
-            alert = {'type':'error'}
+            alert = {'type':'info'}
             alert['title'] = 'You must upgrade to a Professional workshop in order to change the scope to public.'
             session['alert'] = alert
             session.save()
@@ -949,7 +949,7 @@ class WorkshopController(BaseController):
         page = pageLib.getInformation(c.w)
         if page and 'data' in page:
             background = page['data']
-        if background and background != '':
+        if background and background != utils.workshopInfo:
             c.backConfig = 1
         else:
             c.backConfig = 0

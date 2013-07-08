@@ -315,7 +315,7 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     w['allowDiscussions']  = u'1'
     commit(w)
     w['urlCode'] = utils.toBase62(w)
-    background = ''
+    background = utils.workshopInfo
     
     p = pageLib.Page(title, owner, w, background)
     e = eventLib.Event('Create workshop', 'User %s created a workshop'%(c.authuser['email']), w)

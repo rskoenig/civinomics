@@ -9,12 +9,25 @@
 <%def name="fields_alert()">
 	% if 'alert' in session:
 		<% alert = session['alert'] %> 
-        <div class="alert alert-${alert['type']} workshop-admin">
-            ## bad char: ×
-            ## good char: x
-            <button data-dismiss="alert" class="close">x</button>
-            <strong>${alert['title']}</strong>
-        </div>
+            <div class="alert alert-${alert['type']} workshop-admin" style="overflow: visible;">
+                ## bad char: ×
+                ## good char: x
+                <button data-dismiss="alert" class="close">x</button>
+                % if 'upgrade to a Professional' in alert['title']:
+                    <div class="row-fluid">
+                        <div class="span8">
+                            <strong>${alert['title']}</strong>
+                        </div>
+                        <div class="span4">
+                            <form name="workshopUpgrade" id="workshopUpgrade" action="/workshop/${c.w['urlCode']}/${c.w['url']}/upgrade/handler" method="POST" class="no-bottom">
+                                <button type="submit" class="btn btn-large btn-civ pull-right">Upgrade to Pro</button>
+                            </form>
+                        </div>
+                    </div>
+                % else:
+                    <strong>${alert['title']}</strong>
+                % endif
+            </div>
         <% 
            session.pop('alert')
            session.save()
@@ -43,14 +56,14 @@
         <div class="browse">
             <h4 class="section-header smaller">Basic Info</h4>
             <div class="row-fluid">
-                <div class="span6">
+                <div class="span6 offset1">
                     <form name="edit_issue" id="edit_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
                         <fieldset>
                             <legend>Settings</legend>
                             <label>Workshop Name</label>
                             <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="editWorkshopName"/>
-                            <label>Description</label>
-                            <input id = "inputDescription" type="text" name="description" size="50" maxlength="70" value = "${c.w['description']}" class="editWorkshopDescription"/>
+                            <label>Workshop Prompt <span class="help-block">What is the main question participants should consider?</span></label>
+                            <textarea rows="4" id = "inputDescription" type="text" name="description" size="50" maxlength="200" value = "${c.w['description']}" class="editWorkshopDescription"></textarea>
                             <%
                                 if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
                                     yesChecked = 'checked'
@@ -90,40 +103,41 @@
                                 <input type="radio" id="allowResources" name="allowResources" value="0" ${noChecked}> No
                             </label>
                             <br>
-                            % if not c.published:
-                                <button type="submit" class="btn btn-warning">Save Basic Info and Continue</button>
-                            % else:
-                                <button type="submit" class="btn btn-warning">Save Basic Info</button>
-                            % endif
-                        </fieldset>
-                    </form>
-                </div><!-- span6 -->
-                <div class="span6">
-                <legend>Goals</legend>
-                    ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
-                    <p class="muted">Double-click on an existing goal to edit.</p>
-                    <div ng-controller="GoalsCtrl">
-                        <p> {{remaining()}} of {{goals.length}} remaining </p>
-                        <ul class="unstyled goalList">
-                            <li ng-repeat="goal in goals">
-                                <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
-                                <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
-                                <form ng-submit="goalEditDone(goal)" class="inline">
-                                    <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
-                                </form>
-                                <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a>
-                            </li>
-                        </ul>
-                        <form ng-submit="addGoal()" class="addGoal">
-                            <div class="input-append">
-                                <input type="text" ng-model="goalTitle" size="60" maxlength = "60" placeholder="New goal here" class="addGoal" id="addGoal">
-                                <button class="btn btn-primary" type="submit" value="add">add</button>
-                            </div>
-                        </form>
-                        <p class = "green">{{60 - goalTitle.length}}</p>
-                    </div>
-                </div><!-- span6 -->
+
+                        <legend>Goals <span class="label label-important">Required</span></span></legend>
+                        ##The goals should <strong>briefly</strong> describe what you want to accomplish with the workshop, and what you want from the workshop participants. They are displayed on the workshop home page.<br />
+                        <p class="muted">Double-click on an existing goal to edit.</p>
+                        <div ng-controller="GoalsCtrl">
+                            <p> {{remaining()}} of {{goals.length}} remaining </p>
+                            <ul class="unstyled goalList">
+                                <li ng-repeat="goal in goals">
+                                    <span>
+                                    <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
+                                    <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
+                                    <form ng-submit="goalEditDone(goal)" class="inline">
+                                        <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
+                                    </form>
+                                    <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a></span>
+                                </li>
+                            </ul>
+                            <form ng-submit="addGoal()" class="addGoal">
+                                <div class="input-append">
+                                    <input type="text" ng-model="goalTitle" size="60" maxlength = "60" placeholder="New goal here" class="addGoal" id="addGoal">
+                                    <button class="btn btn-primary" type="submit" value="add">add</button>
+                                </div>
+                            </form>
+                            <p class = "green">{{60 - goalTitle.length}}</p>
+                        </div>
+
+                        % if not c.published:
+                            <button type="submit" class="btn btn-warning">Save Basic Info and Continue</button>
+                        % else:
+                            <button type="submit" class="btn btn-warning">Save Basic Info</button>
+                        % endif
+                    </fieldset>
+                </form>
             </div><!-- row -->
+        </div>
         </div><!-- browse -->
     </div><!-- section wrapper -->
 </%def>
@@ -201,10 +215,9 @@
 <%def name="edit_background()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Background</h4>
+            <h4 class="section-header smaller"><span style="margin-left: 185px;">Information </span><a class="btn btn-small btn-primary pull-right right-space" href="/help/markdownGuide" target="_blank"><i class="icon icon-th-list icon-white"></i> Markdown Syntax Guide</a></h4>
             
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
-                <a class="btn" href="/help/markdownGuide" target="_blank"><i class="icon icon-th-list"></i> Quick Markdown Syntax Guide</a>
                <textarea rows="10" id="data" name="data" class="span12">${c.page['data']}</textarea>
                <div class="background-edit-wrapper">
                     % if not c.published:
@@ -245,12 +258,19 @@
                 </div>
                 <div class="span2">
                     <label class="radio">
+                    % if c.w['type'] == 'professional':
                         <input type="radio" name="optionsRadios" id="optionsRadios2" value="Public"
                         % if currentScope == 'Public':
                             checked
                         % endif
-                        disabled>
+                        >
                         Public  <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png">
+                    % else:
+                    <button class="transparent">
+                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="Public" disabled>
+                    </button>
+                        Public  <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png">
+                    % endif
                     </label>
                 </div>
                 <div class="span3">

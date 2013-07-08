@@ -189,6 +189,10 @@ form.addGoal{
     border-right: 1px solid #DDDDDD;
 }
 
+.right-space{
+  margin-right: 4px;
+}
+
 .disabled{
     background: #f2dede;
     border-radius:10px;
@@ -687,6 +691,14 @@ ul.listeners > li {
 }
 .profile-workshop{
     padding-right:5px;
+}
+
+button.transparent{
+  border: none;
+  background: none;
+  background-color: none;
+  margin-top: 0;
+  padding-top: 0;
 }
 
 .btn-civ {
