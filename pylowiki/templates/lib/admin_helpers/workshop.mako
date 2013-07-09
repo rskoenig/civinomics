@@ -154,7 +154,20 @@
     % if c.w['public_private'] != 'trial':
         <table class="table table-bordered">
         <thead>
-        <tr><th>Current Listeners</th></tr>
+        <tr><th>Listeners 
+        <button type="button" class="pull-right btn btn-small btn-success" data-toggle="collapse" data-target="#addlistener">
+        + Listener
+        </button>
+        <div id="addlistener" class="collapse">
+            <form id="resignListener" class="form-inline" name="addListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/add/handler/" method="post">
+                New Listener: 
+                <input type="text" name="name" class="input-small" placeholder="Name">
+                <input type="text" name="title" class="input-small" placeholder="Title">
+                <input type="text" name="email" class="input-small" placeholder="Email">
+                <button type="submit" class="btn btn-success">Save Listener</button>
+            </form>
+        </div><!-- collapse -->
+        </th></th>
         </thead>
         <tbody>
         % for listener in c.listeners:
