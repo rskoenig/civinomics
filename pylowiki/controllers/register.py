@@ -14,7 +14,6 @@ from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.db.mainImage    as mainImageLib
-import pylowiki.lib.mail            as mailLib
 
 log = logging.getLogger(__name__)
 
@@ -30,6 +29,7 @@ class RegisterController(BaseController):
             h.check_if_login_required()
 
     def signupDisplay(self):
+        c.facebookAppId = config['facebook.appid']
         c.numAccounts = 1000
         c.numUsers = len(getActiveUsers())
         if 'splashMsg' in session:
@@ -56,6 +56,8 @@ class RegisterController(BaseController):
         return render("/derived/signup.bootstrap")
 
     def fbNewAccount( self ):
+        c.facebookAppId = config['facebook.appid']
+        
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
@@ -85,6 +87,8 @@ class RegisterController(BaseController):
         return hash.lower()
 
     def fbSignUpDisplay( self ):
+        c.facebookAppId = config['facebook.appid']
+
         """ This is an intermediary page for the signup process when a facebook user first
         creates an account. """
         c.numAccounts = 1000
@@ -111,6 +115,8 @@ class RegisterController(BaseController):
         return render("/derived/fbSignUp.bootstrap")
 
     def fbSigningUp( self ):
+        c.facebookAppId = config['facebook.appid']
+
         log.info("register:fbSigningUp signing up with fb")
         """ handles creating an account for a facebook user who does not have one on the site """
         # I need the facebook identity stuff - load these things into the session when this process
@@ -288,7 +294,6 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
-                    mailLib.sendWelcomeMail(user)
                     
                     log.info( "Successful guest activation with credentials - " + email )
                     returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
@@ -328,7 +333,6 @@ class RegisterController(BaseController):
                     log.info('session of user: %s' % session['user'])
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
-                    mailLib.sendWelcomeMail(user)
                     
                     log.info( "Successful facebook signup with email - " + email )
                     returnPage = "/"

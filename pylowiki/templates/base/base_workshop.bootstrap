@@ -11,6 +11,18 @@
    <div class="span12 well workshop-panel">
       <div class="row-fluid">
          <div class="span3">
+            <% path = request.environ['PATH_INFO'] %>
+            % if path == "/workshop/" + c.w['urlCode'] + "/" + c.w['url'] or path == "/workshops/" + c.w['urlCode'] + "/" + c.w['url']:
+                <div class="alert alert-info">
+                <strong>Participate!</strong>
+                <ul>
+                <li>Add information <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/resource">resources</a></li>
+                <li>Engage in <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/discussion">conversations</a></li>
+                <li>Share your <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}/idea">ideas</a></li>
+                <li>Vote all items up or down</li>
+                </ul>
+                </div>
+            % endif
          </div>
          <div class="span6">
             <h1 class="centered workshop-title"> 
@@ -18,9 +30,6 @@
             {{workshopTitle}}
             </a>
             </h1>
-            <p class="centered workshop-desc" ng-init="workshopDesc='${c.w['description'].replace("'", "\\'")}' " ng-cloak>
-            {{workshopDesc}}
-            </p>
          </div>
          % if workshopLib.isPublished(c.w):
            <div class="span3">

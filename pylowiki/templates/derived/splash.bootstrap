@@ -84,7 +84,7 @@
 
 
 <%def name="headScripts()">
-  <script src="/js/vendor/facebookLike.js"></script>
+  
 </%def>
 
 <%def name="extraScripts()">

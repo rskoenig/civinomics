@@ -2,7 +2,7 @@
 window.fbAsyncInit = function() {
 FB.init({
   appId      : '421911304496726', // App ID
-  channelUrl : '//WWW.CIVINOMICS.COM/channel.html', // Channel File
+  channelUrl : 'http://WWW.CIVINOMICS.COM/channel.html', // Channel File
   status     : true, // check login status
   cookie     : true, // enable cookies to allow the server to access the session
   xfbml      : true  // parse XFBML
