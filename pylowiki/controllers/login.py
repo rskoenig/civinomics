@@ -110,6 +110,8 @@ class LoginController(BaseController):
             return "not found"
 
     def fbLoginHandler(self):
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
         # NOTE - find when this function is used compared to the one right before this
         # send user to page where id will be anych tested again - if it agrees with who
         # this process started with, we log them in
@@ -333,6 +335,9 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render( "/derived/changepass.mako" )
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+
         if workshopCode != 'None' and workshopURL != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None':

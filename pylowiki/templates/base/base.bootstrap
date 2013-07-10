@@ -75,11 +75,15 @@
    ${self.atlassian_issueCollector()}
    <div id="fb-root"></div>
    % if 'user' not in session:
+       <%
+           facebookAppId = c.facebookAppId
+           channelUrl = c.channelUrl
+       %>
        <script>
          window.fbAsyncInit = function() {
             FB.init({
-              appId      : '133971610029022',
-              channelUrl : 'http://www.civinomics.com/channel.html', // Channel File
+              appId      : "${facebookAppId}",
+              channelUrl : "${channelUrl}", // Channel File
               status     : true, // check login status
               cookie     : false, // enable cookies to allow the server to access the session
               xfbml      : true  // parse XFBML

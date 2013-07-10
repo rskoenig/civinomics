@@ -170,7 +170,7 @@ def hashPassword(password):
     return md5(password + config['app_conf']['auth.pass.salt']).hexdigest()
 
 class User(object):
-    def __init__(self, email, name, password, country, memberType, postalCode = '00000'):
+    def __init__(self, email, name, password, country, memberType, postalCode = '00000', **kwargs):
         u = Thing('user')
         u['greetingMsg'] = ''
         u['websiteLink'] = ''
@@ -194,8 +194,12 @@ class User(object):
         commit(u)
         u['urlCode'] = toBase62(u)
         commit(u)
-        if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session and 'fbEmail' not in session):
-            self.generateActivationHash(u)
+        if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
+            if 'facebookSignup' in kwargs:
+                if kwargs['facebookSignup'] == False:
+                    self.generateActivationHash(u)
+            else:
+                self.generateActivationHash(u)
         commit(u)
  
 

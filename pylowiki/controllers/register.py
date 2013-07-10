@@ -30,6 +30,9 @@ class RegisterController(BaseController):
             h.check_if_login_required()
 
     def signupDisplay(self):
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+
         c.numAccounts = 1000
         c.numUsers = len(getActiveUsers())
         if 'splashMsg' in session:
@@ -56,6 +59,9 @@ class RegisterController(BaseController):
         return render("/derived/signup.bootstrap")
 
     def fbNewAccount( self ):
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
@@ -242,7 +248,7 @@ class RegisterController(BaseController):
                 pool, size = letters + digits, 11
                 hash =  ''.join([choice(pool) for i in range(size)])
                 password = hash.lower()
-                u = User(email, name, password, country, memberType, postalCode)
+                u = User(email, name, password, country, memberType, postalCode, facebookSignup=True)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True
                 session['registerSuccess'] = True
