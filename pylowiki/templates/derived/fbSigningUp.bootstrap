@@ -20,7 +20,7 @@
                       </div>
                   % endif
                   <div class="login-top">
-                      <h2> Login </h2>
+                      <h2> Signing Up </h2>
                   </div>
                   <div class="login-body">
                       % if c.conf['read_only.value'] == 'true':
