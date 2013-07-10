@@ -336,6 +336,7 @@ You can change your password to something you prefer on your profile page.\n\n''
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
         c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
 
         if workshopCode != 'None' and workshopURL != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)

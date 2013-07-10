@@ -1,10 +1,10 @@
-function fbLogin(facebookAppId) {
+function fbLogin(facebookAppId, channelUrl) {
 //$('#fbLogin').on('click', function (e) {
-
+ 
  window.fbAsyncInit = function() {
     FB.init({
       appId      : facebookAppId, // ${facebookAppId}, '133971610029022', App ID
-      channelUrl : 'http://www.civinomics.com/channel.html', // Channel File
+      channelUrl : channelUrl, // Channel File
       status     : true, // check login status
       cookie     : false, // enable cookies to allow the server to access the session
       xfbml      : true  // parse XFBML
