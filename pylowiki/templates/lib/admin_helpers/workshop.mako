@@ -159,12 +159,14 @@
         + Listener
         </button>
         <div id="addlistener" class="collapse">
-            <form id="resignListener" class="form-inline" name="addListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/add/handler/" method="post">
+            <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; lName=''; lTitle=''; lEmail='';" id="addListener" ng-submit="saveListener()" class="form-inline" name="addListener">
                 New Listener: 
-                <input type="text" name="name" class="input-small" placeholder="Name">
-                <input type="text" name="title" class="input-small" placeholder="Title">
-                <input type="text" name="email" class="input-small" placeholder="Email">
+                <input type="text" name="lName" class="input-small" ng-model="lName" placeholder="Name" required>
+                <input type="text" name="lTitle" class="input-small" ng-model="lTitle" placeholder="Title" required>
+                <input type="text" name="lEmail" class="input-small" ng-model="lEmail" placeholder="Email" required>
                 <button type="submit" class="btn btn-success">Save Listener</button>
+                <br />
+                <span ng-show="addListenerShow">{{addListenerResponse}}</span>
             </form>
         </div><!-- collapse -->
         </th></th>

@@ -33,7 +33,7 @@ class ListenerController(BaseController):
                 c.user = userLib.getUserByCode(userCode)
                 workshopCode = request.params['workshopCode']
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
-        elif action == 'listenerNotificationHandler' and userCode is not None and workshopCode is not None:
+        elif (action == 'listenerNotificationHandler' or action == 'listenerAddHandler') and userCode is not None and workshopCode is not None:
                 c.user = userLib.getUserByCode(userCode)
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
         else:
@@ -49,6 +49,19 @@ class ListenerController(BaseController):
         
         if not c.user or not c.w:
             abort(404)
+            
+    @h.login_required
+    def listenerAddHandler(self):   
+        payload = json.loads(request.body)
+        if 'lName' not in payload or 'lTitle' not in payload or 'lEmail' not in payload:
+            return "Error"
+        lName = payload['lName']
+        lTitle = payload['lTitle']
+        lEmail = payload['lEmail']
+        if not lName or not lTitle or not lEmail:
+            return "Please enter complete information"
+        # make sure not already a listener
+        return "Add Listener: " + lName + " " + lTitle + " " + lEmail
             
 
     def listenerInviteHandler(self):
