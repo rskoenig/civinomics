@@ -195,8 +195,8 @@ class User(object):
         u['urlCode'] = toBase62(u)
         commit(u)
         if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
-            if 'facebookSignup' in kwargs:
-                if kwargs['facebookSignup'] == False:
+            if 'externalAuthSignup' in kwargs:
+                if kwargs['externalAuthSignup'] == False:
                     self.generateActivationHash(u)
             else:
                 self.generateActivationHash(u)

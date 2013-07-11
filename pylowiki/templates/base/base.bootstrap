@@ -73,12 +73,12 @@
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
-   <div id="fb-root"></div>
    % if 'user' not in session:
        <%
            facebookAppId = c.facebookAppId
            channelUrl = c.channelUrl
        %>
+       <div id="fb-root"></div>
        <script>
          window.fbAsyncInit = function() {
             FB.init({

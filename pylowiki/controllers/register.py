@@ -248,7 +248,7 @@ class RegisterController(BaseController):
                 pool, size = letters + digits, 11
                 hash =  ''.join([choice(pool) for i in range(size)])
                 password = hash.lower()
-                u = User(email, name, password, country, memberType, postalCode, facebookSignup=True)
+                u = User(email, name, password, country, memberType, postalCode, externalAuthSignup=True)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True
                 session['registerSuccess'] = True
