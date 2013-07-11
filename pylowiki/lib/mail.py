@@ -124,3 +124,24 @@ def sendCommentMail(recipient, parent, workshop, text):
     textMessage += "\n\nThis is an automated message. Your Civinomics profile preferences are set to email \nnotifications when someone comments on one of your items.\nTo change this, login to your Civinomics account, and go to the Preferences menu\nof your Edit Profile tab." 
 
     send(recipient, fromEmail, subject, textMessage)
+    
+def sendListenerInviteMail(recipient, user, workshop):
+           
+    subject = 'You are invited to listen in on a Civinomics workshop'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/invitelistener.txt"
+    browseURL = config['app_conf']['site_base_url'] + "/workshop" + "/" + workshop['urlCode'] + "/" + workshop['url']
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    textMessage = textMessage.replace('${c.sender}', user['name'])
+    textMessage = textMessage.replace('${c.workshop}', workshop['title'])
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+
+    send(recipient, fromEmail, subject, textMessage)

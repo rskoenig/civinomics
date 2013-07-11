@@ -15,6 +15,7 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.mail            as mailLib
 import simplejson as json
 
 log = logging.getLogger(__name__)
@@ -25,7 +26,7 @@ class ListenerController(BaseController):
     def __before__(self, action, userCode = None, workshopCode = None):
         wList = ['listenerResignHandler', 'listenerTitleHandler']
         uList = ['listenerInviteHandler', 'listenerResponseHandler']
-        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler']
+        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler']
         if action in wList and workshopCode is not None and 'userCode' in request.params:
                 userCode = request.params['userCode']
                 c.user = userLib.getUserByCode(userCode)                
@@ -92,6 +93,23 @@ class ListenerController(BaseController):
             listener['disabled'] = '1';
             dbHelpers.commit(listener)
             return "Listener Disabled!"
+            
+    @h.login_required
+    def listenerEmailHandler(self):   
+        payload = json.loads(request.body)
+        if 'urlCode' not in payload:
+            return "Error no urlCode"
+        urlCode = payload['urlCode']
+        # make sure not already a listener for this workshop
+        listener = listenerLib.getListenerByCode(urlCode)
+        inviteList = listener['invites'].split(",")
+        if c.user['urlCode'] in inviteList:
+            return "You have already sent an invitiation!"
+        mailLib.sendListenerInviteMail(listener['email'], c.user, c.w)
+        inviteList.append(c.user['urlCode'])
+        listener['invites'] = ",".join(inviteList)
+        dbHelpers.commit(listener)
+        return "Invitation sent. Thanks!"
             
     def listenerInviteHandler(self):
         listener = listenerLib.Listener(c.user, c.w, 1)

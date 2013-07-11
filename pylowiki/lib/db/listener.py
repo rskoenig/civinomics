@@ -66,6 +66,7 @@ def Listener(name, title, email, workshop, pending = 1):
         listener['disabled'] = u'0'
         listener['itemAlerts'] = u'0'
         listener['digest'] = u'1'
+        listener['invites'] = ''
         commit(listener)
         listener['urlCode'] = toBase62(listener)
         user = userLib.getUserByEmail(email)

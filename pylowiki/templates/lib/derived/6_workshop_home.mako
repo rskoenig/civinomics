@@ -26,20 +26,13 @@
         <ul class="media-list centered" id="workshopNotables">
         % for person in users:
             <%
-                if person.objType == 'facilitator':
-                    personTitle = 'Workshop Facilitator'
-                    personClass = 'facilitator'
-                else:
-                    personTitle = person['title']
-                    personClass = 'listener'
+                personTitle = person['title']
+                personClass = 'listener'
             %>
             <li class="media ${personClass} notables-item">
                 ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
                 <div class="media-body">
                     <h4 class="media-heading">${lib_6.userLink(person, className="green green-hover")}</h4>
-                    % if personClass == 'listener':
-                        <p class="no-bottom"><small>(listener)</small></p>
-                    % endif
                     ${personTitle}
                 </div>
             </li>
@@ -54,12 +47,22 @@
             <%
                 lName = person['name']
                 lTitle = person['title']
-                personClass = 'listener'
+                listenerCode = person['urlCode']
+                personClass = 'pending'
             %>
             <li class="media ${personClass} notables-item">
+                <div class="pull-right rightbuttonspacer"><button class="btn btn-primary btn-small" data-toggle="collapse" data-target="#invite${listenerCode}"><i class="icon-envelope icon-white"></i> Invite</button></div>
                 <div class="media-body">
-                    <h4 class="media-heading">${lName}, ${lTitle}</h4>
-                    <p class="no-bottom"><small>(invite to be a listener)</small></p>  
+                    <h4 class="media-heading">${lName}</h4>
+                    ${lTitle}  
+                </div>
+                <div id="invite${listenerCode}" class="collapse">
+                    <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
+                    Email an invitation?
+                    <button type="submit" class="btn btn-warning">Invite Listener</button>
+                    <br />
+                    <span ng-show="emailListenerShow">{{emailListenerResponse}}</span>
+                    </form>
                 </div>
             </li>
             
