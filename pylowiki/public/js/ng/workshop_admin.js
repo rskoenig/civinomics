@@ -35,6 +35,7 @@ function facilitatorController($scope, $http, $location) {
 
 function listenerController($scope, $http, $location) {
     $scope.addListenerShow     = false;
+    $scope.disableListenerShow     = false;
     
     $scope.saveListener = function() {
         var addURL = '/workshop/' + $scope.code + '/' + $scope.url + '/listener/' + $scope.user + '/add/handler';
@@ -45,9 +46,15 @@ function listenerController($scope, $http, $location) {
             $scope.lName = '';
             $scope.lTitle = '';
             $scope.lEmail = '';
-            this.lName.placeholder = 'Name';
-            this.lTitle.placeholder = 'Title';
-            this.lEmail.placeholder = 'Email';
+        });
+    };  
+    $scope.toggleListener = function() {
+        var disableURL = '/workshop/' + $scope.code + '/' + $scope.url + '/listener/' + $scope.user + '/disable/handler';
+        var postData = {'urlCode':$scope.listener, 'lReason':$scope.lReason};
+        $http.post(disableURL, postData).success(function(data){
+            $scope.disableListenerShow = true;
+            $scope.disableListenerResponse = data;
+            $scope.lReason = '';
         });
     };
 }

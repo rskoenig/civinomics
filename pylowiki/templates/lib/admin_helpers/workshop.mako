@@ -6,6 +6,7 @@
     import pylowiki.lib.db.user             as userLib
     import pylowiki.lib.db.event            as eventLib
     import pylowiki.lib.db.workshop         as workshopLib
+    import simplejson as json
 %>  
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
@@ -178,8 +179,9 @@
                 lPending = ""
                 listenerCode = listener['urlCode']
                 lEvents = eventLib.getParentEvents(listener)
-                lName = listener['name']
-                lTitle = listener['title']
+                lName = listener['name'].replace("'", "&#39;")
+                lTitle = listener['title'].replace("'", "&#39;")
+                linkTitle = lName + ", " + lTitle
                 lEmail = listener['email']
                 if 'userCode' not in listener:
                     
@@ -187,14 +189,14 @@
                 else:
                     lUser = userLib.getUserByCode(listener['userCode'])
                     lib_6.userImage(lUser, className = 'avatar small-avatar')
-                    lib_6.userLink(lUser)
+                    lib_6.userLink(lUser, title = linkTitle)
 
             %>
             ${lPending} <div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" data-target="#disableListener${listenerCode}">
             Disable</button> <button class="btn btn-small btn-success" data-toggle="collapse" data-target="#editListener${listenerCode}">
             Edit</button></div><!-- btn-group -->
             <div id="disableListener${listenerCode}" class="collapse">
-                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; listener='${listenerCode}'" id="disableListener" ng-submit="disableListener()" class="form-inline" name="disableListener">
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'" id="disableListener" ng-submit="toggleListener()" class="form-inline" name="disableListener">
                 <input type="text" name="lReason" ng-model="lReason" placeholder="Reason" required>
                 <button type="submit" class="btn btn-warning">Disable Listener</button>
                 <br />
@@ -202,7 +204,7 @@
                 </form>
             </div><!-- collapse -->
             <div id="editListener${listenerCode}" class="collapse">
-                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; listener='${listenerCode}'; lName='${lName}'; lTitle='${lTitle}'; lEmail='${lEmail}';" id="editListener" ng-submit="editListener()" class="form-inline" name="editListener">
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; lName='${lName}'; lTitle='${lTitle}'; lEmail='${lEmail}';" id="editListener" ng-submit="editListener()" class="form-inline" name="editListener">
                 Edit Listener:<br />
                 Name: <input type="text" class="input-small" name="lName" ng-model="lName" required>
                 Title: <input type="text" class="input-small" name="lTitle" ng-model="lTitle" required>
@@ -231,13 +233,30 @@
             % for listener in c.disabledListeners:
                 <tr><td>
                 <%
+                lPending = ""
+                listenerCode = listener['urlCode']
+                lEvents = eventLib.getParentEvents(listener)
+                lName = listener['name'].replace("'", "&#39;")
+                lTitle = listener['title'].replace("'", "&#39;")
+                linkTitle = lName + ", " + lTitle
+                lEmail = listener['email']
+                if 'userCode' not in listener:   
+                    lPending = listener['name'] + ', ' + listener['title'] + " (Pending)"
+                else:
                     lUser = userLib.getUserByCode(listener['userCode'])
-                    lEvents = eventLib.getParentEvents(listener)
                     lib_6.userImage(lUser, className = 'avatar small-avatar')
-                    lib_6.userLink(lUser)
-
+                    lib_6.userLink(lUser, title = linkTitle)
                 %>
-                <br />
+                ${lPending}<div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" data-target="#disableListener${listenerCode}">
+                Enable</button></div><!-- btn-group -->
+                <div id="disableListener${listenerCode}" class="collapse">
+                    <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'" id="disableListener" ng-submit="toggleListener()" class="form-inline" name="disableListener">
+                    <input type="text" name="lReason" ng-model="lReason" placeholder="Reason" required>
+                    <button type="submit" class="btn btn-warning">Enable Listener</button>
+                    <br />
+                    <span ng-show="disableListenerShow">{{disableListenerResponse}}</span>
+                    </form>
+                </div><!-- collapse -->
                 % if lEvents:
                     % for lE in lEvents:
                         <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />

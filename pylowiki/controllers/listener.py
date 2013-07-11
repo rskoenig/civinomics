@@ -25,6 +25,7 @@ class ListenerController(BaseController):
     def __before__(self, action, userCode = None, workshopCode = None):
         wList = ['listenerResignHandler', 'listenerTitleHandler']
         uList = ['listenerInviteHandler', 'listenerResponseHandler']
+        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler']
         if action in wList and workshopCode is not None and 'userCode' in request.params:
                 userCode = request.params['userCode']
                 c.user = userLib.getUserByCode(userCode)                
@@ -33,7 +34,7 @@ class ListenerController(BaseController):
                 c.user = userLib.getUserByCode(userCode)
                 workshopCode = request.params['workshopCode']
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
-        elif (action == 'listenerNotificationHandler' or action == 'listenerAddHandler') and userCode is not None and workshopCode is not None:
+        elif action in adminList and userCode is not None and workshopCode is not None:
                 c.user = userLib.getUserByCode(userCode)
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
         else:
@@ -68,7 +69,30 @@ class ListenerController(BaseController):
         else:
             return "Already a Listener!"
             
-
+    @h.login_required
+    def listenerDisableHandler(self):   
+        payload = json.loads(request.body)
+        if 'lReason' not in payload:
+            return "Error no lReason"
+        if 'urlCode' not in payload:
+            return "Error no urlCode"
+        lReason = payload['lReason']
+        urlCode = payload['urlCode']
+        if not lReason or not urlCode:
+            return "Please enter complete information"
+        # make sure not already a listener for this workshop
+        listener = listenerLib.getListenerByCode(urlCode)
+        if not listener:
+            return 'No such Listener!'
+        if listener['disabled'] == '1':
+            listener['disabled'] = '0';
+            dbHelpers.commit(listener)
+            return "Listener Enabled!"
+        if listener['disabled'] == '0':
+            listener['disabled'] = '1';
+            dbHelpers.commit(listener)
+            return "Listener Disabled!"
+            
     def listenerInviteHandler(self):
         listener = listenerLib.Listener(c.user, c.w, 1)
         alert = {'type':'success'}

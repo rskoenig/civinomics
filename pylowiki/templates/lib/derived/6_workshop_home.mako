@@ -13,14 +13,18 @@
 
 <%def name="whoListening()">
     <%
-        people = []
-        if c.listeners:
-            people += c.listeners
+        users = []
+        pending = []
+        for listener in c.listeners:
+            if 'userCode' in listener:
+                users.append(listener)
+            else:
+                pending.append(listener)
     %>
-    % if people:
+    % if users:
         <h4 class="section-header smaller section-header-inner">Who's Listening</h4>
         <ul class="media-list centered" id="workshopNotables">
-        % for person in people:
+        % for person in users:
             <%
                 if person.objType == 'facilitator':
                     personTitle = 'Workshop Facilitator'
@@ -37,6 +41,25 @@
                         <p class="no-bottom"><small>(listener)</small></p>
                     % endif
                     ${personTitle}
+                </div>
+            </li>
+            
+        % endfor
+        </ul>
+     % endif
+    % if pending:
+        <h4 class="section-header smaller section-header-inner">Not Yet Listening</h4>
+        <ul class="media-list centered" id="workshopNotables">
+        % for person in pending:
+            <%
+                lName = person['name']
+                lTitle = person['title']
+                personClass = 'listener'
+            %>
+            <li class="media ${personClass} notables-item">
+                <div class="media-body">
+                    <h4 class="media-heading">${lName}, ${lTitle}</h4>
+                    <p class="no-bottom"><small>(invite to be a listener)</small></p>  
                 </div>
             </li>
             
