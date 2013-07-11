@@ -60,8 +60,13 @@ class ListenerController(BaseController):
         lEmail = payload['lEmail']
         if not lName or not lTitle or not lEmail:
             return "Please enter complete information"
-        # make sure not already a listener
-        return "Add Listener: " + lName + " " + lTitle + " " + lEmail
+        # make sure not already a listener for this workshop
+        listener = listenerLib.getListener(lEmail, c.w)
+        if not listener or listener['disabled'] == '1':
+            listenerLib.Listener(lName, lTitle, lEmail, c.w, "0")
+            return "Add Listener: " + lName + " " + lTitle + " " + lEmail
+        else:
+            return "Already a Listener!"
             
 
     def listenerInviteHandler(self):

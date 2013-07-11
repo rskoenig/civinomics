@@ -164,7 +164,7 @@
                 <input type="text" name="lName" class="input-small" ng-model="lName" placeholder="Name" required>
                 <input type="text" name="lTitle" class="input-small" ng-model="lTitle" placeholder="Title" required>
                 <input type="text" name="lEmail" class="input-small" ng-model="lEmail" placeholder="Email" required>
-                <button type="submit" class="btn btn-success">Save Listener</button>
+                <button type="submit" class="btn btn-warning">Save Listener</button>
                 <br />
                 <span ng-show="addListenerShow">{{addListenerResponse}}</span>
             </form>
@@ -176,36 +176,43 @@
             <tr><td>
             <%
                 lPending = ""
-                if listener['pending'] == '1':
-                    lPending = "(Pending)"
-                lUser = userLib.getUserByCode(listener['userCode'])
+                listenerCode = listener['urlCode']
                 lEvents = eventLib.getParentEvents(listener)
-                lib_6.userImage(lUser, className = 'avatar small-avatar')
-                lib_6.userLink(lUser)
-
-            %>
-            ${lPending}<br />
-            <form id="resignListener" class="form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
-            Disable listener:<br />
-            Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
-            <input type="hidden" name="userCode" value="${lUser['urlCode']}">
-            <button type="submit" class="btn btn-warning" value="Resign">Disable</button>
-            <br />
-            </form><br />
-            <form id="titleListener" class="form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
-            Add a job title to listener (60 characters max):<br />
-            <% 
-                if 'title' in listener:
-                    ltitle = listener['title']
+                lName = listener['name']
+                lTitle = listener['title']
+                lEmail = listener['email']
+                if 'userCode' not in listener:
+                    
+                    lPending = listener['name'] + ', ' + listener['title'] + " (Pending)"
                 else:
-                    ltitle = ""
-            %>
-            Title: <input type="text" name="listenerTitle" value="${ltitle}" size="60" maxlength="60"> &nbsp;&nbsp;&nbsp;
-            <input type="hidden" name="userCode" value="${lUser['urlCode']}">
-            <button type="submit" class="btn btn-warning">Save Title</button>
-            <br />
-            </form><br />
+                    lUser = userLib.getUserByCode(listener['userCode'])
+                    lib_6.userImage(lUser, className = 'avatar small-avatar')
+                    lib_6.userLink(lUser)
 
+            %>
+            ${lPending} <div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" data-target="#disableListener${listenerCode}">
+            Disable</button> <button class="btn btn-small btn-success" data-toggle="collapse" data-target="#editListener${listenerCode}">
+            Edit</button></div><!-- btn-group -->
+            <div id="disableListener${listenerCode}" class="collapse">
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; listener='${listenerCode}'" id="disableListener" ng-submit="disableListener()" class="form-inline" name="disableListener">
+                <input type="text" name="lReason" ng-model="lReason" placeholder="Reason" required>
+                <button type="submit" class="btn btn-warning">Disable Listener</button>
+                <br />
+                <span ng-show="disableListenerShow">{{disableListenerResponse}}</span>
+                </form>
+            </div><!-- collapse -->
+            <div id="editListener${listenerCode}" class="collapse">
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; listener='${listenerCode}'; lName='${lName}'; lTitle='${lTitle}'; lEmail='${lEmail}';" id="editListener" ng-submit="editListener()" class="form-inline" name="editListener">
+                Edit Listener:<br />
+                Name: <input type="text" class="input-small" name="lName" ng-model="lName" required>
+                Title: <input type="text" class="input-small" name="lTitle" ng-model="lTitle" required>
+                Email: <input type="text" class="input-small" name="lEmail" ng-model="lEmail" required>
+                <button type="submit" class="btn btn-warning">Save Changes</button>
+                <br />
+                <span ng-show="editListenerShow">{{editListenerResponse}}</span>
+                </form>
+            </div><!-- collapse -->
+            <br />
             % if lEvents:
                 % for lE in lEvents:
                     <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />

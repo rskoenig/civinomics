@@ -53,7 +53,7 @@ def getListenersForUser(user, disabled = 0):
 def Listener(name, title, email, workshop, pending = 1):
     # recycle existing disabled listener objects for this user and this workshop
     listener = getListener(email, workshop)
-    if listener and listener['disabled'] == '1':
+    if listener:
         listener['disabled'] = '0'
         listener['pending'] = pending
         commit(listener)
@@ -68,9 +68,9 @@ def Listener(name, title, email, workshop, pending = 1):
         listener['digest'] = u'1'
         commit(listener)
         listener['urlCode'] = toBase62(listener)
-        user = getUserByEmail(email)
+        user = userLib.getUserByEmail(email)
         if user:
-            listener = generic.linkChildToParent(user, workshop)
+            listener = generic.linkChildToParent(listener, user)
             listener['name'] = user['name']
         listener = generic.linkChildToParent(listener, workshop)
         commit(listener)  
