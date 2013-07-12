@@ -50,6 +50,15 @@ def getThingByID(thingID):
             .one()
     except:
         return False
+        
+# mostly for linking listeners to users
+def getThingsByEmail(email):
+    try:
+        q = meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc('email', email)))
+        return q.all()
+    except Exception as e:
+        return False
 
 def addedItemAs(thing, privs, role = None):
     """

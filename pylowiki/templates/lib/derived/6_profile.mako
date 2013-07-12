@@ -84,7 +84,7 @@
                     % if role == 'Listening':
                         <div style="margin-top: 10px;">
                             <%
-                                l = listenerLib.getListener(c.user, workshop)
+                                l = listenerLib.getListener(c.user['email'], workshop)
                                 itemsChecked = ''
                                 digestChecked = ''
                                 if 'itemAlerts' in l and l['itemAlerts'] == '1':
