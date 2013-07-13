@@ -153,6 +153,7 @@
 
 <%def name="admin_listeners()">
     % if c.w['public_private'] != 'trial':
+        <div ng-controller="listenerController" ng-init="user='${c.authuser['urlCode']}'; code='${c.w['urlCode']}'; url='${c.w['url']}'; getList()">
         <table class="table table-bordered">
         <thead>
         <tr><th>Listeners 
@@ -160,7 +161,7 @@
         + Listener
         </button>
         <div id="addlistener" class="collapse">
-            <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; lName=''; lTitle=''; lEmail='';" id="addListener" ng-submit="saveListener()" class="form-inline" name="addListener">
+            <form id="addListener" ng-submit="saveListener()" class="form-inline" name="addListener">
                 New Listener: 
                 <input type="text" name="lName" class="input-small" ng-model="lName" placeholder="Name" required>
                 <input type="text" name="lTitle" class="input-small" ng-model="lTitle" placeholder="Title" required>
@@ -173,100 +174,36 @@
         </th></th>
         </thead>
         <tbody>
-        % for listener in c.listeners:
-            <tr><td>
-            <%
-                lPending = ""
-                listenerCode = listener['urlCode']
-                lEvents = eventLib.getParentEvents(listener)
-                lName = listener['name'].replace("'", "&#39;")
-                lTitle = listener['title'].replace("'", "&#39;")
-                linkTitle = lName + ", " + lTitle
-                lEmail = listener['email']
-                if 'userCode' not in listener:
-                    
-                    lPending = listener['name'] + ', ' + listener['title'] + " (Pending)"
-                else:
-                    lUser = userLib.getUserByCode(listener['userCode'])
-                    lib_6.userImage(lUser, className = 'avatar small-avatar')
-                    lib_6.userLink(lUser, title = linkTitle)
-
-            %>
-            ${lPending} <div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" data-target="#disableListener${listenerCode}">
-            Disable</button> <button class="btn btn-small btn-success" data-toggle="collapse" data-target="#editListener${listenerCode}">
+        <tr ng-repeat="listener in listeners">
+        <td>
+            <a href="{{listener.profileLink}}"><img class="small-avatar" src="{{listener.userImage}}"> {{listener.lName}}</a> {{listener.lTitle}} ({{listener.state}})
+            <div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" id="toggleButton{{listener.urlCode}}" data-target="#disableListener{{listener.urlCode}}">
+            {{listener.button}}</button> <button class="btn btn-small btn-success" data-toggle="collapse" data-target="#editListener{{listener.urlCode}}">
             Edit</button></div><!-- btn-group -->
-            <div id="disableListener${listenerCode}" class="collapse">
-                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'" id="disableListener" ng-submit="toggleListener()" class="form-inline" name="disableListener">
+            <div id="disableListener{{listener.urlCode}}" class="collapse">
+                <form id="toggleForm{{listener.urlCode}}" ng-submit="toggleListener('{{listener.urlCode}}')" class="form-inline" name="toggleForm{{listener.urlCode}}">
                 <input type="text" name="lReason" ng-model="lReason" placeholder="Reason" required>
-                <button type="submit" class="btn btn-warning">Disable Listener</button>
+                <button type="submit" class="btn btn-warning" id="toggleSubmit{{listener.urlCode}}">{{listener.button}} Listener</button>
                 <br />
                 <span ng-show="disableListenerShow">{{disableListenerResponse}}</span>
                 </form>
             </div><!-- collapse -->
-            <div id="editListener${listenerCode}" class="collapse">
-                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; lName='${lName}'; lTitle='${lTitle}'; lEmail='${lEmail}';" id="editListener" ng-submit="editListener()" class="form-inline" name="editListener">
+            <div id="editListener{{listener.urlCode}}" class="collapse">
+                <form id="editForm{{listener.urlCode}}" ng-submit="editListener('{{listener.urlCode}}')" class="form-inline" name="editForm{{listener.urlCode}}">
                 Edit Listener:<br />
-                Name: <input type="text" class="input-small" name="lName" ng-model="lName" required>
-                Title: <input type="text" class="input-small" name="lTitle" ng-model="lTitle" required>
-                Email: <input type="text" class="input-small" name="lEmail" ng-model="lEmail" required>
+                Name: <input type="text" class="input-small" id="lName" name="lName" value="{{listener.lName}}" required>
+                Title: <input type="text" class="input-small" id="lTitle" name="lTitle" value="{{listener.lTitle}}" required>
+                Email: <input type="text" class="input-small" id="lEmail" name="lEmail" value="{{listener.lEmail}}" required>
                 <button type="submit" class="btn btn-warning">Save Changes</button>
                 <br />
                 <span ng-show="editListenerShow">{{editListenerResponse}}</span>
                 </form>
             </div><!-- collapse -->
-            <br />
-            % if lEvents:
-                % for lE in lEvents:
-                    <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
-                % endfor
-            % endif
-            </td></tr>
-        % endfor
+        </td>
+        </tr>
         </tbody>
         </table>
-        % if len(c.disabledListeners) > 0:
-            <table class="table table-bordered">
-            <thead>
-            <tr><th>Disabled Listeners</th></tr>
-            </thead>
-            <tbody>
-            % for listener in c.disabledListeners:
-                <tr><td>
-                <%
-                lPending = ""
-                listenerCode = listener['urlCode']
-                lEvents = eventLib.getParentEvents(listener)
-                lName = listener['name'].replace("'", "&#39;")
-                lTitle = listener['title'].replace("'", "&#39;")
-                linkTitle = lName + ", " + lTitle
-                lEmail = listener['email']
-                if 'userCode' not in listener:   
-                    lPending = listener['name'] + ', ' + listener['title'] + " (Pending)"
-                else:
-                    lUser = userLib.getUserByCode(listener['userCode'])
-                    lib_6.userImage(lUser, className = 'avatar small-avatar')
-                    lib_6.userLink(lUser, title = linkTitle)
-                %>
-                ${lPending}<div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" data-target="#disableListener${listenerCode}">
-                Enable</button></div><!-- btn-group -->
-                <div id="disableListener${listenerCode}" class="collapse">
-                    <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'" id="disableListener" ng-submit="toggleListener()" class="form-inline" name="disableListener">
-                    <input type="text" name="lReason" ng-model="lReason" placeholder="Reason" required>
-                    <button type="submit" class="btn btn-warning">Enable Listener</button>
-                    <br />
-                    <span ng-show="disableListenerShow">{{disableListenerResponse}}</span>
-                    </form>
-                </div><!-- collapse -->
-                % if lEvents:
-                    % for lE in lEvents:
-                        <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
-                    % endfor
-                % endif
-                </tr></td>
-            % endfor
-            </tbody>
-            </table>
-        % endif
+        </div><!-- listenerController -->
     % endif
 </%def>
 

@@ -26,7 +26,7 @@ class ListenerController(BaseController):
     def __before__(self, action, userCode = None, workshopCode = None):
         wList = ['listenerResignHandler', 'listenerTitleHandler']
         uList = ['listenerInviteHandler', 'listenerResponseHandler']
-        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler']
+        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler']
         if action in wList and workshopCode is not None and 'userCode' in request.params:
                 userCode = request.params['userCode']
                 c.user = userLib.getUserByCode(userCode)                
@@ -71,7 +71,27 @@ class ListenerController(BaseController):
             return "Already a Listener!"
             
     @h.login_required
-    def listenerDisableHandler(self):   
+    def listenerEditHandler(self):   
+        payload = json.loads(request.body)
+        if 'lName' not in payload or 'lTitle' not in payload or 'lEmail' not in payload or 'urlCode' not in payload:
+            return "Error"
+        lName = payload['lName']
+        lTitle = payload['lTitle']
+        lEmail = payload['lEmail']
+        urlCode = payload['urlCode']
+        if not lName or not lTitle or not lEmail:
+            return "Please enter complete information"
+        listener = listenerLib.getListenerByCode(urlCode)
+        if not listener:
+            return 'No such listener!'
+        listener['name'] = lName;
+        listener['title'] = lTitle;
+        listener['email'] = lEmail;
+        dbHelpers.commit(listener)
+        return "Updated Listener."
+            
+    @h.login_required
+    def listenerDisableHandler(self):
         payload = json.loads(request.body)
         if 'lReason' not in payload:
             return "Error no lReason"
@@ -110,6 +130,65 @@ class ListenerController(BaseController):
         listener['invites'] = ",".join(inviteList)
         dbHelpers.commit(listener)
         return "Invitation sent. Thanks!"
+        
+    @h.login_required
+    def listenerListHandler(self):
+        activeEnabled = []
+        pendingEnabled = []
+        activeDisabled = []
+        pendingDisabled = []
+        
+        log.info('listenerListHandler')
+        enabled = listenerLib.getListenersForWorkshop(c.w)
+        for l in enabled:
+            if 'userCode' in l:
+                activeEnabled.append(l)
+            else:
+                pendingEnabled.append(l)
+                
+        disabled = listenerLib.getListenersForWorkshop(c.w, '1')
+        for l in disabled:
+            if 'userCode' in l:
+                activeDisabled.append(l)
+            else:
+                pendingDisabled.append(l)
+                    
+        jsonReturn = '{ "listeners": ['
+        comma = ''
+        for l in activeEnabled:
+            user = userLib.getUserByCode(l['userCode'])
+            userImage = generic.userImageSource(user)
+            profileLink = "/profile/" + user['urlCode'] + "/" + user['url']
+            jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Disable","state":"Active"}'
+            comma = ','
+ 
+        if not activeEnabled:
+            comma = ''
+        userImage = "/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png"
+        profileLink = ""
+        for l in pendingEnabled:
+            jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Disable","state":"Pending"}'
+            comma = ','
+
+        if not activeEnabled and not pendingEnabled:
+            comma = ''
+        for l in activeDisabled:
+            user = userLib.getUserByCode(l['userCode'])
+            profileLink = "/profile/" + user['urlCode'] + "/" + user['url']
+            jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Enable","state":"Active"}'
+            comma = ','
+
+        if not activeEnabled and not pendingEnabled and not activeDisabled:
+            comma = ''
+        userImage = "/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png"
+        profileLink = ''
+        for l in pendingDisabled:
+            jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Enable","state":"Pending"}'
+            comma = ','
+        jsonReturn += "]}"
+        
+        return jsonReturn
+
             
     def listenerInviteHandler(self):
         listener = listenerLib.Listener(c.user, c.w, 1)

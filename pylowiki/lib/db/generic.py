@@ -4,6 +4,7 @@ log = logging.getLogger(__name__)
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
 from dbHelpers import with_characteristic as wc
+from hashlib import md5
 
 def linkChildToParent(child, parent):
     # Defines a standard for object linking.
@@ -84,3 +85,40 @@ def addedItemAs(thing, privs, role = None):
         else:
             thing['addedAs'] = 'user'
     return thing
+    
+def userImageSource(user, **kwargs):
+        # Assumes 'user' is a Thing.
+        # Defaults to a gravatar source
+        # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
+        #                          we return a source based on the value given here (civ/gravatar)
+        source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
+        large = False
+        gravatar = True
+
+        if 'className' in kwargs:
+            if 'avatar-large' in kwargs['className']:
+                large = True
+        if 'forceSource' in kwargs:
+            if kwargs['forceSource'] == 'civ':
+                gravatar = False
+                if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                else:
+                    source = '/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png'
+        elif 'extSource' in user.keys():
+            if 'facebookSource' in user.keys():
+                if user['facebookSource'] == u'1':
+                    gravatar = False
+                    # NOTE - when to provide large or small link?
+                    if large:
+                        source = user['facebookProfileBig']
+                    else:
+                        source = user['facebookProfileSmall']
+        else:
+            if 'avatarSource' in user.keys():
+                if user['avatarSource'] == 'civ':
+                    gravatar = False
+                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+        if large and gravatar:
+            source += '&s=200'
+        return source

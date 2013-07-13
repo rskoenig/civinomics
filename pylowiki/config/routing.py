@@ -195,13 +195,15 @@ def make_map():
     # Facilitator notifications
     map.connect('/{workshop:workshops?}/{code}/{url}/facilitate/{userCode}/notifications/{handler:handler/?}', controller = 'facilitator', action = 'facilitatorNotificationHandler', code = '{code}', url='{url}', userCode = '{userCode}')
     
-    # Listener invitation and response
+    # Listener management
     map.connect('/profile/{userCode}/{userURL}/listener/invite/{handler:handler/?}', controller = 'listener', action = 'listenerInviteHandler', userCode = '{userCode}', userURL = '{userURL}')
     map.connect('/profile/{userCode}/{userURL}/listener/response/{handler:handler/?}', controller = 'listener', action = 'listenerResponseHandler', userCode = '{userCode}', userURL = '{userURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/resign/{handler:handler/?}', controller = 'listener', action = 'listenerResignHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/add/{handler:handler/?}', controller = 'listener', action = 'listenerAddHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/edit/{handler:handler/?}', controller = 'listener', action = 'listenerEditHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/disable/{handler:handler/?}', controller = 'listener', action = 'listenerDisableHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/email/{handler:handler/?}', controller = 'listener', action = 'listenerEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/list/{handler:handler/?}', controller = 'listener', action = 'listenerListHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/title/{handler:handler/?}', controller = 'listener', action = 'listenerTitleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
     # Comment notifications
