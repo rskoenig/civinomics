@@ -176,7 +176,7 @@
         <tbody>
         <tr ng-repeat="listener in listeners">
         <td>
-            <a href="{{listener.profileLink}}"><img class="small-avatar" src="{{listener.userImage}}"> {{listener.lName}}</a> {{listener.lTitle}} ({{listener.state}})
+            <a href="{{listener.profileLink}}" class="{{listener.state}}"><img class="small-avatar" src="{{listener.userImage}}"> <span id="listenerName{{listener.urlCode}}">{{listener.lName}}</span></a>, <span id="listenerTitle{{listener.urlCode}}">{{listener.lTitle}}</span> ({{listener.state}})
             <div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" id="toggleButton{{listener.urlCode}}" data-target="#disableListener{{listener.urlCode}}">
             {{listener.button}}</button> <button class="btn btn-small btn-success" data-toggle="collapse" data-target="#editListener{{listener.urlCode}}">
             Edit</button></div><!-- btn-group -->

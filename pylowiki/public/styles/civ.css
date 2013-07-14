@@ -472,8 +472,13 @@ textarea.comment-reply{
     background-color:#d9edf7;
 }
 
-.pending{
+.pendingListener{
     background-color:#c4ffbf;
+}
+
+a.Pending, a.Pending:active, a.Pending:link, a.Pending:hover{
+  color: #333333;
+  text-decoration: none;  
 }
 
 a, a:hover{

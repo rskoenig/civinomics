@@ -64,11 +64,21 @@ class ListenerController(BaseController):
             return "Please enter complete information"
         # make sure not already a listener for this workshop
         listener = listenerLib.getListener(lEmail, c.w)
-        if not listener or listener['disabled'] == '1':
-            listenerLib.Listener(lName, lTitle, lEmail, c.w, "0")
-            return "Add Listener: " + lName + " " + lTitle + " " + lEmail
+        if not listener:
+            listener = listenerLib.Listener(lName, lTitle, lEmail, c.w, "0")
+            user = userLib.getUserByEmail(lEmail)
+            if user:
+                userImage = generic.userImageSource(user)
+                profileLink = "/profile/" + user['urlCode'] + "/" + user['url']
+                lState = 'Active'
+            else:
+                userImage = "/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png"
+                profileLink = ''
+                lState = 'Pending'
+            jsonReturn = '{"urlCode":"' + listener['urlCode'] + '","lName":"' + listener['name'].replace("'", "&#39;") + '", "lTitle":"' + listener['title'].replace("'", "&#39;") + '", "lEmail":"' + listener['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Disable","state":"' + lState + '"}'
+            return jsonReturn
         else:
-            return "Already a Listener!"
+            return '{"state":"Error", "errorMessage":"Already a Listener!"}'
             
     @h.login_required
     def listenerEditHandler(self):   

@@ -48,7 +48,7 @@
                 lName = person['name']
                 lTitle = person['title']
                 listenerCode = person['urlCode']
-                personClass = 'pending'
+                personClass = 'pendingListener'
             %>
             <li class="media ${personClass} notables-item">
                 % if 'user' in session and c.authuser:
