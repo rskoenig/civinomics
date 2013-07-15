@@ -52,7 +52,7 @@
             %>
             <li class="media ${personClass} notables-item">
                 % if 'user' in session and c.authuser:
-                    <div class="pull-right rightbuttonspacer"><button class="btn btn-primary btn-small" data-toggle="collapse" data-target="#invite${listenerCode}"><i class="icon-envelope icon-white"></i> Invite</button></div>
+                    <div class="pull-right rightbuttonspacer"><a href="#invite${listenerCode}" class="btn btn-primary btn-small" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % else:
                     <div class="pull-right rightbuttonspacer"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/idea" class="btn btn-primary btn-small"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % endif
@@ -61,14 +61,26 @@
                     ${lTitle}  
                 </div>
                 % if 'user' in session and c.authuser:
-                    <div id="invite${listenerCode}" class="collapse">
-                        <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
-                        Email an invitation?
-                        <button type="submit" class="btn btn-warning">Invite Listener</button>
-                        <br />
-                        <span ng-show="emailListenerShow">{{emailListenerResponse}}</span>
-                        </form>
-                    </div>
+                    <%
+                        memberMessage = "Please join me and participate in this online Civinomics workshop.\nThere are good ideas and informed discussions, please login and listen in!"
+                    %>
+                    <div id="invite${listenerCode}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="invite${listenerCode}Label" aria-hidden="true">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h3 id="invite${listenerCode}Label">Invite ${lName} to Listen</h3>
+                        </div><!-- modal-header -->
+                        <div class="modal-body">
+                            <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
+                            Add your message to the listener invitation:<br />
+                            <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
+                            <br />
+                            <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
+                            <button type="submit" class="btn btn-warning">Send Invitation</button>
+                            <br />
+                            <span ng-show="emailListenerShow">{{emailListenerResponse}}</span>
+                            </form>
+                        </div><!-- modal-footer -->
+                    </div><!-- modal -->
                 % endif
             </li>
             

@@ -127,15 +127,16 @@ class ListenerController(BaseController):
     @h.login_required
     def listenerEmailHandler(self):   
         payload = json.loads(request.body)
-        if 'urlCode' not in payload:
-            return "Error no urlCode"
+        if 'urlCode' not in payload or 'memberMessage' not in payload:
+            return "Error no urlCode or memberMessage"
         urlCode = payload['urlCode']
+        memberMessage = payload['memberMessage']
         # make sure not already a listener for this workshop
         listener = listenerLib.getListenerByCode(urlCode)
         inviteList = listener['invites'].split(",")
         if c.user['urlCode'] in inviteList:
             return "You have already sent an invitiation!"
-        mailLib.sendListenerInviteMail(listener['email'], c.user, c.w)
+        mailLib.sendListenerInviteMail(listener['email'], c.user, c.w, memberMessage)
         inviteList.append(c.user['urlCode'])
         listener['invites'] = ",".join(inviteList)
         dbHelpers.commit(listener)

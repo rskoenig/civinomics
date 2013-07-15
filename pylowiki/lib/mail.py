@@ -69,7 +69,7 @@ def sendPMemberInvite(workshopName, senderName, recipient, message, browseURL):
     textMessage = textMessage.replace('${c.workshopName}', workshopName)
     textMessage = textMessage.replace('${c.inviteMessage}', message)
     textMessage = textMessage.replace('${c.browseLink}', browseURL)
-
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
     fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
     toEmail = recipient
     subject = 'An invitation from ' + senderName
@@ -125,7 +125,7 @@ def sendCommentMail(recipient, parent, workshop, text):
 
     send(recipient, fromEmail, subject, textMessage)
     
-def sendListenerInviteMail(recipient, user, workshop):
+def sendListenerInviteMail(recipient, user, workshop, memberMessage):
            
     subject = 'You are invited to listen in on a Civinomics workshop'
     
@@ -141,6 +141,7 @@ def sendListenerInviteMail(recipient, user, workshop):
     textMessage = textMessage.replace('${c.sender}', user['name'])
     textMessage = textMessage.replace('${c.workshop}', workshop['title'])
     textMessage = textMessage.replace('${c.browseLink}', browseURL)
+    textMessage = textMessage.replace('${c.memberMessage}', memberMessage)
 
     fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
 

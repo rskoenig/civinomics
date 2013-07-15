@@ -185,7 +185,7 @@
                 <input type="text" name="lReason" ng-model="lReason" placeholder="Reason" required>
                 <button type="submit" class="btn btn-warning" id="toggleSubmit{{listener.urlCode}}">{{listener.button}} Listener</button>
                 <br />
-                <span ng-show="disableListenerShow">{{disableListenerResponse}}</span>
+                <span id="toggleListenerResponse{{listener.urlCode}}"></span>
                 </form>
             </div><!-- collapse -->
             <div id="editListener{{listener.urlCode}}" class="collapse">
@@ -196,7 +196,7 @@
                 Email: <input type="text" class="input-small" id="lEmail" name="lEmail" value="{{listener.lEmail}}" required>
                 <button type="submit" class="btn btn-warning">Save Changes</button>
                 <br />
-                <span ng-show="editListenerShow">{{editListenerResponse}}</span>
+                <span id="editListenerResponse{{listener.urlCode}}"></span>
                 </form>
             </div><!-- collapse -->
         </td>

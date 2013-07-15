@@ -1,17 +1,16 @@
 
 Hello,
 
-Civinomics member ${c.sender} is inviting you to listen in
-to this Civinomics workshop:
-
+Civinomics member ${c.sender} is inviting you to an online
+Civinomics workshop named:
 "${c.workshop}"
 
-Use a web brower to visit civinomics.com and start your free membership
-today. Once you have logged in, you can begin participating in the online 
-Civinomics workshop here:
+"${c.memberMessage}"
+
+Use a web broser to visit the workshop today at:
 ${c.browseLink}
 
 Best regards,
 
-The folks at Civinomics and especially, member ${c.sender}
+The folks at Civinomics and especially, member ${c.sender}!
 
