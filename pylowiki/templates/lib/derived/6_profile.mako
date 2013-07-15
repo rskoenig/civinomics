@@ -423,7 +423,7 @@
             for f in fList:
                 w = workshopLib.getWorkshopByCode(f['workshopCode'])
                 if w['deleted'] == '0':
-                    wlisten = listenerLib.getListener(c.user, w)
+                    wlisten = listenerLib.getListener(c.user['email'], w)
                     if not facilitatorLib.isFacilitator(c.user, w) and not facilitatorLib.isPendingFacilitator(c.user, w):
                         wListF.append(w)
                     if (not wlisten or wlisten['disabled'] == '1') and w['type'] != 'personal':
@@ -454,6 +454,7 @@
                         <option value="${myW['urlCode']}">${myW['title']}</option>
                     % endfor                       
                     </select>
+                    <input type="text" name="lTitle" placeholder="Title or Description" required>
                 </form>
                 </div>
             </div><!-- row -->

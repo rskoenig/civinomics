@@ -185,6 +185,7 @@ class ListenerController(BaseController):
             comma = ''
         for l in activeDisabled:
             user = userLib.getUserByCode(l['userCode'])
+            userImage = generic.userImageSource(user)
             profileLink = "/profile/" + user['urlCode'] + "/" + user['url']
             jsonReturn += comma + '{"urlCode":"' + l['urlCode'] + '","lName":"' + l['name'].replace("'", "&#39;") + '", "lTitle":"' + l['title'].replace("'", "&#39;") + '", "lEmail":"' + l['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Enable","state":"Active"}'
             comma = ','
@@ -202,20 +203,16 @@ class ListenerController(BaseController):
 
             
     def listenerInviteHandler(self):
-        listener = listenerLib.Listener(c.user, c.w, 1)
-        alert = {'type':'success'}
-        alert['title'] = 'Listener invitation issued.'
-        session['alert'] = alert
-        session.save()
-        
-        workshopLib.setWorkshopPrivs(c.w)
-        title = 'Listener invitation'
-        text = '(This is an automated message)'
-        extraInfo = 'listenerInvite'
-        m = messageLib.Message(owner = c.user, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = c.authuser)
-        m = generic.linkChildToParent(m, listener)
-        dbHelpers.commit(m)
-        eventLib.Event('Listener Invitation Issued', '%s issued an invitation to be a listener of %s'%(c.authuser['name'], c.w['title']), m, user = c.authuser, action='extraInfo')
+        listener = listenerLib.getListener(c.user['email'], c.w)
+        lTitle = ''
+        if 'lTitle' in request.params:
+            lTitle = request.params['lTitle']
+        if not listener:
+            listener = listenerLib.Listener(c.user['name'], lTitle, c.user['email'], c.w, "0")
+        else:
+            listener['disabled'] = '0'
+            listener['title'] = lTitle
+            dbHelpers.commit(listener)
         
         return redirect("/profile/%s/%s"%(c.user['urlCode'], c.user['url']))
 
