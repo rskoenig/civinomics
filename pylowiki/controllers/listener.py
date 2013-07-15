@@ -26,7 +26,7 @@ class ListenerController(BaseController):
     def __before__(self, action, userCode = None, workshopCode = None):
         wList = ['listenerResignHandler', 'listenerTitleHandler']
         uList = ['listenerInviteHandler', 'listenerResponseHandler']
-        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler']
+        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler', 'listenerSuggestHandler']
         if action in wList and workshopCode is not None and 'userCode' in request.params:
                 userCode = request.params['userCode']
                 c.user = userLib.getUserByCode(userCode)                
@@ -141,6 +141,21 @@ class ListenerController(BaseController):
         listener['invites'] = ",".join(inviteList)
         dbHelpers.commit(listener)
         return "Invitation sent. Thanks!"
+        
+    @h.login_required
+    def listenerSuggestHandler(self):   
+        payload = json.loads(request.body)
+        if 'suggestListener' not in payload:
+            return "Error no suggestListener"
+        suggestListener = payload['suggestListener']
+        facilitators = facilitatorLib.getFacilitatorsByWorkshop(c.w)
+        sMessage = suggestListener
+        sTitle = "Listener Suggestion"
+        workshopLib.setWorkshopPrivs(c.w)
+        for facilitator in facilitators:
+            fUser = userLib.getUserByID(facilitator.owner)
+            message = messageLib.Message(owner = fUser, title = sTitle, text = sMessage, sender = c.authuser, privs = c.privs, workshop = c.w, extraInfo = "listenerSuggestion")
+        return "Suggestion sent. Thanks!"
         
     @h.login_required
     def listenerListHandler(self):

@@ -83,10 +83,24 @@
                     </div><!-- modal -->
                 % endif
             </li>
-            
         % endfor
         </ul>
      % endif
+     % if 'user' in session and c.authuser:
+        <ul class="media-list centered">
+            <li class="media pendingListener notables-item">
+            <small>Know somebody who should be listening?</small><br />
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline" name="suggestListenerForm">
+                <div class="pull-right rightbuttonspacer">
+                <input type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
+                <button type="submit" class="btn btn-success btn-small">Submit</button>
+                </div>
+                <br />
+                <span ng-show="suggestListenerShow">{{suggestListenerResponse}}</span>
+                </form>
+            </li>
+        </ul><!-- media-list -->
+    % endif
 </%def>
 
 <%def name="showFacilitators()">
