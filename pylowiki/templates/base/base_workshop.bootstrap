@@ -8,7 +8,10 @@
 <%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
 
 <div class="row-fluid" ng-app="civ">
-   <div class="span12 well workshop-panel">
+   <div class="span1 well workshop-panel">
+    h
+   </div>
+   <div class="span11 well workshop-panel">
       <div class="row-fluid">
          <div class="span3">
          </div>

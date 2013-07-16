@@ -15,6 +15,8 @@
     <%
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
+        # great place to load links that will define this page and things in it
+        # great chance to use civ.io too
     %>
     <div id="fb-root"></div>
     <script src="/js/extauth.js" type="text/javascript"></script>
@@ -61,16 +63,22 @@
             });
         }
 
-        function sendDialog(authResponse) {
-            FB.ui({
-                method: 'send',
-                u: 'http://todd.civinomics.org'
-            });
+        function likeThis(authResponse) {
+          FB.api(
+              'me/og.likes',
+              'post',
+              {
+                  object: "http://samples.ogp.me/226075010839791"
+              },
+              function(response) {
+              // handle the response
+              }
+          );
         }
 
     </script>
-    <input type="button" value="share" onClick="shareOnWall()"/>
-    <input type="button" value="send message" onClick="sendDialog()"/>
+    <a href="#" onClick="shareOnWall()"><img src="/images/fb_share.png"></a>
+    <a href="#" onClick="likeThis()"><img src="/images/fb_signin.png"></a>
 </%def>
 
 <%def name="whoListening()">

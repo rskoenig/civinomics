@@ -58,6 +58,35 @@ class RegisterController(BaseController):
             
         return render("/derived/signup.bootstrap")
 
+    def signupNoExtAuthDisplay(self):
+
+        # todo - clear splash message if this came from /fbSignUp
+
+        c.numAccounts = 1000
+        c.numUsers = len(getActiveUsers())
+        if 'splashMsg' in session:
+            c.splashMsg = session['splashMsg']
+            session.pop('splashMsg')
+            session.save()
+        if 'registerSuccess' in session:
+            c.success = session['registerSuccess']
+            session.pop('registerSuccess')
+            session.save()
+        if 'guestCode' in session and 'workshopCode' in session:
+                c.w = getWorkshopByCode(session['workshopCode'])
+                if c.w:
+                    setWorkshopPrivs(c.w)
+                    c.mainImage = mainImageLib.getMainImage(c.w)
+                    c.title = c.w['title']
+                    c.listingType = False
+                    return render('/derived/6_guest_signup.bootstrap')
+                else:
+                    session.pop('guestCode')
+                    session.pop('workshopCode')
+                    session.save()
+            
+        return render("/derived/signupNoExtAuth.bootstrap")
+
     def fbNewAccount( self ):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']

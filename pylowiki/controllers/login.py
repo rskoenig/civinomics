@@ -355,5 +355,26 @@ You can change your password to something you prefer on your profile page.\n\n''
             
         return render("/derived/login.bootstrap")
 
+    def loginNoExtAuthDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
+
+        # todo - clear splash message if this came from /fbSignUp
+
+        if workshopCode != 'None' and workshopURL != 'None':
+            afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
+            if thing != 'None':
+                afterLoginURL += "/" + thing
+                if thingCode != 'None' and thingURL != 'None':
+                    afterLoginURL += "/%s/%s"%(thingCode, thingURL)
+            session['afterLoginURL'] = afterLoginURL
+            session.save()
+            log.info('loginDisplay afterLoginURL is %s'%afterLoginURL)
+        
+        if 'splashMsg' in session:
+            c.splashMsg = session['splashMsg']
+            session.pop('splashMsg')
+            session.save()
+            
+        return render("/derived/loginNoExtAuth.bootstrap")
+
     def forgotPassword(self):
         return render("/derived/forgotPassword.bootstrap")

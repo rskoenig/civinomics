@@ -849,7 +849,9 @@ class WorkshopController(BaseController):
     def display(self, workshopCode, workshopURL):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
-
+        #c.url = request.url
+        log.info("req url: %s"%request.url)
+        
         c.title = c.w['title']
 
         c.isFollowing = False
