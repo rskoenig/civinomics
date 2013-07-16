@@ -428,6 +428,11 @@ img.avatar{
    width:25px;
 }
 
+.medium-avatar{
+   height: 40px;
+   width:40px;
+   margin-right: 15px;
+}
 .avatar.topbar-avatar{
     height:20px;
     width:20px;
@@ -472,8 +477,9 @@ textarea.comment-reply{
     background-color:#d9edf7;
 }
 
-.pendingListener{
-    background-color:#c4ffbf;
+.listener-name{
+    font-size: 18px;
+    font-weight: bold;
 }
 
 a.Pending, a.Pending:active, a.Pending:link, a.Pending:hover{

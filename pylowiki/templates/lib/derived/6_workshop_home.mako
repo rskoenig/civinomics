@@ -21,19 +21,20 @@
             else:
                 pending.append(listener)
     %>
+    <h4 class="section-header smaller section-header-inner">Listeners</h4>
     % if users:
-        <h4 class="section-header smaller section-header-inner">Who's Listening</h4>
-        <ul class="media-list centered" id="workshopNotables">
+        <div class="green"><p>Participating</p></div>
+        <ul class="media-list" id="workshopNotables">
         % for person in users:
             <%
                 personTitle = person['title']
                 personClass = 'listener'
             %>
-            <li class="media ${personClass} notables-item">
-                ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
+            <li class="media notables-item">
+                ${lib_6.userImage(person, className="avatar medium-avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
-                    <h4 class="media-heading">${lib_6.userLink(person, className="green green-hover")}</h4>
-                    ${personTitle}
+                    ${lib_6.userLink(person, className="orange orange-hover listener-name")}<br />
+                    <small>${personTitle}</small>
                 </div>
             </li>
             
@@ -41,8 +42,9 @@
         </ul>
      % endif
     % if pending:
-        <h4 class="section-header smaller section-header-inner">Not Yet Listening</h4>
-        <ul class="media-list centered" id="workshopNotables">
+        <hr>
+        <div class="orange"><p>Not yet participating. Invite them to join in.</p></div>
+        <ul class="media-list" id="workshopNotables">
         % for person in pending:
             <%
                 lName = person['name']
@@ -50,15 +52,15 @@
                 listenerCode = person['urlCode']
                 personClass = 'pendingListener'
             %>
-            <li class="media ${personClass} notables-item">
+            <li class="media notables-item">
                 % if 'user' in session and c.authuser:
-                    <div class="pull-right rightbuttonspacer"><a href="#invite${listenerCode}" class="btn btn-primary btn-small" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                    <div class="pull-left rightbuttonspacing"><a href="#invite${listenerCode}" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % else:
-                    <div class="pull-right rightbuttonspacer"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/idea" class="btn btn-primary btn-small"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                    <div class="pull-left rightbuttonspacing"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/idea" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
                 % endif
                 <div class="media-body">
-                    <h4 class="media-heading">${lName}</h4>
-                    ${lTitle}  
+                    <span class="listener-name">${lName}</span><br />
+                    <small>${lTitle}</small> 
                 </div>
                 % if 'user' in session and c.authuser:
                     <%
@@ -87,11 +89,12 @@
         </ul>
      % endif
      % if 'user' in session and c.authuser:
+        <hr>
         <ul class="media-list centered">
             <li class="media pendingListener notables-item">
             <small>Know somebody who should be listening?</small><br />
                 <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline" name="suggestListenerForm">
-                <div class="pull-right rightbuttonspacer">
+                <div class="pull-right">
                 <input type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
                 <button type="submit" class="btn btn-success btn-small">Submit</button>
                 </div>

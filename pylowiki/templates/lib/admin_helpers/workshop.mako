@@ -161,12 +161,13 @@
         + Listener
         </button>
         <div id="addlistener" class="collapse">
+            <div class="spacer"></div>
             <form id="addListener" ng-submit="saveListener()" class="form-inline" name="addListener">
                 New Listener: 
-                <input type="text" name="lName" class="input-small" ng-model="lName" placeholder="Name" required>
-                <input type="text" name="lTitle" class="input-small" ng-model="lTitle" placeholder="Title" required>
-                <input type="text" name="lEmail" class="input-small" ng-model="lEmail" placeholder="Email" required>
-                <button type="submit" class="btn btn-warning">Save Listener</button>
+                <input type="text" name="lName" class="input-medium" ng-model="lName" placeholder="Name" required>
+                <input type="text" name="lTitle" class="input-medium" ng-model="lTitle" placeholder="Title" required>
+                <input type="text" name="lEmail" class="input-medium" ng-model="lEmail" placeholder="Email" required>
+                <button type="submit" class="btn btn-warning">Save</button>
                 <br />
                 <span ng-show="addListenerShow">{{addListenerResponse}}</span>
             </form>
