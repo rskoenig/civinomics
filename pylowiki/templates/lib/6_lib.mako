@@ -642,7 +642,7 @@
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
-            <form action="${editThingLink(thing, embed=True, raw=True)}" method="post" class="form form-horizontal" id="edit-${thing.objType}">
+            <form action="${editThingLink(thing, embed=True, raw=True)}" method="post" class="form" id="edit-${thing.objType}">
                 <label>edit</label>
                 % if thing.objType == 'comment':
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
@@ -657,7 +657,7 @@
                     <input type="text" class="input-block-level" name="link" value = "${thing['link']}">
                     <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % endif
-                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
+                <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
     </div>
