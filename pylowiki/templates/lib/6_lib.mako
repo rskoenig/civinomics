@@ -177,6 +177,16 @@
    ${thisLink | n}
 </%def>
 
+<%def name="userGreetingMsg(user)">
+  <%
+    if type(user) == type(1L):
+      user = userLib.getUserByID(user)
+    elif type(user) == type(u''):
+         user = userLib.getUserByCode(user)
+  %>
+  ${user['greetingMsg']}
+</%def>
+
 <%def name="workshopLink(w, **kwargs)">
    <%
    if 'embed' in kwargs:
@@ -378,7 +388,7 @@
                 if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
                     source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
                 else:
-                    source = '/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png'
+                    source = '/images/hamilton.png'
         elif 'extSource' in user.keys():
             if 'facebookSource' in user.keys():
                 if user['facebookSource'] == u'1':
@@ -767,35 +777,31 @@
 
 <%def name="revisionHistory(revisions, parent)">
     % if revisions:
-        <div class="row-fluid">
-            <div class="span6 offset1">
-                <div class="accordion" id="revision-wrapper">
-                    <div class="accordion-group no-border">
-                        <div class="accordion-heading">
-                            <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
-                                Click to show revisions
-                            </a>
-                        </div>
-                        <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
-                            <div class="accordion-inner no-border">
-                                <table class="table table-hover table-condensed">
-                                    <tr>
-                                        <th>Revision</th>
-                                        <th>Author</th>
-                                    </tr>
-                                    % for rev in revisions:
-                                        <% linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, c.w, embed=True), rev.date) %>
-                                        <tr>
-                                            <td>${linkStr | n}</td>
-                                            <td>${userLink(rev.owner)}</td>
-                                        </tr>
-                                    % endfor
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-            </div><!--/.span6 offset1-->
-        </div> <!--/.row-fluid-->
+      <div class="accordion" id="revision-wrapper">
+          <div class="accordion-group no-border">
+              <div class="accordion-heading">
+                  <a class="accordion-toggle green green-hover" data-toggle="collapse" data-parent="#revision-wrapper" href="#revisionsTable-${parent['urlCode']}">
+                      <small>Click to show revisions</small>
+                  </a>
+              </div>
+              <div id="revisionsTable-${parent['urlCode']}" class="accordion-body collapse">
+                  <div class="accordion-inner no-border">
+                      <table class="table table-hover table-condensed">
+                          <tr>
+                              <th>Revision</th>
+                              <th>Author</th>
+                          </tr>
+                          % for rev in revisions:
+                              <% linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, c.w, embed=True), rev.date) %>
+                              <tr>
+                                  <td>${linkStr | n}</td>
+                                  <td>${userLink(rev.owner)}</td>
+                              </tr>
+                          % endfor
+                      </table>
+                  </div>
+              </div>
+          </div>
     % endif
 </%def>
 
