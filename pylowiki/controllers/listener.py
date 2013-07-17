@@ -71,10 +71,12 @@ class ListenerController(BaseController):
                 userImage = generic.userImageSource(user)
                 profileLink = "/profile/" + user['urlCode'] + "/" + user['url']
                 lState = 'Active'
+                eventLib.Event('Active Listener Added', '%s added as listener'%user['name'], listener, user = c.authuser)
             else:
                 userImage = "/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png"
                 profileLink = ''
                 lState = 'Pending'
+                eventLib.Event('Pending Listener Added', '%s added as listener'%lName, listener, user = c.authuser)
             jsonReturn = '{"urlCode":"' + listener['urlCode'] + '","lName":"' + listener['name'].replace("'", "&#39;") + '", "lTitle":"' + listener['title'].replace("'", "&#39;") + '", "lEmail":"' + listener['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Disable","state":"' + lState + '"}'
             return jsonReturn
         else:
@@ -98,6 +100,7 @@ class ListenerController(BaseController):
         listener['title'] = lTitle;
         listener['email'] = lEmail;
         dbHelpers.commit(listener)
+        eventLib.Event('Listener edited', '%s edited listener info'%c.authuser['name'], listener, user = c.authuser)
         return "Updated Listener."
             
     @h.login_required
@@ -118,11 +121,13 @@ class ListenerController(BaseController):
         if listener['disabled'] == '1':
             listener['disabled'] = '0';
             dbHelpers.commit(listener)
-            return "Listener Enabled!"
+            returnMsg = "Listener Enabled!"
         if listener['disabled'] == '0':
             listener['disabled'] = '1';
             dbHelpers.commit(listener)
-            return "Listener Disabled!"
+            returnMsg = "Listener Disabled!"
+            
+        eventLib.Event(returnMsg, '%s by %s'%(returnMsg, c.authuser['name']), listener, user = c.authuser)
             
     @h.login_required
     def listenerEmailHandler(self):   
@@ -135,11 +140,12 @@ class ListenerController(BaseController):
         listener = listenerLib.getListenerByCode(urlCode)
         inviteList = listener['invites'].split(",")
         if c.user['urlCode'] in inviteList:
-            return "You have already sent an invitiation!"
+            return "You have already sent an invitiation to this person for this workshop!"
         mailLib.sendListenerInviteMail(listener['email'], c.user, c.w, memberMessage)
         inviteList.append(c.user['urlCode'])
         listener['invites'] = ",".join(inviteList)
         dbHelpers.commit(listener)
+        eventLib.Event('Listener invitation sent', 'Listener invitation sent by %s: %s'%(c.authuser['name'], memberMessage), listener, user = c.authuser)
         return "Invitation sent. Thanks!"
         
     @h.login_required
