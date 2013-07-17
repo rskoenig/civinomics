@@ -49,42 +49,34 @@
 </%def>
 
 <%def name="showItemTitle(thing)">
-    <div class="span1">
-        ${lib_6.upDownVote(thing)}
-    </div>
-    <div class="span11">
-        <h4>
-            <% 
-                link = ''
-                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
-                if thing.objType == 'resource':
-                    link = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['link'], 75))
-                elif thing.objType == 'revision':
-                    if thing['objType'] == 'resource':
-                        title = '<a href="%s" class="listed-item-title" target="_blank">%s</a>' %(thing['link'], thing['title'])
-                    else:
-                        title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+    <h4>
+        <% 
+            link = ''
+            title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
+            if thing.objType == 'resource':
+                link = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['link'], 75))
+            elif thing.objType == 'revision':
+                if thing['objType'] == 'resource':
+                    title = '<a href="%s" class="listed-item-title" target="_blank">%s</a>' %(thing['link'], thing['title'])
                 else:
                     title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
-            %>
-            ${title | n}<br>
-            ${link | n}
-        </h4>
-    </div>
+            else:
+                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+        %>
+        ${title | n}<br>
+        ${link | n}
+    </h4>
 </%def>
 
 <%def name="showItemOwner(thing)">
-    <div class="span11 offset1">
-        <%
-            lib_6.userImage(thing.owner, className="avatar")
-            role = ''
-            if 'addedAs' in thing.keys():
-                roles = ['admin', 'facilitator', 'listener']
-                if thing['addedAs'] in roles:
-                    role = '(%s) ' % thing['addedAs']
-        %>
-        Posted by ${lib_6.userLink(thing.owner)} ${role}from ${lib_6.userGeoLink(thing.owner)}
-    </div>
+    <%
+        role = ''
+        if 'addedAs' in thing.keys():
+            roles = ['admin', 'facilitator', 'listener']
+            if thing['addedAs'] in roles:
+                role = '(%s)' % thing['addedAs']
+    %>
+    ${lib_6.userLink(thing.owner)} ${role}, <span class="grey">${lib_6.userGreetingMsg(thing.owner)}</span> from ${lib_6.userGeoLink(thing.owner)}${lib_6.userImage(thing.owner, className="avatar med-avatar")}
 </%def>
 
 <%def name="moderationPanel(thing)">
@@ -95,22 +87,18 @@
         editID = 'edit-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
     %>
-    <div class="row-fluid">
-        <div class="span11 offset1">
-            <div class="btn-group">
-                % if thing['disabled'] == '0':
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
-                % endif
-                % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
-                % endif
-                % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
-                    <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
-                % endif
-            </div>
-        </div>
+    <div class="btn-group">
+        % if thing['disabled'] == '0':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+        % endif
+        % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+        % endif
+        % if userLib.isAdmin(c.authuser.id) or facilitatorLib.isFacilitator(c.authuser, c.w):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+        % endif
+
     </div>
-    
     <%
         if thing['disabled'] == '0':
             lib_6.flagThing(thing)

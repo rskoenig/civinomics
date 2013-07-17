@@ -41,9 +41,10 @@
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
         	    <div class="control-group">
-				    <label for="greetingMsg" class="control-label">A greeting message:</label>
+				    <label for="greetingMsg" class="control-label">Short bio:</label>
 				    <div class="controls">
-                        <textarea name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="span10"></textarea>
+                        <input type="text" name="greetingMsg" ng-model="greetingMsg" ng-init="greetingMsg='${c.user['greetingMsg']}'" rows=4 class="span10">
+                        <span class="help-block">Displayed with your posts<br>(example: Thomas Jefferson, Founding Father)</span>
 				    </div> <!-- /.controls -->
 			    </div> <!-- /.control-group -->
        	        <div class="control-group">
