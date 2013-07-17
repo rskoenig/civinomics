@@ -66,7 +66,13 @@
             });
         }
     </script>
-    <a href="#" onClick="shareOnWall()"><img src="/images/fb_share.png"></a>
+    % if 'user' in session:
+        % if 'externalAuthType' in c.authuser.keys():
+            % if c.authuser['externalAuthType'] == 'facebook':
+                <a href="#" onClick="shareOnWall()"><img src="/images/fb_share.png"></a>
+            % endif
+        % endif
+    % endif
 </%def>
 
 <%def name="validateSession()">

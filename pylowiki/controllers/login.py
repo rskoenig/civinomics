@@ -204,6 +204,8 @@ class LoginController(BaseController):
                     # session['fbBigPic']  session['fbSmallPic']
                     user['facebookProfileSmall'] = session['fbSmallPic']
                     user['facebookProfileBig'] = session['fbBigPic']
+            else:
+                user['externalAuthType'] = ''
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
