@@ -27,9 +27,10 @@
                 </div>
             % endif
             <div class="row-fluid">
-                <%
-                    helpers.showItemTitle(c.thing)
-                %>
+                ${lib_6.facebookDialogShare(c.requestUrl)}
+            </div><!--/.row-fluid-->
+            <div class="row-fluid">
+                ${helpers.showItemTitle(c.thing)}
             </div><!--/.row-fluid-->
             <div class="row-fluid">
                 ${helpers.showItemOwner(c.thing)}

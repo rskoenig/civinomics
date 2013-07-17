@@ -13,6 +13,62 @@
    log = logging.getLogger(__name__)
 %>
 
+<%def name="facebookDialogShare(link)">
+    <%
+        # NOTE - link should probably be created by the function in this file, thingLinkRouter.
+        # However, I need to do some homework on how to strip the href=" " out, and place an
+        # http://www.civinomics.com in.
+        facebookAppId = c.facebookAppId
+        channelUrl = c.channelUrl
+    %>
+    <div id="fb-root"></div>
+    <script src="/js/extauth.js" type="text/javascript"></script>
+    <script>
+        console.log('before window init');
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : "${facebookAppId}", // App ID
+                channelUrl : "${channelUrl}", // Channel File
+                status     : true, // check login status
+                cookie     : false, // enable cookies to allow the server to access the session
+                xfbml      : true  // parse XFBML
+            });
+            console.log('after window init');
+            FB.Event.subscribe('auth.authResponseChange', function(response) {
+              // Here we specify what we do with the response anytime this event occurs.
+              console.log('above response tree');
+              if (response.status === 'connected') {
+                console.log('calling fb connected');
+                //shareOnWall(response.authResponse);
+              } else if (response.status === 'not_authorized') {
+                console.log('not authd');                
+                //FB.login();
+              } else {
+                console.log('else');
+                //FB.login();
+              }
+            });
+        };
+        
+        // Load the SDK asynchronously
+        (function(d){
+            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement('script'); js.id = id; js.async = true;
+            js.src = "//connect.facebook.net/en_US/all.js";
+            ref.parentNode.insertBefore(js, ref);
+        }(document));
+
+        function shareOnWall(authResponse) {
+            FB.ui({
+                method: "stream.share",
+                u: "${link}"
+            });
+        }
+    </script>
+    <a href="#" onClick="shareOnWall()"><img src="/images/fb_share.png"></a>
+</%def>
+
 <%def name="validateSession()">
    <%
       if 'user' in session:
