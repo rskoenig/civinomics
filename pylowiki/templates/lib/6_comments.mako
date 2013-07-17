@@ -221,7 +221,7 @@
             % if parent:
                 % if parent.objType == 'comment':
                     % if parent['urlCode'] != comment['urlCode']:
-                        | <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
+                        <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
                     % endif
                 % endif
             % endif
@@ -256,8 +256,6 @@
                 </div> <!--/.span11-->
             </div> <!--/.row-fluid-->
             <%
-                revisions = revisionLib.getRevisionsForThing(comment)
-                lib_6.revisionHistory(revisions, comment)
                 if 'user' in session:
                     if c.thing['disabled'] == '0':
                         commentFooter(comment, author)
@@ -294,6 +292,10 @@
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                 % endif
             </div>
+            <%
+                revisions = revisionLib.getRevisionsForThing(comment)
+                lib_6.revisionHistory(revisions, comment)
+            %>
         </div><!--/.span11.offset1-->
     </div><!--/.row-fluid-->
     
@@ -302,10 +304,10 @@
         <div class="span11 offset1">
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
                 <label>reply</label>
-                <textarea name="comment-textarea" class="comment-reply span12"></textarea>
+                <textarea name="comment-textarea" class="comment-reply span12" placeholder="Add a reply..."></textarea>
                 <input type="hidden" name="parentCode" value="${comment['urlCode']}" />
                 <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
-                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
+                <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
     </div>
