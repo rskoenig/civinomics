@@ -127,13 +127,18 @@ class LoginController(BaseController):
         email = session['fbEmail']
         # get user by email, if no match look for match by facebook user it
         user = userLib.getUserByEmail( email )
+        log.info('asked for email')
         if user:
+            log.info('found email: %s'%user['email'])
             alreadyFb = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
             if not alreadyFb:
+                log.info('did not find by fb id')
                 # we have a person that already has an account on site, but hasn't
                 # used the facebook auth to login yet
                 # we need to activate parameters for this person's account
-                user['facebookAuthId'] = facebookAuthId    
+                user['facebookAuthId'] = facebookAuthId
+            else:
+                log.info('found by fb id')
             user['facebookAccessToken'] = accessToken
             user['externalAuthType'] = 'facebook'
             # a user's account email can be different from the email on their facebook account.
@@ -142,8 +147,10 @@ class LoginController(BaseController):
             commit(user)
             return render("/derived/fbLoggingIn.bootstrap")
         else:
+            log.info('did not find by email')
             user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
             if user:
+                log.info('found by user id %s'%user['email'])
                 # we have an active account. set their profile pic to be based on facebook's
                 user['facebookAccessToken'] = accessToken
                 user['externalAuthType'] = 'facebook'
@@ -162,9 +169,9 @@ class LoginController(BaseController):
         email = session['fbEmail']
         log.info("login:fbLoggingIn")
         # get user
-        user = userLib.getUserByFacebookAuthId( facebookAuthId )
+        user = userLib.getUserByEmail( email )
         if not user:
-            user = userLib.getUserByEmail( email )
+            user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if user:
             log.info("login:fbLoggingIn found user, logging in")
             LoginController.logUserIn(self, user)
