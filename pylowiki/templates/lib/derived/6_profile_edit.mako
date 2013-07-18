@@ -246,6 +246,16 @@
                                     </div>
                                 </form>
                             % endif
+                        % elif message['extraInfo'] in ['listenerSuggestion']:
+                            <% workshop = workshopLib.getWorkshopByCode(message['workshopCode']) %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    Member ${lib_6.userLink(sender)} has a listener suggestion for workshop <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a>:<br />
+                                    <p>${message['text']}</p>
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
                         % elif message['extraInfo'] in ['commentResponse']:
                             <%
                                 comment = commentLib.getCommentByCode(message['commentCode'])
