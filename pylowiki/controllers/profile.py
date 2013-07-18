@@ -120,11 +120,8 @@ class ProfileController(BaseController):
         c.pendingListeners = []
         c.listeningWorkshops = []
         for l in listenerList:
-            if 'pending' in l and l['pending'] == '1':
-                c.pendingListeners.append(l)
-            else:
-                lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-                c.listeningWorkshops.append(lw)
+            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+            c.listeningWorkshops.append(lw)
         
         c.privateWorkshops = []
         if 'user' in session and c.authuser:
