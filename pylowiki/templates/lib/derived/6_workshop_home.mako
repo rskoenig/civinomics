@@ -13,36 +13,102 @@
 
 <%def name="whoListening()">
     <%
-        people = []
-        if c.listeners:
-            people += c.listeners
+        users = []
+        pending = []
+        for listener in c.listeners:
+            if 'userCode' in listener:
+                users.append(listener)
+            else:
+                pending.append(listener)
     %>
-    % if people:
-        <h4 class="section-header smaller section-header-inner">Who's Listening</h4>
-        <ul class="media-list centered" id="workshopNotables">
-        % for person in people:
+    <h4 class="section-header smaller section-header-inner">Listeners</h4>
+    % if users:
+        <div class="green"><p>Participating</p></div>
+        <ul class="media-list" id="workshopNotables">
+        % for person in users:
             <%
-                if person.objType == 'facilitator':
-                    personTitle = 'Workshop Facilitator'
-                    personClass = 'facilitator'
-                else:
-                    personTitle = person['title']
-                    personClass = 'listener'
+                personTitle = person['title']
+                personClass = 'listener'
             %>
-            <li class="media ${personClass} notables-item">
-                ${lib_6.userImage(person, className="avatar media-object", linkClass="pull-right")}
+            <li class="media notables-item">
+                ${lib_6.userImage(person, className="avatar med-avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
-                    <h4 class="media-heading">${lib_6.userLink(person, className="green green-hover")}</h4>
-                    % if personClass == 'listener':
-                        <p class="no-bottom"><small>(listener)</small></p>
-                    % endif
-                    ${personTitle}
+                    ${lib_6.userLink(person, className="orange orange-hover listener-name")}<br />
+                    <small>${personTitle}</small>
                 </div>
             </li>
             
         % endfor
         </ul>
      % endif
+    % if pending:
+        <hr>
+        <div class="orange"><p>Not yet participating. Invite them to join in.</p></div>
+        <ul class="media-list" id="workshopNotables">
+        % for person in pending:
+            <%
+                lName = person['name']
+                lTitle = person['title']
+                listenerCode = person['urlCode']
+                personClass = 'pendingListener'
+                if person['invites'] != '':
+                    inviteList = person['invites'].split(',')
+                    numInvites = str(len(inviteList))
+                else:
+                    numInvites = '0'
+            %>
+            <li class="media notables-item">
+                % if 'user' in session and c.authuser:
+                    <div class="pull-left rightbuttonspacing"><a href="#invite${listenerCode}" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                % else:
+                    <div class="pull-left rightbuttonspacing"><a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/idea" class="btn btn-primary btn-mini"><i class="icon-envelope icon-white"></i> Invite</a></div>
+                % endif
+                <div class="media-body">
+                    <span class="listener-name">${lName}</span><br />
+                    <small>${lTitle}</small> 
+                </div>
+                % if 'user' in session and c.authuser:
+                    <%
+                        memberMessage = "Please join me and participate in this online Civinomics workshop.\nThere are good ideas and informed discussions, please login and listen in!"
+                    %>
+                    <div id="invite${listenerCode}" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="invite${listenerCode}Label" aria-hidden="true">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h3 id="invite${listenerCode}Label">Invite ${lName} to Listen</h3>
+                        </div><!-- modal-header -->
+                        <div class="modal-body"> 
+                            <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
+                            Add your message to the listener invitation:<br />
+                            <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
+                            <br />
+                            <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
+                            <button type="submit" class="btn btn-warning">Send Invitation</button>
+                            <br />
+                            <span ng-show="emailListenerShow">{{emailListenerResponse}}</span>
+                            </form>
+                        </div><!-- modal-footer -->
+                    </div><!-- modal -->
+                % endif
+            </li>
+        % endfor
+        </ul>
+     % endif
+     % if 'user' in session and c.authuser:
+        <hr>
+        <ul class="media-list centered">
+            <li class="media pendingListener notables-item">
+            <small>Know somebody who should be listening?</small><br />
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline" name="suggestListenerForm">
+                <div class="pull-right">
+                <input type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
+                <button type="submit" class="btn btn-success btn-small">Submit</button>
+                </div>
+                <br />
+                <span ng-show="suggestListenerShow">{{suggestListenerResponse}}</span>
+                </form>
+            </li>
+        </ul><!-- media-list -->
+    % endif
 </%def>
 
 <%def name="showFacilitators()">

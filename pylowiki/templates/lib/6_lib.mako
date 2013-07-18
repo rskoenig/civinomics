@@ -154,7 +154,7 @@
       if user.objType == 'facilitator':
          user = userLib.getUserByID(user.owner)
       if user.objType == 'listener':
-         user = userLib.getUserByCode(user['userCode'])
+         user = userLib.getUserByEmail(user['email'])
       if 'raw' in kwargs:
          if kwargs['raw']:
             return '/profile/%s/%s/' %(user['urlCode'], user['url'])
@@ -342,7 +342,7 @@
       if user.objType == 'facilitator':
          user = userLib.getUserByID(user.owner)
       if user.objType == 'listener':
-         user = userLib.getUserByCode(user['userCode'])
+         user = userLib.getUserByEmail(user['email'])
       imgStr += '<a href="'
       imgStr += userLink(user, raw=True)
       imgStr += '"'

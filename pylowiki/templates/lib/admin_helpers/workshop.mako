@@ -6,6 +6,7 @@
     import pylowiki.lib.db.user             as userLib
     import pylowiki.lib.db.event            as eventLib
     import pylowiki.lib.db.workshop         as workshopLib
+    import simplejson as json
 %>  
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
@@ -152,80 +153,58 @@
 
 <%def name="admin_listeners()">
     % if c.w['public_private'] != 'trial':
+        <div ng-controller="listenerController" ng-init="user='${c.authuser['urlCode']}'; code='${c.w['urlCode']}'; url='${c.w['url']}'; getList()">
         <table class="table table-bordered">
         <thead>
-        <tr><th>Current Listeners</th></tr>
+        <tr><th>Listeners 
+        <button type="button" class="pull-right btn btn-small btn-success" data-toggle="collapse" data-target="#addlistener">
+        + Listener
+        </button>
+        <div id="addlistener" class="collapse">
+            <div class="spacer"></div>
+            <form id="addListener" ng-submit="saveListener()" class="form-inline" name="addListener">
+                New Listener: 
+                <input type="text" name="lName" class="input-medium" ng-model="lName" placeholder="Name" required>
+                <input type="text" name="lTitle" class="input-medium" ng-model="lTitle" placeholder="Title" required>
+                <input type="text" name="lEmail" class="input-medium" ng-model="lEmail" placeholder="Email" required>
+                <button type="submit" class="btn btn-warning">Save</button>
+                <br />
+                <span ng-show="addListenerShow">{{addListenerResponse}}</span>
+            </form>
+        </div><!-- collapse -->
+        </th></th>
         </thead>
         <tbody>
-        % for listener in c.listeners:
-            <tr><td>
-            <%
-                lPending = ""
-                if listener['pending'] == '1':
-                    lPending = "(Pending)"
-                lUser = userLib.getUserByCode(listener['userCode'])
-                lEvents = eventLib.getParentEvents(listener)
-                lib_6.userImage(lUser, className = 'avatar small-avatar')
-                lib_6.userLink(lUser)
-
-            %>
-            ${lPending}<br />
-            <form id="resignListener" class="form-inline" name="resignListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/resign/handler/" method="post">
-            Disable listener:<br />
-            Reason: <input type="text" name="resignReason"> &nbsp;&nbsp;&nbsp;
-            <input type="hidden" name="userCode" value="${lUser['urlCode']}">
-            <button type="submit" class="btn btn-warning" value="Resign">Disable</button>
-            <br />
-            </form><br />
-            <form id="titleListener" class="form-inline" name="titleListener" action="/workshop/${c.w['urlCode']}/${c.w['url']}/listener/title/handler/" method="post">
-            Add a job title to listener (60 characters max):<br />
-            <% 
-                if 'title' in listener:
-                    ltitle = listener['title']
-                else:
-                    ltitle = ""
-            %>
-            Title: <input type="text" name="listenerTitle" value="${ltitle}" size="60" maxlength="60"> &nbsp;&nbsp;&nbsp;
-            <input type="hidden" name="userCode" value="${lUser['urlCode']}">
-            <button type="submit" class="btn btn-warning">Save Title</button>
-            <br />
-            </form><br />
-
-            % if lEvents:
-                % for lE in lEvents:
-                    <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
-                % endfor
-            % endif
-            </td></tr>
-        % endfor
+        <tr ng-repeat="listener in listeners">
+        <td>
+            <a href="{{listener.profileLink}}" class="{{listener.state}}"><img class="avatar small-avatar" src="{{listener.userImage}}"> <span id="listenerName{{listener.urlCode}}">{{listener.lName}}</span>, <span id="listenerTitle{{listener.urlCode}}">{{listener.lTitle}}</span> ({{listener.state}})</a>
+            <div class="btn-group pull-right"><button class=" btn btn-small btn-success" data-toggle="collapse" id="toggleButton{{listener.urlCode}}" data-target="#disableListener{{listener.urlCode}}">
+            {{listener.button}}</button> <button class="btn btn-small btn-success" data-toggle="collapse" data-target="#editListener{{listener.urlCode}}">
+            Edit</button></div><!-- btn-group -->
+            <div id="disableListener{{listener.urlCode}}" class="collapse">
+                <form id="toggleForm{{listener.urlCode}}" ng-submit="toggleListener('{{listener.urlCode}}')" class="form-inline" name="toggleForm{{listener.urlCode}}">
+                <input type="text" name="lReason" ng-model="lReason" placeholder="Reason" required>
+                <button type="submit" class="btn btn-warning" id="toggleSubmit{{listener.urlCode}}">{{listener.button}} Listener</button>
+                <br />
+                <span id="toggleListenerResponse{{listener.urlCode}}"></span>
+                </form>
+            </div><!-- collapse -->
+            <div id="editListener{{listener.urlCode}}" class="collapse">
+                <form id="editForm{{listener.urlCode}}" ng-submit="editListener('{{listener.urlCode}}')" class="form-inline" name="editForm{{listener.urlCode}}">
+                Edit Listener:<br />
+                Name: <input type="text" class="input-small" id="lName" name="lName" value="{{listener.lName}}" required>
+                Title: <input type="text" class="input-small" id="lTitle" name="lTitle" value="{{listener.lTitle}}" required>
+                Email: <input type="text" class="input-small" id="lEmail" name="lEmail" value="{{listener.lEmail}}" required>
+                <button type="submit" class="btn btn-warning">Save Changes</button>
+                <br />
+                <span id="editListenerResponse{{listener.urlCode}}"></span>
+                </form>
+            </div><!-- collapse -->
+        </td>
+        </tr>
         </tbody>
         </table>
-        % if len(c.disabledListeners) > 0:
-            <table class="table table-bordered">
-            <thead>
-            <tr><th>Disabled Listeners</th></tr>
-            </thead>
-            <tbody>
-            % for listener in c.disabledListeners:
-                <tr><td>
-                <%
-                    lUser = userLib.getUserByCode(listener['userCode'])
-                    lEvents = eventLib.getParentEvents(listener)
-                    lib_6.userImage(lUser, className = 'avatar small-avatar')
-                    lib_6.userLink(lUser)
-
-                %>
-                <br />
-                % if lEvents:
-                    % for lE in lEvents:
-                        <strong>${lE.date} ${lE['title']}</strong>  ${lE['data']}<br />
-                    % endfor
-                % endif
-                </tr></td>
-            % endfor
-            </tbody>
-            </table>
-        % endif
+        </div><!-- listenerController -->
     % endif
 </%def>
 
