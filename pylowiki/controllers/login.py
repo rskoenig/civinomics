@@ -125,39 +125,35 @@ class LoginController(BaseController):
         facebookAuthId = session['facebookAuthId']
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
-        # get user
-        user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
-        userEmailOnly = False
-        if not user:
-            user = userLib.getUserByEmail( email )
-            if user:
-                userEmailOnly = True
+        # get user by email, if no match look for match by facebook user it
+        user = userLib.getUserByEmail( email )
         if user:
-            if userEmailOnly:
+            alreadyFb = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
+            if not alreadyFb:
                 # we have a person that already has an account on site, but hasn't
                 # used the facebook auth to login yet
                 # we need to activate parameters for this person's account
-                user['facebookAuthId'] = facebookAuthId
-            # we have an active account. set their profile pic to be based on facebook's
+                user['facebookAuthId'] = facebookAuthId    
             user['facebookAccessToken'] = accessToken
             user['externalAuthType'] = 'facebook'
             # a user's account email can be different from the email on their facebook account.
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
-            #if 'fbSmallPic' in session:
-                #user['extSource'] = True
-                #user['facebookSource'] = True
-                #smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
-                #user['facebookProfileSmall'] = smallPic
-                #user['facebookProfileBig'] = smallPic
             commit(user)
             return render("/derived/fbLoggingIn.bootstrap")
-            #LoginController.logUserIn(self, user)
         else:
-            # unexpected - this user's account does not already exist - render a
-            # page made just for signing this person up by asking facebook one more time
-            # if this user is auth'd and there is no account
-            return render("/derived/fbSigningUp.bootstrap")
+            user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
+            if user:
+                # we have an active account. set their profile pic to be based on facebook's
+                user['facebookAccessToken'] = accessToken
+                user['externalAuthType'] = 'facebook'
+                # a user's account email can be different from the email on their facebook account.
+                # we should keep track of this, it'll be handy
+                user['fbEmail'] = email
+                commit(user)
+                return render("/derived/fbLoggingIn.bootstrap")
+            else:
+                return render("/derived/fbSigningUp.bootstrap")
         
     def fbLoggingIn(self):
         # this page has already confirmed we're authd and logged in, just need to 
