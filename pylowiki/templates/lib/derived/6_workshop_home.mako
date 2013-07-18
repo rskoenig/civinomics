@@ -51,6 +51,11 @@
                 lTitle = person['title']
                 listenerCode = person['urlCode']
                 personClass = 'pendingListener'
+                if person['invites'] != '':
+                    inviteList = person['invites'].split(',')
+                    numInvites = str(len(inviteList))
+                else:
+                    numInvites = '0'
             %>
             <li class="media notables-item">
                 % if 'user' in session and c.authuser:
@@ -71,7 +76,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                             <h3 id="invite${listenerCode}Label">Invite ${lName} to Listen</h3>
                         </div><!-- modal-header -->
-                        <div class="modal-body">
+                        <div class="modal-body"> 
                             <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; listener='${listenerCode}'; memberMessage='${memberMessage}'" id="inviteListener" ng-submit="emailListener()" class="form-inline" name="inviteListener">
                             Add your message to the listener invitation:<br />
                             <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>

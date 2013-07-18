@@ -125,13 +125,17 @@ def sendCommentMail(recipient, parent, workshop, text):
 
     send(recipient, fromEmail, subject, textMessage)
     
-def sendListenerInviteMail(recipient, user, workshop, memberMessage):
+def sendListenerInviteMail(recipient, user, workshop, memberMessage, numInvites):
            
     subject = 'You are invited to listen in on a Civinomics workshop'
     
     emailDir = config['app_conf']['emailDirectory']
     txtFile = emailDir + "/invitelistener.txt"
     browseURL = config['app_conf']['site_base_url'] + "/workshop" + "/" + workshop['urlCode'] + "/" + workshop['url']
+    if numInvites == '0':
+        numInvitesMessage = ''
+    else:
+        numInvitesMessage = "\nThere are now %s members who've asked you to join in!\n"%numInvites
 
     # open and read the text file
     fp = open(txtFile, 'r')
@@ -142,6 +146,28 @@ def sendListenerInviteMail(recipient, user, workshop, memberMessage):
     textMessage = textMessage.replace('${c.workshop}', workshop['title'])
     textMessage = textMessage.replace('${c.browseLink}', browseURL)
     textMessage = textMessage.replace('${c.memberMessage}', memberMessage)
+    textMessage = textMessage.replace('${c.numInvitesMessage}', numInvitesMessage)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+
+    send(recipient, fromEmail, subject, textMessage)
+    
+def sendListenerAddMail(recipient, user, workshop):
+           
+    subject = 'You are invited to listen in on a Civinomics workshop'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/addlistener.txt"
+    browseURL = config['app_conf']['site_base_url'] + "/workshop" + "/" + workshop['urlCode'] + "/" + workshop['url']
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    textMessage = textMessage.replace('${c.sender}', user['name'])
+    textMessage = textMessage.replace('${c.workshop}', workshop['title'])
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
 
     fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
 

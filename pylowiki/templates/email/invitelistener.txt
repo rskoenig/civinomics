@@ -1,16 +1,20 @@
 
 Hello,
 
-Civinomics member ${c.sender} is inviting you to an online
-Civinomics workshop named:
-"${c.workshop}"
+${c.sender} has seconded you as a listener in the Civinomics workshop 
+"${c.workshop}", an online space for civic 
+improvement.
 
 "${c.memberMessage}"
+${c.numInvitesMessage}
 
-Use a web broser to visit the workshop today at:
+Listeners are experts on a workshop's topic or in the position to take 
+action on a workshop's outcomes. You were probably invited because you 
+fit this description. The listener's role is not to moderate but to 
+observe, and of course comment and add ideas if you wish.
+
+Your participation would be of great value to other Civinomics members. 
+Please join the workshop today!
+
 ${c.browseLink}
-
-Best regards,
-
-The folks at Civinomics and especially, member ${c.sender}!
 

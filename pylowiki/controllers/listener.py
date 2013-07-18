@@ -77,6 +77,7 @@ class ListenerController(BaseController):
                 profileLink = ''
                 lState = 'Pending'
                 eventLib.Event('Pending Listener Added', '%s added as listener'%lName, listener, user = c.authuser)
+            mailLib.sendListenerAddMail(listener['email'], c.authuser, c.w)
             jsonReturn = '{"urlCode":"' + listener['urlCode'] + '","lName":"' + listener['name'].replace("'", "&#39;") + '", "lTitle":"' + listener['title'].replace("'", "&#39;") + '", "lEmail":"' + listener['email'] + '", "profileLink":"' + profileLink + '","userImage":"' + userImage + '", "button":"Disable","state":"' + lState + '"}'
             return jsonReturn
         else:
@@ -138,10 +139,15 @@ class ListenerController(BaseController):
         memberMessage = payload['memberMessage']
         # make sure not already a listener for this workshop
         listener = listenerLib.getListenerByCode(urlCode)
-        inviteList = listener['invites'].split(",")
+        if listener['invites'] != '':
+            inviteList = listener['invites'].split(",")
+            numInvites = str(len(inviteList))
+        else:
+            inviteList = []
+            numInvites = '0'
         if c.user['urlCode'] in inviteList:
             return "You have already sent an invitiation to this person for this workshop!"
-        mailLib.sendListenerInviteMail(listener['email'], c.user, c.w, memberMessage)
+        mailLib.sendListenerInviteMail(listener['email'], c.authuser, c.w, memberMessage, numInvites)
         inviteList.append(c.user['urlCode'])
         listener['invites'] = ",".join(inviteList)
         dbHelpers.commit(listener)
