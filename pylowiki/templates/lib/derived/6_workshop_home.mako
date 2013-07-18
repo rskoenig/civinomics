@@ -31,7 +31,7 @@
                 personClass = 'listener'
             %>
             <li class="media notables-item">
-                ${lib_6.userImage(person, className="avatar medium-avatar media-object", linkClass="pull-left")}
+                ${lib_6.userImage(person, className="avatar med-avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
                     ${lib_6.userLink(person, className="orange orange-hover listener-name")}<br />
                     <small>${personTitle}</small>
