@@ -201,6 +201,13 @@ class User(object):
             else:
                 self.generateActivationHash(u)
         commit(u)
+        
+        listenerList = genericLib.getThingsByEmail(u['email'])
+        for listener in listenerList:
+            if listener.objType == 'listener' and 'userCode' not in listener:
+                listener = genericLib.linkChildToParent(listener, u)
+                commit(listener)
+        
  
 
         self.u = u
