@@ -88,9 +88,9 @@ class LoginController(BaseController):
             if user:
                 log.info("found user by facebook id")
 
-        if user:
-            for thisKey in user.keys():
-                log.info("user %s == %s"%(thisKey, user[thisKey]))
+        #if user:
+        #    for thisKey in user.keys():
+        #        log.info("user %s == %s"%(thisKey, user[thisKey]))
 
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
@@ -167,16 +167,16 @@ class LoginController(BaseController):
         # log this person in now
         facebookAuthId = session['facebookAuthId']
         email = session['fbEmail']
+        log.info("login:fbLoggingIn")
         # get user
-        user = userLib.getUserByFacebookAuthId( facebookAuthId )
+        user = userLib.getUserByEmail( email )
         if not user:
-            user = userLib.getUserByEmail( email )
+            user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if user:
+            log.info("login:fbLoggingIn found user, logging in")
             LoginController.logUserIn(self, user)
         else:
-            log.info("DID NOT FIND USER - DEAD END")
-            # somehow this flow got mixed up and now there's not an account yet
-            # create new account flow from here? what are the possible cases?
+            log.info("login:fbLoggingIn DID NOT FIND USER - DEAD END")
 
     def logUserIn(self, user, **kwargs):
         # NOTE - need to store the access token? kee in session or keep on user?
