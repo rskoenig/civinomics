@@ -62,7 +62,7 @@
         function shareOnWall(authResponse) {
             FB.ui({
                 method: "stream.share",
-                u: "${link}"
+                u: ""
             });
         }
     </script>

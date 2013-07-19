@@ -1,6 +1,6 @@
 import logging, pickle
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect_to, redirect
 import webhelpers.paginate as paginate
 from pylowiki.lib.base import BaseController, render
@@ -67,6 +67,11 @@ class DiscussionController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def topic(self, workshopCode, workshopURL, discussionCode, discussionURL):
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.requestUrl = request.url
+
         c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
         if not c.thing:
             c.thing = revisionLib.getRevisionByCode(discussionCode)
