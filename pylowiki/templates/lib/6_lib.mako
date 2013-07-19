@@ -66,7 +66,7 @@
             });
         }
     </script>
-    <a href="#" onClick="shareOnWall()"><img src="/images/fb_share.png"></a>
+    <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
 </%def>
 
 <%def name="validateSession()">
