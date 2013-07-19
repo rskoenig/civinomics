@@ -129,7 +129,7 @@ class LoginController(BaseController):
         user = userLib.getUserByEmail( email )
         log.info('asked for email')
         if user:
-            log.info('found email: %s'%user['email'])
+            log.info('found email')
             alreadyFb = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
             if not alreadyFb:
                 log.info('did not find by fb id')
@@ -145,7 +145,7 @@ class LoginController(BaseController):
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
             commit(user)
-            return render("/derived/fbLoggingIn.bootstrap")
+            return redirect("/fbLoggingIn")
         else:
             log.info('did not find by email')
             user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
@@ -158,25 +158,23 @@ class LoginController(BaseController):
                 # we should keep track of this, it'll be handy
                 user['fbEmail'] = email
                 commit(user)
-                return render("/derived/fbLoggingIn.bootstrap")
+                return redirect("/fbLoggingIn")
             else:
-                return render("/derived/fbSigningUp.bootstrap")
+                return redirect("/fbSigningUp")
         
     def fbLoggingIn(self):
         # this page has already confirmed we're authd and logged in, just need to 
         # log this person in now
         facebookAuthId = session['facebookAuthId']
         email = session['fbEmail']
-        log.info("login:fbLoggingIn")
         # get user
         user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if not user:
             user = userLib.getUserByEmail( email )
         if user:
-            log.info("login:fbLoggingIn found user, logging in")
             LoginController.logUserIn(self, user)
         else:
-            log.info("login:fbLoggingIn DID NOT FIND USER - DEAD END")
+            log.info("DID NOT FIND USER - DEAD END")
             # somehow this flow got mixed up and now there's not an account yet
             # create new account flow from here? what are the possible cases?
 
