@@ -30,42 +30,8 @@
    </head>
    <body ${self.bodyTag_extras()}>
 
-         ##
-         ## uses the appropriate navbar, container and footer depending on the page
-         ##
-
-         % if session._environ['PATH_INFO'] in ("/", "/signup", "/login", "/forgotPassword") or "activate" in session._environ['PATH_INFO']:
-            <div id="wrap">
-               ${helpers.splashNavbar()}
-               <div>
-                  ${next.body()}
-               </div>
-            </div><!-- close wrap -->
-            % if session._environ['PATH_INFO'] == ("/"):
-               ${helpers.tallFooter()}
-            % endif
-
-         % elif "corp" in session._environ['PATH_INFO']:
-            <div id="wrap">
-               ${helpers.mainNavbar()}
-               <div class="container main">
-                  ${next.body()}
-               </div>
-            </div><!-- close wrap -->
-            ${helpers.copyright()}
-
-         % else:
-            <div id="wrap">
-               ${helpers.mainNavbar()}
-               <div class="container-wide">
-                  ${next.body()}
-               </div>
-            </div><!-- close wrap -->
-            ${helpers.shortFooter()}
-
-         % endif
-
-   </div>
+    ${next.body()}
+    
 
    <!-- scripts go at the bottom so they don't keep the user waiting -->
    <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
