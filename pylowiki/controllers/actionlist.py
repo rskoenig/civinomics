@@ -111,4 +111,28 @@ class ActionlistController(BaseController):
 
         return feed.writeString('utf-8')
 
+    def searchTags( self, id1 ):
+        id1 = id1.replace("_", " ")
+        c.title = c.heading = 'Search Workshops by Tag: ' + id1
+        tList = searchTags(id1)
+        c.list = []
+        """return all the thingIDs that are tags with title id1 """
+        for t in tList:
+            """get the workshop that has the """
+            w = getWorkshopByCode(t['workshopCode'])
+            if w['deleted'] == '0' and w['startTime'] != '0000-00-00':
+                c.list.append(getWorkshopByCode(t['workshopCode']))
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        c.activity = getRecentActivity(10)
+        c.scope = {'level':'earth', 'name':'all'}
+        c.rssURL = "/activity/rss"
+
+        return render('/derived/6_main_listing.bootstrap')
+
 

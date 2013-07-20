@@ -1,0 +1,11 @@
+<%namespace name="helpers" file="/lib/template_lib.mako" />
+
+<div id="wrap">
+   ${helpers.splashNavbar()}
+   <div>
+      ${next.body()}
+   </div>
+</div><!-- close wrap -->
+% if session._environ['PATH_INFO'] == ("/"):
+   ${helpers.tallFooter()}
+% endif

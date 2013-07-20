@@ -19,15 +19,20 @@
             % if not goals:
                This workshop has no goals!
             % else:
-               <ul>
-               % for goal in goals:
-                  % if goal['status'] == u'100':
-                     <li class="done-true">${goal['title']}</li>
-                  % else:
-                     <li>${goal['title']}</li>
-                  % endif
-               % endfor
-               </ul>
+               <div class="left-indent">
+                  Goals:
+                  <br>
+                  <br>
+                  <ul>
+                  % for goal in goals:
+                     % if goal['status'] == u'100':
+                        <li class="done-true">${goal['title']}</li>
+                     % else:
+                        <li>${goal['title']}</li>
+                     % endif
+                  % endfor
+                  </ul>
+               </div>
             % endif
          </span>
          <% 
@@ -38,29 +43,26 @@
             else:
                imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
          %>
-         <div style="width:100%; height:190px; background-image:url('${imgSrc}'); background-repeat:no-repeat; background-size:cover; background-position:center;"></div>
+         <div style="background-image:url('${imgSrc}');"></div>
       </a>
    </div>
-      <p class="orange centered">
-         <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 60)} </a></strong>
-      </p>
-      <div class="workshop-listing-info">
-         <span>
-            <small>
-                ${lib_6.ellipsisIZE(w['description'], 100)}
-            </small>
-         </span>
-         <span class="pull-right orange workshop-listing-info-icons"> 
-            <a ${lib_6.workshopLink(w)}> <!-- Num watchers -->
-               ${len(followLib.getWorkshopFollowers(w))}
-               <img class="small-bookmark" data-toggle="tooltip" title="Followers" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
-            </a> <!-- /Num watchers -->
-            <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
-               ${activityLib.getActivityCountForWorkshop(w['urlCode'])}
-               <img class="small-bulb" data-toggle="tooltip" title="Ideas, conversations, resources, comments" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
-            </a> <!-- /Num inputs -->
-         </span>
-      </div>
+   <div class="span workshop-listingTitle">
+      <strong><a ${lib_6.workshopLink(w)}> ${lib_6.ellipsisIZE(w['title'], 60)} </a></strong>
+   </div>
+   <div class="workshop-listing-info">
+      <span class="workshop-listing-info-icons"> 
+         <img class="small-bookmark" data-toggle="tooltip" title="Members who have bookmarked this workshop" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
+         <a ${lib_6.workshopLink(w)}> <!-- Num watchers -->
+            <strong>${len(followLib.getWorkshopFollowers(w))}</strong>
+         </a><span>BOOKMARKS</span> <!-- /Num watchers -->
+      </span>
+      <span class="workshop-listing-info-icons"> 
+         <img class="small-bulb" data-toggle="tooltip" title="Ideas, conversations, resources, comments" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
+         <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
+            <strong>${len(activityLib.getActivityForWorkshop(w['urlCode']))}</strong>
+         </a><span>OBJECTS</span> <!-- /Num inputs -->
+      </span>
+   </div>
 </%def>
 
 <%def name="showActivity(item, **kwargs)">
@@ -69,7 +71,7 @@
          w = workshopLib.getWorkshopByCode(item['workshopCode'])
          thisUser = getUserByID(item.owner)
       %>
-      <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar', linkClass = 'media-object')}</div> 
+      <div class="pull-left"> ${lib_6.userImage(thisUser, className = 'avatar small-avatar', linkClass = 'media-object')}</div> 
       <div class="media-body">
          ${lib_6.userLink(thisUser, className = 'green green-hover', maxChars = 25)} 
          ${lib_6.showItemInActivity(item, w, **kwargs)}

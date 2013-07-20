@@ -2,46 +2,46 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_main_listing.mako" />
 
+
 <div class="row">
-   <div class="span8"> <!-- listings -->
-      <div class="section-wrapper">
-         <div class="browse">
-            <h3 class="section-header"> ${c.workshopTitlebar} </h3>
-            <div class="row-fluid"><!--navigation row-->
-                % if len(c.list) != 0:
-                    <ul class="thumbnails">
-                        % for item in c.list:
-                            <li class="span6 wrap-workshop"> ${helpers.show_workshop(item)} </li>
-                        % endfor
-                    </ul>
-                % else:
-                    <div class="alert alert-success centered">
-                        <p>Be the first to add a public workshop here!</p>
-                        <a class="btn btn-success" href="/workshop/display/create/form">Let's do it!</a>
-                    </div>
-                % endif
-            </div><!--/navigation row-->
-         </div><!--/.browse-->
-      </div><!--/.section-wrapper-->
-   </div> <!-- /listings -->
-   <div class="span4"> <!-- Activity Stream -->
-      <div class="section-wrapper">
-         <div class="activity">
-            <h3 class="section-header"> Activity <a href="${c.rssURL}" target="_blank"><img src="/images/feed-icon-28x28.png" title="RSS feed" alt="RSS feed"></a></h3>
-            % if len(c.activity) != 0:
-            <% 
-               numItems = 10
-               for i in range(len(c.activity)):
-                  thisActivity = c.activity[i]
-                  helpers.showActivity(thisActivity, expandable=True)
-                  if i > numItems:
-                     break
-            %>
+   <div class="span10"> <!-- listings -->
+      <!--${c.workshopTitlebar}-->
+        <div class="row-fluid sidepanel" style="margin-bottom: 10px;">
+          <span class="lead grey">Work with others to come up with policy solutions</span>
+          <span class="left-indent">
+            ${lib_6.geoDropdown()}
+            ${lib_6.public_tags()}
+            <a class="btn btn-civ left-space" href="/workshop/display/create/form"><i class="icon-plus icon-white"></i> New Workshop</a>
+          </span>
+        </div>
+        <div class="row-fluid"><!--navigation row-->
+            % if len(c.list) != 0:
+                <ul class="thumbnails">
+                    % for item in c.list:
+                        <li class="span4 wrap-workshop"> ${helpers.show_workshop(item)} </li>
+                    % endfor
+                </ul>
             % else:
-                <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
+                <div class="alert alert-success centered">
+                    <p>Be the first to add a public workshop here!</p>
+                    <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
+                </div>
             % endif
-         </div>
-      </div>
+        </div><!--/navigation row-->
+   </div> <!-- /listings -->
+   <div class="span2 sidepanel pull-right" style="margin-left: 0; padding-right: 8px;"> <!-- Activity Stream -->
+      % if len(c.activity) != 0:
+      <% 
+         numItems = 10
+         for i in range(len(c.activity)):
+            thisActivity = c.activity[i]
+            helpers.showActivity(thisActivity, expandable=True)
+            if i > numItems:
+               break
+      %>
+      % else:
+          <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
+      % endif
    </div> <!-- /Activity Stream -->
 </div>
 

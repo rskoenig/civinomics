@@ -23,6 +23,21 @@ html,body{
   margin-bottom: 60px;
 }
 
+.container-wide{
+  width: 98%;
+  margin-left: 2%;
+  margin-right: 0;
+  margin-bottom: 60px;
+}
+
+.container-wide div.span10{
+  width:80%;
+}
+
+.container-wide div.span2{
+  width:17%;
+}
+
 .social-sign-in-separator {
 margin: 25px auto;
 max-width: 100%;
@@ -194,7 +209,7 @@ hr.civ-topbar-hr{
 
 .dropdown-menu .active > a,
 .dropdown-menu .active > a:hover {
-  color: #333333;
+  color: #ffffff;
   text-decoration: none;
   background-color: #0ca900;
   background-image: -moz-linear-gradient(top, #0ca900, #087600);
@@ -294,15 +309,20 @@ ul.activity > li {
 }
 
 .wrap-workshop{
-    border: 5px solid #075D00;
-    background-color: gainsboro;
-    height:310px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20px;
+    -moz-box-shadow: 0 0px 4px #111;
+    -webkit-box-shadow: 0 0px 4px #111;
+    box-shadow: 0 0px 4px #111;
+    border: 1px solid #075D00;
     margin-top:5px;
     position:relative;
+    min-height: 265px;
 }
 
 .wrap-workshop:hover{
-    border: 5px solid #D15D00;
+    border: 1px solid #D15D00;
 }
 .feed{
    display:inline-block;
@@ -511,20 +531,46 @@ a.name{
    height: 15px;
 }
 
-.workshop-listing-info-icons{
-   position:absolute;
-   bottom:5px;
-   right:10px;
+.workshop-listingTitle{
+  border-bottom: 1px solid #E8E8E8;
 }
+  .workshop-listingTitle a{
+    color: #333333;
+  }
+
+.span.workshop-listingTitle{
+  margin-left: 0px;
+  padding: 9px;
+  min-height: 60px;
+  }
+
 .workshop-listing-info{
    width:100%;
-   height:55px;
-   bottom:0;
-   position:absolute;
    margin-left:5px;
    margin-right:10px;
+   padding-top:5px;
+   float: left;
+   height: 27px;
 }
-.row-fluid [class*="span"]:nth-child(odd).wrap-workshop{
+
+.workshop-listing-info-icons{
+  border-right: 1px solid #E8E8E8;
+  padding-left: 10px;
+  padding-right: 5px;
+}
+
+.workshop-listing-info-icons span{
+  color: #999999;
+  font-size: 10px;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+
+.workshop-listing-info-icons a{
+  color: #333333;
+}
+
+.row-fluid [class*="span"]:nth-child(3n + 1).wrap-workshop{
    margin-left:0px;
 }
 .crop{
@@ -842,7 +888,7 @@ ul.listeners > li {
 /* --- Container configuration ---------------------------------------------------------- */
 .viewport {
     float: left;
-    margin: 0 0 9px 0;
+    margin: 0;
     overflow: hidden;
     position: relative;
     max-height: 190px;
@@ -865,14 +911,24 @@ ul.listeners > li {
     top: -20px;
 }
 
+.viewport div {
+  width:100%;
+  height:190px;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center;
+  -webkit-border-radius: 19px 19px 0 0;
+  -moz-border-radius: 19px 19px 0 0;
+  border-radius: 19px 19px 0 0;
+}
+
 /* --- Label configuration -------------------------------------------------------------- */
 .viewport a span {
     display: none;
     font-weight: bold;
     height: 100%;
-    padding-top: 50px;
+    padding-top: 20px;
     position: absolute;
-    text-align: center;
     text-decoration: none;
     width: 100%;
     z-index: 100;
@@ -888,6 +944,9 @@ ul.listeners > li {
     background-color: rgba(15, 15, 15, 0.6);
     color: #fff;
     text-shadow: #000 0px 0px 20px;
+    -webkit-border-radius: 19px 19px 0 0;
+    -moz-border-radius: 19px 19px 0 0;
+    border-radius: 19px 19px 0 0;
 }
     .dark-background em {
         color: #ccc;
@@ -1190,4 +1249,12 @@ li.thumbnail-gallery{
 
 .left-space{
   margin-left: 4px;
+}
+
+.left-indent{
+  margin-left: 20px;
+}
+
+.sidepanel{
+  padding-top: 20px;
 }

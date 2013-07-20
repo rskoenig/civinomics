@@ -1,4 +1,4 @@
-<%inherit file="/base/base.bootstrap"/>
+<%inherit file="/base/base_splash.bootstrap"/>
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
