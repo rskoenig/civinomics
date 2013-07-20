@@ -1,6 +1,6 @@
 import logging
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.user             as  userLib
@@ -63,6 +63,11 @@ class ResourceController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def showResource(self, workshopCode, workshopURL, resourceCode, resourceURL):
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.requestUrl = request.url
+
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:
             c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
