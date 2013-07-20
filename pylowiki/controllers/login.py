@@ -88,9 +88,9 @@ class LoginController(BaseController):
             if user:
                 log.info("found user by facebook id")
 
-        if user:
-            for thisKey in user.keys():
-                log.info("user %s == %s"%(thisKey, user[thisKey]))
+        #if user:
+        #    for thisKey in user.keys():
+        #        log.info("user %s == %s"%(thisKey, user[thisKey]))
 
         session['facebookAuthId'] = facebookAuthId
         session['fbEmail'] = email
@@ -125,39 +125,42 @@ class LoginController(BaseController):
         facebookAuthId = session['facebookAuthId']
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
-        # get user
-        user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
-        userEmailOnly = False
-        if not user:
-            user = userLib.getUserByEmail( email )
-            if user:
-                userEmailOnly = True
+        # get user by email, if no match look for match by facebook user it
+        user = userLib.getUserByEmail( email )
+        log.info('asked for email')
         if user:
-            if userEmailOnly:
+            log.info('found email')
+            alreadyFb = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
+            if not alreadyFb:
+                log.info('did not find by fb id')
                 # we have a person that already has an account on site, but hasn't
                 # used the facebook auth to login yet
                 # we need to activate parameters for this person's account
                 user['facebookAuthId'] = facebookAuthId
-            # we have an active account. set their profile pic to be based on facebook's
+            else:
+                log.info('found by fb id')
             user['facebookAccessToken'] = accessToken
             user['externalAuthType'] = 'facebook'
             # a user's account email can be different from the email on their facebook account.
             # we should keep track of this, it'll be handy
             user['fbEmail'] = email
-            #if 'fbSmallPic' in session:
-                #user['extSource'] = True
-                #user['facebookSource'] = True
-                #smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
-                #user['facebookProfileSmall'] = smallPic
-                #user['facebookProfileBig'] = smallPic
             commit(user)
-            return render("/derived/fbLoggingIn.bootstrap")
-            #LoginController.logUserIn(self, user)
+            return redirect("/fbLoggingIn")
         else:
-            # unexpected - this user's account does not already exist - render a
-            # page made just for signing this person up by asking facebook one more time
-            # if this user is auth'd and there is no account
-            return render("/derived/fbSigningUp.bootstrap")
+            log.info('did not find by email')
+            user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
+            if user:
+                log.info('found by user id %s'%user['email'])
+                # we have an active account. set their profile pic to be based on facebook's
+                user['facebookAccessToken'] = accessToken
+                user['externalAuthType'] = 'facebook'
+                # a user's account email can be different from the email on their facebook account.
+                # we should keep track of this, it'll be handy
+                user['fbEmail'] = email
+                commit(user)
+                return redirect("/fbLoggingIn")
+            else:
+                return redirect("/fbSigningUp")
         
     def fbLoggingIn(self):
         # this page has already confirmed we're authd and logged in, just need to 
@@ -166,16 +169,14 @@ class LoginController(BaseController):
         email = session['fbEmail']
         log.info("login:fbLoggingIn")
         # get user
-        user = userLib.getUserByFacebookAuthId( facebookAuthId )
+        user = userLib.getUserByEmail( email )
         if not user:
-            user = userLib.getUserByEmail( email )
+            user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if user:
             log.info("login:fbLoggingIn found user, logging in")
             LoginController.logUserIn(self, user)
         else:
             log.info("login:fbLoggingIn DID NOT FIND USER - DEAD END")
-            # somehow this flow got mixed up and now there's not an account yet
-            # create new account flow from here? what are the possible cases?
 
     def logUserIn(self, user, **kwargs):
         # NOTE - need to store the access token? kee in session or keep on user?
@@ -202,6 +203,8 @@ class LoginController(BaseController):
                     # session['fbBigPic']  session['fbSmallPic']
                     user['facebookProfileSmall'] = session['fbSmallPic']
                     user['facebookProfileBig'] = session['fbBigPic']
+            else:
+                user['externalAuthType'] = ''
         user['laston'] = time.time()
         loginTime = time.localtime(float(user['laston']))
         loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
@@ -333,6 +336,9 @@ You can change your password to something you prefer on your profile page.\n\n''
         return render( "/derived/changepass.mako" )
 
     def loginDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+
         if workshopCode != 'None' and workshopURL != 'None':
             afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
             if thing != 'None':
@@ -349,6 +355,27 @@ You can change your password to something you prefer on your profile page.\n\n''
             session.save()
             
         return render("/derived/login.bootstrap")
+
+    def loginNoExtAuthDisplay(self, workshopCode, workshopURL, thing, thingCode, thingURL):
+
+        # todo - clear splash message if this came from /fbSignUp
+
+        if workshopCode != 'None' and workshopURL != 'None':
+            afterLoginURL = "/workshop/%s/%s"%(workshopCode, workshopURL)
+            if thing != 'None':
+                afterLoginURL += "/" + thing
+                if thingCode != 'None' and thingURL != 'None':
+                    afterLoginURL += "/%s/%s"%(thingCode, thingURL)
+            session['afterLoginURL'] = afterLoginURL
+            session.save()
+            log.info('loginDisplay afterLoginURL is %s'%afterLoginURL)
+        
+        if 'splashMsg' in session:
+            c.splashMsg = session['splashMsg']
+            session.pop('splashMsg')
+            session.save()
+            
+        return render("/derived/loginNoExtAuth.bootstrap")
 
     def forgotPassword(self):
         return render("/derived/forgotPassword.bootstrap")

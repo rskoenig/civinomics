@@ -27,12 +27,13 @@
                 </div>
             % endif
             <div class="row-fluid">
-                <div class="span1">
-                    ${lib_6.upDownVote(c.thing)}
-                </div>
-                <div class="span11">
-                    ${helpers.showItemTitle(c.thing)}
-                </div>
+                ${lib_6.facebookDialogShare(c.requestUrl)}
+            </div><!--/.row-fluid-->
+            <div class="row-fluid">
+                ${helpers.showItemTitle(c.thing)}
+            </div><!--/.row-fluid-->
+            <div class="row-fluid">
+                ${helpers.showItemOwner(c.thing)}
             </div><!--/.row-fluid-->
             <%
                 if c.thing['disabled'] == '1':
@@ -40,21 +41,10 @@
                 if c.thing.objType == 'idea':
                     if c.thing['adopted'] == '1':
                         helpers.showAdoptedMessage(c.thing)
+                helpers.extraText(c.thing)
+                lib_6.revisionHistory(c.revisions, c.thing)
+                helpers.moderationPanel(c.thing)
             %>
-                ${helpers.extraText(c.thing)}
-                <div class="row-fluid">
-                    <div class="span12">
-                        <span class="pull-right">${helpers.showItemOwner(c.thing)}</span>
-                    </div>
-                </div>
-                <div class="row-fluid">
-                    <div class="span11 offset1">   
-                        ${helpers.moderationPanel(c.thing)}                    
-                        ${lib_6.revisionHistory(c.revisions, c.thing)}
-                    </div>
-                </div>
-                
-            
             % if c.thing.objType != 'revision':
             <div class="row-fluid">
                 <div class="span12">

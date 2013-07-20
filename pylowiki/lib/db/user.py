@@ -195,19 +195,12 @@ class User(object):
         u['urlCode'] = toBase62(u)
         commit(u)
         if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
-            if 'facebookSignup' in kwargs:
-                if kwargs['facebookSignup'] == False:
+            if 'externalAuthSignup' in kwargs:
+                if kwargs['externalAuthSignup'] == False:
                     self.generateActivationHash(u)
             else:
                 self.generateActivationHash(u)
         commit(u)
-        
-        listenerList = genericLib.getThingsByEmail(u['email'])
-        for listener in listenerList:
-            if listener.objType == 'listener' and 'userCode' not in listener:
-                listener = genericLib.linkChildToParent(listener, u)
-                commit(listener)
-        
  
 
         self.u = u
