@@ -28,6 +28,7 @@
             % endif
             <div class="row-fluid">
                 ${lib_6.facebookDialogShare(c.requestUrl)}
+                ${lib_6.emailShare(c.requestUrl)}
             </div><!--/.row-fluid-->
             <div class="row-fluid">
                 ${helpers.showItemTitle(c.thing)}
