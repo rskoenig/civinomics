@@ -23,12 +23,15 @@ def getSharesByUser(user):
     except:
         return False
 
-def Share(user, itemCode, email, name, message):
+def Share(user, itemCode, itemURL, email, name, message):
     share = Thing('share', user.id)
     share['itemCode']     = itemCode
+    share['itemURL']     = itemURL
     share['email']     = email
     share['name']     = name
     share['message']     = message
+    share = generic.linkChildToParent(share, user)
     commit(share)
     share['urlCode'] = toBase62(share)
     commit(share)
+    return share

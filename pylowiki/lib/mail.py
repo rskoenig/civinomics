@@ -172,3 +172,34 @@ def sendListenerAddMail(recipient, user, workshop):
     fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
 
     send(recipient, fromEmail, subject, textMessage)
+    
+def sendShareMail(recipientName, recipientEmail, memberMessage, user, workshop, item, itemURL):
+           
+    subject = 'Sharing a link to a Civinomics workshop with you'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/shareemail.txt"
+    
+    introduction = ""
+    itemDet = 'a'
+    if item.objtype == 'idea':
+        itemDet = 'an'
+        
+    introduction = "Hello,\n\n%s is sharing a link to %s item hosted at Civinomics:\n%s\n\n"%(itemDet, item.objtype, item,URL, user['name'])
+    if item.objType == 'workshop':
+        introduction += 'The workshop is titled "%s".'%item['title']
+    else:
+        introduction += 'The %s is titled "%s" and is in a workshop titled "%s".'%(item.objType, item['title'], workshop['title'])
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    textMessage = textMessage.replace('${c.sender}', user['name'])
+    textMessage = textMessage.replace('${c.workshop}', workshop['title'])
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+
+    send(recipient, fromEmail, subject, textMessage)

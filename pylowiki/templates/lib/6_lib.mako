@@ -69,7 +69,7 @@
     <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
 </%def>
 
-<%def name="emailShare(link)">
+<%def name="emailShare(itemURL, itemCode)">
     % if 'user' in session and c.authuser:
         <% 
             memberMessage = "You should check out this thing."
@@ -81,20 +81,20 @@
                 <h3 id="myModalLabel">Share This With a Friend</h3>
             </div><!-- modal-header -->
             <div class="modal-body">
-                <form ng-controller="shareController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; itemURL='${link}'; memberMessage='${memberMessage}'; recipientEmail=''; recipientName=''" id="shareEmailForm" ng-submit="shareEmail()" class="form-inline" name="shareEmailForm">
-                    Your friend's name:<br>
-                    <input type="text" name="recipientName" ng-model="recipientName"><br />
-                    Your friend's email:<br>
-                    <input type="text" name="recipientEmail" ng-model="recipientEmail"><br />
+                <form ng-controller="shareController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; itemURL='${itemURL}'; itemCode='${itemCode}'; memberMessage='${memberMessage}'; recipientEmail=''; recipientName=''; shareEmailResponse='';" id="shareEmailForm" ng-submit="shareEmail()" class="form-inline" name="shareEmailForm">
+                    Your friends name:<br>
+                    <input type="text" name="recipientName" ng-model="recipientName" required><br />
+                    Your friends email:<br>
+                    <input type="text" name="recipientEmail" ng-model="recipientEmail" required><br />
                     Add a message for your friend:<br />
                     <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
-                    <br />
+                    <div class="spacer"></div>
                     <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
                     <button type="submit" class="btn btn-warning">Send Email</button>
                     <br />
-                    <span ng-show="emailListenerShow">{{shareEmailResponse}}</span>
+                    <span ng-show="shareEmailShow">{{shareEmailResponse}}</span>
                 </form>
-                <p>Share me… ${link}</p>
+                <p>Share me… ${itemURL}</p>
             </div><!-- modal-body -->
         </div><!-- modal -->
     % endif
@@ -488,8 +488,9 @@
         else:
             if 'avatarSource' in user.keys():
                 if user['avatarSource'] == 'civ':
-                    gravatar = False
-                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                    if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                        source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                        gravatar = False
         if large and gravatar:
             source += '&s=200'
         return source
