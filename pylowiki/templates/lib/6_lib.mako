@@ -452,9 +452,6 @@
                 </li>
             % endfor
         </ul>
-        % if dropdown in args:
-          </div>
-        % endif
     % endif
     <% 
         return outOfScope
