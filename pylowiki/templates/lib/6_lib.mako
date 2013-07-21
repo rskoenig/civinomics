@@ -428,7 +428,7 @@
                             ]
     %>
     % if 'user' in session:
-      <ul class="nav nav-pills pull-left geo-breadcrumbs">
+      <ul class="nav nav-pills geo-breadcrumbs">
             % for scopeLevel in scopeMapping:
                 <%
                     activeClass = ''
@@ -479,7 +479,7 @@
                             ]
     %>
     % if 'user' in session:
-      <div class="btn-group">
+      <div class="btn-group pull-right left-space">
         <button class="btn dropdown-toggle" data-toggle="dropdown">
           Sort by Region
           <span class="caret"></span>
@@ -919,7 +919,7 @@
 
 <%def name="public_tags()">
   <% pTags = getCategoryTagCount() %>
-  <div class="btn-group">
+  <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
       Sort by Tag
       <span class="caret"></span>

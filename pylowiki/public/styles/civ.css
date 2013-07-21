@@ -953,7 +953,6 @@ ul.listeners > li {
 }
 
 .viewport div {
-  width:100%;
   height:190px;
   background-repeat:no-repeat;
   background-size:cover;
@@ -1312,7 +1311,7 @@ li.thumbnail-gallery{
 }
 
 .span5.expl-phrase{
-    min-width: 400px;
+    min-width: 450px;
     margin-bottom: 10px;
     display: block;
 }

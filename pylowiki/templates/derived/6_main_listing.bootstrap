@@ -5,13 +5,14 @@
 
 <div class="row">
    <div class="span10"> <!-- listings -->
-      <!--${c.workshopTitlebar}-->
-        <div class="row-fluid top-space">
-          <span class="span5 lead grey expl-phrase">Work with others to develop solutions</span>
-          <span class="span6 sort-buttons">
+        <div class="row-fluid top-space" style="width: 98.12%;">
+          <span class="span5 lead grey expl-phrase">Workshops: collaborate to develop proposals</span>
+          <span class="span6 sort-buttons pull-right">
+            <a class="btn btn-civ left-space pull-right" href="/workshop/display/create/form"><i class="icon-plus icon-white"></i> New Workshop</a>
             ${lib_6.geoDropdown()}
             ${lib_6.public_tags()}
-            <a class="btn btn-civ left-space" href="/workshop/display/create/form"><i class="icon-plus icon-white"></i> New Workshop</a>
+            <!-- <span class="pull-right">Displaying: ${c.workshopTitlebar}</span> -->
+            
           </span>
         </div>
         <div class="row-fluid"><!--navigation row-->
