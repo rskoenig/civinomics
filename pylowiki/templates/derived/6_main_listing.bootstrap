@@ -29,7 +29,7 @@
             % endif
         </div><!--/navigation row-->
    </div> <!-- /listings -->
-   <div class="span2 pull-right" style="margin-left: 0; padding: 10px 8px;"> <!-- Activity Stream -->
+   <div class="span2 activity pull-right" style="margin-left: 0; padding: 10px 8px;"> <!-- Activity Stream -->
         % if len(c.activity) != 0:
         <% 
            numItems = 20

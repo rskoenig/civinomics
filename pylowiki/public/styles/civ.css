@@ -38,33 +38,6 @@ html,body{
   width:18%;
 }
 
-@media (min-width: 1001px){
-  .row-fluid [class*="span"]:nth-child(3n + 1).wrap-workshop{
-     margin-left:0px;
-  }
-}
-
-@media (max-width: 1000px) and (min-width: 771px){
-  .row-fluid .span4.wrap-workshop{
-    width: 48%;
-  }
-
-  .row-fluid [class*="span"]:nth-child(2n + 1).wrap-workshop{
-   margin-left:0px;
-  }
-}
-
-@media (max-width: 770px){
-  .row-fluid .span4.wrap-workshop{
-    width: 98%;
-  }
-
-  .row-fluid [class*="span"]:nth-child(n + 1).wrap-workshop{
-   margin-left:0px;
-  }
-}
-
-
 .social-sign-in-separator {
 margin: 25px auto;
 max-width: 100%;
@@ -351,6 +324,50 @@ ul.activity > li {
 .wrap-workshop:hover{
     border: 1px solid #D15D00;
 }
+
+
+@media (min-width: 1125px){
+  .row-fluid [class*="span"]:nth-child(3n + 1).wrap-workshop{
+     margin-left:0px;
+  }
+}
+
+@media (max-width: 1124px) and (min-width: 771px){
+  .row-fluid .span4.wrap-workshop{
+    width: 48%;
+  }
+
+  .row-fluid [class*="span"]:nth-child(2n + 1).wrap-workshop{
+   margin-left:0px;
+  }
+}
+
+@media (max-width: 941px){
+  .span2.activity{
+    display: none;
+  }
+
+  .container-wide div.span10{
+  width:96%;
+}
+}
+
+@media (max-width: 770px){
+  .row-fluid [class*="span"]:nth-child(n + 1).wrap-workshop{
+    margin-left:0px;
+  }
+
+  .row-fluid .span4.wrap-workshop{
+    width: 98%;
+    min-height: 285px;
+  }
+
+  .span.workshop-listingTitle{
+    margin-top: 190px;
+    min-height: 60px;
+  }
+}
+
 .feed{
    display:inline-block;
 }
