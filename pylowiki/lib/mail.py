@@ -182,10 +182,10 @@ def sendShareMail(recipientName, recipientEmail, memberMessage, user, workshop, 
     
     introduction = ""
     itemDet = 'a'
-    if item.objtype == 'idea':
+    if item.objType == 'idea':
         itemDet = 'an'
         
-    introduction = "Hello,\n\n%s is sharing a link to %s item hosted at Civinomics:\n%s\n\n"%(itemDet, item.objtype, item,URL, user['name'])
+    introduction = "Dear %s,\n\n%s is sharing a link to %s %s item hosted at Civinomics:\n%s\n\n"%(recipientName, user['name'], itemDet, item.objType, itemURL)
     if item.objType == 'workshop':
         introduction += 'The workshop is titled "%s".'%item['title']
     else:
@@ -197,9 +197,9 @@ def sendShareMail(recipientName, recipientEmail, memberMessage, user, workshop, 
     fp.close()
     
     textMessage = textMessage.replace('${c.sender}', user['name'])
-    textMessage = textMessage.replace('${c.workshop}', workshop['title'])
-    textMessage = textMessage.replace('${c.browseLink}', browseURL)
+    textMessage = textMessage.replace('${c.intro}', introduction)
+    textMessage = textMessage.replace('${c.memberMessage}', memberMessage)
 
     fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
 
-    send(recipient, fromEmail, subject, textMessage)
+    send(recipientEmail, fromEmail, subject, textMessage)
