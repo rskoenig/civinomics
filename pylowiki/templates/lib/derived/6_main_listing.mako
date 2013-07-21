@@ -57,10 +57,10 @@
          </a><span>BOOKMARKS</span> <!-- /Num watchers -->
       </span>
       <span class="workshop-listing-info-icons"> 
-         <img class="small-bulb" data-toggle="tooltip" title="Ideas, conversations, resources, comments" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
+         <img class="small-bulb" data-toggle="tooltip" title="Ideas, conversations, resources, comments" src="/images/glyphicons_pro/glyphicons/png/glyphicons_150_edit.png">
          <a ${lib_6.workshopLink(w)}> <!-- Num inputs -->
             <strong>${len(activityLib.getActivityForWorkshop(w['urlCode']))}</strong>
-         </a><span>OBJECTS</span> <!-- /Num inputs -->
+         </a><span>POSTS</span> <!-- /Num inputs -->
       </span>
    </div>
 </%def>

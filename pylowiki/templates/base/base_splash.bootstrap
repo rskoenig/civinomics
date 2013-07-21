@@ -1,3 +1,4 @@
+<%inherit file="/base/base.bootstrap"/>
 <%namespace name="helpers" file="/lib/template_lib.mako" />
 
 <div id="wrap">

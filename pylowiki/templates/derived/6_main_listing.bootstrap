@@ -6,9 +6,9 @@
 <div class="row">
    <div class="span10"> <!-- listings -->
       <!--${c.workshopTitlebar}-->
-        <div class="row-fluid sidepanel" style="margin-bottom: 10px;">
-          <span class="lead grey">Work with others to come up with policy solutions</span>
-          <span class="left-indent">
+        <div class="row-fluid top-space">
+          <span class="span5 lead grey expl-phrase">Work with others to develop solutions</span>
+          <span class="span6 sort-buttons">
             ${lib_6.geoDropdown()}
             ${lib_6.public_tags()}
             <a class="btn btn-civ left-space" href="/workshop/display/create/form"><i class="icon-plus icon-white"></i> New Workshop</a>
@@ -29,19 +29,19 @@
             % endif
         </div><!--/navigation row-->
    </div> <!-- /listings -->
-   <div class="span2 sidepanel pull-right" style="margin-left: 0; padding-right: 8px;"> <!-- Activity Stream -->
-      % if len(c.activity) != 0:
-      <% 
-         numItems = 10
-         for i in range(len(c.activity)):
-            thisActivity = c.activity[i]
-            helpers.showActivity(thisActivity, expandable=True)
-            if i > numItems:
-               break
-      %>
-      % else:
-          <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
-      % endif
+   <div class="span2 pull-right" style="margin-left: 0; padding: 10px 8px;"> <!-- Activity Stream -->
+        % if len(c.activity) != 0:
+        <% 
+           numItems = 20
+           for i in range(len(c.activity)):
+              thisActivity = c.activity[i]
+              helpers.showActivity(thisActivity, expandable=True)
+              if i > numItems:
+                 break
+        %>
+        % else:
+            <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
+        % endif
    </div> <!-- /Activity Stream -->
 </div>
 
@@ -72,3 +72,5 @@
         });
     </script>
 </%def>
+
+

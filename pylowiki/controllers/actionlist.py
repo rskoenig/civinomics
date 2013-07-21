@@ -34,7 +34,7 @@ class ActionlistController(BaseController):
         """Valid actions: edit, revision, delete, restore, sitemap """
         c.title = c.heading = c.workshopTitlebar = 'All Workshops'
         c.list = getActiveWorkshops()
-        c.activity = getRecentActivity(10)
+        c.activity = getRecentActivity(20)
         c.scope = {'level':'earth', 'name':'all'}
         c.rssURL = "/activity/rss"
         return render('derived/6_main_listing.bootstrap')

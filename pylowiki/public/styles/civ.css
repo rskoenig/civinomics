@@ -31,12 +31,39 @@ html,body{
 }
 
 .container-wide div.span10{
-  width:80%;
+  width:78%;
 }
 
 .container-wide div.span2{
-  width:17%;
+  width:18%;
 }
+
+@media (min-width: 1001px){
+  .row-fluid [class*="span"]:nth-child(3n + 1).wrap-workshop{
+     margin-left:0px;
+  }
+}
+
+@media (max-width: 1000px) and (min-width: 771px){
+  .row-fluid .span4.wrap-workshop{
+    width: 48%;
+  }
+
+  .row-fluid [class*="span"]:nth-child(2n + 1).wrap-workshop{
+   margin-left:0px;
+  }
+}
+
+@media (max-width: 770px){
+  .row-fluid .span4.wrap-workshop{
+    width: 98%;
+  }
+
+  .row-fluid [class*="span"]:nth-child(n + 1).wrap-workshop{
+   margin-left:0px;
+  }
+}
+
 
 .social-sign-in-separator {
 margin: 25px auto;
@@ -570,9 +597,6 @@ a.name{
   color: #333333;
 }
 
-.row-fluid [class*="span"]:nth-child(3n + 1).wrap-workshop{
-   margin-left:0px;
-}
 .crop{
    width:100%; height:190px; background-repeat:no-repeat; background-size:cover; background-position:center;
 }
@@ -1006,7 +1030,7 @@ li.thumbnail-gallery{
    margin-bottom:0;
 }
 .row-fluid .span4{
-   width:30%;
+   width:31%;
 }
 
 /* Pricing Tables */
@@ -1255,6 +1279,23 @@ li.thumbnail-gallery{
   margin-left: 20px;
 }
 
-.sidepanel{
+.top-space{
   padding-top: 20px;
+}
+
+.strong{
+  font-weight: bold;
+}
+
+.span6.sort-buttons{
+    min-width: 450px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    display: block;
+}
+
+.span5.expl-phrase{
+    min-width: 400px;
+    margin-bottom: 10px;
+    display: block;
 }
