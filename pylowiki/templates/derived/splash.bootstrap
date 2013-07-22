@@ -1,4 +1,4 @@
-<%inherit file="/base/base.bootstrap"/>
+<%inherit file="/base/base_splash.bootstrap"/>
 <%namespace name="helpers" file="/lib/template_lib.mako" />
 
 <%def name="extraStyles()">
