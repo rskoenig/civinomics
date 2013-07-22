@@ -1,5 +1,5 @@
 
-function shareController($scope, $http, $location) {
+function shareController($scope, $http, $location, $timeout) {
     $scope.shareEmailShow     = false;
     
     $scope.shareEmail = function() {
@@ -8,6 +8,14 @@ function shareController($scope, $http, $location) {
         $http.post(shareURL, postData).success(function(data){
             $scope.shareEmailShow = true;
             $scope.shareEmailResponse = data;
+            $scope.recipientName = '';
+            $scope.recipientEmail = '';
+            $scope.memberMessage = 'You might be interested in this online Civinomics workshop.';
+            var t = $timeout( function() { 
+                $scope.shareEmailResponse = '';
+                $scope.shareEmailShow = false;
+            }, 8000);
+
         });
     };
 }

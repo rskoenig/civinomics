@@ -7,5 +7,7 @@ Civinomics is an online civic and community improvement space.
 Please visit the link shared by your friend, and please login
 and participate!
 
+Sincerely,
+
 The folks at Civinomics, and especially, your friend ${c.sender}
 

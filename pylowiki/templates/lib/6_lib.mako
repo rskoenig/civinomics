@@ -72,7 +72,7 @@
 <%def name="emailShare(itemURL, itemCode)">
     % if 'user' in session and c.authuser:
         <% 
-            memberMessage = "You should check out this thing."
+            memberMessage = "You might be interested in this online Civinomics workshop."
         %>
         <a href="#emailShare" role="button" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Share</a>
         <div id="emailShare" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -82,9 +82,9 @@
             </div><!-- modal-header -->
             <div class="modal-body">
                 <form ng-controller="shareController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; itemURL='${itemURL}'; itemCode='${itemCode}'; memberMessage='${memberMessage}'; recipientEmail=''; recipientName=''; shareEmailResponse='';" id="shareEmailForm" ng-submit="shareEmail()" class="form-inline" name="shareEmailForm">
-                    Your friends name:<br>
+                    Your friend's name:<br>
                     <input type="text" name="recipientName" ng-model="recipientName" required><br />
-                    Your friends email:<br>
+                    Your friend's email:<br>
                     <input type="text" name="recipientEmail" ng-model="recipientEmail" required><br />
                     Add a message for your friend:<br />
                     <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
@@ -94,7 +94,6 @@
                     <br />
                     <span ng-show="shareEmailShow">{{shareEmailResponse}}</span>
                 </form>
-                <p>Share me… ${itemURL}</p>
             </div><!-- modal-body -->
         </div><!-- modal -->
     % endif

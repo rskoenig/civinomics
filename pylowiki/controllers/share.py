@@ -50,6 +50,6 @@ class ShareController(BaseController):
         item = generic.getThing(itemCode)
         mailLib.sendShareMail(recipientName, recipientEmail, memberMessage, c.user, c.w, item, itemURL)
         
-        returnMsg =  "itemURL = " + itemURL + " itemCode = " + itemCode + " rName = " + recipientName + " rEmail = " + recipientEmail + " message = " + memberMessage
+        returnMsg =  "Email sent, thanks for sharing!"
         return returnMsg
   
