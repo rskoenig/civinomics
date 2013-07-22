@@ -1,0 +1,114 @@
+<%inherit file="/base/base_workshop.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
+
+<% 
+   self.addListing(c.listingType)
+%>
+
+<%def name="addListing(listingType)">
+   <div class="row-fluid">
+      <div class="span12">
+         <div class="section-wrapper">
+            <div class="browse">
+               % if listingType.startswith(('a', 'e', 'i', 'o', 'u')):
+                  <h3 class="section-header"> Add an ${listingType} </h3>
+               % else:
+                  <h3 class="section-header"> Add a ${listingType} </h3>
+               % endif
+               <%
+                  if listingType == 'discussion':
+                     self.addDiscussion()
+                  elif listingType == 'resource':
+                     self.addResource()
+                  elif listingType == 'idea':
+                     self.addIdea()
+               %>
+            </div><!--/.browse-->
+         </div><!--/.section-wrapper-->
+      </div><!--/.span12-->
+   </div><!--/.row-fluid-->
+</%def>
+
+<%def name="addDiscussion()">
+   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/discussion/handler" id="addDiscussion" method="post">
+      <fieldset>
+         <label>Conversation title</label>
+         <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120">
+         <span class="help-block"> (Try to keep your title informative, but concise.) </span>
+      </fieldset>
+      <hr/>
+      ${self.additionalInfo()}
+      ${self.submitButton()}
+   </form>
+</%def>
+
+<%def name="addResource()">
+   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/resource/handler" id="addResource" method="post">
+      <fieldset>
+         <label>Resource title</label>
+         <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120">
+         <span class="help-block"> (Try to keep your title informative, but concise.) </span>
+      </fieldset>
+      <hr/>
+      <fieldset>
+         <label>Resource URL</label>
+         <input type="text" class="input-block-level" name="link">
+      </fieldset>
+      <hr/>
+      ${self.additionalInfo(name="text")}
+      ${self.submitButton()}
+   </form>
+</%def>
+
+<%def name="addIdea()">
+   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/idea/handler" id="addIdea" method="post">
+      <fieldset ng-controller="GoalsCtrl">
+         <label>Idea</label>
+         <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120">
+         <span class="help-block"> (Try to have your idea address one or more of the workshop goals below) </span>
+         <label>Workshop goals</label>
+         <ul ng-cloak>
+            <li ng-repeat="goal in goals">
+               <span class="goal-title done-{{goal.done}}">{{goal.title}}</span>
+            </li>
+         </ul>
+      </fieldset>
+      ${self.additionalInfo(name="text")}
+      ${self.submitButton()}
+   </form>
+</%def>
+
+<%def name="submitButton()">
+    <fieldset>
+        <button class="btn btn-large btn-civ pull-right" type="submit" name="submit">Submit</button>
+    </fieldset>
+</%def>
+
+<%def name="additionalInfo(name='text')">
+   <fieldset>
+      <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+      <textarea name="${name}" rows="3" class="input-block-level"></textarea>
+      <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
+   </fieldset>
+</%def>
+
+<%def name="extraScripts2()">
+   <script type="text/javascript" src="/js/vendor/charCount.js"></script>
+   <script>
+      $("#title").charCount({
+         allowed:120,
+         warning:20,
+         css: 'counter green pull-right',
+         counterElement: 'strong'
+      });
+   </script>
+   <script type="text/javascript">
+      function GoalsCtrl($scope, $http) {
+         var getGoalsURL = "/workshop/${c.w['urlCode']}/${c.w['url']}/goals/get"
+         $http.get(getGoalsURL).success(function(data){
+            $scope.goals = data;
+         });
+      };
+   </script>
+</%def>
