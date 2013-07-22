@@ -46,6 +46,7 @@
             ${helpers.showScope()}
             ${helpers.whoListening()}
             ${lib_6.facebookDialogShare(c.requestUrl)}
+            ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
@@ -78,7 +79,6 @@
             });
         });
     </script>
-
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
 
 </%def>
