@@ -33,12 +33,8 @@
    <div class="span2 activity pull-right" style="margin-left: 0; padding: 10px 8px;"> <!-- Activity Stream -->
         % if len(c.activity) != 0:
         <% 
-           numItems = 20
-           for i in range(len(c.activity)):
-              thisActivity = c.activity[i]
+           for thisActivity in c.activity:
               helpers.showActivity(thisActivity, expandable=True)
-              if i > numItems:
-                 break
         %>
         % else:
             <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>

@@ -128,7 +128,7 @@ class ActionlistController(BaseController):
             items_per_page = 15, item_count = c.count
         )
 
-        c.activity = getRecentActivity(10)
+        c.activity = getRecentActivity(20)
         c.scope = {'level':'earth', 'name':'all'}
         c.rssURL = "/activity/rss"
 
