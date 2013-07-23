@@ -118,9 +118,8 @@ class ActionlistController(BaseController):
         c.list = []
         """return all the thingIDs that are tags with title id1 """
         for t in tList:
-            """get the workshop that has the """
             w = getWorkshopByCode(t['workshopCode'])
-            if w['deleted'] == '0' and w['startTime'] != '0000-00-00':
+            if w['deleted'] == '0' and w['published'] == '1' and w['public_private'] == 'public':
                 c.list.append(getWorkshopByCode(t['workshopCode']))
 
         c.count = len( c.list )

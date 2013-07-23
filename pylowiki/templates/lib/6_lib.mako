@@ -1,6 +1,5 @@
 <%!
    from pylowiki.lib.db.geoInfo import getGeoInfo
-   from pylowiki.lib.db.tag import getCategoryTagCount
 
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
@@ -8,6 +7,7 @@
    import pylowiki.lib.db.user          as userLib
    import pylowiki.lib.db.rating        as ratingLib
    import pylowiki.lib.db.mainImage     as mainImageLib
+   import pylowiki.lib.db.tag           as tagLib
    
    from hashlib import md5
    import logging, os
@@ -1002,19 +1002,16 @@
 </%def>
 
 <%def name="public_tags()">
-  <% pTags = getCategoryTagCount() %>
+  <%  categories = tagLib.getWorkshopTagCategories() %>
   <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
       Sort by Tag
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
-      % for pT in sorted(pTags.keys()):
-        % if pTags[pT] > 0:
-          <% fixedpT = pT.replace(" ", "_") %>
-          <li><a href="/searchTags/${fixedpT}/" title="Click to view workshops with this tag">${pT} (${pTags[pT]})</a></li>
-        % endif
-      % endfor
+        % for category in sorted(categories):
+            <li><a href="/searchTags/${category.replace(" ", "_")}/" title="Click to view workshops with this tag">${category.replace(" ", "_")}</a></li>
+        % endfor
     </ul> <!-- /.unstyled -->
   </div>
 </%def>
