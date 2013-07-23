@@ -1,0 +1,45 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<div id="bg">
+    <img src='/images/splash/Large_CityHall.jpg' alt="">
+</div>
+<div class="login">
+  <div class="container">
+      <div class="row">
+          <div class="span6 offset3" style="padding-top:100px;">
+              <div class="well main-well">
+                  % if c.splashMsg:
+                      <% message = c.splashMsg %>
+                      <div class="alert alert-${message['type']}">
+                          <button data-dismiss="alert" class="close">x</button>
+                          <strong>${message['title']}</strong> ${message['content']}
+                      </div>
+                  % endif
+                  <div class="login-top">
+                      <h2> Login </h2>
+                  </div>
+                  <div class="login-body">
+                      % if c.conf['read_only.value'] == 'true':
+                          <h1> Sorry, Civinomics is in read only mode right now </h1>
+                      % else:
+                          <div id="fbSigningUp">
+                            <p>Thank you, we are now signing you up using your Facebook identity.</p>
+                          </div>
+                      % endif
+                  </div>
+                  <div class="login-bottom">
+                      
+                      <text class="form-subtext"><a href="/forgotPassword" style="color: #075D00; padding-top:20px;"> Forgot password?</a></text>
+                      <text class="form-subtext pull-right"><a href="/signup" style="color: #075D00; padding-top:20px;"> Don't have a Civinomics account yet?</a></text>
+                      </label>
+                      
+                  </div>
+              </div><!-- main-well -->
+          </div><!-- sapn6 -->
+      </div><!-- row -->
+  </div><!-- container -->
+</div><!-- login -->

@@ -1,0 +1,96 @@
+<%inherit file="/base/base_splash.bootstrap"/>
+
+<%def name="extraStyles()">
+   <link href="/styles/splash.css" rel="stylesheet">
+</%def>
+
+<%def name="headScripts()">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="/js/ng/signup_login.js" type="text/javascript"></script>
+    <script src="/js/geo.js" type="text/javascript"></script>
+</%def>
+
+<div id="bg">
+    <img src='/images/splash/CA_leg.jpg' alt="">
+    <div class="span8">
+        <p class="photoCredits">iStockphoto</p>
+    </div>
+</div>
+
+<div id="fbSignUp" class="container">
+    <div class="row">
+        % if c.success:
+            <div class="span6 offset3" style="padding-top:150px;">
+                <div class="success-well">
+                    <div class="login-top">
+                        <h2>Success!</h2>
+                    <div>
+                    Check your email to finish setting up your account.
+                    If you don't see an email from us in your inbox, try checking your junk mail folder.
+                </div>
+            </div>
+        % else: 
+            <div class="span6 offset3" style="padding-top:50px;">
+                <div class="well main-well">
+                    % if c.splashMsg:
+                        <% message = c.splashMsg %>
+                        <div class="alert alert-${message['type']}">
+                            <button data-dismiss="alert" class="close">x</button>
+                            <strong>${message['title']}</strong> ${message['content']}
+                        </div>
+                    % endif
+                    <div class="login-top">
+                        <h2> Complete Facebook Sign Up </h2><br />
+                        % if float(c.numAccounts - c.numUsers)/float(c.numAccounts) <= .25:
+                            <p> ${c.numAccounts - c.numUsers}/${c.numAccounts} accounts left </p>
+                        % endif
+                    </div>
+                    % if c.conf['read_only.value'] == 'true':
+                        <h1> Sorry, Civinomics is in read only mode right now </h1>
+                    % else:
+                        <div class="login-body" style="border-bottom:none;">
+                            <form id="sign_in" action="/signup/fbSigningUp" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
+                                <input type="hidden" name="country" value="United States">
+                                <input type="hidden" name="memberType" value="professional">
+                                <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} ">
+                                    <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Postal Code: </label>
+                                    <div class="controls">
+                                        <input type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
+                                        <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid postal code!</span>
+                                        <div id="postalCodeResult"></div>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <label class="checkbox">
+                                            <input type="checkbox" name="chkTOS" id="chkTOS" ng-model="chkTOS" required>  I agree to the <a href="/corp/terms" style="color: #075D00;">Terms Of Use</a>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <button class="btn btn-success disabled" ng-show="signupForm.$invalid">Complete sign up</button>
+                                        <button type="submit" class="btn btn-success" ng-show="signupForm.$valid">Complete sign up</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    % endif
+                </div>
+            </div>
+        % endif
+    </div>
+</div>
+
+<%def name="extraScripts()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.signup-tooltip').tooltip();
+        $('.icon-question-sign').tooltip();
+    </script>
+</%def>
+
+<%def name="bodyTag_extras()">
+    ng-app
+</%def>
+
