@@ -34,7 +34,7 @@ class ActionlistController(BaseController):
         """Valid actions: edit, revision, delete, restore, sitemap """
         c.title = c.heading = c.workshopTitlebar = 'All Workshops'
         c.list = getActiveWorkshops()
-        c.activity = getRecentActivity(10)
+        c.activity = getRecentActivity(20)
         c.scope = {'level':'earth', 'name':'all'}
         c.rssURL = "/activity/rss"
         return render('derived/6_main_listing.bootstrap')
@@ -110,5 +110,28 @@ class ActionlistController(BaseController):
         response.content_type = 'application/xml'
 
         return feed.writeString('utf-8')
+
+    def searchTags( self, id1 ):
+        id1 = id1.replace("_", " ")
+        c.title = c.heading = 'Search Workshops by Tag: ' + id1
+        tList = searchTags(id1)
+        c.list = []
+        """return all the thingIDs that are tags with title id1 """
+        for t in tList:
+            w = getWorkshopByCode(t['workshopCode'])
+            if w['deleted'] == '0' and w['published'] == '1' and w['public_private'] == 'public':
+                c.list.append(getWorkshopByCode(t['workshopCode']))
+
+        c.count = len( c.list )
+        c.paginator = paginate.Page(
+            c.list, page=int(request.params.get('page', 1)),
+            items_per_page = 15, item_count = c.count
+        )
+
+        c.activity = getRecentActivity(10)
+        c.scope = {'level':'earth', 'name':'all'}
+        c.rssURL = "/activity/rss"
+
+        return render('/derived/6_main_listing.bootstrap')
 
 

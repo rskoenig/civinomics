@@ -1,12 +1,13 @@
 <%!
    from pylowiki.lib.db.geoInfo import getGeoInfo
-   
+
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
    import pylowiki.lib.db.resource      as resourceLib
    import pylowiki.lib.db.user          as userLib
    import pylowiki.lib.db.rating        as ratingLib
    import pylowiki.lib.db.mainImage     as mainImageLib
+   import pylowiki.lib.db.tag           as tagLib
    
    from hashlib import md5
    import logging, os
@@ -514,7 +515,7 @@
                             ]
     %>
     % if 'user' in session:
-        <ul class="nav nav-pills pull-left geo-breadcrumbs">
+      <ul class="nav nav-pills geo-breadcrumbs">
             % for scopeLevel in scopeMapping:
                 <%
                     activeClass = ''
@@ -542,6 +543,54 @@
     <% 
         return outOfScope
     %>
+</%def>
+
+<%def name="geoDropdown()">
+    <%
+        outOfScope = False
+        if 'user' in session:
+            county = c.authuser_geo['countyTitle']
+            city = c.authuser_geo['cityTitle']
+            if county == city:
+                county = 'County of ' + county
+                city = 'City of ' + city
+            scopeMapping = [    ('earth', 'Earth'),
+                            ('country', c.authuser_geo['countryTitle']),
+                            ('state', c.authuser_geo['stateTitle']),
+                            ('county', county),
+                            ('city', city),
+                            ('postalCode', c.authuser_geo['postalCode'])
+                            ]
+    %>
+    % if 'user' in session:
+      <div class="btn-group pull-right left-space">
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+          Sort by Region
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          % for scopeLevel in scopeMapping:
+              <%
+                  activeClass = ''
+                      
+                  if c.scope['level'] == scopeLevel[0]:
+                      if scopeLevel[0] != 'earth':
+                          scopeKey = '%sURL' % scopeLevel[0] 
+                          userScope = c.authuser_geo[scopeKey]
+                      else:
+                          userScope = 'earth'
+                      if c.scope['name'] == userScope:
+                          activeClass = 'active'
+                      else:
+                          outOfScope = True
+              %>
+              <li class="${activeClass}">
+                  <a ${self._geoWorkshopLink(c.authuser_geo, depth = scopeLevel[0]) | n}>${scopeLevel[1]}</a>
+              </li>
+            % endfor
+        </ul>
+      </div>
+    % endif
 </%def>
 
 <%def name="outOfScope()">
@@ -950,4 +999,19 @@
         modTime = os.stat(prefix + path).st_mtime
         return "%s?t=%s" %(path, modTime)
     %>
+</%def>
+
+<%def name="public_tags()">
+  <%  categories = tagLib.getWorkshopTagCategories() %>
+  <div class="btn-group pull-right left-space">
+    <button class="btn dropdown-toggle" data-toggle="dropdown">
+      Sort by Tag
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu">
+        % for category in sorted(categories):
+            <li><a href="/searchTags/${category.replace(" ", "_")}/" title="Click to view workshops with this tag">${category.replace(" ", "_")}</a></li>
+        % endfor
+    </ul> <!-- /.unstyled -->
+  </div>
 </%def>
