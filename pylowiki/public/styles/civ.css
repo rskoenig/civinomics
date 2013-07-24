@@ -439,7 +439,7 @@ ul.activity > li {
 }
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
-   background-color:#075D00;
+   background-color:#005d28;
    border-radius: 20px;
    color:white;
    padding-left:10px;
@@ -449,14 +449,14 @@ ul.activity > li {
 .nav-pills > li > a, .nav-pills > li > a:hover {
    background-color:none;
    border-radius: 20px;
-   color:#075D00;
+   color:#005D28;
    padding-left:8px;
    padding-right:8px;
 }
 
 .nav.nav-tabs.nav-stacked > li > a{
    display: block;
-   color: #0b9000;
+   color: #005D28;
    padding-right: 10px;
 }
 
@@ -465,7 +465,7 @@ ul.activity > li {
 }
 
 .nav.nav-tabs.nav-stacked > li.active > a{
-   background-color: #0b9000;
+   background-color: #005D28;
    color: #ffffff;
 }
 
