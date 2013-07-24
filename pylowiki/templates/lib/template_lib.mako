@@ -32,7 +32,7 @@
                 <div class="nav-collapse collapse">
                     <ul class="nav pull-right" id="profileAvatar">
                         <%
-                            wSelected = mSelected = pSelected = aSelected = ''
+                            wSelected = mSelected = pSelected = aSelected = hSelected = ''
                             if "/workshops" in session._environ['PATH_INFO']:
                                 wSelected = "active"
                             elif "/messages" in session._environ['PATH_INFO']:
@@ -41,6 +41,8 @@
                                 pSelected = "active"
                             elif "/admin" in session._environ['PATH_INFO']:
                                 aSelected = "active"
+                            elif "/help" in session._environ['PATH_INFO']:
+                                hSelected = "active"
                             endif
                         %>
                         % if 'user' in session:
@@ -82,7 +84,7 @@
                                 </ul>
                             </li>
                         % else:
-                            <li><a href="/help">Help</a></li>
+                            <li class="${hSelected}"><a href="/help">Help</a></li>
                             <li><a href="/login">Login</a></li>
                             <li><a href="/signup">Signup</a></li>
                         % endif
