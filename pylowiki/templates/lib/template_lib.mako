@@ -39,7 +39,7 @@
                                         if numMessages > 0:
                                             messageCount += ' %s' % numMessages
                                 %>
-                                <a href="#"><span class="badge badge-warning"><i class="icon-envelope icon-white"></i>${messageCount}</span></a>
+                                <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><span class="badge badge-warning"><i class="icon-envelope icon-white"></i>${messageCount}</span></a>
                             </li>
                         % endif
                             <li class="active">
