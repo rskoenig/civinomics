@@ -193,6 +193,7 @@ def editResource(resource, title, text, url, owner):
 # Object
 def Resource(info, type, title, owner, workshop, privs, role = None, text = None, parent = None):
     a = Thing('resource', owner.id)
+    a['type'] = type
     if type == 'url':
         if not info.startswith('http://'):
             info = u'http://' + info

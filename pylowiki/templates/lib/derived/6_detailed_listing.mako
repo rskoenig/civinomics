@@ -139,6 +139,12 @@
                                 ${itemLink | n}
                             </p>
                         % endif:
+                        % if item.objType == 'resource' and 'embed' in item:
+                            <p>
+                                <% itemLink = '<small>(<a %s>Click to View</a>)</small>' %lib_6.thingLinkRouter(item, c.w, embed=True) %>
+                                ${itemLink | n}
+                            </p>
+                        % endif:
                         <p class="no-bottom">
                             Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}
                         </p>
