@@ -4,6 +4,7 @@
     import pylowiki.lib.db.message  as messageLib
 %>
 
+!
 <%def name="mainNavbar()">
     <div class="navbar civ-navbar navbar-fixed-top" style="margin-bottom: 60px;">
         <div class="navbar-inner">
@@ -30,8 +31,20 @@
                 </ul>
                 <div class="nav-collapse collapse">
                     <ul class="nav pull-right" id="profileAvatar">
+                        <%
+                            wSelected = mSelected = pSelected = aSelected = ''
+                            if "/workshops" in session._environ['PATH_INFO']:
+                                wSelected = "active"
+                            elif "/messages" in session._environ['PATH_INFO']:
+                                mSelected = "active"
+                            elif "/profile" in session._environ['PATH_INFO']:
+                                pSelected = "active"
+                            elif "/admin" in session._environ['PATH_INFO']:
+                                aSelected = "active"
+                            endif
+                        %>
                         % if 'user' in session:
-                            <li>
+                            <li class="${mSelected}">
                                 <%
                                     messageCount = ''
                                     numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
@@ -42,12 +55,12 @@
                                 <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><span class="badge badge-warning"><i class="icon-envelope icon-white"></i>${messageCount}</span></a>
                             </li>
                         % endif
-                            <li class="active">
+                            <li class="${wSelected}">
                                 <a href="/workshops">Workshops</a>
                             </li>
                         % if 'user' in session:
                             % if userLib.isAdmin(c.authuser.id):
-                                <li class="dropdown">
+                                <li class="dropdown ${aSelected}">
                                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                                         <li><a tabindex="-1" href="/admin/users">Users</a></li>
@@ -59,12 +72,11 @@
                                     </ul>
                                 </li>
                             % endif
-                            <li class="dropdown">
+                            <li class="dropdown ${pSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                     ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                                     <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
-                                    <li><a tabindex="-1" href="#">Preferences</a></li>
                                     <li><a href="/help">Help</a></li>
                                     <li><a tabindex="-1" href="/login/logout">Logout</a></li>
                                 </ul>

@@ -511,7 +511,7 @@ ul.activity > li {
    text-shadow: none;
 }
 
-.navbar .nav > li.dropdown .dropdown-toggle .caret{
+.navbar .nav > li.dropdown .dropdown-toggle .caret, .navbar .nav > li.dropdown.opn .dropdown-toggle .caret, .navbar .nav > li.dropdown.active .dropdown-toggle .caret, .navbar .nav > li.dropdown.open.active .dropdown-toggle .caret{
   border-top-color: #ffffff;
   border-bottom-color: #ffffff;
 }
@@ -522,6 +522,7 @@ ul.activity > li {
   background-color: transparent;
   border-color: rgba(0,0,0,.4)!important;
   color: #fff!important;
+  line-height: 22px;
   box-shadow: inset 0 0 15px rgba(0,0,0,.6)!important;
   -webkit-box-shadow: inset 0 0 15px rgba(0,0,0,.6)!important;
   -moz-box-shadow: inset 0 0 15px rgba(0,0,0,.6)!important;
@@ -907,7 +908,7 @@ ul.listeners > li {
     padding-right:5px;
 }
 
-.btn-civ {
+.btn-civ, .btn-success {
    color: white;
    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
    background-color: #00aa49;
@@ -922,7 +923,7 @@ ul.listeners > li {
    background-image: -ms-linear-gradient(top, #00aa49, #007733);
 }
 
-.btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled] {
+.btn-civ:hover, .btn-civ:active, .btn-civ.active, .btn-civ.disabled, .btn-civ[disabled], .btn-success:hover, .btn-success:active, .btn-success.active, .btn-success.disabled, .btn-success[disabled] {
    color: white;
    background-color: #00c354;
    background-image:none;
