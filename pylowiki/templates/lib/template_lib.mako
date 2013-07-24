@@ -6,11 +6,7 @@
 
 <%def name="mainNavbar()">
     <div class="navbar civ-navbar navbar-fixed-top" style="margin-bottom: 60px;">
-        <div class="navbar-inner"
-            % if "corp" in session._environ['PATH_INFO']:
-                id="corpNavbar"
-            % endif
-        >
+        <div class="navbar-inner">
             <div class="container">
                 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                     <span class="icon-bar"></span>
@@ -75,8 +71,8 @@
                             </li>
                         % else:
                             <li><a href="/help">Help</a></li>
-                            <li><a href="/login">login</a></li>
-                            <li><a href="/signup">signup</a></li>
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/signup">Signup</a></li>
                         % endif
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -105,8 +101,8 @@
                <li class="nav-item"></li> 
             </ul>
             <ul class="nav pull-right">
-              <li class="nav-item"><a href="/signup" class="nav-item">Sign Up</a></li>
-              <li class="nav-item"><a href="/login" class="nav-item">Log In</a></li>
+              <li class="nav-item"><a href="/signup" class="nav-item green green-hover">Sign Up</a></li>
+              <li class="nav-item"><a href="/login" class="nav-item green green-hover">Log In</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

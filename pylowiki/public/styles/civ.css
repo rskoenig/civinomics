@@ -488,12 +488,26 @@ ul.activity > li {
 }
 
 .navbar .nav > li > a{
-   color: #ffffff;
+   color: #e6e6e6;
    text-shadow: none;
 }
 
 .navbar .nav > li > a:hover{
    color: #ffffff;
+   text-shadow: none;
+}
+
+.nav > li > a {
+   display: inline-block;
+}
+
+.navbar .nav > li > a.green{
+   color: #005d28;
+   text-shadow: none;
+}
+
+.navbar .nav > li > a.green-hover:hover{
+   color: #007733;
    text-shadow: none;
 }
 
