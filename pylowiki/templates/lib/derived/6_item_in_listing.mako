@@ -74,6 +74,7 @@
                 title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
         %>
         ${title | n}<br>
+        <div class="spacer"></div>
         ${info | n}
     </h4>
 </%def>
