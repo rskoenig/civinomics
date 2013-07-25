@@ -204,10 +204,6 @@ class LoginController(BaseController):
                 log.info("login:logUserIn externalAuthType facebook")
                 user['facebookAccessToken'] = session['fbAccessToken']
                 if 'fbSmallPic' in session:
-                    user['extSource'] = True
-                    user['facebookSource'] = True
-                    #smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
-                    # session['fbBigPic']  session['fbSmallPic']
                     user['facebookProfileSmall'] = session['fbSmallPic']
                     user['facebookProfileBig'] = session['fbBigPic']
             else:

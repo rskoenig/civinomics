@@ -78,7 +78,7 @@
         <div class="browse">
             <h4 class="section-header smaller">Add or Change Your Pictures</h4>
             <form class="form-horizontal" id="setImageSourceForm" name="setImageSourceForm">
-                % if 'facebookSource' in c.user.keys():
+                % if 'facebookAuthId' in c.user.keys():
                     <div class="control-group">
                         <label class="control-label" for="avatarType">
                             ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="facebook")}
