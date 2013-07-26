@@ -78,6 +78,21 @@
         <div class="browse">
             <h4 class="section-header smaller">Add or Change Your Pictures</h4>
             <form class="form-horizontal" id="setImageSourceForm" name="setImageSourceForm">
+                % if 'facebookAuthId' in c.user.keys():
+                    <div class="control-group">
+                        <label class="control-label" for="avatarType">
+                            ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="facebook")}
+                        </label>
+                        <div class="controls chooseAvatar">
+                            <label class="radio">
+                                <input type="radio" value="facebook" name="avatarType" id="avatarType" ng-click="uploadImage = false" ng-model="imageSource">
+                                    Use your facebook image
+                                </input>
+                            </label>
+                        </div>
+                    </div>
+                % endif
+                
                 <div class="control-group">
                     <label class="control-label" for="avatarType">
                         ${lib_6.userImage(c.user, className="avatar avatar-small", forceSource="gravatar")}

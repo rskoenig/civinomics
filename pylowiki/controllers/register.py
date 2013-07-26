@@ -306,8 +306,7 @@ class RegisterController(BaseController):
                     # we should keep track of this, it'll be handy
                     user['fbEmail'] = email
                     if 'fbSmallPic' in session:
-                        user['extSource'] = True
-                        user['facebookSource'] = True
+                        user['avatarSource'] = 'facebook'
                         user['facebookProfileSmall'] = session['fbSmallPic']
                         user['facebookProfileBig'] = session['fbBigPic']
                     
@@ -346,8 +345,7 @@ class RegisterController(BaseController):
                     # we should keep track of this, it'll be handy
                     user['fbEmail'] = email
                     if 'fbSmallPic' in session:
-                        user['extSource'] = True
-                        user['facebookSource'] = True
+                        user['avatarSource'] = 'facebook'
                         user['facebookProfileSmall'] = session['fbSmallPic']
                         user['facebookProfileBig'] = session['fbBigPic']
                     #user['facebookProfileBig'] = session['fbBigPic']
