@@ -139,6 +139,10 @@ class LoginController(BaseController):
                 user['facebookAuthId'] = facebookAuthId
             else:
                 log.info('found by fb id')
+            # we have an active account. because of an earlier design flaw we need to 
+            # set avatarSource if it hasn't been added to this user object yet
+            if 'avatarSource' not in user.keys():
+                user['avatarSource'] = 'facebook'
             user['facebookAccessToken'] = accessToken
             user['externalAuthType'] = 'facebook'
             # a user's account email can be different from the email on their facebook account.
@@ -151,7 +155,10 @@ class LoginController(BaseController):
             user = userLib.getUserByFacebookAuthId( unicode(facebookAuthId) )
             if user:
                 log.info('found by user id %s'%user['email'])
-                # we have an active account. set their profile pic to be based on facebook's
+                # we have an active account. because of an earlier design flaw we need to 
+                # set avatarSource if it hasn't been added to this user object yet
+                if 'avatarSource' not in user.keys():
+                    user['avatarSource'] = 'facebook'
                 user['facebookAccessToken'] = accessToken
                 user['externalAuthType'] = 'facebook'
                 # a user's account email can be different from the email on their facebook account.
@@ -197,10 +204,6 @@ class LoginController(BaseController):
                 log.info("login:logUserIn externalAuthType facebook")
                 user['facebookAccessToken'] = session['fbAccessToken']
                 if 'fbSmallPic' in session:
-                    user['extSource'] = True
-                    user['facebookSource'] = True
-                    #smallPic = facebookLib.saveFacebookImage(session['fbSmallPic'])
-                    # session['fbBigPic']  session['fbSmallPic']
                     user['facebookProfileSmall'] = session['fbSmallPic']
                     user['facebookProfileBig'] = session['fbBigPic']
             else:
