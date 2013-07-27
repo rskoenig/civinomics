@@ -51,25 +51,27 @@
 <%def name="showItemTitle(thing)">
     <h4>
         <% 
-            link = ''
             title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
             if thing.objType == 'resource':
-                if 'type' in thing:
-                    if thing['type'] == 'url':
-                        info = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['link'], 75))
-                    elif thing['type'] == 'embed':
-                        info = thing['embed']
-                    elif thing['type'] == 'image':
-                        info = "image location here"
-                    else:
-                        info = ""
+                if thing['type'] == 'url':
+                    info = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['info'], 75))
+                elif thing['type'] == 'embed':
+                    info = thing['info']
+                elif thing['type'] == 'slideshow':
+                    info = "slideshow urlCode"
                 else:
-                    info = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['link'], 75))
+                    info = ""
             elif thing.objType == 'revision':
+                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
                 if thing['objType'] == 'resource':
-                    title = '<a href="%s" class="listed-item-title" target="_blank">%s</a>' %(thing['link'], thing['title'])
-                else:
-                    title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+                    if thing['type'] == 'url':
+                        info = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['info'], 75))
+                    elif thing['type'] == 'embed':
+                        info = thing['info']
+                    elif thing['type'] == 'slideshow':
+                        info = "slideshow urlCode"
+                    else:
+                        info = "" 
             else:
                 title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
         %>

@@ -176,11 +176,11 @@ class AdminController(BaseController):
                 alert['content'] = 'Failed to edit discussion.'
         elif c.thing.objType == 'resource':
             title = request.params['title']
-            link = request.params['link']
+            info = request.params['info']
             text = request.params['text']
             if title.strip() == '':
                 title = blankText
-            if resourceLib.editResource(c.thing, title, text, link, c.authuser):
+            if resourceLib.editResource(c.thing, type, title, text, info, c.authuser):
                 alert = {'type':'success'}
                 alert['title'] = 'Resource edit.'
                 alert['content'] = 'Resource edit successful.'

@@ -71,9 +71,9 @@
                                     <div class="span9 list-item-text" id="content_${itemCounter}">
                                         <% itemTitle = '<h5 class="no-bottom"><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                                         ${itemTitle | n}
-                                        % if item.objType == 'resource' and 'link' in item:
+                                        % if item.objType == 'resource' and item['type'] == 'url':
                                             <p>
-                                            <% itemLink = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 75)) %>
+                                            <% itemLink = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['info'], 75)) %>
                                             ${itemLink | n}
                                             </p>
                                         % endif
@@ -129,13 +129,13 @@
                                 <small><i class="icon-star"></i> This idea adopted!</small>
                             % endif
                         % endif
-                        % if item.objType == 'resource' and 'link' in item:
+                        % if item.objType == 'resource' and item['type'] == 'url':
                             <p>
-                                <% itemLink = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
+                                <% itemLink = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['info'], 60)) %>
                                 ${itemLink | n}
                             </p>
                         % endif:
-                        % if item.objType == 'resource' and 'embed' in item:
+                        % if item.objType == 'resource' and item['type'] == 'embed':
                             <p>
                                 <% itemLink = '<small>(<a %s>Click to View</a>)</small>' %lib_6.thingLinkRouter(item, c.w, embed=True) %>
                                 ${itemLink | n}

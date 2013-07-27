@@ -172,19 +172,17 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
         return False
 
 # setters
-def editResource(resource, title, text, url, owner):
+def editResource(resource, type, title, text, info, owner):
     try:
         revisionLib.Revision(owner, resource)
         resource['title'] = title
         resource['text'] = text
-        if not url.startswith('http://'):
-            url = u'http://' + url
-        resource['link'] = url
+        if type == 'url':
+            if not info.startswith('http://'):
+                info = u'http://' + info
+        resource['info'] = info
         resource['url'] = urlify(title)
-        tldResults = extract(url)
-        resource['tld'] = tldResults.tld
-        resource['domain'] = tldResults.domain
-        resource['subdomain'] = tldResults.subdomain
+        commit(resource)
         return True
     except:
         log.error('ERROR: unable to edit resource')
