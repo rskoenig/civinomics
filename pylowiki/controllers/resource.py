@@ -118,10 +118,12 @@ class ResourceController(BaseController):
             if resourceLib.getResourceByLink(request.params['link'], c.w):
                 return redirect(session['return_to']) # Link already submitted
             resourceInfo = request.params['link']
-        if resourceType == 'embed':
+        elif resourceType == 'embed':
             resourceInfo = request.params['embed']
             if not resourceInfo.startswith("<iframe") or not resourceInfo.endswith("</iframe>"):
                 return redirect(session['return_to'])
+        else:
+            return redirect(session['return_to'])
         text = ''
         if 'text' in request.params:
             text = request.params['text'] # Optional

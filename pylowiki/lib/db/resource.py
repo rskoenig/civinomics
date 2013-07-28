@@ -195,15 +195,7 @@ def Resource(info, type, title, owner, workshop, privs, role = None, text = None
     if type == 'url':
         if not info.startswith('http://'):
             info = u'http://' + info
-        a['link'] = info
-        tldResults = extract(info)
-        a['tld'] = tldResults.tld
-        a['domain'] = tldResults.domain
-        a['subdomain'] = tldResults.subdomain
-    if type == 'embed':
-        a['embed'] = info
-    if type == 'image':
-        a['pictureHash'] = info
+    a['info'] = info
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:
