@@ -163,7 +163,7 @@ class WorkshopController(BaseController):
         session.save()
 
         slideshow = slideshowLib.getSlideshow(c.w)
-        c.slideshow = slideshowLib.getAllSlides(slideshow.id)
+        c.slideshow = slideshowLib.getAllSlides(slideshow)
 
         werror = 0
         wchanges = 0

@@ -164,7 +164,7 @@
         <ul>
             <li>Click and drag to rearrange images</li>
             <li>Add captions</li>
-            <li>Store unused images under Unpublished Slides</li>
+            <li>Drag images to Trash to delete</li>
         </ul>
         <div class="demo">
             <div class="column" id="published">
@@ -187,7 +187,7 @@
                 % endfor
             </div><!-- column -->
             <div class="column" id="unpublished">
-                <h4 class="unsortable centered">Unpublished slides</h4>
+                <h4 class="unsortable centered">Trash</h4>
                 % for slide in c.slideshow:
                     % if int(slide['deleted']) == 1:
                         <div class="portlet" id = "portlet_${slide.id}">

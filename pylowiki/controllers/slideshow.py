@@ -14,6 +14,7 @@ from pylowiki.lib.db.slideshow import Slideshow, getSlideshow, getAllSlides
 import pylowiki.lib.db.slideshow        as slideshowLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 from pylowiki.lib.db.imageIdentifier import getImageIdentifier
+import pylowiki.lib.db.generic        as genericLib
 
 from pylowiki.lib.images import saveImage, resizeImage, numImagesInDirectory
 
@@ -25,16 +26,18 @@ import os
 
 class SlideshowController(BaseController):
 
-    def __before__(self, action, workshopCode = None):
+    def __before__(self, action, parentCode = None):
         if action in ['addImageHandler', 'edit', 'editPosition']:
-            if workshopCode is None:
+            if parentCode is None:
                 abort(404)
+            parent = genericLib.getThing(parentCode)g
             c.w = workshopLib.getWorkshopByCode(workshopCode)
             workshopLib.setWorkshopPrivs(c.w)
             if not c.w:
                 abort(404)
             if not (c.privs['admin'] or c.privs['facilitator']):
                 abort(404)
+                
             c.slideshow = getSlideshow(c.w)
             if not c.slideshow:
                 abort(404)

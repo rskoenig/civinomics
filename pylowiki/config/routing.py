@@ -132,9 +132,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/goals/{goalCode}/delete{end:/?}', controller = 'goals', action = 'delete')
 
     # Workshop slideshow
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/slide/edit', controller = 'slideshow', action = 'edit')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/slide/edit/position', controller = 'slideshow', action = 'editPosition')
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/addImages/{handler:handler/?}', controller = 'slideshow', action = 'addImageHandler')
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/slide/edit', controller = 'slideshow', action = 'edit')
+    map.connect('/{workshop:workshops?}/{parentCode}/{parentURL}/slide/edit/position', controller = 'slideshow', action = 'editPosition')
 
     # Account handler routines
     map.connect('/workshop/{workshopCode}/{workshopURL}/manage/{account:account/?}', controller = 'account', action = 'manageAccount', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
