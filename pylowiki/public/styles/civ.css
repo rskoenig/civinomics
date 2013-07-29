@@ -1315,3 +1315,14 @@ li.thumbnail-gallery{
     margin-bottom: 10px;
     display: block;
 }
+
+.more{
+  font-style: italic;
+  font-size: 12px;
+}
+
+
+.goals-preview{
+  margin-left: 20px;
+  padding-right: 10px;
+}

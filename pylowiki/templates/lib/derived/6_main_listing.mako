@@ -19,19 +19,26 @@
             % if not goals:
                This workshop has no goals!
             % else:
-               <div class="left-indent">
+               <div class="goals-preview">
                   Goals:
                   <br>
-                  <br>
                   <ul>
+                  <% count = 0 %>
                   % for goal in goals:
-                     % if goal['status'] == u'100':
-                        <li class="done-true">${goal['title']}</li>
-                     % else:
-                        <li>${goal['title']}</li>
+                     % if count <= 2:
+                        % if goal['status'] == u'100':
+                           <li class="done-true">${goal['title']}</li>
+                        % else:
+                           <li>${goal['title']}</li>
+                        % endif
+                        <% count += 1%>
                      % endif
                   % endfor
                   </ul>
+                  % if len(goals) > 3:
+                     <% moreGoals = len(goals) - 3 %>
+                     <p class="centered more">${moreGoals} more</p>
+                  % endif
                </div>
             % endif
          </span>
