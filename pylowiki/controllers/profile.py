@@ -160,6 +160,9 @@ class ProfileController(BaseController):
                         c.comments.append(c.rawActivity['items'][itemCode])
 
         return render("/derived/6_profile.bootstrap")
+
+    def showUserMessages(self, id1, id2, id3 = ''):
+        return render("/derived/6_messages.bootstrap")
     
     def showUserResources(self, id1, id2):
         # Called when visiting /profile/urlCode/url

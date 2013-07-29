@@ -183,10 +183,6 @@
 
 <%def name="profileMessages()">
     <table class="table table-condensed table-hover">
-        <thead>
-            <th>Sender</th>
-            <th>Message</th>
-        </thead>
         % for message in c.messages:
             <%
                 rowClass = ''
@@ -206,7 +202,6 @@
                         <p>Civinomics</p>
                     % else:
                         ${lib_6.userImage(sender, className="avatar")}
-                        <p>${lib_6.userLink(sender)}</p>
                     % endif
                 </td>
                 <td class="message-content"> 
@@ -236,7 +231,7 @@
                                 <div class="media">
                                     ${lib_6.workshopImage(workshop, linkClass="pull-left message-workshop-image")}
                                     <div class="media-body">
-                                        <h4 class="media-heading centered">${message['title']}</h4>
+                                        <h5 class="media-heading">${message['title']}</h5>
                                         <p>${lib_6.userLink(sender)} invites you to facilitate <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a></p>
                                         <p>${message['text']}</p>
                                         <p>(You have already responded by ${responseAction})</p>
@@ -251,10 +246,10 @@
                                     <div class="media">
                                         ${lib_6.workshopImage(workshop, linkClass="pull-left")}
                                         <div class="media-body">
-                                            <h4 class="media-heading centered">${message['title']}</h4>
+                                            <h5 class="media-heading">${message['title']}</h5>
                                             <p>${lib_6.userLink(sender)} invites you to ${action} <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a></p>
                                             <p>${message['text']}</p>
-                                            <button type="submit" name="acceptInvite" class="btn btn-mini btn-success" title="Accept the invitation to ${action} the workshop">Accept</button>
+                                            <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to ${action} the workshop">Accept</button>
                                             <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to ${action} the workshop">Decline</button>
                                             <p class="pull-right"><small>${message.date} (PST)</small></p>
                                         </div>
@@ -265,7 +260,7 @@
                             <% workshop = workshopLib.getWorkshopByCode(message['workshopCode']) %>
                             <div class="media">
                                 <div class="media-body">
-                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <h5 class="media-heading">${message['title']}</h5>
                                     Member ${lib_6.userLink(sender)} has a listener suggestion for workshop <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a>:<br />
                                     <p>${message['text']}</p>
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
@@ -278,7 +273,7 @@
                             %>
                             <div class="media">
                                 <div class="media-body">
-                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <h5 class="media-heading">${lib_6.userLink(sender)} ${message['title']}</h5>
                                     <p><a ${lib_6.thingLinkRouter(comment, workshop, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">${comment['data']}</a></p>
                                     <p>${message['text']}</p>
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>

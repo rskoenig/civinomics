@@ -19,7 +19,6 @@
                             ${helpers.followButton(c.user)}
                             % endif
                             <li class="pull-right"><a href="#tab-edit" data-toggle="tab">Edit Profile</a></li>
-                            <li class="pull-right"><a href="#tab-messages" data-toggle="tab">Messages (${c.unreadMessageCount})</a></li>
                         % else:
                             ${helpers.followButton(c.user)}
                         % endif
@@ -50,9 +49,6 @@
                     </div>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
-                            <div class="tab-pane" id="tab-messages">
-                                ${helpersEdit.profileMessages()}
-                            </div>
                             <div class="tab-pane" id="tab-edit">
                                 ${helpers.editProfile()}
                             </div>

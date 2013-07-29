@@ -48,7 +48,7 @@ div.hidden{
     display:block;
     position: absolute;
     width: 100%;
-    margin-top:5px;
+    margin-top:-5px;
     background-size:cover;
 }
 

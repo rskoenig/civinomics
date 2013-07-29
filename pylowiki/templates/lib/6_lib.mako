@@ -453,7 +453,11 @@
       
       imgStr += '></a>'
    %>
-   ${imgStr | n}
+   % if 'noLink' in kwargs:
+      <img src="${_userImageSource(user, **kwargs)}" class="${kwargs['className']}" alt="${title}" title="${title}">
+   % else:
+    ${imgStr | n}
+   % endif
 </%def>
 
 <%def name="_userImageSource(user, **kwargs)">
