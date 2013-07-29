@@ -1,6 +1,5 @@
 <%!
    from pylowiki.lib.db.geoInfo import getGeoInfo
-   from pylowiki.lib.db.tag import getCategoryTagCount
 
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
@@ -8,11 +7,98 @@
    import pylowiki.lib.db.user          as userLib
    import pylowiki.lib.db.rating        as ratingLib
    import pylowiki.lib.db.mainImage     as mainImageLib
+   import pylowiki.lib.db.tag           as tagLib
    
    from hashlib import md5
    import logging, os
    log = logging.getLogger(__name__)
 %>
+
+<%def name="facebookDialogShare(link)">
+    <%
+        # NOTE - link should probably be created by the function in this file, thingLinkRouter.
+        # However, I need to do some homework on how to strip the href=" " out, and place an
+        # http://www.civinomics.com in.
+        facebookAppId = c.facebookAppId
+        channelUrl = c.channelUrl
+    %>
+    <div id="fb-root"></div>
+    <script src="/js/extauth.js" type="text/javascript"></script>
+    <script>
+        console.log('before window init');
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : "${facebookAppId}", // App ID
+                channelUrl : "${channelUrl}", // Channel File
+                status     : true, // check login status
+                cookie     : false, // enable cookies to allow the server to access the session
+                xfbml      : true  // parse XFBML
+            });
+            console.log('after window init');
+            FB.Event.subscribe('auth.authResponseChange', function(response) {
+              // Here we specify what we do with the response anytime this event occurs.
+              console.log('above response tree');
+              if (response.status === 'connected') {
+                console.log('calling fb connected');
+                //shareOnWall(response.authResponse);
+              } else if (response.status === 'not_authorized') {
+                console.log('not authd');                
+                //FB.login();
+              } else {
+                console.log('else');
+                //FB.login();
+              }
+            });
+        };
+        
+        // Load the SDK asynchronously
+        (function(d){
+            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement('script'); js.id = id; js.async = true;
+            js.src = "//connect.facebook.net/en_US/all.js";
+            ref.parentNode.insertBefore(js, ref);
+        }(document));
+
+        function shareOnWall(authResponse) {
+            FB.ui({
+                method: "stream.share",
+                u: ""
+            });
+        }
+    </script>
+    <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+</%def>
+
+<%def name="emailShare(itemURL, itemCode)">
+    % if 'user' in session and c.authuser:
+        <% 
+            memberMessage = "You might be interested in this online Civinomics workshop."
+        %>
+        <a href="#emailShare" role="button" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Share</a>
+        <div id="emailShare" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Share This With a Friend</h3>
+            </div><!-- modal-header -->
+            <div class="modal-body">
+                <form ng-controller="shareController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; itemURL='${itemURL}'; itemCode='${itemCode}'; memberMessage='${memberMessage}'; recipientEmail=''; recipientName=''; shareEmailResponse='';" id="shareEmailForm" ng-submit="shareEmail()" class="form-inline" name="shareEmailForm">
+                    Your friend's name:<br>
+                    <input type="text" name="recipientName" ng-model="recipientName" required><br />
+                    Your friend's email:<br>
+                    <input type="text" name="recipientEmail" ng-model="recipientEmail" required><br />
+                    Add a message for your friend:<br />
+                    <textarea rows="6" class="field span12" ng-model="memberMessage" name="memberMessage">{{memberMessage}}</textarea>
+                    <div class="spacer"></div>
+                    <button class="btn btn-warning" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button type="submit" class="btn btn-warning">Send Email</button>
+                    <br />
+                    <span ng-show="shareEmailShow">{{shareEmailResponse}}</span>
+                </form>
+            </div><!-- modal-body -->
+        </div><!-- modal -->
+    % endif
+</%def>
 
 <%def name="validateSession()">
    <%
@@ -390,20 +476,36 @@
                     source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
                 else:
                     source = '/images/hamilton.png'
-        elif 'extSource' in user.keys():
-            if 'facebookSource' in user.keys():
-                if user['facebookSource'] == u'1':
+            elif kwargs['forceSource'] == 'facebook':
+                if large:
+                    source = user['facebookProfileBig']
+                else:
+                    source = user['facebookProfileSmall']
+
+        else:
+            if 'avatarSource' in user.keys():
+                if user['avatarSource'] == 'civ':
+                    if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
+                        source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+                        gravatar = False
+                elif user['avatarSource'] == 'facebook':
                     gravatar = False
-                    # NOTE - when to provide large or small link?
                     if large:
                         source = user['facebookProfileBig']
                     else:
                         source = user['facebookProfileSmall']
-        else:
-            if 'avatarSource' in user.keys():
-                if user['avatarSource'] == 'civ':
-                    gravatar = False
-                    source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
+            elif 'extSource' in user.keys():
+                # this is needed untl we're sure all facebook connected users have properly 
+                # functioning profile pics - the logic here is now handled 
+                # with the above user['avatarSource'] == 'facebook': ..
+                if 'facebookSource' in user.keys():
+                    if user['facebookSource'] == u'1':
+                        gravatar = False
+                        # NOTE - when to provide large or small link?
+                        if large:
+                            source = user['facebookProfileBig']
+                        else:
+                            source = user['facebookProfileSmall']
         if large and gravatar:
             source += '&s=200'
         return source
@@ -915,19 +1017,16 @@
 </%def>
 
 <%def name="public_tags()">
-  <% pTags = getCategoryTagCount() %>
+  <%  categories = tagLib.getWorkshopTagCategories() %>
   <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
       Sort by Tag
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
-      % for pT in sorted(pTags.keys()):
-        % if pTags[pT] > 0:
-          <% fixedpT = pT.replace(" ", "_") %>
-          <li><a href="/searchTags/${fixedpT}/" title="Click to view workshops with this tag">${pT} (${pTags[pT]})</a></li>
-        % endif
-      % endfor
+        % for category in sorted(categories):
+            <li><a href="/searchTags/${category.replace(" ", "_")}/" title="Click to view workshops with this tag">${category.replace(" ", "_")}</a></li>
+        % endfor
     </ul> <!-- /.unstyled -->
   </div>
 </%def>

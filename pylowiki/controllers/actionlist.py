@@ -118,9 +118,8 @@ class ActionlistController(BaseController):
         c.list = []
         """return all the thingIDs that are tags with title id1 """
         for t in tList:
-            """get the workshop that has the """
             w = getWorkshopByCode(t['workshopCode'])
-            if w['deleted'] == '0' and w['startTime'] != '0000-00-00':
+            if w['deleted'] == '0' and w['published'] == '1' and w['public_private'] == 'public':
                 c.list.append(getWorkshopByCode(t['workshopCode']))
 
         c.count = len( c.list )
@@ -129,7 +128,7 @@ class ActionlistController(BaseController):
             items_per_page = 15, item_count = c.count
         )
 
-        c.activity = getRecentActivity(10)
+        c.activity = getRecentActivity(20)
         c.scope = {'level':'earth', 'name':'all'}
         c.rssURL = "/activity/rss"
 

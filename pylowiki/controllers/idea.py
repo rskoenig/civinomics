@@ -1,6 +1,6 @@
 import logging
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
@@ -84,6 +84,11 @@ class IdeaController(BaseController):
         return redirect(utils.thingURL(c.w, newIdea))
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.requestUrl = request.url
+
         c.thing = ideaLib.getIdea(ideaCode)
         if not c.thing:
             c.thing = revisionLib.getRevisionByCode(ideaCode)

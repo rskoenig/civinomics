@@ -52,7 +52,7 @@ def getThingByID(thingID):
     except:
         return False
         
-# mostly for linking listeners to users
+# mostly for linking listeners and pmembers to users
 def getThingsByEmail(email):
     try:
         q = meta.Session.query(Thing)\

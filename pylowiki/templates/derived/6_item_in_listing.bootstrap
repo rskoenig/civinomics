@@ -27,13 +27,14 @@
                 </div>
             % endif
             <div class="row-fluid">
-                <div class="span1">
+                 <div class="span1">
                     ${lib_6.upDownVote(c.thing)}
                 </div>
                 <div class="span11">
                     ${helpers.showItemTitle(c.thing)}
                 </div>
             </div><!--/.row-fluid-->
+            <div class="spacer"></div>
             <%
                 if c.thing['disabled'] == '1':
                     helpers.showDisabledMessage(c.thing)
@@ -48,13 +49,11 @@
                     </div>
                 </div>
                 <div class="row-fluid">
-                    <div class="span11 offset1">   
-                        ${helpers.moderationPanel(c.thing)}                    
+                    <div class="span11 offset1">
+                        ${lib_6.facebookDialogShare(c.requestUrl)} ${lib_6.emailShare(c.requestUrl, c.thing['urlCode'])} ${helpers.moderationPanel(c.thing)}
                         ${lib_6.revisionHistory(c.revisions, c.thing)}
                     </div>
                 </div>
-                
-            
             % if c.thing.objType != 'revision':
             <div class="row-fluid">
                 <div class="span12">

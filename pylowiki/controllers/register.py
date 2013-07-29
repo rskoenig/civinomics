@@ -30,6 +30,9 @@ class RegisterController(BaseController):
             h.check_if_login_required()
 
     def signupDisplay(self):
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+
         c.numAccounts = 1000
         c.numUsers = len(getActiveUsers())
         if 'splashMsg' in session:
@@ -55,7 +58,39 @@ class RegisterController(BaseController):
             
         return render("/derived/signup.bootstrap")
 
+    def signupNoExtAuthDisplay(self):
+
+        # todo - clear splash message if this came from /fbSignUp
+
+        c.numAccounts = 1000
+        c.numUsers = len(getActiveUsers())
+        if 'splashMsg' in session:
+            c.splashMsg = session['splashMsg']
+            session.pop('splashMsg')
+            session.save()
+        if 'registerSuccess' in session:
+            c.success = session['registerSuccess']
+            session.pop('registerSuccess')
+            session.save()
+        if 'guestCode' in session and 'workshopCode' in session:
+                c.w = getWorkshopByCode(session['workshopCode'])
+                if c.w:
+                    setWorkshopPrivs(c.w)
+                    c.mainImage = mainImageLib.getMainImage(c.w)
+                    c.title = c.w['title']
+                    c.listingType = False
+                    return render('/derived/6_guest_signup.bootstrap')
+                else:
+                    session.pop('guestCode')
+                    session.pop('workshopCode')
+                    session.save()
+            
+        return render("/derived/signupNoExtAuth.bootstrap")
+
     def fbNewAccount( self ):
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
@@ -242,7 +277,7 @@ class RegisterController(BaseController):
                 pool, size = letters + digits, 11
                 hash =  ''.join([choice(pool) for i in range(size)])
                 password = hash.lower()
-                u = User(email, name, password, country, memberType, postalCode, facebookSignup=True)
+                u = User(email, name, password, country, memberType, postalCode, externalAuthSignup=True)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True
                 session['registerSuccess'] = True
@@ -271,8 +306,7 @@ class RegisterController(BaseController):
                     # we should keep track of this, it'll be handy
                     user['fbEmail'] = email
                     if 'fbSmallPic' in session:
-                        user['extSource'] = True
-                        user['facebookSource'] = True
+                        user['avatarSource'] = 'facebook'
                         user['facebookProfileSmall'] = session['fbSmallPic']
                         user['facebookProfileBig'] = session['fbBigPic']
                     
@@ -311,8 +345,7 @@ class RegisterController(BaseController):
                     # we should keep track of this, it'll be handy
                     user['fbEmail'] = email
                     if 'fbSmallPic' in session:
-                        user['extSource'] = True
-                        user['facebookSource'] = True
+                        user['avatarSource'] = 'facebook'
                         user['facebookProfileSmall'] = session['fbSmallPic']
                         user['facebookProfileBig'] = session['fbBigPic']
                     #user['facebookProfileBig'] = session['fbBigPic']

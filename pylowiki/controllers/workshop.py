@@ -847,6 +847,11 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.requestUrl = request.url
+        
         c.title = c.w['title']
 
         c.isFollowing = False

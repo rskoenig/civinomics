@@ -39,15 +39,17 @@
    ${self.extraScripts()}
    ${self.extraScripts2()}
    ${self.atlassian_issueCollector()}
-   <div id="fb-root"></div>
    % if 'user' not in session:
+       <%
+           facebookAppId = c.facebookAppId
+           channelUrl = c.channelUrl
+       %>
+       <div id="fb-root"></div>
        <script>
-       //$('#fbLogin').on('click', function (e) {
-
          window.fbAsyncInit = function() {
             FB.init({
-              appId      : '133971610029022', // App ID
-              channelUrl : '//todd.civinomics.org/cross/channel.html', // Channel File
+              appId      : "${facebookAppId}",
+              channelUrl : "${channelUrl}", // Channel File
               status     : true, // check login status
               cookie     : false, // enable cookies to allow the server to access the session
               xfbml      : true  // parse XFBML
@@ -131,7 +133,9 @@
          function authSignal() {
            console.log('in auth signal')
            var authSignal = '<div id="authSignal"></div>'
-           $('#fbLoginButton').append(authSignal);
+           $('#fbLoginButton1').append(authSignal);
+           $('#fbLoginButton2').append(authSignal);
+           console.log('should have added this: '+authSignal)
          }
 
          function fbConnected(authResponse) {
@@ -161,6 +165,7 @@
                // page that will log this user in.
                result = fbCheckAccount(response, authResponse, smallPic, bigPic);
                if (result == "not found") {
+                 console.log('no account on site yet')
                  // no account on site yet.
                  // this is a unique situation where the person has authorized us to use their
                  // fb identity, but hasn't created an account yet. This assumes that's what they
@@ -171,17 +176,17 @@
                    window.location = '/signup/fbSignUp/';
                  }
                } else {
+                 console.log('account found')
                  if ($('#authSignal').length) {
+                   console.log('auth signal heard')
                    // this triggers when a person has arrived but was not yet logged inot facebook or
                    // had not yet given auth to our app
-                   var newLiButton = '<li class="nav-item">Logging In</li>';
                    var newButton = 'Logging In'
-                   $('#fbLoginButton').html(newLiButton);
                    $('#fbLoginButton1').html(newButton);
                    $('#fbLoginButton2').html(newButton);
                    window.location = '/fbLoggingIn/';
-                 }
-                 else if ($('#fbLoggingIn').length) {
+                 
+                 } else if ($('#fbLoggingIn').length) {
                    // this element is only found on a page meant to be used as a redirect when
                    // the 'login with facebook' link has been clicked.
                    window.location = '/fbLoggingIn/';
@@ -189,9 +194,7 @@
                    // this code is used when a person arrives and it is seen that they have 
                    // auth'd our app and are logged into facebook 
                    // replace current button with returned result
-                   var newLiButton = '<li class="nav-item"><a href="/fbLogin"><img src="/images/fb_signin.png"></a></li>';
                    var newButton = '<a href="/fbLogin"><img src="/images/fb_signin.png"></a>'
-                   $('#fbLoginButton').html(newLiButton);
                    $('#fbLoginButton1').html(newButton);
                    $('#fbLoginButton2').html(newButton);
                  }
@@ -199,7 +202,6 @@
              },1000);
            });
          }
-       //})
        </script>
    % endif  ## if 'user' in session
    </body>

@@ -30,6 +30,17 @@ def getWorkshops( deleted = '0'):
     except:
         return False
         
+def getPublicWorkshopCodes( deleted = '0'):
+    publicList = {}
+    try:
+        pWorkshops = meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('public_private', 'public'))).filter(Thing.data.any(wc('deleted', deleted))).all()
+        for p in pWorkshops:
+            pCode = p['urlCode']
+            publicList[pCode] = 1
+        return publicList
+    except:
+        return False
+        
 def getDemoWorkshops():
     try:
         return meta.Session.query(Thing).filter_by(objType = 'workshop').filter(Thing.data.any(wc('demo', '1'))).all()

@@ -207,6 +207,9 @@ def make_map():
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/{userCode}/list/{handler:handler/?}', controller = 'listener', action = 'listenerListHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/listener/title/{handler:handler/?}', controller = 'listener', action = 'listenerTitleHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}')
 
+    # Share management
+    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/share/{userCode}/email/{handler:handler/?}', controller = 'share', action = 'shareEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
+    
     # Comment notifications
     map.connect('/profile/preferences/{id1}/{id2}/comments/{handler:handler/?}', controller = 'profile', action = 'preferencesCommentsHandler', id1 = '{id1}', id2 = '{id2}')
     
@@ -284,22 +287,25 @@ def make_map():
     
     # Login and signup
     map.connect('/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
+    map.connect('/loginNoExtAuth{end:/?}', controller = 'login', action = 'loginNoExtAuthDisplay', workshopCode = 'None', workshopURL = 'None', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login/{thing}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/clogin/{thing}/{thingCode}/{thingURL}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = '{thingCode}', thingURL = '{thingURL}')
     map.connect('/{loginHandler:loginHandler/?}', controller = 'login', action = 'loginHandler')
     map.connect('/{signup:signup/?}', controller = 'register', action = 'signupDisplay')
+    map.connect('/{signupNoExtAuth:signupNoExtAuth/?}', controller = 'register', action = 'signupNoExtAuthDisplay')
     map.connect('/signup/handler{end:/?}', controller = 'register', action= 'signupHandler')
     map.connect('/{forgotPassword:forgotPassword/?}', controller = 'login', action = 'forgotPassword')
     map.connect('/{forgotPasswordHandler:forgotPasswordHandler/?}', controller = 'login', action = 'forgot_handler')
 
     # external authentication routes
+    map.connect('/fbLogin{end:/?}', controller = 'login', action = 'fbLoginHandler')
+    map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoggingIn')
     map.connect('/fbNewAccount{end:/?}', controller = 'register', action = 'fbNewAccount')
     map.connect('/signup/fbSignUp{end:/?}', controller = 'register', action = 'fbSignUpDisplay')
     map.connect('/signup/fbSigningUp{end:/?}', controller = 'register', action = 'fbSigningUp')
     map.connect('/{flogin:flogin/?}', controller = 'flogin', action = 'login')
-    map.connect('/fbLogin{end:/?}', controller = 'login', action = 'fbLoginHandler')
-    map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoggingIn')
+    
     # for ajax request from page after pinging fb for auth info
     map.connect('/extauth/fbEmail/{id1}{end:/?}', controller = 'login', action = 'fbAuthCheckEmail', id1 = '{id1}')
     map.connect('/extauth/fbProfilePicSmall/{id1}{end:/?}', controller = 'profile', action = 'fbProfilePicSmall', id1 = '{id1}')
