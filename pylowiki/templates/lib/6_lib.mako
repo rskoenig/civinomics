@@ -480,21 +480,36 @@
                     source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
                 else:
                     source = '/images/hamilton.png'
-        elif 'extSource' in user.keys():
-            if 'facebookSource' in user.keys():
-                if user['facebookSource'] == u'1':
-                    gravatar = False
-                    # NOTE - when to provide large or small link?
-                    if large:
-                        source = user['facebookProfileBig']
-                    else:
-                        source = user['facebookProfileSmall']
+            elif kwargs['forceSource'] == 'facebook':
+                if large:
+                    source = user['facebookProfileBig']
+                else:
+                    source = user['facebookProfileSmall']
+
         else:
             if 'avatarSource' in user.keys():
                 if user['avatarSource'] == 'civ':
                     if 'directoryNum_avatar' in user.keys() and 'pictureHash_avatar' in user.keys():
                         source = '/images/avatar/%s/avatar/%s.png' %(user['directoryNum_avatar'], user['pictureHash_avatar'])
                         gravatar = False
+                elif user['avatarSource'] == 'facebook':
+                    gravatar = False
+                    if large:
+                        source = user['facebookProfileBig']
+                    else:
+                        source = user['facebookProfileSmall']
+            elif 'extSource' in user.keys():
+                # this is needed untl we're sure all facebook connected users have properly 
+                # functioning profile pics - the logic here is now handled 
+                # with the above user['avatarSource'] == 'facebook': ..
+                if 'facebookSource' in user.keys():
+                    if user['facebookSource'] == u'1':
+                        gravatar = False
+                        # NOTE - when to provide large or small link?
+                        if large:
+                            source = user['facebookProfileBig']
+                        else:
+                            source = user['facebookProfileSmall']
         if large and gravatar:
             source += '&s=200'
         return source
