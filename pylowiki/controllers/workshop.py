@@ -1015,6 +1015,7 @@ class WorkshopController(BaseController):
             
         slideshow = slideshowLib.getSlideshow(c.w)
         c.slideshow = slideshowLib.getAllSlides(slideshow)
+        c.deleted_slides = []
         c.published_slides = []
         slide_ids = [int(item) for item in slideshow['slideshow_order'].split(',')]
         for id in slide_ids:

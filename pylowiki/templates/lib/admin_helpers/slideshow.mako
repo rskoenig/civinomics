@@ -11,7 +11,7 @@
  */
 -->
 
-<%def name="admin_slideshow()">    
+<%def name="admin_slideshow(parent)">    
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Slideshow</h4>
@@ -188,7 +188,7 @@
             </div><!-- column -->
             <div class="column" id="unpublished">
                 <h4 class="unsortable centered">Trash</h4>
-                % for slide in c.slideshow:
+                % for slide in c.deleted_slides:
                     % if int(slide['deleted']) == 1:
                         <div class="portlet" id = "portlet_${slide.id}">
                             <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>

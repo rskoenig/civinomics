@@ -30,20 +30,28 @@ class SlideshowController(BaseController):
         if action in ['addImageHandler', 'edit', 'editPosition']:
             if parentCode is None:
                 abort(404)
-            parent = genericLib.getThing(parentCode)g
-            c.w = workshopLib.getWorkshopByCode(workshopCode)
-            workshopLib.setWorkshopPrivs(c.w)
-            if not c.w:
-                abort(404)
-            if not (c.privs['admin'] or c.privs['facilitator']):
-                abort(404)
+            parent = genericLib.getThing(parentCode)
+            if parent.objType == 'workshop':
+                c.w = workshopLib.getWorkshopByCode(parentCode)
+                workshopLib.setWorkshopPrivs(c.w)
+                if not c.w:
+                    abort(404)
+                if not (c.privs['admin'] or c.privs['facilitator']):
+                    abort(404)
                 
-            c.slideshow = getSlideshow(c.w)
-            if not c.slideshow:
-                abort(404)
+                c.slideshow = getSlideshow(c.w)
+                if not c.slideshow:
+                    abort(404)
+            elif parent.objType == 'resource':
+                if 'workshopCode' in resource:
+                    c.w = workshopLib.getWorkshopByCode(resource['workshopCode'])
+                    workshopLib.setWorkshopPrivs(c.w)
+                    if not (c.privs['admin'] or c.privs['facilitator']) and (resource.owner != c.authuser.id):
+                        abort(404)
+                    c.slideshow = resource
 
     @h.login_required
-    def addImageHandler(self, workshopCode, workshopURL):
+    def addImageHandler(self, parentCode, parentURL):
         allSlides = getAllSlides(c.slideshow)
         
         if 'files[]' in request.params.keys():
@@ -127,7 +135,7 @@ class SlideshowController(BaseController):
             return json.dumps(result)
         
     @h.login_required
-    def edit(self, workshopCode, workshopURL):
+    def edit(self, parentCode, parentURL):
         """
             Gets called whenever an edit to the title or caption of a slide is made
             
@@ -152,13 +160,14 @@ class SlideshowController(BaseController):
         return json.dumps({'content':content})
         
     @h.login_required
-    def editPosition(self, workshopCode, workshopURL):
+    def editPosition(self, parentCode, parentURL):
         """
             Gets called whenever the slideshow order is changed.
             Gets called once per column.
             Publishes and unpublishes slides (sets the 'deleted' attribute)
         """
         value = request.params['slides']
+        log.info(value)
         if value == '_published' or value == '_unpublished':
             return
         
@@ -172,6 +181,7 @@ class SlideshowController(BaseController):
                 slide = forceGetSlide(int(item))
                 if int(slide['deleted']) == 0:
                     slide['deleted'] = '1'
+                    # make slide invisible
                     commit(slide)
         elif state == 'published':
             firstSlide = forceGetSlide(int(order[0]))
