@@ -15,7 +15,7 @@
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Slideshow</h4>
-            ${add_slides()}
+            ${add_slides(c.w)}
             ${edit_slideshow()}
             % if c.w['startTime'] == '0000-00-00':
                 <div class="row-fluid">
@@ -28,9 +28,9 @@
     </div><!-- section-wrapper -->
 </%def>
 
-<%def name="add_slides()">
+<%def name="add_slides(parent)">
     <!-- The file upload form used as target for the file upload widget -->
-    <form id="fileupload" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
+    <form id="fileupload" action="/${parent.objType}/${parent['urlCode']}/${parent['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
     <p><strong>Add images</strong></p>
     <ul>
         <li>Slideshow looks best with 6 or more images</li>
