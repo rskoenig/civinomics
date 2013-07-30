@@ -11,12 +11,19 @@
  */
 -->
 
-<%def name="admin_slideshow(parent)">    
+<%def name="workshop_admin_slideshow()">    
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Slideshow</h4>
             ${add_slides()}
             ${edit_slideshow()}
+            % if c.w['startTime'] == '0000-00-00':
+                <div class="row-fluid">
+                    <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
+                    <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
+                    </form>
+                </div><!-- row-fluid -->
+            % endif
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
@@ -160,7 +167,7 @@
 
 <%def name="edit_slideshow()">
     <div class="row-fluid">
-        <p><strong>Create Slideshow</strong></p>
+        <p><strong>Edit Slideshow</strong></p>
         <ul>
             <li>Click and drag to rearrange images</li>
             <li>Add captions</li>
@@ -169,6 +176,7 @@
         <div class="demo">
             <div class="column" id="published">
                 <h4 class="centered">Published slides</h4 >
+                <div id="num_published_slides" rel="${str(len(c.published_slides))}"></div>
                 % for slide in c.published_slides:
                     % if int(slide['deleted']) == 0:
                         <div class="portlet" id = "portlet_${slide.id}">
@@ -206,10 +214,5 @@
                 % endfor
             </div><!-- column -->
         </div><!-- End demo -->
-        % if c.w['startTime'] == '0000-00-00':
-            <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
-                <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
-            </form>
-        % endif
     </div><!-- row-fluid -->
 </%def>

@@ -9,8 +9,8 @@ from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.workshop     as workshopLib
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshop, isPublished
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.slide import Slide, getSlide, forceGetSlide
-from pylowiki.lib.db.slideshow import Slideshow, getSlideshow, getAllSlides
+from pylowiki.lib.db.slide import Slide, forceGetSlide
+import pylowiki.lib.db.slide        as slideLib
 import pylowiki.lib.db.slideshow        as slideshowLib
 import pylowiki.lib.db.mainImage        as mainImageLib
 from pylowiki.lib.db.imageIdentifier import getImageIdentifier
@@ -39,7 +39,7 @@ class SlideshowController(BaseController):
                 if not (c.privs['admin'] or c.privs['facilitator']):
                     abort(404)
                 
-                c.slideshow = getSlideshow(c.w)
+                c.slideshow = slideshowLib.getSlideshow(c.w)
                 if not c.slideshow:
                     abort(404)
             elif parent.objType == 'resource':
@@ -52,7 +52,7 @@ class SlideshowController(BaseController):
 
     @h.login_required
     def addImageHandler(self, parentCode, parentURL):
-        allSlides = getAllSlides(c.slideshow)
+        allSlides = slideshowLib.getAllSlides(c.slideshow)
         
         if 'files[]' in request.params.keys():
             file = request.params['files[]']
@@ -60,7 +60,7 @@ class SlideshowController(BaseController):
             filename = file.filename
             identifier = 'slide'
             
-            slide = Slide(c.authuser, c.slideshow, 'Sample caption', filename, imageFile, '1')
+            slide = slideLib.Slide(c.authuser, c.slideshow, 'Sample caption', filename, imageFile, '1')
             
             i = getImageIdentifier(identifier)
             directoryNumber = str(int(i['numImages']) / numImagesInDirectory)
@@ -150,7 +150,7 @@ class SlideshowController(BaseController):
         slide_id = slideparams[0]
         slideField = slideparams[1] # either title or caption
         
-        slide = forceGetSlide(slide_id)
+        slide = slideLib.forceGetSlide(slide_id)
         slideshow = slideshowLib.getSlideshowByCode(slide['slideshowCode'])
         
         slide[slideField] = content
@@ -166,6 +166,11 @@ class SlideshowController(BaseController):
             Gets called once per column.
             Publishes and unpublishes slides (sets the 'deleted' attribute)
         """
+        allSlides = slideshowLib.getAllSlides(c.slideshow)
+        published = 0
+        for s in allSlides:
+            if s['deleted'] == 0:
+                published += 1
         value = request.params['slides']
         log.info(value)
         if value == '_published' or value == '_unpublished':
@@ -178,13 +183,12 @@ class SlideshowController(BaseController):
         
         if state == 'unpublished':
             for item in order:
-                slide = forceGetSlide(int(item))
-                if int(slide['deleted']) == 0:
+                slide = slideLib.forceGetSlide(int(item))
+                if int(slide['deleted']) == 0 and published > 1:
                     slide['deleted'] = '1'
-                    # make slide invisible
                     commit(slide)
         elif state == 'published':
-            firstSlide = forceGetSlide(int(order[0]))
+            firstSlide = slideLib.forceGetSlide(int(order[0]))
             slideshow = slideshowLib.getSlideshowByCode(firstSlide['slideshowCode'])
             
             # If we change the initial image
@@ -194,7 +198,7 @@ class SlideshowController(BaseController):
                 pass
             
             for item in order:
-                slide = forceGetSlide(item)
+                slide = slideLib.forceGetSlide(item)
                 if int(slide['deleted']) == 1:
                     slide['deleted'] = '0'
                     commit(slide)
