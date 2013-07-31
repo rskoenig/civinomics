@@ -882,6 +882,15 @@ ul.listeners > li {
 .green{
     color:#005d28;
 }
+
+.med-green{
+    color:#00903e;
+}
+
+.red{
+    color:#90000a;
+}
+
 .grey{
   color:grey;
 }
@@ -1395,6 +1404,10 @@ li.thumbnail-gallery{
 }
 
 .icon-chevron-sign-up{
+  color: #b6b6b6;
+}
+
+.icon-chevron-sign-up:hover{
   color: #90ccaa;
 }
 
@@ -1403,6 +1416,10 @@ li.thumbnail-gallery{
 }
 
 .icon-chevron-sign-down{
+  color: #b6b6b6
+}
+
+.icon-chevron-sign-down:hover{
   color: #d1979b
 }
 
