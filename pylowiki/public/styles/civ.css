@@ -702,8 +702,16 @@ img.watch{
     height:12px;
 }
 .voteBlock{
-   padding-top:8px;
+  padding-top:2px;
 }
+
+.chevron-score{
+  margin-top: 5px;
+  margin-bottom: -2px;
+  font-size: 0.85em;
+  color: grey;
+}
+
 .voteWrapper{
    position:relative;
 }
@@ -1381,8 +1389,23 @@ li.thumbnail-gallery{
   font-size: 12px;
 }
 
-
 .goals-preview{
   margin-left: 20px;
   padding-right: 10px;
+}
+
+.icon-chevron-sign-up{
+  color: #90ccaa;
+}
+
+.icon-chevron-sign-up.voted{
+  color: #00903e;
+}
+
+.icon-chevron-sign-down{
+  color: #d1979b
+}
+
+.icon-chevron-sign-down.voted{
+  color: #90000a;
 }
