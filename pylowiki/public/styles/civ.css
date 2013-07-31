@@ -287,6 +287,13 @@ form.addGoal{
   position: relative;
 }
 
+.trashbasket {
+    background-image: url('/images/trashbasket.png');
+    background-repeat:no-repeat;
+    background-position:center top; 
+    height:150px;
+}
+
 .row-fluid [class*="span"]:nth-child(3n+1).slideListing{
     margin-left:0px;
 }

@@ -194,7 +194,7 @@
                     % endif
                 % endfor
             </div><!-- column -->
-            <div class="column" id="unpublished">
+            <div class="column trashbasket" id="unpublished">
                 <h4 class="unsortable centered">Trash</h4>
                 % for slide in c.deleted_slides:
                     % if int(slide['deleted']) == 1:
