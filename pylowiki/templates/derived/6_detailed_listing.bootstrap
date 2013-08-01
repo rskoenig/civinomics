@@ -11,15 +11,15 @@
    if c.listingType == 'discussion':
       itemList = c.discussions
       helperText = 'Ask a question, give feedback, join a conversation about the workshop, or add your own.'
-      helperText += '<br /><strong class="orange">Vote</strong> existing forum topics <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on veracity or value.'
+      helperText += '<br /><strong class="orange">Vote</strong> existing forum topics <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on veracity or value.'
    elif c.listingType == 'resources':
       itemList = c.resources
       helperText = 'Link to educational information resources like videos, articles and reports.'
-      helperText += '<br />View and <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on veracity or value.'
+      helperText += '<br />View and <strong class="orange">Vote</strong> existing resources <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on veracity or value.'
    elif c.listingType == 'ideas':
       itemList = c.ideas
       helperText = 'Add an idea to meet the goals of the workshop!'
-      helperText += '<br /><strong class="orange">Vote</strong> existing ideas <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">), <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on how well they address the goals.'
+      helperText += '<br /><strong class="orange">Vote</strong> existing ideas <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on how well they address the goals.'
    elif c.listingType == 'activity':
       itemList = c.activity
       helperText = ''

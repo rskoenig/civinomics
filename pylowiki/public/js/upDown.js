@@ -9,18 +9,18 @@
 /*global $:true, jQuery:true */
 $(document).ready(function()
 {
-    var upURL = '/images/icons/glyphicons/upVote.png';
-    var votedUpURL = '/images/icons/glyphicons/upVoted.png';
+    var upClass = 'icon-chevron-sign-up icon-2x';
+    var votedUpClass = 'icon-chevron-sign-up icon-2x voted';
     
-    var downURL = '/images/icons/glyphicons/downVote.png';
-    var votedDownURL = '/images/icons/glyphicons/downVoted.png';
+    var downClass = 'icon-chevron-sign-down icon-2x';
+    var votedDownClass = 'icon-chevron-sign-down icon-2x voted';
     
     $(".downVote").click(function(event)
     {
         event.preventDefault();
         if ($(this).hasClass('voted'))
         {
-            $(this).children('img').attr("src", downURL);
+            $(this).children('i').attr("class", downClass);
          
             // having already placed a downvote, we will bring the score back up one place
             // (assuming there has not previously been a vote on this comment by this person)   
@@ -31,8 +31,8 @@ $(document).ready(function()
         }
         else
         {
-            $(this).children('img').attr("src", votedDownURL);
-            $(this).siblings('.upVote').children('img').attr('src', upURL);
+            $(this).children('i').attr("class", votedDownClass);
+            $(this).siblings('.upVote').children('i').attr('class', upClass);
 
             $(this).attr("class", "downVote voted");
             if ($(this).siblings('.upVote').hasClass('voted')) {
@@ -58,7 +58,7 @@ $(document).ready(function()
         event.preventDefault();
         if ($(this).hasClass('voted'))
         {
-            $(this).children('img').attr("src", upURL);
+            $(this).children('i').attr("class", upClass);
 
             // having already placed an upVote, we will bring the score back down one place
             // (assuming there has not previously been a vote on this comment by this person)
@@ -69,8 +69,8 @@ $(document).ready(function()
         }
         else
         {
-            $(this).children('img').attr("src", votedUpURL);
-            $(this).siblings('.downVote').children('img').attr('src', downURL);
+            $(this).children('i').attr("class", votedUpClass);
+            $(this).siblings('.downVote').children('i').attr('class', downClass);
 
             $(this).attr("class", "upVote voted");
             if ($(this).siblings('.downVote').hasClass('voted')) {
