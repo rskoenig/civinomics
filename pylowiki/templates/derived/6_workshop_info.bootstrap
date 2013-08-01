@@ -27,7 +27,7 @@
                                     There are no additional information resources here yet. Be the first to add one!
                                     </div>
                                 % else:
-                                    <strong class="orange">Vote</strong> existing resources <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) based on veracity or value.
+                                    <strong class="orange">Vote</strong> existing resources <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> based on veracity or value.
                                 % endif
                             </div>
                         </div>
