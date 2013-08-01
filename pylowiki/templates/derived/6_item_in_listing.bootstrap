@@ -75,6 +75,11 @@
   </div><!--/.span12-->
 </div><!--/.row-fluid-->
 
+<%def name="headScripts2()">
+    % if c.reload:
+        <script type="text/javascript">location.reload();</script>
+    % endif
+</%def>
 <%def name="extraScripts2()">
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>

@@ -17,7 +17,7 @@ import pylowiki.lib.alerts              as  alertsLib
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
 import pylowiki.lib.db.mainImage        as  mainImageLib
-
+import webbrowser
 from tldextract import extract
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
@@ -67,6 +67,12 @@ class ResourceController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.requestUrl = request.url
+        # this is for the case of embeds, see add resource handler below
+        if 'reload' in session:
+            log.info("settting c.reload here")
+            c.reload = 1
+            session.pop('reload')
+            session.save()
 
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:
@@ -82,8 +88,7 @@ class ResourceController(BaseController):
         if 'comment' in request.params:
             c.rootComment = commentLib.getCommentByCode(request.params['comment'])
             if not c.rootComment:
-                abort(404)
-                
+                abort(404) 
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, resourceCode, resourceURL, commentCode = ''):
@@ -119,6 +124,11 @@ class ResourceController(BaseController):
                 return redirect(session['return_to']) # Link already submitted
             resourceInfo = request.params['link']
         elif resourceType == 'embed':
+            # we do this to force a browser page reload. The redirect does not cause the browser to
+            # parse the iframe and fetch it, thus the kludge reload
+            log.info("doing the reload")
+            session['reload'] = '1'
+            session.save()
             resourceInfo = request.params['embed']
             if not resourceInfo.startswith("<iframe"):
                 return redirect(session['return_to'])

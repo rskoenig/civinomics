@@ -58,8 +58,8 @@
                     info = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['info'], 75))
                 elif thing['type'] == 'embed':
                     info = thing['info']
-                elif thing['type'] == 'slideshow':
-                    info = "slideshow urlCode"
+                elif thing['type'] == 'album':
+                    info = "album urlCode"
                     
             elif thing.objType == 'revision':
                 title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
