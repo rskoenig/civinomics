@@ -184,7 +184,12 @@
          </div> <!-- /.voteWrapper -->
          <% return %>
       % endif
-      <% rating = int(thing['ups']) - int(thing['downs']) %>
+      <% 
+        rating = int(thing['ups']) - int(thing['downs']) 
+        totalYes = int(thing['ups'])
+        totalNo = int(thing['downs'])
+        totalVotes = int(thing['ups']) + int(thing['downs'])
+      %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          <% 
             rated = ratingLib.getRatingForThing(c.authuser, thing) 
@@ -197,7 +202,7 @@
                   voteImg = '"/images/yes_blank.png"'
             else:
                commentClass = 'yesVote'
-               voteImg = '"/images/icons/yes_blank.png"'
+               voteImg = '"/images/yes_blank.png"'
          %>
          % if thing.objType != 'comment':
             <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
@@ -218,17 +223,17 @@
                   voteImg = '"/images/no_blank.png"'
             else:
                commentClass = 'noVote'
-               voteImg = '"/images/icons/no_blank.png"'
+               voteImg = '"/images/no_blank.png"'
          %>
          % if thing.objType != 'comment':
             <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
          % else:
             <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
          % endif
-         <img src=${voteImg | n} class="vote-icon">
+         <img src=${voteImg | n} class="vote-icon"> 
          </a>
          <br>
-         <div class="centered yesNo-score">${rating}</div>
+         <div class="centered yesNo-score">Yes ${totalYes}, No ${totalNo}</div>
       % else:
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          <!--

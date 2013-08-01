@@ -185,7 +185,12 @@ padding: 0;
 
 .horizontal-list> li {
   display: inline;
-  margin-right: 20px; 
+  margin-right: 8px; 
+}
+
+.horizontal-list.ideaListing{
+  margin-left: 0px;
+  margin-bottom: 10px;
 }
 
 img.small-logo{
@@ -436,6 +441,10 @@ ul.activity > li {
 
 .list-item .list-item-text{
    margin-left: 0;
+}
+
+.list-item .ideaListing{
+   padding: 6px;
 }
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
@@ -703,7 +712,11 @@ img.watch{
 }
 
 .voteBlock{
-  padding-top:2px;
+  padding:2px;
+}
+
+.voteBlock.ideaListing{
+  padding:6px;
 }
 
 .chevron-score{
@@ -1435,6 +1448,13 @@ li.thumbnail-gallery{
   color: #90000a;
 }
 
-.uppercase{
+.ideaListingTitle{
+  font-size: 17px;
+  margin-bottom: 3px;
+  font-weight: bold;
   text-transform: uppercase;
+}
+
+.border-bottom{
+  border-bottom: 1px solid #ddd;
 }
