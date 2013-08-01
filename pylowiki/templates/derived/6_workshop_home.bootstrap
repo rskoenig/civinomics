@@ -24,7 +24,7 @@
                 There are no ideas here yet. Be the first to add one!
                 </div>
              % else:  
-                <p><strong class="orange">Vote</strong> listed ideas <strong class="green">up</strong>(<img src="/images/icons/glyphicons/upVoted.png">) or <strong class="purple">down</strong>(<img src="/images/icons/glyphicons/downVoted.png">) for how they address the workshop goals.</p>
+                <p><strong class="orange">Vote</strong> listed ideas <strong class="med-green">up</strong> <i class="icon-chevron-sign-up voted"></i> or <strong class="red">down</strong> <i class="icon-chevron-sign-down voted"></i> for how they address the workshop goals.</p>
              % endif
              <% 
                 lib.return_to() 

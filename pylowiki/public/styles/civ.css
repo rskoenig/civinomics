@@ -702,8 +702,16 @@ img.watch{
     height:12px;
 }
 .voteBlock{
-   padding-top:8px;
+  padding-top:2px;
 }
+
+.chevron-score{
+  margin-top: 5px;
+  margin-bottom: -2px;
+  font-size: 0.85em;
+  color: grey;
+}
+
 .voteWrapper{
    position:relative;
 }
@@ -874,6 +882,15 @@ ul.listeners > li {
 .green{
     color:#005d28;
 }
+
+.med-green{
+    color:#00903e;
+}
+
+.red{
+    color:#90000a;
+}
+
 .grey{
   color:grey;
 }
@@ -1381,8 +1398,31 @@ li.thumbnail-gallery{
   font-size: 12px;
 }
 
-
 .goals-preview{
   margin-left: 20px;
   padding-right: 10px;
+}
+
+.icon-chevron-sign-up{
+  color: #b6b6b6;
+}
+
+.icon-chevron-sign-up:hover{
+  color: #90ccaa;
+}
+
+.icon-chevron-sign-up.voted{
+  color: #00903e;
+}
+
+.icon-chevron-sign-down{
+  color: #b6b6b6
+}
+
+.icon-chevron-sign-down:hover{
+  color: #d1979b
+}
+
+.icon-chevron-sign-down.voted{
+  color: #90000a;
 }

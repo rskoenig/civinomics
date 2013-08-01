@@ -121,56 +121,56 @@
             if rated:
                if rated['amount'] == '1':
                   commentClass = 'voted upVote'
-                  voteImg = '"/images/icons/glyphicons/upVoted.png"'
+                  voteClass = 'icon-chevron-sign-up icon-2x voted'
                else:
                   commentClass = 'upVote'
-                  voteImg = '"/images/icons/glyphicons/upVote.png"'
+                  voteClass = 'icon-chevron-sign-up icon-2x'
             else:
                commentClass = 'upVote'
-               voteImg = '"/images/icons/glyphicons/upVote.png"'
+               voteClass = 'icon-chevron-sign-up icon-2x'
          %>
          % if thing.objType != 'comment':
             <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
          % else:
             <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${commentClass}">
          % endif
-         <img src=${voteImg | n} class="vote-icon">
+         <i class="${voteClass}"></i>
          </a>
          <br />
-         <div class="centered chevron-score">${rating}</div>
+         <div class="centered chevron-score"> ${rating}</div>
          <%
             if rated:
                if rated['amount'] == '-1':
                   commentClass = 'voted downVote'
-                  voteImg = '"/images/icons/glyphicons/downVoted.png"'
+                  voteClass = 'icon-chevron-sign-down icon-2x voted'
                else:
                   commentClass = 'downVote'
-                  voteImg = '"/images/icons/glyphicons/downVote.png"'
+                  voteClass = 'icon-chevron-sign-down icon-2x'
             else:
                commentClass = 'downVote'
-               voteImg = '"/images/icons/glyphicons/downVote.png"'
+               voteClass = 'icon-chevron-sign-down icon-2x'
          %>
          % if thing.objType != 'comment':
             <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
          % else:
             <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
          % endif
-         <img src=${voteImg | n} class="vote-icon">
+         <i class="${voteClass}"></i>
          </a>
       % else:
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          <!--
          <a href="#" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          -->
-         <img src="/images/icons/glyphicons/upVote.png" class="vote-icon">
+         <i class="icon-chevron-sign-up icon-2x"></i>
          </a>
          <br />
-         <div class="centered chevron-score"> ${rating} </div>
+         <div class="centered chevron-score"> ${rating}</div>
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          <!--
          <a href="#" rel="tooltip" data-placement="bottom" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
          -->
-         <img src="/images/icons/glyphicons/downVote.png" class="vote-icon">
+         <i class="icon-chevron-sign-down icon-2x"></i>
          </a>
          <br />
          <% log.info("vote") %>
