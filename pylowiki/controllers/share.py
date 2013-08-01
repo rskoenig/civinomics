@@ -53,3 +53,7 @@ class ShareController(BaseController):
         returnMsg =  "Email sent, thanks for sharing!"
         return returnMsg
   
+    @h.login_required
+    def shareFacebookHandler(self):
+        # create a share object based on if a workshop or an object within a workshop has been shared
+

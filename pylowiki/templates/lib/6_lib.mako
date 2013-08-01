@@ -61,10 +61,47 @@
         }(document));
 
         function shareOnWall(authResponse) {
-            FB.ui({
-                method: "stream.share",
-                u: ""
-            });
+            FB.ui(
+                {
+                  method: 'feed',
+                  name: 'Facebook Dialogs',
+                  link: '',
+                  
+                  caption: 'Reference Documentation',
+                  description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
+                },
+                //{
+                //    method: "stream.share",
+                //    u: ""
+                //},
+                function(response) 
+                {
+                    var str = "";
+                    for(var k in response) {
+                     if (response.hasOwnProperty(k)) {
+                       var t = typeof(response[k]);
+                       if (t == "object") {
+                         var innerObj = response[k]
+                         for(var j in innerObj) {
+                           var t = typeof(innerObj[j]);
+                           str += "response[" + k + "][" + j + "] *= " + innerObj[j] + " <- type: " + t + "\n";
+                         }
+                       } else {
+                         str += k + " = " + response[k] + " <- type: " + t + "\n";
+                       }
+                     }
+                    }
+                   
+                    console.log(str)
+                    if (response && response.post_id) {
+                      alert('Post was published. ' + str);
+                      // create share object
+                      
+                    } else {
+                      alert('Post was not published. ' + str);
+                    }
+                }
+            );
         }
     </script>
     <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
