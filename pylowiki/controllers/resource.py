@@ -120,7 +120,7 @@ class ResourceController(BaseController):
             resourceInfo = request.params['link']
         elif resourceType == 'embed':
             resourceInfo = request.params['embed']
-            if not resourceInfo.startswith("<iframe") or not resourceInfo.endswith("</iframe>"):
+            if not resourceInfo.startswith("<iframe"):
                 return redirect(session['return_to'])
         else:
             return redirect(session['return_to'])

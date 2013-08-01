@@ -51,6 +51,7 @@
 <%def name="showItemTitle(thing)">
     <h4>
         <% 
+            info = ""
             title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
             if thing.objType == 'resource':
                 if thing['type'] == 'url':
@@ -59,8 +60,7 @@
                     info = thing['info']
                 elif thing['type'] == 'slideshow':
                     info = "slideshow urlCode"
-                else:
-                    info = ""
+                    
             elif thing.objType == 'revision':
                 title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
                 if thing['objType'] == 'resource':

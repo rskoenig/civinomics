@@ -109,23 +109,23 @@
 </%def>
 
 <%def name="extraScripts2()">
-   <script type="text/javascript" src="/js/vendor/charCount.js"></script>
-   <script>
+    <script type="text/javascript" src="/js/vendor/charCount.js"></script>
+    <script>
       $("#title").charCount({
          allowed:120,
          warning:20,
          css: 'counter green pull-right',
          counterElement: 'strong'
       });
-   </script>
-   <script type="text/javascript">
+    </script>
+    <script type="text/javascript">
       function GoalsCtrl($scope, $http) {
          var getGoalsURL = "/workshop/${c.w['urlCode']}/${c.w['url']}/goals/get"
          $http.get(getGoalsURL).success(function(data){
             $scope.goals = data;
          });
       };
-   </script>
+    </script>
 </%def>
 
 <%def name="headScripts()">

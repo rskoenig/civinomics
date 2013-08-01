@@ -1007,6 +1007,7 @@ class WorkshopController(BaseController):
             
         if 'confTab' in session:
             c.tab = session['confTab']
+            log.info(c.tab)
             session.pop('confTab')
             session.save()
         # hack for continue button in tab4 of configure

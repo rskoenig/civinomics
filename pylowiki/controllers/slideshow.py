@@ -9,7 +9,6 @@ from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.workshop     as workshopLib
 from pylowiki.lib.db.workshop import getWorkshopByID, getWorkshop, isPublished
 from pylowiki.lib.db.dbHelpers import commit
-from pylowiki.lib.db.slide import Slide, forceGetSlide
 import pylowiki.lib.db.slide        as slideLib
 import pylowiki.lib.db.slideshow        as slideshowLib
 import pylowiki.lib.db.mainImage        as mainImageLib
