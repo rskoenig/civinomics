@@ -172,15 +172,16 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
         return False
 
 # setters
-def editResource(resource, type, title, text, info, owner):
+def editResource(resource, title, text, link, owner):
     try:
         revisionLib.Revision(owner, resource)
         resource['title'] = title
         resource['text'] = text
-        if type == 'url':
-            if not info.startswith('http://'):
-                info = u'http://' + info
-        resource['info'] = info
+        if not link.startswith('http://'):
+                link = u'http://' + link
+        if resource['link'] != link:
+            resource['type'] = 'general'
+            resource['link'] = link
         resource['url'] = urlify(title)
         commit(resource)
         return True
@@ -189,13 +190,11 @@ def editResource(resource, type, title, text, info, owner):
         return False
 
 # Object
-def Resource(info, type, title, owner, workshop, privs, role = None, text = None, parent = None):
+def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
     a = Thing('resource', owner.id)
-    a['type'] = type
-    if type == 'url':
-        if not info.startswith('http://'):
-            info = u'http://' + info
-    a['info'] = info
+    if not link.startswith('http://'):
+            link = u'http://' + link
+    a['link'] = link
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:
@@ -205,6 +204,7 @@ def Resource(info, type, title, owner, workshop, privs, role = None, text = None
     a = generic.linkChildToParent(a, workshop)
     if parent is not None:
         a = generic.linkChildToParent(a, parent)
+    a['type'] = 'general'
     a['disabled'] = '0'
     a['deleted'] = '0'
     a['ups'] = '0'

@@ -176,16 +176,11 @@ class AdminController(BaseController):
                 alert['content'] = 'Failed to edit discussion.'
         elif c.thing.objType == 'resource':
             title = request.params['title']
-            info = request.params['info']
+            link = request.params['link']
             text = request.params['text']
             if title.strip() == '':
                 title = blankText
-            if resourceLib.editResource(c.thing, type, title, text, info, c.authuser):
-                if c.thing['type'] == 'embed':
-                    # we do this to force a browser page reload. The redirect does not cause the browser to
-                    # parse the iframe and fetch it, thus the kludge reload
-                    session['reload'] = '1'
-                    session.save()
+            if resourceLib.editResource(c.thing, title, text, link, c.authuser):
                 alert = {'type':'success'}
                 alert['title'] = 'Resource edit.'
                 alert['content'] = 'Resource edit successful.'

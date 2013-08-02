@@ -790,12 +790,7 @@
                     <textarea name="text" rows="3" class="input-block-level">${text}</textarea>
                 % elif thing.objType == 'resource':
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
-                    % if thing['type'] == 'embed':
-                        <textarea name="info" rows="3" class="input-block-level">${thing['info']}</textarea>
-                    % else:
-                        <input type="text" class="input-block-level" name="info" value = "${thing['info']}" maxlength="120" id = "info">
-                    % endif
-                    
+                    <input type="text" class="input-block-level" name="link" value = "${thing['link']}" maxlength="120" id = "info">
                     <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % endif
                 <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>

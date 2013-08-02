@@ -51,33 +51,21 @@
 <%def name="showItemTitle(thing)">
     <h4>
         <% 
-            info = ""
+            link = ""
             title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
             if thing.objType == 'resource':
-                if thing['type'] == 'url':
-                    info = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['info'], 75))
-                elif thing['type'] == 'embed':
-                    info = thing['info']
-                elif thing['type'] == 'album':
-                    info = "album urlCode"
+                    link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(thing['link'], lib_6.ellipsisIZE(thing['link'], 75))
                     
             elif thing.objType == 'revision':
                 title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
                 if thing['objType'] == 'resource':
-                    if thing['type'] == 'url':
-                        info = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['info'], 75))
-                    elif thing['type'] == 'embed':
-                        info = thing['info']
-                    elif thing['type'] == 'slideshow':
-                        info = "slideshow urlCode"
-                    else:
-                        info = "" 
+                    link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(thing['link'], lib_6.ellipsisIZE(thing['link'], 75)) 
             else:
                 title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
         %>
         ${title | n}<br>
         <div class="spacer"></div>
-        ${info | n}
+        ${link | n}
     </h4>
 </%def>
 

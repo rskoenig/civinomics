@@ -52,23 +52,8 @@
         </fieldset>
         <hr/>
         <fieldset>
-            Resource Type:<br />
-            <label class="radio">
-                <input type="radio" name="resourceType" id="resourceTypeURL" value="url" ng-model="resourceTypeURL" ng-click="showResourcePrompt();">
-                Link to web page on Internet
-            </label>
-            <label class="radio">
-                <input type="radio" name="resourceType" id="resourceTypeEmbed" value="embed" ng-model="resourceTypeEmbed" ng-click="showResourcePrompt();">
-                Embed code for a display widget of a map, picture or video from a hosting site on the Internet
-            </label>
-            <div id="resourceTypeURLForm" class="collapse">
-                <label>Enter Resource URL</label>
-                <input type="text" class="input-block-level" name="link" id="addResourceLink">
-            </div><!-- collapse -->
-            <div id="resourceTypeEmbedForm" class="collapse">
-                <label>Enter Resource Embed Code</label>
-                <textarea rows="4" class="input-block-level" name="embed" id="addResourceEmbed"></textarea>
-            </div><!-- collapse -->
+            <label>Resource URL</label>
+            <input type="text" class="input-block-level" name="link" id="addResourceLink">
         </fieldset>
       <hr/>
       ${self.additionalInfo(name="text")}

@@ -113,32 +113,23 @@ class ResourceController(BaseController):
     def addResourceHandler(self, workshopCode, workshopURL):
         resourceType = ''
         resourceInfo = ''
-        if 'title' not in request.params or 'resourceType' not in request.params:
+        if 'title' not in request.params:
             return redirect(session['return_to'])
         title = request.params['title'].strip()
         if title == '':
             return redirect(session['return_to'])
-        resourceType = request.params['resourceType']
-        if resourceType == 'url':
-            if resourceLib.getResourceByLink(request.params['link'], c.w):
-                return redirect(session['return_to']) # Link already submitted
-            resourceInfo = request.params['link']
-        elif resourceType == 'embed':
-            # we do this to force a browser page reload. The redirect does not cause the browser to
-            # parse the iframe and fetch it, thus the kludge reload
-            log.info("doing the reload")
-            session['reload'] = '1'
-            session.save()
-            resourceInfo = request.params['embed']
-            if not resourceInfo.startswith("<iframe"):
-                return redirect(session['return_to'])
-        else:
-            return redirect(session['return_to'])
+        if resourceLib.getResourceByLink(request.params['link'], c.w):
+            return redirect(session['return_to']) # Link already submitted
+        link = request.params['link']
+        # we do this to force a browser page reload. The redirect does not cause the browser to
+        # parse the iframe and fetch it, thus the kludge reload
+        #session['reload'] = '1'
+        #session.save()
         text = ''
         if 'text' in request.params:
             text = request.params['text'] # Optional
         if len(title) > 120:
             title = title[:120]
-        newResource = resourceLib.Resource(resourceInfo, resourceType, title, c.authuser, c.w, c.privs, text = text)
+        newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
         alertsLib.emailAlerts(newResource)
         return redirect(utils.thingURL(c.w, newResource))
