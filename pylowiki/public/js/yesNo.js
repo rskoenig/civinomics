@@ -25,9 +25,13 @@ $(document).ready(function()
             // having already placed a noVote, we will bring the score back up one place
             // (assuming there has not previously been a vote on this comment by this person)   
             $(this).attr("class", "noVote");
-            var currentScore = ($(this).siblings(".yesNo-score").html()*1);
-            currentScore = currentScore + 1;
-            $(this).siblings(".yesNo-score").html(currentScore);
+            var noScore = ($(this).children(".noScore").html()*1);
+            noScore = noScore - 1;
+            $(this).children(".noScore").html(noScore);
+
+            var totalVotes = ($(this).siblings(".totalVotesWrapper").children(".totalVotes").html()*1);
+            totalVotes = totalVotes - 1;
+            $(this).siblings(".totalVotesWrapper").children(".totalVotes").html(totalVotes)
         }
         else
         {
@@ -39,15 +43,23 @@ $(document).ready(function()
                 // replacing a yesVote with a noVote will bring the score down two places
                 // (assuming there has not previously been a vote on this comment by this person)
                 $(this).siblings('.yesVote').attr("class", "yesVote");
-                var currentScore = ($(this).siblings(".yesNo-score").html()*1);
-                currentScore = currentScore - 2;
-                $(this).siblings(".yesNo-score").html(currentScore);    
+                var noScore = ($(this).children(".noScore").html()*1);
+                noScore = noScore + 1;
+                $(this).children(".noScore").html(noScore); 
+
+                var yesScore = ($(this).children(".yesScore").html()*1);
+                yesScore = yesScore - 1;
+                $(this).children(".yesScore").html(yesScore);    
             } else {
                  // a noVote from a neutral vote will bring the score down one place
                  // (assuming there has not previously been a vote on this comment by this person)
-                var currentScore = ($(this).siblings(".yesNo-score").html()*1);
-                currentScore = currentScore - 1;
-                $(this).siblings(".yesNo-score").html(currentScore);
+                var noScore = ($(this).children(".noScore").html()*1);
+                noScore = noScore + 1;
+                $(this).children(".noScore").html(noScore);
+
+                var totalVotes = ($(this).siblings(".totalVotesWrapper").children(".totalVotes").html()*1);
+                totalVotes = totalVotes + 1;
+                $(this).siblings(".totalVotesWrapper").children(".totalVotes").html(totalVotes)
             }
         }
         $.post($(this).attr('href'));
@@ -63,9 +75,13 @@ $(document).ready(function()
             // having already placed an yesVote, we will bring the score back down one place
             // (assuming there has not previously been a vote on this comment by this person)
             $(this).attr("class", "yesVote");
-            var currentScore = ($(this).siblings(".yesNo-score").html()*1);
-            currentScore = currentScore - 1;
-            $(this).siblings(".yesNo-score").html(currentScore);
+            var yesScore = ($(this).children(".yesScore").html()*1);
+            yesScore = yesScore - 1;
+            $(this).children(".yesScore").html(yesScore);
+
+            var totalVotes = ($(this).siblings(".totalVotesWrapper").children(".totalVotes").html()*1);
+            totalVotes = totalVotes - 1;
+            $(this).siblings(".totalVotesWrapper").children(".totalVotes").html(totalVotes)
         }
         else
         {
@@ -77,15 +93,23 @@ $(document).ready(function()
                 // replacing a noVote with an yesVote will bring the score up two places
                 // (assuming there has not previously been a vote on this comment by this person)
                 $(this).siblings('.noVote').attr("class", "noVote");
-                var currentScore = ($(this).siblings(".yesNo-score").html()*1);
-                currentScore = currentScore + 2;
-                $(this).siblings(".yesNo-score").html(currentScore);    
+                var noScore = ($(this).children(".noScore").html()*1);
+                noScore = noScore - 1;
+                $(this).children(".noScore").html(noScore); 
+
+                var yesScore = ($(this).children(".yesScore").html()*1);
+                yesScore = yesScore + 1;
+                $(this).children(".yesScore").html(yesScore);    
             } else {
                  // an yesVote from a neutral vote will bring the score up one place
                  // (assuming there has not previously been a vote on this comment by this person)
-                var currentScore = ($(this).siblings(".yesNo-score").html()*1);
-                currentScore = currentScore + 1;
-                $(this).siblings(".yesNo-score").html(currentScore);
+                var yesScore = ($(this).children(".yesScore").html()*1);
+                yesScore = yesScore + 1;
+                $(this).children(".yesScore").html(yesScore);
+
+                var totalVotes = ($(this).siblings(".totalVotesWrapper").children(".totalVotes").html()*1);
+                totalVotes = totalVotes + 1;
+                $(this).siblings(".totalVotesWrapper").children(".totalVotes").html(totalVotes)
             }
         }
         $.post($(this).attr('href'));

@@ -726,11 +726,17 @@ img.watch{
   color: grey;
 }
 
-.yesNo-score{
-  margin-top: 15px;
-  margin-bottom: -2px;
+.yesScore, .noScore{
+  margin-left: 10px;
   font-size: 0.85em;
   color: grey;
+}
+
+.totalVotesWrapper{
+  margin-top: 20px;
+  font-size: 0.85em;
+  color: grey;
+  text-align: center;
 }
 
 .voteWrapper{

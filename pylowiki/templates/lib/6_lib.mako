@@ -209,7 +209,7 @@
          % else:
             <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${commentClass}">
          % endif
-         <img src=${voteImg | n} class="vote-icon">
+         <img src=${voteImg | n} class="vote-icon"><span class="yesScore">${totalYes}</span>
          </a>
          <br>
          <br>
@@ -230,10 +230,12 @@
          % else:
             <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
          % endif
-         <img src=${voteImg | n} class="vote-icon"> 
+         <img src=${voteImg | n} class="vote-icon"><span class="noScore">${totalNo}</span> 
          </a>
          <br>
-         <div class="centered yesNo-score">Yes ${totalYes}, No ${totalNo}</div>
+         <!-- Yes<span class="yesScore">${totalYes}</span>
+         No <span class="noScore">${totalNo}</span> -->
+         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${totalVotes}</span></div>
       % else:
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          <!--
