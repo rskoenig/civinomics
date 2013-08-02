@@ -177,7 +177,7 @@ def editResource(resource, title, text, link, owner):
         revisionLib.Revision(owner, resource)
         resource['title'] = title
         resource['text'] = text
-        if not link.startswith('http://'):
+        if not link.startswith('http://') and not link.startswith('https://'):
                 link = u'http://' + link
         if resource['link'] != link:
             resource['type'] = 'general'
@@ -192,7 +192,7 @@ def editResource(resource, title, text, link, owner):
 # Object
 def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
     a = Thing('resource', owner.id)
-    if not link.startswith('http://'):
+    if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
     a['link'] = link
     a['url'] = urlify(title[:30])
