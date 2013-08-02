@@ -15,6 +15,7 @@ from revision import Revision
 import pylowiki.lib.db.revision as revisionLib
 from tldextract import extract
 import pylowiki.lib.db.generic as generic
+from embedly import Embedly
 
 log = logging.getLogger(__name__)
 
@@ -191,10 +192,32 @@ def editResource(resource, title, text, link, owner):
 
 # Object
 def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
+    eKey = config['app_conf']['embedly.key']
+    eClient = Embedly(eKey)
     a = Thing('resource', owner.id)
     if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
     a['link'] = link
+    eObj = eClient.oembed(link)
+    linkType = eObj['type']
+    if eObj['type'] == 'photo':
+        a['info'] = eObj['url']
+    elif eObj['type'] == 'video' or eObj['type'] == 'rich':
+        a['info'] = eObj['html']
+        
+    
+    if 'width' in eObj.keys():
+        a['width'] = eObj['width']
+    if 'height' in eObj.keys():
+        a['height'] = eObj['height']
+    if 'provider_name' in eObj.keys():
+        a['provider_name'] = eObj['provider_name']
+        
+    if 'thumbnail_url' in eObj.keys():
+        a['thumbnail_url'] = eObj['thumbnail_url']
+        a['thumbnail_width'] = eObj['thumbnail_width']
+        a['thumbnail_height'] = eObj['thumbnail_height']
+    
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:
@@ -204,7 +227,7 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     a = generic.linkChildToParent(a, workshop)
     if parent is not None:
         a = generic.linkChildToParent(a, parent)
-    a['type'] = 'general'
+    a['type'] = linkType
     a['disabled'] = '0'
     a['deleted'] = '0'
     a['ups'] = '0'

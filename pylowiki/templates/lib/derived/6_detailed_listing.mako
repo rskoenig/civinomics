@@ -130,9 +130,21 @@
                             % endif
                         % endif
                         % if item.objType == 'resource':
+                            <% 
+                                extraClass = ""
+                                if item['type'] == 'link' or item['type'] == 'general':
+                                    extraClass="resource-link"
+                                elif item['type'] == 'photo':
+                                    extraClass="resource-photo"
+                                elif item['type'] == 'video':
+                                    extraClass="resource-video"
+                                elif item['type'] == 'rich':
+                                    extraClass="resource-file"
+                                endif
+                            %>
                             <p>
                                 <% itemLink = '<small>(<a %s>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
-                                ${itemLink | n}
+                                <span class="${extraClass}">${itemLink | n}</span>
                             </p>
                         % endif
                         <p class="no-bottom">
