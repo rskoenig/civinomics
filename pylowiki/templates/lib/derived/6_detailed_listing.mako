@@ -253,7 +253,7 @@
                     </div>
                 </div>
             % else:
-                <div class="${authorClass} border-bottom">
+                <div class="row-fluid list-item border-bottom">
                     <div class="span9 list-item-text ideaListing" id="content_${itemCounter}">
                         <% itemTitle = '<p class="ideaListingTitle"><a %s class="listed-item-title">%s</a></p>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                         ${itemTitle | n}
@@ -267,7 +267,7 @@
                                 totalVotes = int(item['ups']) + int(item['downs'])
                             %>
                             <ul class="horizontal-list ideaListing">
-                                <li><i class="icon-certificate"> Total Votes</i> (${totalVotes})</li>
+                                <li><i class="icon-user"> Total Votes</i> (${totalVotes})</li>
                                 % if c.demo:
                                     <li>${comments | n}</li>
                                 % else:

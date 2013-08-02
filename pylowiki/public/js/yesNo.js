@@ -36,7 +36,7 @@ $(document).ready(function()
 
             $(this).attr("class", "noVote voted");
             if ($(this).siblings('.yesVote').hasClass('voted')) {
-                // replacing an yesVote with a noVote will bring the score down two places
+                // replacing a yesVote with a noVote will bring the score down two places
                 // (assuming there has not previously been a vote on this comment by this person)
                 $(this).siblings('.yesVote').attr("class", "yesVote");
                 var currentScore = ($(this).siblings(".yesNo-score").html()*1);

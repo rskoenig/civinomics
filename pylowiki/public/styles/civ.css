@@ -1449,10 +1449,11 @@ li.thumbnail-gallery{
 }
 
 .ideaListingTitle{
-  font-size: 17px;
+  font-size: 18px;
   margin-bottom: 3px;
   font-weight: bold;
-  text-transform: uppercase;
+  /*
+  text-transform: uppercase; */
 }
 
 .border-bottom{

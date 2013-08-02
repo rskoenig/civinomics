@@ -26,14 +26,36 @@
                     </div>
                 </div>
             % endif
-            <div class="row-fluid">
-                 <div class="span1">
-                    ${lib_6.upDownVote(c.thing)}
+
+            % if c.thing.objType == 'idea':
+                <div class="row-fluid">
+                    <div class="span1">
+                    </div>
+                    <div class="span11">
+                        <div class="span3 well" style="float: right; margin-left: 20px;">
+                            ${lib_6.yesNoVote(c.thing)}
+                        </div>
+                        ${helpers.showItemTitle(c.thing)}
+                        <div class="spacer"></div>
+                        ${helpers.extraText(c.thing)}
+                    </div>
+                </div><!--/.row-fluid-->
+            % else:
+                <div class="row-fluid">
+                     <div class="span1">
+                        ${lib_6.upDownVote(c.thing)}
+                    </div>
+                    <div class="span11">
+                        ${helpers.showItemTitle(c.thing)}
+                    </div>
+                </div><!--/.row-fluid-->
+                <div class="row-fluid">
+                    <div class="span11 offset1">
+                        ${helpers.extraText(c.thing)}
+                    </div>
                 </div>
-                <div class="span11">
-                    ${helpers.showItemTitle(c.thing)}
-                </div>
-            </div><!--/.row-fluid-->
+            % endif:
+
             <div class="spacer"></div>
             <%
                 if c.thing['disabled'] == '1':
@@ -42,7 +64,7 @@
                     if c.thing['adopted'] == '1':
                         helpers.showAdoptedMessage(c.thing)
             %>
-                ${helpers.extraText(c.thing)}
+                
                 <div class="row-fluid">
                     <div class="span12">
                         <span class="pull-right">${helpers.showItemOwner(c.thing)}</span>
@@ -77,6 +99,7 @@
 
 <%def name="extraScripts2()">
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript">
         $('.nullvote').tooltip();
