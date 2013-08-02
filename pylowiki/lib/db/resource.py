@@ -173,6 +173,28 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
         return False
 
 # setters
+def setAttributes(resource, link):
+    eKey = config['app_conf']['embedly.key']
+    eClient = Embedly(eKey)
+    eObj = eClient.oembed(link)
+    resource['type'] = eObj['type']
+    if eObj['type'] == 'photo':
+        resource['info'] = eObj['url']
+    elif eObj['type'] == 'video' or eObj['type'] == 'rich':
+        resource['info'] = eObj['html']
+    if 'width' in eObj.keys():
+        resource['width'] = eObj['width']
+    if 'height' in eObj.keys():
+        resource['height'] = eObj['height']
+    if 'provider_name' in eObj.keys():
+        resource['provider_name'] = eObj['provider_name']
+        
+    if 'thumbnail_url' in eObj.keys():
+        resource['thumbnail_url'] = eObj['thumbnail_url']
+        resource['thumbnail_width'] = eObj['thumbnail_width']
+        resource['thumbnail_height'] = eObj['thumbnail_height']
+    commit(resource)
+    
 def editResource(resource, title, text, link, owner):
     try:
         revisionLib.Revision(owner, resource)
@@ -181,9 +203,10 @@ def editResource(resource, title, text, link, owner):
         if not link.startswith('http://') and not link.startswith('https://'):
                 link = u'http://' + link
         if resource['link'] != link:
-            resource['type'] = 'general'
             resource['link'] = link
-        resource['url'] = urlify(title)
+            resource['url'] = urlify(title)
+            setAttributes(resource, link)
+
         commit(resource)
         return True
     except:
@@ -192,32 +215,11 @@ def editResource(resource, title, text, link, owner):
 
 # Object
 def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
-    eKey = config['app_conf']['embedly.key']
-    eClient = Embedly(eKey)
     a = Thing('resource', owner.id)
     if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
     a['link'] = link
-    eObj = eClient.oembed(link)
-    linkType = eObj['type']
-    if eObj['type'] == 'photo':
-        a['info'] = eObj['url']
-    elif eObj['type'] == 'video' or eObj['type'] == 'rich':
-        a['info'] = eObj['html']
-        
-    
-    if 'width' in eObj.keys():
-        a['width'] = eObj['width']
-    if 'height' in eObj.keys():
-        a['height'] = eObj['height']
-    if 'provider_name' in eObj.keys():
-        a['provider_name'] = eObj['provider_name']
-        
-    if 'thumbnail_url' in eObj.keys():
-        a['thumbnail_url'] = eObj['thumbnail_url']
-        a['thumbnail_width'] = eObj['thumbnail_width']
-        a['thumbnail_height'] = eObj['thumbnail_height']
-    
+    setAttributes(a, link)   
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:
@@ -227,7 +229,6 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     a = generic.linkChildToParent(a, workshop)
     if parent is not None:
         a = generic.linkChildToParent(a, parent)
-    a['type'] = linkType
     a['disabled'] = '0'
     a['deleted'] = '0'
     a['ups'] = '0'
