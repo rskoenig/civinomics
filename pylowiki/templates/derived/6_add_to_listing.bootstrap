@@ -59,8 +59,8 @@
         </fieldset>
         <hr/>
         ${self.additionalInfo(name="text")}
-        ${self.submitButton()}
         <span ng-show="addResourceShow">{{addResourceResponse}}</span>
+        ${self.submitButton()}
    </form>
 </%def>
 
