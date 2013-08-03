@@ -178,7 +178,6 @@ def getEObj(link):
     eClient = Embedly(eKey)
     eObj = eClient.oembed(link)
     if eObj['type'] == 'error':
-        log.info("got an error")
         return false
     else:
         return eObj

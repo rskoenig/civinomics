@@ -113,7 +113,6 @@ class ResourceController(BaseController):
     @h.login_required
     def addResourceHandler(self, workshopCode, workshopURL):
         payload = json.loads(request.body)
-        log.info("add resource")
         if 'title' not in payload:
             return redirect(session['return_to'])
         title = payload['title'].strip()
@@ -124,7 +123,6 @@ class ResourceController(BaseController):
         if resourceLib.getResourceByLink(payload['link'], c.w):
             return redirect(session['return_to']) # Link already submitted
         link = payload['link']
-        log.info("got link" + link)
         text = ''
         if 'text' in payload:
             text = payload['text'] # Optional
@@ -134,7 +132,6 @@ class ResourceController(BaseController):
         if newResource:
             alertsLib.emailAlerts(newResource)
             jsonReturn = '{"state":"Success", "resourceCode":"' + newResource['urlCode'] + '","resourceURL":"' + newResource['url'] + '"}'
-            log.info(jsonReturn)
             return jsonReturn
         else:
             return '{"state":"Error", "errorMessage":"Resource not added!"}'

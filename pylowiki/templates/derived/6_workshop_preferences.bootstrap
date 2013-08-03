@@ -218,8 +218,8 @@
                             var portletID = "portlet_" + portletStrList[1];
                             var num_published = document.getElementById("num_published_slides").getAttribute("rel");
                             if(num_published != "1") {
-                                document.getElementById(portletID).style.display = 'block';
-                                document.getElementById(portletID).style.display = 'none';
+                                pElement = document.getElementById(portletID);
+                                pElement.parentNode.removeChild(pElement);
                                 document.getElementById("num_published_slides").setAttribute("rel", num_published - 1);
                             }
                         }
