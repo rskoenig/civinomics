@@ -778,21 +778,31 @@
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
-            <form action="${editThingLink(thing, embed=True, raw=True)}" method="post" class="form" id="edit-${thing.objType}">
-                <label>edit</label>
+            <form ng-controller="editItemController" action="${editThingLink(thing, embed=True, raw=True)}" method="post" class="form" id="edit-${thing.objType}">
+                <fieldset>
+                <label>Edit</label>
                 % if thing.objType == 'comment':
+                    <label>Comment text</label>
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
+                    <label>Idea title</label>
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
                     <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % elif thing.objType == 'discussion':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
+                    <label>Topic title</label>
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
                     <textarea name="text" rows="3" class="input-block-level">${text}</textarea>
                 % elif thing.objType == 'resource':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
-                    <input type="text" class="input-block-level" name="link" value = "${thing['link']}" id = "link">
+                    <label>Resource title</label>
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <label>Resource URL</label>
+                    <input type="url" class="input-block-level" name="link" value = "${thing['link']}" id = "link" required>
+                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
                     <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % endif
+                </fieldset>
                 <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
             </form>
         </div>

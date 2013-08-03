@@ -204,15 +204,18 @@ def setAttributes(resource, eObj):
 def editResource(resource, title, text, link, owner):
     try:
         revisionLib.Revision(owner, resource)
-        resource['title'] = title
-        resource['text'] = text
         if not link.startswith('http://') and not link.startswith('https://'):
                 link = u'http://' + link
         if resource['link'] != link:
             resource['link'] = link
             resource['url'] = urlify(title)
-            setAttributes(resource, link)
-
+            eObj = getEObj(link)
+            if eObj:
+                setAttributes(resource, eObj)
+                resource['title'] = title
+                resource['text'] = text
+            else:
+                return False
         commit(resource)
         return True
     except:
