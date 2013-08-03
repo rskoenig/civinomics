@@ -173,10 +173,17 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
         return False
 
 # setters
-def setAttributes(resource, link):
+def getEObj(link):
     eKey = config['app_conf']['embedly.key']
     eClient = Embedly(eKey)
     eObj = eClient.oembed(link)
+    if eObj['type'] == 'error':
+        log.info("got an error")
+        return false
+    else:
+        return eObj
+    
+def setAttributes(resource, eObj):
     resource['type'] = eObj['type']
     if eObj['type'] == 'photo':
         resource['info'] = eObj['url']
@@ -215,11 +222,15 @@ def editResource(resource, title, text, link, owner):
 
 # Object
 def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
-    a = Thing('resource', owner.id)
     if not link.startswith('http://') and not link.startswith('https://'):
             link = u'http://' + link
+    eObj = getEObj(link)
+    if not eObj:
+        return false
+        
+    a = Thing('resource', owner.id)
     a['link'] = link
-    setAttributes(a, link)   
+    setAttributes(a, eObj)
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:

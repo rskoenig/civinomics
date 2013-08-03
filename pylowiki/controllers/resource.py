@@ -21,6 +21,7 @@ import webbrowser
 from tldextract import extract
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -111,25 +112,30 @@ class ResourceController(BaseController):
 
     @h.login_required
     def addResourceHandler(self, workshopCode, workshopURL):
-        resourceType = ''
-        resourceInfo = ''
-        if 'title' not in request.params:
+        payload = json.loads(request.body)
+        log.info("add resource")
+        if 'title' not in payload:
             return redirect(session['return_to'])
-        title = request.params['title'].strip()
+        title = payload['title'].strip()
         if title == '':
             return redirect(session['return_to'])
-        if resourceLib.getResourceByLink(request.params['link'], c.w):
+        if 'link' not in payload:
+            return redirect(session['return_to'])
+        if resourceLib.getResourceByLink(payload['link'], c.w):
             return redirect(session['return_to']) # Link already submitted
-        link = request.params['link']
-        # we do this to force a browser page reload. The redirect does not cause the browser to
-        # parse the iframe and fetch it, thus the kludge reload
-        #session['reload'] = '1'
-        #session.save()
+        link = payload['link']
+        log.info("got link" + link)
         text = ''
-        if 'text' in request.params:
-            text = request.params['text'] # Optional
+        if 'text' in payload:
+            text = payload['text'] # Optional
         if len(title) > 120:
             title = title[:120]
         newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
-        alertsLib.emailAlerts(newResource)
-        return redirect(utils.thingURL(c.w, newResource))
+        if newResource:
+            alertsLib.emailAlerts(newResource)
+            jsonReturn = '{"state":"Success", "resourceCode":"' + newResource['urlCode'] + '","resourceURL":"' + newResource['url'] + '"}'
+            log.info(jsonReturn)
+            return jsonReturn
+        else:
+            return '{"state":"Error", "errorMessage":"Resource not added!"}'
+

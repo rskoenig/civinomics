@@ -1,17 +1,42 @@
 
 function resourceController($scope, $http, $location, $timeout) {
-    $scope.resourceFormPrompt     = false;
+    $scope.addResourceTitleShow = false;
+    $scope.addResourceURLShow = false;
     
-    $scope.showResourcePrompt = function() {
-        if(document.getElementById('resourceTypeURL').checked) {
-            document.getElementById("resourceTypeEmbedForm").className = "collapse";
-            document.getElementById("addResourceEmbed").value = ""
-            document.getElementById("resourceTypeURLForm").className = "collapse in";
-        } else if(document.getElementById('resourceTypeEmbed').checked) {
-            document.getElementById("resourceTypeURLForm").className = "collapse";
-            document.getElementById("addResourceLink").value = ""
-            document.getElementById("resourceTypeEmbedForm").className = "collapse in";
+    $scope.submitResourceForm = function(addResourceForm) {
+
+
+        if(addResourceForm.title.$invalid) {
+            $scope.addResourceTitleShow = true;
+            $scope.addResourceTitleResponse =  "Title is required.";
+        } else {
+            $scope.addResourceTitleShow = false;
+            $scope.addResourceTitleResponse =  "";  
         }
+        if(addResourceForm.link.$invalid) {
+            $scope.addResourceURLShow = true;
+            $scope.addResourceURLResponse =  "A valid link URL is required.";
+        } else {
+            $scope.addResourceURLShow = false;
+            $scope.addResourceURLResponse =  "";
+        }
+        if(addResourceForm.$valid) {
+            var addURL = '/workshop/' + $scope.workshopCode + '/' + $scope.workshopURL + '/add/resource/handler';
+            var postData = {'title':$scope.title, 'link': $scope.link, 'text': $scope.text};
+            $http.post(addURL, postData).success(function(data){
+                if(data.state == 'Error'){
+                    $scope.addResourceShow = true;
+                    $scope.addResourceResponse = data.errorMessage;
+                } else {
+                    var resourceCode = data.resourceCode;
+                    var resourceURL = data.resourceURL;
+
+                    var newResourceURL = 'http://' + location.hostname + ':' + location.port + '/workshop/' + $scope.workshopCode + '/' + $scope.workshopURL + '/resource/' + resourceCode + '/' + resourceURL;
+                    window.location = newResourceURL;
+                }
+            });
+        }
+        
     };
 
 }
