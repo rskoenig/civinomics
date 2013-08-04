@@ -16,11 +16,12 @@ import pylowiki.lib.db.geoInfo          as  geoInfoLib
 import pylowiki.lib.alerts              as  alertsLib
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
-import pylowiki.lib.db.mainImage        as mainImageLib
-
+import pylowiki.lib.db.mainImage        as  mainImageLib
+import webbrowser
 from tldextract import extract
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -82,8 +83,7 @@ class ResourceController(BaseController):
         if 'comment' in request.params:
             c.rootComment = commentLib.getCommentByCode(request.params['comment'])
             if not c.rootComment:
-                abort(404)
-                
+                abort(404) 
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, resourceCode, resourceURL, commentCode = ''):
@@ -106,18 +106,27 @@ class ResourceController(BaseController):
 
     @h.login_required
     def addResourceHandler(self, workshopCode, workshopURL):
-        if 'submit' not in request.params or 'title' not in request.params or 'link' not in request.params:
+        payload = json.loads(request.body)
+        if 'title' not in payload:
             return redirect(session['return_to'])
-        title = request.params['title'].strip()
+        title = payload['title'].strip()
         if title == '':
             return redirect(session['return_to'])
-        if resourceLib.getResourceByLink(request.params['link'], c.w):
+        if 'link' not in payload:
+            return redirect(session['return_to'])
+        if resourceLib.getResourceByLink(payload['link'], c.w):
             return redirect(session['return_to']) # Link already submitted
+        link = payload['link']
         text = ''
-        if 'text' in request.params:
-            text = request.params['text'] # Optional
+        if 'text' in payload:
+            text = payload['text'] # Optional
         if len(title) > 120:
             title = title[:120]
-        newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, c.privs, text = text)
-        alertsLib.emailAlerts(newResource)
-        return redirect(utils.thingURL(c.w, newResource))
+        newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
+        if newResource:
+            alertsLib.emailAlerts(newResource)
+            jsonReturn = '{"state":"Success", "resourceCode":"' + newResource['urlCode'] + '","resourceURL":"' + newResource['url'] + '"}'
+            return jsonReturn
+        else:
+            return '{"state":"Error", "errorMessage":"Resource not added!"}'
+

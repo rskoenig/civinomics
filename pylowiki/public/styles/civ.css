@@ -313,6 +313,53 @@ form.addGoal{
   position: relative;
 }
 
+.trashbasket {
+    background-image: url('/images/trashbasket.png');
+    background-repeat:no-repeat;
+    background-position:center top; 
+    height:150px;
+}
+
+.resource-link {
+    margin-top: 8px;
+    padding-left:25px;
+    height: 25px;
+    background-repeat:no-repeat;
+    background-position:center left;
+    display: inline-block;
+    background-image: url('/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png');
+}
+
+.resource-video {
+    margin-top: 8px;
+    padding-left:30px;
+    height: 25px;
+    background-repeat:no-repeat;
+    background-position:center left;
+    display: inline-block;
+    background-image: url('/images/glyphicons_pro/glyphicons/png/glyphicons_008_film.png');
+}
+
+.resource-photo {
+    margin-top: 8px;
+    padding-left:30px;
+    height: 25px;
+    background-repeat:no-repeat;
+    background-position:center left;
+    display: inline-block;
+    background-image: url('/images/glyphicons_pro/glyphicons/png/glyphicons_138_picture.png');
+}
+
+.resource-file {
+    margin-top: 8px;
+    padding-left:30px;
+    height: 25px;
+    background-repeat:no-repeat;
+    background-position:center left;
+    display: inline-block;
+    background-image: url('/images/glyphicons_pro/glyphicons/png/glyphicons_036_file.png');
+}
+
 .row-fluid [class*="span"]:nth-child(3n+1).slideListing{
     margin-left:0px;
 }

@@ -163,7 +163,7 @@ class WorkshopController(BaseController):
         session.save()
 
         slideshow = slideshowLib.getSlideshow(c.w)
-        c.slideshow = slideshowLib.getAllSlides(slideshow.id)
+        c.slideshow = slideshowLib.getAllSlides(slideshow)
 
         werror = 0
         wchanges = 0
@@ -1007,6 +1007,7 @@ class WorkshopController(BaseController):
             
         if 'confTab' in session:
             c.tab = session['confTab']
+            log.info(c.tab)
             session.pop('confTab')
             session.save()
         # hack for continue button in tab4 of configure
@@ -1015,6 +1016,7 @@ class WorkshopController(BaseController):
             
         slideshow = slideshowLib.getSlideshow(c.w)
         c.slideshow = slideshowLib.getAllSlides(slideshow)
+        c.deleted_slides = []
         c.published_slides = []
         slide_ids = [int(item) for item in slideshow['slideshow_order'].split(',')]
         for id in slide_ids:

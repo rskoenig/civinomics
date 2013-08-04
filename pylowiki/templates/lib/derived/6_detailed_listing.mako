@@ -73,17 +73,13 @@
                                         ${itemTitle | n}
                                         % if item.objType == 'resource':
                                             <p>
-                                            <% itemTitle = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 75)) %>
-                                            ${itemTitle | n}
+                                            <% itemLink = '<small>(<a %s>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 75)) %>
+                                            ${itemLink | n}
                                             </p>
-                                            <p class="no-bottom">
-                                            <small>Posted by ${lib_6.userLink(item.owner)} ${addedAs} from ${lib_6.userGeoLink(item.owner)}</small>
-                                            </p>
-                                        % else:
-                                        <p class="no-bottom">
-                                            Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}
-                                        </p>
                                         % endif
+                                        <p class="no-bottom">
+                                            <small>Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)} ${item.date}</small>
+                                        </p>
                                             <% 
                                                 comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
                                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
@@ -134,18 +130,26 @@
                             % endif
                         % endif
                         % if item.objType == 'resource':
+                            <% 
+                                extraClass = ""
+                                if item['type'] == 'link' or item['type'] == 'general':
+                                    extraClass="resource-link"
+                                elif item['type'] == 'photo':
+                                    extraClass="resource-photo"
+                                elif item['type'] == 'video':
+                                    extraClass="resource-video"
+                                elif item['type'] == 'rich':
+                                    extraClass="resource-file"
+                                endif
+                            %>
                             <p>
-                                <% itemTitle = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
-                                ${itemTitle | n}
+                                <% itemLink = '<small>(<a %s>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
+                                <span class="${extraClass}">${itemLink | n}</span>
                             </p>
-                            <p class="no-bottom">
-                            <small>Posted by ${lib_6.userLink(item.owner)} ${addedAs} from ${lib_6.userGeoLink(item.owner)}</small>
-                            </p>
-                        % else:
+                        % endif
                         <p class="no-bottom">
                             Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}
                         </p>
-                        % endif
                             <% 
                                 comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
