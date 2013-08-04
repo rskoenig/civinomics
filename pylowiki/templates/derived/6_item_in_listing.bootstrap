@@ -16,6 +16,20 @@
      <div class="section-wrapper">
         <div class="browse">
             <h3 class="section-header"> ${d[c.listingType]} </h3>
+            % if 'alert' in session:
+		        <% alert = session['alert'] %> 
+                <div class="alert alert-${alert['type']} workshop-admin">
+                    <button data-dismiss="alert" class="close">x</button>
+                    <strong>${alert['title']}</strong>
+                    % if 'content' in alert:
+                        <br /><strong>${alert['content']}</strong>
+                    % endif
+                </div>
+                <% 
+                    session.pop('alert')
+                    session.save()
+                %>
+	        % endif
             % if c.thing.objType == 'revision':
                 <div class="row-fluid">
                     <div class="span10 offset1">

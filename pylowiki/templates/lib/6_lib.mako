@@ -8,6 +8,7 @@
    import pylowiki.lib.db.rating        as ratingLib
    import pylowiki.lib.db.mainImage     as mainImageLib
    import pylowiki.lib.db.tag           as tagLib
+   import pylowiki.lib.db.workshop      as workshopLib
    
    from hashlib import md5
    import logging, os
@@ -22,56 +23,58 @@
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
     %>
-    <div id="fb-root"></div>
-    <script src="/js/extauth.js" type="text/javascript"></script>
-    <script>
-        console.log('before window init');
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : "${facebookAppId}", // App ID
-                channelUrl : "${channelUrl}", // Channel File
-                status     : true, // check login status
-                cookie     : false, // enable cookies to allow the server to access the session
-                xfbml      : true  // parse XFBML
-            });
-            console.log('after window init');
-            FB.Event.subscribe('auth.authResponseChange', function(response) {
-              // Here we specify what we do with the response anytime this event occurs.
-              console.log('above response tree');
-              if (response.status === 'connected') {
-                console.log('calling fb connected');
-                //shareOnWall(response.authResponse);
-              } else if (response.status === 'not_authorized') {
-                console.log('not authd');                
-                //FB.login();
-              } else {
-                console.log('else');
-                //FB.login();
-              }
-            });
-        };
+    % if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
+        <div id="fb-root"></div>
+        <script src="/js/extauth.js" type="text/javascript"></script>
+        <script>
+            console.log('before window init');
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId      : "${facebookAppId}", // App ID
+                    channelUrl : "${channelUrl}", // Channel File
+                    status     : true, // check login status
+                    cookie     : false, // enable cookies to allow the server to access the session
+                    xfbml      : true  // parse XFBML
+                });
+                console.log('after window init');
+                FB.Event.subscribe('auth.authResponseChange', function(response) {
+                // Here we specify what we do with the response anytime this event occurs.
+                console.log('above response tree');
+                if (response.status === 'connected') {
+                    console.log('calling fb connected');
+                    //shareOnWall(response.authResponse);
+                } else if (response.status === 'not_authorized') {
+                    console.log('not authd');                
+                    //FB.login();
+                } else {
+                    console.log('else');
+                    //FB.login();
+                }
+                });
+            };
         
-        // Load the SDK asynchronously
-        (function(d){
-            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement('script'); js.id = id; js.async = true;
-            js.src = "//connect.facebook.net/en_US/all.js";
-            ref.parentNode.insertBefore(js, ref);
-        }(document));
+            // Load the SDK asynchronously
+            (function(d){
+                var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement('script'); js.id = id; js.async = true;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                ref.parentNode.insertBefore(js, ref);
+            }(document));
 
-        function shareOnWall(authResponse) {
-            FB.ui({
-                method: "stream.share",
-                u: ""
-            });
-        }
-    </script>
-    <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+            function shareOnWall(authResponse) {
+                FB.ui({
+                    method: "stream.share",
+                    u: ""
+                });
+            }
+        </script>
+        <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+    % endif
 </%def>
 
 <%def name="emailShare(itemURL, itemCode)">
-    % if 'user' in session and c.authuser:
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
@@ -778,9 +781,11 @@
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
+            <div class="spacer"></div>
             <form action="${editThingLink(thing, embed=True, raw=True)}" ng-controller="editItemController" method="post" class="form" id="edit-${thing.objType}">
                 <fieldset>
                 <label>Edit</label>
+                <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
                     <label>Comment text</label>
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
