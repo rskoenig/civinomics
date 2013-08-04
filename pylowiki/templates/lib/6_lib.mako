@@ -778,12 +778,12 @@
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
-            <form ng-controller="editItemController" action="${editThingLink(thing, embed=True, raw=True)}" method="post" class="form" id="edit-${thing.objType}">
+            <form action="${editThingLink(thing, embed=True, raw=True)}" ng-controller="editItemController" method="post" class="form" id="edit-${thing.objType}">
                 <fieldset>
                 <label>Edit</label>
                 % if thing.objType == 'comment':
                     <label>Comment text</label>
-                    <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
+                    <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
                     <label>Idea title</label>
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
@@ -796,7 +796,7 @@
                     <textarea name="text" rows="3" class="input-block-level">${text}</textarea>
                 % elif thing.objType == 'resource':
                     <label>Resource title</label>
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id="title" required>
                     <label>Resource URL</label>
                     <input type="url" class="input-block-level" name="link" value = "${thing['link']}" id = "link" required>
                     <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>

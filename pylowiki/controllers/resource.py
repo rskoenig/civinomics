@@ -68,12 +68,6 @@ class ResourceController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.requestUrl = request.url
-        # this is for the case of embeds, see add resource handler below
-        if 'reload' in session:
-            log.info("settting c.reload here")
-            c.reload = 1
-            session.pop('reload')
-            session.save()
 
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:
