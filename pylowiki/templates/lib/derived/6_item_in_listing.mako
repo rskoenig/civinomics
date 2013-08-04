@@ -51,19 +51,25 @@
 <%def name="showItemTitle(thing)">
     <h4>
         <% 
-            link = ''
+            link = ""
             title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
             if thing.objType == 'resource':
-                link = '<small>(<a %s target=_blank>%s</a>)</small>' %(lib_6.thingLinkRouter(thing, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(thing['link'], 75))
+                    link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(thing['link'], lib_6.ellipsisIZE(thing['link'], 75))
+                    if thing['type'] == 'rich' or thing['type'] == 'video':
+                        link = link + '<div class="spacer"></div>' + thing['info']
+                    if thing['type'] == 'photo':
+                        link = link + '<div class="spacer"></div><img src="' + thing['info'] + '">'
             elif thing.objType == 'revision':
+                title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title'])
                 if thing['objType'] == 'resource':
-                    title = '<a href="%s" class="listed-item-title" target="_blank">%s</a>' %(thing['link'], thing['title'])
-                else:
-                    title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
+                    link = '<small>(<a href=%s target=_blank>%s</a>)</small>' %(thing['link'], lib_6.ellipsisIZE(thing['link'], 75))
+                    if 'info' in thing:
+                        link = link + '<div class="spacer"></div>' + thing['info']
             else:
                 title = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(thing, c.w, embed=True), thing['title']) 
         %>
         ${title | n}<br>
+        <div class="spacer"></div>
         ${link | n}
     </h4>
 </%def>

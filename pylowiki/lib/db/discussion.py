@@ -106,16 +106,16 @@ class Discussion(object):
     # If the owner is not None, then the discussion was actively created by some user.
     def __init__(self, **kwargs):
         """
-            Discussions can only be attached to a workshop's feedback, background, workshop resources, suggestions and suggestion resources
+            Discussions can be attached to anything, basically
             kwargs: dict of arguments, keyed as follows:
                     owner                ->    The owner Thing that created the discussion
                     title                ->    The title of the discussion, in string format
                     attachedThing        ->    The Thing to which we are attaching this discussion
                     discType             ->    Used to determine special properties, like a background discussion or a feedback discussion in a workshop
+                    (optional)
                     workshop             ->    Links the discussion to the workshop.  The discussion type is used to differentiate between a discussion 
                                                linked to, say, an idea, and a discussion linked directly to the workshop.
                     privs                ->    The c.privs object describing what the authuser's role is
-                    (optional)
                     text                 ->    Some extra description, if provided
                     role                 ->    The role used to indicate how the discussion was added (admin, facilitator, listener, etc...)  If not provided,
                                                this is automatically set from the privs dict.
@@ -130,7 +130,6 @@ class Discussion(object):
             role = kwargs['role']
         title = kwargs['title']
         discType = kwargs['discType']
-        workshop = kwargs['workshop']
         d['discType'] = discType
         d['disabled'] = '0'
         d['deleted'] = '0'
@@ -139,9 +138,11 @@ class Discussion(object):
         d['title'] = title
         d['url'] = urlify(title)
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
-        d = generic.linkChildToParent(d, workshop)
-        d = generic.addedItemAs(d, kwargs['privs'], role)
         # Optional arguments
+        if 'workshop' in kwargs:
+            workshop = kwargs['workshop']
+            d = generic.linkChildToParent(d, workshop)
+            d = generic.addedItemAs(d, kwargs['privs'], role)
         if 'text' in kwargs:
             d['text'] = kwargs['text']
         if 'attachedThing' in kwargs.keys():

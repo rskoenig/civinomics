@@ -11,19 +11,26 @@
  */
 -->
 
-<%def name="admin_slideshow()">    
+<%def name="workshop_admin_slideshow()">    
     <div class="section-wrapper">
         <div class="browse">
             <h4 class="section-header smaller">Slideshow</h4>
-            ${add_slides()}
+            ${add_slides(c.w)}
             ${edit_slideshow()}
+            % if c.w['startTime'] == '0000-00-00':
+                <div class="row-fluid">
+                    <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
+                    <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
+                    </form>
+                </div><!-- row-fluid -->
+            % endif
         </div><!-- browse -->
     </div><!-- section-wrapper -->
 </%def>
 
-<%def name="add_slides()">
+<%def name="add_slides(parent)">
     <!-- The file upload form used as target for the file upload widget -->
-    <form id="fileupload" action="/workshop/${c.w['urlCode']}/${c.w['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
+    <form id="fileupload" action="/${parent.objType}/${parent['urlCode']}/${parent['url']}/addImages/handler" method="POST" enctype="multipart/form-data">
     <p><strong>Add images</strong></p>
     <ul>
         <li>Slideshow looks best with 6 or more images</li>
@@ -160,15 +167,16 @@
 
 <%def name="edit_slideshow()">
     <div class="row-fluid">
-        <p><strong>Create Slideshow</strong></p>
+        <p><strong>Edit Slideshow</strong></p>
         <ul>
             <li>Click and drag to rearrange images</li>
             <li>Add captions</li>
-            <li>Store unused images under Unpublished Slides</li>
+            <li>Drag images to Trash to delete</li>
         </ul>
         <div class="demo">
             <div class="column" id="published">
                 <h4 class="centered">Published slides</h4 >
+                <div id="num_published_slides" rel="${str(len(c.published_slides))}"></div>
                 % for slide in c.published_slides:
                     % if int(slide['deleted']) == 0:
                         <div class="portlet" id = "portlet_${slide.id}">
@@ -186,9 +194,9 @@
                     % endif
                 % endfor
             </div><!-- column -->
-            <div class="column" id="unpublished">
-                <h4 class="unsortable centered">Unpublished slides</h4>
-                % for slide in c.slideshow:
+            <div class="column trashbasket" id="unpublished">
+                <h4 class="unsortable centered">Trash</h4>
+                % for slide in c.deleted_slides:
                     % if int(slide['deleted']) == 1:
                         <div class="portlet" id = "portlet_${slide.id}">
                             <div class = "portlet-title edit" id = "${slide.id}_title">${slide['title']}</div>
@@ -206,10 +214,5 @@
                 % endfor
             </div><!-- column -->
         </div><!-- End demo -->
-        % if c.w['startTime'] == '0000-00-00':
-            <form name="continueToNext" id="continueToNext" action="/workshop/${c.w['urlCode']}/${c.w['url']}/configureContinueHandler" method="POST">
-                <button type="submit" class="btn btn-warning" name="continueToNext">Continue To Next Step</button>
-            </form>
-        % endif
     </div><!-- row-fluid -->
 </%def>

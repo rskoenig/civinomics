@@ -44,20 +44,23 @@
 </%def>
 
 <%def name="addResource()">
-   <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/resource/handler" id="addResource" method="post">
-      <fieldset>
-         <label>Resource title</label>
-         <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120">
-         <span class="help-block"> (Try to keep your title informative, but concise.) </span>
-      </fieldset>
-      <hr/>
-      <fieldset>
-         <label>Resource URL</label>
-         <input type="text" class="input-block-level" name="link">
-      </fieldset>
-      <hr/>
-      ${self.additionalInfo(name="text")}
-      ${self.submitButton()}
+    <form ng-controller="resourceController" ng-init="workshopCode = '${c.w['urlCode']}'; workshopURL = '${c.w['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
+        <fieldset>
+            <label>Resource title</label>
+            <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
+            <span class="help-block"> (Try to keep your title informative, but concise.) </span>
+            <span ng-show="addResourceTitleShow"><div class="alert alert-danger">{{addResourceTitleResponse}}</div></span>
+        </fieldset>
+        <hr/>
+        <fieldset>
+            <label>Resource URL</label>
+            <input type="url" class="input-block-level" name="link" ng-model="link" placeholder="http://" required>
+            <span ng-show="addResourceURLShow"><div class="alert alert-danger">{{addResourceURLResponse}}</div></span>
+        </fieldset>
+        <hr/>
+        ${self.additionalInfo(name="text")}
+        <span ng-show="addResourceShow">{{addResourceResponse}}</span>
+        ${self.submitButton()}
    </form>
 </%def>
 
@@ -88,27 +91,31 @@
 <%def name="additionalInfo(name='text')">
    <fieldset>
       <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-      <textarea name="${name}" rows="3" class="input-block-level"></textarea>
+      <textarea name="${name}" rows="3" class="input-block-level" ng-model="${name}"></textarea>
       <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
    </fieldset>
 </%def>
 
 <%def name="extraScripts2()">
-   <script type="text/javascript" src="/js/vendor/charCount.js"></script>
-   <script>
+    <script type="text/javascript" src="/js/vendor/charCount.js"></script>
+    <script>
       $("#title").charCount({
          allowed:120,
          warning:20,
          css: 'counter green pull-right',
          counterElement: 'strong'
       });
-   </script>
-   <script type="text/javascript">
+    </script>
+    <script type="text/javascript">
       function GoalsCtrl($scope, $http) {
          var getGoalsURL = "/workshop/${c.w['urlCode']}/${c.w['url']}/goals/get"
          $http.get(getGoalsURL).success(function(data){
             $scope.goals = data;
          });
       };
-   </script>
+    </script>
+</%def>
+
+<%def name="headScripts()">
+    <script src="/js/ng/resource.js" type="text/javascript"></script> 
 </%def>

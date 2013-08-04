@@ -56,7 +56,8 @@ function listenerController($scope, $http, $location) {
             document.getElementById(titleSpanLabel).innerHTML = lTitle;
             response.innerHTML = 'Changes saved.';
         });
-    };  
+    };
+    
     $scope.toggleListener = function(urlCode) {
         var disableURL = '/workshop/' + $scope.code + '/' + $scope.url + '/listener/' + $scope.user + '/disable/handler';
         var formName = 'toggleForm' + urlCode;
