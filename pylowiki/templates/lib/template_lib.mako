@@ -4,13 +4,10 @@
     import pylowiki.lib.db.message  as messageLib
 %>
 
+!
 <%def name="mainNavbar()">
     <div class="navbar civ-navbar navbar-fixed-top" style="margin-bottom: 60px;">
-        <div class="navbar-inner"
-            % if "corp" in session._environ['PATH_INFO']:
-                id="corpNavbar"
-            % endif
-        >
+        <div class="navbar-inner">
             <div class="container">
                 <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                     <span class="icon-bar"></span>
@@ -18,11 +15,7 @@
                     <span class="icon-bar"></span>
                 </a>
                 <a class="brand civ-brand" href="/">
-                    % if "corp" in session._environ['PATH_INFO']:
-                        <img src="/images/logo_white.png" class="small-logo" id="civinomicsLogo">
-                    % else:
-                        <img src="/images/logo.png" class="small-logo" id="civinomicsLogo">
-                    % endif
+                    <img src="/images/logo_white.png" class="small-logo" id="civinomicsLogo">
                 </a>
                 <ul class="nav">
                     <li>
@@ -38,48 +31,39 @@
                 </ul>
                 <div class="nav-collapse collapse">
                     <ul class="nav pull-right" id="profileAvatar">
+                        <%
+                            wSelected = mSelected = pSelected = aSelected = hSelected = ''
+                            if "/workshops" in session._environ['PATH_INFO']:
+                                wSelected = "active"
+                            elif "/messages" in session._environ['PATH_INFO']:
+                                mSelected = "active"
+                            elif "/profile" in session._environ['PATH_INFO']:
+                                pSelected = "active"
+                            elif "/admin" in session._environ['PATH_INFO']:
+                                aSelected = "active"
+                            elif "/help" in session._environ['PATH_INFO']:
+                                hSelected = "active"
+                            endif
+                        %>
                         % if 'user' in session:
-                            <li>
-                                ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", linkClass="topbar-avatar-link")}
+                            <li class="${mSelected}">
                                 <%
-                                    profileTitle = 'my profile'
+                                    messageCount = ''
                                     numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
                                     if numMessages:
                                         if numMessages > 0:
-                                            profileTitle += ' (%s)' % numMessages
+                                            messageCount += ' %s' % numMessages
                                 %>
-                                <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">${profileTitle}</a>
+                                <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><span class="badge badge-warning"><i class="icon-envelope icon-white"></i>${messageCount}</span></a>
                             </li>
-                            % if 'user' in session:
-                                <%
-                                    country = c.authuser_geo['countryTitle']
-                                    countryURL = c.authuser_geo['countryURL']
-                                    state = c.authuser_geo['stateTitle']
-                                    stateURL = c.authuser_geo['stateURL']
-                                    county = c.authuser_geo['countyTitle']
-                                    countyURL = c.authuser_geo['countyURL']
-                                    city = c.authuser_geo['cityTitle']
-                                    cityURL = c.authuser_geo['cityURL']
-                                    postalCode = c.authuser_geo['postalCodeURL']
-                                %>
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">workshops<b class="caret"></b></a>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                        <li><a tabindex="-1" href="/workshop/display/create/form">start a new workshop!</a></li>
-                                        <li><a tabindex="-1" href="/workshops">show all workshops</a></li>
-                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/">- ${country}</a></li>
-                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/${stateURL}/">- State of ${state}</a></li>
-                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/${stateURL}/${countyURL}/">- County of ${county}</a></li>
-                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/${stateURL}/${countyURL}/${cityURL}/">- City of ${city}</a></li>
-                                        <li><a tabindex="-1" href="/workshops/geo/earth/${countryURL}/${stateURL}/${countyURL}/${cityURL}/${postalCode}">- Postal Code of ${postalCode}</a></li>
-                                    </ul>
-                                </li>
-                            % else:
-                                <li><a href="/workshops">workshops</a></li>
-                            % endif
+                        % endif
+                            <li class="${wSelected}">
+                                <a href="/workshops">Workshops</a>
+                            </li>
+                        % if 'user' in session:
                             % if userLib.isAdmin(c.authuser.id):
-                                <li class="dropdown">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">objects<b class="caret"></b></a>
+                                <li class="dropdown ${aSelected}">
+                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
                                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                                         <li><a tabindex="-1" href="/admin/users">Users</a></li>
                                         <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
@@ -90,13 +74,19 @@
                                     </ul>
                                 </li>
                             % endif
-                        % endif
-                        <li><a href="/help">help</a></li>
-                        % if 'user' in session:
-                            <li><a href="/login/logout">logout</a></li>
+                            <li class="dropdown ${pSelected}">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
+                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                                    <li><a href="/help">Help</a></li>
+                                    <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                                </ul>
+                            </li>
                         % else:
-                            <li><a href="/login">login</a></li>
-                            <li><a href="/signup">signup</a></li>
+                            <li class="${hSelected}"><a href="/help">Help</a></li>
+                            <li><a href="/login">Login</a></li>
+                            <li><a href="/signup">Signup</a></li>
                         % endif
                     </ul>
                 </div><!--/.nav-collapse -->
@@ -125,8 +115,8 @@
                <li class="nav-item"></li> 
             </ul>
             <ul class="nav pull-right">
-              <li class="nav-item"><a href="/signup" class="nav-item">Sign Up</a></li>
-              <li class="nav-item"><a href="/login" class="nav-item">Log In</a></li>
+              <li class="nav-item"><a href="/signup" class="nav-item green green-hover">Sign Up</a></li>
+              <li class="nav-item"><a href="/login" class="nav-item green green-hover">Log In</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

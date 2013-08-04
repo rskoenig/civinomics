@@ -73,7 +73,7 @@ class CommentController(BaseController):
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
-            title = 'Someone replied to a post you made'
+            title = ' replied to a post you made'
             text = '(This is an automated message)'
             extraInfo = 'commentResponse'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
