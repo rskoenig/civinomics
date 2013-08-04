@@ -179,9 +179,9 @@
 </%def>
 
 <%def name="yesNoVote(thing)">
-   <div class="voteWrapper">
+   <div class="yesNoWrapper">
       % if thing['disabled'] == '1' or thing.objType == 'revision':
-         </div> <!-- /.voteWrapper -->
+         </div> <!-- /.yesNoWrapper -->
          <% return %>
       % endif
       <% 
@@ -230,7 +230,7 @@
          % else:
             <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
          % endif
-         <img src=${voteImg | n} class="vote-icon"><span class="noScore">${totalNo}</span> 
+         <img src=${voteImg | n} class="vote-icon"><span class="noScore">30000000</span> 
          </a>
          <br>
          <!-- Yes<span class="yesScore">${totalYes}</span>

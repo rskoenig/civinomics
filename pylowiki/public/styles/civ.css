@@ -749,6 +749,11 @@ img.watch{
    position: absolute;
 }
 
+.yesNoWrapper a{
+   width: 100%;
+   position: absolute;
+}
+
 .oddComment{
     background-color:whitesmoke;
 }
