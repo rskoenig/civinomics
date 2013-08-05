@@ -19,3 +19,22 @@ function fbCheckAccount(response, authResponse, smallPic, bigPic){
     //return gobj.result
     //document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = gobj.result;
 }
+
+function postShared(response){
+    // someone shared something. record this in the db
+    // needing info to define the object that is being shared. could be a workshop, could be an 
+    // object within a workshop
+    // ! determine this here, then send the message to the corresponding route
+    //  - 
+    
+    
+    // ! determine this in the controller, creating the correct share object
+    //  - in the controller, depending on the parameters seen, create a share of a workshop,
+    // or a share of an object
+    // sending a post at a share url, can this be determined on the controller end?
+    // var shareURL = '/workshop/' + $scope.code + '/' + $scope.url + '/share/' + $scope.user + 
+    // '/email/handler';
+    //  var postData = {'itemURL':$scope.itemURL, 'itemCode':$scope.itemCode, 
+    //  'recipientName':$scope.recipientName, 'recipientEmail':$scope.recipientEmail, 
+    // 'memberMessage':$scope.memberMessage};
+}
