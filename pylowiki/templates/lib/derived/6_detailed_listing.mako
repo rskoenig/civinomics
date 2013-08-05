@@ -254,20 +254,21 @@
                 </div>
             % else:
                 <div class="row-fluid list-item border-bottom">
-                    <div class="span9 list-item-text ideaListing" id="content_${itemCounter}">
+                    <div class="span10 list-item-text ideaListing" id="content_${itemCounter}">
                         <% itemTitle = '<p class="ideaListingTitle"><a %s class="listed-item-title">%s</a></p>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                         ${itemTitle | n}
                         % if item['adopted'] == '1':
                             <small><i class="icon-star"></i> This idea adopted!</small>
                         % endif
                             <% 
-                                comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments') 
+                                comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments')
+                                fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text') 
                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
 
                                 totalVotes = int(item['ups']) + int(item['downs'])
                             %>
                             <ul class="horizontal-list ideaListing">
-                                <li><i class="icon-user"> Total Votes</i> (${totalVotes})</li>
+                                <li>${fullText | n}</li>
                                 % if c.demo:
                                     <li>${comments | n}</li>
                                 % else:
@@ -278,7 +279,7 @@
                                 <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}</small>
                             </p>
                     </div><!--/.span9-->
-                    <div class="span3 voteBlock ideaListing" id="vote_${itemCounter}">
+                    <div class="span2 voteBlock ideaListing" id="vote_${itemCounter}">
                         ${lib_6.yesNoVote(item)}
                     </div>
                 </div><!--/.row-fluid-->

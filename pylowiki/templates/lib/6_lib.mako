@@ -1,6 +1,9 @@
 <%!
    from pylowiki.lib.db.geoInfo import getGeoInfo
 
+   import locale
+   locale.setlocale(locale.LC_ALL, 'en_US')
+
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
    import pylowiki.lib.db.resource      as resourceLib
@@ -178,7 +181,7 @@
    </div>
 </%def>
 
-<%def name="yesNoVote(thing)">
+<%def name="yesNoVote(thing, *args)">
    <div class="yesNoWrapper">
       % if thing['disabled'] == '1' or thing.objType == 'revision':
          </div> <!-- /.yesNoWrapper -->
@@ -209,7 +212,10 @@
          % else:
             <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${commentClass}">
          % endif
-         <img src=${voteImg | n} class="vote-icon"><span class="yesScore">${totalYes}</span>
+         <img src=${voteImg | n} class="vote-icon">
+         % if 'detail' in args:
+            <span class="yesScore">${locale.format("%d", totalYes, grouping=True)}</span>
+         % endif
          </a>
          <br>
          <br>
@@ -230,12 +236,15 @@
          % else:
             <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
          % endif
-         <img src=${voteImg | n} class="vote-icon"><span class="noScore">30000000</span> 
+         <img src=${voteImg | n} class="vote-icon">
+         % if 'detail' in args:
+            <span class="noScore">${locale.format("%d", totalNo, grouping=True)}</span> 
+         % endif
          </a>
          <br>
          <!-- Yes<span class="yesScore">${totalYes}</span>
          No <span class="noScore">${totalNo}</span> -->
-         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${totalVotes}</span></div>
+         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
       % else:
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          <!--
@@ -252,7 +261,7 @@
          <img src="/images/no_blank.png" class="vote-icon">
          </a>
          <br>
-         <div class="centered yesNo-score"> ${rating} </div>
+         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
          <% log.info("vote") %>
       % endif
    </div>

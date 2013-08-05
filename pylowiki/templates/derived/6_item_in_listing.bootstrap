@@ -9,8 +9,6 @@
     d = {'discussion':'Topic', 'resource':'Resource', 'idea':'Idea'}
 %>
 
-<div class="spacer" style="height:20px;"></div>
-
 <div class="row-fluid">
   <div class="span12">
      <div class="section-wrapper">
@@ -32,8 +30,8 @@
                     <div class="span1">
                     </div>
                     <div class="span11">
-                        <div class="well" style="float: right; margin-left: 20px; padding-left: 40px; width: 175px;">
-                            ${lib_6.yesNoVote(c.thing)}
+                        <div class="well yesNoWell">
+                            ${lib_6.yesNoVote(c.thing, 'detail')}
                         </div>
                         ${helpers.showItemTitle(c.thing)}
                         <div class="spacer"></div>

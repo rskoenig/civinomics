@@ -190,7 +190,8 @@ padding: 0;
 
 .horizontal-list.ideaListing{
   margin-left: 0px;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
+  font-size: .85em;
 }
 
 img.small-logo{
@@ -752,6 +753,13 @@ img.watch{
 .yesNoWrapper a{
    width: 100%;
    position: absolute;
+}
+
+.yesNoWell{
+  float: right;
+  margin-left: 20px;
+  padding-left: 40px;
+  width: 175px;
 }
 
 .oddComment{
@@ -1470,3 +1478,13 @@ li.thumbnail-gallery{
 .border-bottom{
   border-bottom: 1px solid #ddd;
 }
+
+/*
+.yesVote > .yesScore, .noVote > .noScore{
+  display: none;
+}
+
+.yesVote.voted > .yesScore, .noVote.voted > .noScore{
+  display: inline;
+}
+*/
