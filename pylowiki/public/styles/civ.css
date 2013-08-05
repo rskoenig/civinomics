@@ -1479,12 +1479,7 @@ li.thumbnail-gallery{
   border-bottom: 1px solid #ddd;
 }
 
-/*
-.yesVote > .yesScore, .noVote > .noScore{
+.hideVoteTally{
   display: none;
 }
 
-.yesVote.voted > .yesScore, .noVote.voted > .noScore{
-  display: inline;
-}
-*/

@@ -200,12 +200,18 @@
                if rated['amount'] == '1':
                   commentClass = 'voted yesVote'
                   voteImg = '"/images/yes_selected.png"'
+                  displayTally = ''
                else:
                   commentClass = 'yesVote'
                   voteImg = '"/images/yes_blank.png"'
+                  displayTally = ''
+                  if rated['amount'] == '0' :
+                    displayTally = 'hideVoteTally'
+
             else:
                commentClass = 'yesVote'
                voteImg = '"/images/yes_blank.png"'
+               displayTally = 'hideVoteTally'
          %>
          % if thing.objType != 'comment':
             <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
@@ -214,7 +220,7 @@
          % endif
          <img src=${voteImg | n} class="vote-icon">
          % if 'detail' in args:
-            <span class="yesScore">${locale.format("%d", totalYes, grouping=True)}</span>
+            <span class="yesScore ${displayTally}">${locale.format("%d", totalYes, grouping=True)}</span>
          % endif
          </a>
          <br>
@@ -238,7 +244,7 @@
          % endif
          <img src=${voteImg | n} class="vote-icon">
          % if 'detail' in args:
-            <span class="noScore">${locale.format("%d", totalNo, grouping=True)}</span> 
+            <span class="noScore ${displayTally}">${locale.format("%d", totalNo, grouping=True)}</span> 
          % endif
          </a>
          <br>

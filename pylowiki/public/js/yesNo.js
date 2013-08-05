@@ -33,6 +33,10 @@ $(document).ready(function()
             var totalVotes = ($(this).siblings(".totalVotesWrapper").children(".totalVotes").html()*1);
             totalVotes = totalVotes - 1;
             $(this).siblings(".totalVotesWrapper").children(".totalVotes").html(totalVotes)
+
+            //having no longer cast a vote yes/no totals are hidden
+            $(this).children(".noScore").attr("class", "noScore hideVoteTally");
+            $(this).siblings('.yesVote').children(".yesScore").attr("class", "yesScore hideVoteTally");
         }
         else
         {
@@ -63,6 +67,10 @@ $(document).ready(function()
                 var totalVotes = ($(this).siblings(".totalVotesWrapper").children(".totalVotes").html()*1);
                 totalVotes = totalVotes + 1;
                 $(this).siblings(".totalVotesWrapper").children(".totalVotes").html(totalVotes)
+
+                //remove class hiding the yes/no votes
+                $(this).children(".noScore").attr("class", "noScore");
+                $(this).siblings('.yesVote').children(".yesScore").attr("class", "yesScore");
             }
         }
         $.post($(this).attr('href'));
@@ -86,6 +94,10 @@ $(document).ready(function()
             var totalVotes = ($(this).siblings(".totalVotesWrapper").children(".totalVotes").html()*1);
             totalVotes = totalVotes - 1;
             $(this).siblings(".totalVotesWrapper").children(".totalVotes").html(totalVotes)
+
+            //having no longer cast a vote yes/no totals are hidden
+            $(this).siblings(".noVote").children(".noScore").attr("class", "noScore hideVoteTally");
+            $(this).children(".yesScore").attr("class", "yesScore hideVoteTally");
         }
         else
         {
@@ -115,6 +127,10 @@ $(document).ready(function()
                 var totalVotes = ($(this).siblings(".totalVotesWrapper").children(".totalVotes").html()*1);
                 totalVotes = totalVotes + 1;
                 $(this).siblings(".totalVotesWrapper").children(".totalVotes").html(totalVotes)
+
+                //remove class hiding the yes/no votes
+                $(this).siblings(".noVote").children(".noScore").attr("class", "noScore");
+                $(this).children(".yesScore").attr("class", "yesScore");
             }
         }
         $.post($(this).attr('href'));
