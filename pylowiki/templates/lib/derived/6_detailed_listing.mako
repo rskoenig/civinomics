@@ -214,44 +214,40 @@
                                 <small>This item has been disabled by ${lib_6.userLink(disabler)} because: ${reason}</small>
                             </div>
                             <div class="accordion-body collapse" id="item-body-${item['urlCode']}">
-                                <div class="row-fluid list-item">
-                                    <div class="span2 offset1">
-                                        ${lib_6.userImage(author, className = 'avatar')}
-                                    </div> <!--/.span2-->
-                                    <div class="span9 list-item-text" id="content_${itemCounter}">
-                                        <% itemTitle = '<h5 class="no-bottom"><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
+                                <div class="row-fluid list-item border-bottom">
+                                    <div class="span10 list-item-text ideaListing" id="content_${itemCounter}">
+                                        <% itemTitle = '<p class="ideaListingTitle"><a %s class="listed-item-title">%s</a></p>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                                         ${itemTitle | n}
-                                        <p>
-                                            Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}
-                                        </p>
+                                        % if item['adopted'] == '1':
+                                            <small><i class="icon-star"></i> This idea adopted!</small>
+                                        % endif
                                             <% 
-                                                comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
+                                                comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments')
+                                                fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text') 
                                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
+
+                                                totalVotes = int(item['ups']) + int(item['downs'])
                                             %>
-                                            % if c.demo:
-                                                See ${comments | n}
-                                            % else:
-                                                See ${comments | n} (${numComments})
-                                            % endif
+                                            <ul class="horizontal-list ideaListing">
+                                                <li>${fullText | n}</li>
+                                                % if c.demo:
+                                                    <li>${comments | n}</li>
+                                                % else:
+                                                    <li>${comments | n} (${numComments})</li>
+                                                % endif
+                                            </ul>
+                                            <p class="no-bottom">
+                                                <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}</small>
+                                            </p>
                                     </div><!--/.span9-->
-                                    <%doc>
-                                    <div class="span9 list-item-text">
-                                        <% itemTitle = '<h5><a %s class="listed-item-title" target="%s">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), target, lib_6.ellipsisIZE(item['title'], 150)) %>
-                                        ${itemTitle | n}
-                                        Posted by ${lib_6.userLink(item.owner)} from ${lib_6.userGeoLink(item.owner)}
-                                            <br />
-                                            <% 
-                                                comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
-                                                numComments = discussionLib.getDiscussionForThing(item)['numComments']
-                                            %>
-                                            See ${comments | n} (${numComments})
-                                    </div><!--/.span9-->
-                                    </%doc>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                    <div class="span2 voteBlock ideaListing" id="vote_${itemCounter}">
+                                        ${lib_6.yesNoVote(item)}
+                                    </div>
+                                </div><!--/.row-fluid-->
+                            </div><!-- accordion body -->
+                        </div><!-- accordion heading -->
+                    </div><!-- accordion group -->
+                </div><!-- accordion --> 
             % else:
                 <div class="row-fluid list-item border-bottom">
                     <div class="span10 list-item-text ideaListing" id="content_${itemCounter}">

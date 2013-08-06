@@ -199,24 +199,23 @@
             if rated:
                if rated['amount'] == '1':
                   commentClass = 'voted yesVote'
-                  voteImg = '"/images/yes_selected.png"'
                   displayTally = ''
                else:
                   commentClass = 'yesVote'
-                  voteImg = '"/images/yes_blank.png"'
                   displayTally = ''
                   if rated['amount'] == '0' :
-                    displayTally = 'hideVoteTally'
+                    displayTally = 'hidden'
 
             else:
                commentClass = 'yesVote'
-               voteImg = '"/images/yes_blank.png"'
-               displayTally = 'hideVoteTally'
+               displayTally = 'hidden'
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
-           <div class="vote-icon yes-icon"></div>
            % if 'detail' in args:
+              <div class="vote-icon yes-icon detail"></div>
               <div class="yesScore ${displayTally}">${locale.format("%d", totalYes, grouping=True)}</div>
+           % else:
+              <div class="vote-icon yes-icon detail"></div>
            % endif
          </a>
          <br>
@@ -225,38 +224,29 @@
             if rated:
                if rated['amount'] == '-1':
                   commentClass = 'voted noVote'
-                  voteImg = '"/images/no_selected.png"'
                else:
                   commentClass = 'noVote'
-                  voteImg = '"/images/no_blank.png"'
             else:
                commentClass = 'noVote'
-               voteImg = '"/images/no_blank.png"'
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
-           <div class="vote-icon no-icon"></div>
            % if 'detail' in args:
+              <div class="vote-icon no-icon detail"></div>
               <div class="noScore ${displayTally}">${locale.format("%d", totalNo, grouping=True)}</div> 
+           % else:
+              <div class="vote-icon no-icon"></div>
            % endif
          </a>
          <br>
-         <!-- Yes<span class="yesScore">${totalYes}</span>
-         No <span class="noScore">${totalNo}</span> -->
          <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
       % else:
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
-         <!--
-         <a href="#" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
-         -->
-         <img src="/images/yes_blank.png" class="vote-icon">
+         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+          <div class="vote-icon yes-icon"></div>
          </a>
          <br>
          <br>
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
-         <!--
-         <a href="#" rel="tooltip" data-placement="bottom" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-         -->
-         <img src="/images/no_blank.png" class="vote-icon">
+         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+          <div class="vote-icon no-icon"></div>
          </a>
          <br>
          <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>

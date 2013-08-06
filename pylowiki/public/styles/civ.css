@@ -709,13 +709,15 @@ img.watch{
 }
 
 .vote-icon{
-    height:30px;
-}
-.vote-icon.yes-icon, .vote-icon.no-icon{
   background-size: auto 30px;
   background-repeat: no-repeat;
-  width: 50%;
+  height: 30px;
+  width: 100%;
   float: left;
+}
+
+.vote-icon.detail{
+  width: 50%;
 }
 
 .vote-icon.yes-icon{
@@ -744,7 +746,6 @@ img.watch{
   background-image:url(/images/no_selected.png);
 }
 
-
 .voteBlock{
   padding:2px;
 }
@@ -766,7 +767,6 @@ img.watch{
   font-size: 0.85em;
   color: grey;
   width: 50%;
-
 }
 
 .totalVotesWrapper{
@@ -786,7 +786,7 @@ img.watch{
    position: absolute;
 }
 
-.yesNoWrapper a{
+a.yesVote, a.noVote{
    width: 165px;
    position: absolute;
 }
@@ -1507,16 +1507,12 @@ li.thumbnail-gallery{
   font-size: 18px;
   margin-bottom: 3px;
   font-weight: bold;
-  /*
-  text-transform: uppercase; */
 }
 
 .border-bottom{
   border-bottom: 1px solid #ddd;
 }
 
-.hideVoteTally{
+.hidden{
   display: none;
 }
-
-
