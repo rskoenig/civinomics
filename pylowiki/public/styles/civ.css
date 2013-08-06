@@ -711,6 +711,39 @@ img.watch{
 .vote-icon{
     height:30px;
 }
+.vote-icon.yes-icon, .vote-icon.no-icon{
+  background-size: auto 30px;
+  background-repeat: no-repeat;
+  width: 50%;
+  float: left;
+}
+
+.vote-icon.yes-icon{
+  background-image:url(/images/yes_blank.png);
+}
+.vote-icon.yes-icon:hover{
+  background-image:url(/images/yes_hover.png);
+}
+.voted > .vote-icon.yes-icon{
+  background-image:url(/images/yes_selected.png);
+}
+.voted > .vote-icon.yes-icon:hover{
+  background-image:url(/images/yes_selected.png);
+}
+
+.vote-icon.no-icon{
+  background-image:url(/images/no_blank.png);
+}
+.vote-icon.no-icon:hover{
+  background-image:url(/images/no_hover.png);
+}
+.voted > .vote-icon.no-icon{
+  background-image:url(/images/no_selected.png);
+}
+.voted > .vote-icon.no-icon:hover{
+  background-image:url(/images/no_selected.png);
+}
+
 
 .voteBlock{
   padding:2px;
@@ -728,9 +761,12 @@ img.watch{
 }
 
 .yesScore, .noScore{
-  margin-left: 10px;
+  margin-left: 100px;
+  padding-top: 5px;
   font-size: 0.85em;
   color: grey;
+  width: 50%;
+
 }
 
 .totalVotesWrapper{
@@ -751,7 +787,7 @@ img.watch{
 }
 
 .yesNoWrapper a{
-   width: 100%;
+   width: 165px;
    position: absolute;
 }
 
@@ -759,7 +795,7 @@ img.watch{
   float: right;
   margin-left: 20px;
   padding-left: 40px;
-  width: 175px;
+  width: 165px;
 }
 
 .oddComment{
@@ -1482,4 +1518,5 @@ li.thumbnail-gallery{
 .hideVoteTally{
   display: none;
 }
+
 

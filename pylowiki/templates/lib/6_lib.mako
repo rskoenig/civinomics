@@ -213,15 +213,11 @@
                voteImg = '"/images/yes_blank.png"'
                displayTally = 'hideVoteTally'
          %>
-         % if thing.objType != 'comment':
-            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
-         % else:
-            <a href="/rate/${thing.objType}/${thing['urlCode']}/1" class="${commentClass}">
-         % endif
-         <img src=${voteImg | n} class="vote-icon">
-         % if 'detail' in args:
-            <span class="yesScore ${displayTally}">${locale.format("%d", totalYes, grouping=True)}</span>
-         % endif
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
+           <div class="vote-icon yes-icon"></div>
+           % if 'detail' in args:
+              <div class="yesScore ${displayTally}">${locale.format("%d", totalYes, grouping=True)}</div>
+           % endif
          </a>
          <br>
          <br>
@@ -237,15 +233,11 @@
                commentClass = 'noVote'
                voteImg = '"/images/no_blank.png"'
          %>
-         % if thing.objType != 'comment':
-            <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
-         % else:
-            <a href="/rate/${thing.objType}/${thing['urlCode']}/-1" class="${commentClass}">
-         % endif
-         <img src=${voteImg | n} class="vote-icon">
-         % if 'detail' in args:
-            <span class="noScore ${displayTally}">${locale.format("%d", totalNo, grouping=True)}</span> 
-         % endif
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
+           <div class="vote-icon no-icon"></div>
+           % if 'detail' in args:
+              <div class="noScore ${displayTally}">${locale.format("%d", totalNo, grouping=True)}</div> 
+           % endif
          </a>
          <br>
          <!-- Yes<span class="yesScore">${totalYes}</span>
