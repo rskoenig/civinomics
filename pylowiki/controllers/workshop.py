@@ -368,16 +368,11 @@ class WorkshopController(BaseController):
         # assemble a workshop scope string 
         # ||country||state||county||city|zip
         geoTagString = "||" + utils.urlify(geoTagCountry) + "||" + utils.urlify(geoTagState) + "||" + utils.urlify(geoTagCounty) + "||" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
-        wscope = geoInfoLib.getWScopeByWorkshop(c.w)
-        update = 0
-        if not wscope:
-            geoInfoLib.WorkshopScope(c.w, geoTagString)
+        if 'workshop_public_scope' not in c.w:
+            c.w['workshop_public_scope'] = geoTagString
             wchanges = 1
-            
-        if wscope and wscope['scope'] != geoTagString:
-            geoInfoLib.editWorkshopScope(wscope, geoTagString)
-            # wscope['scope'] = geoTagString
-            # dbHelpers.commit(wscope)
+        elif c.w['workshop_public_scope'] != geoTagString:
+            c.w['workshop_public_scope'] = geoTagString
             wchanges = 1
             
         if wchanges:
@@ -881,7 +876,7 @@ class WorkshopController(BaseController):
         c.information = pageLib.getInformation(c.w)
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         if c.w['public_private'] == 'public':
-            c.scope = geoInfoLib.getPublicScope(c.w)
+            c.scope = workshopLib.getPublicScope(c.w)
         c.goals = goalLib.getGoalsForWorkshop(c.w)
         if not c.goals:
             c.goals = []
@@ -1042,9 +1037,8 @@ class WorkshopController(BaseController):
         
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
-        c.wscope = geoInfoLib.getWScopeByWorkshop(c.w)
-        if c.wscope:
-            geoTags = c.wscope['scope'].split('|')
+        if c.w['public_private'] == 'public' and 'workshop_public_scope' in c.w and c.w['workshop_public_scope'] != '':
+            geoTags = c.w['workshop_public_scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
             c.county = utils.geoDeurlify(geoTags[6])
@@ -1066,7 +1060,7 @@ class WorkshopController(BaseController):
         c.flaggedItems = flagLib.getFlaggedThingsInWorkshop(c.w)
         
         if c.w['public_private'] == 'public':
-            c.scope = geoInfoLib.getPublicScope(c.w)
+            c.scope = workshopLib.getPublicScope(c.w)
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = True

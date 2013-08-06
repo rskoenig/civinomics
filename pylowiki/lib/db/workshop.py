@@ -55,10 +55,7 @@ def searchWorkshops( keys, values, deleted = u'0', published = u'1', public_priv
             w_keys = keys
             w_values = values
 
-        log.info(keys)
-        log.info(values)
         map_workshop = map(wcl, w_keys, w_values)
-        log.info(map_workshop)
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'workshop')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
@@ -238,6 +235,51 @@ def isScoped(user, workshop):
         return True       
     
     return False
+    
+def getWorkshopsByScope(searchScope, scopeLevel):
+    ## searchScope: a geo scope string
+    ## scopeLevel: country = 2, state = 4, county = 6, city = 8, zip = 9
+    ## format of scope attribute ||country||state||county||city|zip
+    scopeLevel = int(scopeLevel) + 1
+    try:
+        sList = searchScope.split('|')
+        sList = sList[:int(scopeLevel)]
+        searchScope = "|".join(sList)
+        searchScope = searchScope + '%'
+        return meta.Session.query(Thing)\
+                .filter_by(objType = 'workshop')\
+                .filter(Thing.data.any(wc('deleted', '0')))\
+                .filter(Thing.data.any(wc('public_private', 'public')))\
+                .filter(Thing.data.any(wcl('workshop_public_scope', searchScope, 1)))\
+                .all()
+    except sa.orm.exc.NoResultFound:
+        return False
+    
+def getPublicScope(workshop):
+    if 'workshop_public_scope' in workshop and workshop['workshop_public_scope'] != '':
+        scope = workshop['workshop_public_scope'].split('|')
+        if scope[9] != '0':
+            scopeLevel = 'postalCode'
+            scopeName  = scope[9]
+        elif scope[8] != '0':
+            scopeLevel = 'city'
+            scopeName  = scope[8]
+        elif scope[6] != '0':
+            scopeLevel = 'county'
+            scopeName  = scope[6]
+        elif scope[4] != '0':
+            scopeLevel = 'state'
+            scopeName  = scope[4]
+        elif scope[2] != '0':
+            scopeLevel = 'country'
+            scopeName  = scope[2]
+        else:
+            scopeLevel = 'earth'
+            scopeName  = 'earth'
+    else:
+        scopeLevel = 'earth'
+        scopeName  = 'earth'
+    return {'level':scopeLevel, 'name':scopeName}
 
 def setDemo(workshop): 
     workshop['demo'] = '1'

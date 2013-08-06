@@ -325,12 +325,8 @@ class SearchController(BaseController):
             c.thingsTitle = 'Workshops scoped under ' + geoScopeTitle
             c.listingType = 'searchWorkshops'
             c.things = []
-            wScopeList = geoInfoLib.getWorkshopScopes(geoTagString, scopeLevel)
-            for wscope in wScopeList:
-                workshop = workshopLib.getWorkshopByCode(wscope['workshopCode'])
-                if workshopLib.isPublic(workshop) and workshopLib.isPublished(workshop):
-                    c.things.append(workshop)
-        
+            c.things = workshopLib.getWorkshopsByScope(geoTagString, scopeLevel)
+            
         return render('/derived/6_search.bootstrap')
     
     

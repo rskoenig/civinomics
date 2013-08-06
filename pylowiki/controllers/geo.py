@@ -27,28 +27,36 @@ class GeoController(BaseController):
         c.title = c.heading = 'Public workshops in '
             
         c.rssURL = "/workshops/rss/earth"
+        searchScope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' +  postalCode
+        #country = 3, state = 5, county = 7, city = 9, zip = 10
         if country == '0':
             c.scope = {'level':'earth', 'name':'earth'}
             location = 'earth'
+            scopeLevel = 0
         elif state == '0':
             c.scope = {'level':'country', 'name':country}
             location = country
+            scopeLevel = 2
             c.rssURL += '/%s'%country
         elif county == '0':
             c.scope = {'level':'state', 'name':state}
             location = state
+            scopeLevel = 4
             c.rssURL += '/%s/%s'%(country, state)
         elif city == '0':
             c.scope = {'level':'county', 'name':county}
             location = county
+            scopeLevel = 6
             c.rssURL += '/%s/%s/%s'%(country, state, county)
         elif postalCode == '0':
             c.scope = {'level':'city', 'name':city}
             location = city
+            scopeLevel = 8
             c.rssURL += '/%s/%s/%s/%s'%(country, state, county, city)
         else:
             c.scope = {'level':'postalCode', 'name':postalCode}
             location = postalCode
+            scopeLevel = 9
             c.rssURL += '/%s/%s/%s/%s/%s'%(country, state, county, city, postalCode)
             
         c.scopeTitle = capwords(geoInfoLib.geoDeurlify(location))
@@ -57,15 +65,10 @@ class GeoController(BaseController):
         c.workshopTitlebar = capwords(geoInfoLib.geoDeurlify(location)) + ' workshops'
         
         # Find all workshops within the filtered area
-        scopeList = geoInfoLib.getWorkshopsInScope(country = country, state = state, county = county, city = city, postalCode = postalCode)
-        c.list = []
+        c.list = workshopLib.getWorkshopsByScope(searchScope, scopeLevel)
         workshopCodes = []
-        for scopeObj in scopeList:
-            workshop = workshopLib.getActiveWorkshopByCode(scopeObj['workshopCode'])
-            if workshop:
-                if workshop['public_private'] == 'public':
-                    c.list.append(workshop)
-                    workshopCodes.append(workshop['urlCode'])
+        for workshop in c.list:
+            workshopCodes.append(workshop['urlCode'])
         c.activity = activityLib.getActivityForWorkshops(workshopCodes)
 
     def workshopSearch(self, planet = '0', country = '0', state = '0', county = '0', city = '0', postalCode = '0'):
