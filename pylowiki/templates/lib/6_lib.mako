@@ -66,7 +66,7 @@
                 ref.parentNode.insertBefore(js, ref);
             }(document));
 
-            function shareOnWall(authResponse) {
+            function shareOnWall() {
             FB.ui(
                 {
                   method: 'feed'
@@ -100,6 +100,7 @@
                       var thingCode = "${thingCode}";
                       var requestUrl = "${requestUrl}"
                       result = postShared(response, thingCode, requestUrl, response.post_id);
+                      //result = postTest();
                       // NOTE - send a message to the function in extauth with all possible vars
                       // in the extauth function it;ll be determined what route to call
                     } else {

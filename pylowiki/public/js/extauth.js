@@ -28,14 +28,14 @@ function postShared(response, itemCode, itemURL, postId){
     var encodedUrl = encodeURIComponent(itemURL)
     encodedUrl = encodedUrl.replace(/\%/g, ",")
     var checkURL = "/share/facebook/" + "itemCode" + "&" + "postId" + "&" + "encodedUrl"
-    
+    //var checkURL = "/share/facebook"
     var checkResult = $.ajax({
         type : 'POST',
         async : false,
         url : checkURL
     }).responseText;
 
-
+    return checkResult
     // ! determine this in the controller, creating the correct share object
     //  - in the controller, depending on the parameters seen, create a share of a workshop,
     // or a share of an object
@@ -45,4 +45,16 @@ function postShared(response, itemCode, itemURL, postId){
     //  var postData = {'itemURL':$scope.itemURL, 'itemCode':$scope.itemCode, 
     //  'recipientName':$scope.recipientName, 'recipientEmail':$scope.recipientEmail, 
     // 'memberMessage':$scope.memberMessage};
+}
+
+function postTest(){
+    var checkURL = "/share/test"
+    
+    var checkResult = $.ajax({
+        type : 'POST',
+        async : false,
+        url : checkURL
+    }).responseText;
+
+    return checkResult    
 }
