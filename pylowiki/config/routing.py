@@ -209,11 +209,11 @@ def make_map():
 
     # Share management
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/share/{userCode}/email/{handler:handler/?}', controller = 'share', action = 'shareEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/share/{userCode}/facebook/{handler:handler/?}', controller = 'share', action = 'shareWorkshopFacebookHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{object:objects?}/{objectCode}/{objectURL}/share/{userCode}/facebook/{handler:handler/?}', controller = 'share', action = 'shareObjectFacebookHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', objectCode = '{objectCode}', objectURL = '{objectURL}', userCode = '{userCode}')
-    #map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{resource:resources?}/{resourceCode}/{resourceURL}/share/{userCode}/facebook/{handler:handler/?}', controller = 'share', action = 'shareResourceFacebookHandler'workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', resourceCode = '{resourceCode}', resourceURL = '{resourceURL}', userCode = '{userCode}')
-    #map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{discussion:discussions?}/{discussionCode}/{discussionURL}/share/{userCode}/facebook/{handler:handler/?}', controller = 'share', action = 'shareDiscussionFacebookHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', discussionCode = '{discussionCode}', discussionURL = '{discussionURL}', userCode = '{userCode}')
-    #map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{idea:ideas?}/{ideaCode}/{ideaURL}/share/{userCode}/facebook/{handler:handler/?}', controller = 'share', action = 'shareIdeaFacebookHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', ideaCode = '{ideaCode}', ideaURL = '{ideaURL}', userCode = '{userCode}')    
+    #map.connect('/share/facebook/{itemCode}/{postId}/{itemURL}{end:/?}', controller = 'share', action = 'shareObjectFacebookHandler', itemCode = '{itemCode}', postId = '{postId}', itemURL = '{itemURL}')
+    map.connect('/share/facebook/{id1}{end:/?}', controller = 'share', action = 'shareObjectFacebookHandler', id1 = '{id1}')
+    # why this work?
+    # map.connect('/extauth/fbEmail/{id1}{end:/?}', controller = 'login', action = 'fbAuthCheckEmail', id1 = '{id1}')
+
 
     # Comment notifications
     map.connect('/profile/preferences/{id1}/{id2}/comments/{handler:handler/?}', controller = 'profile', action = 'preferencesCommentsHandler', id1 = '{id1}', id2 = '{id2}')

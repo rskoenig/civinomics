@@ -71,6 +71,7 @@ class DiscussionController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.requestUrl = request.url
+        c.thingCode = discussionCode
 
         c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
         if not c.thing:

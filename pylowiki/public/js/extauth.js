@@ -20,14 +20,22 @@ function fbCheckAccount(response, authResponse, smallPic, bigPic){
     //document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = gobj.result;
 }
 
-function postShared(response){
+function postShared(response, itemCode, itemURL, postId){
     // someone shared something. record this in the db
     // needing info to define the object that is being shared. could be a workshop, could be an 
     // object within a workshop
     // ! determine this here, then send the message to the corresponding route
-    //  - 
+    var encodedUrl = encodeURIComponent(itemURL)
+    encodedUrl = encodedUrl.replace(/\%/g, ",")
+    var checkURL = "/share/facebook/" + "itemCode" + "&" + "postId" + "&" + "encodedUrl"
     
-    
+    var checkResult = $.ajax({
+        type : 'POST',
+        async : false,
+        url : checkURL
+    }).responseText;
+
+
     // ! determine this in the controller, creating the correct share object
     //  - in the controller, depending on the parameters seen, create a share of a workshop,
     // or a share of an object

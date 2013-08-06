@@ -22,6 +22,8 @@
         # http://www.civinomics.com in.
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
+        thingCode = c.thingCode
+        requestUrl = c.requestUrl
         # NOTE: load the code and url of the workshop, if there's a code and url for an object load those
         # as well, if not - set these variables to none or a null type recognized by javascript
     %>
@@ -67,12 +69,7 @@
             function shareOnWall(authResponse) {
             FB.ui(
                 {
-                  method: 'feed',
-                  name: 'Facebook Dialogs',
-                  link: '',
-                  
-                  caption: 'Reference Documentation',
-                  description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
+                  method: 'feed'
                 },
                 //{
                 //    method: "stream.share",
@@ -98,16 +95,19 @@
                    
                     console.log(str)
                     if (response && response.post_id) {
-                      alert('Post was published. ' + str);
+                      //alert('Post was published. ' + str);
                       // create share object
+                      var thingCode = "${thingCode}";
+                      var requestUrl = "${requestUrl}"
+                      result = postShared(response, thingCode, requestUrl, response.post_id);
                       // NOTE - send a message to the function in extauth with all possible vars
                       // in the extauth function it;ll be determined what route to call
                     } else {
-                      alert('Post was not published. ' + str);
+                      //alert('Post was not published. ' + str);
                     }
                 }
             );
-        }
+        };
         </script>
         <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
     % endif

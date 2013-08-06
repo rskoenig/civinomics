@@ -88,6 +88,7 @@ class IdeaController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.requestUrl = request.url
+        c.thingCode = ideaCode
 
         c.thing = ideaLib.getIdea(ideaCode)
         if not c.thing:

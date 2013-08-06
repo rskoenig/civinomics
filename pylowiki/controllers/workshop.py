@@ -851,7 +851,8 @@ class WorkshopController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.requestUrl = request.url
-        
+        c.thingCode = workshopCode
+
         c.title = c.w['title']
 
         c.isFollowing = False

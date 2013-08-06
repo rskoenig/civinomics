@@ -68,6 +68,7 @@ class ResourceController(BaseController):
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
         c.requestUrl = request.url
+        c.thingCode = resourceCode
 
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:

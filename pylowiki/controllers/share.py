@@ -54,7 +54,16 @@ class ShareController(BaseController):
         return returnMsg
   
     @h.login_required
-    def shareWorkshopFacebookHandler(self):
-
-    @h.login_required
-    def shareObjectFacebookHandler(self):
+    def shareObjectFacebookHandler(self, itemCode, postId, itemURL):
+        # create the share object
+        # we can't directly see what message the user posted with this share, but we
+        # might be able to look it up with a facebook graph api call using the postId,
+        # so for now it's best to store the postId as the message. 
+        # see https://developers.facebook.com/docs/reference/api/post/
+        # NOTE - should we add a field to the share object to account for facebook shares?
+        if itemCode and itemURL and postId:
+            share = shareLib.Share(c.user, itemCode, itemURL, '', '', postId)
+            return 'share stored'
+        else:
+            return None
+        
