@@ -10,13 +10,27 @@ app.controller('SearchCtrl', function($scope, $http){
     *       statusCode == 1: No query was submitted
     *       statusCode == 2: Query submitted, no results found
     */
-    $scope.workshopsURL = '/search/workshops'
-    $scope.peopleURL = '/search/people'
-    $scope.resourcesURL = '/search/resources'
-    $scope.discussionsURL = '/search/discussions'
-    $scope.ideasURL = '/search/ideas'
-    var searchQuery = window.location.search;
-    $scope.searchQuery = searchQuery;
+    var pathname = window.location.pathname;
+    var pathList = pathname.split('/');
+    var action = pathList[1];
+    var pathlen = pathList.length;
+    $scope.pathname = pathname;
+    if(action === 'search' && pathlen === 2) {
+        $scope.searchType = 'name';
+        var searchList = window.location.search.split('=')
+        $scope.searchString = searchList[1];
+    } else if(action === 'search' && pathlen === 4) {
+        $scope.searchType = pathList[3];
+        $scope.searchString = pathList[4];
+    } else if(action === 'searchTags') {
+        $scope.searchType = 'tag';
+        $scope.searchString = pathList[2];
+    }
+    $scope.workshopsURL = '/search/workshops/' + $scope.searchType + '/' + $scope.searchString;
+    $scope.peopleURL = '/search/people/' + $scope.searchType + '/' + $scope.searchString;
+    $scope.resourcesURL = '/search/resources/' + $scope.searchType + '/' + $scope.searchString;
+    $scope.discussionsURL = '/search/discussions/' + $scope.searchType + '/' + $scope.searchString;
+    $scope.ideasURL = '/search/ideas/' + $scope.searchType + '/' + $scope.searchString;
     $scope.searchQueryPretty = $("#search-input").val();
     $scope.showingWorkshops = {'class': 'active', 'show': false};
     $scope.showingPeople = {'class': '', 'show': false};
@@ -30,7 +44,7 @@ app.controller('SearchCtrl', function($scope, $http){
     
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments'};
     
-    $http.get($scope.workshopsURL + $scope.searchQuery).success(function(data){
+    $http.get($scope.workshopsURL).success(function(data){
         if (data.statusCode == 1)
         {
             $scope.noQuery = true;
@@ -60,7 +74,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.noQuery = false;
         $scope.loading = true;
         $scope.objType = 'workshops';
-        $http.get($scope.workshopsURL + $scope.searchQuery).success(function(data){
+        $http.get($scope.workshopsURL).success(function(data){
             if (data.statusCode == 1)
             {
                 $scope.noQuery = true;
@@ -92,7 +106,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.noQuery = false;
         $scope.loading = true;
         $scope.objType = 'people';
-        $http.get($scope.peopleURL + $scope.searchQuery).success(function(data){
+        $http.get($scope.peopleURL).success(function(data){
             if (data.statusCode == 1)
             {
                 $scope.noQuery = true;
@@ -124,7 +138,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.noQuery = false;
         $scope.loading = true;
         $scope.objType = 'resources';
-        $http.get($scope.resourcesURL + $scope.searchQuery).success(function(data){
+        $http.get($scope.resourcesURL).success(function(data){
             if (data.statusCode == 1)
             {
                 $scope.noQuery = true;
@@ -156,7 +170,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.noQuery = false;
         $scope.loading = true;
         $scope.objType = 'discussions';
-        $http.get($scope.discussionsURL + $scope.searchQuery).success(function(data){
+        $http.get($scope.discussionsURL).success(function(data){
             if (data.statusCode == 1)
             {
                 $scope.noQuery = true;
@@ -188,7 +202,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.noQuery = false;
         $scope.loading = true;
         $scope.objType = 'ideas';
-        $http.get($scope.ideasURL + $scope.searchQuery).success(function(data){
+        $http.get($scope.ideasURL).success(function(data){
             if (data.statusCode == 1)
             {
                 $scope.noQuery = true;

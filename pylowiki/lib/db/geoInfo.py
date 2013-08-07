@@ -253,7 +253,7 @@ def getScopeTitle(postalCode, country, scope):
 
 def getPublicScope(workshop):
     if 'workshop_public_scope' in workshop and workshop['workshop_public_scope'] != '':
-        scope = scope['scope'].split('|')
+        scope = workshop['workshop_public_scope'].split('|')
         if scope[9] != '0':
             scopeLevel = 'postalCode'
             scopeName  = scope[9]

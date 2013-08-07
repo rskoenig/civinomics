@@ -1036,7 +1036,7 @@
 </%def>
 
 <%def name="public_tags()">
-  <%  categories = tagLib.getWorkshopTagCategories() %>
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
   <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
       Sort by Tag

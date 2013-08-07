@@ -3,7 +3,7 @@ log = logging.getLogger(__name__)
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import with_characteristic as wc
+from dbHelpers import with_characteristic as wc, commit
 from hashlib import md5
 
 def linkChildToParent(child, parent):

@@ -361,7 +361,6 @@ def make_map():
     map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')
     map.connect('/searchWorkshops/{id1}/{id2}{end:/?}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchUsers/{id1}/{id2}{end:/?}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchTags/{id1}{end:/?}', controller='actionlist', action='searchTags', id='searchTags', id1 = '{id1}')
     map.connect('/searchName/{id1}/{id2}{end:/?}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchGeoUsers/{id1}{end:/?}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
     map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
@@ -371,11 +370,12 @@ def make_map():
     ################
 
     map.connect('/search{end:/?}', controller = 'search', action = 'search')
-    map.connect('/search/workshops{end:/?}', controller = 'search', action = 'searchWorkshops')
-    map.connect('/search/people{end:/?}', controller = 'search', action = 'searchPeople')
-    map.connect('/search/resources{end:/?}', controller = 'search', action = 'searchResources')
-    map.connect('/search/discussions{end:/?}', controller = 'search', action = 'searchDiscussions')
-    map.connect('/search/ideas{end:/?}', controller = 'search', action = 'searchIdeas')
+    map.connect('/search/workshops/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchWorkshops', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/people/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchPeople', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/resources/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchResources', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/discussions/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchDiscussions', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/ideas/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchIdeas', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/searchTags/{id1}{end:/?}', controller='search', action='searchWorkshopCategoryTags', id1 = '{id1}')
     
     ################
     # Application  #

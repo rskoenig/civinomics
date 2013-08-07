@@ -277,6 +277,7 @@ class WorkshopController(BaseController):
                 weventMsg +=  "Updated category tags."
                 c.w['workshop_category_tags'] = newTagStr
                 dbHelpers.commit(c.w)
+                workshopLib.updateWorkshopChildren(c.w, 'workshop_category_tags')
                 
             if not workshopLib.isPublished(c.w):
                 weventMsg += ' See your changes by clicking on the preview button above.'
@@ -370,9 +371,11 @@ class WorkshopController(BaseController):
         geoTagString = "||" + utils.urlify(geoTagCountry) + "||" + utils.urlify(geoTagState) + "||" + utils.urlify(geoTagCounty) + "||" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
         if 'workshop_public_scope' not in c.w:
             c.w['workshop_public_scope'] = geoTagString
+            workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             wchanges = 1
         elif c.w['workshop_public_scope'] != geoTagString:
             c.w['workshop_public_scope'] = geoTagString
+            workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             wchanges = 1
             
         if wchanges:

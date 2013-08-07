@@ -54,7 +54,8 @@ def searchWorkshops( keys, values, deleted = u'0', published = u'1', public_priv
         else:
             w_keys = keys
             w_values = values
-
+        log.info("keys is %s"%keys)
+        log.info("values is %s"%values)
         map_workshop = map(wcl, w_keys, w_values)
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'workshop')\
@@ -159,6 +160,60 @@ def getWorkshopPostsSince(code, url, memberDatetime):
         returnList = postList + commentList
 
         return returnList
+        
+def updateWorkshopChildren(workshop, workshopKey):
+    code = workshop['urlCode']        
+    key = '%s%s' %(workshop.objType, 'Code')
+    log.info("key is %s, code is %s"%(key, code))
+    try:
+        itemList = meta.Session.query(Thing)\
+                .filter(Thing.objType.in_(['idea', 'resource', 'discussion']))\
+                .filter(Thing.data.any(wc(key, code)))\
+                .all()
+                
+        for item in itemList:
+            item[workshopKey] = workshop[workshopKey]
+            commit(item)
+            if item.objType == 'discussion':
+                discussionCode = item['urlCode']
+                commentList = meta.Session.query(Thing)\
+                    .filter_by(objType = 'comment')\
+                    .filter(Thing.data.any(wc('discussionCode', discussionCode)))\
+                    .all()
+                for comment in commentList:
+                    comment[workshopKey] = workshop[workshopKey]
+                    commit(comment)                            
+    except Exception as e:
+        return False
+        
+
+def getWorkshopTagCategories():
+    workshopTags = []
+    workshopTags.append('Arts')
+    workshopTags.append('Business')
+    workshopTags.append('Civil Rights')
+    workshopTags.append('Community')
+    workshopTags.append('Economy')
+    workshopTags.append('Education')
+    workshopTags.append('Employment')
+    workshopTags.append('Entertainment')
+    workshopTags.append('Environment')
+    workshopTags.append('Family')
+    workshopTags.append('Government')
+    workshopTags.append('Health')
+    workshopTags.append('Housing')
+    workshopTags.append('Infrastructure')
+    workshopTags.append('Justice')
+    workshopTags.append('Land Use')
+    workshopTags.append('Municipal Services')
+    workshopTags.append('NonProfit')
+    workshopTags.append('Policy')
+    workshopTags.append('Safety')
+    workshopTags.append('Sports')
+    workshopTags.append('Transportation')
+    workshopTags.append('Other')
+    return workshopTags
+
     
 def getWorkshopTagColouring():
     mapping = { 'Civil Rights':         'red-tag',
@@ -250,6 +305,7 @@ def getWorkshopsByScope(searchScope, scopeLevel):
                 .filter_by(objType = 'workshop')\
                 .filter(Thing.data.any(wc('deleted', '0')))\
                 .filter(Thing.data.any(wc('public_private', 'public')))\
+                .filter(Thing.data.any(wc('published', '1')))\
                 .filter(Thing.data.any(wcl('workshop_public_scope', searchScope, 1)))\
                 .all()
     except sa.orm.exc.NoResultFound:

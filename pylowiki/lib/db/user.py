@@ -94,6 +94,7 @@ def searchUsers( uKey, uValue, deleted = u'0', disabled = u'0', activated = u'1'
         return query.all()
     except:
         return False
+        
 
 def getUserPosts(user, active = 1):
     returnList = []

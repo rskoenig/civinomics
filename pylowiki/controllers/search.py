@@ -6,7 +6,6 @@ from pylons.controllers.util import abort, redirect
 from pylons import config
 
 from pylowiki.lib.base import BaseController, render
-
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
@@ -34,16 +33,31 @@ class SearchController(BaseController):
             result:             The search result, given there was at least one
     """
 
-    def __before__(self, action):
+    def __before__(self, action, searchType = None, searchString = None, id1 = None):
         c.title = c.heading = "Civinomics Search"
         self.query = ''
         self.noQuery = False
-        if 'searchQuery' in request.params:
+        self.searchType = 'name'
+        if 'searchQuery' in request.params and searchString == None:
             self.query = request.params['searchQuery']
             if self.query.strip() == '':
                 self.noQuery = True
         else:
             self.noQuery = True
+            
+        if id1 != None:
+            self.query = id1
+            self.noQuery = False
+            
+        if searchType != None:
+            self.searchType = searchType
+            self.noQuery = False
+            
+        if searchString != None:
+            self.query = searchString
+            self.noQuery = False
+            
+        c.searchQuery = self.query
     
     def _noSearch(self, noRender = False):
         c.numUsers = 0
@@ -61,7 +75,41 @@ class SearchController(BaseController):
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
+        c.searchType = "name"
+        c.searchQuery = self.query 
+        c.scope = {'level':'earth', 'name':'all'}
+        return render('/derived/6_search.bootstrap')
+        
+    def searchWorkshopCategoryTags(self):
+        if self.noQuery:
+            return self._noSearch()
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return self._noSearch()
+        log.info("inside searchWorkshopCategoryTags and self.query is %s"%self.query)
+        c.numUsers = userLib.searchUsers('greetingMsg', self.query, count = True)
+        c.numWorkshops = workshopLib.searchWorkshops(['workshop_category_tags'], [self.query], count = True)
+        c.numResources = resourceLib.searchResources(['workshop_category_tags'], [self.query], count = True)
+        c.numDiscussions = discussionLib.searchDiscussions(['workshop_category_tags'], [self.query], count = True)
+        c.numIdeas = ideaLib.searchIdeas('workshop_category_tags', self.query, count = True)
         c.searchQuery = self.query
+        c.searchType = "tag"
+        c.scope = {'level':'earth', 'name':'all'}
+        return render('/derived/6_search.bootstrap')
+        
+    def searchWorkshopGeo(self):
+        if self.noQuery:
+            return self._noSearch()
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return self._noSearch()
+        c.numUsers = 0
+        c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
+        c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)
+        c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
+        c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
+        c.searchType = "tag"
+        c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')
     
     def searchPeople(self):
@@ -97,8 +145,12 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        keys = ['title', 'description', 'workshop_category_tags']
-        values = [self.query, self.query, self.query]
+        if self.searchType == 'tag':
+            keys = ['workshop_category_tags']
+            values = [self.query]
+        else:    
+            keys = ['title', 'description', 'workshop_category_tags']
+            values = [self.query, self.query, self.query]
         workshops = workshopLib.searchWorkshops(keys, values)
         if not workshops:
             return json.dumps({'statusCode':2})
@@ -136,8 +188,12 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        keys = ['title', 'text', 'link']
-        values = [self.query, self.query, self.query]
+        if self.searchType == 'tag':
+            keys = ['workshop_category_tags']
+            values = [self.query]
+        else:
+            keys = ['title', 'text', 'link']
+            values = [self.query, self.query, self.query]
         resources = resourceLib.searchResources(keys, values)
         if not resources:
             return json.dumps({'statusCode':2})
@@ -180,8 +236,12 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        keys = ['title', 'text']
-        values = [self.query, self.query]
+        if self.searchType == 'tag':
+            keys = ['workshop_category_tags']
+            values = [self.query]
+        else:
+            keys = ['title', 'text']
+            values = [self.query, self.query]
         discussions = discussionLib.searchDiscussions(keys, values)
         if not discussions:
             return json.dumps({'statusCode':2})
@@ -221,7 +281,10 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        ideas = ideaLib.searchIdeas('title', self.query)
+        if self.searchType == 'tag':
+            ideas = ideaLib.searchIdeas('workshop_category_tags', self.query)
+        else:
+            ideas = ideaLib.searchIdeas('title', self.query)
         if not ideas:
             return json.dumps({'statusCode':2})
         if len(ideas) == 0:
