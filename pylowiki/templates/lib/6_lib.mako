@@ -239,6 +239,28 @@
          </a>
          <br>
          <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
+          <div class="span12 border-bottom"></div>
+          <form>
+            <fieldset>
+              <br>
+              <div class="checkbox">
+                <label>
+                  <i class="icon-facebook-sign"></i> Post to FB <input type="checkbox"> 
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <i class="icon-twitter-sign"></i> Tweet <input type="checkbox"> 
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  Show how I voted <input type="checkbox"> 
+                </label>
+              </div>
+              <button class="btn btn-inverse btn-small">Share</button>
+            </fieldset>
+          </form>
       % else:
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
           <div class="vote-icon yes-icon"></div>

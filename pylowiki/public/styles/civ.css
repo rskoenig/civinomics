@@ -1516,3 +1516,11 @@ li.thumbnail-gallery{
 .hidden{
   display: none;
 }
+
+.icon-facebook-sign{
+  color: #4c66a4;
+}
+
+.icon-twitter-sign{
+  color: #0099cc;
+}
