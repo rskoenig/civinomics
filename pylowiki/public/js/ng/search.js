@@ -17,7 +17,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.pathname = pathname;
     if(action === 'search' && pathlen === 2) {
         $scope.searchType = 'name';
-        var searchList = window.location.search.split('=')
+        var searchList = window.location.search.split('=');
         $scope.searchString = searchList[1];
     } else if(action === 'search' && pathlen === 4) {
         $scope.searchType = pathList[3];
@@ -25,6 +25,26 @@ app.controller('SearchCtrl', function($scope, $http){
     } else if(action === 'searchTags') {
         $scope.searchType = 'tag';
         $scope.searchString = pathList[2];
+    } else if(action === 'workshops') {
+        $scope.searchType = 'geo';
+        if (pathlen === 4) {
+            $scope.searchString = "||0||0||0||0|0";
+        }
+        if (pathlen === 5) {
+            $scope.searchString = "||" + pathList[4] + "||0||0||0|0";
+        }
+        if (pathlen === 6) {
+            $scope.searchString = "||" + pathList[4] + "||" + pathList[5] + "||0||0|0";
+        }
+        if (pathlen === 7) {
+            $scope.searchString = "||" + pathList[4] + "||" + pathList[5] + "||" + pathList[6] + "||0|0";
+        }
+        if (pathlen === 8) {
+            $scope.searchString = "||" + pathList[4] + "||" + pathList[5] + "||" + pathList[6] + "||" + pathList[7] + "|0";
+        }
+        if (pathlen === 9) {
+            $scope.searchString = "||" + pathList[4] + "||" + pathList[5] + "||" + pathList[6] + "||" + pathList[7] + "|" + pathList[8];
+        }
     }
     $scope.workshopsURL = '/search/workshops/' + $scope.searchType + '/' + $scope.searchString;
     $scope.peopleURL = '/search/people/' + $scope.searchType + '/' + $scope.searchString;
@@ -57,13 +77,13 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.noResult = true;
             $scope.workshops = null;
         }
-        else if (data.statusCode == 0)
+        else if (data.statusCode === 0)
         {
             $scope.workshops = data.result;
             $scope.showingWorkshops.show = true;
         }
         $scope.loading = false;
-    })
+    });
     
     $scope.searchWorkshops = function() {
         $scope.showingPeople = {'class': '', 'show': false};
@@ -88,14 +108,14 @@ app.controller('SearchCtrl', function($scope, $http){
                 $scope.showingWorkshops = {'class': 'active', 'show': false};
                 $scope.workshops = null;
             }
-            else if (data.statusCode == 0)
+            else if (data.statusCode === 0)
             {
                 $scope.workshops = data.result;
                 $scope.showingWorkshops = {'class': 'active', 'show': true};
             }
             $scope.loading = false;
-        })
-    }
+        });
+    };
     
     $scope.searchPeople = function() {
         $scope.showingWorkshops = {'class': '', 'show': false};
@@ -120,14 +140,14 @@ app.controller('SearchCtrl', function($scope, $http){
                 $scope.showingPeople = {'class': 'active', 'show': false};
                 $scope.people = null;
             }
-            else if (data.statusCode == 0)
+            else if (data.statusCode === 0)
             {
                 $scope.people = data.result;
                 $scope.showingPeople = {'class': 'active', 'show': true};
             }
             $scope.loading = false;
-        })
-    }
+        });
+    };
     
     $scope.searchResources = function() {
         $scope.showingWorkshops = {'class': '', 'show': false};
@@ -152,14 +172,14 @@ app.controller('SearchCtrl', function($scope, $http){
                 $scope.showingResources = {'class': 'active', 'show': false};
                 $scope.resources = null;
             }
-            else if (data.statusCode == 0)
+            else if (data.statusCode === 0)
             {
                 $scope.resources = data.result;
                 $scope.showingResources = {'class': 'active', 'show': true};
             }
             $scope.loading = false;
-        })
-    }
+        });
+    };
     
     $scope.searchDiscussions = function() {
         $scope.showingWorkshops = {'class': '', 'show': false};
@@ -184,14 +204,14 @@ app.controller('SearchCtrl', function($scope, $http){
                 $scope.showingDiscussions = {'class': 'active', 'show': false};
                 $scope.discussions = null;
             }
-            else if (data.statusCode == 0)
+            else if (data.statusCode === 0)
             {
                 $scope.discussions = data.result;
                 $scope.showingDiscussions = {'class': 'active', 'show': true};
             }
             $scope.loading = false;
-        })
-    }
+        });
+    };
     
     $scope.searchIdeas = function() {
         $scope.showingWorkshops = {'class': '', 'show': false};
@@ -216,12 +236,12 @@ app.controller('SearchCtrl', function($scope, $http){
                 $scope.showingIdeas = {'class': 'active', 'show': false};
                 $scope.ideas = null;
             }
-            else if (data.statusCode == 0)
+            else if (data.statusCode === 0)
             {
                 $scope.ideas = data.result;
                 $scope.showingIdeas = {'class': 'active', 'show': true};
             }
             $scope.loading = false;
-        })
-    }
-})
+        });
+    };
+});

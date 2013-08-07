@@ -54,8 +54,6 @@ def searchWorkshops( keys, values, deleted = u'0', published = u'1', public_priv
         else:
             w_keys = keys
             w_values = values
-        log.info("keys is %s"%keys)
-        log.info("values is %s"%values)
         map_workshop = map(wcl, w_keys, w_values)
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'workshop')\
@@ -401,6 +399,7 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     w['allowSuggestions'] = u'1'
     w['allowResources'] = u'1'
     w['allowDiscussions']  = u'1'
+    w['workshop_category_tags'] = ''
     commit(w)
     w['urlCode'] = utils.toBase62(w)
     background = utils.workshopInfo

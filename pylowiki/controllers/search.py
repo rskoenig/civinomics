@@ -33,11 +33,45 @@ class SearchController(BaseController):
             result:             The search result, given there was at least one
     """
 
-    def __before__(self, action, searchType = None, searchString = None, id1 = None):
+    def __before__(self, action, searchType = None, **kwargs):
         c.title = c.heading = "Civinomics Search"
         self.query = ''
         self.noQuery = False
         self.searchType = 'name'
+        if 'searchString' in kwargs:
+            searchString = kwargs['searchString']
+        else:
+            searchString = None
+            
+        if 'id1' in kwargs:
+            id1 = kwargs['id1']
+        else:
+            id1 = None
+            
+        if action == 'searchWorkshopGeo':
+            self.searchType = 'geo'
+            if 'country' in kwargs:
+                country = kwargs['country']
+            else:
+                country = '0'
+            if 'state' in kwargs:
+                state = kwargs['state']
+            else:
+                state = '0'
+            if 'county' in kwargs:
+                county = kwargs['county']
+            else:
+                county = '0'
+            if 'city' in kwargs:
+                city = kwargs['city']
+            else:
+                city = '0'
+            if 'postalCode' in kwargs:
+                postalCode = kwargs['postalCode']
+            else:
+                postalCode = '0'
+            searchString = "||%s||%s||%s||%s|%s"%(country, state, county, city, postalCode)
+            
         if 'searchQuery' in request.params and searchString == None:
             self.query = request.params['searchQuery']
             if self.query.strip() == '':
@@ -58,6 +92,7 @@ class SearchController(BaseController):
             self.noQuery = False
             
         c.searchQuery = self.query
+        log.info("c.searchQuery is %s"%c.searchQuery)
     
     def _noSearch(self, noRender = False):
         c.numUsers = 0
@@ -103,13 +138,40 @@ class SearchController(BaseController):
         elif self.query.count('%') == len(self.query):
             # Prevent wildcard searches
             return self._noSearch()
+        log.info("inside searchWorkshopGeo self.query is %s"%self.query)
         c.numUsers = 0
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
-        c.searchType = "tag"
+        c.searchType = "region"
+        geoScope = self.query.split('|')
+        if geoScope[2] == '0':
+            level = 'earth'
+            name = 'all'
+            c.searchQuery = 'Earth'
+        elif geoScope[4] == '0':
+            level = geoScope[2]
+            name = level
+            c.searchQuery = "Country of " + utils.geoDeurlify(geoScope[2])
+        elif geoScope[6] == '0':
+            level = geoScope[4]
+            name = level
+            c.searchQuery = "State of " + utils.geoDeurlify(geoScope[4])
+        elif geoScope[8] == '0':
+            level = geoScope[6]
+            name = level
+            c.searchQuery = "County of " + utils.geoDeurlify(geoScope[6])
+        elif geoScope[9] == '0':
+            level = geoScope[8]
+            name = level
+            c.searchQuery = "City of " + utils.geoDeurlify(geoScope[8])
+        else:
+            level = geoScope[9]
+            name = level
+            c.searchQuery = "Postal Code of " + utils.geoDeurlify(geoScope[9])
         c.scope = {'level':'earth', 'name':'all'}
+        log.info("c.scope is %s c.searchQuery is %s"%(c.scope, c.searchQuery))
         return render('/derived/6_search.bootstrap')
     
     def searchPeople(self):
@@ -147,6 +209,9 @@ class SearchController(BaseController):
         result = []
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
+            values = [self.query]
+        elif self.searchType == 'geo':
+            keys = ['workshop_public_scope']
             values = [self.query]
         else:    
             keys = ['title', 'description', 'workshop_category_tags']
@@ -190,6 +255,9 @@ class SearchController(BaseController):
         result = []
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
+            values = [self.query]
+        elif self.searchType == 'geo':
+            keys = ['workshop_public_scope']
             values = [self.query]
         else:
             keys = ['title', 'text', 'link']
@@ -239,6 +307,9 @@ class SearchController(BaseController):
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]
+        elif self.searchType == 'geo':
+            keys = ['workshop_public_scope']
+            values = [self.query]
         else:
             keys = ['title', 'text']
             values = [self.query, self.query]
@@ -283,6 +354,8 @@ class SearchController(BaseController):
         result = []
         if self.searchType == 'tag':
             ideas = ideaLib.searchIdeas('workshop_category_tags', self.query)
+        elif self.searchType == 'geo':
+            ideas = ideaLib.searchIdeas('workshop_public_scope', self.query)
         else:
             ideas = ideaLib.searchIdeas('title', self.query)
         if not ideas:

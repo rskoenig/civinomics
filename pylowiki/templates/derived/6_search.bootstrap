@@ -4,9 +4,12 @@
 <div class="spacer"></div>
 <div class="row">
     <div class="span6">
-        % if c.searchType == 'name' or c.searchType == 'tag':
-            Results for search by ${c.searchType}
+        % if c.searchType == 'region':
+            Results for search by ${c.searchType} scoped for '${c.searchQuery}'
+        % else:
+            Results for search by ${c.searchType} with search term '${c.searchQuery}'
         % endif
+        
     </div><!-- span6 -->
     <div class="span6">
         ${lib_6.geoDropdown()}
@@ -61,7 +64,12 @@
             <div ng-show="noResult" ng-cloak>
                 <div class="row-fluid">
                     <div class="alert centered span6 offset3">
-                        Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                        % if c.searchType == 'region':
+                            Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
+                        % else:
+                            Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                        % endif
+                        
                     </div>
                 </div>
             </div>

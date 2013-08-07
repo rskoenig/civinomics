@@ -24,6 +24,11 @@ def linkChildToParent(child, parent):
     if key in child:
         # Overwrite, give warning
         log.warning("linkChildToParent(): parent object link already exists in child.")
+    if 'workshop_category_tags' in parent:
+        child['workshop_category_tags'] = parent['workshop_category_tags']
+    if 'workshop_public_scope' in parent:
+        child['workshop_public_scope'] = parent['workshop_public_scope']
+        
     child[key] = code
     return child
     
