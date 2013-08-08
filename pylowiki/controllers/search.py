@@ -228,8 +228,8 @@ class SearchController(BaseController):
             entry['description'] = w['description']
             entry['urlCode'] = w['urlCode']
             entry['url'] = w['url']
-            entry['activity'] = len(activityLib.getActivityForWorkshop(w['urlCode']))
-            entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
+            entry['activity'] = w['numPosts']
+            entry['bookmarks'] = w['numBookmarks']
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             

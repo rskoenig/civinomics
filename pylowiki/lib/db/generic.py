@@ -28,6 +28,8 @@ def linkChildToParent(child, parent):
         child['workshop_category_tags'] = parent['workshop_category_tags']
     if 'workshop_public_scope' in parent:
         child['workshop_public_scope'] = parent['workshop_public_scope']
+    if 'workshop_searchable' in parent:
+        child['workshop_searchable'] = parent['workshop_searchable']
         
     child[key] = code
     return child

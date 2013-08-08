@@ -328,9 +328,12 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         if c.w['public_private'] == 'private' and 'changeScope' in request.params:
-            scopeTest = geoInfoLib.getWScopeByWorkshop(c.w)
-            if not scopeTest:
-                geoInfoLib.WorkshopScope(c.w, "||0|0|0|0|0|0|0|0")
+            c.w['workshop_public_scope'] =  "||0|0|0|0|0|0|0|0"
+            workshopLib.updateWorkshopChildren(workshop, 'workshop_public_scope')
+            if c.w['disabled'] == '0' and c.w['deleted'] == '0' and c.w['published'] == '1':
+                c.w['workshop_searchable'] = '1'
+                workshopLib.updateWorkshopChildren(workshop, 'workshop_searchable')
+                
             weventMsg = 'Workshop scope changed from private to public.'
             c.w['public_private'] = 'public'
             dbHelpers.commit(c.w)
@@ -587,6 +590,9 @@ class WorkshopController(BaseController):
         if 'startWorkshop' in request.params:
             # Set workshop start and end time
             c.w['published'] = '1'
+            if c.w['public_private'] == 'public' and c.w['deleted'] == '0' and c.w['disabled'] == '0':
+                c.w['workshop_searchable'] = '1'
+                workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
             startTime = datetime.datetime.now(None)
             c.w['startTime'] = startTime
             endTime = datetime.datetime.now(None)
@@ -613,6 +619,13 @@ class WorkshopController(BaseController):
         else:
             c.w['published'] = '1'
             action = "republished"
+        
+        if c.w['public_private'] == 'public' and c.w['deleted'] == '0' and c.w['disabled'] == '0' and c.w['published'] == '1':
+            c.w['workshop_searchable'] = '1'
+        else:
+            c.w['workshop_searchable'] = '0'
+            
+        workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
             
         eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop %s.'%action, c.w, c.authuser)
         dbHelpers.commit(c.w)
@@ -622,6 +635,8 @@ class WorkshopController(BaseController):
         alert['content'] = ''
         session['alert'] = alert
         session.save()
+        
+
             
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
 

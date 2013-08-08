@@ -400,6 +400,7 @@ def Workshop(title, owner, publicPrivate, type = "personal"):
     w['allowResources'] = u'1'
     w['allowDiscussions']  = u'1'
     w['workshop_category_tags'] = ''
+    w['workshop_searchable'] = u'0'
     commit(w)
     w['urlCode'] = utils.toBase62(w)
     background = utils.workshopInfo
