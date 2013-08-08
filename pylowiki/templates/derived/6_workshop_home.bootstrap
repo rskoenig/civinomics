@@ -45,8 +45,7 @@
             ${helpers.showTags()}
             ${helpers.showScope()}
             ${helpers.whoListening()}
-            <p>${"%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True))}</p>
-            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)))}
+            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage))}
             ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->

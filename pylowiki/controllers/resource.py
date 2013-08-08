@@ -74,6 +74,13 @@ class ResourceController(BaseController):
         c.requestUrl = request.url
         c.thingCode = resourceCode
 
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:
             c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')

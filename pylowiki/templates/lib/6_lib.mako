@@ -47,7 +47,6 @@
                 console.log('above response tree');
                 if (response.status === 'connected') {
                     console.log('calling fb connected');
-                    console.log("${requestUrl}")
                     //shareOnWall(response.authResponse);
                 } else if (response.status === 'not_authorized') {
                     console.log('not authd');                
@@ -67,7 +66,7 @@
                 js.src = "//connect.facebook.net/en_US/all.js";
                 ref.parentNode.insertBefore(js, ref);
             }(document));
-            console.log("${requestUrl}")
+
             function shareOnWall() {
             FB.ui(
                 {
@@ -105,10 +104,10 @@
                       //alert('Post was published. ' + str);
                       // create share object
                       var thingCode = "${thingCode}";
-                      var requestUrl = "${requestUrl}"
+                      var link = "${link}"
                       var userCode = "${userCode}"
                       var workshopCode = "${workshopCode}"
-                      result = postShared(response, thingCode, requestUrl, response.post_id, userCode, workshopCode);
+                      result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode);
                       //result = postTest();
                       // NOTE - send a message to the function in extauth with all possible vars
                       // in the extauth function it;ll be determined what route to call
