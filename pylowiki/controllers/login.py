@@ -30,7 +30,7 @@ log = logging.getLogger(__name__)
 class LoginController(BaseController):
 
     @h.login_required
-    def shareTest(self, id1):
+    def shareFacebookHandler(self, id1):
         # create the share object
         # we can't directly see what message the user posted with this share, but we
         # might be able to look it up with a facebook graph api call using the postId,

@@ -209,8 +209,9 @@ def make_map():
 
     # Share management
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/share/{userCode}/email/{handler:handler/?}', controller = 'share', action = 'shareEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
-    #map.connect('/share/facebook/{itemCode}/{postId}/{itemURL}{end:/?}', controller = 'share', action = 'shareObjectFacebookHandler', itemCode = '{itemCode}', postId = '{postId}', itemURL = '{itemURL}')
-    map.connect('/share/facebook/{id1}', controller = 'login', action = 'shareTest', id1 = '{id1}')
+    #map.connect('/share/facebook/{itemCode}/{postId}/{itemURL}{end:/?}', controller = 'share', action = 'shareFacebookHandler', itemCode = '{itemCode}', postId = '{postId}', itemURL = '{itemURL}')
+    #map.connect('/share/facebook/{id1}', controller = 'login', action = 'shareFacebookHandler', id1 = '{id1}')
+    map.connect('/share/facebook/{userCode}/{workshopCode}/{itemCode}/{itemURL}/{postId}', controller = 'share', action = 'shareFacebookHandler', userCode = '{userCode}', workshopCode = '{workshopCode}', itemCode = '{itemCode}', itemURL = '{itemURL}', postId = '{postId}')
     #map.connect('/share/test{end:/?}', controller = 'login', action = 'shareTest')
     # why this work?
     # map.connect('/extauth/fbEmail/{id1}{end:/?}', controller = 'login', action = 'fbAuthCheckEmail', id1 = '{id1}')

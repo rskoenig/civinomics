@@ -15,7 +15,7 @@
    log = logging.getLogger(__name__)
 %>
 
-<%def name="facebookDialogShare(link)">
+<%def name="facebookDialogShare(link, picture)">
     <%
         # NOTE - link should probably be created by the function in this file, thingLinkRouter.
         # However, I need to do some homework on how to strip the href=" " out, and place an
@@ -23,9 +23,10 @@
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
         thingCode = c.thingCode
-        requestUrl = c.requestUrl
-        # NOTE: load the code and url of the workshop, if there's a code and url for an object load those
-        # as well, if not - set these variables to none or a null type recognized by javascript
+        userCode = c.authuser['urlCode']
+        workshopCode = c.w['urlCode']
+        name = c.name
+        # how to determine name for post?
     %>
     % if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
         <div id="fb-root"></div>
@@ -46,6 +47,7 @@
                 console.log('above response tree');
                 if (response.status === 'connected') {
                     console.log('calling fb connected');
+                    console.log("${requestUrl}")
                     //shareOnWall(response.authResponse);
                 } else if (response.status === 'not_authorized') {
                     console.log('not authd');                
@@ -65,11 +67,16 @@
                 js.src = "//connect.facebook.net/en_US/all.js";
                 ref.parentNode.insertBefore(js, ref);
             }(document));
-
+            console.log("${requestUrl}")
             function shareOnWall() {
             FB.ui(
                 {
-                  method: 'feed'
+                  method: 'feed',
+                  name: "${name}",
+                  link: "${link}",
+                  picture: "${picture}"
+                  //caption: 'Reference Documentation',
+                  //description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
                 },
                 //{
                 //    method: "stream.share",
@@ -99,7 +106,9 @@
                       // create share object
                       var thingCode = "${thingCode}";
                       var requestUrl = "${requestUrl}"
-                      result = postShared(response, thingCode, requestUrl, response.post_id);
+                      var userCode = "${userCode}"
+                      var workshopCode = "${workshopCode}"
+                      result = postShared(response, thingCode, requestUrl, response.post_id, userCode, workshopCode);
                       //result = postTest();
                       // NOTE - send a message to the function in extauth with all possible vars
                       // in the extauth function it;ll be determined what route to call
@@ -399,9 +408,15 @@
 
 <%def name="ideaLink(i, w, **kwargs)">
    <%
-        ideaStr = 'href="/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
+        if 'noHref' in kwargs:
+            ideaStr = '/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
+        else:
+            ideaStr = 'href="/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
         ideaStr += commentLinkAppender(**kwargs)
-        ideaStr += '"'
+        if 'noHref' in kwargs:
+            ideaStr += ''
+        else:
+            ideaStr += '"'
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return ideaStr

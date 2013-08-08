@@ -87,14 +87,21 @@ class IdeaController(BaseController):
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = config['site_base_url']
+        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+        if c.baseUrl[-1:] == "/":
+            c.baseUrl = c.baseUrl[:-1]
         c.requestUrl = request.url
         c.thingCode = ideaCode
-
+        
         c.thing = ideaLib.getIdea(ideaCode)
         if not c.thing:
             c.thing = revisionLib.getRevisionByCode(ideaCode)
             if not c.thing:
                 abort(404)
+        # name/title for facebook sharing
+        c.name = c.thing['title']
+
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'idea'
         c.revisions = revisionLib.getRevisionsForThing(c.thing)
