@@ -92,7 +92,6 @@ class SearchController(BaseController):
             self.noQuery = False
             
         c.searchQuery = self.query
-        log.info("c.searchQuery is %s"%c.searchQuery)
     
     def _noSearch(self, noRender = False):
         c.numUsers = 0
@@ -105,7 +104,7 @@ class SearchController(BaseController):
         elif self.query.count('%') == len(self.query):
             # Prevent wildcard searches
             return self._noSearch()
-        c.numUsers = userLib.searchUsers('name', self.query, count = True)
+        c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['title', 'description', 'workshop_category_tags'], [self.query, self.query, self.query], count = True)
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
@@ -121,8 +120,7 @@ class SearchController(BaseController):
         elif self.query.count('%') == len(self.query):
             # Prevent wildcard searches
             return self._noSearch()
-        log.info("inside searchWorkshopCategoryTags and self.query is %s"%self.query)
-        c.numUsers = userLib.searchUsers('greetingMsg', self.query, count = True)
+        c.numUsers = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query], count = True)
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_category_tags'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_category_tags'], [self.query], count = True)
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_category_tags'], [self.query], count = True)
@@ -138,7 +136,6 @@ class SearchController(BaseController):
         elif self.query.count('%') == len(self.query):
             # Prevent wildcard searches
             return self._noSearch()
-        log.info("inside searchWorkshopGeo self.query is %s"%self.query)
         c.numUsers = 0
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)
@@ -171,7 +168,6 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "Postal Code of " + utils.geoDeurlify(geoScope[9])
         c.scope = {'level':'earth', 'name':'all'}
-        log.info("c.scope is %s c.searchQuery is %s"%(c.scope, c.searchQuery))
         return render('/derived/6_search.bootstrap')
     
     def searchPeople(self):
@@ -181,7 +177,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        people = userLib.searchUsers('name', self.query)
+        people = userLib.searchUsers(['greetingMsg', 'name'], [self.query, self.query])
         if len(people) == 0:
             return json.dumps({'statusCode': 2})
         for p in people:

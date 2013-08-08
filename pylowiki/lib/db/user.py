@@ -81,14 +81,21 @@ def isAdmin(id):
     except:
         return False
     
-def searchUsers( uKey, uValue, deleted = u'0', disabled = u'0', activated = u'1', count = False):
+def searchUsers( uKeys, uValues, deleted = u'0', disabled = u'0', activated = u'1', count = False):
     try:
+        if type(uKeys) != type([]):
+            u_keys = [uKeys]
+            u_values = [uValues]
+        else:
+            u_keys = uKeys
+            u_values = uValues
+        map_user = map(wcl, u_keys, u_values)
         query = meta.Session.query(Thing)\
                 .filter_by(objType = 'user')\
-                .filter(Thing.data.any(wcl(uKey, uValue)))\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
-                .filter(Thing.data.any(wc('activated', activated)))
+                .filter(Thing.data.any(wc('activated', activated)))\
+                .filter(Thing.data.any(reduce(or_, map_user)))
         if count:
             return query.count()
         return query.all()
