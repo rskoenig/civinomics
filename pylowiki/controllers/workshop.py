@@ -26,7 +26,6 @@ import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.facilitator  as facilitatorLib
 import pylowiki.lib.db.listener     as listenerLib
 import pylowiki.lib.db.rating       as ratingLib
-import pylowiki.lib.db.tag          as tagLib
 import pylowiki.lib.db.motd         as motdLib
 import pylowiki.lib.db.pmember      as pMemberLib
 import pylowiki.lib.db.follow       as followLib
@@ -35,7 +34,6 @@ import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.page         as pageLib
 import pylowiki.lib.db.account      as accountLib
 import pylowiki.lib.db.flag         as flagLib
-import pylowiki.lib.db.tag          as tagLib
 import pylowiki.lib.db.goal         as goalLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
@@ -126,7 +124,6 @@ class WorkshopController(BaseController):
         c.mainImage = mainImageLib.getMainImage(c.w)
         c.published = workshopLib.isPublished(c.w)
         c.started = workshopLib.isStarted(c.w)
-        c.tags = tagLib.getWorkshopTags(c.w)
         if action in setPrivs:
             workshopLib.setWorkshopPrivs(c.w)
             if action in adminOrFacilitator:
@@ -249,11 +246,10 @@ class WorkshopController(BaseController):
     @h.login_required
     def configureTagsWorkshopHandler(self, workshopCode, workshopURL):
         c.title = "Configure Workshop"
-        c.tags = tagLib.getWorkshopTags(c.w)
         currentTags = []
-        if c.tags:
-            for tag in c.tags:
-                currentTags.append(tag['title'])
+        for tag in c.w['workshop_category_tags'].split('|'):
+            if tag and tag != '':
+                currentTags.append(tag)
                 
         session['confTab'] = "tab3"
         session.save()
@@ -265,22 +261,23 @@ class WorkshopController(BaseController):
             
         if 'categoryTags' in request.params:
             categoryTags = request.params.getall('categoryTags')
-            new = 0
-            orphaned = 0
             
+            newTagStr = '|'
             for tag in categoryTags:
                 if tag not in currentTags:
-                    tagLib.Tag(c.w, tag)
                     wchanges = 1
+                newTagStr = newTagStr + tag + '|'
                     
-            for tag in c.tags:
-                if tag['title'] not in categoryTags:
-                    tagLib.orphanTag(tag)
+            for tag in currentTags:
+                if tag not in categoryTags:
                     wchanges = 1
             
             
             if wchanges:
                 weventMsg +=  "Updated category tags."
+                c.w['workshop_category_tags'] = newTagStr
+                dbHelpers.commit(c.w)
+                workshopLib.updateWorkshopChildren(c.w, 'workshop_category_tags')
                 
             if not workshopLib.isPublished(c.w):
                 weventMsg += ' See your changes by clicking on the preview button above.'
@@ -331,9 +328,12 @@ class WorkshopController(BaseController):
             return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
             
         if c.w['public_private'] == 'private' and 'changeScope' in request.params:
-            scopeTest = geoInfoLib.getWScopeByWorkshop(c.w)
-            if not scopeTest:
-                geoInfoLib.WorkshopScope(c.w, "||0|0|0|0|0|0|0|0")
+            c.w['workshop_public_scope'] =  "||0|0|0|0|0|0|0|0"
+            workshopLib.updateWorkshopChildren(workshop, 'workshop_public_scope')
+            if c.w['disabled'] == '0' and c.w['deleted'] == '0' and c.w['published'] == '1':
+                c.w['workshop_searchable'] = '1'
+                workshopLib.updateWorkshopChildren(workshop, 'workshop_searchable')
+                
             weventMsg = 'Workshop scope changed from private to public.'
             c.w['public_private'] = 'public'
             dbHelpers.commit(c.w)
@@ -372,16 +372,13 @@ class WorkshopController(BaseController):
         # assemble a workshop scope string 
         # ||country||state||county||city|zip
         geoTagString = "||" + utils.urlify(geoTagCountry) + "||" + utils.urlify(geoTagState) + "||" + utils.urlify(geoTagCounty) + "||" + utils.urlify(geoTagCity) + "|" + utils.urlify(geoTagPostal)
-        wscope = geoInfoLib.getWScopeByWorkshop(c.w)
-        update = 0
-        if not wscope:
-            geoInfoLib.WorkshopScope(c.w, geoTagString)
+        if 'workshop_public_scope' not in c.w:
+            c.w['workshop_public_scope'] = geoTagString
+            workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             wchanges = 1
-            
-        if wscope and wscope['scope'] != geoTagString:
-            geoInfoLib.editWorkshopScope(wscope, geoTagString)
-            # wscope['scope'] = geoTagString
-            # dbHelpers.commit(wscope)
+        elif c.w['workshop_public_scope'] != geoTagString:
+            c.w['workshop_public_scope'] = geoTagString
+            workshopLib.updateWorkshopChildren(c.w, 'workshop_public_scope')
             wchanges = 1
             
         if wchanges:
@@ -593,6 +590,9 @@ class WorkshopController(BaseController):
         if 'startWorkshop' in request.params:
             # Set workshop start and end time
             c.w['published'] = '1'
+            if c.w['public_private'] == 'public' and c.w['deleted'] == '0' and c.w['disabled'] == '0':
+                c.w['workshop_searchable'] = '1'
+                workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
             startTime = datetime.datetime.now(None)
             c.w['startTime'] = startTime
             endTime = datetime.datetime.now(None)
@@ -619,6 +619,13 @@ class WorkshopController(BaseController):
         else:
             c.w['published'] = '1'
             action = "republished"
+        
+        if c.w['public_private'] == 'public' and c.w['deleted'] == '0' and c.w['disabled'] == '0' and c.w['published'] == '1':
+            c.w['workshop_searchable'] = '1'
+        else:
+            c.w['workshop_searchable'] = '0'
+            
+        workshopLib.updateWorkshopChildren(c.w, 'workshop_searchable')
             
         eventLib.Event('Workshop Config Updated by %s'%c.authuser['name'], 'Workshop %s.'%action, c.w, c.authuser)
         dbHelpers.commit(c.w)
@@ -628,6 +635,8 @@ class WorkshopController(BaseController):
         alert['content'] = ''
         session['alert'] = alert
         session.save()
+        
+
             
         return redirect('/workshop/%s/%s/preferences'%(c.w['urlCode'], c.w['url']))
 
@@ -885,7 +894,7 @@ class WorkshopController(BaseController):
         c.information = pageLib.getInformation(c.w)
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         if c.w['public_private'] == 'public':
-            c.scope = geoInfoLib.getPublicScope(c.w)
+            c.scope = workshopLib.getPublicScope(c.w)
         c.goals = goalLib.getGoalsForWorkshop(c.w)
         if not c.goals:
             c.goals = []
@@ -963,8 +972,12 @@ class WorkshopController(BaseController):
         else:
             c.basicConfig = 0
         
-        tags = tagLib.getWorkshopTags(c.w)
-        if len(tags):
+        testTags = c.w['workshop_category_tags'].split('|')
+        tagList = []
+        for tag in testTags:
+            if tag and tag != '':
+                tagList.append(tag)
+        if len(tagList):
             c.tagConfig = 1
         else:
             c.tagConfig = 0
@@ -1000,10 +1013,10 @@ class WorkshopController(BaseController):
     def preferences(self, workshopCode, workshopURL):
         readyToStart = self.checkPreferences()
         
-        c.tags = tagLib.getWorkshopTags(c.w)
         c.categories = []
-        for tag in c.tags:
-            c.categories.append(tag['title'])
+        for tag in c.w['workshop_category_tags'].split('|'):
+            if tag and tag != '':
+                c.categories.append(tag)
             
         if 'confTab' in session:
             c.tab = session['confTab']
@@ -1042,9 +1055,8 @@ class WorkshopController(BaseController):
         
         c.states = geoInfoLib.getStateList('United-States')
         # ||country||state||county||city|zip
-        c.wscope = geoInfoLib.getWScopeByWorkshop(c.w)
-        if c.wscope:
-            geoTags = c.wscope['scope'].split('|')
+        if c.w['public_private'] == 'public' and 'workshop_public_scope' in c.w and c.w['workshop_public_scope'] != '':
+            geoTags = c.w['workshop_public_scope'].split('|')
             c.country = utils.geoDeurlify(geoTags[2])
             c.state = utils.geoDeurlify(geoTags[4])
             c.county = utils.geoDeurlify(geoTags[6])
@@ -1066,7 +1078,7 @@ class WorkshopController(BaseController):
         c.flaggedItems = flagLib.getFlaggedThingsInWorkshop(c.w)
         
         if c.w['public_private'] == 'public':
-            c.scope = geoInfoLib.getPublicScope(c.w)
+            c.scope = workshopLib.getPublicScope(c.w)
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = True

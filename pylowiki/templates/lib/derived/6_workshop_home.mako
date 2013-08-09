@@ -412,17 +412,18 @@
 
 <%def name="showTags()">
     <% 
-        if c.tags:
-            tagList = []
-            tagString = "Tags: "
-            for tag in c.tags:
-                tagList.append(tag['title'])
-            
-            tagString += ', '.join(tagList)
+        tagString = ''
+        tagList = c.w['workshop_category_tags'].split('|')
+        for tag in tagList:
+            if tag and tag != '':
+                if tagString != '':
+                    tagString = tagString + ", " + tag
+                else:
+                    tagString = tag
+        if tagString != '':
+            tagString = "Tags: " + tagString
     %>
-    % if c.tags:
-        ${tagString}<br />
-    % endif
+    ${tagString}<br />
 </%def>
 
 <%def name="showScope()">

@@ -587,7 +587,7 @@
     % if 'user' in session:
       <div class="btn-group pull-right left-space">
         <button class="btn dropdown-toggle" data-toggle="dropdown">
-          Sort by Region
+          Search by Region
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
@@ -658,7 +658,7 @@
     <%
         link = 'href="/workshops/geo/earth/'
         if depth is None or depth == 'earth':
-            link += '"'
+            link += '0"'
         elif depth == 'country':
             link += '%s"' % geoInfo['countryURL']
         elif depth == 'state':
@@ -1036,10 +1036,10 @@
 </%def>
 
 <%def name="public_tags()">
-  <%  categories = tagLib.getWorkshopTagCategories() %>
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
   <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
-      Sort by Tag
+      Search by Tag
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">

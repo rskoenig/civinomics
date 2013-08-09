@@ -66,12 +66,6 @@ def make_map():
     map.connect('/slideshow/edit', controller = 'slideshow', action = 'edit')
 
     # Geo stuff
-    map.connect('/workshops/geo/earth{end:/?}', controller = 'geo', action = 'workshopSearch')
-    map.connect('/workshops/geo/earth/{country}{end:/?}', controller = 'geo', action = 'workshopSearch')
-    map.connect('/workshops/geo/earth/{country}/{state}{end:/?}', controller = 'geo', action = 'workshopSearch')
-    map.connect('/workshops/geo/earth/{country}/{state}/{county}{end:/?}', controller = 'geo', action = 'workshopSearch')
-    map.connect('/workshops/geo/earth/{country}/{state}/{county}/{city}{end:/?}', controller = 'geo', action = 'workshopSearch')
-    map.connect('/workshops/geo/earth/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'geo', action = 'workshopSearch')
     map.connect('/geoHandler/{id1}/{id2}', controller = 'geo', action = 'geoHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/geo/stateList/{id1}', controller = 'geo', action = 'geoStateHandler', id1 = '{id1}')
     map.connect('/geo/countyList/{id1}/{id2}', controller = 'geo', action = 'geoCountyHandler', id1 = '{id1}', id2 = '{id2}')
@@ -361,7 +355,6 @@ def make_map():
     map.connect('/{workshop:workshops?/?}', controller='actionlist', action='index', id='sitemapIssues')
     map.connect('/searchWorkshops/{id1}/{id2}{end:/?}', controller='actionlist', action='searchWorkshops', id='searchWorkshops', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchUsers/{id1}/{id2}{end:/?}', controller='actionlist', action='searchUsers', id='searchUsers', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/searchTags/{id1}{end:/?}', controller='actionlist', action='searchTags', id='searchTags', id1 = '{id1}')
     map.connect('/searchName/{id1}/{id2}{end:/?}', controller='actionlist', action='searchName', id='searchName', id1 = '{id1}', id2 = '{id2}')
     map.connect('/searchGeoUsers/{id1}{end:/?}', controller='actionlist', action='searchGeoUsers', id='searchGeoUsers', id1 = '{id1}')
     map.connect('/{searchGeoWorkshops:searchGeoWorkshops/?}', controller='actionlist', action='searchGeoWorkshops', id='searchGeoWorkshops')
@@ -371,12 +364,19 @@ def make_map():
     ################
 
     map.connect('/search{end:/?}', controller = 'search', action = 'search')
-    map.connect('/search/workshops{end:/?}', controller = 'search', action = 'searchWorkshops')
-    map.connect('/search/people{end:/?}', controller = 'search', action = 'searchPeople')
-    map.connect('/search/resources{end:/?}', controller = 'search', action = 'searchResources')
-    map.connect('/search/discussions{end:/?}', controller = 'search', action = 'searchDiscussions')
-    map.connect('/search/ideas{end:/?}', controller = 'search', action = 'searchIdeas')
-    
+    map.connect('/search/workshops/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchWorkshops', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/people/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchPeople', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/resources/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchResources', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/discussions/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchDiscussions', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/ideas/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchIdeas', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/searchTags/{id1}{end:/?}', controller='search', action='searchWorkshopCategoryTags', id1 = '{id1}')
+    map.connect('/workshops/geo/{planet}/', controller = 'search', action = 'searchWorkshopGeo', country = 'united-states')
+    map.connect('/workshops/geo/{planet}/{country}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    map.connect('/workshops/geo/{planet}/{country}/{state}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    map.connect('/workshops/geo/{planet}/{country}/{state}/{county}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+    map.connect('/workshops/geo/{planet}/{country}/{state}/{county}/{city}/{postalCode}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
+
     ################
     # Application  #
     ################
