@@ -185,7 +185,13 @@ padding: 0;
 
 .horizontal-list> li {
   display: inline;
-  margin-right: 20px; 
+  margin-right: 8px; 
+}
+
+.horizontal-list.ideaListing{
+  margin-left: 0px;
+  margin-bottom: 0px;
+  font-size: .85em;
 }
 
 img.small-logo{
@@ -485,6 +491,10 @@ ul.activity > li {
    margin-left: 0;
 }
 
+.list-item .ideaListing{
+   padding: 6px;
+}
+
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
    background-color:#005d28;
    border-radius: 20px;
@@ -746,10 +756,49 @@ img.watch{
 }
 
 .vote-icon{
-    height:12px;
+  background-size: auto 30px;
+  background-repeat: no-repeat;
+  height: 30px;
+  width: 100%;
+  float: left;
 }
+
+.vote-icon.detail{
+  width: 50%;
+}
+
+.vote-icon.yes-icon{
+  background-image:url(/images/yes_blank.png);
+}
+.vote-icon.yes-icon:hover{
+  background-image:url(/images/yes_hover.png);
+}
+.voted > .vote-icon.yes-icon{
+  background-image:url(/images/yes_selected.png);
+}
+.voted > .vote-icon.yes-icon:hover{
+  background-image:url(/images/yes_selected.png);
+}
+
+.vote-icon.no-icon{
+  background-image:url(/images/no_blank.png);
+}
+.vote-icon.no-icon:hover{
+  background-image:url(/images/no_hover.png);
+}
+.voted > .vote-icon.no-icon{
+  background-image:url(/images/no_selected.png);
+}
+.voted > .vote-icon.no-icon:hover{
+  background-image:url(/images/no_selected.png);
+}
+
 .voteBlock{
-  padding-top:2px;
+  padding:2px;
+}
+
+.voteBlock.ideaListing{
+  padding:6px;
 }
 
 .chevron-score{
@@ -757,6 +806,21 @@ img.watch{
   margin-bottom: -2px;
   font-size: 0.85em;
   color: grey;
+}
+
+.yesScore, .noScore{
+  margin-left: 100px;
+  padding-top: 5px;
+  font-size: 0.85em;
+  color: grey;
+  width: 50%;
+}
+
+.totalVotesWrapper{
+  margin-top: 20px;
+  font-size: 0.85em;
+  color: grey;
+  text-align: center;
 }
 
 .voteWrapper{
@@ -767,6 +831,18 @@ img.watch{
    width: 100%;
    text-align: center;
    position: absolute;
+}
+
+a.yesVote, a.noVote{
+   width: 165px;
+   position: absolute;
+}
+
+.yesNoWell{
+  float: right;
+  margin-left: 20px;
+  padding-left: 40px;
+  width: 165px;
 }
 
 .oddComment{
@@ -1472,4 +1548,26 @@ li.thumbnail-gallery{
 
 .icon-chevron-sign-down.voted{
   color: #90000a;
+}
+
+.ideaListingTitle{
+  font-size: 18px;
+  margin-bottom: 3px;
+  font-weight: bold;
+}
+
+.border-bottom{
+  border-bottom: 1px solid #ddd;
+}
+
+.hidden{
+  display: none;
+}
+
+.icon-facebook-sign{
+  color: #4c66a4;
+}
+
+.icon-twitter-sign{
+  color: #0099cc;
 }

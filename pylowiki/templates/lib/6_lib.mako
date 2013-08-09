@@ -1,6 +1,9 @@
 <%!
    from pylowiki.lib.db.geoInfo import getGeoInfo
 
+   import locale
+   locale.setlocale(locale.LC_ALL, 'en_US')
+
    import pylowiki.lib.db.discussion    as discussionLib
    import pylowiki.lib.db.idea          as ideaLib
    import pylowiki.lib.db.resource      as resourceLib
@@ -176,6 +179,80 @@
          <i class="icon-chevron-sign-down icon-2x"></i>
          </a>
          <br />
+         <% log.info("vote") %>
+      % endif
+   </div>
+</%def>
+
+<%def name="yesNoVote(thing, *args)">
+   <div class="yesNoWrapper">
+      % if thing['disabled'] == '1' or thing.objType == 'revision':
+         </div> <!-- /.yesNoWrapper -->
+         <% return %>
+      % endif
+      <% 
+        rating = int(thing['ups']) - int(thing['downs']) 
+        totalYes = int(thing['ups'])
+        totalNo = int(thing['downs'])
+        totalVotes = int(thing['ups']) + int(thing['downs'])
+      %>
+      % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
+         <% 
+            rated = ratingLib.getRatingForThing(c.authuser, thing) 
+            if rated:
+               if rated['amount'] == '1':
+                  commentClass = 'voted yesVote'
+                  displayTally = ''
+               else:
+                  commentClass = 'yesVote'
+                  displayTally = ''
+                  if rated['amount'] == '0' :
+                    displayTally = 'hidden'
+
+            else:
+               commentClass = 'yesVote'
+               displayTally = 'hidden'
+         %>
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
+           % if 'detail' in args:
+              <div class="vote-icon yes-icon detail"></div>
+              <div class="yesScore ${displayTally}">${locale.format("%d", totalYes, grouping=True)}</div>
+           % else:
+              <div class="vote-icon yes-icon detail"></div>
+           % endif
+         </a>
+         <br>
+         <br>
+         <%
+            if rated:
+               if rated['amount'] == '-1':
+                  commentClass = 'voted noVote'
+               else:
+                  commentClass = 'noVote'
+            else:
+               commentClass = 'noVote'
+         %>
+         <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
+           % if 'detail' in args:
+              <div class="vote-icon no-icon detail"></div>
+              <div class="noScore ${displayTally}">${locale.format("%d", totalNo, grouping=True)}</div> 
+           % else:
+              <div class="vote-icon no-icon"></div>
+           % endif
+         </a>
+         <br>
+         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
+      % else:
+         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+          <div class="vote-icon yes-icon"></div>
+         </a>
+         <br>
+         <br>
+         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
+          <div class="vote-icon no-icon"></div>
+         </a>
+         <br>
+         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
          <% log.info("vote") %>
       % endif
    </div>
