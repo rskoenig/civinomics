@@ -392,12 +392,22 @@
             if kwargs['directLink'] == True and r['type'] == 'url':
                     resourceStr = 'href="%s' %(r['info'])
             else:
-                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                if 'noHref' in kwargs:
+                    resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                else:
+                    resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
         else:
-            resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+            if 'noHref' in kwargs:
+                resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+            else:
+                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
         
         resourceStr += commentLinkAppender(**kwargs)
-        resourceStr += '"'
+        if 'noHref' in kwargs:
+            resourceStr += ''
+        else:
+            resourceStr += '"'
+
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return resourceStr
@@ -425,9 +435,15 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
     <%
-        discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+        if 'noHref' in kwargs:
+            discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+        else:
+            discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
         discussionStr += commentLinkAppender(**kwargs)
-        discussionStr += '"'
+        if 'noHref' in kwargs:
+            discussionStr += ''
+        else:
+            discussionStr += '"'
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return discussionStr
@@ -437,7 +453,11 @@
 
 <%def name="commentLink(comment, w, **kwargs)">
    <% 
-        linkStr = 'href="/workshop/%s/%s/comment/%s"' %(w["urlCode"], w["url"], comment["urlCode"])
+
+        if 'noHref' in kwargs:
+            linkStr = '/workshop/%s/%s/comment/%s' %(w["urlCode"], w["url"], comment["urlCode"])
+        else:
+            linkStr = 'href="/workshop/%s/%s/comment/%s"' %(w["urlCode"], w["url"], comment["urlCode"])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return linkStr
