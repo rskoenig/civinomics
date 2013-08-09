@@ -13,6 +13,7 @@ import pylowiki.lib.mail            as mailLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 
+import urllib2 as urllib2
 import simplejson as json
 
 log = logging.getLogger(__name__)
@@ -56,12 +57,11 @@ class ShareController(BaseController):
     @h.login_required
     def shareFacebookHandler(self, itemCode, itemURL, postId):
         # create the share object
-        # we can't directly see what message the user posted with this share, but we
-        # might be able to look it up with a facebook graph api call using the postId,
-        # so for now it's best to store the postId as the message. 
+        # postId will allow us to make a facebook graph api call to see the message associated with this share
         # see https://developers.facebook.com/docs/reference/api/post/
-        # NOTE - should we add a field to the share object to account for facebook shares?
-        # itemCode, itemURL, postId = id1.split("&")
+        itemURL = itemURL.replace(",","%")
+        itemURL = urllib2.unquote(itemURL)
+        log.info("decoded url: %s"%itemURL)
         if itemCode and itemURL and postId:
             if 'user' in session:
                 share = shareLib.Share(c.authuser, itemCode, itemURL, 'facebook', '', postId)

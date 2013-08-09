@@ -27,8 +27,8 @@ function postShared(response, itemCode, itemURL, postId, userCode, workshopCode)
     // ! determine this here, then send the message to the corresponding route
     var encodedUrl = encodeURIComponent(itemURL)
     encodedUrl = encodedUrl.replace(/\%/g, ",")
-    //var checkURL = "/share/facebook/" + itemCode + "&" + postId + "&" + encodedUrl
-    var checkURL = "/share/facebook/" + userCode + "/" + workshopCode + "/" + itemCode + "/" + postId + "/" + encodedUrl
+    
+    var checkURL = "/share/facebook/" + userCode + "/" + workshopCode + "/" + itemCode + "/" + encodedUrl + "/" + postId
     //var checkURL = "/share/facebook"
     var checkResult = $.ajax({
         type : 'POST',
