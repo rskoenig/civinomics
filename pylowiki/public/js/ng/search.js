@@ -14,6 +14,9 @@ app.controller('SearchCtrl', function($scope, $http){
     var pathList = pathname.split('/');
     var action = pathList[1];
     var pathlen = pathList.length;
+    $scope.noResult = false;
+    $scope.noQuery = false;
+    $scope.loading = true;
     $scope.pathname = pathname;
     if(action === 'search' && pathlen === 2) {
         $scope.searchType = 'name';
@@ -46,6 +49,10 @@ app.controller('SearchCtrl', function($scope, $http){
             $scope.searchString = "||" + pathList[4] + "||" + pathList[5] + "||" + pathList[6] + "||" + pathList[7] + "|" + pathList[8];
         }
     }
+    if($scope.searchString === '') {
+        $scope.noQuery = true;
+        $scope.loading = false;
+    }
     $scope.workshopsURL = '/search/workshops/' + $scope.searchType + '/' + $scope.searchString;
     $scope.peopleURL = '/search/people/' + $scope.searchType + '/' + $scope.searchString;
     $scope.resourcesURL = '/search/resources/' + $scope.searchType + '/' + $scope.searchString;
@@ -57,9 +64,6 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.showingResources = {'class': '', 'show': false};
     $scope.showingDiscussions = {'class': '', 'show': false};
     $scope.showingIdeas = {'class': '', 'show': false};
-    $scope.loading = true;
-    $scope.noResult = false;
-    $scope.noQuery = false;
     $scope.objType = 'workshops';
     
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments'};
