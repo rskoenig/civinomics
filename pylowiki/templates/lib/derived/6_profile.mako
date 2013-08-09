@@ -462,6 +462,47 @@
     %endif
 </%def>
 
+<%def name="showProfilePhotos()">
+    % if 'user' in session and c.authuser.id == c.user.id:
+        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <button type="button" class="btn btn-success pull-right" data-toggle="collapse" data-target="#uploadPhoto">
+        + Photo
+        </button>
+        <div id="uploadPhoto" class="collapse">
+            <form id="photoupload" name="photoupload" ng-controller="photoUploadController" ng-init="userCode='${c.user['urlCode']}'; userURL='${c.user['url']}';" ng-submit="validateForm(photoupload)" enctype="multipart/form-data">
+            <div class="row-fluid">
+                <div class="span10">
+                    <fieldset>
+                    <label>Title</label>
+                    <input type="text" ng-model="name" name="title" id="title" maxlength="120" required>
+                    <label>Description</label>
+                    <textarea name="text" ng-model="text" rows="3" class="input-block-level" required></textarea>
+                    <label>Category</label>
+                    <select name="categoryTag" ng-model="categoryTag" id="categoryTag">
+                    <option value="choose" selected>Choose a category</option>
+                    % for category in tagCategories:
+                        <option value="${category}">${category.title()}</option>
+                    % endfor
+                    </select>
+                    <div class="spacer"></div>
+                    <label>Select picture to upload</label>
+                    <input type="file" ng-model="file" name="files[]">
+                    <div class="spacer"></div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-success disabled" ng-show="photoupload.$invalid" onClick="event.preventDefault(); return 0;">Save and Upload</button>
+                            <button type="submit" class="btn btn-success" ng-show="photoupload.$valid">Save and Upload</button>
+                        </div><!-- controls -->
+                    </div><!-- control-group -->
+                    </fieldset>
+                    <div id="photoUploadResult"></div>
+                </div><!-- span10 -->
+            </div><!-- row-fluid -->
+            </form>
+        </div><!-- uploadPhoto -->
+    % endif
+</%def>
+
 <%def name="editProfile()">
     <%namespace file="/lib/derived/6_profile_edit.mako" name="helpersEdit" />
     <%

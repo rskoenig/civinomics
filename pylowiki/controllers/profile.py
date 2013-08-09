@@ -25,6 +25,7 @@ import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.message          as messageLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.images              as imageLib
+import pylowiki.lib.db.photo               as photoLib
 
 import time, datetime
 import simplejson as json
@@ -140,6 +141,8 @@ class ProfileController(BaseController):
         c.discussions = []
         c.comments = []
         c.ideas = []
+        
+        c.photos = photoLib.getUserPhotos(c.user)
         
         c.rawActivity = activityLib.getMemberActivity(c.user)
         
