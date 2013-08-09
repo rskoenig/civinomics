@@ -15,6 +15,7 @@ from revision import Revision
 import pylowiki.lib.db.revision as revisionLib
 from tldextract import extract
 import pylowiki.lib.db.generic as generic
+from embedly import Embedly
 
 log = logging.getLogger(__name__)
 
@@ -152,54 +153,76 @@ def searchResources(keys, values, deleted = u'0', disabled = u'0', count = False
                 .filter_by(objType = 'resource')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('workshop_searchable', '1')))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
-        # Because of the vertical model, it doesn't look like we can look at the linked workshop's status
-        # and apply that as an additional filter within the database level.
-        rows = q.all()
-        keys = ['deleted', 'disabled', 'published', 'public_private']
-        values = [u'0', u'0', u'1', u'public']
-        resources = []
-        for row in rows:
-            w = generic.getThing(row['workshopCode'], keys = keys, values = values)
-            if not w:
-                continue
-            resources.append(row)
         if count:
-            return len(resources)
-        return resources
+            return q.count()
+        return q.all()
     except Exception as e:
         log.error(e)
         return False
 
 # setters
-def editResource(resource, title, text, url, owner):
+def getEObj(link):
+    eKey = config['app_conf']['embedly.key']
+    eClient = Embedly(eKey)
+    eObj = eClient.oembed(link)
+    if eObj['type'] == 'error':
+        return false
+    else:
+        return eObj
+    
+def setAttributes(resource, eObj):
+    resource['type'] = eObj['type']
+    if eObj['type'] == 'photo':
+        resource['info'] = eObj['url']
+    elif eObj['type'] == 'video' or eObj['type'] == 'rich':
+        resource['info'] = eObj['html']
+    if 'width' in eObj.keys():
+        resource['width'] = eObj['width']
+    if 'height' in eObj.keys():
+        resource['height'] = eObj['height']
+    if 'provider_name' in eObj.keys():
+        resource['provider_name'] = eObj['provider_name']
+        
+    if 'thumbnail_url' in eObj.keys():
+        resource['thumbnail_url'] = eObj['thumbnail_url']
+        resource['thumbnail_width'] = eObj['thumbnail_width']
+        resource['thumbnail_height'] = eObj['thumbnail_height']
+    commit(resource)
+    
+def editResource(resource, title, text, link, owner):
     try:
         revisionLib.Revision(owner, resource)
-        resource['title'] = title
-        resource['text'] = text
-        if not url.startswith('http://'):
-            url = u'http://' + url
-        resource['link'] = url
-        resource['url'] = urlify(title)
-        tldResults = extract(url)
-        resource['tld'] = tldResults.tld
-        resource['domain'] = tldResults.domain
-        resource['subdomain'] = tldResults.subdomain
+        if not link.startswith('http://') and not link.startswith('https://'):
+                link = u'http://' + link
+        if resource['link'] != link:
+            resource['link'] = link
+            resource['url'] = urlify(title)
+            eObj = getEObj(link)
+            if eObj:
+                setAttributes(resource, eObj)
+                resource['title'] = title
+                resource['text'] = text
+            else:
+                return False
+        commit(resource)
         return True
     except:
         log.error('ERROR: unable to edit resource')
         return False
 
 # Object
-def Resource(url, title, owner, workshop, privs, role = None, text = None, parent = None):
+def Resource(link, title, owner, workshop, privs, role = None, text = None, parent = None):
+    if not link.startswith('http://') and not link.startswith('https://'):
+            link = u'http://' + link
+    eObj = getEObj(link)
+    if not eObj:
+        return false
+        
     a = Thing('resource', owner.id)
-    if not url.startswith('http://'):
-        url = u'http://' + url
-    a['link'] = url # The resource's URL
-    tldResults = extract(url)
-    a['tld'] = tldResults.tld
-    a['domain'] = tldResults.domain
-    a['subdomain'] = tldResults.subdomain
+    a['link'] = link
+    setAttributes(a, eObj)
     a['url'] = urlify(title[:30])
     a['title'] = title
     if text is None:
@@ -209,7 +232,6 @@ def Resource(url, title, owner, workshop, privs, role = None, text = None, paren
     a = generic.linkChildToParent(a, workshop)
     if parent is not None:
         a = generic.linkChildToParent(a, parent)
-    a['type'] = 'general'
     a['disabled'] = '0'
     a['deleted'] = '0'
     a['ups'] = '0'

@@ -11,6 +11,7 @@
    import pylowiki.lib.db.rating        as ratingLib
    import pylowiki.lib.db.mainImage     as mainImageLib
    import pylowiki.lib.db.tag           as tagLib
+   import pylowiki.lib.db.workshop      as workshopLib
    
    from hashlib import md5
    import logging, os
@@ -25,56 +26,58 @@
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
     %>
-    <div id="fb-root"></div>
-    <script src="/js/extauth.js" type="text/javascript"></script>
-    <script>
-        console.log('before window init');
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : "${facebookAppId}", // App ID
-                channelUrl : "${channelUrl}", // Channel File
-                status     : true, // check login status
-                cookie     : false, // enable cookies to allow the server to access the session
-                xfbml      : true  // parse XFBML
-            });
-            console.log('after window init');
-            FB.Event.subscribe('auth.authResponseChange', function(response) {
-              // Here we specify what we do with the response anytime this event occurs.
-              console.log('above response tree');
-              if (response.status === 'connected') {
-                console.log('calling fb connected');
-                //shareOnWall(response.authResponse);
-              } else if (response.status === 'not_authorized') {
-                console.log('not authd');                
-                //FB.login();
-              } else {
-                console.log('else');
-                //FB.login();
-              }
-            });
-        };
+    % if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
+        <div id="fb-root"></div>
+        <script src="/js/extauth.js" type="text/javascript"></script>
+        <script>
+            console.log('before window init');
+            window.fbAsyncInit = function() {
+                FB.init({
+                    appId      : "${facebookAppId}", // App ID
+                    channelUrl : "${channelUrl}", // Channel File
+                    status     : true, // check login status
+                    cookie     : false, // enable cookies to allow the server to access the session
+                    xfbml      : true  // parse XFBML
+                });
+                console.log('after window init');
+                FB.Event.subscribe('auth.authResponseChange', function(response) {
+                // Here we specify what we do with the response anytime this event occurs.
+                console.log('above response tree');
+                if (response.status === 'connected') {
+                    console.log('calling fb connected');
+                    //shareOnWall(response.authResponse);
+                } else if (response.status === 'not_authorized') {
+                    console.log('not authd');                
+                    //FB.login();
+                } else {
+                    console.log('else');
+                    //FB.login();
+                }
+                });
+            };
         
-        // Load the SDK asynchronously
-        (function(d){
-            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement('script'); js.id = id; js.async = true;
-            js.src = "//connect.facebook.net/en_US/all.js";
-            ref.parentNode.insertBefore(js, ref);
-        }(document));
+            // Load the SDK asynchronously
+            (function(d){
+                var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+                if (d.getElementById(id)) {return;}
+                js = d.createElement('script'); js.id = id; js.async = true;
+                js.src = "//connect.facebook.net/en_US/all.js";
+                ref.parentNode.insertBefore(js, ref);
+            }(document));
 
-        function shareOnWall(authResponse) {
-            FB.ui({
-                method: "stream.share",
-                u: ""
-            });
-        }
-    </script>
-    <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+            function shareOnWall(authResponse) {
+                FB.ui({
+                    method: "stream.share",
+                    u: ""
+                });
+            }
+        </script>
+        <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+    % endif
 </%def>
 
 <%def name="emailShare(itemURL, itemCode)">
-    % if 'user' in session and c.authuser:
+    % if ('user' in session and c.authuser) and (workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w)):
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
@@ -414,8 +417,8 @@
 <%def name="resourceLink(r, w, **kwargs)">
    <%
         if 'directLink' in kwargs:
-            if kwargs['directLink'] == True:
-                resourceStr = 'href="%s' %(r['link'])
+            if kwargs['directLink'] == True and r['type'] == 'url':
+                    resourceStr = 'href="%s' %(r['info'])
             else:
                 resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
         else:
@@ -661,7 +664,7 @@
     % if 'user' in session:
       <div class="btn-group pull-right left-space">
         <button class="btn dropdown-toggle" data-toggle="dropdown">
-          Sort by Region
+          Search by Region
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu">
@@ -732,7 +735,7 @@
     <%
         link = 'href="/workshops/geo/earth/'
         if depth is None or depth == 'earth':
-            link += '"'
+            link += '0"'
         elif depth == 'country':
             link += '%s"' % geoInfo['countryURL']
         elif depth == 'state':
@@ -874,21 +877,33 @@
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
-            <form action="${editThingLink(thing, embed=True, raw=True)}" method="post" class="form" id="edit-${thing.objType}">
-                <label>edit</label>
+            <div class="spacer"></div>
+            <form action="${editThingLink(thing, embed=True, raw=True)}" ng-controller="editItemController" method="post" class="form" id="edit-${thing.objType}">
+                <fieldset>
+                <label>Edit</label>
+                <span ng-show="editItemShow"><div class="alert alert-danger">{{editItemResponse}}</div></span>
                 % if thing.objType == 'comment':
-                    <textarea class="comment-reply span12" name="textarea${thing['urlCode']}">${thing['data']}</textarea>
+                    <label>Comment text</label>
+                    <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
                 % elif thing.objType == 'idea':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
+                    <label>Idea title</label>
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
                     <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % elif thing.objType == 'discussion':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
+                    <label>Topic title</label>
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>
+                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
                     <textarea name="text" rows="3" class="input-block-level">${text}</textarea>
                 % elif thing.objType == 'resource':
-                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title">
-                    <input type="text" class="input-block-level" name="link" value = "${thing['link']}">
+                    <label>Resource title</label>
+                    <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id="title" required>
+                    <label>Resource URL</label>
+                    <input type="url" class="input-block-level" name="link" value = "${thing['link']}" id = "link" required>
+                    <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
                     <textarea name="text" rows="3" class="input-block-level">${thing['text']}</textarea>
                 % endif
+                </fieldset>
                 <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
@@ -1098,10 +1113,10 @@
 </%def>
 
 <%def name="public_tags()">
-  <%  categories = tagLib.getWorkshopTagCategories() %>
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
   <div class="btn-group pull-right left-space">
     <button class="btn dropdown-toggle" data-toggle="dropdown">
-      Sort by Tag
+      Search by Tag
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu">
