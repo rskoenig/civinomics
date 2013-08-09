@@ -35,6 +35,7 @@ class SearchController(BaseController):
 
     def __before__(self, action, searchType = None, **kwargs):
         c.title = c.heading = "Civinomics Search"
+        c.scope = {'level':'earth', 'name':'all'}
         self.query = ''
         self.noQuery = False
         self.searchType = 'name'
@@ -90,6 +91,10 @@ class SearchController(BaseController):
         if searchString != None:
             self.query = searchString
             self.noQuery = False
+            
+        if self.query == '':
+            return self._noSearch()
+            self.noQuery = True
             
         c.searchQuery = self.query
     
