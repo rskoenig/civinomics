@@ -95,36 +95,13 @@
                 },
                 function(response) 
                 {
-                    var str = "";
-                    for(var k in response) {
-                     if (response.hasOwnProperty(k)) {
-                       var t = typeof(response[k]);
-                       if (t == "object") {
-                         var innerObj = response[k]
-                         for(var j in innerObj) {
-                           var t = typeof(innerObj[j]);
-                           str += "response[" + k + "][" + j + "] *= " + innerObj[j] + " <- type: " + t + "\n";
-                         }
-                       } else {
-                         str += k + " = " + response[k] + " <- type: " + t + "\n";
-                       }
-                     }
-                    }
-                   
-                    console.log(str)
                     if (response && response.post_id) {
-                      //alert('Post was published. ' + str);
-                      // create share object
+                      // if there's a post_id, create share object
                       var thingCode = "${thingCode}";
                       var link = "${link}"
                       var userCode = "${userCode}"
                       var workshopCode = "${workshopCode}"
                       result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode);
-                      //result = postTest();
-                      // NOTE - send a message to the function in extauth with all possible vars
-                      // in the extauth function it;ll be determined what route to call
-                    } else {
-                      //alert('Post was not published. ' + str);
                     }
                 }
             );
