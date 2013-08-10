@@ -856,14 +856,14 @@ class WorkshopController(BaseController):
             c.baseUrl = c.baseUrl[:-1]
         c.requestUrl = request.url
         c.thingCode = workshopCode
-
+        # standard thumbnail image for facebook shares
         if c.mainImage['pictureHash'] == 'supDawg':
             c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
         elif 'format' in c.mainImage.keys():
             c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
         else:
             c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
-        
+        # name for facebook share posts
         c.name = c.title = c.w['title']
 
         c.isFollowing = False

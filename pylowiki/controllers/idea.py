@@ -93,7 +93,7 @@ class IdeaController(BaseController):
             c.baseUrl = c.baseUrl[:-1]
         c.requestUrl = request.url
         c.thingCode = ideaCode
-        
+        # standard thumbnail image for facebook shares
         if c.mainImage['pictureHash'] == 'supDawg':
             c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
         elif 'format' in c.mainImage.keys():

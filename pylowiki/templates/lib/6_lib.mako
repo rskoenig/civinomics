@@ -90,8 +90,8 @@
                   name: "${name}",
                   link: "${link}",
                   picture: "${picture}",
-                  caption: "${caption}"
-                  //description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
+                  caption: "${caption}",
+                  description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
                 },
                 function(response) 
                 {
