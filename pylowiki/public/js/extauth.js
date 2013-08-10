@@ -37,25 +37,4 @@ function postShared(response, itemCode, itemURL, postId, userCode, workshopCode)
     }).responseText;
 
     return checkResult
-    // ! determine this in the controller, creating the correct share object
-    //  - in the controller, depending on the parameters seen, create a share of a workshop,
-    // or a share of an object
-    // sending a post at a share url, can this be determined on the controller end?
-    // var shareURL = '/workshop/' + $scope.code + '/' + $scope.url + '/share/' + $scope.user + 
-    // '/email/handler';
-    //  var postData = {'itemURL':$scope.itemURL, 'itemCode':$scope.itemCode, 
-    //  'recipientName':$scope.recipientName, 'recipientEmail':$scope.recipientEmail, 
-    // 'memberMessage':$scope.memberMessage};
-}
-
-function postTest(){
-    var checkURL = "/share/test"
-    
-    var checkResult = $.ajax({
-        type : 'POST',
-        async : false,
-        url : checkURL
-    }).responseText;
-
-    return checkResult    
 }

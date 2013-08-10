@@ -864,10 +864,6 @@ class WorkshopController(BaseController):
         else:
             c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
         
-        #THEN in template: 
-        #, "%s%s"%(c.baseUrl, c.backgroundImage)
-
-        #c.name is a universal title for sharing items via facebook
         c.name = c.title = c.w['title']
 
         c.isFollowing = False

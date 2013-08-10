@@ -61,7 +61,6 @@ class ShareController(BaseController):
         # see https://developers.facebook.com/docs/reference/api/post/
         itemURL = itemURL.replace(",","%")
         itemURL = urllib2.unquote(itemURL)
-        log.info("decoded url: %s"%itemURL)
         if itemCode and itemURL and postId:
             if 'user' in session:
                 share = shareLib.Share(c.authuser, itemCode, itemURL, 'facebook', '', postId)
