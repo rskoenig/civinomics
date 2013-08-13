@@ -1,0 +1,42 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%def name="page_specific_css()">
+    <!-- None -->
+</%def>
+<%def name="display_body_right_content()">
+  <div class="span8"><!--span body-->
+    <div class="row-fluid">
+        <h1>Careers</h1>
+        </br>
+        <p class="lead">Let's reinvent the world.</p>
+        <p> We're looking for talented, self-directed people to join our team. Don't see your job posting below? We're open to crazy ideas: <a href="#">careers @ civinomics.com</a></p>
+    </div>
+    <div>
+
+    </div>
+    <div class="row-fluid">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Department</th>
+              <th>Position</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% careers = c.careers %>
+            % for career in careers:
+              <tr>
+                  <td>${career['department']}</td>
+                  <td><a href="/corp/careers/${career['url']}">${career['title']}</a></td>
+              </tr>
+            % endfor
+          </tbody>
+        </table>
+        </br>
+        </br>
+        </br>
+        </br>
+    </div>      
+  </div><!--/.span8-->
+</%def>
+
+<%def name="display_body_bottom_content()"></%def>
