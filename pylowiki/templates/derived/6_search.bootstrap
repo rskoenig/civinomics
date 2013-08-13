@@ -216,3 +216,11 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
 </%def>
+<%def name="extraScripts()">
+    <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
+   <%
+        backgroundImage = '"/images/cityHall_test.jpg"'
+
+   %>
+   <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+</%def>
