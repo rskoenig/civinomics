@@ -85,9 +85,7 @@
     </script>
     % if 'user' in session:
         % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
-            <script src="${lib_6.fingerprintFile('/js/geo.js')}" type="text/javascript"></script>
-            
-            
+            <script src="${lib_6.fingerprintFile('/js/geo.js')}" type="text/javascript"></script>    
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.ui.widget.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/load-image.min.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/canvas-to-blob.min.js')}"></script>
@@ -100,6 +98,8 @@
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-angular.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/app.js')}"></script>
             <script src="${lib_6.fingerprintFile('/js/vendor/jquery.Jcrop.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/locale.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/main.js')}"></script>
         % endif 
     % endif
 
@@ -129,5 +129,8 @@
 <%def name="extraStyles()">
     <link rel="stylesheet" href="/styles/vendor/jquery.Jcrop.css">
     <link rel="stylesheet" href="/styles/vendor/blueimp.css">
+    <link rel="stylesheet" href="http://blueimp.github.com/cdn/css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="http://blueimp.github.com/Bootstrap-Image-Gallery/css/bootstrap-image-gallery.min.css">
+    <link type="text/css" rel="stylesheet" href="${h.url_for('/styles/jquery.fileupload-ui.css')}" />
 </%def>
 

@@ -499,7 +499,62 @@
                 </div><!-- span10 -->
             </div><!-- row-fluid -->
             </form>
-        </div><!-- uploadPhoto -->
+        
+     <div class="section-wrapper" ng-init="code='${c.user['urlCode']}'; url='${c.user['url']}'; uploadImage = 'true'; imageSource = 'civ';">
+        <div class="browse">
+            <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/picture/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm">
+                <!-- Redirect browsers with JavaScript disabled to the origin page -->
+                <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
+                <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+                <div class="row-fluid fileupload-buttonbar">
+                    <div class="span10 offset1">
+                        <!-- The fileinput-button span is used to style the file input field as button -->
+                        <span class="btn btn-success fileinput-button span6 offset3">
+                            <i class="icon-plus icon-white"></i>
+                            <span>Select your picture</span>
+                            <input type="file" name="files[]">
+                        </span>
+                        <!-- The loading indicator is shown during file processing -->
+                        <div class="fileupload-loading"></div>
+                    </div>
+                    <!-- The global progress information -->
+                </div>
+                <div class="row-fluid">
+                    <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
+                        <!-- The global progress bar -->
+                        <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
+                        <!-- The extended global progress information -->
+                        <div class="progress-extended">&nbsp;</div>
+                    </div>
+                </div>
+                <!-- The table listing the files available for upload/download -->
+                <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+                    <tbody><tr data-ng-repeat="file in queue">
+                        <td data-ng-switch="" on="!!file.thumbnail_url">
+                            <div class="preview" data-ng-switch-when="true">
+                                <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
+                            </div>
+                            <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
+                        </td>
+                        <td>
+                            <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                                <i class="icon-upload icon-white"></i>
+                                <span>Start</span>
+                            </button>
+                            <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
+                                <i class="icon-ban-circle icon-white"></i>
+                                <span>Cancel</span>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody></table>
+            </form>
+        </div><!-- browse -->
+    </div><!-- section-wrapper -->
+    </div>
     % endif
 </%def>
 
