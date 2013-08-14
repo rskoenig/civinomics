@@ -5,9 +5,11 @@
 <div class="row">
     <div class="span6">
         % if c.searchType == 'region':
-            Results for search by ${c.searchType} scoped for '${c.searchQuery}'
+            <span class="lead geoName">${c.searchQuery}</span>
+        % elif c.searchType == 'tag':
+            <span class="lead geoName">${c.searchQuery}</span>
         % else:
-            Results for search by ${c.searchType} with search term '${c.searchQuery}'
+            <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
         % endif
         
     </div><!-- span6 -->
@@ -16,37 +18,38 @@
         ${lib_6.public_tags()}
     </div><!-- span6 -->
 </div>
+
 <div class="row-fluid" ng-controller="SearchCtrl">
     <div class="tabbable tabs-left civ-search">
         <ul class="nav nav-tabs">
             <li ng-class="showingWorkshops.class">
                 <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
-                    <span class="pull-left"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_061_keynote.png" class="workshop-search-icon"> Workshops </span>
+                    <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
                     <span class="pull-right">(${c.numWorkshops})</span>
+                </a>
+            </li>
+            <li ng-class="showingIdeas.class">
+                <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
+                    <span class="pull-left"><i class="icon-file-text"></i> Ideas </span>
+                    <span class="pull-right">(${c.numIdeas})</span>
                 </a>
             </li>
             <li ng-class="showingPeople.class">
                 <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_003_user.png"> People </span>
+                    <span class="pull-left"><i class="icon-user"></i> People </span>
                     <span class="pull-right">(${c.numUsers})</span>
                 </a>
             </li>
             <li ng-class="showingResources.class">
                 <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources </span>
+                    <span class="pull-left"><i class="icon-link"></i> Resources </span>
                     <span class="pull-right">(${c.numResources})</span>
                 </a>
             </li>
             <li ng-class="showingDiscussions.class">
                 <a href="#ideas" class = "green green-hover" ng-click="searchDiscussions()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussions </span>
+                    <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
                     <span class="pull-right">(${c.numDiscussions})</span>
-                </a>
-            </li>
-            <li ng-class="showingIdeas.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
-                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas </span>
-                    <span class="pull-right">(${c.numIdeas})</span>
                 </a>
             </li>
         </ul>
@@ -219,7 +222,7 @@
 <%def name="extraScripts()">
     <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
    <%
-        backgroundImage = '"/images/cityHall_test.jpg"'
+        backgroundImage = '"/images/grey.png"'
 
    %>
    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>

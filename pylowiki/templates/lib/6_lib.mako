@@ -707,21 +707,7 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">MyGov<b class="caret"></b></a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
         % for scopeLevel in scopeMapping:
-            <%
-                activeClass = ''
-                    
-                if c.scope['level'] == scopeLevel[0]:
-                    if scopeLevel[0] != 'earth':
-                        scopeKey = '%sURL' % scopeLevel[0] 
-                        userScope = c.authuser_geo[scopeKey]
-                    else:
-                        userScope = 'earth'
-                    if c.scope['name'] == userScope:
-                        activeClass = 'active'
-                    else:
-                        outOfScope = True
-            %>
-            <li class="${activeClass}">
+            <li>
                 <a ${self._geoWorkshopLink(c.authuser_geo, depth = scopeLevel[0]) | n}>${scopeLevel[1]}</a>
             </li>
           % endfor

@@ -107,24 +107,40 @@ color: #999;
    bottom:0;
    right:12px;
 }
+
+.civ-search{
+  margin-top: 30px;
+}
+
 .civ-search > .nav.nav-tabs > li > a{
     min-width:150px;
+    color: #ffffff;
+    font-size: 16px;
 }
+
+.civ-search > .nav.nav-tabs > li > a:hover{
+    color: #005d28;
+}
+
+.civ-search > .nav.nav-tabs > li.active > a{
+    color: #005d28;
+}
+
 .civ-search > .nav-tabs > .active > a, .civ-search > .nav-tabs > .active > a:hover{
-    border:3px solid #075D00;
+    border:1px solid #ffffff;
+    color: #005d28;
 }
 .civ-search.tabs-left > .nav-tabs .active > a, .tabs-left > .nav-tabs .active > a:hover{
-    border-color:#075D00 transparent #075D00 #075D00;
+    border-color:#ffffff transparent #ffffff #ffffff;
 }
-.civ-search.tabs-left > .nav-tabs > li > a{
-    margin-right:-3px;
-}
+
 .civ-search.tabs-left > .nav-tabs{
-    border-right:3px solid #075D00;
+    border-right:1px solid #ffffff;
 }
 .loading-civ{
     margin-top:10%;
-    margin-left:35%;
+    margin-left:45%;
+    color: #ffffff;
 }
 
 .accordion-heading .accordion-toggle {
@@ -868,7 +884,7 @@ a.yesVote, a.noVote{
 .workshop-nav-icon{
    max-height:16px;
 }
-.workshop-search-icon{
+.search-icon{
     max-width:15px;
 }
 
@@ -1570,4 +1586,14 @@ li.thumbnail-gallery{
 
 .icon-twitter-sign{
   color: #0099cc;
+}
+
+.geoName{
+  color: #fff;
+  font-size: 30px;
+}
+
+.searchName{
+  color: #fff;
+  font-size: 20px;
 }
