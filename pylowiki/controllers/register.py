@@ -15,6 +15,7 @@ from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
+import re
 
 log = logging.getLogger(__name__)
 
@@ -194,6 +195,12 @@ class RegisterController(BaseController):
                 log.info('facebook email missing')
             else:
                 email = session['fbEmail']
+                if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+                    # invalid email, could be the 'undefined' case
+                    # we'll make a unique email for this user
+                    email = "%s@%s.com"%(session['facebookAuthId'],session['facebookAuthId'])
+                    log.info("created email %s"%email)
+
         if  'postalCode' not in request.params:
             log.info('postalCode missing')
         else:
