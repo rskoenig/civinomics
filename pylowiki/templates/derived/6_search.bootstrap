@@ -2,218 +2,221 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
 <div class="spacer"></div>
-<div class="row">
-    <div class="span6">
-        % if c.searchType == 'region':
-            <span class="lead geoName">${c.searchQuery}</span>
-        % elif c.searchType == 'tag':
-            <span class="lead geoName">${c.searchQuery}</span>
-        % else:
-            <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
-        % endif
-        
-    </div><!-- span6 -->
-    <div class="span6">
-        ${lib_6.geoDropdown()}
-        ${lib_6.public_tags()}
-    </div><!-- span6 -->
-</div>
-
 <div class="row-fluid" ng-controller="SearchCtrl">
-    <div class="tabbable tabs-left civ-search">
-        <ul class="nav nav-tabs">
-            <li ng-class="showingWorkshops.class">
-                <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
-                    <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
-                    <span class="pull-right">(${c.numWorkshops})</span>
-                </a>
-            </li>
-            <li ng-class="showingIdeas.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
-                    <span class="pull-left"><i class="icon-file-text"></i> Ideas </span>
-                    <span class="pull-right">(${c.numIdeas})</span>
-                </a>
-            </li>
-            <li ng-class="showingPeople.class">
-                <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                    <span class="pull-left"><i class="icon-user"></i> People </span>
-                    <span class="pull-right">(${c.numUsers})</span>
-                </a>
-            </li>
-            <li ng-class="showingResources.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
-                    <span class="pull-left"><i class="icon-link"></i> Resources </span>
-                    <span class="pull-right">(${c.numResources})</span>
-                </a>
-            </li>
-            <li ng-class="showingDiscussions.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchDiscussions()">
-                    <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
-                    <span class="pull-right">(${c.numDiscussions})</span>
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="loading-civ" ng-show="loading" ng-cloak>
-                <i class="icon-spinner icon-spin icon-4x"></i>
-            </div>
-            <div ng-show="noQuery" ng-cloak>
-                <div class="row-fluid">
-                    <div class="alert alert-info centered span6 offset3">
-                        Searching for nothing yields nothing.  How zen.
+    <div class="span9">
+        <div class="row-fluid">
+            <div class="span6">
+                % if c.searchType == 'region':
+                    <span class="lead geoName">${c.searchQuery}</span>
+                % elif c.searchType == 'tag':
+                    <span class="lead geoName">${c.searchQuery}</span>
+                % else:
+                    <span class="searchName">Results for search by ${c.searchType} with search term '${c.searchQuery}'</span>
+                % endif
+                
+            </div><!-- span6 -->
+            <div class="span6">
+                ${lib_6.geoDropdown()}
+                ${lib_6.public_tags()}
+            </div><!-- span6 -->
+        </div>
+        <div class="tabbable tabs-left civ-search">
+            <ul class="nav nav-tabs">
+                <li ng-class="showingWorkshops.class">
+                    <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
+                        <span class="pull-left"><i class="icon-gear"></i> Workshops </span>
+                        <span class="pull-right">(${c.numWorkshops})</span>
+                    </a>
+                </li>
+                <li ng-class="showingIdeas.class">
+                    <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
+                        <span class="pull-left"><i class="icon-file-text"></i> Ideas </span>
+                        <span class="pull-right">(${c.numIdeas})</span>
+                    </a>
+                </li>
+                <li ng-class="showingPeople.class">
+                    <a href="#users" class="green green-hover" ng-click="searchPeople()">
+                        <span class="pull-left"><i class="icon-user"></i> People </span>
+                        <span class="pull-right">(${c.numUsers})</span>
+                    </a>
+                </li>
+                <li ng-class="showingResources.class">
+                    <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
+                        <span class="pull-left"><i class="icon-link"></i> Resources </span>
+                        <span class="pull-right">(${c.numResources})</span>
+                    </a>
+                </li>
+                <li ng-class="showingDiscussions.class">
+                    <a href="#ideas" class = "green green-hover" ng-click="searchDiscussions()">
+                        <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
+                        <span class="pull-right">(${c.numDiscussions})</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="loading-civ" ng-show="loading" ng-cloak>
+                    <i class="icon-spinner icon-spin icon-4x"></i>
+                </div>
+                <div ng-show="noQuery" ng-cloak>
+                    <div class="row-fluid">
+                        <div class="alert alert-info centered span6 offset3">
+                            Searching for nothing yields nothing.  How zen.
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div ng-show="noResult" ng-cloak>
-                <div class="row-fluid">
-                    <div class="alert centered span6 offset3">
-                        % if c.searchType == 'region':
-                            Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
-                        % else:
-                            Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
-                        % endif
-                        
+                <div ng-show="noResult" ng-cloak>
+                    <div class="row-fluid">
+                        <div class="alert centered span6 offset3">
+                            % if c.searchType == 'region':
+                                Sorry, we couldn't find any {{objType}} scoped for "{{searchQueryPretty}}"
+                            % else:
+                                Sorry, we couldn't find any {{objType}} matching "{{searchQueryPretty}}"
+                            % endif
+                            
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat="w in workshops"><td>
-                        <div class="media">
-                            <a class="pull-left" href = '/workshops/{{w.urlCode}}/{{w.url}}'>
-                                <img class="media-object" ng-src="{{w.imageURL}}" alt="{{w.title}}" title="{{w.title}}">
-                            </a>
-                            <div class="media-body">
-                                <h4 class="media-heading"><a class="green green-hover" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
-                                <p>{{w.description}}</p>
-                                <p> Tags:
-                                    <span ng-repeat="tag in w.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
-                                </p>
-                                <p>
-                                    <span>
-                                        {{w.bookmarks}} <img class="small-bookmark" bs-tooltip="tooltip.bookmark" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
-                                    </span>
-                                    <span>
-                                        {{w.activity}} <img class="small-bulb" bs-tooltip="tooltip.activity" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
-                                    </span>
-                                </p>
+                <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
+                    <table class="table table-condensed table-hover">
+                        <tr ng-repeat="w in workshops"><td>
+                            <div class="media">
+                                <a class="pull-left" href = '/workshops/{{w.urlCode}}/{{w.url}}'>
+                                    <img class="media-object" ng-src="{{w.imageURL}}" alt="{{w.title}}" title="{{w.title}}">
+                                </a>
+                                <div class="media-body">
+                                    <h4 class="media-heading"><a class="green green-hover" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
+                                    <p>{{w.description}}</p>
+                                    <p> Tags:
+                                        <span ng-repeat="tag in w.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                    </p>
+                                    <p>
+                                        <span>
+                                            {{w.bookmarks}} <img class="small-bookmark" bs-tooltip="tooltip.bookmark" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
+                                        </span>
+                                        <span>
+                                            {{w.activity}} <img class="small-bulb" bs-tooltip="tooltip.activity" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
+                                        </span>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="users" class="tab-pane" ng-class="showingPeople.class" ng-show="showingPeople.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "p in people"><td>
-                        <div class="media">
-                            <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
-                                <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
-                            </a>
-                            <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
-                            <p>from <a href="{{p.cityURL}}" class="green green-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="green green-hover">{{p.stateTitle}}</a></p>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "resource in resources"><td>
-                        <div class="media">
-                            <div class="pull-left">
-                                <a href="/profile/{{resource.authorCode}}/{{resource.authorURL}}" class="media-object">
-                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{resource.authorHash}}?r=pg&d=identicon&s=200" alt="{{resource.authorName}}" title="{{resource.authorName}}">
+                        </td></tr>
+                    </table>
+                </div>
+                <div id="users" class="tab-pane" ng-class="showingPeople.class" ng-show="showingPeople.show">
+                    <table class="table table-condensed table-hover">
+                        <tr ng-repeat = "p in people"><td>
+                            <div class="media">
+                                <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
+                                    <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
                                 </a>
+                                <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
+                                <p>from <a href="{{p.cityURL}}" class="green green-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="green green-hover">{{p.stateTitle}}</a></p>
                             </div>
-                            <div class="media-body">
-                                <a class="green green-hover" href="/profile/{{resource.authorCode}}/{{resource.authorURL}}">
-                                    {{resource.authorName}}
-                                </a>
-                                added the resource
-                                <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
-                                    {{resource.title}}
-                                </a>
-                                in the workshop
-                                <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
-                                    {{resource.workshopTitle}}
-                                </a>
-                                <p>
-                                    Net votes: {{resource.voteCount}}
-                                </p>
-                                <p>
-                                    Comments: {{resource.numComments}}
-                                </p>
+                        </td></tr>
+                    </table>
+                </div>
+                <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
+                    <table class="table table-condensed table-hover">
+                        <tr ng-repeat = "resource in resources"><td>
+                            <div class="media">
+                                <div class="pull-left">
+                                    <a href="/profile/{{resource.authorCode}}/{{resource.authorURL}}" class="media-object">
+                                        <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{resource.authorHash}}?r=pg&d=identicon&s=200" alt="{{resource.authorName}}" title="{{resource.authorName}}">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <a class="green green-hover" href="/profile/{{resource.authorCode}}/{{resource.authorURL}}">
+                                        {{resource.authorName}}
+                                    </a>
+                                    added the resource
+                                    <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
+                                        {{resource.title}}
+                                    </a>
+                                    in the workshop
+                                    <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
+                                        {{resource.workshopTitle}}
+                                    </a>
+                                    <p>
+                                        Net votes: {{resource.voteCount}}
+                                    </p>
+                                    <p>
+                                        Comments: {{resource.numComments}}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "discussion in discussions"><td>
-                        <div class="media">
-                            <div class="pull-left">
-                                <a href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}" class="media-object">
-                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{discussion.authorHash}}?r=pg&d=identicon&s=200" alt="{{discussion.authorName}}" title="{{discussion.authorName}}">
-                                </a>
+                        </td></tr>
+                    </table>
+                </div>
+                <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
+                    <table class="table table-condensed table-hover">
+                        <tr ng-repeat = "discussion in discussions"><td>
+                            <div class="media">
+                                <div class="pull-left">
+                                    <a href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}" class="media-object">
+                                        <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{discussion.authorHash}}?r=pg&d=identicon&s=200" alt="{{discussion.authorName}}" title="{{discussion.authorName}}">
+                                    </a>
+                                </div>
+                                <div class="media-body">
+                                    <a class="green green-hover" href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}">
+                                        {{discussion.authorName}}
+                                    </a>
+                                    added the discussion
+                                    <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}/discussion/{{discussion.urlCode}}/{{discussion.url}}">
+                                        {{discussion.title}}
+                                    </a>
+                                    in the workshop
+                                    <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}">
+                                        {{discussion.workshopTitle}}
+                                    </a>
+                                    <p>
+                                        Net votes: {{discussion.voteCount}}
+                                    </p>
+                                    <p>
+                                        Comments: {{discussion.numComments}}
+                                    </p>
+                                </div>
                             </div>
-                            <div class="media-body">
-                                <a class="green green-hover" href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}">
-                                    {{discussion.authorName}}
-                                </a>
-                                added the discussion
-                                <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}/discussion/{{discussion.urlCode}}/{{discussion.url}}">
-                                    {{discussion.title}}
-                                </a>
-                                in the workshop
-                                <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}">
-                                    {{discussion.workshopTitle}}
-                                </a>
-                                <p>
-                                    Net votes: {{discussion.voteCount}}
-                                </p>
-                                <p>
-                                    Comments: {{discussion.numComments}}
-                                </p>
+                        </td></tr>
+                    </table>
+                </div>
+                <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "idea in ideas" class="plain"><td>
+                            <div class="media well" style="opacity: 0.9;">
+                                <div class="media-body">
+                                    <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
+                                        {{idea.title}}
+                                    </a></p>
+                                    <ul class="horizontal-list ideaListing">
+                                        <li>
+                                            <i class="icon-cog"></i> From workshop: <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}">
+                                                {{idea.workshopTitle}}
+                                            </a>
+                                        </li>
+                                        <li><i class="icon-check-sign"></i> Net votes ({{idea.voteCount}})</li>
+                                        <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
+                                    </ul>
+                                    <p class="no-bottom">
+                                        <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                    </td></tr>
-                </table>
-            </div>
-            <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
-                <table class="table table-condensed table-hover">
-                    <tr ng-repeat = "idea in ideas"><td>
-                        <div class="media">
-                            <div class="pull-left">
-                                <a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}" class="media-object">
-                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}">
-                                </a>
-                            </div>
-                            <div class="media-body">
-                                <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">
-                                    {{idea.authorName}}
-                                </a>
-                                posed the idea
-                                <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
-                                    {{idea.title}}
-                                </a>
-                                in the workshop
-                                <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}">
-                                    {{idea.workshopTitle}}
-                                </a>
-                                <p>
-                                    Net votes: {{idea.voteCount}}
-                                </p>
-                                <p>
-                                    Comments: {{idea.numComments}}
-                                </p>
-                            </div>
-                        </div>
-                    </td></tr>
-                </table>
+                        </td></tr>
+                    </table>
+                </div>
+            </div><!-- tab-content -->
+        </div><!-- tabbable tabs-left civ-search -->
+    </div><!-- span9 -->
+    <div class="span3" style="opacity: 0.9;">
+        
+        <div class="well" style="padding: 10px;">
+            <div class="span12">
+                <img class="thumbnail" style="width: 150px; margin: 0 auto 10px; " src="/images/cityHall_test.jpg">
             </div>
         </div>
+
     </div>
-</div>
+</div><!-- row-fluid -->
 
 <%def name="headScripts()">
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>

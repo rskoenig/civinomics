@@ -1570,6 +1570,7 @@ li.thumbnail-gallery{
   font-size: 18px;
   margin-bottom: 3px;
   font-weight: bold;
+  color: black;
 }
 
 .border-bottom{
@@ -1596,4 +1597,16 @@ li.thumbnail-gallery{
 .searchName{
   color: #fff;
   font-size: 20px;
+}
+
+.table.plain, tr.plain > td{
+  border-top: 0;
+}
+
+.table.plain td{
+  padding: 0;
+}
+
+.table tr td .well{
+  margin-bottom: 8px;
 }
