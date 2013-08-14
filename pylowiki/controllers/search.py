@@ -278,6 +278,7 @@ class SearchController(BaseController):
             entry['text'] = r['text']
             entry['urlCode'] = r['urlCode']
             entry['url'] = r['url']
+            entry['link']= r['link']
             entry['addedAs'] = r['addedAs']
             #entry['domain'] = r['domain']
             #entry['tld'] = r['tld']

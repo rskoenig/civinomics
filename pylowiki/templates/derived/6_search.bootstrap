@@ -115,32 +115,35 @@
                     </table>
                 </div>
                 <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
-                    <table class="table table-condensed table-hover">
-                        <tr ng-repeat = "resource in resources"><td>
-                            <div class="media">
+                    <table class="table plain">
+                        <tr ng-repeat = "resource in resources" class="plain"><td>
+                            <div class="media well searchListing">
                                 <div class="pull-left">
-                                    <a href="/profile/{{resource.authorCode}}/{{resource.authorURL}}" class="media-object">
-                                        <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{resource.authorHash}}?r=pg&d=identicon&s=200" alt="{{resource.authorName}}" title="{{resource.authorName}}">
-                                    </a>
+                                    <i class="icon-link icon-4x"></i>
                                 </div>
                                 <div class="media-body">
-                                    <a class="green green-hover" href="/profile/{{resource.authorCode}}/{{resource.authorURL}}">
-                                        {{resource.authorName}}
-                                    </a>
-                                    added the resource
-                                    <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
+                                    <h4 class="media-heading"><a class="listed-item-title" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
                                         {{resource.title}}
-                                    </a>
-                                    in the workshop
-                                    <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
-                                        {{resource.workshopTitle}}
-                                    </a>
+                                    </a></h4>
+                                    <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
                                     <p>
                                         Net votes: {{resource.voteCount}}
                                     </p>
                                     <p>
                                         Comments: {{resource.numComments}}
                                     </p>
+                                    <p>
+                                        <i class="icon-gear"></i>From workshop
+                                        <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
+                                            {{resource.workshopTitle}}
+                                        </a>
+                                    </p>
+                                    <p><small>
+                                        Posted by
+                                        <a class="green green-hover" href="/profile/{{resource.authorCode}}/{{resource.authorURL}}">
+                                            {{resource.authorName}}
+                                        </a>
+                                    </small></p>
                                 </div>
                             </div>
                         </td></tr>
