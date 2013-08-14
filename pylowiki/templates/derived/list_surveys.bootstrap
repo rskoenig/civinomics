@@ -1,0 +1,55 @@
+<%! 
+   from pylowiki.lib.db.geoInfo import getGeoInfo
+   from pylowiki.lib.db.tag import getPublicTagCount, getMemberTagCount
+%>
+
+<%inherit file="/base/template.bootstrap"/>
+<%namespace name="helpers" file="/derived/list_survey/helpers.mako" />
+
+<div class="row-fluid">
+    
+    <%doc>
+    ## Left column
+    <div class="span3">
+        <div class="civ-col">
+            <div class="civ-col-inner">
+                ${helpers.draw_avatar()}
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
+        
+        <div class="civ-col">
+            <h2 class="civ-col">Upcoming Workshops</h2>
+            <div class="civ-col-inner">
+                ${helpers.upcomingWorkshops()}
+            </div> <!-- /.civ-col-inner -->
+            
+        </div> <!-- /.civ-col -->
+    </div>
+    </%doc>
+
+    ## Right column
+    <div class="span12" style="text-align:center;">
+        % if c.message:
+            ${helpers.showMessage()}
+        % endif
+        <div class="civ-col">
+            <h2 class="civ-col">${c.heading}</h2>
+            <div class="civ-col-inner">
+                ${helpers.featured_survey(c.mainSurvey)}
+            </div> <!-- /.civ-col-inner -->
+            <div class="civ-col-inner">
+                ${helpers.list_surveys(c.surveys)}
+            </div> <!-- /.civ-col-inner -->
+        </div> <!-- /.civ-col -->
+    </div> <!-- /.span6 -->
+</div> <!-- /.row-fluid -->
+
+<%def name = 'extraStyles()'>
+
+</%def>
+<%def name = 'extraHTML()'>
+
+</%def>
+<%def name = 'extraScripts()'>
+
+</%def>

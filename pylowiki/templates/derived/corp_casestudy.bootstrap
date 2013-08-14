@@ -1,0 +1,74 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+
+<%namespace name="helpers" file="/derived/casestudy/helpers.mako" />
+
+
+<%def name="page_specific_css()">
+</%def>
+<%def name="display_body_right_content()">
+<div class="row-fluid">
+  <div class="span7">
+      ${helpers.showSlide(c.study)}
+  </div>
+  <div class="span5">
+      <table class="table table-bordered">
+          <tbody>
+               <tr>
+                  <td><h4>Status</h4></td>
+                  <td>${helpers.status(c.study)}</td>
+               </tr>
+                <tr>
+                  <td><h4>Dates</h4></td>
+                  <td>${helpers.dates(c.study)}</td>
+               </tr>
+               <tr>
+                  <td><h4>Respondents</h4></td>
+                  <td>${helpers.respondents(c.study)}</td>
+               </tr>
+               <tr>
+                  <td style="width:150px;"><h4>Partner Agencies</h4></td>
+                  <td>${helpers.listPartners(c.study)}</td>
+               </tr>
+               % if len(c.study['sponsors']) > 0:
+                 <tr>
+                    <td><h4>Sponsors</h4></td>
+                    <td>${helpers.sponsors(c.study)}</td>
+                 </tr>
+               % endif
+               % if len(c.study['publications']) > 0:
+                 <tr>
+                    <td><h4>Publications</h4></td>
+                    <td>${helpers.publications(c.study)}</td>
+                 </tr>
+               % endif
+          </tbody>
+      </table>
+  </div>
+</div>
+            
+        </br>
+            <h3><em>Problem</em></h3>
+                <div>${helpers.background(c.study)}</div>
+                % if c.video:
+                      </br>
+                      ${c.video | n}
+                % endif
+            </br>
+            <h3><em>Solution</em></h3>
+                <div>${helpers.solution(c.study)}</div>
+                <div>${helpers.slideShow(c.study)}</div>
+
+            </br>
+            <h3><em>Results</em></h3>
+                <div>${helpers.results(c.study)}</div>
+            </br>
+            </br>
+            % if c.study['nextSteps'] != "":
+              <h3><em>Next Steps</em></h3>
+              <div>${helpers.nextSteps(c.study)}</div>
+            % endif
+         </div><!--/.hero-unit-->
+    </div><!--/.span8-->
+    
+</%def>
+
