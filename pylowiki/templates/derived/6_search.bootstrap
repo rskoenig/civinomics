@@ -5,7 +5,7 @@
 <div class="row-fluid" ng-controller="SearchCtrl">
     <div class="span9">
         <div class="row-fluid">
-            <div class="span6">
+            <div class="span7">
                 % if c.searchType == 'region':
                     <span class="lead geoName">${c.searchQuery}</span>
                 % elif c.searchType == 'tag':
@@ -15,7 +15,7 @@
                 % endif
                 
             </div><!-- span6 -->
-            <div class="span6">
+            <div class="span5">
                 ${lib_6.geoDropdown()}
                 ${lib_6.public_tags()}
             </div><!-- span6 -->
@@ -77,25 +77,23 @@
                     </div>
                 </div>
                 <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
-                    <table class="table table-condensed table-hover">
-                        <tr ng-repeat="w in workshops"><td>
-                            <div class="media">
-                                <a class="pull-left" href = '/workshops/{{w.urlCode}}/{{w.url}}'>
-                                    <img class="media-object" ng-src="{{w.imageURL}}" alt="{{w.title}}" title="{{w.title}}">
-                                </a>
-                                <div class="media-body">
-                                    <h4 class="media-heading"><a class="green green-hover" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
-                                    <p>{{w.description}}</p>
-                                    <p> Tags:
+                    <table class="table plain">
+                        <tr ng-repeat="w in workshops" class="plain"><td>
+                            <div class="media well searchListing">
+                                <div class="span3">
+                                    <a href = '/workshops/{{w.urlCode}}/{{w.url}}'>
+                                        <div style="height:100px; background-image:url('{{w.imageURL}}'); background-repeat:no-repeat; background-size:cover; background-position:center;"/></div>
+                                    </a>
+                                </div>
+                                <div class="span9 media-body">
+                                    <h4 class="media-heading"><a class="listed-item-title" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
+                                    <p class="grey"><small>{{w.description}}</small></p>
+                                    <ul class="horizontal-list ideaListing">
+                                        <li><i class="icon-bookmark"></i> Bookmarks ({{w.bookmarks}})</li>
+                                        <li><i class="icon-edit"></i> Posts ({{w.activity}})</li>
+                                    </ul>
+                                    <p> <small>Tags:</small>
                                         <span ng-repeat="tag in w.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
-                                    </p>
-                                    <p>
-                                        <span>
-                                            {{w.bookmarks}} <img class="small-bookmark" bs-tooltip="tooltip.bookmark" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_072_bookmark.png">
-                                        </span>
-                                        <span>
-                                            {{w.activity}} <img class="small-bulb" bs-tooltip="tooltip.activity" data-delay="250" data-placement="bottom" src="/images/glyphicons_pro/glyphicons/png/glyphicons_030_pencil.png">
-                                        </span>
                                     </p>
                                 </div>
                             </div>
@@ -182,7 +180,7 @@
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
                         <tr ng-repeat = "idea in ideas" class="plain"><td>
-                            <div class="media well" style="opacity: 0.9;">
+                            <div class="media well searchListing">
                                 <div class="media-body">
                                     <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
                                         {{idea.title}}

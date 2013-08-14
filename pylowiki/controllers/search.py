@@ -6,6 +6,8 @@ from pylons.controllers.util import abort, redirect
 from pylons import config
 
 from pylowiki.lib.base import BaseController, render
+import pylowiki.lib.db.activity     as activityLib
+import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
@@ -224,8 +226,8 @@ class SearchController(BaseController):
             entry['description'] = w['description']
             entry['urlCode'] = w['urlCode']
             entry['url'] = w['url']
-            entry['activity'] = w['numPosts']
-            entry['bookmarks'] = w['numBookmarks']
+            entry['activity'] = len(activityLib.getActivityForWorkshop(w['urlCode']))
+            entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             

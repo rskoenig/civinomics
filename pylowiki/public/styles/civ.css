@@ -160,10 +160,10 @@ padding: 0;
     margin-left:5px;
 }
 .green-tag{
-    background-color: #075D00;
+    background-color: #005d28;
 }
 .orange-tag{
-    background-color: #D15D00;
+    background-color: #f89406;
 }
 .blue-tag{
     background-color: #3a87ad;
@@ -175,7 +175,7 @@ padding: 0;
     background-color: #333333;
 }
 .red-tag{
-    background-color: #b94a48;
+    background-color: #90000a;
 }
 .well.footer{
    background: white;
@@ -1597,6 +1597,10 @@ li.thumbnail-gallery{
 .searchName{
   color: #fff;
   font-size: 20px;
+}
+
+.well.searchListing{
+  opacity: 0.9;
 }
 
 .table.plain, tr.plain > td{
