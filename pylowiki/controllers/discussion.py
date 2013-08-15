@@ -70,13 +70,28 @@ class DiscussionController(BaseController):
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = config['site_base_url']
+        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+        if c.baseUrl[-1:] == "/":
+            c.baseUrl = c.baseUrl[:-1]
         c.requestUrl = request.url
+        c.thingCode = discussionCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
 
         c.thing = c.discussion = discussionLib.getDiscussion(discussionCode)
         if not c.thing:
             c.thing = revisionLib.getRevisionByCode(discussionCode)
             if not c.thing:
                 abort(404)
+        # name/title for facebook sharing
+        c.name = c.thing['title']
+
         c.flags = flagLib.getFlags(c.thing)
         c.events = eventLib.getParentEvents(c.thing)
         c.title = c.w['title']
