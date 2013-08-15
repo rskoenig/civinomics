@@ -152,7 +152,7 @@ class SearchController(BaseController):
         elif geoScope[4] == '0':
             level = geoScope[2]
             name = level
-            c.searchQuery = "Country of " + utils.geoDeurlify(geoScope[2])
+            c.searchQuery = "" + utils.geoDeurlify(geoScope[2])
         elif geoScope[6] == '0':
             level = geoScope[4]
             name = level
@@ -279,6 +279,7 @@ class SearchController(BaseController):
             entry['urlCode'] = r['urlCode']
             entry['url'] = r['url']
             entry['link']= r['link']
+            entry['type']= r['type']
             entry['addedAs'] = r['addedAs']
             #entry['domain'] = r['domain']
             #entry['tld'] = r['tld']
@@ -370,7 +371,7 @@ class SearchController(BaseController):
                 continue
             entry = {}
             entry['title'] = idea['title']
-            entry['voteCount'] = int(idea['ups']) - int(idea['downs'])
+            entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
             entry['urlCode'] = idea['urlCode']
             entry['url'] = idea['url']
             entry['addedAs'] = idea['addedAs']

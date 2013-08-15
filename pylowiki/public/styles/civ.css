@@ -204,7 +204,7 @@ padding: 0;
   margin-right: 8px; 
 }
 
-.horizontal-list.ideaListing{
+.horizontal-list.iconListing{
   margin-left: 0px;
   margin-bottom: 0px;
   font-size: .85em;
@@ -501,10 +501,7 @@ ul.activity > li {
 .list-item{
    margin-top:10px;
    border-radius:10px;
-}
-
-.list-item .list-item-text{
-   margin-left: 0;
+   min-height: 80px;
 }
 
 .list-item .ideaListing{
@@ -1542,11 +1539,11 @@ li.thumbnail-gallery{
   padding-right: 10px;
 }
 
-.icon-chevron-sign-up{
+.upVote > .icon-chevron-sign-up, .downVote > .icon-chevron-sign-down{
   color: #b6b6b6;
 }
 
-.icon-chevron-sign-up:hover{
+.upVote > .icon-chevron-sign-up:hover{
   color: #90ccaa;
 }
 
@@ -1554,11 +1551,7 @@ li.thumbnail-gallery{
   color: #00903e;
 }
 
-.icon-chevron-sign-down{
-  color: #b6b6b6
-}
-
-.icon-chevron-sign-down:hover{
+.downVote > .icon-chevron-sign-down:hover{
   color: #d1979b
 }
 
@@ -1617,4 +1610,8 @@ li.thumbnail-gallery{
 
 .media.well > p {
   margin-bottom: 5px;
+}
+
+.listingIcons{
+  margin-right: ;
 }

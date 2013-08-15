@@ -99,7 +99,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-indent-left:before{content:"\f03b";}
 .icon-indent-right:before{content:"\f03c";}
 .icon-facetime-video:before{content:"\f03d";}
-.icon-picture:before{content:"\f03e";}
+.icon-picture:before,.icon-photo:before{content:"\f03e";}
 .icon-pencil:before{content:"\f040";}
 .icon-map-marker:before{content:"\f041";}
 .icon-adjust:before{content:"\f042";}
@@ -355,7 +355,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-renminbi:before,.icon-cny:before{content:"\f158";}
 .icon-won:before,.icon-krw:before{content:"\f159";}
 .icon-bitcoin:before,.icon-btc:before{content:"\f15a";}
-.icon-file:before{content:"\f15b";}
+.icon-file:before,.icon-rich:before{content:"\f15b";}
 .icon-file-text:before{content:"\f15c";}
 .icon-sort-by-alphabet:before{content:"\f15d";}
 .icon-sort-by-alphabet-alt:before{content:"\f15e";}
@@ -369,7 +369,7 @@ a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .
 .icon-youtube:before{content:"\f167";}
 .icon-xing:before{content:"\f168";}
 .icon-xing-sign:before{content:"\f169";}
-.icon-youtube-play:before{content:"\f16a";}
+.icon-youtube-play:before,.icon-video:before{content:"\f16a";}
 .icon-dropbox:before{content:"\f16b";}
 .icon-stackexchange:before{content:"\f16c";}
 .icon-instagram:before{content:"\f16d";}

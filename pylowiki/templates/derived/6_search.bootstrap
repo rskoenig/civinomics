@@ -88,7 +88,7 @@
                                 <div class="span9 media-body">
                                     <h4 class="media-heading"><a class="listed-item-title" href="/workshops/{{w.urlCode}}/{{w.url}}">{{w.title}}</a></h4>
                                     <p class="grey"><small>{{w.description}}</small></p>
-                                    <ul class="horizontal-list ideaListing">
+                                    <ul class="horizontal-list iconListing">
                                         <li><i class="icon-bookmark"></i> Bookmarks ({{w.bookmarks}})</li>
                                         <li><i class="icon-edit"></i> Posts ({{w.activity}})</li>
                                     </ul>
@@ -118,63 +118,52 @@
                     <table class="table plain">
                         <tr ng-repeat = "resource in resources" class="plain"><td>
                             <div class="media well searchListing">
-                                <div class="pull-left">
-                                    <i class="icon-link icon-4x"></i>
+                                <div class="span1">
+                                   <i class="icon-{{resource.type}} icon-3x"></i>
                                 </div>
-                                <div class="media-body">
+                                <div class="span11 media-body">
                                     <h4 class="media-heading"><a class="listed-item-title" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
                                         {{resource.title}}
                                     </a></h4>
                                     <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
-                                    <p>
-                                        Net votes: {{resource.voteCount}}
-                                    </p>
-                                    <p>
-                                        Comments: {{resource.numComments}}
-                                    </p>
-                                    <p>
-                                        <i class="icon-gear"></i>From workshop
-                                        <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
-                                            {{resource.workshopTitle}}
-                                        </a>
-                                    </p>
-                                    <p><small>
-                                        Posted by
-                                        <a class="green green-hover" href="/profile/{{resource.authorCode}}/{{resource.authorURL}}">
-                                            {{resource.authorName}}
-                                        </a>
-                                    </small></p>
+
+                                    <ul class="horizontal-list iconListing">
+                                        <li>
+                                            <i class="icon-cog"></i> From workshop: <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}">
+                                                {{resource.workshopTitle}}
+                                            </a>
+                                        </li>
+                                        <li><i class="icon-chevron-sign-up"></i> Net votes ({{resource.voteCount}})</li>
+                                        <li><i class="icon-comment"></i> Comments ({{resource.numComments}})</li>
+                                    </ul>
                                 </div>
                             </div>
                         </td></tr>
                     </table>
                 </div>
                 <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
-                    <table class="table table-condensed table-hover">
-                        <tr ng-repeat = "discussion in discussions"><td>
-                            <div class="media">
-                                <div class="pull-left">
-                                    <a href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}" class="media-object">
-                                        <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{discussion.authorHash}}?r=pg&d=identicon&s=200" alt="{{discussion.authorName}}" title="{{discussion.authorName}}">
-                                    </a>
+                    <table class="table plain">                             
+                        <tr ng-repeat = "discussion in discussions" class="plain"><td>
+                            <div class="media well searchListing">
+                                <div class="span1">
+                                   <i class="icon-comments icon-3x"></i>
                                 </div>
-                                <div class="media-body">
-                                    <a class="green green-hover" href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}">
-                                        {{discussion.authorName}}
-                                    </a>
-                                    added the discussion
-                                    <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}/discussion/{{discussion.urlCode}}/{{discussion.url}}">
+                                <div class="span11 media-body">
+                                    <h4 class="media-heading"><a class="listed-item-title" href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}/discussion/{{discussion.urlCode}}/{{discussion.url}}">
                                         {{discussion.title}}
-                                    </a>
-                                    in the workshop
-                                    <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}">
-                                        {{discussion.workshopTitle}}
-                                    </a>
-                                    <p>
-                                        Net votes: {{discussion.voteCount}}
-                                    </p>
-                                    <p>
-                                        Comments: {{discussion.numComments}}
+                                    </a></h4>
+                                    <ul class="horizontal-list iconListing">
+                                        <li>
+                                            <i class="icon-cog"></i> From workshop: <a href="/workshop/{{discussion.workshopCode}}/{{discussion.workshopURL}}">
+                                                {{discussion.workshopTitle}}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <i class="icon-comment"></i> Comments {{discussion.numComments}}
+                                        </li>
+                                    </ul>
+                                    <p class="no-bottom">
+                                        <span class="left-space"><a href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{discussion.authorHash}}?r=pg&d=identicon&s=200" alt="{{discussion.authorName}}" title="{{discussion.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}">{{discussion.authorName}}</a></small></span>
                                     </p>
                                 </div>
                             </div>
@@ -189,14 +178,14 @@
                                     <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
                                         {{idea.title}}
                                     </a></p>
-                                    <ul class="horizontal-list ideaListing">
+                                    <ul class="horizontal-list iconListing">
+                                        <li><i class="icon-check-sign"></i> Total votes ({{idea.voteCount}})</li>
+                                        <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
                                         <li>
                                             <i class="icon-cog"></i> From workshop: <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}">
                                                 {{idea.workshopTitle}}
                                             </a>
                                         </li>
-                                        <li><i class="icon-check-sign"></i> Net votes ({{idea.voteCount}})</li>
-                                        <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
                                     </ul>
                                     <p class="no-bottom">
                                         <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>

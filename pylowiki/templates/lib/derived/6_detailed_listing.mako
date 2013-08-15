@@ -109,56 +109,64 @@
                     </div>
                 </div>
             % else:
-                <div class="${authorClass}">
+                <div class="row-fluid list-item border-bottom">
                     <div class="span1 voteBlock" id="vote_${itemCounter}">
                         ${lib_6.upDownVote(item)}
                     </div>
                     % if thing == 'resources':
+                        <% 
+                            iconClass = ""
+                            if item['type'] == 'link' or item['type'] == 'general':
+                                iconClass="icon-link"
+                            elif item['type'] == 'photo':
+                                iconClass="icon-picture"
+                            elif item['type'] == 'video':
+                                iconClass="icon-youtube-play"
+                            elif item['type'] == 'rich':
+                                iconClass="icon-file"
+                            endif
+                        %>
                         <div class="span1">
+                            <div class="spacer"></div>
+                            <i class="${iconClass} icon-3x"></i>
                         </div>
                     % else:
-                        <div class="span2" id="author_${itemCounter}">
-                            ${lib_6.userImage(author, className = 'avatar')}
+                        <div class="span1">
+                            <div class="spacer"></div>
+                            <i class="icon-comments icon-3x"></i>
                         </div> <!--/.span2-->
                     % endif
-                    <div class="span9 list-item-text" id="content_${itemCounter}">
-                        <% itemTitle = '<h5 class="no-bottom"><a %s class="listed-item-title">%s</a></h5>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
-                        ${itemTitle | n}
-                        % if item.objType == 'idea':
-                            % if item['adopted'] == '1':
-                                <small><i class="icon-star"></i> This idea adopted!</small>
-                            % endif
-                        % endif
+                    <div class="span10 list-item-text" id="content_${itemCounter}">
+                        <h4 class="media-heading">
+                            <% itemTitle = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
+                            ${itemTitle | n}
+                        </h4>
+
                         % if item.objType == 'resource':
-                            <% 
-                                extraClass = ""
-                                if item['type'] == 'link' or item['type'] == 'general':
-                                    extraClass="resource-link"
-                                elif item['type'] == 'photo':
-                                    extraClass="resource-photo"
-                                elif item['type'] == 'video':
-                                    extraClass="resource-video"
-                                elif item['type'] == 'rich':
-                                    extraClass="resource-file"
-                                endif
-                            %>
-                            <p>
-                                <% itemLink = '<small>(<a %s>%s</a>)</small>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
-                                <span class="${extraClass}">${itemLink | n}</span>
-                            </p>
+                            <% itemLink = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
+                            ${itemLink | n}
                         % endif
-                        <p class="no-bottom">
-                            Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}
-                        </p>
+
                             <% 
-                                comments = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'comments') 
+                                comments = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), ' Comments') 
                                 numComments = discussionLib.getDiscussionForThing(item)['numComments']
                             %>
-                            % if c.demo:
-                                See ${comments | n}
-                            % else:
-                                See ${comments | n} (${numComments})
-                            % endif
+
+                            <ul class="horizontal-list iconListing">
+                                <li>
+                                    % if c.demo:
+                                        ${comments | n}
+                                    % else:
+                                        ${comments | n} (${numComments})
+                                    % endif
+                                </li>
+                            </ul>
+
+                        % if item.objType != 'resource':
+                            <p class="no-bottom">
+                                <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}</small>
+                            </p>
+                        % endif
                     </div><!--/.span9-->
                 </div><!--/.row-fluid-->
             % endif
@@ -232,7 +240,7 @@
 
                                                 totalVotes = int(item['ups']) + int(item['downs'])
                                             %>
-                                            <ul class="horizontal-list ideaListing">
+                                            <ul class="horizontal-list iconListing">
                                                 <li>${fullText | n}</li>
                                                 % if c.demo:
                                                     <li>${comments | n}</li>
@@ -267,7 +275,7 @@
 
                                 totalVotes = int(item['ups']) + int(item['downs'])
                             %>
-                            <ul class="horizontal-list ideaListing">
+                            <ul class="horizontal-list iconListing">
                                 <li>${fullText | n}</li>
                                 % if c.demo:
                                     <li>${comments | n}</li>
