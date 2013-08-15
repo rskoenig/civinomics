@@ -13,6 +13,7 @@ import pylowiki.lib.mail            as mailLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 
+import urllib2 as urllib2
 import simplejson as json
 
 log = logging.getLogger(__name__)
@@ -53,3 +54,16 @@ class ShareController(BaseController):
         returnMsg =  "Email sent, thanks for sharing!"
         return returnMsg
   
+    @h.login_required
+    def shareFacebookHandler(self, itemCode, itemURL, postId):
+        # create the share object
+        # postId will allow us to make a facebook graph api call to see the message associated with this share
+        # see https://developers.facebook.com/docs/reference/api/post/
+        itemURL = itemURL.replace(",","%")
+        itemURL = urllib2.unquote(itemURL)
+        if itemCode and itemURL and postId:
+            if 'user' in session:
+                share = shareLib.Share(c.authuser, itemCode, itemURL, 'facebook', '', postId)
+                return 'share stored'
+        else:
+            return None
