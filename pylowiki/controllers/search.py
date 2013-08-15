@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
+import urllib2
+
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -145,30 +147,71 @@ class SearchController(BaseController):
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.searchType = "region"
         geoScope = self.query.split('|')
+        baseUrl = config['site_base_url']
+        # removes the / if there is one
+        if baseUrl[-1] == "/":
+            baseUrl = baseUrl[:-1]
+
         if geoScope[2] == '0':
             level = 'earth'
             name = 'all'
             c.searchQuery = 'Earth'
+            flag = baseUrl + "/images/flags/" + level + ".gif"
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+            
         elif geoScope[4] == '0':
             level = geoScope[2]
             name = level
             c.searchQuery = "" + utils.geoDeurlify(geoScope[2])
+            flag = baseUrl + "/images/flags/country/" + geoScope[2] + ".gif"
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+            
         elif geoScope[6] == '0':
             level = geoScope[4]
             name = level
             c.searchQuery = "State of " + utils.geoDeurlify(geoScope[4])
+            flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '.gif'
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+            
         elif geoScope[8] == '0':
             level = geoScope[6]
             name = level
             c.searchQuery = "County of " + utils.geoDeurlify(geoScope[6])
+            flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '/counties/' + geoScope[6] + '.gif'
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+
         elif geoScope[9] == '0':
             level = geoScope[8]
             name = level
             c.searchQuery = "City of " + utils.geoDeurlify(geoScope[8])
+            flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '/counties/' + geoScope[6] + '/cities/' + geoScope[8] + '.gif'
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+
         else:
             level = geoScope[9]
             name = level
             c.searchQuery = "Postal Code of " + utils.geoDeurlify(geoScope[9])
+            c.flag = '/images/flags/generalFlag.gif'
         c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')
     

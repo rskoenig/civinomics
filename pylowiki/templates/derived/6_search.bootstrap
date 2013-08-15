@@ -202,7 +202,7 @@
         
         <div class="well" style="padding: 10px;">
             <div class="span12">
-                <img class="thumbnail" style="width: 150px; margin: 0 auto 10px; " src="/images/cityHall_test.jpg">
+                <img class="thumbnail" style="width: 150px; margin: 0 auto 10px; " src="${c.flag}">
             </div>
         </div>
 
