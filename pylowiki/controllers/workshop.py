@@ -859,9 +859,21 @@ class WorkshopController(BaseController):
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = config['site_base_url']
+        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+        if c.baseUrl[-1:] == "/":
+            c.baseUrl = c.baseUrl[:-1]
         c.requestUrl = request.url
-        
-        c.title = c.w['title']
+        c.thingCode = workshopCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+        # name for facebook share posts
+        c.name = c.title = c.w['title']
 
         c.isFollowing = False
         if 'user' in session:
