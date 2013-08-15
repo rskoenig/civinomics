@@ -18,19 +18,41 @@
    log = logging.getLogger(__name__)
 %>
 
-<%def name="facebookDialogShare(link)">
+<%def name="facebookDialogShare(link, picture)">
     <%
-        # NOTE - link should probably be created by the function in this file, thingLinkRouter.
-        # However, I need to do some homework on how to strip the href=" " out, and place an
-        # http://www.civinomics.com in.
+        # link: direct url to item being shared
+        # picture: url of the parent workshop's background image
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
+        thingCode = c.thingCode
+        userCode = c.authuser['urlCode']
+        workshopCode = c.w['urlCode']
+        # name: the workshop's name or the item's title. This ends up as the name of the object being shared on facebook.
+        name = c.name
+        # this is an elaborate way to get the item or workshop's description loaded as the caption
+        if c.thing:
+            if 'text' in c.thing.keys():
+                caption = c.thing['text']
+            else:
+                if c.w:
+                    if 'description' in c.w.keys():
+                        caption = c.w['description'].replace("'", "\\'")
+                    else:
+                        caption = ''
+                else:
+                    caption = ''
+        else:
+            if 'description' in c.w.keys():
+                caption = c.w['description'].replace("'", "\\'")
+            else:
+                caption = ''
+        
     %>
     % if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
         <div id="fb-root"></div>
         <script src="/js/extauth.js" type="text/javascript"></script>
         <script>
-            console.log('before window init');
+            // activate facebook javascript sdk
             window.fbAsyncInit = function() {
                 FB.init({
                     appId      : "${facebookAppId}", // App ID
@@ -39,7 +61,6 @@
                     cookie     : false, // enable cookies to allow the server to access the session
                     xfbml      : true  // parse XFBML
                 });
-                console.log('after window init');
                 FB.Event.subscribe('auth.authResponseChange', function(response) {
                 // Here we specify what we do with the response anytime this event occurs.
                 console.log('above response tree');
@@ -65,12 +86,29 @@
                 ref.parentNode.insertBefore(js, ref);
             }(document));
 
-            function shareOnWall(authResponse) {
-                FB.ui({
-                    method: "stream.share",
-                    u: ""
-                });
-            }
+            function shareOnWall() {
+            FB.ui(
+                {
+                  method: 'feed',
+                  name: "${name}",
+                  link: "${link}",
+                  picture: "${picture}",
+                  caption: "${caption}",
+                  description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
+                },
+                function(response) 
+                {
+                    if (response && response.post_id) {
+                      // if there's a post_id, create share object
+                      var thingCode = "${thingCode}";
+                      var link = "${link}"
+                      var userCode = "${userCode}"
+                      var workshopCode = "${workshopCode}"
+                      result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode);
+                    }
+                }
+            );
+        };
         </script>
         <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
     % endif
@@ -420,12 +458,22 @@
             if kwargs['directLink'] == True and r['type'] == 'url':
                     resourceStr = 'href="%s' %(r['info'])
             else:
-                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                if 'noHref' in kwargs:
+                    resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+                else:
+                    resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
         else:
-            resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+            if 'noHref' in kwargs:
+                resourceStr = '/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
+            else:
+                resourceStr = 'href="/workshop/%s/%s/resource/%s/%s' %(w["urlCode"], w["url"], r["urlCode"], r["url"])
         
         resourceStr += commentLinkAppender(**kwargs)
-        resourceStr += '"'
+        if 'noHref' in kwargs:
+            resourceStr += ''
+        else:
+            resourceStr += '"'
+
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return resourceStr
@@ -435,9 +483,15 @@
 
 <%def name="ideaLink(i, w, **kwargs)">
    <%
-        ideaStr = 'href="/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
+        if 'noHref' in kwargs:
+            ideaStr = '/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
+        else:
+            ideaStr = 'href="/workshop/%s/%s/idea/%s/%s' %(w["urlCode"], w["url"], i["urlCode"], i["url"])
         ideaStr += commentLinkAppender(**kwargs)
-        ideaStr += '"'
+        if 'noHref' in kwargs:
+            ideaStr += ''
+        else:
+            ideaStr += '"'
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return ideaStr
@@ -447,9 +501,15 @@
 
 <%def name="discussionLink(d, w, **kwargs)">
     <%
-        discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+        if 'noHref' in kwargs:
+            discussionStr = '/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
+        else:
+            discussionStr = 'href="/workshop/%s/%s/discussion/%s/%s' %(w["urlCode"], w["url"], d["urlCode"], d["url"])
         discussionStr += commentLinkAppender(**kwargs)
-        discussionStr += '"'
+        if 'noHref' in kwargs:
+            discussionStr += ''
+        else:
+            discussionStr += '"'
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return discussionStr
@@ -459,7 +519,11 @@
 
 <%def name="commentLink(comment, w, **kwargs)">
    <% 
-        linkStr = 'href="/workshop/%s/%s/comment/%s"' %(w["urlCode"], w["url"], comment["urlCode"])
+
+        if 'noHref' in kwargs:
+            linkStr = '/workshop/%s/%s/comment/%s' %(w["urlCode"], w["url"], comment["urlCode"])
+        else:
+            linkStr = 'href="/workshop/%s/%s/comment/%s"' %(w["urlCode"], w["url"], comment["urlCode"])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return linkStr

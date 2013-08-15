@@ -204,6 +204,8 @@ def make_map():
     # Share management
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/share/{userCode}/email/{handler:handler/?}', controller = 'share', action = 'shareEmailHandler', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', userCode = '{userCode}')
     
+    map.connect('/share/facebook/{userCode}/{workshopCode}/{itemCode}/{itemURL}/{postId}', controller = 'share', action = 'shareFacebookHandler', userCode = '{userCode}', workshopCode = '{workshopCode}', itemCode = '{itemCode}', itemURL = '{itemURL}', postId = '{postId}')
+
     # Comment notifications
     map.connect('/profile/preferences/{id1}/{id2}/comments/{handler:handler/?}', controller = 'profile', action = 'preferencesCommentsHandler', id1 = '{id1}', id2 = '{id2}')
     
