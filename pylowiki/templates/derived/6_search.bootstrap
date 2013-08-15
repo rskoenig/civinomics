@@ -159,7 +159,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <i class="icon-comment"></i> Comments {{discussion.numComments}}
+                                            <i class="icon-comment"></i> Comments ({{discussion.numComments}})
                                         </li>
                                     </ul>
                                     <p class="no-bottom">
