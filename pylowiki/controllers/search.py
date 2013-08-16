@@ -6,6 +6,7 @@ import urllib2
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylons import config
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.activity     as activityLib
@@ -146,7 +147,7 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.searchType = "region"
-        geoScope = self.query.split('|')
+        geoScope = self.query.split('|') 
         baseUrl = config['site_base_url']
         # removes the / if there is one
         if baseUrl[-1] == "/":
@@ -162,6 +163,7 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
+            c.population = 7200000000
             
         elif geoScope[4] == '0':
             level = geoScope[2]
@@ -173,6 +175,8 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
+            geoInfo = getCountryInfo(geoScope[2]) 
+            c.population = geoInfo['Country_population']
             
         elif geoScope[6] == '0':
             level = geoScope[4]
@@ -184,6 +188,8 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
+            geoInfo = getStateInfo(geoScope[4], geoScope[2]) 
+            c.population = geoInfo['Population']
             
         elif geoScope[8] == '0':
             level = geoScope[6]
@@ -195,6 +201,9 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
+            county = geoDeurlify(geoScope[6])
+            geoInfo = getCountyInfo(county, geoScope[4], geoScope[2])
+            c.population = geoInfo['Population']
 
         elif geoScope[9] == '0':
             level = geoScope[8]
@@ -206,12 +215,17 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
+            city = geoDeurlify(geoScope[8])
+            geoInfo = getCityInfo(city, geoScope[4], geoScope[2]) 
+            c.population = geoInfo['Population']
 
         else:
             level = geoScope[9]
             name = level
             c.searchQuery = "Postal Code of " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
+            geoInfo = getPostalInfo(geoScope[9]) 
+            c.population = geoInfo['Population']
         c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')
     

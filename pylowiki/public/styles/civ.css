@@ -1615,3 +1615,22 @@ li.thumbnail-gallery{
 .listingIcons{
   margin-right: ;
 }
+
+.form-horizontal.stats .control-group{
+  margin-bottom: 0;
+}
+
+.form-horizontal.stats .control-label{
+float: left;
+width: 100px;
+padding-top: 5px;
+text-align: right;
+}
+
+.form-horizontal.stats .controls{
+  margin-left: 100px;
+}
+
+.form-horizontal.stats .controls span{
+  padding-top: 5px;
+}
