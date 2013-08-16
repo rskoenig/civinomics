@@ -23,6 +23,8 @@ class ShareController(BaseController):
     def __before__(self, action, userCode = None, workshopCode = None):
         if userCode is not None and workshopCode is not None:
                 c.user = userLib.getUserByCode(userCode)
+                if not c.user:
+                    c.user = userLib.getUserByFacebookAuthId( unicode(userCode) )
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
         else:
             abort(404)

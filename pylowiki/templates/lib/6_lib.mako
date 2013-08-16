@@ -25,7 +25,7 @@
         facebookAppId = c.facebookAppId
         channelUrl = c.channelUrl
         thingCode = c.thingCode
-        userCode = c.authuser['urlCode']
+        userCode = ''
         workshopCode = c.w['urlCode']
         # name: the workshop's name or the item's title. This ends up as the name of the object being shared on facebook.
         name = c.name
@@ -53,6 +53,7 @@
         <script src="/js/extauth.js" type="text/javascript"></script>
         <script>
             // activate facebook javascript sdk
+            var fbAuthId = '';
             window.fbAsyncInit = function() {
                 FB.init({
                     appId      : "${facebookAppId}", // App ID
@@ -66,7 +67,7 @@
                 console.log('above response tree');
                 if (response.status === 'connected') {
                     console.log('calling fb connected');
-                    //shareOnWall(response.authResponse);
+                    fbAuthId = response.authResponse.userID;
                 } else if (response.status === 'not_authorized') {
                     console.log('not authd');                
                     //FB.login();
@@ -102,7 +103,7 @@
                       // if there's a post_id, create share object
                       var thingCode = "${thingCode}";
                       var link = "${link}"
-                      var userCode = "${userCode}"
+                      var userCode = fbAuthId;
                       var workshopCode = "${workshopCode}"
                       result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode);
                     }
