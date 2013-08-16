@@ -203,9 +203,9 @@
         </div><!-- tabbable tabs-left civ-search -->
     </div><!-- span9 -->
     % if c.searchType == 'region':
-        <div class="span3 well" style="opacity: 0.9; padding: 10px;">
+        <div class="span3 well search-side-bar">
             <div class="span12">
-                <img class="thumbnail" style="width: 150px; margin: 0 auto 10px; " src="${c.flag}">
+                <img class="thumbnail flag" src="${c.flag}">
             </div>
             <form class="form-horizontal stats">
                 <div class="control-group">

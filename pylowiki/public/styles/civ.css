@@ -1539,11 +1539,11 @@ li.thumbnail-gallery{
   padding-right: 10px;
 }
 
-.upVote > .icon-chevron-sign-up, .downVote > .icon-chevron-sign-down{
+.upVote > .icon-chevron-sign-up, .downVote > .icon-chevron-sign-down, .nullvote .icon-chevron-sign-up, .nullvote .icon-chevron-sign-down{
   color: #b6b6b6;
 }
 
-.upVote > .icon-chevron-sign-up:hover{
+.upVote > .icon-chevron-sign-up:hover, .nullvote .icon-chevron-sign-up:hover{
   color: #90ccaa;
 }
 
@@ -1551,7 +1551,7 @@ li.thumbnail-gallery{
   color: #00903e;
 }
 
-.downVote > .icon-chevron-sign-down:hover{
+.downVote > .icon-chevron-sign-down:hover, .nullvote .icon-chevron-sign-down:hover{
   color: #d1979b
 }
 
@@ -1596,6 +1596,11 @@ li.thumbnail-gallery{
   opacity: 0.9;
 }
 
+.well.search-side-bar{
+  opacity: 0.9;
+  padding: 10px;
+}
+
 .table.plain, tr.plain > td{
   border-top: 0;
 }
@@ -1610,10 +1615,6 @@ li.thumbnail-gallery{
 
 .media.well > p {
   margin-bottom: 5px;
-}
-
-.listingIcons{
-  margin-right: ;
 }
 
 .form-horizontal.stats .control-group{
@@ -1633,4 +1634,9 @@ text-align: right;
 
 .form-horizontal.stats .controls span{
   padding-top: 5px;
+}
+
+.thumbnail.flag{
+  width: 150px;
+  margin: 0 auto 10px;
 }
