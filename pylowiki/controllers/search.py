@@ -163,7 +163,9 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
-            c.population = 7200000000
+            c.population = 7172450000
+            c.medianAge = 28.4
+            c.personsHousehold = 4
             
         elif geoScope[4] == '0':
             level = geoScope[2]
@@ -177,6 +179,8 @@ class SearchController(BaseController):
                 c.flag = '/images/flags/generalFlag.gif'
             geoInfo = getCountryInfo(geoScope[2]) 
             c.population = geoInfo['Country_population']
+            c.medianAge = geoInfo['Country_median_age']
+            c.personsHousehold = geoInfo['Country_persons_per_household']
             
         elif geoScope[6] == '0':
             level = geoScope[4]
@@ -190,6 +194,8 @@ class SearchController(BaseController):
                 c.flag = '/images/flags/generalFlag.gif'
             geoInfo = getStateInfo(geoScope[4], geoScope[2]) 
             c.population = geoInfo['Population']
+            c.medianAge = geoInfo['Population_Median']
+            c.personsHousehold = geoInfo['Average_Household_Size']
             
         elif geoScope[8] == '0':
             level = geoScope[6]
@@ -204,6 +210,8 @@ class SearchController(BaseController):
             county = geoDeurlify(geoScope[6])
             geoInfo = getCountyInfo(county, geoScope[4], geoScope[2])
             c.population = geoInfo['Population']
+            c.medianAge = geoInfo['Population_Median']
+            c.personsHousehold = geoInfo['Average_Household_Size']
 
         elif geoScope[9] == '0':
             level = geoScope[8]
@@ -218,6 +226,8 @@ class SearchController(BaseController):
             city = geoDeurlify(geoScope[8])
             geoInfo = getCityInfo(city, geoScope[4], geoScope[2]) 
             c.population = geoInfo['Population']
+            c.medianAge = geoInfo['Population_Median']
+            c.personsHousehold = geoInfo['Average_Household_Size']
 
         else:
             level = geoScope[9]
@@ -226,6 +236,9 @@ class SearchController(BaseController):
             c.flag = '/images/flags/generalFlag.gif'
             geoInfo = getPostalInfo(geoScope[9]) 
             c.population = geoInfo['Population']
+            c.medianAge = geoInfo['MedianAge']
+            c.personsHousehold = geoInfo['PersonsPerHousehold']
+
         c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')
     

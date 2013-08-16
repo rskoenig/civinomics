@@ -214,8 +214,21 @@
                         <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
                     </div>
                 </div>
+                <div class="control-group">
+                    <label class="control-label grey" for="inputEmail">Median Age:</label>
+                    <div class="controls">
+                        <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label grey" for="inputEmail">Persons per Household:</label>
+                    <div class="controls">
+                        <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
+                    </div>
+                </div>
             </form>
         </div>
+
     % endif
 </div><!-- row-fluid -->
 
