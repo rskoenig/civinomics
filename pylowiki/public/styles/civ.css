@@ -533,7 +533,7 @@ ul.activity > li {
 
 .affix {
   position: fixed;
-  top: 10px;
+  top: 40px;
 }
 
 .nav .divider {
@@ -890,20 +890,20 @@ a.yesVote, a.noVote{
 }
 
 .well.help{
-   color: #468847;
-   background-color: #dff0d8;
-   border-color: #468847;
+   color: #005d28;
+   background-color: #d3ebdd;
+   border-color: #005d28;
    height: 200px;
    padding-top: 5px;
    position: relative;
 }
 
 .well.help:hover{
-   background-color: #b2dba1;
+   background-color: #82c69f;
 }
 
 .well.help a{
-   color: #468847;
+   color: #005d28;
 }
 
 .span4.well.help {
