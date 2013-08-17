@@ -2,6 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace file="/lib/derived/6_profile.mako" name="helpers" />
 <%namespace file="/lib/derived/6_profile_edit.mako" name="helpersEdit" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 <%!
     from pylowiki.lib.db.user import isAdmin
 %>
@@ -58,7 +59,7 @@
             </div>
         </div>
         <div class="span4">
-            ${helpers.profileDashboard()}
+            ${dashboard.profileDashboard()}
         </div><!--/.span4-->
     </div>
 ##</div>
