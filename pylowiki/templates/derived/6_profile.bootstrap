@@ -19,7 +19,7 @@
                             % if isAdmin(c.authuser.id) and c.user.id != c.authuser.id:
                             ${helpers.followButton(c.user)}
                             % endif
-                            <li class="pull-right"><a href="#tab-edit" data-toggle="tab">Edit Profile</a></li>
+                            <li class="pull-right"><a href="/profile/${c.user['urlCode']}/${c.user['url']}/edit">Edit Profile</a></li>
                         % else:
                             ${helpers.followButton(c.user)}
                         % endif
@@ -109,7 +109,6 @@
     % if 'user' in session:
         % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
             <script src="${lib_6.fingerprintFile('/js/ng/alerts_admin.js')}" type="text/javascript"></script>
-            <script src="${lib_6.fingerprintFile('/js/ng/photo_upload.js')}" type="text/javascript"></script>
             <script src="${lib_6.fingerprintFile('/js/profile.js')}" type="text/javascript"></script>
             <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
         % endif

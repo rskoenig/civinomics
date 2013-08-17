@@ -273,6 +273,7 @@ class ProfileController(BaseController):
     @h.login_required
     def edit(self, id1, id2):
         c.events = eventLib.getParentEvents(c.user)
+        log.info("profile edit")
         if userLib.isAdmin(c.authuser.id) or c.user.id == c.authuser.id:
             c.title = 'Edit Profile'
             if 'confTab' in session:
@@ -283,19 +284,8 @@ class ProfileController(BaseController):
                 c.admin = True
             else:
                 c.admin = False
-            c.pendingFacilitators = []
-            fList = facilitatorLib.getFacilitatorsByUser(c.user)
-            for f in fList:
-                if 'pending' in f and f['pending'] == '1':
-                    c.pendingFacilitators.append(f)
-
-            listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-            c.pendingListeners = []
-            for l in listenerList:
-                if 'pending' in l and l['pending'] == '1':
-                    c.pendingListeners.append(l)
                     
-            return render('/derived/6_profile.bootstrap')
+            return render('/derived/6_profile_edit.bootstrap')
         else:
             abort(404)
 
@@ -575,11 +565,7 @@ class ProfileController(BaseController):
         # make sure they are authorized to do this
         if c.user.id != c.authuser.id and userLib.isAdmin(c.authuser.id) != 1:
             abort(404)      
-                    
-        session['confTab'] = "tab4"
-        session.save()
-            
-        
+
         if 'password' in request.params:
             password = request.params['password']
 
