@@ -94,7 +94,7 @@
                   name: "${name}",
                   link: "${link}",
                   picture: "${picture}",
-                  caption: "${caption}",
+                  caption: "",
                   description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
                 },
                 function(response) 
@@ -111,7 +111,7 @@
             );
         };
         </script>
-        <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+        <a href="#" target='_top' onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
     % endif
 </%def>
 
