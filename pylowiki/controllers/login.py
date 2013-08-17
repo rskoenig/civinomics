@@ -127,6 +127,34 @@ class LoginController(BaseController):
             log.info("returning 'not found'")
             return "not found"
 
+    def fbSimpleCheck(self, id1):
+        # this receives an email from the fb javascript auth checker, figures out what to do
+        # is there a user with this email?
+        # info == [0 email, 1 access token, 2 expires in, 3 signed request, 4 user id]
+        name, email, access, expires, signed, facebookAuthId = id1.split("&")
+        
+        data = LoginController.verifyFbSignature(self, signed)
+        if data is None:
+            log.error('Invalid signature')
+            return None
+
+        user = userLib.getUserByFacebookAuthId( facebookAuthId )
+        if not user:
+            user = userLib.getUserByEmail( email )
+            if user:
+                log.info("found user by email " + email)
+        else:
+            if user:
+                log.info("found user by facebook id")
+
+        if user:           
+            # civ finds there's already a linked account
+            return "found user"
+        else:
+            #- civ finds there's not yet an account or it is not yet linked
+            log.info("returning 'not found'")
+            return "not found"
+
     def fbLoginHandler(self):
         # NOTE - find when this function is used compared to the one right before this
         # send user to page where id will be anych tested again - if it agrees with who

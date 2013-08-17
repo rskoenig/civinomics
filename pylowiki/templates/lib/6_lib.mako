@@ -68,6 +68,7 @@
                 if (response.status === 'connected') {
                     console.log('calling fb connected');
                     fbAuthId = response.authResponse.userID;
+                    showButton(response.authResponse);
                 } else if (response.status === 'not_authorized') {
                     console.log('not authd');                
                     //FB.login();
@@ -88,30 +89,43 @@
             }(document));
 
             function shareOnWall() {
-            FB.ui(
-                {
-                  method: 'feed',
-                  name: "${name}",
-                  link: "${link}",
-                  picture: "${picture}",
-                  caption: "${caption}",
-                  description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
-                },
-                function(response) 
-                {
-                    if (response && response.post_id) {
-                      // if there's a post_id, create share object
-                      var thingCode = "${thingCode}";
-                      var link = "${link}"
-                      var userCode = fbAuthId;
-                      var workshopCode = "${workshopCode}"
-                      result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode);
+                FB.ui(
+                    {
+                        method: 'feed',
+                        name: "${name}",
+                        link: "${link}",
+                        picture: "${picture}",
+                        caption: "${caption}",
+                        description: 'Civinomics is an Open Intelligence platform. Collaborate to create the solutions you need.'
+                    },
+                    function(response) 
+                    {
+                        if (response && response.post_id) {
+                          // if there's a post_id, create share object
+                          var thingCode = "${thingCode}";
+                          var link = "${link}"
+                          var userCode = fbAuthId;
+                          var workshopCode = "${workshopCode}"
+                          result = postShared(response, thingCode, link, response.post_id, userCode, workshopCode);
+                        }
                     }
-                }
-            );
-        };
+                );
+
+            };
+            function showButton(authResponse) {
+                FB.api('/me', function(response) 
+                    {
+                        result = fbSimpleCheck(response, authResponse);
+                        console.log(result);
+                        if (result == "found user") {
+                            var shareButton = '<a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>';
+                            $('#fb-root').append(shareButton);
+                        }
+                    }
+                );
+            };
         </script>
-        <a href="#" onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+        
     % endif
 </%def>
 

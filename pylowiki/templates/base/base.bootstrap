@@ -85,7 +85,7 @@
          }(document));
 
          function authSignal() {
-           var authSignal = '<div id="authSignal"></div>'
+           var authSignal = '<div id="authSignal"></div>';
            $('#fbLoginButton1').append(authSignal);
            $('#fbLoginButton2').append(authSignal);
          }

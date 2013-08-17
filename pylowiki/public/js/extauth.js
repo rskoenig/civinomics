@@ -20,6 +20,19 @@ function fbCheckAccount(response, authResponse, smallPic, bigPic){
     //document.getElementById("postalCodeResult").innerText = document.getElementById("postalCodeResult").textContent = gobj.result;
 }
 
+function fbSimpleCheck(response, authResponse){
+    // just check to see if there's a matching account on our site
+    var checkURL = "/extauth/fbSimpleCheck/" + response.name + "&" + response.email + "&" + authResponse.accessToken + "&" + authResponse.expiresIn + "&" + authResponse.signedRequest + "&" + authResponse.userID 
+    
+    var checkResult = $.ajax({
+        type : 'POST',
+        async : false,
+        url : checkURL
+    }).responseText;
+    //console.log('cr ' + checkResult)
+    return checkResult;    
+}
+
 function postShared(response, itemCode, itemURL, postId, userCode, workshopCode){
     // someone shared something. record this in the db
     // needing info to define the object that is being shared. could be a workshop, could be an 

@@ -304,6 +304,7 @@ def make_map():
     
     # for ajax request from page after pinging fb for auth info
     map.connect('/extauth/fbEmail/{id1}{end:/?}', controller = 'login', action = 'fbAuthCheckEmail', id1 = '{id1}')
+    map.connect('/extauth/fbSimpleCheck/{id1}{end:/?}', controller = 'login', action = 'fbSimpleCheck', id1 = '{id1}')
     map.connect('/extauth/fbProfilePicSmall/{id1}{end:/?}', controller = 'profile', action = 'fbProfilePicSmall', id1 = '{id1}')
 
     # User activation

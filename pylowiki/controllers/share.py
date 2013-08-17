@@ -65,7 +65,7 @@ class ShareController(BaseController):
         itemURL = urllib2.unquote(itemURL)
         if itemCode and itemURL and postId:
             if 'user' in session:
-                share = shareLib.Share(c.authuser, itemCode, itemURL, 'facebook', '', postId)
+                share = shareLib.Share(c.user, itemCode, itemURL, 'facebook', '', postId)
                 return 'share stored'
         else:
             return None
