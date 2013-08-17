@@ -78,7 +78,7 @@
             %>
                 
             <div class="row-fluid">
-                <div class="span12">
+                <div class="span11 offset1">
                     <span class="pull-right">${helpers.showItemOwner(c.thing)}</span>
                 </div>
             </div>

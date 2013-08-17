@@ -390,7 +390,9 @@
     elif type(user) == type(u''):
          user = userLib.getUserByCode(user)
   %>
-  ${user['greetingMsg']}
+  % if len(user['greetingMsg']) > 0:
+    , ${ellipsisIZE(user['greetingMsg'], 50)}
+  % endif
 </%def>
 
 <%def name="workshopLink(w, **kwargs)">
