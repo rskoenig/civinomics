@@ -1,0 +1,27 @@
+<%inherit file="/base/base_corp.bootstrap"/>
+<%namespace name="helpers" file="/lib/corp_lib.mako"/>
+
+<%def name="page_specific_css()">
+    <!-- None -->
+</%def>
+<%def name="display_body_right_content()">
+    <div id="team" class="row-fluid">
+
+        <h1>Team</h1>
+        </br>
+        
+        <blockquote>
+            <p>The people who are crazy enough to think they can change the world, are the ones who do.</p>
+            <small>Steve Jobs</small>
+        </blockquote>
+
+        ${helpers.list_team(c.team)}
+
+        <h2>Advisors</h2>
+        </br>
+        ${helpers.list_team(c.advisors)}
+
+    </div>
+    
+</%def>
+
