@@ -32,7 +32,7 @@
     <div class="section-wrapper">
         <div class="browse">
             %if ('user' in session and c.user.id == c.authuser.id) or c.isAdmin:
-                <div ng-init="updateGeoLinks(); dashboardFullName='${c.user['name']}'">
+                <div ng-init="dashboardFullName='${c.user['name']}'; greetingMsg='${c.user['greetingMsg']}'; fullName='${c.user['name']}'; websiteDesc='${c.user['websiteDesc']}'; postalCode='${c.user['postalCode']}'; updateGeoLinks();";>
                     <h3 class="section-header">{{fullName}}</h3>
                     <p><a href="{{cityURL}}">{{cityTitle}}</a>, <a href="{{stateURL}}">{{stateTitle}}</a>, <a href="{{countryURL}}">{{countryTitle}}</a>
                 </div>

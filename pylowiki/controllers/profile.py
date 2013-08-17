@@ -56,6 +56,7 @@ class ProfileController(BaseController):
                 if c.user.id == c.authuser.id or c.isAdmin:
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
+            log.info("in profile before action is %s"%action)
 
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
@@ -278,19 +279,8 @@ class ProfileController(BaseController):
                 c.admin = True
             else:
                 c.admin = False
-            c.pendingFacilitators = []
-            fList = facilitatorLib.getFacilitatorsByUser(c.user)
-            for f in fList:
-                if 'pending' in f and f['pending'] == '1':
-                    c.pendingFacilitators.append(f)
-
-            listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-            c.pendingListeners = []
-            for l in listenerList:
-                if 'pending' in l and l['pending'] == '1':
-                    c.pendingListeners.append(l)
-                    
-            return render('/derived/6_profile.bootstrap')
+                
+            return render('/derived/6_profile_edit.bootstrap')
         else:
             abort(404)
 
