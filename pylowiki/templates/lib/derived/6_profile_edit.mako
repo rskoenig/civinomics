@@ -183,6 +183,13 @@
 
 <%def name="profileMessages()">
     <table class="table table-condensed table-hover">
+        % if len(c.messages) == 0:
+            <div class="spacer"></div>
+            <div class="alert">
+              <button type="button" class="close" data-dismiss="alert">&times;</button>
+              <strong>Hey there!</strong> You don't have any messages yet. You'll receive messages when people reply to your posts, invite you to join a workshop, etc.
+            </div>
+        % endif
         % for message in c.messages:
             <%
                 rowClass = ''

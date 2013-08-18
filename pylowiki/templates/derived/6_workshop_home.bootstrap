@@ -15,7 +15,7 @@
         </div>
       </div> <!-- /.section-wrapper -->
 
-      <div class="section-wrapper">
+      <div class="section-wrapper" id="vote">
           <div class="browse">
              <h4 class="section-header smaller"> Vote ${lib_6.createNew("ideas", 'small')}
              </h4>
