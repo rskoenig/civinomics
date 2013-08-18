@@ -2,6 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace file="/lib/derived/6_profile.mako" name="helpers" />
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+<%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
 <%!
     from pylowiki.lib.db.user import isAdmin
 %>
@@ -14,6 +15,7 @@
                 <ul class="nav nav-tabs" id="profileTabs">
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
                     <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
+                    <li><a href="#tab-photos" data-toggle="tab" class="green green-hover">My Pictures</a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if isAdmin(c.authuser.id) and c.user.id != c.authuser.id:
@@ -28,7 +30,7 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-activity">
                         ${helpers.showMemberActivity(c.rawActivity)}
-                    </div>
+                    </div><!-- tab-pane -->
                     <div class="tab-pane" id="tab-workshops">
                         ${helpers.inviteCoFacilitate()}
                         <table class="table table-hover table-condensed">
@@ -47,10 +49,13 @@
                         % endfor
                         </tbody>
                         </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    </div><!-- tab-pane -->
+                    <div class="tab-pane" id="tab-photos">
+                        ${photos.myPictures()}
+                    </div><!-- tab-pane -->
+                </div><!-- tab-content -->
+            </div><!-- tabbable -->
+        </div><!-- span8 -->
         <div class="span4">
             ${dashboard.profileDashboard()}
         </div><!--/.span4-->
