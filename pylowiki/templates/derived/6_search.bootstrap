@@ -2,7 +2,7 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%! 
     import locale
-    locale.setlocale(locale.LC_ALL, 'en_US')
+    locale.setlocale(locale.LC_ALL, 'en_US.utf8')
 %>
 
 <div class="spacer"></div>
