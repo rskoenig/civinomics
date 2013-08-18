@@ -56,7 +56,6 @@ class ProfileController(BaseController):
                 if c.user.id == c.authuser.id or c.isAdmin:
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
-            log.info("in profile before action is %s"%action)
 
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url

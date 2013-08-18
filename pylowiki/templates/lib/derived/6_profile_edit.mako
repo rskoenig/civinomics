@@ -50,9 +50,6 @@
                 <div class="span3">
                     <div class="section-wrapper">
                         <div class="browse">
-                            <div style="text-align: center">
-                                <h4 class="section-header smaller">Edit Profile</h4>
-                            </div><!-- center -->
                             <ul class="nav nav-pills nav-stacked">
                             <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Info
                             </a></li>
