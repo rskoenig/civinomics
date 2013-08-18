@@ -711,7 +711,7 @@
     %>
 </%def>
 
-<%def name="geoDropdown()">
+<%def name="geoDropdown(*args)">
     <%
         outOfScope = False
         if 'user' in session:
@@ -729,7 +729,17 @@
                             ]
     %>
     % if 'user' in session:
-      <div class="btn-group pull-right left-space">
+      % if 'navBar' in args:
+        ${myGov(scopeMapping)}
+      % else:
+        ${geoButton(scopeMapping)}
+      % endif
+
+    % endif
+</%def>
+
+<%def name="geoButton(scopeMapping)">
+  <div class="btn-group pull-right left-space">
         <button class="btn dropdown-toggle" data-toggle="dropdown">
           Search by Region
           <span class="caret"></span>
@@ -756,8 +766,24 @@
             % endfor
         </ul>
       </div>
-    % endif
 </%def>
+
+<%def name="myGov(scopeMapping)">
+  
+  <li class="dropdown">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">MyGov<b class="caret"></b></a>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+        % for scopeLevel in scopeMapping:
+            <li>
+                <a ${self._geoWorkshopLink(c.authuser_geo, depth = scopeLevel[0]) | n}>${scopeLevel[1]}</a>
+            </li>
+          % endfor
+      </ul>
+  </li>
+</%def>
+
+
+
 
 <%def name="outOfScope()">
     <%
