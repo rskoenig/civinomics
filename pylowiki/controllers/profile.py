@@ -23,6 +23,7 @@ import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.message          as messageLib
+import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.images              as imageLib
 
@@ -157,7 +158,12 @@ class ProfileController(BaseController):
                         c.ideas.append(c.rawActivity['items'][itemCode])
                     elif c.rawActivity['items'][itemCode]['objType'] == 'comment':
                         c.comments.append(c.rawActivity['items'][itemCode])
-
+        
+        c.photos = []
+        photos = photoLib.getUserPhotos(c.user)
+        if photos:
+            c.photos = photos
+        
         return render("/derived/6_profile.bootstrap")
 
     def showUserMessages(self, id1, id2, id3 = ''):
@@ -508,6 +514,102 @@ class ProfileController(BaseController):
             return json.dumps(jsonResponse)
         else:
             abort(404)
+            
+    @h.login_required
+    def photoUploadHandler(self, id1, id2):
+        """
+            Ideally:  
+            1) User selects image, gets presented with aspect-ratio constrained selection.
+            2) User adjusts centering and dimensions, hits 'start'
+            3) Process image - detailed below
+        
+            Grab the uploaded file.  Hash and save the original first.  Then process.
+            Processing means:
+            1) Check to ensure it is an image (should be done in the hash + save step)
+            2) Check for square dimensions.  If not square, crop.  Do not save the image here, just pass on the image object.
+            3) If necessary, resize the dimensions of the image to 1200px x 1200px.  Save the final image here.
+            
+            The client expects a json-encoded string with the following format:
+            
+            {"files": [
+              {
+                "name": "picture1.jpg",
+                "size": 902604,
+                "url": "http:\/\/example.org\/files\/picture1.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture1.jpg",
+                "delete_type": "DELETE"
+              },
+              {
+                "name": "picture2.jpg",
+                "size": 841946,
+                "url": "http:\/\/example.org\/files\/picture2.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture2.jpg",
+                "delete_type": "DELETE"
+              }
+            ]}
+        """
+        if c.authuser.id != c.user.id:
+            abort(404)
+        
+        requestKeys = request.params.keys()
+        log.info('got %s'%requestKeys)
+        title = "Sample Title"
+        description = "Sample Description"
+        tags = "notags"
+        scope = "noscope"
+        
+        log.info("got title %s description %s and scope %s"%(title, description, scope))
+        # first make sure the title, description, tag and location are set
+        if 'files[]' in requestKeys:
+            file = request.params['files[]']
+            filename = file.filename
+            file = file.file
+            image = imageLib.openImage(file)
+            if not image:
+                abort(404) # Maybe make this a json response instead
+            imageHash = imageLib.generateHash(filename, c.authuser)
+            
+            # make the photo object
+            photo = photoLib.Photo(c.authuser, title, description, tags, scope)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = photo)
+            
+            width = min(image.size)
+            x = 0
+            y = 0
+            if 'width' in requestKeys:
+                width = int(request.params['width'])
+            if 'x' in requestKeys:
+                x = int(request.params['x'])
+            if 'y' in requestKeys:
+                y = int(request.params['y'])
+            dims = {'x': x, 
+                    'y': y, 
+                    'width':width,
+                    'height':width}
+            clientWidth = -1
+            clientHeight = -1
+            if 'clientWidth' in requestKeys:
+                clientWidth = request.params['clientWidth']
+            if 'clientHeight' in requestKeys:
+                clientHeight = request.params['clientHeight']
+            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
+            image = imageLib.resizeImage(image, imageHash, 600, 600)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
+            image = imageLib.resizeImage(image, imageHash, 200, 200)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
+            
+            jsonResponse =  {'files': [
+                                {
+                                    'name':filename,
+                                    'thumbnail_url':'/images/photos/%s/photo/%s.png' %(c.authuser['directoryNum_avatar'], imageHash)
+                                }
+                            ]}
+            return json.dumps(jsonResponse)
+        else:
+            abort(404)
+       
         
     @h.login_required
     def setImageSource(self, id1, id2):

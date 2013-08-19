@@ -6,15 +6,14 @@ import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic as wc
 from pylons import config
 import pylowiki.lib.db.generic      as generic
-import pylowiki.lib.utils           as utils
-import pylowiki.lib.images          as imageLib 
+import pylowiki.lib.utils           as utils 
 
 log = logging.getLogger(__name__)
 
 # Getters
-def getPhoto(slideID, deleted = '0'):
+def getUserPhotos(user, deleted = '0'):
     try:
-        return meta.Session.query(Thing).filter_by(id = slideID).filter_by(objType = 'photo').filter(Thing.data.any(wc('deleted', deleted))).one()
+        return meta.Session.query(Thing).filter_by(objType = 'photo').filter(Thing.data.any(wc('userCode', user['urlCode']))).filter(Thing.data.any(wc('deleted', deleted))).all()
     except:
         return False
 
@@ -24,28 +23,16 @@ def deletePhoto( photo ):
     commit(photo)
 
 # Object
-def Photo(owner, album, title, description, filename, image):
-    image = imageLib.openImage(image)
-    if not image:
-        abort(404)
+def Photo(owner, title, description, tags, scope):
     p = Thing('photo', owner.id)
-    generic.linkChildToParent(p, album)
+    generic.linkChildToParent(p, owner)
     commit(p)
     p['urlCode'] = utils.toBase62(p)
-        
-    imageHash = imageLib.generateHash(filename, p)
-    image = imageLib.saveImage(image, imageHash, 'slide', 'orig', thing = p)
-    image = imageLib.resizeImage(image, imageHash, 1200, 1200, preserveAspectRatio = True)
-    image = imageLib.saveImage(image, imageHash, 'slide', 'slideshow')
-    image = imageLib.resizeImage(image, imageHash, 128, 128, preserveAspectRatio = True)
-    image = imageLib.saveImage(image, imageHash, 'slide', 'thumbnail')
-
-        
-    # finally
-    p['pictureHash'] = imageHash
+       
     p['title'] = title
     p['description'] = description
-    p['filename'] = filename
+    p['tags'] = tags
+    p['scope'] = scope
     p['deleted'] = u'0'
     p['disabled'] = u'0'
     p['format'] = u'png'
