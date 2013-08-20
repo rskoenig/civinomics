@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 import logging
+import urllib2
 
 from pylons import request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylons import config
+from pylowiki.lib.db.geoInfo import geoDeurlify, getPostalInfo, getCityInfo, getCountyInfo, getStateInfo, getCountryInfo, getGeoScope, getGeoTitles, getWorkshopScopes
 
 from pylowiki.lib.base import BaseController, render
+import pylowiki.lib.db.activity     as activityLib
+import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
@@ -147,31 +151,98 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.searchType = "region"
-        geoScope = self.query.split('|')
+        geoScope = self.query.split('|') 
+        baseUrl = config['site_base_url']
+        # removes the / if there is one
+        if baseUrl[-1] == "/":
+            baseUrl = baseUrl[:-1]
+
         if geoScope[2] == '0':
             level = 'earth'
             name = 'all'
             c.searchQuery = 'Earth'
+            flag = baseUrl + "/images/flags/" + level + ".gif"
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+            c.population = 7172450000
+            c.medianAge = 28.4
+            c.personsHousehold = 4
+            
         elif geoScope[4] == '0':
             level = geoScope[2]
             name = level
-            c.searchQuery = "Country of " + utils.geoDeurlify(geoScope[2])
+            c.searchQuery = "" + utils.geoDeurlify(geoScope[2])
+            flag = baseUrl + "/images/flags/country/" + geoScope[2] + ".gif"
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+            geoInfo = getCountryInfo(geoScope[2]) 
+            c.population = geoInfo['Country_population']
+            c.medianAge = geoInfo['Country_median_age']
+            c.personsHousehold = geoInfo['Country_persons_per_household']
+            
         elif geoScope[6] == '0':
             level = geoScope[4]
             name = level
             c.searchQuery = "State of " + utils.geoDeurlify(geoScope[4])
+            flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '.gif'
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+            geoInfo = getStateInfo(geoScope[4], geoScope[2]) 
+            c.population = geoInfo['Population']
+            c.medianAge = geoInfo['Population_Median']
+            c.personsHousehold = geoInfo['Average_Household_Size']
+            
         elif geoScope[8] == '0':
             level = geoScope[6]
             name = level
             c.searchQuery = "County of " + utils.geoDeurlify(geoScope[6])
+            flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '/counties/' + geoScope[6] + '.gif'
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+            county = geoDeurlify(geoScope[6])
+            geoInfo = getCountyInfo(county, geoScope[4], geoScope[2])
+            c.population = geoInfo['Population']
+            c.medianAge = geoInfo['Population_Median']
+            c.personsHousehold = geoInfo['Average_Household_Size']
+
         elif geoScope[9] == '0':
             level = geoScope[8]
             name = level
             c.searchQuery = "City of " + utils.geoDeurlify(geoScope[8])
+            flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '/counties/' + geoScope[6] + '/cities/' + geoScope[8] + '.gif'
+            try:
+                f = urllib2.urlopen(urllib2.Request(flag))
+                c.flag = flag
+            except:
+                c.flag = '/images/flags/generalFlag.gif'
+            city = geoDeurlify(geoScope[8])
+            geoInfo = getCityInfo(city, geoScope[4], geoScope[2]) 
+            c.population = geoInfo['Population']
+            c.medianAge = geoInfo['Population_Median']
+            c.personsHousehold = geoInfo['Average_Household_Size']
+
         else:
             level = geoScope[9]
             name = level
             c.searchQuery = "Postal Code of " + utils.geoDeurlify(geoScope[9])
+            c.flag = '/images/flags/generalFlag.gif'
+            geoInfo = getPostalInfo(geoScope[9]) 
+            c.population = geoInfo['Population']
+            c.medianAge = geoInfo['MedianAge']
+            c.personsHousehold = geoInfo['PersonsPerHousehold']
+
         c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')
     
@@ -188,6 +259,7 @@ class SearchController(BaseController):
         for p in people:
             entry = {}
             entry['name'] = p['name']
+            entry['greetingMsg'] = p['greetingMsg']
             entry['hash'] = md5(p['email']).hexdigest()
             entry['urlCode'] = p['urlCode']
             entry['url'] = p['url']
@@ -229,8 +301,8 @@ class SearchController(BaseController):
             entry['description'] = w['description']
             entry['urlCode'] = w['urlCode']
             entry['url'] = w['url']
-            entry['activity'] = w['numPosts']
-            entry['bookmarks'] = w['numBookmarks']
+            entry['activity'] = len(activityLib.getActivityForWorkshop(w['urlCode']))
+            entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             
@@ -280,6 +352,8 @@ class SearchController(BaseController):
             entry['text'] = r['text']
             entry['urlCode'] = r['urlCode']
             entry['url'] = r['url']
+            entry['link']= r['link']
+            entry['type']= r['type']
             entry['addedAs'] = r['addedAs']
             #entry['domain'] = r['domain']
             #entry['tld'] = r['tld']
@@ -371,7 +445,7 @@ class SearchController(BaseController):
                 continue
             entry = {}
             entry['title'] = idea['title']
-            entry['voteCount'] = int(idea['ups']) - int(idea['downs'])
+            entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
             entry['urlCode'] = idea['urlCode']
             entry['url'] = idea['url']
             entry['addedAs'] = idea['addedAs']

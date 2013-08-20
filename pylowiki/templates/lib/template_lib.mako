@@ -33,7 +33,7 @@
                     <ul class="nav pull-right" id="profileAvatar">
                         <%
                             wSelected = mSelected = pSelected = aSelected = hSelected = ''
-                            if "/workshops" in session._environ['PATH_INFO']:
+                            if "/workshops" in session._environ['PATH_INFO'] and not 'geo' in session._environ['PATH_INFO']:
                                 wSelected = "active"
                             elif "/messages" in session._environ['PATH_INFO']:
                                 mSelected = "active"
@@ -56,6 +56,7 @@
                                 %>
                                 <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
                             </li>
+                            ${lib_6.geoDropdown('navBar')}
                         % endif
                             <li class="${wSelected}">
                                 <a href="/workshops">Workshops</a>
