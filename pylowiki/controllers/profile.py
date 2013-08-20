@@ -168,6 +168,12 @@ class ProfileController(BaseController):
 
     def showUserMessages(self, id1, id2, id3 = ''):
         return render("/derived/6_messages.bootstrap")
+        
+    def showUserPhoto(self, id1, id2, id3):
+        if not id3 or id3 == '':
+            abort(404)
+        c.photo = photoLib.getPhoto(id3)
+        return render("/derived/6_profile_photo.bootstrap")
     
     def showUserResources(self, id1, id2):
         # Called when visiting /profile/urlCode/url

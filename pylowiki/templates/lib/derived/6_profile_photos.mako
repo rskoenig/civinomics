@@ -64,11 +64,12 @@
     <div class="row-fluid">
         <ul class="thumbnails">
         % for photo in c.photos:
-            <li class="span4 wrap-workshop">
+            <li class="span4 wrap-workshop centered">
             <div class="viewport">
             <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
             <div style="background-image:url('${imgSrc}');"></div>
-            </div>
+            </div><br />
+            <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a>
             </li>
         % endfor
         </ul>

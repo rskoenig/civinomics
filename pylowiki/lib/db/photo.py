@@ -17,6 +17,13 @@ def getUserPhotos(user, deleted = '0'):
     except:
         return False
 
+def getPhoto(photoCode):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'photo').filter(Thing.data.any(wc('photoCode', photoCode))).one()
+    except:
+        return False       
+
+
 # Setters
 def deletePhoto( photo ):
     photo['deleted'] = '1'
