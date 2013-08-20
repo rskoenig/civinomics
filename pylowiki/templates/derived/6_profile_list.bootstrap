@@ -4,7 +4,7 @@
 <%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
 
 <div class="spacer"></div>
-<div class="row-fluid">
+<div class="row-fluid" ng-controller="ProfileEditController">
     <div class="span8">
     <%
         if c.listingType == 'discussions' or c.listingType == 'resources' or c.listingType == 'ideas':
