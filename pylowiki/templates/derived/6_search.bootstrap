@@ -261,7 +261,7 @@
 <%def name="extraScripts()">
     <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
    <%
-        backgroundImage = '"http://om.files.wordpress.com/2013/06/20130614-125906.jpg"'
+        backgroundImage = '"/images/grey.png"'
 
    %>
    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
