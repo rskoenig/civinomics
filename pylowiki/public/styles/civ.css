@@ -1640,3 +1640,20 @@ text-align: right;
   width: 150px;
   margin: 0 auto 10px;
 }
+
+.darkened-bg{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 120%;
+  width: 100%;
+  z-index: -1;
+  opacity: 0.2;
+  background-image: -o-linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+  background-image: -moz-linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgb(135,135,135)), color-stop(0.62, rgb(0,0,0)));
+  background-image: -webkit-linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+  background-image: -ms-linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+  background-image: linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+
+}

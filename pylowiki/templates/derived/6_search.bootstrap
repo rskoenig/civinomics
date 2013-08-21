@@ -4,7 +4,7 @@
     import locale
     locale.setlocale(locale.LC_ALL, 'en_US')
 %>
-
+<div class="darkened-bg"></div> 
 <div class="spacer"></div>
 <div class="row-fluid" ng-controller="SearchCtrl">
     <div class="span9">
@@ -25,6 +25,7 @@
             </div><!-- span6 -->
         </div>
         <div class="tabbable tabs-left civ-search">
+
             <ul class="nav nav-tabs">
                 <li ng-class="showingWorkshops.class">
                     <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
@@ -239,7 +240,7 @@
 <%def name="extraScripts()">
     <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
    <%
-        backgroundImage = '"/images/grey.png"'
+        backgroundImage = '"http://om.files.wordpress.com/2013/06/20130614-125906.jpg"'
 
    %>
    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
