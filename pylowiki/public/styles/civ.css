@@ -1599,6 +1599,7 @@ li.thumbnail-gallery{
 .well.search-side-bar{
   opacity: 0.9;
   padding: 10px;
+  min-width: 220px;
 }
 
 .table.plain, tr.plain > td{
@@ -1630,10 +1631,12 @@ text-align: right;
 
 .form-horizontal.stats .controls{
   margin-left: 100px;
+  padding-top: 5px;
 }
 
 .form-horizontal.stats .controls span{
-  padding-top: 5px;
+  
+
 }
 
 .thumbnail.flag{
