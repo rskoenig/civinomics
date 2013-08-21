@@ -25,7 +25,6 @@
             </div><!-- span6 -->
         </div>
         <div class="tabbable tabs-left civ-search">
-
             <ul class="nav nav-tabs">
                 <li ng-class="showingWorkshops.class">
                     <a href="#workshops" data-toggle="tab" class="green green-hover" ng-click="searchWorkshops()">
