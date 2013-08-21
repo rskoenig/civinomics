@@ -730,7 +730,7 @@
     %>
     % if 'user' in session:
       % if 'navBar' in args:
-        ${myGov(scopeMapping)}
+        ${myPlaces(scopeMapping)}
       % else:
         ${geoButton(scopeMapping)}
       % endif
@@ -768,10 +768,10 @@
       </div>
 </%def>
 
-<%def name="myGov(scopeMapping)">
+<%def name="myPlaces(scopeMapping)">
   
   <li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">MyGov<b class="caret"></b></a>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Places<b class="caret"></b></a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
         % for scopeLevel in scopeMapping:
             <li>

@@ -1592,6 +1592,7 @@ li.thumbnail-gallery{
 .well.search-side-bar{
   opacity: 0.9;
   padding: 10px;
+  min-width: 220px;
 }
 
 .table.plain, tr.plain > td{
@@ -1623,13 +1624,32 @@ text-align: right;
 
 .form-horizontal.stats .controls{
   margin-left: 100px;
-}
-
-.form-horizontal.stats .controls span{
   padding-top: 5px;
 }
 
 .thumbnail.flag{
   width: 150px;
   margin: 0 auto 10px;
+}
+
+.darkened-bg{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 110%;
+  width: 100%;
+  z-index: -1;
+  opacity: 0.2;
+  background-image: -o-linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+  background-image: -moz-linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.24, rgb(135,135,135)), color-stop(0.62, rgb(0,0,0)));
+  background-image: -webkit-linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+  background-image: -ms-linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+  background-image: linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
+
+}
+
+hr.stats{
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
