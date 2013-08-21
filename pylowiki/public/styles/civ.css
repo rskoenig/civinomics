@@ -1657,3 +1657,8 @@ text-align: right;
   background-image: linear-gradient(bottom, rgb(135,135,135) 24%, rgb(0,0,0) 62%);
 
 }
+
+hr.stats{
+  margin-top: 5px;
+  margin-bottom: 5px;
+}

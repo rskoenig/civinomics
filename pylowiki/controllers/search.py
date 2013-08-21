@@ -231,12 +231,15 @@ class SearchController(BaseController):
         else:
             level = geoScope[9]
             name = level
-            c.searchQuery = "Postal Code of " + utils.geoDeurlify(geoScope[9])
+            c.searchQuery = "Postal Code " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
             geoInfo = getPostalInfo(geoScope[9]) 
             c.population = geoInfo['Population']
-            c.medianAge = geoInfo['MedianAge']
+            c.medianAge = geoInfo['MedianAge']            
             c.personsHousehold = geoInfo['PersonsPerHousehold']
+            c.incomePerHousehold = geoInfo['IncomePerHousehold']
+            c.avgHouseValue = geoInfo['AverageHouseValue']
+            c.bizAnnualPayroll = geoInfo['BusinessAnnualPayroll']
 
         c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')

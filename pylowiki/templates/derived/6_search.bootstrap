@@ -227,6 +227,27 @@
                         <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
                     </div>
                 </div>
+                % if 'Postal Code' in c.searchQuery:
+                    <hr class="stats">
+                    <div class="control-group">
+                        <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                        <div class="controls">
+                            <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                        <div class="controls">
+                            <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                        <div class="controls">
+                            <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                        </div>
+                    </div>
+                % endif
             </form>
         </div>
 
