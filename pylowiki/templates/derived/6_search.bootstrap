@@ -129,7 +129,7 @@
                                     <h4 class="media-heading"><a class="listed-item-title" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
                                         {{resource.title}}
                                     </a></h4>
-                                    <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
+                                    <a class="break" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
 
                                     <ul class="horizontal-list iconListing">
                                         <li>
