@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging, time
 
-from pylons import request, response, session, tmpl_context as c, url
+from pylons import config, request, response, session, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
 from pylons import config
 
@@ -22,8 +22,14 @@ import mechanize
 import base64
 import hashlib
 import hmac
+import urllib as urllib
 import urllib2 as urllib2
 import simplejson as json
+
+import collections
+import ConfigParser
+import random
+import binascii
 
 log = logging.getLogger(__name__)
 
@@ -75,6 +81,154 @@ class LoginController(BaseController):
         #    log.info("signature data: %s" % data[piece])
 
         return data
+
+    def create_auth_header(self, parameters):
+        """For all collected parameters, order them and create auth header"""
+        ordered_parameters = {}
+        ordered_parameters = collections.OrderedDict(sorted(parameters.items()))
+        auth_header = (
+            '%s="%s"' % (k, v) for k, v in ordered_parameters.iteritems())
+        val = "OAuth " + ', '.join(auth_header)
+        return val
+
+    def calculate_signature(self, signing_key, signature_base_string):
+        """Calculate the signature using SHA1"""
+        hashed = hmac.new(signing_key, signature_base_string, hashlib.sha1)
+
+        sig = binascii.b2a_base64(hashed.digest())[:-1]
+
+        return LoginController.escape(self, sig)
+
+
+    def create_signing_key(self, oauth_consumer_secret, oauth_token_secret=None):
+        """Create key to sign request with"""
+        signing_key = LoginController.escape(self, oauth_consumer_secret) + '&'
+
+        if oauth_token_secret is not None:
+            signing_key += LoginController.escape(self, oauth_token_secret)
+
+        return signing_key
+
+
+    def stringify_parameters(self, parameters):
+        """Orders parameters, and generates string representation of parameters"""
+        output = ''
+        ordered_parameters = {}
+        ordered_parameters = collections.OrderedDict(sorted(parameters.items()))
+
+        counter = 1
+        for k, v in ordered_parameters.iteritems():
+            output += escape(str(k)) + '=' + escape(str(v))
+            if counter < len(ordered_parameters):
+                output += '&'
+                counter += 1
+
+        return output
+
+    def escape(self, s):
+        """Percent Encode the passed in string"""
+        return urllib.quote(s, safe='~')
+
+    def collect_parameters(self, oauth_parameters, status, url_parameters):
+        """Combines oauth, url and status parameters"""
+        #Add the oauth_parameters to a temp hash
+        temp = oauth_parameters.copy()
+
+        #Add the status, if passed in.  Used for posting a new tweet
+        if status is not None:
+            temp['status'] = status
+
+        if url_parameters is not None:
+            #Add the url_parameters to the temp hash
+            for k, v in url_parameters.iteritems():
+                temp[k] = v
+
+        return temp
+
+    def generate_signature(self, method, url, oauth_parameters, oauth_consumer_key, oauth_consumer_secret, oauth_token_secret=None, status=None, url_parameters=None):
+        """Create the signature base string"""
+
+        #Combine parameters into one hash
+        temp = LoginController.collect_parameters(self, oauth_parameters, status, url_parameters)
+
+        #Create string of combined url and oauth parameters
+        parameter_string = LoginController.stringify_parameters(self, temp)
+
+        #Create your Signature Base String
+        signature_base_string = ( method.upper() + '&' + LoginController.escape(self, str(url)) + '&' + LoginController.escape(self, parameter_string) )
+
+        #Get the signing key
+        signing_key = LoginController.create_signing_key(self, oauth_consumer_secret, oauth_token_secret)
+
+        return LoginController.calculate_signature(self, signing_key, signature_base_string)
+
+    def get_nonce(self):
+        """Unique token generated for each request"""
+        n = base64.b64encode(''.join([str(random.randint(0, 9)) for i in range(24)]))
+        return n
+
+    def get_oauth_parameters(self, consumer_key, access_token):
+        """Returns OAuth parameters needed for making request"""
+        oauth_parameters = {
+            'oauth_timestamp': str(int(time.time())),
+            'oauth_signature_method': "HMAC-SHA1",
+            'oauth_version': "1.0",
+            'oauth_token': access_token,
+            'oauth_nonce': LoginController.get_nonce(self),
+            'oauth_consumer_key': consumer_key
+        }
+
+        return oauth_parameters
+
+    def twtLoginRedirect(self):
+        # assemble an oauth post for twitter
+        url = config['twitter.requestTokenUrl']
+        method = "POST"
+        # this is for doing a get at twitter to create a post, not needed here
+        #url_parameters = {
+        #    'exclude_replies': 'true'
+        #}
+
+        #configuration hash for the keys
+        keys = {
+            "twitter_consumer_secret": config['twitter.consumerSecret'],
+            "twitter_consumer_key": config['twitter.consumerKey'],
+            "access_token": config['twitter.accessToken'],
+            "access_token_secret": config['twitter.accessTokenSecret']
+        }
+
+        oauth_parameters = LoginController.get_oauth_parameters(
+            self,
+            keys['twitter_consumer_key'],
+            keys['access_token']
+        )
+
+        oauth_parameters['oauth_signature'] = LoginController.generate_signature(
+            self,
+            method,
+            url,
+            oauth_parameters,
+            keys['twitter_consumer_key'],
+            keys['twitter_consumer_secret'],
+            keys['access_token_secret']
+        )
+
+        headers = {'Authorization': LoginController.create_auth_header(self, oauth_parameters)}
+
+        # this is how the code from 
+        # http://mkelsey.com/2013/05/01/authorizing-and-signing-a-twitter-api-call-using-python/
+        # is supposed to end, but in this case we're doing a post redirect
+        # url += '?' + urllib.urlencode(url_parameters)
+        #r = requests.post(url, headers=headers)
+        #print json.dumps(json.loads(r.text), sort_keys=False, indent=4)
+
+        log.info(url)
+        return redirect(requests.post(url, headers=headers))
+
+
+    #def twtLoginHandler(self):
+        # handles the data sent back from a login/auth with twitter
+        # https://api.twitter.com/oauth/authenticate?oauth_token=NESTV7Yhvk5JBwdpBjF3c8KbKdBVJXjRKB3vbKwvxY
 
     def fbAuthCheckEmail(self, id1):
         # this receives an email from the fb javascript auth checker, figures out what to do
