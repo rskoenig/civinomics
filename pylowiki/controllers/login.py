@@ -223,13 +223,14 @@ class LoginController(BaseController):
         r = requests.post(url, headers=headers)
         print json.dumps(json.loads(r.text), sort_keys=False, indent=4)
 
-        #log.info(url)
+        log.info(r)
         #return redirect(requests.post(url, headers=headers))
 
 
-    #def twtLoginHandler(self):
+    def twtLoginHandler(self):
         # handles the data sent back from a login/auth with twitter
         # https://api.twitter.com/oauth/authenticate?oauth_token=NESTV7Yhvk5JBwdpBjF3c8KbKdBVJXjRKB3vbKwvxY
+        log.info("twitter said hi back!")
 
     def fbAuthCheckEmail(self, id1):
         # this receives an email from the fb javascript auth checker, figures out what to do
