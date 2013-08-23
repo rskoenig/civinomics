@@ -108,6 +108,15 @@ color: #999;
    right:12px;
 }
 
+.corp-sidebar{
+  min-width: 130px;
+  margin-top:10px;
+}
+
+.corp-sidebar li a{
+  width: 130px;
+}
+
 .civ-search{
   margin-top: 30px;
 }
