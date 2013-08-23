@@ -170,6 +170,7 @@ class LoginController(BaseController):
     def get_oauth_parameters(self, consumer_key, access_token):
         """Returns OAuth parameters needed for making request"""
         oauth_parameters = {
+            'oauth_callback' : config['twitter.callbackurl'],
             'oauth_timestamp': str(int(time.time())),
             'oauth_signature_method': "HMAC-SHA1",
             'oauth_version': "1.0",
@@ -219,11 +220,11 @@ class LoginController(BaseController):
         # http://mkelsey.com/2013/05/01/authorizing-and-signing-a-twitter-api-call-using-python/
         # is supposed to end, but in this case we're doing a post redirect
         # url += '?' + urllib.urlencode(url_parameters)
-        #r = requests.post(url, headers=headers)
-        #print json.dumps(json.loads(r.text), sort_keys=False, indent=4)
+        r = requests.post(url, headers=headers)
+        print json.dumps(json.loads(r.text), sort_keys=False, indent=4)
 
-        log.info(url)
-        return redirect(requests.post(url, headers=headers))
+        #log.info(url)
+        #return redirect(requests.post(url, headers=headers))
 
 
     #def twtLoginHandler(self):
