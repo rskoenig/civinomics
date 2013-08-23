@@ -58,6 +58,27 @@
                 </li>
             </ul>
             <div class="tab-content">
+                <div class="row-fluid" style="color: #ffffff;" ng-cloak>
+                    <form class="form-search">
+                        Filter: <input type="text" class="input-small search-query" ng-model="query">
+                        Sort by: 
+                        <select ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
+                            <option value="-date">Recent</option>
+                            <option value="title">Alphabetical</option>
+                            <option value="-numComments">Most Comments</option>
+                            <option value="-voteCount">Most Votes</option>
+                        </select>
+                        <select ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
+                            <option value="-startTime">Start Time</option>
+                            <option value="-bookmarks">Bookmarks</option>
+                            <option value="-activity">Posts</option>
+                        </select>
+                        <select ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
+                            <option value="-date">Recent</option>
+                            <option value="title">Alphabetical</option>
+                        </select>
+                    </form>
+                </div>
                 <div class="loading-civ" ng-show="loading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-4x"></i>
                 </div>
@@ -82,7 +103,7 @@
                 </div>
                 <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
                     <table class="table plain">
-                        <tr ng-repeat="w in workshops" class="plain"><td>
+                        <tr ng-repeat="w in workshops | filter:query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span3">
                                     <a href = '/workshops/{{w.urlCode}}/{{w.url}}'>
@@ -106,21 +127,26 @@
                 </div>
                 <div id="users" class="tab-pane" ng-class="showingPeople.class" ng-show="showingPeople.show">
                     <table class="table plain">
-                        <tr ng-repeat = "p in people" class="plain"><td>
+                        <tr ng-repeat = "p in people | filter:query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
-                                <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
-                                    <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
-                                </a>
-                                <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
-                                <p class="grey">{{p.greetingMsg}}</p>
-                                <p>from <a href="{{p.cityURL}}" class="orange oreange-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="orange orange-hover">{{p.stateTitle}}</a></p>
+                                <div class="span2">
+                                    <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
+                                        <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
+                                    </a>
+                                </div>
+                                <div class="span10">
+                                    <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
+                                    <p class="grey">{{p.greetingMsg}}</p>
+                                    <small><p>from <a href="{{p.cityURL}}" class="orange oreange-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="orange orange-hover">{{p.stateTitle}}</a><br>
+                                        joined {{p.date}}</p></small>
+                                </div>
                             </div>
                         </td></tr>
                     </table>
                 </div>
                 <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
                     <table class="table plain">
-                        <tr ng-repeat = "resource in resources" class="plain"><td>
+                        <tr ng-repeat = "resource in resources | filter: query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span1">
                                    <i class="icon-{{resource.type}} icon-3x"></i>
@@ -147,7 +173,7 @@
                 </div>
                 <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
                     <table class="table plain">                             
-                        <tr ng-repeat = "discussion in discussions" class="plain"><td>
+                        <tr ng-repeat = "discussion in discussions | filter:query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span1">
                                    <i class="icon-comments icon-3x"></i>
@@ -176,7 +202,7 @@
                 </div>
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
-                        <tr ng-repeat = "idea in ideas" class="plain"><td>
+                        <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="media-body">
                                     <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">

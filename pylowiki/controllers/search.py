@@ -266,6 +266,8 @@ class SearchController(BaseController):
             entry['cityTitle'] = userGeo['cityTitle']
             entry['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
             entry['stateTitle'] = userGeo['stateTitle']
+            thing = userLib.getUserByCode(p['urlCode'])
+            entry['date'] = thing.date.strftime('%Y-%m-%d at %H:%M:%S')
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -303,6 +305,7 @@ class SearchController(BaseController):
             entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
+            entry['startTime'] = w['startTime']
             
             tagList = []
             for title in w['workshop_category_tags'].split('|'):
@@ -365,6 +368,8 @@ class SearchController(BaseController):
             entry['authorURL'] = u['url']
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
+            thing = resourceLib.getResource(r['urlCode'],r['url'])
+            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -413,6 +418,8 @@ class SearchController(BaseController):
             entry['authorURL'] = u['url']
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
+            thing = discussionLib.getDiscussion(d['urlCode'])
+            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -456,6 +463,8 @@ class SearchController(BaseController):
             entry['authorURL'] = u['url']
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
+            thing = ideaLib.getIdea(idea['urlCode'])
+            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})

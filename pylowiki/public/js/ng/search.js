@@ -61,6 +61,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.noResult = false;
     $scope.noQuery = false;
     $scope.objType = 'workshops';
+    $scope.orderProp = '-date';
     
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments'};
     
