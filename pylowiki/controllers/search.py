@@ -176,10 +176,11 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
-            geoInfo = getCountryInfo(geoScope[2]) 
-            c.population = geoInfo['Country_population']
-            c.medianAge = geoInfo['Country_median_age']
-            c.personsHousehold = geoInfo['Country_persons_per_household']
+            c.geoInfo = getCountryInfo(geoScope[2]) 
+            if c.geoInfo:
+                c.population = c.geoInfo['Country_population']
+                c.medianAge = c.geoInfo['Country_median_age']
+                c.personsHousehold = c.geoInfo['Country_persons_per_household']
             
         elif geoScope[6] == '0':
             level = geoScope[4]
@@ -191,10 +192,11 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
-            geoInfo = getStateInfo(geoScope[4], geoScope[2]) 
-            c.population = geoInfo['Population']
-            c.medianAge = geoInfo['Population_Median']
-            c.personsHousehold = geoInfo['Average_Household_Size']
+            c.geoInfo = getStateInfo(geoScope[4], geoScope[2]) 
+            if c.geoInfo:
+                c.population = c.geoInfo['Population']
+                c.medianAge = c.geoInfo['Population_Median']
+                c.personsHousehold = c.geoInfo['Average_Household_Size']
             
         elif geoScope[8] == '0':
             level = geoScope[6]
@@ -207,10 +209,11 @@ class SearchController(BaseController):
             except:
                 c.flag = '/images/flags/generalFlag.gif'
             county = geoDeurlify(geoScope[6])
-            geoInfo = getCountyInfo(county, geoScope[4], geoScope[2])
-            c.population = geoInfo['Population']
-            c.medianAge = geoInfo['Population_Median']
-            c.personsHousehold = geoInfo['Average_Household_Size']
+            c.geoInfo = getCountyInfo(county, geoScope[4], geoScope[2])
+            if c.geoInfo:
+                c.population = c.geoInfo['Population']
+                c.medianAge = c.geoInfo['Population_Median']
+                c.personsHousehold = c.geoInfo['Average_Household_Size']
 
         elif geoScope[9] == '0':
             level = geoScope[8]
@@ -223,23 +226,25 @@ class SearchController(BaseController):
             except:
                 c.flag = '/images/flags/generalFlag.gif'
             city = geoDeurlify(geoScope[8])
-            geoInfo = getCityInfo(city, geoScope[4], geoScope[2]) 
-            c.population = geoInfo['Population']
-            c.medianAge = geoInfo['Population_Median']
-            c.personsHousehold = geoInfo['Average_Household_Size']
+            c.geoInfo = getCityInfo(city, geoScope[4], geoScope[2]) 
+            if c.geoInfo:
+                c.population = c.geoInfo['Population']
+                c.medianAge = c.geoInfo['Population_Median']
+                c.personsHousehold = c.geoInfo['Average_Household_Size']
 
         else:
             level = geoScope[9]
             name = level
             c.searchQuery = "Postal Code " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
-            geoInfo = getPostalInfo(geoScope[9]) 
-            c.population = geoInfo['Population']
-            c.medianAge = geoInfo['MedianAge']            
-            c.personsHousehold = geoInfo['PersonsPerHousehold']
-            c.incomePerHousehold = geoInfo['IncomePerHousehold']
-            c.avgHouseValue = geoInfo['AverageHouseValue']
-            c.bizAnnualPayroll = geoInfo['BusinessAnnualPayroll']
+            c.geoInfo = getPostalInfo(geoScope[9]) 
+            if c.geoInfo:
+                c.population = c.geoInfo['Population']
+                c.medianAge = c.geoInfo['MedianAge']            
+                c.personsHousehold = c.geoInfo['PersonsPerHousehold']
+                c.incomePerHousehold = c.geoInfo['IncomePerHousehold']
+                c.avgHouseValue = c.geoInfo['AverageHouseValue']
+                c.bizAnnualPayroll = c.geoInfo['BusinessAnnualPayroll']
 
         c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')

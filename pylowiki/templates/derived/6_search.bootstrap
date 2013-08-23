@@ -249,47 +249,53 @@
             <div class="span12">
                 <img class="thumbnail flag" src="${c.flag}">
             </div>
-            <form class="form-horizontal stats">
-                <div class="control-group">
-                    <label class="control-label grey" for="inputEmail">Population:</label>
-                    <div class="controls">
-                        <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label grey" for="inputEmail">Median Age:</label>
-                    <div class="controls">
-                        <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label grey" for="inputEmail">Persons per Household:</label>
-                    <div class="controls">
-                        <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
-                    </div>
-                </div>
-                % if 'Postal Code' in c.searchQuery:
-                    <hr class="stats">
+            % if c.geoInfo:
+                <form class="form-horizontal stats">
                     <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                        <label class="control-label grey" for="inputEmail">Population:</label>
                         <div class="controls">
-                            <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                            <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                        <label class="control-label grey" for="inputEmail">Median Age:</label>
                         <div class="controls">
-                            <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                            <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                        <label class="control-label grey" for="inputEmail">Persons per Household:</label>
                         <div class="controls">
-                            <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                            <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
                         </div>
                     </div>
-                % endif
-            </form>
+                    % if 'Postal Code' in c.searchQuery:
+                        <hr class="stats">
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                    % endif
+                </form>
+            % else:
+                <div class="span12">
+                    <em class="grey">Stats are not yet available for this region.</em>
+                </div>
+            % endif
         </div>
 
     % endif
