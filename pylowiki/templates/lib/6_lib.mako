@@ -1152,3 +1152,13 @@
     </ul> <!-- /.unstyled -->
   </div>
 </%def>
+
+<%def name="public_tag_filter()">
+  <%  categories = workshopLib.getWorkshopTagCategories() %>
+  <select class="med-width" ng-model="query">
+      <option value=''>All Tags</option>
+    % for category in sorted(categories):
+      <option value="${category}">${category}</option>
+    % endfor
+  </select>
+</%def>

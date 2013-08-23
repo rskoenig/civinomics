@@ -306,7 +306,6 @@ class SearchController(BaseController):
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             entry['startTime'] = w['startTime']
-            
             tagList = []
             for title in w['workshop_category_tags'].split('|'):
                 if title and title != '':
@@ -315,6 +314,8 @@ class SearchController(BaseController):
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
             entry['tags'] = tagList
+            thing = workshopLib.getWorkshopByCode(w['urlCode'])
+            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -341,6 +342,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
             return json.dumps({'statusCode':2})
+        titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for r in resources:
             w = generic.getThing(r['workshopCode'])
             if w['public_private'] != u'public':
@@ -370,6 +372,14 @@ class SearchController(BaseController):
             entry['authorHash'] = md5(u['email']).hexdigest()
             thing = resourceLib.getResource(r['urlCode'],r['url'])
             entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            tagList = []
+            for title in r['workshop_category_tags'].split('|'):
+                if title and title != '':
+                    tagMapping = {}
+                    tagMapping['title'] = title
+                    tagMapping['colour'] = titleToColourMapping[title]
+                    tagList.append(tagMapping)
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -396,6 +406,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(discussions) == 0:
             return json.dumps({'statusCode':2})
+        titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for d in discussions:
             w = generic.getThing(d['workshopCode'])
             if w['public_private'] != u'public':
@@ -420,6 +431,14 @@ class SearchController(BaseController):
             entry['authorHash'] = md5(u['email']).hexdigest()
             thing = discussionLib.getDiscussion(d['urlCode'])
             entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            tagList = []
+            for title in d['workshop_category_tags'].split('|'):
+                if title and title != '':
+                    tagMapping = {}
+                    tagMapping['title'] = title
+                    tagMapping['colour'] = titleToColourMapping[title]
+                    tagList.append(tagMapping)
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -442,6 +461,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(ideas) == 0:
             return json.dumps({'statusCode':2})
+        titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for idea in ideas:
             w = generic.getThing(idea['workshopCode'])
             if w['public_private'] != u'public':
@@ -465,6 +485,14 @@ class SearchController(BaseController):
             entry['authorHash'] = md5(u['email']).hexdigest()
             thing = ideaLib.getIdea(idea['urlCode'])
             entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            tagList = []
+            for title in idea['workshop_category_tags'].split('|'):
+                if title and title != '':
+                    tagMapping = {}
+                    tagMapping['title'] = title
+                    tagMapping['colour'] = titleToColourMapping[title]
+                    tagList.append(tagMapping)
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})

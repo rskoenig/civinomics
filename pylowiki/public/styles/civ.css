@@ -1685,3 +1685,7 @@ hr.stats{
     -moz-hyphens: auto;
       hyphens: auto;
 }
+
+.med-width{
+  width: 150px;
+}
