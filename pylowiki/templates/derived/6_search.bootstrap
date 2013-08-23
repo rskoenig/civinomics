@@ -58,7 +58,7 @@
                 </li>
             </ul>
             <div class="tab-content">
-                <div class="row-fluid" style="color: #ffffff;" ng-cloak>
+                <div class="row-fluid" style="color: #ffffff; padding-bottom: 10px;" ng-cloak>
                     <form class="form-search">
                         Filter: <input type="text" class="input-small search-query" ng-model="query">
                         Sort by: 
@@ -73,6 +73,9 @@
                             <option value="-bookmarks">Bookmarks</option>
                             <option value="-activity">Posts</option>
                         </select>
+                        <a class="btn btn-success" href="/workshop/display/create/form" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
+                            <i class="icon-plus"> New Workshop</i>
+                        </a>
                         <select ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
                             <option value="-date">Recent</option>
                             <option value="title">Alphabetical</option>
