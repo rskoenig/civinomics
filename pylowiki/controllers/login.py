@@ -26,7 +26,7 @@ import urllib as urllib
 import urllib2 as urllib2
 import simplejson as json
 
-import collections
+from ordereddict import OrderedDict
 import ConfigParser
 import random
 import binascii
@@ -85,7 +85,7 @@ class LoginController(BaseController):
     def create_auth_header(self, parameters):
         """For all collected parameters, order them and create auth header"""
         ordered_parameters = {}
-        ordered_parameters = collections.OrderedDict(sorted(parameters.items()))
+        ordered_parameters = OrderedDict(sorted(parameters.items()))
         auth_header = (
             '%s="%s"' % (k, v) for k, v in ordered_parameters.iteritems())
         val = "OAuth " + ', '.join(auth_header)
@@ -114,11 +114,11 @@ class LoginController(BaseController):
         """Orders parameters, and generates string representation of parameters"""
         output = ''
         ordered_parameters = {}
-        ordered_parameters = collections.OrderedDict(sorted(parameters.items()))
+        ordered_parameters = OrderedDict(sorted(parameters.items()))
 
         counter = 1
         for k, v in ordered_parameters.iteritems():
-            output += escape(str(k)) + '=' + escape(str(v))
+            output += LoginController.escape(self, str(k)) + '=' + LoginController.escape(self, str(v))
             if counter < len(ordered_parameters):
                 output += '&'
                 counter += 1
