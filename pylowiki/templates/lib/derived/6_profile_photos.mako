@@ -64,14 +64,30 @@
     <div class="row-fluid">
         <ul class="thumbnails">
         % for photo in c.photos:
-            <li class="span4 wrap-workshop centered">
-            <div class="viewport">
+            <li class="span4 centered">
             <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
-            <div style="background-image:url('${imgSrc}');"></div>
-            </div><br />
+            <img src="${imgSrc}" class="wrap-photo">
+            <br />
             <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a>
             </li>
         % endfor
         </ul>
     </div><!-- row-fluid -->
+</%def>
+
+<%def name="showPhoto()">
+    <div class="row-fluid">
+        <div class="span8 offset2">
+            <% imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/photo/" + c.photo['pictureHash_photos'] + ".png" %>
+            <img src="${imgSrc}" class="wrap-photo"><br />
+            <div class="spacer"></div>
+            <div class="centered">
+                ${c.photo['title']}<br />
+            </div><!-- centered -->
+            <div class="spacer"></div>
+            ${c.photo['description']}
+        </div>
+        
+        
+    </div>
 </%def>

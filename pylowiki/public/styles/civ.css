@@ -387,6 +387,11 @@ ul.activity > li {
     margin-bottom: 15px;
 }
 
+.wrap-photo{
+    box-shadow: 0 0px 4px #111;
+    border: 1px solid #005d28;
+}
+
 .wrap-workshop{
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
@@ -397,7 +402,7 @@ ul.activity > li {
     border: 1px solid #005d28;
     margin-top:5px;
     position:relative;
-    min-height: 265px;
+    min-height: 256px;
 }
 
 .wrap-workshop:hover{
