@@ -20,9 +20,7 @@
                 
             </div><!-- span6 -->
             <div class="span5">
-                ${lib_6.geoDropdown()}
-                ${lib_6.public_tags()}
-            </div><!-- span6 -->
+            </div><!-- span5 -->
         </div>
         <div class="tabbable tabs-left civ-search">
             <ul class="nav nav-tabs">
