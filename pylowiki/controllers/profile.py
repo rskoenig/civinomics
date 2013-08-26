@@ -176,6 +176,14 @@ class ProfileController(BaseController):
     def showUserMessages(self, id1, id2, id3 = ''):
         return render("/derived/6_messages.bootstrap")
         
+    def showUserPhotos(self, id1, id2):
+        c.photos = []
+        photos = photoLib.getUserPhotos(c.user)
+        if photos:
+            c.photos = photos
+        
+        return render("/derived/6_profile_photos.bootstrap")
+        
     def showUserPhoto(self, id1, id2, id3):
         if not id3 or id3 == '':
             abort(404)

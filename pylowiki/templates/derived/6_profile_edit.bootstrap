@@ -6,8 +6,8 @@
     from pylowiki.lib.db.user import isAdmin
 %>
 ##<div ng-app="ngUploadApp">
-    <!-- inline style kludge to handle fixed nav bar -->
-    <div class="row-fluid" ng-controller="ProfileEditController" style="padding-top: 10px;">
+    <div class="spacer"></div>
+    <div class="row-fluid" ng-controller="ProfileEditController">
         <div class="span8">
             <div class="tabbable">
                 <ul class="nav nav-tabs" id="editTabs">
