@@ -7,9 +7,10 @@
 <div id="wrap">
   ${helpers.mainNavbar()}
   <div class="container main">
+    <div class="spacer"></div>
     <div class="row-fluid">
-      <div class="tabbable tabs-left civ-search">
-          <ul class="nav nav-tabs">
+      <div class="tabbable tabs-left">
+          <ul class="nav nav-tabs corp-sidebar">
               <li
                 % if c.pagetype == "about":
                    class ="active"

@@ -20,9 +20,7 @@
                 
             </div><!-- span6 -->
             <div class="span5">
-                ${lib_6.geoDropdown()}
-                ${lib_6.public_tags()}
-            </div><!-- span6 -->
+            </div><!-- span5 -->
         </div>
         <div class="tabbable tabs-left civ-search">
             <ul class="nav nav-tabs">
@@ -58,6 +56,34 @@
                 </li>
             </ul>
             <div class="tab-content">
+                <div class="row-fluid" style="color: #ffffff; padding-bottom: 10px;" ng-cloak>
+                    <form class="form-search">
+                        Filter: <input type="text" class="input-small search-query" ng-model="query">
+                        Sort by: 
+                        <select class="med-width" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
+                            <option value="-date">Recent</option>
+                            <option value="title">Alphabetical</option>
+                            <option value="-numComments">Most Comments</option>
+                            <option value="-voteCount">Most Votes</option>
+                        </select>
+                        <select class="med-width" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
+                            <option value="-date">Date Created</option>
+                            <option value="-startTime">Start Time</option>
+                            <option value="-bookmarks">Bookmarks</option>
+                            <option value="-activity">Posts</option>
+                        </select>
+                        <select class="med-width" ng-model="orderProp" ng-show="showingPeople.show" ng-cloak>
+                            <option value="-date">Join Date</option>
+                            <option value="title">Alphabetical</option>
+                        </select>
+                        <span ng-hide="showingPeople.show" ng-cloak>
+                            ${lib_6.public_tag_filter()}
+                        </span>
+                        <a class="btn btn-success" href="/workshop/display/create/form" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
+                            <i class="icon-plus"> New Workshop</i>
+                        </a>
+                    </form>
+                </div>
                 <div class="loading-civ" ng-show="loading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-4x"></i>
                 </div>
@@ -82,7 +108,7 @@
                 </div>
                 <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
                     <table class="table plain">
-                        <tr ng-repeat="w in workshops" class="plain"><td>
+                        <tr ng-repeat="w in workshops | filter:query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span3">
                                     <a href = '/workshops/{{w.urlCode}}/{{w.url}}'>
@@ -106,21 +132,26 @@
                 </div>
                 <div id="users" class="tab-pane" ng-class="showingPeople.class" ng-show="showingPeople.show">
                     <table class="table plain">
-                        <tr ng-repeat = "p in people" class="plain"><td>
+                        <tr ng-repeat = "p in people | filter:query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
-                                <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
-                                    <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
-                                </a>
-                                <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
-                                <p class="grey">{{p.greetingMsg}}</p>
-                                <p>from <a href="{{p.cityURL}}" class="orange oreange-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="orange orange-hover">{{p.stateTitle}}</a></p>
+                                <div class="span2">
+                                    <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
+                                        <img class="media-object avatar" ng-src="http://www.gravatar.com/avatar/{{p.hash}}?r=pg&d=identicon&s=200" alt="{{p.name}}" title="{{p.name}}">
+                                    </a>
+                                </div>
+                                <div class="span10">
+                                    <h4 class="media-heading"><a class="green green-hover" href="/profile/{{p.urlCode}}/{{p.url}}">{{p.name}}</a></h4>
+                                    <p class="grey">{{p.greetingMsg}}</p>
+                                    <small><p>from <a href="{{p.cityURL}}" class="orange oreange-hover">{{p.cityTitle}}</a>, <a href="{{p.stateURL}}" class="orange orange-hover">{{p.stateTitle}}</a><br>
+                                        joined {{p.date}}</p></small>
+                                </div>
                             </div>
                         </td></tr>
                     </table>
                 </div>
                 <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
                     <table class="table plain">
-                        <tr ng-repeat = "resource in resources" class="plain"><td>
+                        <tr ng-repeat = "resource in resources | filter: query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span1">
                                    <i class="icon-{{resource.type}} icon-3x"></i>
@@ -129,7 +160,7 @@
                                     <h4 class="media-heading"><a class="listed-item-title" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">
                                         {{resource.title}}
                                     </a></h4>
-                                    <a href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
+                                    <a class="break" href="/workshop/{{resource.workshopCode}}/{{resource.workshopURL}}/resource/{{resource.urlCode}}/{{resource.url}}">{{resource.link}}</a>
 
                                     <ul class="horizontal-list iconListing">
                                         <li>
@@ -140,6 +171,9 @@
                                         <li><i class="icon-chevron-sign-up"></i> Net votes ({{resource.voteCount}})</li>
                                         <li><i class="icon-comment"></i> Comments ({{resource.numComments}})</li>
                                     </ul>
+                                    <p class="hidden"> <small>Tags:</small>
+                                        <span ng-repeat="tag in discussion.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                    </p>
                                 </div>
                             </div>
                         </td></tr>
@@ -147,7 +181,7 @@
                 </div>
                 <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
                     <table class="table plain">                             
-                        <tr ng-repeat = "discussion in discussions" class="plain"><td>
+                        <tr ng-repeat = "discussion in discussions | filter:query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span1">
                                    <i class="icon-comments icon-3x"></i>
@@ -166,6 +200,9 @@
                                             <i class="icon-comment"></i> Comments ({{discussion.numComments}})
                                         </li>
                                     </ul>
+                                    <p class="hidden"> <small>Tags:</small>
+                                        <span ng-repeat="tag in discussion.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                    </p>
                                     <p class="no-bottom">
                                         <span class="left-space"><a href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{discussion.authorHash}}?r=pg&d=identicon&s=200" alt="{{discussion.authorName}}" title="{{discussion.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{discussion.authorCode}}/{{discussion.authorURL}}">{{discussion.authorName}}</a></small></span>
                                     </p>
@@ -176,7 +213,7 @@
                 </div>
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
-                        <tr ng-repeat = "idea in ideas" class="plain"><td>
+                        <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="media-body">
                                     <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
@@ -191,6 +228,9 @@
                                             </a>
                                         </li>
                                     </ul>
+                                    <p class="hidden"> <small>Tags:</small>
+                                        <span ng-repeat="tag in idea.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                    </p>
                                     <p class="no-bottom">
                                         <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>
                                     </p>
@@ -207,47 +247,53 @@
             <div class="span12">
                 <img class="thumbnail flag" src="${c.flag}">
             </div>
-            <form class="form-horizontal stats">
-                <div class="control-group">
-                    <label class="control-label grey" for="inputEmail">Population:</label>
-                    <div class="controls">
-                        <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label grey" for="inputEmail">Median Age:</label>
-                    <div class="controls">
-                        <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
-                    </div>
-                </div>
-                <div class="control-group">
-                    <label class="control-label grey" for="inputEmail">Persons per Household:</label>
-                    <div class="controls">
-                        <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
-                    </div>
-                </div>
-                % if 'Postal Code' in c.searchQuery:
-                    <hr class="stats">
+            % if c.geoInfo:
+                <form class="form-horizontal stats">
                     <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                        <label class="control-label grey" for="inputEmail">Population:</label>
                         <div class="controls">
-                            <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                            <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                        <label class="control-label grey" for="inputEmail">Median Age:</label>
                         <div class="controls">
-                            <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                            <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                        <label class="control-label grey" for="inputEmail">Persons per Household:</label>
                         <div class="controls">
-                            <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                            <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
                         </div>
                     </div>
-                % endif
-            </form>
+                    % if 'Postal Code' in c.searchQuery:
+                        <hr class="stats">
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                    % endif
+                </form>
+            % else:
+                <div class="span12">
+                    <em class="grey">Stats are not yet available for this region.</em>
+                </div>
+            % endif
         </div>
 
     % endif
