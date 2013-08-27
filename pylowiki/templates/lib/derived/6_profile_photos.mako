@@ -10,7 +10,7 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="myPictures()">
+<%def name="uploadPhoto()">
     % if 'user' in session and (c.authuser.id == c.user.id):
         <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
             <div class="row-fluid fileupload-buttonbar">
@@ -60,19 +60,6 @@
             </tbody></table>
         </form>
     % endif
-                
-    <div class="row-fluid">
-        <ul class="thumbnails">
-        % for photo in c.photos:
-            <li class="span4 centered">
-            <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
-            <img src="${imgSrc}" class="wrap-photo">
-            <br />
-            <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a>
-            </li>
-        % endfor
-        </ul>
-    </div><!-- row-fluid -->
 </%def>
 
 <%def name="showPhoto()">

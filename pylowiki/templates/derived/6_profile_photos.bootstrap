@@ -5,7 +5,8 @@
 <%namespace file="/lib/derived/6_profile_photos.mako" name="photos" />
 
 <div class="spacer"></div>
-<div class="row-fluid" ng-controller="ProfileEditController">
+<div class="row-fluid" ng-controller="ProfileEditController" ng-init="fullName = '${c.user['name']}'; ">
+        ##var thisForm = {member_name:$scope.fullName, $scope.email, $scope.postalCode, $scope.greetingMsg, $scope.websiteLink, $scope.websiteDesc
     <div class="span8">
         <div class="tabbable">
             <ul class="nav nav-tabs" id="editTabs">
@@ -14,7 +15,23 @@
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab-photos">
-                    ${photos.myPictures()}
+                    ${photos.uploadPhoto()}
+                    % for photo in c.photos:
+                        <div class="row-fluid">
+                            <div class="span1">
+                                ${lib_6.upDownVote(photo)}
+                            </div><!-- span1 -->
+                            <div class="span3">
+                                <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
+                                <img src="${imgSrc}" class="wrap-photo">
+                            </div><!-- span3 -->
+                            <div class="span8">
+                                <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a><br />
+                                Added: ${photo.date}
+                            </div><!-- span8 -->
+                        </div><!-- row-fluid -->
+                        <div class="spacer"></div>
+                    % endfor
                 </div><!-- tab-photos -->
             </div><!-- tab-content -->
         </div><!-- tabbable -->
@@ -28,6 +45,7 @@
     <script type="text/javascript">
         $('.hoverTip').tooltip();
     </script>
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
     <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
@@ -41,4 +59,32 @@
             });
         });
     </script>
+    % if 'user' in session:
+        % if c.user.id == c.authuser.id or isAdmin(c.authuser.id):
+            <script src="${lib_6.fingerprintFile('/js/geo.js')}" type="text/javascript"></script>
+            
+            
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.ui.widget.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/load-image.min.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/canvas-to-blob.min.js')}"></script>
+            ##<script src="${lib_6.fingerprintFile('/js/vendor/blueimp/bootstrap-image-gallery.min.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.iframe-transport.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-process.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-resize.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-validate.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/jquery.fileupload-angular.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/blueimp/app.js')}"></script>
+            <script src="${lib_6.fingerprintFile('/js/vendor/jquery.Jcrop.js')}"></script>
+        % endif 
+    % endif
+</%def>
+
+<%def name="extraStyles()">
+    <link rel="stylesheet" href="/styles/vendor/jquery.Jcrop.css">
+    <link rel="stylesheet" href="/styles/vendor/blueimp.css">
+</%def>
+
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
 </%def>

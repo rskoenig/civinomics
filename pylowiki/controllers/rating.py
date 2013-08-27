@@ -11,6 +11,7 @@ import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.idea         as ideaLib
+import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.comment      as commentLib
 
@@ -41,6 +42,8 @@ class RatingController(BaseController):
             thing = commentLib.getCommentByCode(code)
         elif action == 'rateIdea':
             thing = ideaLib.getIdea(code)
+        elif action == 'ratePhoto':
+            thing = photoLib.getPhoto(code)
         
         if thing['disabled'] == '1':
             # Should only get triggered when the user posts directly and bypasses the UI
@@ -73,6 +76,10 @@ class RatingController(BaseController):
 
     @h.login_required
     def rateIdea(self, code, amount):
+        return redirect(session['return_to'])
+        
+    @h.login_required
+    def ratePhoto(self, code, amount):
         return redirect(session['return_to'])
 
     ########################################################################

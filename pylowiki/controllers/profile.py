@@ -166,11 +166,6 @@ class ProfileController(BaseController):
         followers = followLib.getUserFollowers(c.user)
         c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
         
-        c.photos = []
-        photos = photoLib.getUserPhotos(c.user)
-        if photos:
-            c.photos = photos
-        
         return render("/derived/6_profile.bootstrap")
 
     def showUserMessages(self, id1, id2, id3 = ''):
@@ -181,6 +176,28 @@ class ProfileController(BaseController):
         photos = photoLib.getUserPhotos(c.user)
         if photos:
             c.photos = photos
+            
+        c.privs = {}
+            
+        # we need to do this for the voting and comments
+        c.privs['admin'] = False
+        # Workshop facilitator
+        c.privs['facilitator'] = False
+        # Like a facilitator, but with no special privs
+        c.privs['listener'] = False
+        # Logged in member with privs to add objects
+        c.privs['participant'] = False
+        # Not logged in, privs to visit this specific workshop
+        c.privs['guest'] = False
+        # Not logged in, visitor privs in all public workshops
+        c.privs['visitor'] = True
+        # is a demo workshop
+        c.privs['demo'] = False
+        if 'user' in session:
+            c.privs['admin'] = userLib.isAdmin(c.authuser.id)
+            c.privs['participant'] = True
+            c.privs['guest'] = False
+            c.privs['visitor'] = False
         
         return render("/derived/6_profile_photos.bootstrap")
         
@@ -617,15 +634,15 @@ class ProfileController(BaseController):
             if 'clientHeight' in requestKeys:
                 clientHeight = request.params['clientHeight']
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
-            image = imageLib.resizeImage(image, imageHash, 600, 600)
+            image = imageLib.resizeImage(image, imageHash, 480, 480)
             image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
-            image = imageLib.resizeImage(image, imageHash, 200, 200)
+            image = imageLib.resizeImage(image, imageHash, 160, 160)
             image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
             
             jsonResponse =  {'files': [
                                 {
                                     'name':filename,
-                                    'thumbnail_url':'/images/photos/%s/photo/%s.png' %(photo['directoryNum_photos'], imageHash)
+                                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(photo['directoryNum_photos'], imageHash)
                                 }
                             ]}
             return json.dumps(jsonResponse)

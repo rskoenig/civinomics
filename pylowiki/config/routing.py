@@ -221,6 +221,7 @@ def make_map():
     map.connect('/rateFacilitation/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateFacilitation', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/resource/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateResource', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/discussion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateDiscussion', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/photo/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'ratePhoto', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/comment/{code}/{amount}{end:/?}', controller = 'rating', action = 'rateComment', code = '{code}', amount = '{amount}')
     map.connect('/rate/idea/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateIdea', code = '{code}', url = '{url}', amount = '{amount}')
     

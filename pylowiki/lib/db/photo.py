@@ -37,6 +37,7 @@ def Photo(owner, title, description, tags, scope):
     p['urlCode'] = utils.toBase62(p)
        
     p['title'] = title
+    p['url'] = utils.urlify(title[:20])
     p['description'] = description
     p['tags'] = tags
     p['scope'] = scope
