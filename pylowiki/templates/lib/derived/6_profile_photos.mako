@@ -40,7 +40,7 @@
                     <td data-ng-switch="" on="!!file.thumbnail_url">
                         <div class="preview" data-ng-switch-when="true">
                             <% tagList = workshopLib.getWorkshopTagCategories() %>
-                            <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/{{file.image_hash}/update/handler" method="POST">
+                            <form name="scope" id="scope" action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/{{file.image_hash}/update/handler" method="POST">
                             <div class="row-fluid">
                                 <div class="span3">
                                     <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
@@ -54,7 +54,115 @@
                                     <textarea name="description">Sample Description</textarea>
 
                                     <label for="scope" class="control-label" required>Scope:</label>
-                                    <input type="text" name="scope" value="||0||0||0||0|0">
+                                    <div class="row-fluid"><span id="countrySelect">
+                                        <div class="span1"></div>
+                                        <div class="span2">Country:</div>
+                                        <div class="span9">
+                                            <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
+                                            <option value="0">Select a country</option>
+                                            <option value="United States" ${countrySelected}>United States</option>
+                                            </select>
+                                        </div><!-- span9 -->
+                                        </span><!-- countrySelect -->
+                                    </div><!-- row-fluid -->
+                                    <div class="row-fluid"><span id="stateSelect">
+                                        % if c.country != "0":
+                                            <div class="span1"></div>
+                                            <div class="span2">State:</div>
+                                            <div class="span9">
+                                                <select name="geoTagState" id="geoTagState" class="geoTagState" onChange="geoTagStateChange(); return 1;">
+                                                <option value="0">Select a state</option>
+                                                % for state in states:
+                                                    % if state != 'District of Columbia':
+                                                        % if c.state == state['StateFullName']:
+                                                            <% stateSelected = "selected" %>
+                                                        % else:
+                                                            <% stateSelected = "" %>
+                                                        % endif
+                                                        <option value="${state['StateFullName']}" ${stateSelected}>${state['StateFullName']}</option>
+                                                    % endif
+                                                % endfor
+                                                </select>
+                                            </div><!-- span9 -->
+                                        % else:
+                                            or leave blank if your photo is specific to the entire planet.
+                                        % endif
+                                    </span></div><!-- row-fluid -->
+                                    <div class="row-fluid"><span id="countySelect">
+                                        % if c.state != "0":
+                                            <% counties = getCountyList("united-states", c.state) %>
+                                            <% cityMessage = "or leave blank if your photo is specific to the entire state." %>
+                                            <div class="span1"></div>
+                                            <div class="span2">County:</div>
+                                            <div class="span9">
+                                                <select name="geoTagCounty" id="geoTagCounty" class="geoTagCounty" onChange="geoTagCountyChange(); return 1;">
+                                                <option value="0">Select a county</option>
+                                                % for county in counties:
+                                                    % if c.county == county['County'].title():
+                                                        <% countySelected = "selected" %>
+                                                    % else:
+                                                        <% countySelected = "" %>
+                                                    % endif
+                                                    <option value="${county['County'].title()}" ${countySelected}>${county['County'].title()}</option>
+                                                % endfor
+                                                </select>
+                                            </div><!-- span9 -->
+                                        % else:
+                                            <% cityMessage = "" %>
+                                            ${countyMessage}
+                                        % endif
+                                    </span></div><!-- row -->
+                                    <div class="row-fluid"><span id="citySelect">
+                                        % if c.county != "0":
+                                            <% cities = getCityList("united-states", c.state, c.county) %>
+                                            <% postalMessage = "or leave blank if your photo is specific to the entire county." %>
+                                            <div class="span1"></div>
+                                            <div class="span2">City:</div>
+                                            <div class="span9">
+                                                <select name="geoTagCity" id="geoTagCity" class="geoTagCity" onChange="geoTagCityChange(); return 1;">
+                                                <option value="0">Select a city</option>
+                                                % for city in cities:
+                                                    % if c.city == city['City'].title():
+                                                        <% citySelected = "selected" %>
+                                                    % else:
+                                                        <% citySelected = "" %>
+                                                    % endif
+                                                    <option value="${city['City'].title()}" ${citySelected}>${city['City'].title()}</option>
+                                                % endfor
+                                                </select>
+                                            </div><!-- span9 -->
+                                        % else:
+                                            <% postalMessage = "" %>
+                                            ${cityMessage}
+                                        % endif
+                                    </span></div><!-- row-fluid -->
+                                    <div class="row-fluid"><span id="postalSelect">
+                                        % if c.city != "0":
+                                            <% postalCodes = getPostalList("united-states", c.state, c.county, c.city) %>
+                                            <% underPostalMessage = "or leave blank if your photo is specific to the entire city." %>
+                                            <div class="span1"></div>
+                                            <div class="span2">Postal Code:</div>
+                                            <div class="span9">
+                                                <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
+                                                <option value="0">Select a postal code</option>
+                                                % for pCode in postalCodes:
+                                                    % if c.postal == str(pCode['ZipCode']):
+                                                        <% postalSelected = "selected" %>
+                                                    % else:
+                                                        <% postalSelected = "" %>
+                                                    % endif
+                                                    <option value="${pCode['ZipCode']}" ${postalSelected}>${pCode['ZipCode']}</option>
+                                                % endfor
+                                                </select>
+                                            </div><!-- span9 -->
+                                        % else:
+                                            <% underPostalMessage = "" %>
+                                            ${postalMessage}
+                                        % endif
+                                    </span></div><!-- row-fluid -->
+                                    <div class="row-fluid">
+                                        <span id="underPostal">${underPostalMessage}</span><br />
+                                    </div><!-- row-fluid -->
                                     <fieldset>
                                 </div><!-- span4 -->
                                 <div class="span4">

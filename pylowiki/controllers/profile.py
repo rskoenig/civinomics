@@ -178,6 +178,12 @@ class ProfileController(BaseController):
         if photos:
             c.photos = photos
             
+        c.country = '0'
+        c.state = '0'
+        c.county = '0'
+        c.city = '0'
+        c.postal = '0'
+            
         c.privs = {}
             
         # we need to do this for the voting and comments
