@@ -667,11 +667,13 @@ class ProfileController(BaseController):
         if 'title' in request.params:
             title = request.params['title']
         else:
+            log.info('no title')
             abort(404)
             
         if 'description' in request.params:
             description = request.params['description']
         else:
+            log.info('no description')
             abort(404)
             
             
@@ -680,14 +682,47 @@ class ProfileController(BaseController):
             
             newTagStr = '|'
             for tag in categoryTags:
-                if tag not in currentTags:
-                    wchanges = 1
                 newTagStr = newTagStr + tag + '|'
-                
-        if 'scope' in request.params:
-            scope = request.params['scope']
         else:
+            log.info('no tags')
             abort(404)
+            
+        if 'geoTagCountry' in request.params:
+            country = request.params['geoTagCountry']
+        else:
+            country = '0'
+            
+        if 'geoTagState' in request.params:
+            state = request.params['geoTagState']
+        else:
+            state = '0'
+            
+        if 'geoTagCounty' in request.params:
+            county = request.params['geoTagCounty']
+        else:
+            county = '0'
+            
+        if 'geoTagCity' in request.params:
+            city = request.params['geoTagCity']
+        else:
+            city = '0'
+
+        if 'geoTagPostal' in request.params:
+            postal = request.params['geoTagPostal']
+        else:
+            postal = '0'
+            
+        scope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' + urlify(postal)
+            
+        photo['title'] = title
+        photo['description'] = description
+        photo['tags'] = newTagStr
+        photo['scope'] = scope
+        dbHelpers.commit(photo)
+        
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photos/show"
+                
+        return redirect(returnURL)
         
         
     @h.login_required

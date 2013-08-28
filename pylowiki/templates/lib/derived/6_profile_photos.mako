@@ -39,28 +39,37 @@
                 <tbody><tr data-ng-repeat="file in queue">
                     <td data-ng-switch="" on="!!file.thumbnail_url">
                         <div class="preview" data-ng-switch-when="true">
+                            <script type="text/javascript">
+                                function setAction(imageHash) {
+                                    actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
+                                    document.getElementById('fileupload').action = actionURL;
+                                }
+                            </script>
                             <% tagList = workshopLib.getWorkshopTagCategories() %>
-                            <form name="scope" id="scope" action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/{{file.image_hash}/update/handler" method="POST">
                             <div class="row-fluid">
-                                <div class="span3">
+                                <div class="span8">
                                     <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
-                                </div><!-- span4 -->
-                                <div class="span4">
-
-                                    <fieldset>
+                                    <br />1/3 size thumbnail
+                                    <div class="spacer"></div>
                                     <label for="title" class="control-label" required>Title:</label>
                                     <input type="text" name="title" value="Sample Title">
                                     <label for="description" class="control-label" required>Description:</label>
                                     <textarea name="description">Sample Description</textarea>
 
                                     <label for="scope" class="control-label" required>Scope:</label>
+                                    <% 
+                                        countyMessage = ""
+                                        cityMessage = ""
+                                        postalMessage = ""
+                                        underPostalMessage = ""
+                                    %>
                                     <div class="row-fluid"><span id="countrySelect">
                                         <div class="span1"></div>
                                         <div class="span2">Country:</div>
                                         <div class="span9">
-                                            <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry">
-                                            <option value="0">Select a country</option>
-                                            <option value="United States" ${countrySelected}>United States</option>
+                                            <select name="geoTagCountry" id="geoTagCountry" class="geoTagCountry" onChange="geoTagCountryChange(); return 1;">
+                                            <option value="0" selected>Select a country</option>
+                                            <option value="United States">United States</option>
                                             </select>
                                         </div><!-- span9 -->
                                         </span><!-- countrySelect -->
@@ -143,7 +152,7 @@
                                             <div class="span1"></div>
                                             <div class="span2">Postal Code:</div>
                                             <div class="span9">
-                                                <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal" onChange="geoTagPostalChange(); return 1;">
+                                                <select name="geoTagPostal" id="geoTagPostal" class="geoTagPostal">
                                                 <option value="0">Select a postal code</option>
                                                 % for pCode in postalCodes:
                                                     % if c.postal == str(pCode['ZipCode']):
@@ -177,7 +186,7 @@
                                 </div><!-- span4 -->
                             </div><!-- row-fluid -->
                             <div class="row-fluid">
-                                <button class="btn btn-success" type="Submit">Submit</button>
+                                <button class="btn btn-success" type="Submit" onClick="setAction('{{file.image_hash}}'); return 1;">Submit</button>
                             </div><!-- row-fluid -->
                             </form>
                         </div><!-- preview -->
@@ -210,6 +219,10 @@
             <div class="spacer"></div>
             <div class="centered">
                 ${c.photo['title']}<br />
+                % for tag in c.photo['tags'].split('|'):
+                    ${tag} &nbsp;
+                % endfor 
+                Location: ${c.photo['scope']}<br /><br />
             </div><!-- centered -->
             <div class="spacer"></div>
             ${c.photo['description']}
