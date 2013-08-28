@@ -21,8 +21,13 @@ def getPhoto(photoCode):
     try:
         return meta.Session.query(Thing).filter_by(objType = 'photo').filter(Thing.data.any(wc('urlCode', photoCode))).one()
     except:
-        return False       
-
+        return False  
+        
+def getPhotoByHash(imageHash):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'photo').filter(Thing.data.any(wc('pictureHash_photos', imageHash))).one()
+    except:
+        return False
 
 # Setters
 def deletePhoto( photo ):

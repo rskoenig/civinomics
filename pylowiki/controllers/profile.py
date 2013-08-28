@@ -174,6 +174,7 @@ class ProfileController(BaseController):
     def showUserPhotos(self, id1, id2):
         c.photos = []
         photos = photoLib.getUserPhotos(c.user)
+        c.categories = []
         if photos:
             c.photos = photos
             
@@ -642,13 +643,46 @@ class ProfileController(BaseController):
             jsonResponse =  {'files': [
                                 {
                                     'name':filename,
-                                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(photo['directoryNum_photos'], imageHash)
+                                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(photo['directoryNum_photos'], imageHash),
+                                    'image_hash':imageHash
                                 }
                             ]}
             return json.dumps(jsonResponse)
         else:
             abort(404)
-       
+            
+    @h.login_required
+    def photoUpdateHandler(self, id1, id2, id3):
+        photo = photoLib.getPhotoByHash(id3)
+        if not photo:
+            log.info("photo hash is %s"%id3)
+            abort(404)
+        
+        if 'title' in request.params:
+            title = request.params['title']
+        else:
+            abort(404)
+            
+        if 'description' in request.params:
+            description = request.params['description']
+        else:
+            abort(404)
+            
+            
+        if 'categoryTags' in request.params:
+            categoryTags = request.params.getall('categoryTags')
+            
+            newTagStr = '|'
+            for tag in categoryTags:
+                if tag not in currentTags:
+                    wchanges = 1
+                newTagStr = newTagStr + tag + '|'
+                
+        if 'scope' in request.params:
+            scope = request.params['scope']
+        else:
+            abort(404)
+        
         
     @h.login_required
     def setImageSource(self, id1, id2):

@@ -39,7 +39,39 @@
                 <tbody><tr data-ng-repeat="file in queue">
                     <td data-ng-switch="" on="!!file.thumbnail_url">
                         <div class="preview" data-ng-switch-when="true">
-                            <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
+                            <% tagList = workshopLib.getWorkshopTagCategories() %>
+                            <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/{{file.image_hash}/update/handler" method="POST">
+                            <div class="row-fluid">
+                                <div class="span3">
+                                    <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
+                                </div><!-- span4 -->
+                                <div class="span4">
+
+                                    <fieldset>
+                                    <label for="title" class="control-label" required>Title:</label>
+                                    <input type="text" name="title" value="Sample Title">
+                                    <label for="description" class="control-label" required>Description:</label>
+                                    <textarea name="description">Sample Description</textarea>
+
+                                    <label for="scope" class="control-label" required>Scope:</label>
+                                    <input type="text" name="scope" value="||0||0||0||0|0">
+                                    <fieldset>
+                                </div><!-- span4 -->
+                                <div class="span4">
+                                    <fieldset>
+                                    Category Tags
+                                    % for tag in tagList:
+                                        <label class="checkbox">
+                                        <input type="checkbox" name="categoryTags" value="${tag}" /> ${tag}
+                                        </label>
+                                    % endfor
+                                    </fieldset>
+                                </div><!-- span4 -->
+                            </div><!-- row-fluid -->
+                            <div class="row-fluid">
+                                <button class="btn btn-success" type="Submit">Submit</button>
+                            </div><!-- row-fluid -->
+                            </form>
                         </div><!-- preview -->
                         <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
                     </td>
@@ -74,7 +106,5 @@
             <div class="spacer"></div>
             ${c.photo['description']}
         </div>
-        
-        
     </div>
 </%def>
