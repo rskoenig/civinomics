@@ -175,6 +175,7 @@ class ProfileController(BaseController):
         c.photos = []
         photos = photoLib.getUserPhotos(c.user)
         c.categories = []
+        c.categoryColors = workshopLib.getWorkshopTagColouring()
         if photos:
             c.photos = photos
             

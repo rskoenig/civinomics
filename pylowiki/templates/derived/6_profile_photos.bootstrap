@@ -33,6 +33,18 @@
                             </div><!-- span3 -->
                             <div class="span8">
                                 <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a><br />
+                                <% tags = photo['tags'].split('|') %>
+                                Tags: 
+                                % for tag in tags:
+                                    % if tag != '':
+                                        <% 
+                                            tTitle = tag.title()
+                                            colorClass = c.categoryColors[tTitle]
+                                        %>
+                                        <span class="label workshop-tag ${colorClass}">${tTitle}</span>
+                                    % endif
+                                % endfor
+                                <br />
                                 Added: ${photo.date}
                             </div><!-- span8 -->
                         </div><!-- row-fluid -->
