@@ -89,7 +89,7 @@ class CommentController(BaseController):
             elif thing.objType == 'photo':
                 log.info("thing is a photo")
                 title = ' commented on one of your pictures'
-                message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser)
+                message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
             message = genericLib.linkChildToParent(message, comment.c)
             dbHelpers.commit(message)
             log.info("after message")

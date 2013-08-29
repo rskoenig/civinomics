@@ -87,9 +87,10 @@ def Message(**kwargs):
     if 'extraInfo' in kwargs:
         extraInfo = kwargs['extraInfo']
         m['extraInfo'] = extraInfo
-        workshop = kwargs['workshop']
-        if extraInfo in ['facilitationInvite', 'listenerInvite', 'listenerSuggestion']:
-            generic.linkChildToParent(m, workshop)
+        if 'workshop' in kwargs:
+            workshop = kwargs['workshop']
+            if extraInfo in ['facilitationInvite', 'listenerInvite', 'listenerSuggestion']:
+                generic.linkChildToParent(m, workshop)
     
     m['sender']     = sender
     m['text']       = text

@@ -108,6 +108,18 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
+                        % elif message['extraInfo'] in ['commentOnPhoto']:
+                            <%
+                                comment = commentLib.getCommentByCode(message['commentCode'])
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h5 class="media-heading">${lib_6.userLink(sender)} ${message['title']}</h5>
+                                    <p><a ${lib_6.thingLinkRouter(comment, c.user, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">${comment['data']}</a></p>
+                                    <p>${message['text']}</p>
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
                         % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
                             <%
                                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
