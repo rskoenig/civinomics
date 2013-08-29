@@ -75,6 +75,11 @@ def thingURL(workshop, thing):
             return baseURL
     return baseURL + "/%s/%s/%s" %(thing.objType, thing['urlCode'], thing['url'])
     
+def profilePhotoURL(thing):
+    owner = generic.getThing(thing['userCode'])
+
+    return "/profile/%s/%s/photo/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
+    
 def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:
         if mainImage['pictureHash'] == 'supDawg':

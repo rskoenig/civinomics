@@ -283,6 +283,7 @@
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
+                            'photo':'picture',
                             'comment':'comment'}
     %>
     <table class="table table-hover table-condensed">
@@ -290,13 +291,20 @@
         
         % for itemCode in activity['itemList']:
             <% 
-                workshopCode = activity['items'][itemCode]['workshopCode']
-                workshopLink = "/workshop/" + activity['workshops'][workshopCode]['urlCode'] + "/" + activity['workshops'][workshopCode]['url']
+                if 'workshopCode' in activity['items'][itemCode]:
+                    workshopCode = activity['items'][itemCode]['workshopCode']
+                    workshopLink = "/workshop/" + activity['workshops'][workshopCode]['urlCode'] + "/" + activity['workshops'][workshopCode]['url']
+                else:
+                    workshopLink = "/foo/photo"
                 parent = False
                 if activity['items'][itemCode]['objType'] == 'comment':
                     parentCode = activity['items'][itemCode]['parentCode']
                     parentObjType = activity['parents'][parentCode]['objType']
-                    parentLink = workshopLink + "/" + parentObjType + "/" + activity['parents'][parentCode]['urlCode'] + "/" + activity['parents'][parentCode]['url']
+                    if parentObjType == 'photo':
+                        log.info('got photo in activity')
+                        parentLink = "/foo/photo"
+                    else:
+                        parentLink = workshopLink + "/" + parentObjType + "/" + activity['parents'][parentCode]['urlCode'] + "/" + activity['parents'][parentCode]['url']
                     title = lib_6.ellipsisIZE(activity['items'][itemCode]['data'], 40)
                     itemLink = parentLink + '?comment=' + itemCode
                 else:

@@ -43,15 +43,20 @@ class CommentController(BaseController):
             parentCommentCode = request.params['parentCode']
             thingCode = request.params['thingCode']
             thing = genericLib.getThing(thingCode)
+            log.info('thingCode is %s'%thingCode)
             if not thing:
                 return False
             if thing['disabled'] == '1':
                 return False
-            workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
-            if not workshop:
-                return False
-            else:
-                workshopLib.setWorkshopPrivs(workshop)
+            if 'workshopCode' in thing:
+                workshop = workshopLib.getWorkshopByCode(thing['workshopCode'])
+                if not workshop:
+                    return False
+                else:
+                    workshopLib.setWorkshopPrivs(workshop)
+            elif thing.objType == 'photo':
+                userLib.setUserPrivs()
+                log.info('thing is a photo')
             data = request.params['comment-textarea']
             data = data.strip()
             if data == '':
@@ -72,11 +77,18 @@ class CommentController(BaseController):
                 discussion = discussionLib.getDiscussion(request.params['discussionCode'])
                 parentCommentID = 0
                 parentAuthor = userLib.getUserByID(discussion.owner)
+            log.info('before comment')
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
             title = ' replied to a post you made'
             text = '(This is an automated message)'
             extraInfo = 'commentResponse'
-            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
+            log.info('after comment')
+            if 'workshopCode' in thing:
+                title = ' replied to a post you made'
+                message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
+            elif thing.objType == 'photo':
+                title = ' commented on one of your pictures'
+                message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser)
             message = genericLib.linkChildToParent(message, comment.c)
             dbHelpers.commit(message)
             alertsLib.emailAlerts(comment)
@@ -84,9 +96,11 @@ class CommentController(BaseController):
                 mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
                 if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
                     mailLib.sendCommentMail(parentAuthor['email'], parentComment, workshop, data)
-                
-            return redirect(utils.thingURL(workshop, thing))
-                
+            
+            if 'workshopCode' in thing:   
+                return redirect(utils.thingURL(workshop, thing))
+            elif thing.objType == 'photo':
+                return redirect(utils.profilePhotoURL(thing))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             return redirect(utils.thingURL(workshop, thing))
@@ -96,6 +110,11 @@ class CommentController(BaseController):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
         if c.w['public_private'] == 'public':
             c.scope = geoInfoLib.getPublicScope(c.w)
+        return render('/derived/6_permaComment.bootstrap')
+        
+    def permalinkPhoto(self, userCode, userURL, revisionCode):
+        c.revision = revisionLib.getRevisionByCode(revisionCode)
+        c.user = userLib.getUserByCode(userCode)
         return render('/derived/6_permaComment.bootstrap')
         
     ####################################################

@@ -12,6 +12,7 @@
    import pylowiki.lib.db.mainImage     as mainImageLib
    import pylowiki.lib.db.tag           as tagLib
    import pylowiki.lib.db.workshop      as workshopLib
+   import pylowiki.lib.db.photo         as photoLib
    
    from hashlib import md5
    import logging, os
@@ -480,6 +481,32 @@
    ${resourceStr | n}
 </%def>
 
+<%def name="photoLink(photo, dparent, **kwargs)">
+   <%
+        if 'directLink' in kwargs:
+            if 'noHref' in kwargs:
+                photoStr = '/profile/%s/%s/photo/show/%s/' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
+            else:
+                photoStr = 'href="/profile/%s/%s/photo/show/%s' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
+        else:
+            if 'noHref' in kwargs:
+                resourceStr = '/profile/%s/%s/photo/show/%s' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
+            else:
+                resourceStr = 'href="/profile/%s/%s/photo/show/%s' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
+        
+        photoStr += commentLinkAppender(**kwargs)
+        if 'noHref' in kwargs:
+            photoStr += ''
+        else:
+            photoStr += '"'
+
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return photoStr
+   %>
+   ${photoStr | n}
+</%def>
+
 <%def name="ideaLink(i, w, **kwargs)">
    <%
         if 'noHref' in kwargs:
@@ -530,37 +557,42 @@
    ${linkStr | n}
 </%def>
 
-<%def name="thingLinkRouter(thing, workshop, **kwargs)">
+<%def name="thingLinkRouter(thing, dparent, **kwargs)">
     <%
         if thing.objType == 'revision':
             objType = thing['objType']
         else:
             objType = thing.objType
         if objType == 'discussion':
-            return discussionLink(thing, workshop, **kwargs)
+            return discussionLink(thing, dparent, **kwargs)
         elif objType == 'resource':
-            return resourceLink(thing, workshop, **kwargs)
+            return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
-            return ideaLink(thing, workshop, **kwargs)
+            return ideaLink(thing, dparent, **kwargs)
         elif objType == 'comment':
             if thing.objType == 'revision':
-                return commentLink(thing, workshop, **kwargs)
+                return commentLink(thing, dparent, **kwargs)
             # set up for member activity feeds in profile.py getMemberPosts  
             if 'ideaCode' in thing.keys():
                 idea = ideaLib.getIdea(thing['ideaCode'])
                 if not idea:
                     return False
-                return ideaLink(idea, workshop, **kwargs)
+                return ideaLink(idea, dparent, **kwargs)
             elif 'resourceCode' in thing.keys():
                 resource = resourceLib.getResourceByCode(thing['resourceCode'])
                 if not resource:
                     return False
-                return resourceLink(resource, workshop, **kwargs)
+                return resourceLink(resource, dparent, **kwargs)
+            elif 'photoCode' in thing.keys():
+                photo = photoLib.getPhoto(thing['photoCode'])
+                if not photo:
+                    return False
+                return photoLink(photo, dparent, **kwargs)
             else:
                 discussion = discussionLib.getDiscussion(thing['discussionCode'])
                 if not discussion:
                     return False
-                return discussionLink(discussion, workshop, **kwargs)
+                return discussionLink(discussion, dparent, **kwargs)
     %>
 </%def>
 

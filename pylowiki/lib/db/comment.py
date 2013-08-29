@@ -9,6 +9,7 @@ from pylowiki.lib.db.flag import checkFlagged
 from pylowiki.lib.db.workshop import getWorkshopByCode
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.resource     as resourceLib
+import pylowiki.lib.db.photo        as photoLib
 import sqlalchemy as sa
 from time import time
 from dbHelpers import commit, with_characteristic as wc
@@ -141,15 +142,20 @@ def editComment(comment, data):
 class Comment(object):
     # parent is a Thing id
     def __init__(self, data, owner, discussion, privs, role = None, parent = 0):
-        w = getWorkshopByCode(discussion['workshopCode'])
-        if discussion['discType'] == 'idea':
-            attachedThing = ideaLib.getIdea(discussion['ideaCode'])
-        elif discussion['discType'] == 'resource':
-            attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
-        else:
-            attachedThing = None
+        attachedThing = None
         thisComment = Thing('comment', owner.id)
-        thisComment = generic.linkChildToParent(thisComment, w)
+        
+        if 'workshopCode' in discussion:
+            w = getWorkshopByCode(discussion['workshopCode'])
+            thisComment = generic.linkChildToParent(thisComment, w)
+            if discussion['discType'] == 'idea':
+                attachedThing = ideaLib.getIdea(discussion['ideaCode'])
+            elif discussion['discType'] == 'resource':
+                attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
+                
+        if 'photoCode' in discussion:
+            attachedThing = photoLib.getPhoto(discussion['photoCode'])
+            
         thisComment = generic.linkChildToParent(thisComment, discussion)
         if attachedThing is not None:
             thisComment = generic.linkChildToParent(thisComment, attachedThing)

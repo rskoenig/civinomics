@@ -54,6 +54,8 @@ def getMemberActivity(user):
     for activity in initialActivityList:
         if activity.objType == 'discussion' and activity['discType'] != 'general':
             continue
+        if activity.objType == 'comment' and 'photoCode' in activity:
+            continue
             
         # load the itemDict for this item
         itemCode = activity['urlCode']
@@ -61,7 +63,8 @@ def getMemberActivity(user):
         itemDict[itemCode] = {}
         itemDict[itemCode]['objType'] = activity.objType
         for key in itemKeys:
-            itemDict[itemCode][key] = activity[key]
+            if key in activity:
+                itemDict[itemCode][key] = activity[key]
                 
         if activity.objType == 'comment':
             key = 'data'
@@ -76,14 +79,15 @@ def getMemberActivity(user):
                 parentDict[parentCode] = {}
                 parentDict[parentCode]['objType'] = parent.objType
                 for pkey in itemKeys:
-                    parentDict[parentCode][pkey] = parent[pkey]
+                    if pkey in parent:
+                        parentDict[parentCode][pkey] = parent[pkey]
                 if parent.objType == 'comment':
                     pkey = 'data'
                 else:
                     parentDict[parentCode]['url'] = parent['url']
                     pkey = 'title'
-                    
-                parentDict[parentCode][pkey] = parent[pkey]
+                if pkey in parent:    
+                    parentDict[parentCode][pkey] = parent[pkey]
                 
         else:
             itemDict[itemCode]['url'] = activity['url']
@@ -92,7 +96,7 @@ def getMemberActivity(user):
         itemDict[itemCode][key] = activity[key]
             
         # see if we need to lookup the workshop and add it to the workshopDict
-        if activity['workshopCode'] not in workshopDict:
+        if 'workshopCode' in activity and activity['workshopCode'] not in workshopDict:
             workshopCode = activity['workshopCode']
             workshop = generic.getThing(workshopCode)
             workshopDict[workshopCode] = {}

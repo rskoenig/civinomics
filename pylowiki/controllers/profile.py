@@ -77,16 +77,19 @@ class ProfileController(BaseController):
             # ony active objects
             if c.rawActivity['items'][itemCode]['deleted'] == '0' and c.rawActivity['items'][itemCode]['disabled'] == '0':
                 # only public objects unless author or admin
-                workshopCode = c.rawActivity['items'][itemCode]['workshopCode']
-                if c.rawActivity['workshops'][workshopCode]['deleted'] == '0' and c.rawActivity['workshops'][workshopCode]['published'] == '1' and c.rawActivity['workshops'][workshopCode]['public_private'] == 'public' or (c.isUser or c.isAdmin):
-                    if c.rawActivity['items'][itemCode]['objType'] == 'resource':
-                        c.resources.append(c.rawActivity['items'][itemCode])
-                    elif c.rawActivity['items'][itemCode]['objType'] == 'discussion':
-                        c.discussions.append(c.rawActivity['items'][itemCode])
-                    elif c.rawActivity['items'][itemCode]['objType'] == 'idea':
-                        c.ideas.append(c.rawActivity['items'][itemCode])
-                    elif c.rawActivity['items'][itemCode]['objType'] == 'comment':
-                        c.comments.append(c.rawActivity['items'][itemCode])
+                if 'workshopCode' in c.rawActivity['items'][itemCode]:
+                    workshopCode = c.rawActivity['items'][itemCode]['workshopCode']
+                    if c.rawActivity['workshops'][workshopCode]['deleted'] == '0' and c.rawActivity['workshops'][workshopCode]['published'] == '1' and c.rawActivity['workshops'][workshopCode]['public_private'] == 'public' or (c.isUser or c.isAdmin):
+                        if c.rawActivity['items'][itemCode]['objType'] == 'resource':
+                            c.resources.append(c.rawActivity['items'][itemCode])
+                        elif c.rawActivity['items'][itemCode]['objType'] == 'discussion':
+                            c.discussions.append(c.rawActivity['items'][itemCode])
+                        elif c.rawActivity['items'][itemCode]['objType'] == 'idea':
+                            c.ideas.append(c.rawActivity['items'][itemCode])
+                        elif c.rawActivity['items'][itemCode]['objType'] == 'comment':
+                            c.comments.append(c.rawActivity['items'][itemCode])
+                            
+        userLib.setUserPrivs()
   
 
     def showUserPage(self, id1, id2, id3 = ''):
@@ -185,28 +188,6 @@ class ProfileController(BaseController):
         c.county = '0'
         c.city = '0'
         c.postal = '0'
-            
-        c.privs = {}
-            
-        # we need to do this for the voting and comments
-        c.privs['admin'] = False
-        # Workshop facilitator
-        c.privs['facilitator'] = False
-        # Like a facilitator, but with no special privs
-        c.privs['listener'] = False
-        # Logged in member with privs to add objects
-        c.privs['participant'] = False
-        # Not logged in, privs to visit this specific workshop
-        c.privs['guest'] = False
-        # Not logged in, visitor privs in all public workshops
-        c.privs['visitor'] = True
-        # is a demo workshop
-        c.privs['demo'] = False
-        if 'user' in session:
-            c.privs['admin'] = userLib.isAdmin(c.authuser.id)
-            c.privs['participant'] = True
-            c.privs['guest'] = False
-            c.privs['visitor'] = False
         
         return render("/derived/6_profile_photos.bootstrap")
         
