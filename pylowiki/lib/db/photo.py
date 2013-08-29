@@ -29,6 +29,27 @@ def getPhotoByHash(imageHash):
         return meta.Session.query(Thing).filter_by(objType = 'photo').filter(Thing.data.any(wc('pictureHash_photos', imageHash))).one()
     except:
         return False
+        
+def getPhotoLocation(photo):
+    scope = photo['scope'].split('|')
+    if scope[2] != '' and scope[2] != '0':
+        country = scope[2].title()
+        if scope[4] != '' and scope[4] != '0':
+            state = scope[4].title()
+            if scope[6] != '' and scope[6] != '0':
+                county = scope[6].title()
+                if scope[8] != '' and scope[8] != '0':
+                    city = scope[8].title()
+                    return country + ", State of " + state + ", County of " + county + ", City of " + city
+                else:
+                    return country + ", State of " + state + ", County of " + county
+            else:
+                return country + ", State of " + state
+        else:
+            return "Country of " + country
+    else:
+        return "Planet Earth"
+    
 
 # Setters
 def deletePhoto( photo ):

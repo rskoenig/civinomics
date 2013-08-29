@@ -7,6 +7,7 @@
 
 <%
     lib.return_to()
+    import pylowiki.lib.db.photo            as photoLib
 %>
 
 
@@ -46,6 +47,8 @@
                                 % endfor
                                 <br />
                                 Added: ${photo.date}
+                                <br />
+                                Photo Location: ${photoLib.getPhotoLocation(photo)}<br />
                             </div><!-- span8 -->
                         </div><!-- row-fluid -->
                         <div class="spacer"></div>

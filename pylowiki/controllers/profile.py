@@ -195,7 +195,7 @@ class ProfileController(BaseController):
         if not id3 or id3 == '':
             abort(404)
             
-        log.info("c.user is %s"%c.user)
+        c.categoryColors = workshopLib.getWorkshopTagColouring()
         c.photo = photoLib.getPhoto(id3)
         c.thing = c.photo
         c.discussion = discussionLib.getDiscussionForThing(c.photo)
@@ -701,6 +701,7 @@ class ProfileController(BaseController):
         scope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' + urlify(postal)
             
         photo['title'] = title
+        photo['url'] = urlify(title)
         photo['description'] = description
         photo['tags'] = newTagStr
         photo['scope'] = scope

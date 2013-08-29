@@ -5,6 +5,7 @@
     import pylowiki.lib.db.follow       as followLib
     import pylowiki.lib.db.user         as userLib
     import pylowiki.lib.db.pmember      as pmemberLib
+    import pylowiki.lib.db.photo        as photoLib
     import pylowiki.lib.utils           as utils
 %>
 
@@ -219,13 +220,25 @@
             <div class="spacer"></div>
             <div class="centered">
                 ${c.photo['title']}<br />
-                % for tag in c.photo['tags'].split('|'):
-                    ${tag} &nbsp;
-                % endfor 
-                Location: ${c.photo['scope']}<br /><br />
             </div><!-- centered -->
+            <% tags = c.photo['tags'].split('|') %>
+            Tags: 
+            % for tag in tags:
+                % if tag != '':
+                    <% 
+                        tTitle = tag.title()
+                        colorClass = c.categoryColors[tTitle]
+                    %>
+                    <span class="label workshop-tag ${colorClass}">${tTitle}</span>
+                % endif
+            % endfor
+            <br />
+            Added: ${c.photo.date}
+            <br />
+            Photo Location: ${photoLib.getPhotoLocation(c.photo)}<br />
             <div class="spacer"></div>
             ${c.photo['description']}
+            <div class="spacer"></div>
         </div>
     </div>
 </%def>
