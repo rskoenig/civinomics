@@ -13,6 +13,7 @@ from pylons import config
 import pylowiki.lib.db.activity         as activityLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
+import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
@@ -214,6 +215,8 @@ class ProfileController(BaseController):
             abort(404)
             
         c.photo = photoLib.getPhoto(id3)
+        c.thing = c.photo
+        c.discussion = discussionLib.getDiscussionForThing(c.photo)
         return render("/derived/6_profile_photo.bootstrap")
     
     def showUserResources(self, id1, id2):

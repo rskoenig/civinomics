@@ -6,6 +6,7 @@ import sqlalchemy as sa
 from dbHelpers import commit, with_characteristic as wc
 from pylons import config
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.utils           as utils 
 
 log = logging.getLogger(__name__)
@@ -52,4 +53,5 @@ def Photo(owner, title, description, tags, scope):
     p['ups'] = '0'
     p['downs'] = '0'
     commit(p)
+    d = discussionLib.Discussion(owner = owner, discType = 'photo', attachedThing = p, title = title)
     return p
