@@ -101,7 +101,12 @@ def Message(**kwargs):
     m['urlCode'] = toBase62(m)
     commit(m)
     
-    d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
+    if 'workshop' in kwargs:
+        d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
                 title = title, text = text, workshop = kwargs['workshop'], privs = kwargs['privs'], role = None)
+    else:
+        d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
+            title = title, text = text, privs = kwargs['privs'], role = None)
+        
     return m
     

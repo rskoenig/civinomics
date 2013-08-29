@@ -483,16 +483,7 @@
 
 <%def name="photoLink(photo, dparent, **kwargs)">
    <%
-        if 'directLink' in kwargs:
-            if 'noHref' in kwargs:
-                photoStr = '/profile/%s/%s/photo/show/%s/' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
-            else:
-                photoStr = 'href="/profile/%s/%s/photo/show/%s' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
-        else:
-            if 'noHref' in kwargs:
-                resourceStr = '/profile/%s/%s/photo/show/%s' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
-            else:
-                resourceStr = 'href="/profile/%s/%s/photo/show/%s' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
+        photoStr = 'href="/profile/%s/%s/photo/show/%s' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
         
         photoStr += commentLinkAppender(**kwargs)
         if 'noHref' in kwargs:

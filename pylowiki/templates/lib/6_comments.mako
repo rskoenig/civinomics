@@ -204,6 +204,7 @@
             headerClass += " facilitator"
         elif comment['addedAs'] == 'listener':
             headerClass += " listener"
+
     %>
     <div class="${headerClass}">
         <!--<button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
@@ -224,11 +225,12 @@
             % if parent:
                 % if parent.objType == 'comment':
                     % if parent['urlCode'] != comment['urlCode']:
-                        % if c.w:
-                            dparent = c.w
-                        % else:
-                            dparent = c.user
-                        % endif
+                        <% 
+                            if c.w:
+                                dparent = c.w
+                            elif c.user:
+                                dparent = c.user
+                        %>
                         <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
                     % endif
                 % endif
@@ -340,8 +342,9 @@
     <%
         if c.w:
             dparent = c.w
-        else:
+        elif c.user:
             dparent = c.user
+
         continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
     %>
     ${continueStr | n}

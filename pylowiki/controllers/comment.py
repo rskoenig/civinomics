@@ -87,10 +87,12 @@ class CommentController(BaseController):
                 title = ' replied to a post you made'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
             elif thing.objType == 'photo':
+                log.info("thing is a photo")
                 title = ' commented on one of your pictures'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser)
             message = genericLib.linkChildToParent(message, comment.c)
             dbHelpers.commit(message)
+            log.info("after message")
             alertsLib.emailAlerts(comment)
             if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):
                 mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
@@ -100,6 +102,7 @@ class CommentController(BaseController):
             if 'workshopCode' in thing:   
                 return redirect(utils.thingURL(workshop, thing))
             elif thing.objType == 'photo':
+                log.info("before redirect")
                 return redirect(utils.profilePhotoURL(thing))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.

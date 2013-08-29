@@ -195,6 +195,7 @@ class ProfileController(BaseController):
         if not id3 or id3 == '':
             abort(404)
             
+        log.info("c.user is %s"%c.user)
         c.photo = photoLib.getPhoto(id3)
         c.thing = c.photo
         c.discussion = discussionLib.getDiscussionForThing(c.photo)
