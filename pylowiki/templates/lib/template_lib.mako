@@ -71,6 +71,7 @@
                                         <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
                                         <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
                                         <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                                        <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     </ul>
                                 </li>
                             % endif

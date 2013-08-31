@@ -35,7 +35,7 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments']:
+        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         # Actions that require a workshop and a workshop child object
@@ -43,9 +43,13 @@ class AdminController(BaseController):
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
-            c.w = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
-            workshopLib.setWorkshopPrivs(c.w)
             author = userLib.getUserByID(c.thing.owner)
+            if c.thing.objType == 'photo':
+                userLib.setUserPrivs()
+            else:
+                c.w = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
+                workshopLib.setWorkshopPrivs(c.w)
+            
             
             # Check if a non-admin is attempting to mess with an admin-level item
             if userLib.isAdmin(author.id):
@@ -63,9 +67,11 @@ class AdminController(BaseController):
             
             if not c.thing:
                 abort(404)
-            workshop = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
-            if not workshop:
-                return json.dumps({'code':thingCode, 'result':'ERROR'})
+            if 'workshopCode' in c.thing:
+                workshop = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
+                if not workshop:
+                    return json.dumps({'code':thingCode, 'result':'ERROR'})
+                    
         if action in ['edit', 'enable', 'disable', 'immunify', 'adopt']:
             # Check if a non-admin is attempting to mess with an item already touched by an admin
             if c.thing['disabled'] == u'1':
@@ -74,7 +80,7 @@ class AdminController(BaseController):
                     if not userLib.isAdmin(c.authuser.id):
                         c.returnDict = json.dumps({'code':c.thing['urlCode'], 'result':'Error: cannot %s an item touched by an administrator' % action})
                         c.error = True
-        # Actions that only require the workshop
+
         if action in ['setDemo']:
             if thingCode is None:
                 abort(404)
@@ -83,8 +89,12 @@ class AdminController(BaseController):
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['enable', 'disable', 'immunify', 'adopt']:
-            if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
-                abort(404)
+            if c.thing.objType == 'photo':
+                if not userLib.isAdmin(c.authuser.id):
+                    abort(404)
+            else:
+                if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
+                    abort(404)
         if action in ['enable', 'disable', 'immunify', 'delete', 'adopt']:
             # Surely there must be a more elegant way to pass along this common variable
             if 'reason' not in request.params:
@@ -96,11 +106,18 @@ class AdminController(BaseController):
         if action in ['edit']:
             if c.thing.owner == c.authuser.id:
                 pass
+            elif c.thing.objType == 'photo' and not userLib.isAdmin(c.authuser.id):
+                abort(404)
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
-    
     def users(self):
         c.list = userLib.getAllUsers()
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def flaggedPhotos(self):
+        c.list = flagLib.getFlaggedThings('photo')
+        if not c.list:
+            c.list = []
         return render( "/derived/6_list_all_items.bootstrap" )
     
     def workshops(self):
@@ -267,8 +284,9 @@ class AdminController(BaseController):
         return json.dumps({'code':thingCode, 'result':result})
         
     def flag(self, thingCode):
-        if not workshopLib.isScoped(c.authuser, c.w):
-            return json.dumps({'code':thingCode, 'result':'Error: Unable to flag.'})
+        if c.thing.objType != 'photo':
+            if not workshopLib.isScoped(c.authuser, c.w):
+                return json.dumps({'code':thingCode, 'result':'Error: Unable to flag.'})
         if c.error:
             return c.returnDict
         if c.thing['disabled'] == '1':
@@ -286,7 +304,10 @@ class AdminController(BaseController):
                 return json.dumps({'code':thingCode, 'result':result})
             else:
                 result += ' Warning: %s has marked this as immune because %s.' % (author['email'], immunifyEvent['reason'])
-        newFlag = flagLib.Flag(c.thing, c.authuser, workshop = c.w)
+        if c.thing.objType == 'photo':
+            newFlag = flagLib.Flag(c.thing, c.authuser)
+        else:
+            newFlag = flagLib.Flag(c.thing, c.authuser, workshop = c.w)
         alertsLib.emailAlerts(newFlag)
         return json.dumps({'code':thingCode, 'result':result})
         

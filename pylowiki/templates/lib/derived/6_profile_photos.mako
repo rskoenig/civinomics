@@ -212,6 +212,41 @@
     % endif
 </%def>
 
+<%def name="photoModerationPanel(thing)">
+    <%
+        if 'user' not in session or thing.objType == 'revision':
+            return
+        flagID = 'flag-%s' % thing['urlCode']
+        editID = 'edit-%s' % thing['urlCode']
+        adminID = 'admin-%s' % thing['urlCode']
+    %>
+    <div class="btn-group">
+        % if thing['disabled'] == '0':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+        % endif
+        % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+        % endif
+        % if userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+        % endif
+
+    </div>
+    <%
+        if thing['disabled'] == '0':
+            lib_6.flagThing(thing)
+            if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id):
+                lib_6.editThing(thing)
+            if userLib.isAdmin(c.authuser.id):
+                lib_6.adminThing(thing)
+        else:
+            if userLib.isAdmin(c.authuser.id):
+                lib_6.editThing(thing)
+            if userLib.isAdmin(c.authuser.id):
+                lib_6.adminThing(thing)
+    %>
+</%def>
+
 <%def name="showPhoto()">
     <div class="row-fluid">
         <div class="span8 offset2">

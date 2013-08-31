@@ -50,6 +50,12 @@
             % else:
                 <li><a href="/admin/comments">Comments</a></li>
             % endif
+            
+            % if itemType == 'photo':
+                <li class="active"><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
+            % else:
+                <li><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
+            % endif
         </ul>
     </div><!--/.span3-->
 

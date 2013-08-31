@@ -8,6 +8,7 @@
 <%
     lib.return_to()
     import pylowiki.lib.db.photo            as photoLib
+    import pylowiki.lib.db.discussion       as discussionLib
 %>
 
 
@@ -24,6 +25,11 @@
                 <div class="tab-pane active" id="tab-photos">
                     ${photos.uploadPhoto()}
                     % for photo in c.photos:
+                        <% 
+                            pdiscussion = discussionLib.getDiscussionForThing(photo)
+                            numComments = pdiscussion['numComments']
+                        %>
+                        
                         <div class="row-fluid">
                             <div class="span1">
                                 ${lib_6.upDownVote(photo)}
@@ -49,6 +55,7 @@
                                 Added: ${photo.date}
                                 <br />
                                 Photo Location: ${photoLib.getPhotoLocation(photo)}<br />
+                                <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">View or Add Comments (${numComments})</a>
                             </div><!-- span8 -->
                         </div><!-- row-fluid -->
                         <div class="spacer"></div>

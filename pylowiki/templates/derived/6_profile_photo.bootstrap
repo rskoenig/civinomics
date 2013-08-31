@@ -11,6 +11,7 @@
 <div class="row-fluid" ng-controller="ProfileEditController">
     <div class="span8">
         ${photo.showPhoto()}
+        ${photo.photoModerationPanel(c.photo)}
         ${comments(c.photo, c.discussion)}
     </div>
     <div class="span4">
