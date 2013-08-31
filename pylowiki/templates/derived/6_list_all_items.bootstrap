@@ -90,6 +90,9 @@
                         % elif itemType == 'comment':
                             <% workshop = workshopLib.getWorkshopByCode(item['workshopCode']) %>
                             <td><a ${lib_6.thingLinkRouter(item, workshop, id='accordion-%s'%item['urlCode'])} class="expandable">${item['data']}</a></td>
+                        % elif itemType == 'photo':
+                            <% imgSrc = "/images/photos/" + item['directoryNum_photos'] + "/thumbnail/" + item['pictureHash_photos'] + ".png" %>
+                            <td><a href="/profile/${owner['urlCode']}/${owner['url']}/photo/show/${item['urlCode']}"><img src="${imgSrc}">${item['title']}</a></td>
                         % endif
                     </tr>
                 % endfor
