@@ -187,6 +187,7 @@ def updateWorkshopChildren(workshop, workshopKey):
 
 def getWorkshopTagCategories():
     workshopTags = []
+    workshopTags.append('Animals')
     workshopTags.append('Arts')
     workshopTags.append('Business')
     workshopTags.append('Civil Rights')
@@ -205,6 +206,7 @@ def getWorkshopTagCategories():
     workshopTags.append('Land Use')
     workshopTags.append('Municipal Services')
     workshopTags.append('NonProfit')
+    workshopTags.append('Outdoors')
     workshopTags.append('Policy')
     workshopTags.append('Safety')
     workshopTags.append('Sports')

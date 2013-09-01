@@ -44,7 +44,7 @@ class AdminController(BaseController):
                 abort(404)
             c.thing = generic.getThing(thingCode)
             author = userLib.getUserByID(c.thing.owner)
-            if c.thing.objType == 'photo':
+            if c.thing.objType == 'photo' or 'photoCode' in c.thing:
                 userLib.setUserPrivs()
             else:
                 c.w = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
@@ -89,7 +89,7 @@ class AdminController(BaseController):
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         if action in ['enable', 'disable', 'immunify', 'adopt']:
-            if c.thing.objType == 'photo':
+            if c.thing.objType == 'photo' or 'photoCode' in c.thing:
                 if not userLib.isAdmin(c.authuser.id):
                     abort(404)
             else:
@@ -106,7 +106,7 @@ class AdminController(BaseController):
         if action in ['edit']:
             if c.thing.owner == c.authuser.id:
                 pass
-            elif c.thing.objType == 'photo' and not userLib.isAdmin(c.authuser.id):
+            elif (c.thing.objType == 'photo' or 'photoCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
                 abort(404)
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
@@ -284,7 +284,7 @@ class AdminController(BaseController):
         return json.dumps({'code':thingCode, 'result':result})
         
     def flag(self, thingCode):
-        if c.thing.objType != 'photo':
+        if c.thing.objType != 'photo' and 'photoCode' not in c.thing:
             if not workshopLib.isScoped(c.authuser, c.w):
                 return json.dumps({'code':thingCode, 'result':'Error: Unable to flag.'})
         if c.error:
@@ -304,7 +304,7 @@ class AdminController(BaseController):
                 return json.dumps({'code':thingCode, 'result':result})
             else:
                 result += ' Warning: %s has marked this as immune because %s.' % (author['email'], immunifyEvent['reason'])
-        if c.thing.objType == 'photo':
+        if c.thing.objType == 'photo' or 'photoCode' in c.thing:
             newFlag = flagLib.Flag(c.thing, c.authuser)
         else:
             newFlag = flagLib.Flag(c.thing, c.authuser, workshop = c.w)
