@@ -58,15 +58,17 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.resourcesURL = '/search/resources/' + $scope.searchType + '/' + $scope.searchString;
     $scope.discussionsURL = '/search/discussions/' + $scope.searchType + '/' + $scope.searchString;
     $scope.ideasURL = '/search/ideas/' + $scope.searchType + '/' + $scope.searchString;
+    $scope.photosURL = '/search/photos/' + $scope.searchType + '/' + $scope.searchString;
     $scope.searchQueryPretty = $("#search-input").val();
     $scope.showingWorkshops = {'class': 'active', 'show': false};
     $scope.showingPeople = {'class': '', 'show': false};
     $scope.showingResources = {'class': '', 'show': false};
     $scope.showingDiscussions = {'class': '', 'show': false};
     $scope.showingIdeas = {'class': '', 'show': false};
+    $scope.showingPhotos = {'class': '', 'show': false};
     $scope.objType = 'workshops';
     
-    $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments'};
+    $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos'};
     
     $http.get($scope.workshopsURL).success(function(data){
         if (data.statusCode == 1)
@@ -94,6 +96,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -126,6 +129,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -158,6 +162,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -190,6 +195,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -222,6 +228,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -244,6 +251,39 @@ app.controller('SearchCtrl', function($scope, $http){
             {
                 $scope.ideas = data.result;
                 $scope.showingIdeas = {'class': 'active', 'show': true};
+            }
+            $scope.loading = false;
+        });
+    };
+        
+    $scope.searchPhotos = function() {
+        $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingResources = {'class': '', 'show': false};
+        $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
+        $scope.loading = true;
+        $scope.objType = 'photos';
+        $http.get($scope.photosURL).success(function(data){
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingPhotos = {'class': 'active', 'show': false};
+                $scope.photos = null;
+            }
+            else if (data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingPhotos = {'class': 'active', 'show': false};
+                $scope.photos = null;
+            }
+            else if (data.statusCode === 0)
+            {
+                $scope.photos = data.result;
+                $scope.showingPhotos = {'class': 'active', 'show': true};
             }
             $scope.loading = false;
         });

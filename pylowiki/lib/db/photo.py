@@ -3,7 +3,8 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
-from dbHelpers import commit, with_characteristic as wc
+from sqlalchemy import and_, not_, or_
+from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.discussion   as discussionLib
@@ -51,6 +52,27 @@ def getPhotoLocation(photo):
         return "Planet Earth"
     
 
+def searchPhotos( keys, values, deleted = u'0', count = False):
+    log.info("db search")
+    try:
+        if type(keys) != type([]):
+            p_keys = [keys]
+            p_values = [values]
+        else:
+            p_keys = keys
+            p_values = values
+        map_photos = map(wcl, p_keys, p_values)
+        q = meta.Session.query(Thing)\
+                .filter_by(objType = 'photo')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(reduce(or_, map_photos)))
+        if count:
+            return q.count()
+        return q.all()
+    except Exception as e:
+        log.error(e)
+        return False
+        
 # Setters
 def deletePhoto( photo ):
     photo['deleted'] = '1'

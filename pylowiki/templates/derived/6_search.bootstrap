@@ -32,13 +32,13 @@
                 </a>
             </li>
             <li ng-class="showingResources.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
+                <a href="#resources" class = "green green-hover" ng-click="searchResources()">
                     <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_050_link.png"> Resources </span>
                     <span class="pull-right">(${c.numResources})</span>
                 </a>
             </li>
             <li ng-class="showingDiscussions.class">
-                <a href="#ideas" class = "green green-hover" ng-click="searchDiscussions()">
+                <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
                     <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_244_conversation.png"> Discussions </span>
                     <span class="pull-right">(${c.numDiscussions})</span>
                 </a>
@@ -47,6 +47,12 @@
                 <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
                     <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_064_lightbulb.png"> Ideas </span>
                     <span class="pull-right">(${c.numIdeas})</span>
+                </a>
+            </li>
+            <li ng-class="showingPhotos.class">
+                <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
+                    <span class="pull-left"><img class="workshop-search-icon" src="/images/glyphicons_pro/glyphicons/png/glyphicons_138_picture.png"> Pictures </span>
+                    <span class="pull-right">(${c.numPhotos})</span>
                 </a>
             </li>
         </ul>
@@ -202,6 +208,33 @@
                                 </p>
                                 <p>
                                     Comments: {{idea.numComments}}
+                                </p>
+                            </div>
+                        </div>
+                    </td></tr>
+                </table>
+            </div>
+            <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
+                <table class="table table-condensed table-hover">
+                    <tr ng-repeat = "photo in photos"><td>
+                        <div class="media">
+                            <div class="pull-left">
+                                <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}" class="media-object">
+                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{photo.authorHash}}?r=pg&d=identicon&s=200" alt="{{photo.authorName}}" title="{{photo.authorName}}">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <a class="green green-hover" href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">
+                                    {{photo.authorName}}
+                                </a>
+                                posted the photo
+                                <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}">
+                                    {{photo.title}}</a>
+                                <p>
+                                    Net votes: {{photo.voteCount}}
+                                </p>
+                                <p>
+                                    Comments: {{photo.numComments}}
                                 </p>
                             </div>
                         </div>
