@@ -16,6 +16,7 @@
                     <li class="active"><a href="#tab-activity" data-toggle="tab" class="green green-hover">Activity</a></li>
                     <li><a href="#tab-workshops" data-toggle="tab" class="green green-hover">My Workshops</a></li>
                     <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">My Pictures</a></li>
+                    <li><a href="/profile/${c.user['urlCode']}/${c.user['url']}/archives">Archives</a></li>
                     % if 'user' in session:
                         % if c.user['email'] == c.authuser['email'] or isAdmin(c.authuser.id):
                             % if isAdmin(c.authuser.id) and c.user.id != c.authuser.id:

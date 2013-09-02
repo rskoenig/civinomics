@@ -176,29 +176,67 @@ class ProfileController(BaseController):
         return render("/derived/6_messages.bootstrap")
         
     def showUserPhotos(self, id1, id2):
-        c.photos = []
-        photos = photoLib.getUserPhotos(c.user)
+        # defaults for photo editor
+        c.photo = False
+        c.title = "Sample Title"
+        c.description = "Sample Description"
         c.categories = []
-        c.categoryColors = workshopLib.getWorkshopTagColouring()
-        if photos:
-            c.photos = photos
-            
         c.country = '0'
         c.state = '0'
         c.county = '0'
         c.city = '0'
         c.postal = '0'
         
+        
+        c.photos = []
+        photos = photoLib.getUserPhotos(c.user)
+        
+        c.categoryColors = workshopLib.getWorkshopTagColouring()
+        if photos:
+            c.photos = photos
+
+        
         return render("/derived/6_profile_photos.bootstrap")
+ 
+    def showUserArchives(self, id1, id2):
+
+        return render("/derived/6_profile_archives.bootstrap")
         
     def showUserPhoto(self, id1, id2, id3):
         if not id3 or id3 == '':
             abort(404)
-            
-        c.categoryColors = workshopLib.getWorkshopTagColouring()
         c.photo = photoLib.getPhoto(id3)
+        c.title = c.photo['title']
+        c.description = c.photo['description']
+        # for the 6_lib item functions we leverage
         c.thing = c.photo
         c.discussion = discussionLib.getDiscussionForThing(c.photo)
+        c.categoryColors = workshopLib.getWorkshopTagColouring()
+        
+        # defaults for photo editor
+        tagString = c.photo['tags']
+        tempList = tagString.split('|')
+        c.categories = []
+        for tag in tempList:
+            if tag and tag != '':
+                c.categories.append(tag)
+        c.country = '0'
+        c.state = '0'
+        c.county = '0'
+        c.city = '0'
+        c.postal = '0'
+        scope = c.photo['scope'].split('|')
+        if scope[2] != '' and scope[2] != '0':
+            c.country = scope[2].title()
+            if scope[4] != '' and scope[4] != '0':
+                c.state = scope[4].title()
+                if scope[6] != '' and scope[6] != '0':
+                    c.county = scope[6].title()
+                    if scope[8] != '' and scope[8] != '0':
+                        c.city = scope[8].title()
+                        if scope[9] != '' and scope[9] != '0':
+                            c.postal = scope[9]
+                            
         return render("/derived/6_profile_photo.bootstrap")
     
     def showUserResources(self, id1, id2):
