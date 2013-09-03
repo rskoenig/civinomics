@@ -272,7 +272,18 @@
         % endif
     % else:
         % if userLib.isAdmin(c.authuser.id):
-            ${self.editPhoto()}
+            <% editID = 'edit-%s'%thing['urlCode'] %>
+            <div class="row-fluid collapse" id="${editID}">
+                <div class="span11 offset1">
+                    <div class="spacer"></div>
+                    <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/${c.photo['pictureHash_photos']}/update/handler" method="post" class="form">
+                        ${self.editPhoto()}
+                        <div class="row-fluid">
+                            <button class="btn btn-success" type="Submit">Submit</button>
+                        </div><!-- row-fluid -->
+                    </form>
+                </div><!-- span11 -->
+            </div><!-- row-fluid -->
         % endif
         % if userLib.isAdmin(c.authuser.id):
             ${lib_6.adminThing(thing)}
