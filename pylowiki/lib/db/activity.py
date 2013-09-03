@@ -35,8 +35,8 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
         return False
         
 def getMemberActivity(user):
-    activityTypes = ['resource', 'comment', 'discussion', 'idea']
-    codes = ['resourceCode', 'ideaCode', 'discussionCode']
+    activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo']
+    codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
     workshopKeys = ['deleted', 'disabled', 'public_private', 'urlCode', 'url',  'title', 'published']
     itemKeys = ['deleted', 'disabled', 'urlCode', 'workshopCode']
     
@@ -53,8 +53,6 @@ def getMemberActivity(user):
     # Messy
     for activity in initialActivityList:
         if activity.objType == 'discussion' and activity['discType'] != 'general':
-            continue
-        if activity.objType == 'comment' and 'photoCode' in activity:
             continue
             
         # load the itemDict for this item

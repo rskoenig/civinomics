@@ -6,6 +6,9 @@
     import pylowiki.lib.db.user         as userLib
     import pylowiki.lib.db.pmember      as pmemberLib
     import pylowiki.lib.utils           as utils
+    
+    import logging, os
+    log = logging.getLogger(__name__)
 %>
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -279,11 +282,12 @@
         actionMapping = {   'resource': 'added the resource',
                             'discussion': 'started the conversation',
                             'idea': 'posed the idea',
+                            'photo': 'added the picture',
                             'comment': 'commented on a'}
         objTypeMapping = {  'resource':'resource',
                             'discussion':'conversation',
                             'idea':'idea',
-                            'photo':'picture',
+                            'photo':'photo',
                             'comment':'comment'}
     %>
     <table class="table table-hover table-condensed">
@@ -291,18 +295,21 @@
         
         % for itemCode in activity['itemList']:
             <% 
+                objType = activity['items'][itemCode]['objType']
+                activityStr = actionMapping[objType]
+                
                 if 'workshopCode' in activity['items'][itemCode]:
                     workshopCode = activity['items'][itemCode]['workshopCode']
                     workshopLink = "/workshop/" + activity['workshops'][workshopCode]['urlCode'] + "/" + activity['workshops'][workshopCode]['url']
                 else:
+                    workshopCode = "photo"
                     workshopLink = "/foo/photo"
                 parent = False
                 if activity['items'][itemCode]['objType'] == 'comment':
                     parentCode = activity['items'][itemCode]['parentCode']
                     parentObjType = activity['parents'][parentCode]['objType']
                     if parentObjType == 'photo':
-                        log.info('got photo in activity')
-                        parentLink = "/foo/photo"
+                        parentLink = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photo/show/" + parentCode
                     else:
                         parentLink = workshopLink + "/" + parentObjType + "/" + activity['parents'][parentCode]['urlCode'] + "/" + activity['parents'][parentCode]['url']
                     title = lib_6.ellipsisIZE(activity['items'][itemCode]['data'], 40)
@@ -314,23 +321,42 @@
 
                 
             %>
-            % if activity['workshops'][workshopCode]['public_private'] == 'public' or (c.browser == False or c.isAdmin == True or c.isUser == True):
+
+            % if objType == 'photo':
+                <% 
+                    title = activity['items'][itemCode]['title']
+                    urlCode = activity['items'][itemCode]['urlCode']
+                    link = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photo/show/" + urlCode
+                    activityStr = "added the picture <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
                 % if activity['items'][itemCode]['deleted'] == '0':
-                    <% 
-                        if parentCode and activity['parents'][parentCode]['deleted'] == '1':
-                            continue
-                            
-                        objType = activity['items'][itemCode]['objType']
-                        activityStr = actionMapping[objType]
-                        if objType == 'comment':
-                            if parentObjType == 'idea':
-                                activityStr += 'n'
-                            activityStr += ' <a href="' + parentLink + '">' + objTypeMapping[parentObjType] + '</a>, saying'
-                            activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
-                        else:
-                            activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
-                    %>
                     <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'comment' and workshopCode == 'photo':
+                <% 
+                    if parentCode and activity['parents'][parentCode]['deleted'] != '1':
+                        activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                <tr><td>${activityStr | n} </td></tr>
+            % else:
+                % if activity['workshops'][workshopCode]['public_private'] == 'public' or (c.browser == False or c.isAdmin == True or c.isUser == True):
+                    % if activity['items'][itemCode]['deleted'] == '0':
+                        <% 
+                            if parentCode and activity['parents'][parentCode]['deleted'] == '1':
+                                continue
+                            
+                            if objType == 'comment':
+                                if parentObjType == 'idea':
+                                    activityStr += 'n'
+                                activityStr += ' <a href="' + parentLink + '">' + objTypeMapping[parentObjType] + '</a>, saying'
+                                activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                            else:
+                                activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                        %>
+                        <tr><td>${activityStr | n}</td></tr>
+                    % endif
                 % endif
             % endif
         % endfor

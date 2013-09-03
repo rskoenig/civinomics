@@ -70,6 +70,7 @@ class ProfileController(BaseController):
         c.discussions = []
         c.comments = []
         c.ideas = []
+        c.photos = []
         
         c.rawActivity = activityLib.getMemberActivity(c.user)
         
@@ -88,7 +89,9 @@ class ProfileController(BaseController):
                             c.ideas.append(c.rawActivity['items'][itemCode])
                         elif c.rawActivity['items'][itemCode]['objType'] == 'comment':
                             c.comments.append(c.rawActivity['items'][itemCode])
-                            
+                elif c.rawActivity['items'][itemCode]['objType'] == 'photo':
+                    c.photos.append(c.rawActivity['items'][itemCode])
+                    
         userLib.setUserPrivs()
   
 

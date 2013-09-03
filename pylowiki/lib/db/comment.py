@@ -152,8 +152,7 @@ class Comment(object):
                 attachedThing = ideaLib.getIdea(discussion['ideaCode'])
             elif discussion['discType'] == 'resource':
                 attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
-                
-        if 'photoCode' in discussion:
+        if discussion['discType'] == 'photo':
             attachedThing = photoLib.getPhoto(discussion['photoCode'])
             
         thisComment = generic.linkChildToParent(thisComment, discussion)
