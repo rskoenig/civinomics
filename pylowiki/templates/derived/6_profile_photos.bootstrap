@@ -9,6 +9,8 @@
     lib.return_to()
     import pylowiki.lib.db.photo            as photoLib
     import pylowiki.lib.db.discussion       as discussionLib
+    import pylowiki.lib.db.event            as eventLib
+    import pylowiki.lib.db.user             as userLib
 %>
 
 
@@ -30,34 +32,83 @@
                             numComments = pdiscussion['numComments']
                         %>
                         
-                        <div class="row-fluid">
-                            <div class="span1">
-                                ${lib_6.upDownVote(photo)}
-                            </div><!-- span1 -->
-                            <div class="span3">
-                                <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
-                                <img src="${imgSrc}" class="wrap-photo">
-                            </div><!-- span3 -->
-                            <div class="span8">
-                                <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a><br />
-                                <% tags = photo['tags'].split('|') %>
-                                Tags: 
-                                % for tag in tags:
-                                    % if tag != '':
-                                        <% 
-                                            tTitle = tag.title()
-                                            colorClass = c.categoryColors[tTitle]
-                                        %>
-                                        <span class="label workshop-tag ${colorClass}">${tTitle}</span>
-                                    % endif
-                                % endfor
-                                <br />
-                                Added: ${photo.date}
-                                <br />
-                                Photo Location: ${photoLib.getPhotoLocation(photo)}<br />
-                                <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">View or Add Comments (${numComments})</a>
-                            </div><!-- span8 -->
-                        </div><!-- row-fluid -->
+                        % if photo['disabled'] == '0' and photo['deleted'] == '0':
+                            <div class="row-fluid">
+                                <div class="span1">
+                                    ${lib_6.upDownVote(photo)}
+                                </div><!-- span1 -->
+                                <div class="span3">
+                                    <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
+                                    <img src="${imgSrc}" class="wrap-photo">
+                                </div><!-- span3 -->
+                                <div class="span8">
+                                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a><br />
+                                    <% tags = photo['tags'].split('|') %>
+                                    Tags: 
+                                    % for tag in tags:
+                                        % if tag != '':
+                                            <% 
+                                                tTitle = tag.title()
+                                                colorClass = c.categoryColors[tTitle]
+                                            %>
+                                            <span class="label workshop-tag ${colorClass}">${tTitle}</span>
+                                        % endif
+                                    % endfor
+                                    <br />
+                                    Added: ${photo.date}
+                                    <br />
+                                    Photo Location: ${photoLib.getPhotoLocation(photo)}<br />
+                                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">View or Add Comments (${numComments})</a>
+                                </div><!-- span8 -->
+                            </div><!-- row-fluid -->
+                        % elif photo['disabled'] == '1' and photo['deleted'] == '0':
+                            <div class="accordion" id="item-${photo['urlCode']}">
+                                <div class="accordion-group no-border">
+                                    <div class="accordion-heading disabled">
+                                        <div class="collapsed-item-header">
+                                            <button class="accordion-toggle inline btn btn-mini collapsed" data-toggle="collapse" data-parent="#item-${photo['urlCode']}" href="#item-body-${photo['urlCode']}">Show</button>
+                                            <%
+                                                    event = eventLib.getEventsWithAction(photo, 'disabled')[0]
+                                                    disabler = userLib.getUserByID(event.owner)
+                                                    reason = event['reason']
+                                            %>
+                                            <small>This item has been disabled by ${lib_6.userLink(disabler)} because: ${reason}</small>
+                                        </div><!-- collapsed-item-header -->
+                                        <div class="accordion-body collapse" id="item-body-${photo['urlCode']}">
+                                            <div class="row-fluid list-item">
+                                                <div class="span1">
+                                                    ${lib_6.upDownVote(photo)}
+                                                </div><!-- span1 -->
+                                                <div class="span3">
+                                                    <% imgSrc = "/images/photos/" + photo['directoryNum_photos'] + "/thumbnail/" + photo['pictureHash_photos'] + ".png" %>
+                                                    <img src="${imgSrc}" class="wrap-photo">
+                                                    <div class="spacer"></div>
+                                                </div><!-- span3 -->
+                                                <div class="span8">
+                                                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">${photo['title']}</a><br />
+                                                    <% tags = photo['tags'].split('|') %>
+                                                    Tags: 
+                                                    % for tag in tags:
+                                                        % if tag != '':
+                                                            <% 
+                                                                tTitle = tag.title()
+                                                                colorClass = c.categoryColors[tTitle]
+                                                            %>
+                                                            <span class="label workshop-tag ${colorClass}">${tTitle}</span>
+                                                        % endif
+                                                    % endfor
+                                                    <br />
+                                                    Added: ${photo.date}
+                                                    <br />
+                                                    Photo Location: ${photoLib.getPhotoLocation(photo)}<br />
+                                                    <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photo['urlCode']}">View or Add Comments (${numComments})</a>
+                                                </div><!-- span8 -->
+                                            </div><!-- row-fluid -->
+                                        </div><!-- accordian-body-collapse -->
+                                    </div><!-- accordian-heading -->
+                                </div><!-- accordian-group -->
+                            </div><!-- accordian -->
+                        % endif
                         <div class="spacer"></div>
                     % endfor
                 </div><!-- tab-photos -->
