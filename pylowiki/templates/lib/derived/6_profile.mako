@@ -226,7 +226,7 @@
             % if len(things) == 0:
                 There doesn't seem to be anything here!
             % else:
-                % if c.listingType == 'watching':
+                % if c.listingType == 'watching' or c.listingType == 'listening' or c.listingType == 'facilitating':
                     <table class="table table-condensed table-hover user-thing-listing">
                         <tbody>
                             <% counter = 0 %>

@@ -91,6 +91,18 @@
                     ${thingCount(c.user, c.watching, 'bookmarks')}
                 </div>
             </div> <!--/.row-fluid-->
+                        <hr>
+            <div class="row-fluid">
+                <div class="span4">
+                    ${thingCount(c.user, c.photos, 'pictures')}
+                </div>
+                <div class="span4">
+                    ${thingCount(c.user, c.facilitatorWorkshops, 'facilitating')}
+                </div>
+                <div class="span4">
+                    ${thingCount(c.user, c.listeningWorkshops, 'listening')}
+                </div>
+            </div> <!--/.row-fluid-->
         </div><!--/.browse-->
     </div><!--/.section-wrapper-->
 </%def>

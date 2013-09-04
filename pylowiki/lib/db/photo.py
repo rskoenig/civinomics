@@ -8,6 +8,7 @@ from dbHelpers import commit, with_characteristic as wc, with_characteristic_lik
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.utils           as utils 
 
 log = logging.getLogger(__name__)
@@ -34,13 +35,13 @@ def getPhotoByHash(imageHash):
 def getPhotoLocation(photo):
     scope = photo['scope'].split('|')
     if scope[2] != '' and scope[2] != '0':
-        country = scope[2].title()
+        country = geoInfoLib.geoDeurlify(scope[2].title())
         if scope[4] != '' and scope[4] != '0':
-            state = scope[4].title()
+            state = geoInfoLib.geoDeurlify(scope[4].title())
             if scope[6] != '' and scope[6] != '0':
-                county = scope[6].title()
+                county = geoInfoLib.geoDeurlify(scope[6].title())
                 if scope[8] != '' and scope[8] != '0':
-                    city = scope[8].title()
+                    city = geoInfoLib.geoDeurlify(scope[8].title())
                     return country + ", State of " + state + ", County of " + county + ", City of " + city
                 else:
                     return country + ", State of " + state + ", County of " + county

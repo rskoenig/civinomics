@@ -64,6 +64,30 @@ class ProfileController(BaseController):
 
         followers = followLib.getUserFollowers(c.user)
         c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
+        
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+        c.pendingListeners = []
+        c.listeningWorkshops = []
+        for l in listenerList:
+            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+            c.listeningWorkshops.append(lw)
+            
+        
+        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
+        c.facilitatorWorkshops = []
+        c.pendingFacilitators = []
+        for f in facilitatorList:
+           if 'pending' in f and f['pending'] == '1':
+              c.pendingFacilitators.append(f)
+           elif f['disabled'] == '0':
+              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
+                 # show to the workshop owner, show to the facilitator owner, show to admin
+                 if 'user' in session: 
+                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+                         c.facilitatorWorkshops.append(myW)
+              else:
+                    c.facilitatorWorkshops.append(myW)
                     
         # this still needs to be optimized so we don't get the activity twice
         c.resources = []
@@ -118,23 +142,6 @@ class ProfileController(BaseController):
                 c.isAdmin = True
         else:
             c.browse = True
-            
-
-        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
-        c.facilitatorWorkshops = []
-        c.pendingFacilitators = []
-        for f in facilitatorList:
-           if 'pending' in f and f['pending'] == '1':
-              c.pendingFacilitators.append(f)
-           elif f['disabled'] == '0':
-              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
-                 # show to the workshop owner, show to the facilitator owner, show to admin
-                 if 'user' in session: 
-                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                         c.facilitatorWorkshops.append(myW)
-              else:
-                    c.facilitatorWorkshops.append(myW)
 
         watching = followLib.getWorkshopFollows(c.user)
         watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
@@ -152,13 +159,6 @@ class ProfileController(BaseController):
                     c.bookmarkedWorkshops.append(workshop)
  
         interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
-        
-        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-        c.pendingListeners = []
-        c.listeningWorkshops = []
-        for l in listenerList:
-            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-            c.listeningWorkshops.append(lw)
         
         c.privateWorkshops = []
         if 'user' in session and c.authuser:
@@ -237,13 +237,13 @@ class ProfileController(BaseController):
         c.postal = '0'
         scope = c.photo['scope'].split('|')
         if scope[2] != '' and scope[2] != '0':
-            c.country = scope[2].title()
+            c.country = geoInfoLib.geoDeurlify(scope[2].title())
             if scope[4] != '' and scope[4] != '0':
-                c.state = scope[4].title()
+                c.state = geoInfoLib.geoDeurlify(scope[4].title())
                 if scope[6] != '' and scope[6] != '0':
-                    c.county = scope[6].title()
+                    c.county = geoInfoLib.geoDeurlify(scope[6].title())
                     if scope[8] != '' and scope[8] != '0':
-                        c.city = scope[8].title()
+                        c.city = geoInfoLib.geoDeurlify(scope[8].title())
                         if scope[9] != '' and scope[9] != '0':
                             c.postal = scope[9]
                             
@@ -279,6 +279,16 @@ class ProfileController(BaseController):
         self._basicSetup(id1, id2, 'watching')
         return render("/derived/6_profile_list.bootstrap")
     
+    def showUserListening(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/listening
+        self._basicSetup(id1, id2, 'listening')
+        return render("/derived/6_profile_list.bootstrap")
+        
+    def showUserFacilitating(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/facilitating
+        self._basicSetup(id1, id2, 'facilitating')
+        return render("/derived/6_profile_list.bootstrap")
+    
     def _basicSetup(self, code, url, page):
         # code and url are now unused here, now that __before__ is defined
         c.title = c.user['name']
@@ -302,6 +312,7 @@ class ProfileController(BaseController):
         c.followers = items['followers']
         c.following = items['following']
         c.watching = items['watching']
+
     
     def _userItems(self, user):
         isUser = False
@@ -316,7 +327,8 @@ class ProfileController(BaseController):
         # or user-interested (e.g. followers, following, watching) objects
         items = {}
         
-        following = followLib.getUserFollows(c.user) # list of follow objects
+        following = followLib.getUserFollows(c.user) 
+        # list of follow objects 
         items['following'] = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
 
         followers = followLib.getUserFollowers(c.user)
@@ -328,6 +340,18 @@ class ProfileController(BaseController):
         for workshop in watchList:
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
                 items['watching'].append(workshop)
+                
+        items['listening'] = []
+        for workshop in c.listeningWorkshops:
+            if workshop['public_private'] == 'public' or (isUser or isAdmin):
+                items['listening'].append(workshop)
+                log.info("listening workshop")
+                
+        items['facilitating'] = []
+        for workshop in c.facilitatorWorkshop:
+            if workshop['public_private'] == 'public' or (isUser or isAdmin):
+                items['facilitating'].append(workshop)
+            
         
         # Already checks for disabled/deleted by default
         # The following section feels like a good candidate for map/reduce
