@@ -6,6 +6,10 @@
     import pylowiki.lib.db.comment          as commentLib
     import pylowiki.lib.db.event            as eventLib
     import pylowiki.lib.db.generic          as generic
+
+    import logging, os
+    log = logging.getLogger(__name__)
+
 %> 
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
@@ -124,19 +128,31 @@
                             <%
                                 photoCode = message['photoCode']
                                 thing = generic.getThing(photoCode)
+                                title = thing['title']
+                                if message['extraInfo'] in ['disabledPhoto']:
+                                    event = eventLib.getEventsWithAction(message, 'disabled')
+                                elif message['extraInfo'] in ['enabledPhoto']:
+                                    event = eventLib.getEventsWithAction(message, 'enabled')
+                                elif message['extraInfo'] in ['deletedPhoto']:
+                                    event = eventLib.getEventsWithAction(message, 'deleted')
+                                
+                                action = event[0]['action']
+                                reason = event[0]['reason']
                             %>
                             <div class="media">
                                 <div class="media-body">
                                     <h4 class="media-heading centered">${message['title']}</h4>
-                                    <p>It was ${event['action']} because: ${event['reason']}</p>
+                                    <p>It was ${action} because: ${reason}</p>
                                     <p>Your photo:
-                                        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${thing['urlCode']}" class="green green-hover">${thing['title']}</a>
+                                        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photoCode}" class="green green-hover">${title}</a>
                                     </p>
-                                    <p>${message['text']}</p>
+                                    <% log.info("message photo") %>
+                                    % if 'text' in message:
+                                        <p>${message['text']}</p>
+                                    % endif
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
-                            
                         % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
                             <%
                                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
