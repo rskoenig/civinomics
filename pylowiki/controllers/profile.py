@@ -209,6 +209,13 @@ class ProfileController(BaseController):
         if not id3 or id3 == '':
             abort(404)
         c.photo = photoLib.getPhoto(id3)
+        if not c.photo:
+            c.photo = revisionLib.getRevisionByCode(id3)
+            if not c.photo:
+                abort(404)
+            c.revisions = []
+        else:
+            c.revisions = revisionLib.getRevisionsForThing(c.photo)
         c.title = c.photo['title']
         c.description = c.photo['description']
         # for the 6_lib item functions we leverage
@@ -747,6 +754,7 @@ class ProfileController(BaseController):
         photo['tags'] = newTagStr
         photo['scope'] = scope
         dbHelpers.commit(photo)
+        revisionLib.Revision(c.authuser, photo)
         
         returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photos/show"
                 
