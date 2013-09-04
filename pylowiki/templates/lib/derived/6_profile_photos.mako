@@ -6,6 +6,7 @@
     import pylowiki.lib.db.user         as userLib
     import pylowiki.lib.db.pmember      as pmemberLib
     import pylowiki.lib.db.photo        as photoLib
+    import pylowiki.lib.db.event        as eventLib
     import pylowiki.lib.utils           as utils
     import pylowiki.lib.db.geoInfo      as geoLib
 %>
@@ -292,32 +293,43 @@
 </%def>
 
 <%def name="showPhoto()">
-    <div class="row-fluid">
-        <div class="span8 offset2">
-            <% imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/photo/" + c.photo['pictureHash_photos'] + ".png" %>
-            <img src="${imgSrc}" class="wrap-photo"><br />
-            <div class="spacer"></div>
-            <div class="centered">
-                ${c.photo['title']}<br />
-            </div><!-- centered -->
-            <% tags = c.photo['tags'].split('|') %>
-            Tags: 
-            % for tag in tags:
-                % if tag != '':
-                    <% 
-                        tTitle = tag.title()
-                        colorClass = c.categoryColors[tTitle]
-                    %>
-                    <span class="label workshop-tag ${colorClass}">${tTitle}</span>
-                % endif
-            % endfor
-            <br />
-            Added: ${c.photo.date}
-            <br />
-            Photo Location: ${photoLib.getPhotoLocation(c.photo)}<br />
-            <div class="spacer"></div>
-            ${c.photo['description']}
-            <div class="spacer"></div>
+    % if c.photo['deleted'] == '0':
+        <div class="row-fluid">
+            <div class="span8 offset2">
+                <% imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/photo/" + c.photo['pictureHash_photos'] + ".png" %>
+                <img src="${imgSrc}" class="wrap-photo"><br />
+                <div class="spacer"></div>
+                <div class="centered">
+                    ${c.photo['title']}<br />
+                </div><!-- centered -->
+                <% tags = c.photo['tags'].split('|') %>
+                Tags: 
+                % for tag in tags:
+                    % if tag != '':
+                        <% 
+                            tTitle = tag.title()
+                            colorClass = c.categoryColors[tTitle]
+                        %>
+                        <span class="label workshop-tag ${colorClass}">${tTitle}</span>
+                    % endif
+                % endfor
+                <br />
+                Added: ${c.photo.date}
+                <br />
+                Photo Location: ${photoLib.getPhotoLocation(c.photo)}<br />
+                <div class="spacer"></div>
+                ${c.photo['description']}
+                <div class="spacer"></div>
+            </div>
         </div>
-    </div>
+    % else:
+        <%
+            event = eventLib.getEventsWithAction(c.photo, 'deleted')[0]
+            deleter = userLib.getUserByID(event.owner)
+            reason = event['reason']
+        %>
+        <div class="row-fluid">
+            This picture deleted by ${deleter['name']} because: ${reason}
+        </div><!-- row-fluid -->
+    % endif
 </%def>

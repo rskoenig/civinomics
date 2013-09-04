@@ -11,8 +11,10 @@
 <div class="row-fluid" ng-controller="ProfileEditController">
     <div class="span8">
         ${photo.showPhoto()}
-        ${photo.photoModerationPanel(c.photo)}
-        ${comments(c.photo, c.discussion)}
+        % if c.photo['deleted'] == '0':
+            ${photo.photoModerationPanel(c.photo)}
+            ${comments(c.photo, c.discussion)}
+        % endif
     </div>
     <div class="span4">
         ${dashboard.profileDashboard()}
