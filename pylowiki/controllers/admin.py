@@ -219,14 +219,21 @@ class AdminController(BaseController):
         text = '(This is an automated message)'
         extraInfo = action
         parentAuthor = userLib.getUserByID(thing.owner)
-        message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
+        if thing.objType == 'photo':
+            extraInfo = action + 'Photo'
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, photoCode = thing['urlCode'])
+        else:
+            message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = c.w, extraInfo = extraInfo, sender = user)
         eventLib.Event(eventTitle, eventDescriptor, message, user, reason = reason, action = action) # An event for the message dispatched to the Thing's author
         message = generic.linkChildToParent(message, thing)
         dbHelpers.commit(message)
         
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):
-                flagLib.Flag(thing, user, workshop = c.w)
+                if thing.objType == 'photo':
+                    flagLib.Flag(thing, user)
+                else:
+                    flagLib.Flag(thing, user, workshop = c.w)
                 
     def _adoptEvent(self, user, thing, reason, action):
         eventTitle = '%s %s' % (action.title(), thing.objType)

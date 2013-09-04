@@ -173,10 +173,10 @@
             <div class="row-fluid fileupload-buttonbar">
                 <div class="span10 offset1">
                     <!-- The fileinput-button span is used to style the file input field as button -->
-                    <span class="pull-left">Upload pictures of your world (4MB max, please)</span>
+                    <span class="pull-left">Document your community with pictures.  (5MB max, please)</span>
                     <span class="btn btn-success fileinput-button pull-right">
                         <i class="icon-plus icon-white"></i>
-                        <span>Photo</span>
+                        <span>Picture</span>
                         <input type="file" name="files[]">
                     </span>
                     <!-- The loading indicator is shown during file processing -->

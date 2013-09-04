@@ -120,6 +120,23 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
+                        % elif message['extraInfo'] in ['disabledPhoto', 'enabledPhoto', 'deletedPhoto']:
+                            <%
+                                photoCode = message['photoCode']
+                                thing = generic.getThing(photoCode)
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <p>It was ${event['action']} because: ${event['reason']}</p>
+                                    <p>Your photo:
+                                        <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${thing['urlCode']}" class="green green-hover">${thing['title']}</a>
+                                    </p>
+                                    <p>${message['text']}</p>
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
+                            
                         % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
                             <%
                                 event = eventLib.getEventsWithAction(message, message['extraInfo'])
