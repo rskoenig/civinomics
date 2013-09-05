@@ -416,6 +416,8 @@ class SearchController(BaseController):
         if len(photos) == 0:
             log.info("len photos is 0")
             return json.dumps({'statusCode':2})
+            
+        colors = workshopLib.getWorkshopTagColouring()
         for photo in photos:
             p = generic.getThing(photo['urlCode'])
             u = generic.getThing(photo['userCode'])
@@ -424,6 +426,17 @@ class SearchController(BaseController):
             log.info("after photo deleted disabled")
             entry = {}
             entry['title'] = p['title']
+            tagList = p['tags'].split('|')
+            tags = []
+            tagColors = []
+            for tag in tagList:
+                if tag and tag != '':
+                    tags.append(tag)
+                    c = colors[tag]
+                    tagColors.append(c)
+            entry['tags'] = tags
+            entry['colors'] = tagColors
+            entry['location'] = photoLib.getPhotoLocation(p)
             entry['voteCount'] = int(p['ups']) - int(p['downs'])
             entry['urlCode'] = p['urlCode']
             entry['url'] = p['url']

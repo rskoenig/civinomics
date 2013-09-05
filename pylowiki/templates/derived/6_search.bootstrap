@@ -1,6 +1,10 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
+<%!
+    import pylowiki.lib.db.workshop     as workshopLib
+%>
+
 <div class="spacer"></div>
 <div class="row">
     <div class="span6">
@@ -219,17 +223,14 @@
                     <tr ng-repeat = "photo in photos"><td>
                         <div class="media">
                             <div class="pull-left">
-                                <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}" class="media-object">
-                                    <img class="avatar" ng-src="http://www.gravatar.com/avatar/{{photo.authorHash}}?r=pg&d=identicon&s=200" alt="{{photo.authorName}}" title="{{photo.authorName}}">
-                                </a>
+                                <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
                             </div>
                             <div class="media-body">
-                                <a class="green green-hover" href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">
-                                    {{photo.authorName}}
-                                </a>
-                                posted the photo
-                                <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}">
-                                    {{photo.title}}</a>
+                                <a href="{{photo.photoLink}}">{{photo.title}}</a><br />
+                                Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
+                                Location: {{photo.location}}<br />
+                                Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                                <br />
                                 <p>
                                     Net votes: {{photo.voteCount}}
                                 </p>
