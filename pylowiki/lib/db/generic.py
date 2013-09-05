@@ -50,6 +50,15 @@ def getThing(code, keys = None, values = None):
         return q.one()
     except Exception as e:
         return False
+
+def getChildrenOfParent(parent):
+    parentCode = parent.objType.replace("Unpublished", "")  + 'Code'
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
+            .all()
+    except:
+        return False
         
 def getThingByID(thingID):
     try:

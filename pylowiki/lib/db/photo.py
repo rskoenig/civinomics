@@ -8,6 +8,7 @@ from dbHelpers import commit, with_characteristic as wc, with_characteristic_lik
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.utils           as utils 
 
@@ -78,7 +79,28 @@ def searchPhotos( keys, values, deleted = u'0', count = False):
 def deletePhoto( photo ):
     photo['deleted'] = '1'
     commit(photo)
-
+    
+def unpublishPhoto( photo ):
+    if 'user' in session and (c.authuser.id == photo.owner or userLib.isAdmin(c.authuser.id)):
+        if c.authuser.id == photo.owner:
+            photo['unpublished_by'] = 'owner'
+        elif userLib.isAdmin(c.authuser.id):
+            photo['unpublished_by'] = 'admin'
+        
+        # get the list of children
+        children = generic.getChildrenOfParent(photo)
+        for child in children:
+            child['unpublished_by'] = 'parent'
+            oldType = child.objType
+            child.objType = oldType + 'Unpublished'
+            commit(child)
+        
+        # now reset the object types to unpublished
+        photo.objType = 'photoUnpublished'
+        commit(photo)
+    else:
+        abort(404)
+        
 # Object
 def Photo(owner, title, description, tags, scope):
     p = Thing('photo', owner.id)
