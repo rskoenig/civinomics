@@ -926,6 +926,36 @@
     ${flagStr | n}
 </%def>
 
+<%def name="unpublishThingLink(thing, **kwargs)">
+    <%
+        unpublishStr = '"/unpublish/%s/%s"' %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return unpublishStr
+                    return 'href = ' + unpublishStr
+                return 'href = ' + unpublishStr
+        unpublishStr = 'href = ' + unpublishStr
+    %>
+    ${unpublishStr | n}
+</%def>
+
+<%def name="publishThingLink(thing, **kwargs)">
+    <%
+        publishStr = '"/publish/%s/%s"' %(thing.objType.replace("Unpublish", ""), thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return publishStr
+                    return 'href = ' + publishStr
+                return 'href = ' + publishStr
+        publishStr = 'href = ' + publishStr
+    %>
+    ${publishStr | n}
+</%def>
+
 <%def name="editThingLink(thing, **kwargs)">
     <%
         editStr = "/edit/%s/%s" %(thing.objType, thing['urlCode'])
@@ -950,6 +980,32 @@
             <a ${flagThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${flagID}">No</a>
             <span id = "flagged_${thing['urlCode']}"></span>
+        </div>
+    </div>
+</%def>
+
+<%def name="unpublishThing(thing, **kwargs)">
+    <% unpublishID = 'unpublish-%s' % thing['urlCode'] %>
+    <div class="row-fluid collapse" id="${unpublishID}">
+        <div class="span11 offset1 alert">
+            <strong>Are you sure you want to unpublish this ${thing.objType}?</strong>
+            <br />
+            <a ${unpublishThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
+            <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">No</a>
+            <span id = "unpublish_${thing['urlCode']}"></span>
+        </div>
+    </div>
+</%def>
+
+<%def name="publishThing(thing, **kwargs)">
+    <% publishID = 'publish-%s' % thing['urlCode'] %>
+    <div class="row-fluid collapse" id="${publishID}">
+        <div class="span11 offset1 alert">
+            <strong>Are you sure you want to publish this ${thing.objType.replace("Unpublished", "")}?</strong>
+            <br />
+            <a ${publishThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
+            <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${publishID}">No</a>
+            <span id = "publish_${thing['urlCode']}"></span>
         </div>
     </div>
 </%def>

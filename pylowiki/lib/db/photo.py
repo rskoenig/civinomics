@@ -8,7 +8,6 @@ from dbHelpers import commit, with_characteristic as wc, with_characteristic_lik
 from pylons import config
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.discussion   as discussionLib
-import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.utils           as utils 
 
@@ -23,7 +22,7 @@ def getUserPhotos(user, deleted = '0'):
 
 def getPhoto(photoCode):
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'photo').filter(Thing.data.any(wc('urlCode', photoCode))).one()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['photo', 'photoUnpublished'])).filter(Thing.data.any(wc('urlCode', photoCode))).one()
     except:
         return False  
         

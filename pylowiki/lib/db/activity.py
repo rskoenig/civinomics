@@ -34,8 +34,11 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
     except:
         return False
         
-def getMemberActivity(user):
-    activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo']
+def getMemberActivity(user, unpublished = '0'):
+    if unpublished == '1':
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished']
+    else:
+        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo']
     codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
     workshopKeys = ['deleted', 'disabled', 'public_private', 'urlCode', 'url',  'title', 'published']
     itemKeys = ['deleted', 'disabled', 'urlCode', 'workshopCode']
@@ -52,14 +55,14 @@ def getMemberActivity(user):
         .order_by('-date').all()
     # Messy
     for activity in initialActivityList:
-        if activity.objType == 'discussion' and activity['discType'] != 'general':
+        if activity.objType.replace("Unpublished", "") == 'discussion' and activity['discType'] != 'general':
             continue
             
         # load the itemDict for this item
         itemCode = activity['urlCode']
         itemList.append(itemCode)
         itemDict[itemCode] = {}
-        itemDict[itemCode]['objType'] = activity.objType
+        itemDict[itemCode]['objType'] = activity.objType.replace("Unpublished", "")
         for key in itemKeys:
             if key in activity:
                 itemDict[itemCode][key] = activity[key]
@@ -75,7 +78,7 @@ def getMemberActivity(user):
             if parentCode not in parentDict.keys():
                 parent = generic.getThing(activity[parentCodeField])
                 parentDict[parentCode] = {}
-                parentDict[parentCode]['objType'] = parent.objType
+                parentDict[parentCode]['objType'] = parent.objType.replace("Unpublished", "")
                 for pkey in itemKeys:
                     if pkey in parent:
                         parentDict[parentCode][pkey] = parent[pkey]

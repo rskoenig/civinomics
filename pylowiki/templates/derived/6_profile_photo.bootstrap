@@ -23,7 +23,9 @@
                 This is a revision dated ${c.photo.date}<br />
             % else:
                 ${photo.photoModerationPanel(c.photo)}
-                ${comments(c.photo, c.discussion)}
+                % if c.photo.objType != 'photoUnpublished':
+                    ${comments(c.photo, c.discussion)}
+                % endif
             % endif
         % endif
     </div>

@@ -231,13 +231,15 @@ def make_map():
     map.connect('/delete/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'delete')
     map.connect('/edit/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'edit')
     map.connect('/flag/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'flag')
+    map.connect('/publish/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'publish')
+    map.connect('/unpublish/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'unpublish')
     map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
     map.connect('/adopt/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'adopt')
     map.connect('/demo/set/{thingCode}{end:/?}', controller = 'admin', action='setDemo')
     
     ########################################################################################################
     # 
-    # Online Survey specific routes
+    # Online Survey specific routes  map.connec
     # 
     ########################################################################################################
 

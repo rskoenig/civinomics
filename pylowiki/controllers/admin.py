@@ -39,12 +39,12 @@ class AdminController(BaseController):
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
         # Actions that require a workshop and a workshop child object
-        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt']:
+        if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish']:
             if thingCode is None:
                 abort(404)
             c.thing = generic.getThing(thingCode)
             author = userLib.getUserByID(c.thing.owner)
-            if c.thing.objType == 'photo' or 'photoCode' in c.thing:
+            if c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing:
                 userLib.setUserPrivs()
             else:
                 c.w = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
@@ -88,8 +88,8 @@ class AdminController(BaseController):
         if action in ['delete', 'setDemo']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
-        if action in ['enable', 'disable', 'immunify', 'adopt']:
-            if c.thing.objType == 'photo' or 'photoCode' in c.thing:
+        if action in ['enable', 'disable', 'immunify', 'adopt', 'publish', 'unpublish']:
+            if c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing:
                 if not userLib.isAdmin(c.authuser.id):
                     abort(404)
             else:
@@ -106,7 +106,7 @@ class AdminController(BaseController):
         if action in ['edit']:
             if c.thing.owner == c.authuser.id:
                 pass
-            elif (c.thing.objType == 'photo' or 'photoCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
+            elif (c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing) and not userLib.isAdmin(c.authuser.id):
                 abort(404)
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
@@ -288,6 +288,45 @@ class AdminController(BaseController):
         action = 'deleted'
         self._enableDisableDeleteEvent(c.authuser, c.thing, c.reason, action)
         dbHelpers.commit(c.thing)
+        return json.dumps({'code':thingCode, 'result':result})
+        
+    def publish(self, thingCode):
+        if c.error:
+            return c.returnDict
+        result = 'Successfully published!'
+        c.thing['unpublished_by'] = ''
+        c.thing.objType = c.thing.objType.replace("Unpublished", "")
+        dbHelpers.commit(c.thing)
+        
+        # get the children and replublish them
+        children = generic.getChildrenOfParent(c.thing)
+        for child in children:
+            child['unpublished_by'] == ''
+            child.objType = child.objType.replace("Unpublished", "")
+            dbHelpers.commit(child)
+            
+        return json.dumps({'code':thingCode, 'result':result})
+        
+    def unpublish(self, thingCode):
+        if c.error:
+            return c.returnDict
+        result = 'Successfully unpublished!'
+        if(c.authuser.id == c.thing.owner):
+            auth = 'owner'
+        elif userLib.isAdmin(c.authuser.id):
+            auth = 'admin'
+            
+        c.thing['unpublished_by'] = auth
+        c.thing.objType = c.thing.objType + "Unpublished"
+        dbHelpers.commit(c.thing)
+        
+        # get the children and unplublish them
+        children = generic.getChildrenOfParent(c.thing)
+        for child in children:
+            child['unpublished_by'] == 'parent'
+            child.objType = child.objType + "Unpublished"
+            dbHelpers.commit(child)
+            
         return json.dumps({'code':thingCode, 'result':result})
         
     def flag(self, thingCode):

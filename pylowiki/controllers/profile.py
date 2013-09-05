@@ -97,6 +97,7 @@ class ProfileController(BaseController):
         c.photos = []
         
         c.rawActivity = activityLib.getMemberActivity(c.user)
+        c.unpublishedActivity = activityLib.getMemberActivity(c.user, '1')
         
         for itemCode in c.rawActivity['itemList']:
             # ony active objects

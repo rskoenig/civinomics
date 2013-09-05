@@ -39,11 +39,11 @@ def getDiscussions(disabled = '0', deleted = '0', discType = 'general'):
         return False
     
 def getDiscussionForThing(parent):
-    if parent.objType == 'discussion':
+    if parent.objType.replace("Unpublished", "") == 'discussion':
         return parent
-    thisKey = '%sCode' % parent.objType
+    thisKey = '%sCode' % parent.objType.replace("Unpublished", "")
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['discussion', 'discussionUnpublished'])).filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
     except:
         return False
 

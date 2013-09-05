@@ -238,13 +238,20 @@
         flagID = 'flag-%s' % thing['urlCode']
         editID = 'edit-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
+        publishID = 'publish-%s' % thing['urlCode']
+        unpublishID = 'unpublish-%s' % thing['urlCode']
     %>
     <div class="btn-group">
-        % if thing['disabled'] == '0':
+        % if thing['disabled'] == '0' and thing.objType != 'photoUnpublished':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
         % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id):
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
+        % endif
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'photoUnpublished':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
+        % elif (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType == 'photoUnpublished':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
         % endif
         % if userLib.isAdmin(c.authuser.id):
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
@@ -267,6 +274,11 @@
                     </form>
                 </div><!-- span11 -->
             </div><!-- row-fluid -->
+            % if thing.objType == 'photoUnpublished':
+                ${lib_6.publishThing(thing)}
+            % else:
+                ${lib_6.unpublishThing(thing)}
+            % endif
             % if userLib.isAdmin(c.authuser.id):
                 ${lib_6.adminThing(thing)}
             % endif
