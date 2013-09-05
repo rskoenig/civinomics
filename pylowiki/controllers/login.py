@@ -16,6 +16,11 @@ from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.share    as shareLib
 
+# oauth2 imports
+import urlparse
+import oauth2 as oauth
+
+# manual oauth access imports - some are needed elsewhere
 import requests
 import mechanize
 
@@ -181,7 +186,126 @@ class LoginController(BaseController):
 
         return oauth_parameters
 
-    def twtLoginRedirect(self):
+    def twtLoginTweepy(self):
+        #: https://github.com/tweepy/tweepy
+        #: create an OAuthHandler instance .. tweepy's doc is misleading:
+        #: code example - auth = tweepy.OAuthHandler(consumer_token, consumer_secret)
+        #: consumer_token is either our consumer_key, or access_token - likely it's consumerKey
+        # the callback_url can be passed in here as a third arg if needed.
+        # in our case, this is set in our application's settings on twitter
+        auth = tweepy.OAuthHandler(config['twitter.consumerKey'], config['twitter.consumerSecret'])
+
+        # Unlike basic auth, we must do the OAuth “dance” before we can start using the API.
+        # We must complete the following steps:
+        # 1 Get a request token from twitter
+        # 2 Redirect user to twitter.com to authorize our application
+        # 3 If using a callback, twitter will redirect the user to us. Otherwise the user must manually supply us with the verifier code.
+        # 4 Exchange the authorized request token for an access token.
+
+        # 1) fetch request token to begin the dance:
+        try:
+            redirect_url = auth.get_authorization_url()
+        except tweepy.TweepError:
+            print 'Error! Failed to get request token.'
+
+        # 2) we will be using a callback request. So we must store the request token in 
+        # the session since we will need it inside the callback URL request. 
+        session['request_token_key'] = auth.request_token.key
+        session['request_token_secret'] = auth.request_token.secret
+        session.save()
+
+        
+
+    def twtLoginOauth2(self):
+        #: oauth2 library from easy_install oauth2
+        #: 1) Obtain a request token
+        #: user wants to sign in, POST to twitter../oauth/request_token with oauth_callback
+        #: twitter generates request token, responds 200 OK with:
+        # oath_token, oauth_token_secret, oauth_callback_confirmed
+        # this reponse is routed to twtRequestHandler here
+
+        consumer_key = config['twitter.consumerKey']
+        consumer_secret = config['twitter.consumerSecret']
+
+        request_token_url = 'https://api.twitter.com/oauth/request_token'
+        access_token_url = 'https://api.twitter.com/oauth/access_token'
+        authorize_url = 'https://api.twitter.com/oauth/authorize'
+
+        consumer = oauth.Consumer(consumer_key, consumer_secret)
+        client = oauth.Client(consumer)
+
+        # Step 1: Post for a request token. This is a temporary token that is used for 
+        # having the user authorize an access token and to sign the request to obtain 
+        # said access token.
+
+        params = {
+            'oauth_nonce': oauth.generate_nonce(),
+            'oauth_callback' : config['twitter.requestTokenUrl'],
+            'oauth_signature_method' : "HMAC-SHA1",
+            'oauth_timestamp': int(time.time()),
+            'oauth_version': "1.0"
+        }
+
+        # either twitter will respond right here, or the response will be routed to 
+        # the next function, twtRequestHandler
+        resp, content = client.request(request_token_url, "POST", parameters=params)
+        log.info("resp %s" % resp)
+        log.info("content %s" % content)
+        # this request should generate a response to the callback url, which will route
+        # to function twtRequestHandler
+
+    def twtRequestHandler(self):
+        #: asking twitter for a request token, the response is directed here
+        #: 2) redirecting the user
+        # Your application should examine the HTTP status of the response. 
+        # Any value other than 200 indicates a failure. The body of the response will 
+        # contain the oauth_token, oauth_token_secret, and oauth_callback_confirmed parameters. 
+        # Your application should verify that oauth_callback_confirmed is true and store the 
+        # other two values for the next steps.
+
+        # how do I grab the request token? it is in the body of the response
+        request_token = dict(urlparse.parse_qsl(content))
+
+        log.info("Request Token:")
+        log.info("    - oauth_token        = %s" % request_token['oauth_token'])
+        log.info("    - oauth_token_secret = %s" % request_token['oauth_token_secret'])
+
+        # Step 2: Redirect to the provider. Since this is a CLI script we do not 
+        # redirect. In a web application you would redirect the user to the URL
+        # below.
+
+        log.info("Redirect to link:")
+        log.info("%s?oauth_token=%s" % (authorize_url, request_token['oauth_token']))
+
+        # After the user has granted access to you, the consumer, the provider will
+        # redirect you to whatever URL you have told them to redirect to. You can 
+        # usually define this in the oauth_callback argument as well.
+        #accepted = 'n'
+        #while accepted.lower() == 'n':
+        #    accepted = raw_input('Have you authorized me? (y/n) ')
+        #oauth_verifier = raw_input('What is the PIN? ')
+
+        # Step 3: Once the consumer has redirected the user back to the oauth_callback
+        # URL you can request the access token the user has approved. You use the 
+        # request token to sign this request. After this is done you throw away the
+        # request token and use the access token returned. You should store this 
+        # access token somewhere safe, like a database, for future use.
+        token = oauth.Token(request_token['oauth_token'],
+            request_token['oauth_token_secret'])
+        token.set_verifier(oauth_verifier)
+        client = oauth.Client(consumer, token)
+
+        resp, content = client.request(access_token_url, "POST")
+        access_token = dict(urlparse.parse_qsl(content))
+
+        log.info("Access Token:")
+        log.info("    - oauth_token        = %s" % access_token['oauth_token'])
+        log.info("    - oauth_token_secret = %s" % access_token['oauth_token_secret'])
+        
+        log.info("You may now access protected resources using the access tokens above.")
+        
+
+    def twtLoginRedirectManual(self):
         # assemble an oauth post for twitter
         url = config['twitter.requestTokenUrl']
         method = "POST"
