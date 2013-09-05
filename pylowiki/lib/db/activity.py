@@ -67,7 +67,7 @@ def getMemberActivity(user, unpublished = '0'):
             if key in activity:
                 itemDict[itemCode][key] = activity[key]
                 
-        if activity.objType == 'comment':
+        if activity.objType.replace("Unpublished", "") == 'comment':
             key = 'data'
             # comprehensions return a list
             parentCodeList = [i for i in codes if i in activity.keys()]

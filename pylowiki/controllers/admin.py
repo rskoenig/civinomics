@@ -301,7 +301,7 @@ class AdminController(BaseController):
         # get the children and replublish them
         children = generic.getChildrenOfParent(c.thing)
         for child in children:
-            child['unpublished_by'] == ''
+            child['unpublished_by'] = ''
             child.objType = child.objType.replace("Unpublished", "")
             dbHelpers.commit(child)
             
@@ -323,7 +323,7 @@ class AdminController(BaseController):
         # get the children and unplublish them
         children = generic.getChildrenOfParent(c.thing)
         for child in children:
-            child['unpublished_by'] == 'parent'
+            child['unpublished_by'] = 'parent'
             child.objType = child.objType + "Unpublished"
             dbHelpers.commit(child)
             
