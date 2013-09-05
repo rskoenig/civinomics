@@ -214,7 +214,47 @@ class LoginController(BaseController):
         session['request_token_secret'] = auth.request_token.secret
         session.save()
 
+        # now we can redirect the user to the URL returned to us earlier from the 
+        # get_authorization_url() method.
+        redirect_user(redirect_url)
+
+    def twtLoginTweepy2(self, id1):
+        # The callback from twitter will include a verifier as a parameter in the URL.
+        # The final step is exchanging the request token for an access token. The access 
+        # token is the “key” for opening the Twitter API treasure box. To fetch this token 
+        # we do the following:
+
+        # re-build the auth handler:
+        auth = tweepy.OAuthHandler(config['twitter.consumerKey'], config['twitter.consumerSecret'])
+        request_token_key = session['request_token_key']
+        request_token_secret = session['request_token_secret']
+        # saving these two with this user will expedite this process in the future?
+        # see: It is a good idea to save the access token for later use. You do not need 
+        # to re-fetch it each time. Twitter currently does not expire the tokens, so the only 
+        # time it would ever go invalid is if the user revokes our application access. To store 
+        # the access token depends on your application. Basically you need to store 2 string 
+        # values: key and secret: auth.access_token.key, auth.access_token.secret
+        #  You can throw these into a database, file, or where ever you store your data. To 
+        # re-build an OAuthHandler from this stored access token you would do this:
+        #  auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        #  auth.set_access_token(key, secret)
         
+        auth.set_request_token(request_token_key, request_token_secret)
+
+        # pull the value of id1 out oauth_verifier=?
+        log.info("verifier param: %s" % id1)
+        verifier = id1.split('=')[-1]
+
+        try:
+            auth.get_access_token(verifier)
+        except tweepy.TweepError:
+            print 'Error! Failed to get access token.'
+
+        # So now that we have our OAuthHandler equiped with an access token, we are ready for 
+        # business:
+        # the user's profile info and pic are now needed.
+        api = tweepy.API(auth)
+        api.update_status('tweepy + oauth!')
 
     def twtLoginOauth2(self):
         #: oauth2 library from easy_install oauth2

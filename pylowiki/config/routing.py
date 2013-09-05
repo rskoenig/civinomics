@@ -305,7 +305,7 @@ def make_map():
     # twitter auth routes
     map.connect('/{twitterLoginBegin:twitterLoginBegin/?}', controller = 'login', action = 'twtLoginTweepy')
     map.connect('/{twitterRequestHandler:twitterRequestHandler/?}', controller = 'login', action = 'twtRequestHandler')
-    map.connect('/{twitterAuth:twitterAuth/?}', controller = 'login', action = 'twtLoginHandler')
+    map.connect('/{twitterAuth:twitterAuth/{id1}{end:/?}', controller = 'login', action = 'twtLoginTweepy2', id1 = '{id1}')
     
     # for ajax request from page after pinging fb for auth info
     map.connect('/extauth/fbEmail/{id1}{end:/?}', controller = 'login', action = 'fbAuthCheckEmail', id1 = '{id1}')
