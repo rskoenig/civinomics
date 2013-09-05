@@ -8,7 +8,7 @@
 <div class="spacer"></div>
 <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photos/show">View All Photos</a>
 <div class="spacer"></div>
-<div class="row-fluid" ng-controller="ProfileEditController">
+<div class="row-fluid">
     <div class="span8">
         ${photo.showPhoto()}
         % if c.photo['deleted'] == '0':
@@ -29,7 +29,7 @@
             % endif
         % endif
     </div>
-    <div class="span4">
+    <div class="span4" ng-controller="ProfileEditController">
         ${dashboard.profileDashboard()}
     </div><!--/.span4-->
 </div>
@@ -42,6 +42,7 @@
     </script>
     <script src="/js/vendor/jquery.expander.min.js" type="text/javascript"></script>
     <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+    <script src="/js/ng/edit_item.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('.expandable').expander({
