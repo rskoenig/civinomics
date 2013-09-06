@@ -322,9 +322,8 @@
                     % if tag != '':
                         <% 
                             tTitle = tag.title()
-                            colorClass = c.categoryColors[tTitle]
                         %>
-                        <span class="label workshop-tag ${colorClass}">${tTitle}</span>
+                        <span class="label workshop-tag ${tag}">${tTitle}</span>
                     % endif
                 % endfor
                 <br />

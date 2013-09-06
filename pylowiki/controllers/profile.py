@@ -662,8 +662,8 @@ class ProfileController(BaseController):
         log.info('got %s'%requestKeys)
         title = "Sample Title"
         description = "Sample Description"
-        tags = "notags"
-        scope = "noscope"
+        tags = "|"
+        scope = "||0||0||0||0|0"
         
         log.info("got title %s description %s and scope %s"%(title, description, scope))
         # first make sure the title, description, tag and location are set
