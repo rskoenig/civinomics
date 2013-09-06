@@ -149,7 +149,7 @@ class AdminController(BaseController):
             # Should only happen when someone posts directly to the server instead of through the UI.
             return False
         blankText = '(blank)'
-        if c.thing.objType == 'comment':
+        if c.thing.objType.replace("Unpublished", "") == 'comment':
             data = request.params['textarea' + thingCode]
             data = data.strip()
             
@@ -163,7 +163,7 @@ class AdminController(BaseController):
                 alert['title'] = 'Comment edit.'
                 alert['content'] = 'Comment edit successful.'
                 eventLib.Event('Comment edited by %s'%c.authuser['name'], c.thing, c.authuser)
-        elif c.thing.objType == 'idea':
+        elif c.thing.objType.replace("Unpublished", "") == 'idea':
             title = request.params['title']
             text = request.params['text']
             if title.strip() == '':
@@ -177,7 +177,7 @@ class AdminController(BaseController):
                 alert = {'type':'error'}
                 alert['title'] = 'Idea edit failed.'
                 alert['content'] = 'Failed to edit idea.'
-        elif c.thing.objType == 'discussion':
+        elif c.thing.objType.replace("Unpublished", "") == 'discussion':
             title = request.params['title']
             text = request.params['text']
             if title.strip() == '':
@@ -191,7 +191,7 @@ class AdminController(BaseController):
                 alert = {'type':'error'}
                 alert['title'] = 'Discussion edit failed.'
                 alert['content'] = 'Failed to edit discussion.'
-        elif c.thing.objType == 'resource':
+        elif c.thing.objType.replace("Unpublished", "") == 'resource':
             title = request.params['title']
             link = request.params['link']
             text = request.params['text']
@@ -208,7 +208,10 @@ class AdminController(BaseController):
                 alert['content'] = 'Failed to edit resource.'
         session['alert'] = alert
         session.save()
-        return redirect(utils.thingURL(c.w, c.thing))
+        if c.w:
+            return redirect(utils.thingURL(c.w, c.thing))
+        if c.user:
+            redirect(utils.thingURL(c.user, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):
         eventTitle = '%s %s' % (action.title(), thing.objType.replace("Unpublished", ""))

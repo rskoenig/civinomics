@@ -56,7 +56,6 @@ class CommentController(BaseController):
                     workshopLib.setWorkshopPrivs(workshop)
             elif thing.objType == 'photo':
                 userLib.setUserPrivs()
-                log.info('thing is a photo')
             data = request.params['comment-textarea']
             data = data.strip()
             if data == '':
@@ -87,7 +86,6 @@ class CommentController(BaseController):
                 title = ' replied to a post you made'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
             elif thing.objType == 'photo':
-                log.info("thing is a photo")
                 title = ' commented on one of your pictures'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
             message = genericLib.linkChildToParent(message, comment.c)
@@ -102,7 +100,6 @@ class CommentController(BaseController):
             if 'workshopCode' in thing:   
                 return redirect(utils.thingURL(workshop, thing))
             elif thing.objType == 'photo':
-                log.info("before redirect")
                 return redirect(utils.profilePhotoURL(thing))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
@@ -118,7 +115,7 @@ class CommentController(BaseController):
     def permalinkPhoto(self, userCode, userURL, revisionCode):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
         c.user = userLib.getUserByCode(userCode)
-        return render('/derived/6_permaComment.bootstrap')
+        return render('/derived/6_permaPhotoComment.bootstrap')
         
     ####################################################
     # 

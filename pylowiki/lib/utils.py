@@ -62,13 +62,22 @@ def isWatching(user, workshop):
    # object follows as 'watching'.
    c.isFollowing = followLib.isFollowing(user, workshop)
   
-def thingURL(workshop, thing):
-    baseURL = '/workshop/%s/%s' % (workshop['urlCode'], workshop['url'])
-    if thing.objType == 'comment':
+def thingURL(thingParent, thing):
+    if thingParent.objType.replace("Unpublished", "") == 'workshop':
+        parentBase = "workshop"
+    elif thingParent.objType.replace("Unpublished", "") == 'user':
+        parentBase = "profile"
+    baseURL = '/%s/%s/%s' % (parentBase, thingParent['urlCode'], thingParent['url'])
+    if thing.objType.replace("Unpublished", "") == 'photo':
+        return baseURL + "/photo/show" + thing['urlCode']
+    if thing.objType.replace("Unpublished", "") == 'comment':
         if 'ideaCode' in thing.keys():
             thing = generic.getThing(thing['ideaCode'])
         elif 'resourceCode' in thing.keys():
             thing = generic.getThing(thing['resourceCode'])
+        elif 'photoCode' in thing.keys():
+            thing = generic.getThing(thing['photoCode'])
+            return baseURL + "/photo/show" + thing['urlCode'] 
         elif 'discussionCode' in thing.keys():
             thing = generic.getThing(thing['discussionCode'])
         else:

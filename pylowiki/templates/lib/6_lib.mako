@@ -534,13 +534,18 @@
     ${discussionStr | n}
 </%def>
 
-<%def name="commentLink(comment, w, **kwargs)">
+<%def name="commentLink(comment, dparent, **kwargs)">
    <% 
-
+        if dparent.objType.replace("Unpublished", "") == 'workshop':
+            parentBase = 'workshop'
+            commentSuffix = "/comment/%s"%comment['urlCode']
+        elif dparent.objType.replace("Unpublished", "") == 'user':
+            parentBase = 'profile'
+            
         if 'noHref' in kwargs:
-            linkStr = '/workshop/%s/%s/comment/%s' %(w["urlCode"], w["url"], comment["urlCode"])
+            linkStr = '/%s/%s/%s/comment/%s' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
         else:
-            linkStr = 'href="/workshop/%s/%s/comment/%s"' %(w["urlCode"], w["url"], comment["urlCode"])
+            linkStr = 'href="/%s/%s/%s/comment/%s"' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return linkStr
@@ -551,9 +556,9 @@
 <%def name="thingLinkRouter(thing, dparent, **kwargs)">
     <%
         if thing.objType == 'revision':
-            objType = thing['objType']
+            objType = thing['objType'].replace("Unpublished", "")
         else:
-            objType = thing.objType
+            objType = thing.objType.replace("Unpublished", "")
         if objType == 'discussion':
             return discussionLink(thing, dparent, **kwargs)
         elif objType == 'resource':
@@ -1181,7 +1186,13 @@
                               <th>Author</th>
                           </tr>
                           % for rev in revisions:
-                              <% linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, c.w, embed=True), rev.date) %>
+                            <% 
+                                    if c.w:
+                                        dparent = c.w
+                                    elif c.user:
+                                        dparent = c.user
+                                    linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
+                            %>
                               <tr>
                                   <td>${linkStr | n}</td>
                                   <td>${userLink(rev.owner)}</td>
