@@ -16,6 +16,12 @@ from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.share    as shareLib
 
+#tweepy imports
+import tweepy as tweepy
+
+# twython imports
+from twython import Twython
+
 # oauth2 imports
 import urlparse
 import oauth2 as oauth
@@ -186,6 +192,50 @@ class LoginController(BaseController):
 
         return oauth_parameters
 
+    def twythonLogin(self):
+        #: https://github.com/ryanmcgrath/twython
+        # create a Twython instance with Consumer Key and Consumer Secret
+        twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
+        # callback url is set in the app on twitter, otherwise it can be set in this call
+        auth = twitter.get_authentication_tokens()
+
+        # From the auth variable, save the oauth_token and oauth_token_secret for later use 
+        # (these are not the final auth tokens).
+        session['oauth_token'] = auth['oauth_token']
+        session['oauth_token_secret'] = auth['oauth_token_secret']
+        session.save()
+
+        #Send the user to the authentication url
+        return redirect(auth['auth_url'])
+
+    def twythonLogin2(self):
+        # The callback from twitter will include a verifier as a parameter in the URL.
+        # The final step is exchanging the request token for an access token. The access 
+        # token is the “key” for opening the Twitter API
+        oauth_verifier = request.GET['oauth_verifier']
+        log.info("oauth_verifier: %s"%oauth_verifier)
+
+        # Now that we have the oauth_verifier stored to a variable, we'll want to create
+        # a new instance of Twython and grab the final user tokens
+        twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'], session['oauth_token'], session['oauth_token_secret'])
+
+        final_step = twitter.get_authorized_tokens(oauth_verifier)
+        # Once you have the final user tokens, store them in a database for later use!:
+
+        session['oauth_token_final'] = final_step['oauth_token']
+        session['oauth_token_secret_final'] = final_step['oauth_token_secret']
+        session.save()
+
+        log.info("session['oauth_token_final']: %s" % session['oauth_token_final'])        
+        log.info("session['oauth_token_secret_final']: %s" % session['oauth_token_secret_final'])
+
+        twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'], session['oauth_token_final'], session['oauth_token_secret_final'])
+
+        # we're live.
+        myCreds = twitter.verify_credentials()
+        #myCreds = twitter.get_home_timeline()
+        log.info("myCreds: %s" % myCreds)
+
     def twtLoginTweepy(self):
         #: https://github.com/tweepy/tweepy
         #: create an OAuthHandler instance .. tweepy's doc is misleading:
@@ -211,12 +261,14 @@ class LoginController(BaseController):
         # 2) we will be using a callback request. So we must store the request token in 
         # the session since we will need it inside the callback URL request. 
         session['request_token_key'] = auth.request_token.key
+        log.info("request_token_key %s"%session['request_token_key'])
         session['request_token_secret'] = auth.request_token.secret
+        log.info("request_token_secret %s"%session['request_token_secret'])
         session.save()
 
         # now we can redirect the user to the URL returned to us earlier from the 
         # get_authorization_url() method.
-        redirect_user(redirect_url)
+        return redirect(redirect_url)
 
     def twtLoginTweepy2(self, id1):
         # The callback from twitter will include a verifier as a parameter in the URL.
@@ -227,7 +279,10 @@ class LoginController(BaseController):
         # re-build the auth handler:
         auth = tweepy.OAuthHandler(config['twitter.consumerKey'], config['twitter.consumerSecret'])
         request_token_key = session['request_token_key']
+        log.info("2 request_token_key %s"%request_token_key)
         request_token_secret = session['request_token_secret']
+        log.info("2 request_token_secret %s"%request_token_secret)
+
         # saving these two with this user will expedite this process in the future?
         # see: It is a good idea to save the access token for later use. You do not need 
         # to re-fetch it each time. Twitter currently does not expire the tokens, so the only 
@@ -244,6 +299,7 @@ class LoginController(BaseController):
         # pull the value of id1 out oauth_verifier=?
         log.info("verifier param: %s" % id1)
         verifier = id1.split('=')[-1]
+        log.info("verifier: %s" % verifier)
 
         try:
             auth.get_access_token(verifier)
@@ -254,7 +310,11 @@ class LoginController(BaseController):
         # business:
         # the user's profile info and pic are now needed.
         api = tweepy.API(auth)
-        api.update_status('tweepy + oauth!')
+        #if not api.verify_credentials():
+        #    LoginController.twtLoginTweepy(self)
+
+        user_info = api.me()
+        log.info(user_info)
 
     def twtLoginOauth2(self):
         #: oauth2 library from easy_install oauth2
