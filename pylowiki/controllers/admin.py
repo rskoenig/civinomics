@@ -211,15 +211,15 @@ class AdminController(BaseController):
         return redirect(utils.thingURL(c.w, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):
-        eventTitle = '%s %s' % (action.title(), thing.objType)
-        eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType, thing['urlCode'], reason)
+        eventTitle = '%s %s' % (action.title(), thing.objType.replace("Unpublished", ""))
+        eventDescriptor = 'User with email %s %s object of type %s with code %s for this reason: %s' %(user['email'], action, thing.objType.replace("Unpublished", ""), thing['urlCode'], reason)
         eventLib.Event(eventTitle, eventDescriptor, thing, user, reason = reason, action = action) # An event for the admin/facilitator
         
         title = 'Someone %s a post you made' %(action)
         text = '(This is an automated message)'
         extraInfo = action
         parentAuthor = userLib.getUserByID(thing.owner)
-        if thing.objType == 'photo':
+        if thing.objType.replace("Unpublished", "") == 'photo':
             extraInfo = action + 'Photo'
             message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, extraInfo = extraInfo, sender = user, photoCode = thing['urlCode'])
         else:
@@ -230,7 +230,7 @@ class AdminController(BaseController):
         
         if action in ['disabled', 'deleted']:
             if not flagLib.checkFlagged(thing):
-                if thing.objType == 'photo':
+                if thing.objType.replace("Unpublished", "") == 'photo':
                     flagLib.Flag(thing, user)
                 else:
                     flagLib.Flag(thing, user, workshop = c.w)

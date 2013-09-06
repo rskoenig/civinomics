@@ -17,6 +17,9 @@
 <%def name="profileMessages()">
     <table class="table table-condensed table-hover">
         % for message in c.messages:
+            % if 'commentCode' in message and not commentLib.getCommentByCode(message['commentCode']):
+                <% continue %>
+            % endif
             <%
                 rowClass = ''
                 if message['read'] == u'0':

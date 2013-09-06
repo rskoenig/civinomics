@@ -260,7 +260,9 @@
     </div>
     
     % if thing['disabled'] == '0':
-        ${lib_6.flagThing(thing)}
+        % if thing.objType != 'photoUnpublished':
+            ${lib_6.flagThing(thing)}
+        % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
             % if thing.objType != 'photoUnpublished':
                 <% editID = 'edit-%s'%thing['urlCode'] %>

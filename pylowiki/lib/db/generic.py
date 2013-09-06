@@ -20,7 +20,7 @@ def linkChildToParent(child, parent):
         log.error("linkChildToParent(): parent object of type %s and id %s missing 'urlCode' field." %(parent.objType, parent.id))
         return False
     
-    key = '%s%s' %(parent.objType, 'Code')
+    key = '%s%s' %(parent.objType.replace("Unpublished", ""), 'Code')
     if key in child:
         # Overwrite, give warning
         log.warning("linkChildToParent(): parent object link already exists in child.")
