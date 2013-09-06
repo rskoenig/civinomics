@@ -245,7 +245,7 @@
         % if thing['disabled'] == '0' and thing.objType != 'photoUnpublished':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif
-        % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id):
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'photoUnpublished':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${editID}">edit</a>>
         % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'photoUnpublished':
@@ -261,19 +261,21 @@
     
     % if thing['disabled'] == '0':
         ${lib_6.flagThing(thing)}
-        % if c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id):
-            <% editID = 'edit-%s'%thing['urlCode'] %>
-            <div class="row-fluid collapse" id="${editID}">
-                <div class="span11 offset1">
-                    <div class="spacer"></div>
-                    <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/${c.photo['pictureHash_photos']}/update/handler" method="post" class="form">
-                        ${self.editPhoto()}
-                        <div class="row-fluid">
-                            <button class="btn btn-success" type="Submit">Submit</button>
-                        </div><!-- row-fluid -->
-                    </form>
-                </div><!-- span11 -->
-            </div><!-- row-fluid -->
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+            % if thing.objType != 'photoUnpublished':
+                <% editID = 'edit-%s'%thing['urlCode'] %>
+                <div class="row-fluid collapse" id="${editID}">
+                    <div class="span11 offset1">
+                        <div class="spacer"></div>
+                        <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/${c.photo['pictureHash_photos']}/update/handler" method="post" class="form">
+                            ${self.editPhoto()}
+                            <div class="row-fluid">
+                                <button class="btn btn-success" type="Submit">Submit</button>
+                            </div><!-- row-fluid -->
+                        </form>
+                    </div><!-- span11 -->
+                </div><!-- row-fluid -->
+            % endif
             % if thing.objType == 'photoUnpublished':
                 ${lib_6.publishThing(thing)}
             % else:
