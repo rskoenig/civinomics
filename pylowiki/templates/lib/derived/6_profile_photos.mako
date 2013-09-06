@@ -311,29 +311,29 @@
 <%def name="showPhoto()">
     % if c.photo['deleted'] == '0':
 
-                <% imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/orig/" + c.photo['pictureHash_photos'] + ".png" %>
-                <img src="${imgSrc}" class="wrap-photo"><br />
-                <div class="spacer"></div>
-                <div class="centered">
-                    ${c.photo['title']}<br />
-                </div><!-- centered -->
-                <% tags = c.photo['tags'].split('|') %>
-                Tags: 
-                % for tag in tags:
-                    % if tag != '':
-                        <% 
-                            tTitle = tag.title()
-                        %>
-                        <span class="label workshop-tag ${tag}">${tTitle}</span>
-                    % endif
-                % endfor
-                <br />
-                Added: ${c.photo.date}
-                <br />
-                Photo Location: ${photoLib.getPhotoLocation(c.photo)}<br />
-                <div class="spacer"></div>
-                ${c.photo['description']}
-                <div class="spacer"></div>
+        <% imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/orig/" + c.photo['pictureHash_photos'] + ".png" %>
+        <img src="${imgSrc}" class="wrap-photo"><br />
+        <div class="spacer"></div>
+        <div class="centered">
+            ${c.photo['title']}<br />
+        </div><!-- centered -->
+        <% tags = c.photo['tags'].split('|') %>
+        Tags: 
+        % for tag in tags:
+            % if tag != '':
+                <% 
+                    tTitle = tag.title()
+                %>
+                <span class="label workshop-tag ${tag}">${tTitle}</span>
+            % endif
+        % endfor
+        <br />
+        Added: ${c.photo.date}
+        <br />
+        Photo Location: ${photoLib.getPhotoLocation(c.photo)}<br />
+        <div class="spacer"></div>
+        ${c.photo['description']}
+        <div class="spacer"></div>
 
     % else:
         <%

@@ -38,6 +38,7 @@ class AdminController(BaseController):
         if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
+                
         # Actions that require a workshop and a workshop child object
         if action in ['edit', 'enable', 'disable', 'delete', 'flag', 'immunify', 'adopt', 'publish', 'unpublish']:
             if thingCode is None:
@@ -90,7 +91,7 @@ class AdminController(BaseController):
                 abort(404)
         if action in ['enable', 'disable', 'immunify', 'adopt', 'publish', 'unpublish']:
             if c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing:
-                if not userLib.isAdmin(c.authuser.id):
+                if not userLib.isAdmin(c.authuser.id) and c.authuser.id != c.thing.owner:
                     abort(404)
             else:
                 if not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
@@ -110,6 +111,7 @@ class AdminController(BaseController):
                 abort(404)
             elif not userLib.isAdmin(c.authuser.id) and not facilitatorLib.isFacilitator(c.authuser, workshop):
                 abort(404)
+                
     def users(self):
         c.list = userLib.getAllUsers()
         return render( "/derived/6_list_all_items.bootstrap" )
@@ -311,6 +313,7 @@ class AdminController(BaseController):
         return json.dumps({'code':thingCode, 'result':result})
         
     def unpublish(self, thingCode):
+        log.info('inside unpublish')
         if c.error:
             return c.returnDict
         result = 'Successfully unpublished!'
