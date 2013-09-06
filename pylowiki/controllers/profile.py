@@ -684,11 +684,11 @@ class ProfileController(BaseController):
             x = 0
             y = 0
             if 'width' in requestKeys:
-                width = int(request.params['width'])
+                width = int(float(request.params['width']))
             if 'x' in requestKeys:
-                x = int(request.params['x'])
+                x = int(float(request.params['x']))
             if 'y' in requestKeys:
-                y = int(request.params['y'])
+                y = int(float(request.params['y']))
             dims = {'x': x, 
                     'y': y, 
                     'width':width,

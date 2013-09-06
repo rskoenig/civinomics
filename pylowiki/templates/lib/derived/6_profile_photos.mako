@@ -310,9 +310,8 @@
 
 <%def name="showPhoto()">
     % if c.photo['deleted'] == '0':
-        <div class="row-fluid">
-            <div class="span8 offset2">
-                <% imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/photo/" + c.photo['pictureHash_photos'] + ".png" %>
+
+                <% imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/orig/" + c.photo['pictureHash_photos'] + ".png" %>
                 <img src="${imgSrc}" class="wrap-photo"><br />
                 <div class="spacer"></div>
                 <div class="centered">
@@ -335,8 +334,7 @@
                 <div class="spacer"></div>
                 ${c.photo['description']}
                 <div class="spacer"></div>
-            </div>
-        </div>
+
     % else:
         <%
             event = eventLib.getEventsWithAction(c.photo, 'deleted')[0]
