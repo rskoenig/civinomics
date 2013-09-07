@@ -213,27 +213,36 @@ class LoginController(BaseController):
         # The final step is exchanging the request token for an access token. The access 
         # token is the “key” for opening the Twitter API
         oauth_verifier = request.GET['oauth_verifier']
-        log.info("oauth_verifier: %s"%oauth_verifier)
+        # We should verify that the token matches the request token received in step 1.
+        if not request.GET['oauth_token'] == session['oauth_token']:
+            log.error('Invalid oauth_token')
+            return redirect('/')
+        #log.info("oauth_verifier: %s"%oauth_verifier)
 
         # Now that we have the oauth_verifier stored to a variable, we'll want to create
         # a new instance of Twython and grab the final user tokens
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'], session['oauth_token'], session['oauth_token_secret'])
 
         final_step = twitter.get_authorized_tokens(oauth_verifier)
-        # Once you have the final user tokens, store them in a database for later use!:
 
+        # Once we have the final user tokens, we store them in a database for later use
+        # NOTE - for now they're stored in the session. not good - must store in db
         session['oauth_token_final'] = final_step['oauth_token']
         session['oauth_token_secret_final'] = final_step['oauth_token_secret']
         session.save()
 
-        log.info("session['oauth_token_final']: %s" % session['oauth_token_final'])        
-        log.info("session['oauth_token_secret_final']: %s" % session['oauth_token_secret_final'])
+        #log.info("session['oauth_token_final']: %s" % session['oauth_token_final'])        
+        #log.info("session['oauth_token_secret_final']: %s" % session['oauth_token_secret_final'])
 
+        # with the final user data, we re-initialize the twitter api access object
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'], session['oauth_token_final'], session['oauth_token_secret_final'])
 
-        # we're live.
+        # grab the user's creds
         myCreds = twitter.verify_credentials()
-        #myCreds = twitter.get_home_timeline()
+        
+        # NEXT - new user? create account and log them in (asking for zip / email on the way)
+        #  returning user? log them in.
+
         log.info("myCreds: %s" % myCreds)
 
     def twtLoginTweepy(self):
