@@ -194,12 +194,9 @@ class ProfileController(BaseController):
         
         c.photos = []
         photos = photoLib.getUserPhotos(c.user)
-        
-        c.categoryColors = workshopLib.getWorkshopTagColouring()
         if photos:
             c.photos = photos
 
-        
         return render("/derived/6_profile_photos.bootstrap")
  
     def showUserArchives(self, id1, id2):
@@ -222,7 +219,6 @@ class ProfileController(BaseController):
         # for the 6_lib item functions we leverage
         c.thing = c.photo
         c.discussion = discussionLib.getDiscussionForThing(c.photo)
-        c.categoryColors = workshopLib.getWorkshopTagColouring()
         
         # defaults for photo editor
         tagString = c.photo['tags']
@@ -735,17 +731,12 @@ class ProfileController(BaseController):
             log.info('no description')
             abort(404)
             
-            
+        newTagStr = '|'    
         if 'categoryTags' in request.params:
             categoryTags = request.params.getall('categoryTags')
-            
-            newTagStr = '|'
             for tag in categoryTags:
                 newTagStr = newTagStr + tag + '|'
-        else:
-            log.info('no tags')
-            abort(404)
-            
+
         if 'geoTagCountry' in request.params:
             country = request.params['geoTagCountry']
         else:
