@@ -995,7 +995,7 @@
         <div class="span11 offset1 alert">
             <strong>Are you sure you want to unpublish this ${thing.objType}?</strong>
             <br />
-            <a ${unpublishThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
+            <a ${unpublishThingLink(thing)} class="btn btn-danger">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">No</a>
             <span id = "unpublish_${thing['urlCode']}"></span>
         </div>
@@ -1008,7 +1008,7 @@
         <div class="span11 offset1 alert">
             <strong>Are you sure you want to publish this ${thing.objType.replace("Unpublished", "")}?</strong>
             <br />
-            <a ${publishThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
+            <a ${publishThingLink(thing)} class="btn btn-danger">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${publishID}">No</a>
             <span id = "publish_${thing['urlCode']}"></span>
         </div>

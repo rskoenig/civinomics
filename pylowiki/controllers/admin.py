@@ -213,7 +213,7 @@ class AdminController(BaseController):
         if c.w:
             return redirect(utils.thingURL(c.w, c.thing))
         if c.user:
-            redirect(utils.thingURL(c.user, c.thing))
+            return redirect(utils.thingURL(c.user, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):
         eventTitle = '%s %s' % (action.title(), thing.objType.replace("Unpublished", ""))
@@ -298,7 +298,6 @@ class AdminController(BaseController):
     def publish(self, thingCode):
         if c.error:
             return c.returnDict
-        result = 'Successfully published!'
         c.thing['unpublished_by'] = ''
         c.thing.objType = c.thing.objType.replace("Unpublished", "")
         dbHelpers.commit(c.thing)
@@ -310,30 +309,40 @@ class AdminController(BaseController):
             child.objType = child.objType.replace("Unpublished", "")
             dbHelpers.commit(child)
             
-        return json.dumps({'code':thingCode, 'result':result})
+        if 'workshopCode' in c.thing:
+            dparent = generic.getThing(c.thing['workshopCode'])
+            returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
+        else:
+            dparent = generic.getThingByID(c.thing.owner)
+            returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
+        return redirect(returnURL)
         
     def unpublish(self, thingCode):
-        log.info('inside unpublish')
         if c.error:
             return c.returnDict
-        result = 'Successfully unpublished!'
         if(c.authuser.id == c.thing.owner):
             auth = 'owner'
         elif userLib.isAdmin(c.authuser.id):
             auth = 'admin'
             
         c.thing['unpublished_by'] = auth
-        c.thing.objType = c.thing.objType + "Unpublished"
+        c.thing.objType = c.thing.objType.replace("Unpublished", "") + "Unpublished"
         dbHelpers.commit(c.thing)
         
         # get the children and unplublish them
         children = generic.getChildrenOfParent(c.thing)
         for child in children:
             child['unpublished_by'] = 'parent'
-            child.objType = child.objType + "Unpublished"
+            child.objType = child.objType.replace("Unpublished", "") + "Unpublished"
             dbHelpers.commit(child)
             
-        return json.dumps({'code':thingCode, 'result':result})
+        if 'workshopCode' in c.thing:
+            dparent = generic.getThing(c.thing['workshopCode'])
+            returnURL = "/workshop/%s/%s/%s/%s/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'], c.thing['url'])
+        else:
+            dparent = generic.getThingByID(c.thing.owner)
+            returnURL = "/profile/%s/%s/%s/show/%s"%(dparent['urlCode'], dparent['url'], c.thing.objType.replace("Unpublished", ""), c.thing['urlCode'])
+        return redirect(returnURL)
         
     def flag(self, thingCode):
         if c.thing.objType != 'photo' and 'photoCode' not in c.thing:
