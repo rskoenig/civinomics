@@ -18,6 +18,7 @@ import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.alerts          as  alertsLib
 
 from pylowiki.lib.sort import sortBinaryByTopPop, sortContByAvgTop
@@ -91,6 +92,12 @@ class DiscussionController(BaseController):
                 abort(404)
         # name/title for facebook sharing
         c.name = c.thing['title']
+        if 'views' not in c.thing:
+            c.thing['views'] = u'0'
+            
+        views = int(c.thing['views']) + 1
+        c.thing['views'] = str(views)
+        dbHelpers.commit(c.thing)
 
         c.flags = flagLib.getFlags(c.thing)
         c.events = eventLib.getParentEvents(c.thing)

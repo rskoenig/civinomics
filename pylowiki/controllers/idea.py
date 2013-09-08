@@ -13,6 +13,7 @@ import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.alerts          as alertsLib
 import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render
@@ -108,6 +109,12 @@ class IdeaController(BaseController):
                 abort(404)
         # name/title for facebook sharing
         c.name = c.thing['title']
+        if 'views' not in c.thing:
+            c.thing['views'] = u'0'
+            
+        views = int(c.thing['views']) + 1
+        c.thing['views'] = str(views)
+        dbHelpers.commit(c.thing)
 
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'idea'
