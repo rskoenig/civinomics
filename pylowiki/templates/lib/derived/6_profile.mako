@@ -309,7 +309,9 @@
                     parentCode = activity['items'][itemCode]['parentCode']
                     parentObjType = activity['parents'][parentCode]['objType']
                     if parentObjType == 'photo':
-                        parentLink = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photo/show/" + parentCode
+                        ownerID = activity['parents'][parentCode]['owner']
+                        owner = userLib.getUserByID(ownerID)
+                        parentLink = "/profile/" + owner['urlCode'] + "/" + owner['url'] + "/photo/show/" + parentCode
                     else:
                         parentLink = workshopLink + "/" + parentObjType + "/" + activity['parents'][parentCode]['urlCode'] + "/" + activity['parents'][parentCode]['url']
                     title = lib_6.ellipsisIZE(activity['items'][itemCode]['data'], 40)
@@ -324,9 +326,11 @@
 
             % if objType == 'photo':
                 <% 
+                    ownerID = activity['items'][itemCode]['owner']
+                    owner = userLib.getUserByID(ownerID)
                     title = activity['items'][itemCode]['title']
                     urlCode = activity['items'][itemCode]['urlCode']
-                    link = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photo/show/" + urlCode
+                    link = "/profile/" + owner['urlCode'] + "/" + owner['url'] + "/photo/show/" + urlCode
                     activityStr = "added the picture <a href=\"" + link + "\">" + title + "</a>"
                 
                 %>

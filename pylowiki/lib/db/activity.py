@@ -63,6 +63,7 @@ def getMemberActivity(user, unpublished = '0'):
         itemList.append(itemCode)
         itemDict[itemCode] = {}
         itemDict[itemCode]['objType'] = activity.objType.replace("Unpublished", "")
+        itemDict[itemCode]['owner'] = activity.owner
         for key in itemKeys:
             if key in activity:
                 itemDict[itemCode][key] = activity[key]
@@ -79,6 +80,7 @@ def getMemberActivity(user, unpublished = '0'):
                 parent = generic.getThing(activity[parentCodeField])
                 parentDict[parentCode] = {}
                 parentDict[parentCode]['objType'] = parent.objType.replace("Unpublished", "")
+                parentDict[parentCode]['owner'] = parent.owner
                 for pkey in itemKeys:
                     if pkey in parent:
                         parentDict[parentCode][pkey] = parent[pkey]
