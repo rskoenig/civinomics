@@ -206,7 +206,7 @@
                             </script>
                             ${editPhoto()}
                             <div class="row-fluid">
-                                <button class="btn btn-success" type="Submit" onClick="setAction('{{file.image_hash}}'); return 1;">Submit</button>
+                                <button class="btn btn-success" type="Submit" onClick="setAction('{{file.image_hash}}'); return 1;">Save Changes</button>
                             </div><!-- row-fluid -->
                             </form>
                         </div><!-- preview -->
@@ -272,7 +272,7 @@
                         <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/${c.photo['pictureHash_photos']}/update/handler" method="post" class="form">
                             ${self.editPhoto()}
                             <div class="row-fluid">
-                                <button class="btn btn-success" type="Submit">Submit</button>
+                                <button class="btn btn-success" type="Submit">Save Changes</button>
                             </div><!-- row-fluid -->
                         </form>
                     </div><!-- span11 -->
@@ -296,7 +296,7 @@
                     <form action="/profile/${c.user['urlCode']}/${c.user['url']}/photo/${c.photo['pictureHash_photos']}/update/handler" method="post" class="form">
                         ${self.editPhoto()}
                         <div class="row-fluid">
-                            <button class="btn btn-success" type="Submit">Submit</button>
+                            <button class="btn btn-success" type="Submit">Save Changes</button>
                         </div><!-- row-fluid -->
                     </form>
                 </div><!-- span11 -->

@@ -196,6 +196,7 @@ class ProfileController(BaseController):
         photos = photoLib.getUserPhotos(c.user)
         if photos:
             c.photos = photos
+            c.photos.reverse()
 
         return render("/derived/6_profile_photos.bootstrap")
  
