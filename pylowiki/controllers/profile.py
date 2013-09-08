@@ -182,7 +182,7 @@ class ProfileController(BaseController):
     def showUserPhotos(self, id1, id2):
         # defaults for photo editor
         c.photo = False
-        c.title = "Sample Title"
+        c.photoTitle = "Sample Title"
         c.description = "Sample Description"
         c.categories = []
         c.country = '0'
@@ -214,7 +214,7 @@ class ProfileController(BaseController):
             c.revisions = []
         else:
             c.revisions = revisionLib.getRevisionsForThing(c.photo)
-        c.title = c.photo['title']
+        c.photoTitle = c.photo['title']
         c.description = c.photo['description']
         # for the 6_lib item functions we leverage
         c.thing = c.photo

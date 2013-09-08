@@ -23,7 +23,7 @@
             % endif
             <fieldset>
             <label for="title" class="control-label" required>Title:</label>
-            <input type="text" name="title" value="${c.title}">
+            <input type="text" name="title" value="${c.photoTitle}">
             <label for="description" class="control-label" required>Description:</label>
             <textarea name="description">${c.description}</textarea>
 
@@ -171,15 +171,15 @@
 <%def name="uploadPhoto()">
     % if 'user' in session and (c.authuser.id == c.user.id):
         <form id="fileupload" action="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
-            <div class="row-fluid fileupload-buttonbar">
+            <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
                 <div class="span10 offset1">
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="pull-left">Document your community with pictures.  (5MB max, please)</span>
-                    <span class="btn btn-success fileinput-button pull-right">
+                    <button class="btn btn-success fileinput-button pull-right" data-toggle="collapse" data-target="#fileinput-button-div">
                         <i class="icon-plus icon-white"></i>
                         <span>Picture</span>
                         <input type="file" name="files[]">
-                    </span>
+                    </button>
                     <!-- The loading indicator is shown during file processing -->
                     <div class="fileupload-loading"></div>
                 </div><!-- span10 -->
@@ -220,7 +220,7 @@
                         <i class="icon-upload icon-white"></i>
                         <span>Save</span>
                         </button>
-                        <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
+                        <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel" data-toggle="collapse" data-target="#fileinput-button-div">
                         <i class="icon-ban-circle icon-white"></i>
                         <span>Cancel</span>
                         </button>
