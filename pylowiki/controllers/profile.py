@@ -208,6 +208,13 @@ class ProfileController(BaseController):
         if not id3 or id3 == '':
             abort(404)
         c.photo = photoLib.getPhoto(id3)
+        if 'views' not in c.photo:
+            c.photo['views'] = u'0'
+            
+        views = int(c.photo['views']) + 1
+        c.photo['views'] = str(views)
+        dbHelpers.commit(c.photo)
+            
         if not c.photo:
             c.photo = revisionLib.getRevisionByCode(id3)
             if not c.photo:

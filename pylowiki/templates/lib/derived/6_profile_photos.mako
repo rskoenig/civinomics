@@ -250,8 +250,12 @@
         % endif
         % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'photoUnpublished':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
-        % elif (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType == 'photoUnpublished':
-            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+        % elif thing.objType == 'photoUnpublished' and thing['unpublished_by'] != 'parent':
+            % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+            % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+            % endif
         % endif
         % if userLib.isAdmin(c.authuser.id):
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
@@ -330,11 +334,15 @@
         <br />
         Added: ${c.photo.date}
         <br />
+        Views: ${c.photo['views']}
+        <br />
+        % if c.photo.objType == 'photoUnpublished':
+            Unpublished by: ${c.photo['unpublished_by']}<br />
+        % endif
         Photo Location: ${photoLib.getPhotoLocation(c.photo)}<br />
         <div class="spacer"></div>
         ${c.photo['description']}
         <div class="spacer"></div>
-
     % else:
         <%
             event = eventLib.getEventsWithAction(c.photo, 'deleted')[0]
