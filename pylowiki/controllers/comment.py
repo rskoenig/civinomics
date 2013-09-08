@@ -85,21 +85,21 @@ class CommentController(BaseController):
             if 'workshopCode' in thing:
                 title = ' replied to a post you made'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, workshop = workshop, extraInfo = extraInfo, sender = c.authuser)
-            elif thing.objType == 'photo':
+            elif thing.objType.replace("Unpublished", "") == 'photo':
                 title = ' commented on one of your pictures'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
             message = genericLib.linkChildToParent(message, comment.c)
             dbHelpers.commit(message)
-            log.info("after message")
             alertsLib.emailAlerts(comment)
             if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):
-                mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
-                if parentCommentCode and parentCommentCode != '0' and parentCommentCode != '':
-                    mailLib.sendCommentMail(parentAuthor['email'], parentComment, workshop, data)
+                if 'workshopCode' in thing:
+                    mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
+                elif thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in thing:
+                    mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
             
             if 'workshopCode' in thing:   
                 return redirect(utils.thingURL(workshop, thing))
-            elif thing.objType == 'photo':
+            elif thing.objType == 'photo' or 'photoCode' in thing:
                 return redirect(utils.profilePhotoURL(thing))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
