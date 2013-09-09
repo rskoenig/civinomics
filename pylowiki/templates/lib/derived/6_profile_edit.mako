@@ -226,11 +226,11 @@
                 <div id="fileupload-button-div" class="row-fluid fileupload-buttonbar collapse in">
                     <div class="span10 offset1">
                         <!-- The fileinput-button span is used to style the file input field as button -->
-                        <button class="btn btn-success fileinput-button span6 offset3" data-toggle="collapse" data-target="#fileupload-button-div">
+                        <span class="btn btn-success fileinput-button span6 offset3" data-toggle="collapse" data-target="#fileupload-button-div">
                             <i class="icon-plus icon-white"></i>
                             <span>Select your picture</span>
                             <input type="file" name="files[]">
-                        </button>
+                        </span>
                         <!-- The loading indicator is shown during file processing -->
                         <div class="fileupload-loading"></div>
                     </div>
