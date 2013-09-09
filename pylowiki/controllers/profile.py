@@ -353,7 +353,7 @@ class ProfileController(BaseController):
                 log.info("listening workshop")
                 
         items['facilitating'] = []
-        for workshop in c.facilitatorWorkshop:
+        for workshop in c.facilitatorWorkshops:
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
                 items['facilitating'].append(workshop)
             
