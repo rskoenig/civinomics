@@ -663,13 +663,11 @@ class ProfileController(BaseController):
             abort(404)
         
         requestKeys = request.params.keys()
-        log.info('got %s'%requestKeys)
         title = "Sample Title"
         description = "Sample Description"
         tags = "|"
         scope = "||0||0||0||0|0"
         
-        log.info("got title %s description %s and scope %s"%(title, description, scope))
         # first make sure the title, description, tag and location are set
         if 'files[]' in requestKeys:
             file = request.params['files[]']

@@ -175,11 +175,11 @@
                 <div class="span10 offset1">
                     <!-- The fileinput-button span is used to style the file input field as button -->
                     <span class="pull-left">Document your community with pictures.  (5MB max, please)</span>
-                    <button class="btn btn-success fileinput-button pull-right" data-toggle="collapse" data-target="#fileinput-button-div">
+                    <span class="btn btn-success fileinput-button pull-right"  data-toggle="collapse" data-target="#fileinput-button-div">
                         <i class="icon-plus icon-white"></i>
                         <span>Picture</span>
                         <input type="file" name="files[]">
-                    </button>
+                    </span>
                     <!-- The loading indicator is shown during file processing -->
                     <div class="fileupload-loading"></div>
                 </div><!-- span10 -->
@@ -220,7 +220,7 @@
                         <i class="icon-upload icon-white"></i>
                         <span>Save</span>
                         </button>
-                        <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel" data-toggle="collapse" data-target="#fileinput-button-div">
+                        <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
                         <i class="icon-ban-circle icon-white"></i>
                         <span>Cancel</span>
                         </button>
