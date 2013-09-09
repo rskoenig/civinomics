@@ -45,13 +45,19 @@ class AdminController(BaseController):
                 abort(404)
             c.thing = generic.getThing(thingCode)
             author = userLib.getUserByID(c.thing.owner)
-            if c.thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in c.thing:
-                userLib.setUserPrivs()
-            else:
+            
+            if 'workshopCode' in c.thing:
                 c.w = workshopLib.getWorkshopByCode(c.thing['workshopCode'])
                 workshopLib.setWorkshopPrivs(c.w)
-            
-            
+            elif 'photoCode' in c.thing:
+                # a comment of a photo
+                parent = generic.getThing(c.thing['photoCode'])
+                c.user = generic.getThing(parent['userCode'])
+                userLib.setUserPrivs()
+            elif c.thing.objType.replace("Unpublished", "") == 'photo':
+                c.user = generic.getThing(parent['userCode'])
+                userLib.setUserPrivs()
+                 
             # Check if a non-admin is attempting to mess with an admin-level item
             if userLib.isAdmin(author.id):
                 if not userLib.isAdmin(c.authuser.id):
@@ -212,7 +218,7 @@ class AdminController(BaseController):
         session.save()
         if c.w:
             return redirect(utils.thingURL(c.w, c.thing))
-        if c.user:
+        elif c.user:
             return redirect(utils.thingURL(c.user, c.thing))
 
     def _enableDisableDeleteEvent(self, user, thing, reason, action):

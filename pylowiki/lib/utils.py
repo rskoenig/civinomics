@@ -77,7 +77,7 @@ def thingURL(thingParent, thing):
             thing = generic.getThing(thing['resourceCode'])
         elif 'photoCode' in thing.keys():
             thing = generic.getThing(thing['photoCode'])
-            return baseURL + "/photo/show" + thing['urlCode'] 
+            return baseURL + "/photo/show/" + thing['urlCode'] 
         elif 'discussionCode' in thing.keys():
             thing = generic.getThing(thing['discussionCode'])
         else:
