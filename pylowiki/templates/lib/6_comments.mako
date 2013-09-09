@@ -218,7 +218,7 @@
             if comment['addedAs'] in roles:
                 role = '(%s)' % comment['addedAs']
         %>
-        ${role},<span class="grey">${lib_6.userGreetingMsg(author)}</span> from ${lib_6.userGeoLink(author, comment=True)}
+        ${role}<span class="grey">${lib_6.userGreetingMsg(author)}</span> from ${lib_6.userGeoLink(author, comment=True)}
         
         <span class="pull-right disabledComment-notice">
             <small>
