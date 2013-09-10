@@ -49,9 +49,15 @@
                     </a>
                 </li>
                 <li ng-class="showingDiscussions.class">
-                    <a href="#ideas" class = "green green-hover" ng-click="searchDiscussions()">
+                    <a href="#discussions" class = "green green-hover" ng-click="searchDiscussions()">
                         <span class="pull-left"><i class="icon-comments"></i> Discussions </span>
                         <span class="pull-right">(${c.numDiscussions})</span>
+                    </a>
+                </li>
+                <li ng-class="showingPhotos.class">
+                    <a href="#photos" class = "green green-hover" ng-click="searchPhotos()">
+                        <span class="pull-left"><i class="icon-picture"></i> Pictures </span>
+                        <span class="pull-right">(${c.numPhotos})</span>
                     </a>
                 </li>
             </ul>
@@ -233,6 +239,30 @@
                                     </p>
                                     <p class="no-bottom">
                                         <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                </div>
+                <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
+                    <table class="table table-condensed table-hover">
+                        <tr ng-repeat = "photo in photos"><td>
+                            <div class="media">
+                                <div class="pull-left">
+                                    <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
+                                </div>
+                                <div class="media-body">
+                                    <a href="{{photo.photoLink}}">{{photo.title}}</a><br />
+                                    Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
+                                    Location: {{photo.location}}<br />
+                                    Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                                    <br />
+                                    <p>
+                                        Net votes: {{photo.voteCount}}
+                                    </p>
+                                    <p>
+                                        Comments: {{photo.numComments}}
                                     </p>
                                 </div>
                             </div>
