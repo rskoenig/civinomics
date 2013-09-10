@@ -1,21 +1,16 @@
 <%inherit file="/base/base_indented.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
-<%namespace file="/lib/derived/6_profile.mako" name="helpers" />
-<%namespace file="/lib/derived/6_profile_edit.mako" name="helpersEdit" />
+<%namespace file="/lib/derived/6_profile_messages.mako" name="messages" />
 
-<%!
-    from pylowiki.lib.db.user import isAdmin
-%>
-    <!-- inline style kludge to handle fixed nav bar -->
-    <div class="row-fluid" style="padding-top: 10px;">
-        <div class="span8">
-            <span class="lead grey expl-phrase">Messages</span>
-            <div id="tab-messages">
-                ${helpersEdit.profileMessages()}
-            </div>
+<div class="spacer"></div>
+<div class="row-fluid">
+    <div class="span8">
+        <span class="lead grey expl-phrase">Messages</span>
+        <div id="tab-messages">
+            ${messages.profileMessages()}
         </div>
     </div>
-##</div>
+</div>
 
 <%def name = 'extraScripts()'>
     <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>

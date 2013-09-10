@@ -107,49 +107,24 @@ color: #999;
    bottom:0;
    right:12px;
 }
-
-.corp-sidebar{
-  min-width: 130px;
-  margin-top:10px;
-}
-
-.corp-sidebar li a{
-  width: 130px;
-}
-
-.civ-search{
-  margin-top: 30px;
-}
-
 .civ-search > .nav.nav-tabs > li > a{
     min-width:150px;
-    color: #ffffff;
-    font-size: 16px;
 }
-
-.civ-search > .nav.nav-tabs > li > a:hover{
-    color: #005d28;
-}
-
-.civ-search > .nav.nav-tabs > li.active > a{
-    color: #005d28;
-}
-
 .civ-search > .nav-tabs > .active > a, .civ-search > .nav-tabs > .active > a:hover{
-    border:1px solid #ffffff;
-    color: #005d28;
+    border:3px solid #075D00;
 }
 .civ-search.tabs-left > .nav-tabs .active > a, .tabs-left > .nav-tabs .active > a:hover{
-    border-color:#ffffff transparent #ffffff #ffffff;
+    border-color:#075D00 transparent #075D00 #075D00;
 }
-
+.civ-search.tabs-left > .nav-tabs > li > a{
+    margin-right:-3px;
+}
 .civ-search.tabs-left > .nav-tabs{
-    border-right:1px solid #ffffff;
+    border-right:3px solid #075D00;
 }
 .loading-civ{
     margin-top:10%;
-    margin-left:45%;
-    color: #ffffff;
+    margin-left:35%;
 }
 
 .accordion-heading .accordion-toggle {
@@ -168,23 +143,24 @@ padding: 0;
 .workshop-tag{
     margin-left:5px;
 }
-.green-tag{
-    background-color: #005d28;
+
+.green-tag, .Outdoors, .Land, .Environment, .Animals{
+    background-color: #075D00;
 }
-.orange-tag{
-    background-color: #f89406;
+.orange-tag, .Arts, .Entertainment, .Sports, .Community, .Other{
+    background-color: #D15D00;
 }
-.blue-tag{
+.blue-tag, .Transportation, .Infrastructure, .Municipal{
     background-color: #3a87ad;
 }
-.grey-tag{
+.grey-tag, .Government, .NonProfit, .Policy{
     background-color: #999999;
 }
-.black-tag{
+.black-tag, .Business, .Economy, .Employment, .Education, .Housing{
     background-color: #333333;
 }
-.red-tag{
-    background-color: #90000a;
+.red-tag, .Civil, .Health, .Safety, .Justice{
+    background-color: #b94a48;
 }
 .well.footer{
    background: white;
@@ -213,7 +189,7 @@ padding: 0;
   margin-right: 8px; 
 }
 
-.horizontal-list.iconListing{
+.horizontal-list.ideaListing{
   margin-left: 0px;
   margin-bottom: 0px;
   font-size: .85em;
@@ -412,6 +388,11 @@ ul.activity > li {
     margin-bottom: 15px;
 }
 
+.wrap-photo{
+    box-shadow: 0 0px 4px #111;
+    border: 1px solid #005d28;
+}
+
 .wrap-workshop{
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
@@ -422,7 +403,7 @@ ul.activity > li {
     border: 1px solid #005d28;
     margin-top:5px;
     position:relative;
-    min-height: 265px;
+    min-height: 256px;
 }
 
 .wrap-workshop:hover{
@@ -510,7 +491,10 @@ ul.activity > li {
 .list-item{
    margin-top:10px;
    border-radius:10px;
-   min-height: 80px;
+}
+
+.list-item .list-item-text{
+   margin-left: 0;
 }
 
 .list-item .ideaListing{
@@ -628,27 +612,23 @@ img.avatar{
 .avatar{
    height: 70px;
    width:70px;
-   min-width: 70px;
    margin-bottom:5px;
 }
 
 .small-avatar{
    height: 25px;
    width:25px;
-   min-width: 25px;
 }
 
 .med-avatar{
    height: 40px;
    width: 40px;
-   min-width: 40px;
    margin-right: 15px;
 }
 
 .avatar.topbar-avatar{
     height:20px;
     width:20px;
-    min-width: 20px;
     margin-bottom:0;
 }
 
@@ -894,7 +874,7 @@ a.yesVote, a.noVote{
 .workshop-nav-icon{
    max-height:16px;
 }
-.search-icon{
+.workshop-search-icon{
     max-width:15px;
 }
 
@@ -1545,11 +1525,11 @@ li.thumbnail-gallery{
   padding-right: 10px;
 }
 
-.upVote > .icon-chevron-sign-up, .downVote > .icon-chevron-sign-down, .nullvote .icon-chevron-sign-up, .nullvote .icon-chevron-sign-down{
+.icon-chevron-sign-up{
   color: #b6b6b6;
 }
 
-.upVote > .icon-chevron-sign-up:hover, .nullvote .icon-chevron-sign-up:hover{
+.icon-chevron-sign-up:hover{
   color: #90ccaa;
 }
 
@@ -1557,7 +1537,11 @@ li.thumbnail-gallery{
   color: #00903e;
 }
 
-.downVote > .icon-chevron-sign-down:hover, .nullvote .icon-chevron-sign-down:hover{
+.icon-chevron-sign-down{
+  color: #b6b6b6
+}
+
+.icon-chevron-sign-down:hover{
   color: #d1979b
 }
 
@@ -1569,7 +1553,6 @@ li.thumbnail-gallery{
   font-size: 18px;
   margin-bottom: 3px;
   font-weight: bold;
-  color: black;
 }
 
 .border-bottom{
@@ -1586,108 +1569,4 @@ li.thumbnail-gallery{
 
 .icon-twitter-sign{
   color: #0099cc;
-}
-
-.geoName{
-  color: #fff;
-  font-size: 30px;
-}
-
-.searchName{
-  color: #fff;
-  font-size: 20px;
-}
-
-.well.searchListing{
-  opacity: 0.9;
-}
-
-.well.search-side-bar{
-  opacity: 0.9;
-  padding: 10px;
-  min-width: 220px;
-}
-
-.table.plain, tr.plain > td{
-  border-top: 0;
-}
-
-.table.plain td{
-  padding: 0;
-}
-
-.table tr td .well{
-  margin-bottom: 8px;
-}
-
-.media.well > p {
-  margin-bottom: 5px;
-}
-
-.form-horizontal.stats .control-group{
-  margin-bottom: 0;
-}
-
-.form-horizontal.stats .control-label{
-float: left;
-width: 100px;
-padding-top: 5px;
-text-align: right;
-}
-
-.form-horizontal.stats .controls{
-  margin-left: 100px;
-  padding-top: 5px;
-}
-
-.thumbnail.flag{
-  width: 150px;
-  margin: 0 auto 10px;
-}
-
-.darkened-bg{
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: -1;
-  background-image: -o-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.2) 50%);
-  background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.2) 50%);
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(rgba(0,0,0,0)), color-stop(0.5, rgba(0,0,0,0.2)));
-  background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.2) 50%);
-  background-image: -ms-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.2) 50%);
-  background-image: linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.2) 50%);
-  /* IE 5.5 - 7 */
-  filter: progid:DXImageTransform.Microsoft.gradient(
-    gradientType=1, startColor=#000000, endColorStr=0
-  );
-
-  /* IE8 uses -ms-filter for whatever reason... */
-  -ms-filter: progid:DXImageTransform.Microsoft.gradient(
-    gradientType=1, startColor=#000000, endColoStr=0
-  );
-}
-
-hr.stats{
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-.break, h4{
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  -ms-word-break: break-all;
-    word-break: break-all;
-
-    /* Non standard for webkit */
-    word-break: break-word;
-
-  -webkit-hyphens: auto;
-    -moz-hyphens: auto;
-      hyphens: auto;
-}
-
-.med-width{
-  width: 150px;
 }

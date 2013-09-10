@@ -12,6 +12,7 @@
    import pylowiki.lib.db.mainImage     as mainImageLib
    import pylowiki.lib.db.tag           as tagLib
    import pylowiki.lib.db.workshop      as workshopLib
+   import pylowiki.lib.db.photo         as photoLib
    
    from hashlib import md5
    import logging, os
@@ -203,22 +204,20 @@
          <i class="${voteClass}"></i>
          </a>
       % else:
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
-         <!--
-         <a href="#" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
-         -->
+        % if thing.objType == 'photo':
+            <% loginURL = "/login" %>
+        % else:
+            <% loginURL = "/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" %>
+        % endif
+         <a href="${loginURL}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          <i class="icon-chevron-sign-up icon-2x"></i>
          </a>
          <br />
          <div class="centered chevron-score"> ${rating}</div>
-         <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
-         <!--
-         <a href="#" rel="tooltip" data-placement="bottom" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
-         -->
+         <a href="${loginURL}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          <i class="icon-chevron-sign-down icon-2x"></i>
          </a>
          <br />
-         <% log.info("vote") %>
       % endif
    </div>
 </%def>
@@ -484,6 +483,23 @@
    ${resourceStr | n}
 </%def>
 
+<%def name="photoLink(photo, dparent, **kwargs)">
+   <%
+        photoStr = 'href="/profile/%s/%s/photo/show/%s' %(dparent["urlCode"], dparent["url"], photo["urlCode"])
+        
+        photoStr += commentLinkAppender(**kwargs)
+        if 'noHref' in kwargs:
+            photoStr += ''
+        else:
+            photoStr += '"'
+
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return photoStr
+   %>
+   ${photoStr | n}
+</%def>
+
 <%def name="ideaLink(i, w, **kwargs)">
    <%
         if 'noHref' in kwargs:
@@ -520,13 +536,18 @@
     ${discussionStr | n}
 </%def>
 
-<%def name="commentLink(comment, w, **kwargs)">
+<%def name="commentLink(comment, dparent, **kwargs)">
    <% 
-
+        if dparent.objType.replace("Unpublished", "") == 'workshop':
+            parentBase = 'workshop'
+            commentSuffix = "/comment/%s"%comment['urlCode']
+        elif dparent.objType.replace("Unpublished", "") == 'user':
+            parentBase = 'profile'
+            
         if 'noHref' in kwargs:
-            linkStr = '/workshop/%s/%s/comment/%s' %(w["urlCode"], w["url"], comment["urlCode"])
+            linkStr = '/%s/%s/%s/comment/%s' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
         else:
-            linkStr = 'href="/workshop/%s/%s/comment/%s"' %(w["urlCode"], w["url"], comment["urlCode"])
+            linkStr = 'href="/%s/%s/%s/comment/%s"' %(parentBase, dparent["urlCode"], dparent["url"], comment["urlCode"])
         if 'embed' in kwargs:
             if kwargs['embed'] == True:
                 return linkStr
@@ -534,37 +555,42 @@
    ${linkStr | n}
 </%def>
 
-<%def name="thingLinkRouter(thing, workshop, **kwargs)">
+<%def name="thingLinkRouter(thing, dparent, **kwargs)">
     <%
         if thing.objType == 'revision':
-            objType = thing['objType']
+            objType = thing['objType'].replace("Unpublished", "")
         else:
-            objType = thing.objType
+            objType = thing.objType.replace("Unpublished", "")
         if objType == 'discussion':
-            return discussionLink(thing, workshop, **kwargs)
+            return discussionLink(thing, dparent, **kwargs)
         elif objType == 'resource':
-            return resourceLink(thing, workshop, **kwargs)
+            return resourceLink(thing, dparent, **kwargs)
         elif objType == 'idea':
-            return ideaLink(thing, workshop, **kwargs)
+            return ideaLink(thing, dparent, **kwargs)
         elif objType == 'comment':
             if thing.objType == 'revision':
-                return commentLink(thing, workshop, **kwargs)
+                return commentLink(thing, dparent, **kwargs)
             # set up for member activity feeds in profile.py getMemberPosts  
             if 'ideaCode' in thing.keys():
                 idea = ideaLib.getIdea(thing['ideaCode'])
                 if not idea:
                     return False
-                return ideaLink(idea, workshop, **kwargs)
+                return ideaLink(idea, dparent, **kwargs)
             elif 'resourceCode' in thing.keys():
                 resource = resourceLib.getResourceByCode(thing['resourceCode'])
                 if not resource:
                     return False
-                return resourceLink(resource, workshop, **kwargs)
+                return resourceLink(resource, dparent, **kwargs)
+            elif 'photoCode' in thing.keys():
+                photo = photoLib.getPhoto(thing['photoCode'])
+                if not photo:
+                    return False
+                return photoLink(photo, dparent, **kwargs)
             else:
                 discussion = discussionLib.getDiscussion(thing['discussionCode'])
                 if not discussion:
                     return False
-                return discussionLink(discussion, workshop, **kwargs)
+                return discussionLink(discussion, dparent, **kwargs)
     %>
 </%def>
 
@@ -933,6 +959,36 @@
     ${flagStr | n}
 </%def>
 
+<%def name="unpublishThingLink(thing, **kwargs)">
+    <%
+        unpublishStr = '"/unpublish/%s/%s"' %(thing.objType, thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return unpublishStr
+                    return 'href = ' + unpublishStr
+                return 'href = ' + unpublishStr
+        unpublishStr = 'href = ' + unpublishStr
+    %>
+    ${unpublishStr | n}
+</%def>
+
+<%def name="publishThingLink(thing, **kwargs)">
+    <%
+        publishStr = '"/publish/%s/%s"' %(thing.objType.replace("Unpublish", ""), thing['urlCode'])
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                if 'raw' in kwargs:
+                    if kwargs['raw'] == True:
+                        return publishStr
+                    return 'href = ' + publishStr
+                return 'href = ' + publishStr
+        publishStr = 'href = ' + publishStr
+    %>
+    ${publishStr | n}
+</%def>
+
 <%def name="editThingLink(thing, **kwargs)">
     <%
         editStr = "/edit/%s/%s" %(thing.objType, thing['urlCode'])
@@ -957,6 +1013,32 @@
             <a ${flagThingLink(thing)} class="btn btn-danger flagCommentButton">Yes</a>
             <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${flagID}">No</a>
             <span id = "flagged_${thing['urlCode']}"></span>
+        </div>
+    </div>
+</%def>
+
+<%def name="unpublishThing(thing, **kwargs)">
+    <% unpublishID = 'unpublish-%s' % thing['urlCode'] %>
+    <div class="row-fluid collapse" id="${unpublishID}">
+        <div class="span11 offset1 alert">
+            <strong>Are you sure you want to unpublish this ${thing.objType}?</strong>
+            <br />
+            <a ${unpublishThingLink(thing)} class="btn btn-danger">Yes</a>
+            <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">No</a>
+            <span id = "unpublish_${thing['urlCode']}"></span>
+        </div>
+    </div>
+</%def>
+
+<%def name="publishThing(thing, **kwargs)">
+    <% publishID = 'publish-%s' % thing['urlCode'] %>
+    <div class="row-fluid collapse" id="${publishID}">
+        <div class="span11 offset1 alert">
+            <strong>Are you sure you want to publish this ${thing.objType.replace("Unpublished", "")}?</strong>
+            <br />
+            <a ${publishThingLink(thing)} class="btn btn-danger">Yes</a>
+            <a class="btn accordion-toggle" data-toggle="collapse" data-target="#${publishID}">No</a>
+            <span id = "publish_${thing['urlCode']}"></span>
         </div>
     </div>
 </%def>
@@ -1132,7 +1214,13 @@
                               <th>Author</th>
                           </tr>
                           % for rev in revisions:
-                              <% linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, c.w, embed=True), rev.date) %>
+                            <% 
+                                    if c.w:
+                                        dparent = c.w
+                                    elif c.user:
+                                        dparent = c.user
+                                    linkStr = '<a %s>%s</a>' %(thingLinkRouter(rev, dparent, embed=True), rev.date) 
+                            %>
                               <tr>
                                   <td>${linkStr | n}</td>
                                   <td>${userLink(rev.owner)}</td>

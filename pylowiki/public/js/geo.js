@@ -143,6 +143,40 @@ function geoTagStateChange(){
     }
 }
 
+function geoTagCountryChange(){
+    var selectIndex = document.getElementById("geoTagCountry").selectedIndex;
+    document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
+    document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "";
+    document.getElementById("citySelect").innerText = document.getElementById("citySelect").textContent = "";
+    document.getElementById("postalSelect").innerText = document.getElementById("postalSelect").textContent = "";
+    document.getElementById("underPostal").innerText = document.getElementById("underPostal").textContent = "";
+    if (selectIndex === 0) {
+        document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "or leave blank if specific to the entire planet.";
+    }
+    if (selectIndex === 1) {
+        var urlString = '/geo/stateList/united-states';
+        var stateList = $.ajax({
+            type : 'POST',
+            async : false,
+            url  : urlString
+        }).responseText;
+        var gobj = jQuery.parseJSON(stateList);
+        if (gobj.result != "0") {
+            var states = gobj.result.split(/\|/);
+            var stateMenu = "<div class=\"span1\"></div><div class=\"span2\">State:</div><div class=\"span9\"><select id=\"geoTagState\" name=\"geoTagState\" class=\"geoTagState\" onChange=\"geoTagStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
+            for(var i = 0;i < states.length;i++){
+                if (states[i] !== "") {
+                    stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";
+                }
+            }
+            stateMenu = stateMenu + "</select></div>";
+            document.getElementById("stateSelect").innerText = document.getElementById("stateSelect").textContent = "";
+            document.getElementById("stateSelect").innerHTML = stateMenu;            
+            document.getElementById("countySelect").innerText = document.getElementById("countySelect").textContent = "or leave blank if specific to the entire country.";
+        }
+    }
+}
+
 
 $('.geoTagCountry').change(function(e){
     e.preventDefault();

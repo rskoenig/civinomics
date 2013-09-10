@@ -34,9 +34,12 @@ def getMemberPosts(user, disabled = '0', deleted = '0'):
     except:
         return False
         
-def getMemberActivity(user):
-    activityTypes = ['resource', 'comment', 'discussion', 'idea']
-    codes = ['resourceCode', 'ideaCode', 'discussionCode']
+def getMemberActivity(user, unpublished = '0'):
+    if unpublished == '1':
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished']
+    else:
+        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo']
+    codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
     workshopKeys = ['deleted', 'disabled', 'public_private', 'urlCode', 'url',  'title', 'published']
     itemKeys = ['deleted', 'disabled', 'urlCode', 'workshopCode']
     
@@ -52,18 +55,20 @@ def getMemberActivity(user):
         .order_by('-date').all()
     # Messy
     for activity in initialActivityList:
-        if activity.objType == 'discussion' and activity['discType'] != 'general':
+        if activity.objType.replace("Unpublished", "") == 'discussion' and activity['discType'] != 'general':
             continue
             
         # load the itemDict for this item
         itemCode = activity['urlCode']
         itemList.append(itemCode)
         itemDict[itemCode] = {}
-        itemDict[itemCode]['objType'] = activity.objType
+        itemDict[itemCode]['objType'] = activity.objType.replace("Unpublished", "")
+        itemDict[itemCode]['owner'] = activity.owner
         for key in itemKeys:
-            itemDict[itemCode][key] = activity[key]
+            if key in activity:
+                itemDict[itemCode][key] = activity[key]
                 
-        if activity.objType == 'comment':
+        if activity.objType.replace("Unpublished", "") == 'comment':
             key = 'data'
             # comprehensions return a list
             parentCodeList = [i for i in codes if i in activity.keys()]
@@ -74,16 +79,18 @@ def getMemberActivity(user):
             if parentCode not in parentDict.keys():
                 parent = generic.getThing(activity[parentCodeField])
                 parentDict[parentCode] = {}
-                parentDict[parentCode]['objType'] = parent.objType
+                parentDict[parentCode]['objType'] = parent.objType.replace("Unpublished", "")
+                parentDict[parentCode]['owner'] = parent.owner
                 for pkey in itemKeys:
-                    parentDict[parentCode][pkey] = parent[pkey]
+                    if pkey in parent:
+                        parentDict[parentCode][pkey] = parent[pkey]
                 if parent.objType == 'comment':
                     pkey = 'data'
                 else:
                     parentDict[parentCode]['url'] = parent['url']
                     pkey = 'title'
-                    
-                parentDict[parentCode][pkey] = parent[pkey]
+                if pkey in parent:    
+                    parentDict[parentCode][pkey] = parent[pkey]
                 
         else:
             itemDict[itemCode]['url'] = activity['url']
@@ -92,7 +99,7 @@ def getMemberActivity(user):
         itemDict[itemCode][key] = activity[key]
             
         # see if we need to lookup the workshop and add it to the workshopDict
-        if activity['workshopCode'] not in workshopDict:
+        if 'workshopCode' in activity and activity['workshopCode'] not in workshopDict:
             workshopCode = activity['workshopCode']
             workshop = generic.getThing(workshopCode)
             workshopDict[workshopCode] = {}

@@ -87,9 +87,10 @@ def Message(**kwargs):
     if 'extraInfo' in kwargs:
         extraInfo = kwargs['extraInfo']
         m['extraInfo'] = extraInfo
-        workshop = kwargs['workshop']
-        if extraInfo in ['facilitationInvite', 'listenerInvite', 'listenerSuggestion']:
-            generic.linkChildToParent(m, workshop)
+        if 'workshop' in kwargs:
+            workshop = kwargs['workshop']
+            if extraInfo in ['facilitationInvite', 'listenerInvite', 'listenerSuggestion']:
+                generic.linkChildToParent(m, workshop)
     
     m['sender']     = sender
     m['text']       = text
@@ -101,7 +102,12 @@ def Message(**kwargs):
     m['urlCode'] = toBase62(m)
     commit(m)
     
-    d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
+    if 'workshop' in kwargs:
+        d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
                 title = title, text = text, workshop = kwargs['workshop'], privs = kwargs['privs'], role = None)
+    else:
+        d = discussionLib.Discussion(owner = kwargs['owner'], discType = 'message', attachedThing = m,\
+            title = title, text = text, privs = kwargs['privs'], role = None)
+        
     return m
     
