@@ -51,7 +51,13 @@
                 <li><a href="/admin/comments">Comments</a></li>
             % endif
             
-            % if itemType == 'photo':
+             % if itemType == 'photo':
+                <li class="active"><a href="/admin/photos">Photos</a></li>
+            % else:
+                <li><a href="/admin/photos">Photos</a></li>
+            % endif
+            
+            % if itemType == 'flaggedphoto':
                 <li class="active"><a href="/admin/flaggedPhotos">Flagged Photos</a></li>
             % else:
                 <li><a href="/admin/flaggedPhotos">Flagged Photos</a></li>

@@ -14,6 +14,7 @@ import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
 import pylowiki.lib.db.workshop         as workshopLib
 import pylowiki.lib.db.idea             as ideaLib
+import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.resource         as resourceLib
 import pylowiki.lib.db.comment          as commentLib
@@ -35,7 +36,7 @@ class AdminController(BaseController):
     def __before__(self, action, thingCode = None):
         if 'user' not in session:
             abort(404)
-        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos']:
+        if action in ['users', 'workshops', 'ideas', 'discussions', 'resources', 'comments', 'flaggedPhotos', 'photos']:
             if not userLib.isAdmin(c.authuser.id):
                 abort(404)
                 
@@ -120,6 +121,12 @@ class AdminController(BaseController):
                 
     def users(self):
         c.list = userLib.getAllUsers()
+        return render( "/derived/6_list_all_items.bootstrap" )
+        
+    def photos(self):
+        c.list = photoLib.getAllPhotos()
+        if not c.list:
+            c.list = []
         return render( "/derived/6_list_all_items.bootstrap" )
         
     def flaggedPhotos(self):
