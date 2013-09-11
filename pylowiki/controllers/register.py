@@ -838,6 +838,8 @@ class RegisterController(BaseController):
                     session['splashMsg'] = splashMsg
                     session.save() 
             else:
+                # If they've registered using external authentication, they cannot add a password
+                # by registering in this way.
                 splashMsg['content'] = "The email '" + email + "' is already in use"
                 session['splashMsg'] = splashMsg
                 session.save() 
