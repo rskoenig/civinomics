@@ -26,11 +26,15 @@
                       % if c.conf['read_only.value'] == 'true':
                           <h1> Sorry, Civinomics is in read only mode right now </h1>
                       % else:
-                          <div style="margin-left: 80px;" id="fbLoginButton1">
-                              <fb:login-button show-faces="false" size="xlarge" scope="email, user_photos"><img src="/images/fb_signin.png"></fb:login-button>
+                          <div class="row">
+                              <div class="span3 offset2" id="fbLoginButton1">
+                                  <fb:login-button show-faces="false" size="xlarge" scope="email, user_photos"><img src="/images/fb_signin.png"></fb:login-button>
+                              </div>
                           </div>
-                          <div style="margin-left: 20px;" id="twtLoginButton1">
-                              <a href="/twitterLoginBegin"><img src="/images/twitter-sign-in-with-gray.png"></a>
+                          <div class="row">
+                              <div class="span3 offset2" style="padding-top:21px;" id="twtLoginButton1">
+                                  <a href="/twitterLoginBegin"><img src="/images/twitter-sign-in-with-gray.png"></a>
+                              </div>
                           </div>
                           <div class="social-sign-in-separator sc-font-light sc-text-light">
                               <span>Or sign in with your email</span>
