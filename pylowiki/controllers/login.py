@@ -16,19 +16,9 @@ from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.share    as shareLib
 
-#tweepy imports
-import tweepy as tweepy
-
 # twython imports
 from twython import Twython
-
-# oauth2 imports
 import urlparse
-import oauth2 as oauth
-
-# manual oauth access imports - some are needed elsewhere
-import requests
-import mechanize
 
 import base64
 import hashlib
@@ -93,105 +83,6 @@ class LoginController(BaseController):
 
         return data
 
-    def create_auth_header(self, parameters):
-        """For all collected parameters, order them and create auth header"""
-        ordered_parameters = {}
-        ordered_parameters = OrderedDict(sorted(parameters.items()))
-        auth_header = (
-            '%s="%s"' % (k, v) for k, v in ordered_parameters.iteritems())
-        val = "OAuth " + ', '.join(auth_header)
-        return val
-
-    def calculate_signature(self, signing_key, signature_base_string):
-        """Calculate the signature using SHA1"""
-        hashed = hmac.new(signing_key, signature_base_string, hashlib.sha1)
-
-        sig = binascii.b2a_base64(hashed.digest())[:-1]
-
-        return LoginController.escape(self, sig)
-
-
-    def create_signing_key(self, oauth_consumer_secret, oauth_token_secret=None):
-        """Create key to sign request with"""
-        signing_key = LoginController.escape(self, oauth_consumer_secret) + '&'
-
-        if oauth_token_secret is not None:
-            signing_key += LoginController.escape(self, oauth_token_secret)
-
-        return signing_key
-
-
-    def stringify_parameters(self, parameters):
-        """Orders parameters, and generates string representation of parameters"""
-        output = ''
-        ordered_parameters = {}
-        ordered_parameters = OrderedDict(sorted(parameters.items()))
-
-        counter = 1
-        for k, v in ordered_parameters.iteritems():
-            output += LoginController.escape(self, str(k)) + '=' + LoginController.escape(self, str(v))
-            if counter < len(ordered_parameters):
-                output += '&'
-                counter += 1
-
-        return output
-
-    def escape(self, s):
-        """Percent Encode the passed in string"""
-        return urllib.quote(s, safe='~')
-
-    def collect_parameters(self, oauth_parameters, status, url_parameters):
-        """Combines oauth, url and status parameters"""
-        #Add the oauth_parameters to a temp hash
-        temp = oauth_parameters.copy()
-
-        #Add the status, if passed in.  Used for posting a new tweet
-        if status is not None:
-            temp['status'] = status
-
-        if url_parameters is not None:
-            #Add the url_parameters to the temp hash
-            for k, v in url_parameters.iteritems():
-                temp[k] = v
-
-        return temp
-
-    def generate_signature(self, method, url, oauth_parameters, oauth_consumer_key, oauth_consumer_secret, oauth_token_secret=None, status=None, url_parameters=None):
-        """Create the signature base string"""
-
-        #Combine parameters into one hash
-        temp = LoginController.collect_parameters(self, oauth_parameters, status, url_parameters)
-
-        #Create string of combined url and oauth parameters
-        parameter_string = LoginController.stringify_parameters(self, temp)
-
-        #Create your Signature Base String
-        signature_base_string = ( method.upper() + '&' + LoginController.escape(self, str(url)) + '&' + LoginController.escape(self, parameter_string) )
-
-        #Get the signing key
-        signing_key = LoginController.create_signing_key(self, oauth_consumer_secret, oauth_token_secret)
-
-        return LoginController.calculate_signature(self, signing_key, signature_base_string)
-
-    def get_nonce(self):
-        """Unique token generated for each request"""
-        n = base64.b64encode(''.join([str(random.randint(0, 9)) for i in range(24)]))
-        return n
-
-    def get_oauth_parameters(self, consumer_key, access_token):
-        """Returns OAuth parameters needed for making request"""
-        oauth_parameters = {
-            'oauth_callback' : config['twitter.callbackurl'],
-            'oauth_timestamp': str(int(time.time())),
-            'oauth_signature_method': "HMAC-SHA1",
-            'oauth_version': "1.0",
-            'oauth_token': access_token,
-            'oauth_nonce': LoginController.get_nonce(self),
-            'oauth_consumer_key': consumer_key
-        }
-
-        return oauth_parameters
-
     def twythonLogin(self):
         #: https://github.com/ryanmcgrath/twython
         # create a Twython instance with Consumer Key and Consumer Secret
@@ -212,9 +103,13 @@ class LoginController(BaseController):
         # The callback from twitter will include a verifier as a parameter in the URL.
         # The final step is exchanging the request token for an access token. The access 
         # token is the “key” for opening the Twitter API
-        oauth_verifier = request.GET['oauth_verifier']
+        #oauth_verifier = request.GET['oauth_verifier']
+
+        oauth_verifier = request.params['oauth_verifier']
+        oauth_token = request.params['oauth_token']
+
         # We should verify that the token matches the request token received in step 1.
-        if not request.GET['oauth_token'] == session['oauth_token']:
+        if not oauth_token == session['oauth_token']:
             log.error('Invalid oauth_token')
             return redirect('/')
         #log.info("oauth_verifier: %s"%oauth_verifier)
@@ -225,245 +120,56 @@ class LoginController(BaseController):
 
         final_step = twitter.get_authorized_tokens(oauth_verifier)
 
-        # Once we have the final user tokens, we store them in a database for later use
-        # NOTE - for now they're stored in the session. not good - must store in db
-        session['oauth_token_final'] = final_step['oauth_token']
-        session['oauth_token_secret_final'] = final_step['oauth_token_secret']
-        session.save()
-
         #log.info("session['oauth_token_final']: %s" % session['oauth_token_final'])        
         #log.info("session['oauth_token_secret_final']: %s" % session['oauth_token_secret_final'])
 
         # with the final user data, we re-initialize the twitter api access object
-        twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'], session['oauth_token_final'], session['oauth_token_secret_final'])
+        twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'], final_step['oauth_token'], final_step['oauth_token_secret'])
 
         # grab the user's creds
         myCreds = twitter.verify_credentials()
         
-        # NEXT - new user? create account and log them in (asking for zip / email on the way)
-        #  returning user? log them in.
+        user = userLib.getUserByTwitterId( myCreds['id'] )
+        if user:
+            log.info('found twitter id')
+            # we have an active account.
+            user['oauth_twitter_token'] = final_step['oauth_token']
+            user['oauth_twitter_token_secret'] = final_step['oauth_token_secret']
+            user['externalAuthType'] = 'twitter'
+            commit(user)
+            # log this person in
+            LoginController.logUserIn(self, user)
+        else:
+            log.info('did not find twitter id')
+            c.numAccounts = 1000
+            c.numUsers = len(userLib.getActiveUsers())
 
-        log.info("myCreds: %s" % myCreds)
+            if c.numUsers >= c.numAccounts:
+                splashMsg = {}
+                splashMsg['type'] = 'error'
+                splashMsg['title'] = 'Error:'
+                splashMsg['content'] = 'Sorry, our website has reached capacity!  We will be increasing the capacity in the coming weeks.'
+                session['splashMsg'] = splashMsg
+                session.save()
+                return redirect('/')
+            # save necessary info in session for registering this user
+            session['twitterId'] = myCreds['id']
+            session['twitter_oauth_token'] = final_step['oauth_token']
+            session['twitter_oauth_secret'] = final_step['oauth_token_secret']
+            session['twitterName'] = myCreds['name']
+            session['twitterProfilePic'] = myCreds['profile_image_url_https']
 
-    def twtLoginTweepy(self):
-        #: https://github.com/tweepy/tweepy
-        #: create an OAuthHandler instance .. tweepy's doc is misleading:
-        #: code example - auth = tweepy.OAuthHandler(consumer_token, consumer_secret)
-        #: consumer_token is either our consumer_key, or access_token - likely it's consumerKey
-        # the callback_url can be passed in here as a third arg if needed.
-        # in our case, this is set in our application's settings on twitter
-        auth = tweepy.OAuthHandler(config['twitter.consumerKey'], config['twitter.consumerSecret'])
+            c.title = c.heading = "Registration using your Twitter Account"
+            c.success = False
+            splashMsg = {}
+            splashMsg['type'] = 'success'
+            splashMsg['title'] = 'Email, zipcode and terms of use.'
+            splashMsg['content'] = 'Before we can sign you in, please provide your email, zipcode and agree to our use terms of use.'
+            
+            session['splashMsg'] = splashMsg
+            session.save()
 
-        # Unlike basic auth, we must do the OAuth “dance” before we can start using the API.
-        # We must complete the following steps:
-        # 1 Get a request token from twitter
-        # 2 Redirect user to twitter.com to authorize our application
-        # 3 If using a callback, twitter will redirect the user to us. Otherwise the user must manually supply us with the verifier code.
-        # 4 Exchange the authorized request token for an access token.
-
-        # 1) fetch request token to begin the dance:
-        try:
-            redirect_url = auth.get_authorization_url()
-        except tweepy.TweepError:
-            print 'Error! Failed to get request token.'
-
-        # 2) we will be using a callback request. So we must store the request token in 
-        # the session since we will need it inside the callback URL request. 
-        session['request_token_key'] = auth.request_token.key
-        log.info("request_token_key %s"%session['request_token_key'])
-        session['request_token_secret'] = auth.request_token.secret
-        log.info("request_token_secret %s"%session['request_token_secret'])
-        session.save()
-
-        # now we can redirect the user to the URL returned to us earlier from the 
-        # get_authorization_url() method.
-        return redirect(redirect_url)
-
-    def twtLoginTweepy2(self, id1):
-        # The callback from twitter will include a verifier as a parameter in the URL.
-        # The final step is exchanging the request token for an access token. The access 
-        # token is the “key” for opening the Twitter API treasure box. To fetch this token 
-        # we do the following:
-
-        # re-build the auth handler:
-        auth = tweepy.OAuthHandler(config['twitter.consumerKey'], config['twitter.consumerSecret'])
-        request_token_key = session['request_token_key']
-        log.info("2 request_token_key %s"%request_token_key)
-        request_token_secret = session['request_token_secret']
-        log.info("2 request_token_secret %s"%request_token_secret)
-
-        # saving these two with this user will expedite this process in the future?
-        # see: It is a good idea to save the access token for later use. You do not need 
-        # to re-fetch it each time. Twitter currently does not expire the tokens, so the only 
-        # time it would ever go invalid is if the user revokes our application access. To store 
-        # the access token depends on your application. Basically you need to store 2 string 
-        # values: key and secret: auth.access_token.key, auth.access_token.secret
-        #  You can throw these into a database, file, or where ever you store your data. To 
-        # re-build an OAuthHandler from this stored access token you would do this:
-        #  auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        #  auth.set_access_token(key, secret)
-        
-        auth.set_request_token(request_token_key, request_token_secret)
-
-        # pull the value of id1 out oauth_verifier=?
-        log.info("verifier param: %s" % id1)
-        verifier = id1.split('=')[-1]
-        log.info("verifier: %s" % verifier)
-
-        try:
-            auth.get_access_token(verifier)
-        except tweepy.TweepError:
-            print 'Error! Failed to get access token.'
-
-        # So now that we have our OAuthHandler equiped with an access token, we are ready for 
-        # business:
-        # the user's profile info and pic are now needed.
-        api = tweepy.API(auth)
-        #if not api.verify_credentials():
-        #    LoginController.twtLoginTweepy(self)
-
-        user_info = api.me()
-        log.info(user_info)
-
-    def twtLoginOauth2(self):
-        #: oauth2 library from easy_install oauth2
-        #: 1) Obtain a request token
-        #: user wants to sign in, POST to twitter../oauth/request_token with oauth_callback
-        #: twitter generates request token, responds 200 OK with:
-        # oath_token, oauth_token_secret, oauth_callback_confirmed
-        # this reponse is routed to twtRequestHandler here
-
-        consumer_key = config['twitter.consumerKey']
-        consumer_secret = config['twitter.consumerSecret']
-
-        request_token_url = 'https://api.twitter.com/oauth/request_token'
-        access_token_url = 'https://api.twitter.com/oauth/access_token'
-        authorize_url = 'https://api.twitter.com/oauth/authorize'
-
-        consumer = oauth.Consumer(consumer_key, consumer_secret)
-        client = oauth.Client(consumer)
-
-        # Step 1: Post for a request token. This is a temporary token that is used for 
-        # having the user authorize an access token and to sign the request to obtain 
-        # said access token.
-
-        params = {
-            'oauth_nonce': oauth.generate_nonce(),
-            'oauth_callback' : config['twitter.requestTokenUrl'],
-            'oauth_signature_method' : "HMAC-SHA1",
-            'oauth_timestamp': int(time.time()),
-            'oauth_version': "1.0"
-        }
-
-        # either twitter will respond right here, or the response will be routed to 
-        # the next function, twtRequestHandler
-        resp, content = client.request(request_token_url, "POST", parameters=params)
-        log.info("resp %s" % resp)
-        log.info("content %s" % content)
-        # this request should generate a response to the callback url, which will route
-        # to function twtRequestHandler
-
-    def twtRequestHandler(self):
-        #: asking twitter for a request token, the response is directed here
-        #: 2) redirecting the user
-        # Your application should examine the HTTP status of the response. 
-        # Any value other than 200 indicates a failure. The body of the response will 
-        # contain the oauth_token, oauth_token_secret, and oauth_callback_confirmed parameters. 
-        # Your application should verify that oauth_callback_confirmed is true and store the 
-        # other two values for the next steps.
-
-        # how do I grab the request token? it is in the body of the response
-        request_token = dict(urlparse.parse_qsl(content))
-
-        log.info("Request Token:")
-        log.info("    - oauth_token        = %s" % request_token['oauth_token'])
-        log.info("    - oauth_token_secret = %s" % request_token['oauth_token_secret'])
-
-        # Step 2: Redirect to the provider. Since this is a CLI script we do not 
-        # redirect. In a web application you would redirect the user to the URL
-        # below.
-
-        log.info("Redirect to link:")
-        log.info("%s?oauth_token=%s" % (authorize_url, request_token['oauth_token']))
-
-        # After the user has granted access to you, the consumer, the provider will
-        # redirect you to whatever URL you have told them to redirect to. You can 
-        # usually define this in the oauth_callback argument as well.
-        #accepted = 'n'
-        #while accepted.lower() == 'n':
-        #    accepted = raw_input('Have you authorized me? (y/n) ')
-        #oauth_verifier = raw_input('What is the PIN? ')
-
-        # Step 3: Once the consumer has redirected the user back to the oauth_callback
-        # URL you can request the access token the user has approved. You use the 
-        # request token to sign this request. After this is done you throw away the
-        # request token and use the access token returned. You should store this 
-        # access token somewhere safe, like a database, for future use.
-        token = oauth.Token(request_token['oauth_token'],
-            request_token['oauth_token_secret'])
-        token.set_verifier(oauth_verifier)
-        client = oauth.Client(consumer, token)
-
-        resp, content = client.request(access_token_url, "POST")
-        access_token = dict(urlparse.parse_qsl(content))
-
-        log.info("Access Token:")
-        log.info("    - oauth_token        = %s" % access_token['oauth_token'])
-        log.info("    - oauth_token_secret = %s" % access_token['oauth_token_secret'])
-        
-        log.info("You may now access protected resources using the access tokens above.")
-        
-
-    def twtLoginRedirectManual(self):
-        # assemble an oauth post for twitter
-        url = config['twitter.requestTokenUrl']
-        method = "POST"
-        # this is for doing a get at twitter to create a post, not needed here
-        #url_parameters = {
-        #    'exclude_replies': 'true'
-        #}
-
-        #configuration hash for the keys
-        keys = {
-            "twitter_consumer_secret": config['twitter.consumerSecret'],
-            "twitter_consumer_key": config['twitter.consumerKey'],
-            "access_token": config['twitter.accessToken'],
-            "access_token_secret": config['twitter.accessTokenSecret']
-        }
-
-        oauth_parameters = LoginController.get_oauth_parameters(
-            self,
-            keys['twitter_consumer_key'],
-            keys['access_token']
-        )
-
-        oauth_parameters['oauth_signature'] = LoginController.generate_signature(
-            self,
-            method,
-            url,
-            oauth_parameters,
-            keys['twitter_consumer_key'],
-            keys['twitter_consumer_secret'],
-            keys['access_token_secret']
-        )
-
-        headers = {'Authorization': LoginController.create_auth_header(self, oauth_parameters)}
-
-        # this is how the code from 
-        # http://mkelsey.com/2013/05/01/authorizing-and-signing-a-twitter-api-call-using-python/
-        # is supposed to end, but in this case we're doing a post redirect
-        # url += '?' + urllib.urlencode(url_parameters)
-        r = requests.post(url, headers=headers)
-        print json.dumps(json.loads(r.text), sort_keys=False, indent=4)
-
-        log.info(r)
-        #return redirect(requests.post(url, headers=headers))
-
-
-    def twtLoginHandler(self):
-        # handles the data sent back from a login/auth with twitter
-        # https://api.twitter.com/oauth/authenticate?oauth_token=NESTV7Yhvk5JBwdpBjF3c8KbKdBVJXjRKB3vbKwvxY
-        log.info("twitter said hi back!")
+            return render("/derived/twitterSignUp.bootstrap")
 
     def fbAuthCheckEmail(self, id1):
         # this receives an email from the fb javascript auth checker, figures out what to do
@@ -590,7 +296,7 @@ class LoginController(BaseController):
             log.info("login:fbLoggingIn found user, logging in")
             LoginController.logUserIn(self, user)
         else:
-            log.info("login:fbLoggingIn DID NOT FIND USER - DEAD END")
+            log.info("login:fbLoggingIn DID NOT FIND USER - DEAD END") 
 
     def logUserIn(self, user, **kwargs):
         # NOTE - need to store the access token? kee in session or keep on user?

@@ -632,6 +632,8 @@
                     source = user['facebookProfileBig']
                 else:
                     source = user['facebookProfileSmall']
+            elif kwargs['forceSource'] == 'twitter':
+                source = user['twitterProfilePic']
 
         else:
             if 'avatarSource' in user.keys():
@@ -645,6 +647,10 @@
                         source = user['facebookProfileBig']
                     else:
                         source = user['facebookProfileSmall']
+                elif user['avatarSource'] == 'twitter':
+                    gravatar = False
+                    source = user['twitterProfilePic']
+
             elif 'extSource' in user.keys():
                 # this is needed untl we're sure all facebook connected users have properly 
                 # functioning profile pics - the logic here is now handled 
