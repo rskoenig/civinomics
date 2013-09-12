@@ -396,39 +396,14 @@ class RegisterController(BaseController):
                     returnPage = "/"
                     return redirect(returnPage)
             else:
-                # NOTE this is a case where a user on site has now tried logging in with
-                # the twitter button. This will be caught in controllers/login.twythonLogin2
-                # after we add the twitter id to the account here
-                log.info("register:twitterSigningUp found an already active user")
-                # add twitter userid to user
-                user['twitterAuthId'] = twitterId
-                # this will allow us to use the twitter api in their name
-                user['twitter_oauth_token'] = session['twitter_oauth_token']
-                user['twitter_oauth_secret'] = session['twitter_oauth_secret']
-                user['externalAuthType'] = 'twitter'
-                
-                if 'twitterProfilePic' in session:
-                    user['avatarSource'] = 'twitter'
-                    user['twitterProfilePic'] = session['twitterProfilePic']
-                
-                user['laston'] = time.time()
-                user['activated'] = u'1'
-                loginTime = time.localtime(float(user['laston']))
-                loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                commit(user)
-                session["user"] = user['name']
-                session["userCode"] = user['urlCode']
-                session["userURL"] = user['url']
+                # we have a person that already has an account on site, but hasn't
+                # used the twitter auth to login yet
+                # we need to activate parameters for this person's account
+                # IF they know their password
+                c.email = email
+                session['twtEmail'] = email
                 session.save()
-                log.info('session of user: %s' % session['user'])
-                log.info('%s logged in %s' % (user['name'], loginTime))
-                c.authuser = user
-                mailLib.sendWelcomeMail(user)
-                
-                log.info( "Successful twitter link via email - " + email )
-                returnPage = "/"
-                return redirect(returnPage)
-
+                return render("/derived/twtLinkAccount.bootstrap")
         else:
             log.info("register:twitterSigningUp found user, required info is missing")
             splashMsg['content'] = "Some required info is missing from the twitter data."

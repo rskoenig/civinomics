@@ -238,7 +238,7 @@ class LoginController(BaseController):
         facebookAuthId = session['facebookAuthId']
         accessToken = session['fbAccessToken']
         email = session['fbEmail']
-        # get user by email, if no match look for match by facebook user it
+        # get user by email, if no match look for match by facebook user id
         user = userLib.getUserByEmail( email )
         log.info('asked for email')
         if user:
@@ -249,7 +249,9 @@ class LoginController(BaseController):
                 # we have a person that already has an account on site, but hasn't
                 # used the facebook auth to login yet
                 # we need to activate parameters for this person's account
-                user['facebookAuthId'] = facebookAuthId
+                # IF they know their password
+                c.email = email
+                return render("/derived/fbLinkAccount.bootstrap")
             else:
                 log.info('found by fb id')
             # we have an active account. because of an earlier design flaw we need to 
@@ -282,6 +284,124 @@ class LoginController(BaseController):
             else:
                 return redirect("/fbSigningUp")
         
+    def fbLinkAccountHandler(self):
+        #: handles a login when first connecting a user's account with facebook external
+        #: authentication
+        c.title = c.heading = "Linking account with Facebook Login"  
+        c.splashMsg = False
+        splashMsg = {}
+        splashMsg['type'] = 'error'
+        splashMsg['title'] = 'Error'
+
+        try:
+            email = session['fbEmail']
+            password = request.params["password"]
+                
+            log.info('user %s attempting to log in with facebook auth for first time' % email)
+            if email and password:
+                user = userLib.getUserByEmail( email )
+         
+                if user: # not none or false
+                    if user['activated'] == '0':
+                        splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                        baseURL = c.conf['activation.url']
+                        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                        mailLib.sendActivationMail(user['email'], url)
+                        
+                    elif user['disabled'] == '1':
+                        log.warning("disabled account attempting to login - " + email )
+                        splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
+                    elif userLib.checkPassword( user, password ): 
+                        # if pass is True, link up this account with their facebook stuff
+                        if 'avatarSource' not in user.keys():
+                            user['avatarSource'] = 'facebook'
+                        user['facebookAccessToken'] = session['fbAccessToken']
+                        user['externalAuthType'] = 'facebook'
+                        # a user's account email can be different from the email on their facebook account.
+                        # we should keep track of this, it'll be handy
+                        user['facebookAuthId'] = session['facebookAuthId']
+                        user['fbEmail'] = email
+                        commit(user)
+                        LoginController.logUserIn(self, user)
+
+                    else:
+                        log.warning("incorrect username or password - " + email )
+                        splashMsg['content'] = 'incorrect username or password'
+                else:
+                    log.warning("incorrect username or password - " + email )
+                    splashMsg['content'] = 'incorrect username or password'
+            else:
+                splashMsg['content'] = 'missing username or password'
+            
+            session['splashMsg'] = splashMsg
+            session.save()
+            
+            return redirect("/login")
+
+        except KeyError:
+            return redirect('/')
+
+    def twtLinkAccountHandler(self):
+        #: handles a login when first connecting a user's account with twitter external
+        #: authentication
+        c.title = c.heading = "Linking account with Twitter Login"  
+        c.splashMsg = False
+        splashMsg = {}
+        splashMsg['type'] = 'error'
+        splashMsg['title'] = 'Error'
+        try:
+            email = session['twtEmail']
+            password = request.params["password"]
+                
+            log.info('user %s attempting to log in with twitter auth for first time' % email)
+            if email and password:
+                user = userLib.getUserByEmail( email )
+         
+                if user: # not none or false
+                    if user['activated'] == '0':
+                        splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                        baseURL = c.conf['activation.url']
+                        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                        mailLib.sendActivationMail(user['email'], url)
+                        
+                    elif user['disabled'] == '1':
+                        log.warning("disabled account attempting to login - " + email )
+                        splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
+                    elif userLib.checkPassword( user, password ): 
+                        # if pass is True, link up this account with their twitter stuff
+                        # add twitter userid to user
+                        user['twitterAuthId'] = session['twitterId']
+                        # this will allow us to use the twitter api in their name
+                        user['twitter_oauth_token'] = session['twitter_oauth_token']
+                        user['twitter_oauth_secret'] = session['twitter_oauth_secret']
+                        user['externalAuthType'] = 'twitter'
+                        
+                        if 'twitterProfilePic' in session:
+                            user['avatarSource'] = 'twitter'
+                            user['twitterProfilePic'] = session['twitterProfilePic']
+                        
+                        commit(user)
+                        log.info( "Successful twitter link via email - " + email )
+                        LoginController.logUserIn(self, user)
+
+                    else:
+                        log.warning("incorrect username or password - " + email )
+                        splashMsg['content'] = 'incorrect username or password'
+                else:
+                    log.warning("incorrect username or password - " + email )
+                    splashMsg['content'] = 'incorrect username or password'
+            else:
+                splashMsg['content'] = 'missing username or password'
+            
+            session['splashMsg'] = splashMsg
+            session.save()
+            
+            return redirect("/login")
+
+        except KeyError:
+            return redirect('/')
+
+
     def fbLoggingIn(self):
         # this page has already confirmed we're authd and logged in, just need to 
         # log this person in now

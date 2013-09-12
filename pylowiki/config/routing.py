@@ -295,6 +295,8 @@ def make_map():
     map.connect('/{forgotPasswordHandler:forgotPasswordHandler/?}', controller = 'login', action = 'forgot_handler')
 
     # external authentication routes
+    map.connect('/fbLinkAccountHandler{end:/?}', controller = 'login', action = 'fbLinkAccountHandler')
+    map.connect('/twtLinkAccountHandler{end:/?}', controller = 'login', action = 'twtLinkAccountHandler')
     map.connect('/fbLogin{end:/?}', controller = 'login', action = 'fbLoginHandler')
     map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoggingIn')
     map.connect('/fbNewAccount{end:/?}', controller = 'register', action = 'fbNewAccount')
