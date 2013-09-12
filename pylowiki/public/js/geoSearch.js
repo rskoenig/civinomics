@@ -85,7 +85,7 @@ function geoSearchStateChange(){
     document.getElementById("searchPostalSelect").innerText = document.getElementById("searchPostalSelect").textContent = "";
     document.getElementById("searchCitySelect").innerText = document.getElementById("searchCitySelect").textContent = "";
     document.getElementById("searchCitySelect").innerText = document.getElementById("searchCitySelect").textContent = "";
-    document.getElementById("searchCountySelect").innerText = document.getElementById("countySelect").textContent = "";
+    document.getElementById("searchCountySelect").innerText = document.getElementById("searchCountySelect").textContent = "";
     if (selectIndex === 0) {
         document.getElementById("searchCountySelect").innerText = document.getElementById("searchCountySelect").textContent = "or leave blank if specific to the entire country.";
     } else {

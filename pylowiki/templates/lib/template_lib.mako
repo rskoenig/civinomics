@@ -128,7 +128,31 @@
                 </form>
             </div><!-- span3 -->
             <div class="span4">
-            </div>
+                Search by region:
+                <form  action="/searchTags"  method="POST">
+                    <div class="row-fluid"><span id="searchCountrySelect">
+                        <div class="span1"></div>
+                        <div class="span2">Country:</div>
+                        <div class="span9">
+                            <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
+                            <option value="0" selected>Select a country</option>
+                            <option value="United States">United States</option>
+                            </select>
+                        </div><!-- span9 -->
+                        </span><!-- searchCountrySelect -->
+                    </div><!-- row-fluid -->
+                    <div class="row-fluid"><span id="searchStateSelect">
+                    </span></div>
+                    <div class="row-fluid"><span id="searchCountySelect">
+                    </span></div>
+                    <div class="row-fluid"><span id="searchCitySelect">
+                    </span></div>
+                    <div class="row-fluid"><span id="searchPostalSelect">
+                    </span></div>
+                    <div class="row-fluid"><span id="searchUnderPostal">
+                    </span></div>
+                </form>
+            </div><!-- span4 -->
         </div><!-- row-fluid -->
         <div class="spacer"></div>
     </div><!-- collapse -->
