@@ -107,6 +107,9 @@ color: #999;
    bottom:0;
    right:12px;
 }
+.search-white{
+    background-color:white;
+}
 
 .corp-sidebar{
   min-width: 130px;

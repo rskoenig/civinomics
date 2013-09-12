@@ -2,6 +2,7 @@
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
+    import pylowiki.lib.db.workshop as workshopLib
 %>
 
 !
@@ -19,14 +20,9 @@
                 </a>
                 <ul class="nav">
                     <li>
-                        <form class="form-search" action="/search">
-                            <div class="input-append">
-                                <input type="text" class="span2 search-query" placeholder="workshops or people" id="search-input" name="searchQuery" value="${c.searchQuery}">
-                            </div>
-                            <span class="search-icon-container">
-                                <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_027_search.png" class="search-icon" data-toggle="tooltip" title="search">
-                            </span>
-                        </form>
+                        <button class="btn btn-warning" data-toggle="collapse" data-target="#search">
+                        Search <i class="icon-white icon-search"></i>
+                        </button>
                     </li>
                 </ul>
                 <div class="nav-collapse collapse">
@@ -96,6 +92,46 @@
             </div> <!--/.container-->
         </div> <!--/.navbar-inner.civ-navbar -->
     </div> <!-- /.navbar -->
+    <div id="search" class="collapse search-white">
+        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <div class="spacer"></div>
+        <div class="spacer"></div>
+        <div class="row-fluid">
+            <div class="span3 offset1">
+                Search by word: 
+                <form class="form-search" action="/search">
+                    <div class="input-append">
+                        <input type="text" class="span2 search-query" placeholder="workshops or people" id="search-input" name="searchQuery" value="${c.searchQuery}">
+                    </div>
+                </form>
+            </div><!-- span3 -->
+            <div class="span3">
+                <script type="text/javascript">
+                    function searchTags() {
+                        var tagIndex = document.getElementById('categoryTag').selectedIndex;
+                        var searchTag = document.getElementById('categoryTag').options[tagIndex].value;
+                        if(searchTag != 'nosearch') {
+                            var searchPath = "/searchTags/" + searchTag;
+                            window.location.pathname = searchPath;
+                        }
+                    }
+                </script>
+                Search by tag:
+                <form  action="/searchTags"  method="POST">
+                    <select id="categoryTag" name="categoryTag" onChange="searchTags();">
+                        <option value="nosearch">Choose a category</option>
+                    % for tag in tagCategories:
+                        <% tagValue = tag.replace(" ", "_") %>
+                        <option value="${tagValue}">${tag.title()}</option>
+                    % endfor
+                    </select>
+                </form>
+            </div><!-- span3 -->
+            <div class="span4">
+            </div>
+        </div><!-- row-fluid -->
+        <div class="spacer"></div>
+    </div><!-- collapse -->
     <hr class="civ-topbar-hr" 
         % if "corp" in session._environ['PATH_INFO']:
             id="corpTopbar"
