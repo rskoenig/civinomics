@@ -22,7 +22,8 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
-import pylowiki.lib.helpers as h
+import pylowiki.lib.helpers         as h
+import pylowiki.lib.sort            as sort
 
 import simplejson as json
 from hashlib import md5
@@ -41,6 +42,7 @@ class SearchController(BaseController):
     def __before__(self, action, searchType = None, **kwargs):
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
+        c.backgroundPhoto = '/images/grey.png'
         self.query = ''
         self.noQuery = False
         self.searchType = 'name'
@@ -137,6 +139,13 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_category_tags'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_category_tags', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
+
+        photos = photoLib.searchPhotos('tags', self.query)
+        if photos and len(photos) != 0:
+            photos = sort.sortBinaryByTopPop(photos)
+            p = photos[0]
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+
         c.searchQuery = self.query
         c.searchType = "tag"
         c.scope = {'level':'earth', 'name':'all'}
@@ -154,6 +163,13 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
+
+        photos = photoLib.searchPhotos('scope', self.query)
+        if photos:
+            photos = sort.sortBinaryByTopPop(photos)
+            p = photos[0]
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+
         c.searchType = "region"
         geoScope = self.query.split('|') 
         baseUrl = config['site_base_url']
