@@ -1,0 +1,84 @@
+<%!
+    import pylowiki.lib.db.workshop         as workshopLib
+    import cgi
+%>
+
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/derived/6_workshop_home.mako" />
+
+<div class="row-fluid" ng-app="civ">
+   <div class="span12 well workshop-panel">
+      <div class="row-fluid">
+         <div class="span9">
+            ${helpers.showFlag()}
+            <h1 class="workshop-title"> 
+              <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " ng-cloak>
+                {{workshopTitle}}
+              </a>
+            </h1>
+         </div>
+         % if workshopLib.isPublished(c.w):
+           <div class="span3">
+                  ${helpers.watchButton()}
+                  % if c.privs['admin'] or c.privs['facilitator']: 
+                    % if c.adminPanel:
+                      ${helpers.viewButton()} 
+                    % else:
+                      ${helpers.configButton(c.w)}
+                    % endif
+                  % endif
+           </div>
+         % else:
+           % if c.adminPanel:
+              ${helpers.previewButton()}
+           % else:
+              ${helpers.configButton(c.w)}
+           % endif
+
+         % endif
+
+
+      </div> <!-- /.row-fluid -->
+      <div class="row-fluid">
+         <div class="span12">
+            <%
+               if c.listingType != '':
+                  listingType = c.listingType
+               else:
+                  listingType = None
+            %>
+            ${helpers.workshopNav(c.w, listingType)}
+         </div>
+      </div> <!-- /.row-fluid -->
+      ${next.body()}
+   </div><!-- /.span12.well -->
+</div><!--/.row-->
+
+<%def name="extraScripts()">
+   <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
+   <%
+      if c.mainImage['pictureHash'] == 'supDawg':
+         backgroundImage = '"/images/slide/slideshow/supDawg.slideshow"'
+      elif 'format' in c.mainImage.keys():
+         backgroundImage = '"/images/mainImage/%s/orig/%s.%s"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+      else:
+         backgroundImage = '"/images/mainImage/%s/orig/%s.jpg"' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+   %>
+   <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+   <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+   <script type="text/javascript">
+      $(".followButton").tooltip();
+      $(".preferencesLink").tooltip();
+      $(".publishButton").tooltip();
+   </script>
+
+</%def>
+
+<%def name="headScripts2()">
+    ##<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/goals.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/share.js')}"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/resource.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/ng/edit_item.js')}" type="text/javascript"></script>
+</%def>
