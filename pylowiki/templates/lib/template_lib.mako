@@ -136,11 +136,11 @@
                     </div><!-- row-fluid -->
                     <div class="row-fluid"><span id="searchCountryButton"></span><span id="searchStateSelect">
                     </span></div>
-                    <div class="row-fluid"><span id="searchStateButton"><span id="searchCountySelect">
+                    <div class="row-fluid"><span id="searchStateButton"></span><span id="searchCountySelect">
                     </span></div>
-                    <div class="row-fluid"><span id="searchCountyButton"><span id="searchCitySelect">
+                    <div class="row-fluid"><span id="searchCountyButton"></span><span id="searchCitySelect">
                     </span></div>
-                    <div class="row-fluid"><span id="searchCityButton"><span id="searchPostalSelect">
+                    <div class="row-fluid"><span id="searchCityButton"></span><span id="searchPostalSelect">
                     </span></div>
                     <div class="row-fluid"><span id="searchPostalButton">
                     </span></div>
