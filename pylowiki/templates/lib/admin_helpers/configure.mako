@@ -49,8 +49,8 @@
                             <legend>Settings</legend>
                             <label>Workshop Name</label>
                             <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="editWorkshopName"/>
-                            <label>Description</label>
-                            <input id = "inputDescription" type="text" name="description" size="50" maxlength="70" value = "${c.w['description']}" class="editWorkshopDescription"/>
+                            <label>Introduction</label>
+                            <textarea rows="8" id = "inputDescription" name="description" size="50" value = "${c.w['description']}" class="editWorkshopDescription"></textarea>
                             <%
                                 if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
                                     yesChecked = 'checked'

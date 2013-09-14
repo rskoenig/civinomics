@@ -7,7 +7,10 @@
 <% numIdeas = str(len(c.ideas)) %>
 <div class="row-fluid">
    <div class="span8">
-      ${c.w['description']}
+      <div class="alert alert-info" style="margin-top:10px;">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Intro</strong><br>${c.w['description']} <a class="grey" href="/">read more...</a>
+      </div>
       <div class="section-wrapper slideshow">
         <div id="workshopSlideshow">
           <div>
@@ -45,9 +48,8 @@
             ${helpers.showFacilitators()}
             ${helpers.showScope()}
             ${helpers.showTags()}
+            <br><br>
             ${helpers.whoListening()}
-            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage))}
-            ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->

@@ -153,12 +153,12 @@
 <%def name="watchButton()">
     % if 'user' in session:
         % if c.isFollowing:
-            <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-            <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
+            <button class="btn btn-civ followButton following" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+            <span><i class="icon-bookmark icon-light green"></i> Bookmarked </span>
             </button>
         % else:
-            <button class="btn round pull-right followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-             <span><i class="icon-bookmark pull-left"></i> Bookmark </span>
+            <button class="btn followButton" data-URL-list="workshop_${c.w['urlCode']}_${c.w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+             <span><i class="icon-bookmark pull-left med-green"></i><strong> Bookmark </strong></span>
             </button>
         % endif
     % endif
@@ -166,15 +166,15 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <a class="btn round btn-civ pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i>Admin</span></a>
+   <a class="btn btn-civ preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i><strong>Admin</strong></span></a>
 </%def>
 
 <%def name="previewButton()">
-  <a class="btn round btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> Preview </span></a>
+  <a class="btn btn-civ" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> Preview </span></a>
 </%def>
 
 <%def name="viewButton()">
-  <a class="btn round btn-civ pull-right" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> View </span></a>
+  <a class="btn btn-civ" href="${lib_6.workshopLink(c.w, embed=True, raw=True)}"><span><i class="icon-eye-open icon-white pull-left"></i> View </span></a>
 </%def>
 
 <%def name="workshopNavButton(workshop, count, objType, active = False)">

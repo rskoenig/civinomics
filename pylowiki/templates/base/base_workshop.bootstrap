@@ -17,10 +17,29 @@
                 {{workshopTitle}}
               </a>
             </h1>
+            <div class="rowfluid grey">
+              <div class="span11 offset1">
+                3,988 views - 190 posts - 454 shares  
+              </div>
+            </div>
          </div>
+
          % if workshopLib.isPublished(c.w):
            <div class="span3">
                   ${helpers.watchButton()}
+                  <div class="btn-group">
+                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                      <i class="icon-share"></i><span class="caret"> </span>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <!-- dropdown menu links -->
+                      <li><i class="icon-facebook-sign"></i></li>
+                      <li><i class="icon-twitter-sign"></i></li>
+                      <li><i class="icon-envelope"></i></li>
+                      ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage))}
+                      ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
+                    </ul>
+                  </div>
                   % if c.privs['admin'] or c.privs['facilitator']: 
                     % if c.adminPanel:
                       ${helpers.viewButton()} 
