@@ -429,7 +429,8 @@
     Tags:
     % for tag in tagList:
         % if tag and tag != '':
-            <span class="label workshop-tag green-tag" >${tag}</span>
+            <% tagClass = colors[tag] %>
+            <span class="label workshop-tag ${tagClass}" >${tag}</span>
         % endif
     % endfor
 </%def>
