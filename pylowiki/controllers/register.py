@@ -399,7 +399,15 @@ class RegisterController(BaseController):
                 # we have a person that already has an account on site, but hasn't
                 # used the twitter auth to login yet
                 # we need to activate parameters for this person's account
-                # IF they know their password
+                # IF they know their password, and only if their account was originally
+                # a normal account. If they've authenticated with facebook, for now they 
+                # have made their choice. No need to auth with twitter as well.
+                if 'facebookAuthId' in user.keys():
+                    log.info("user who auths with facebook now wants to auth with twitter. not allowed at this point.")
+                    splashMsg['content'] = ", we cannot allow you to login using twitter authentication since you do so with your facebook account already."
+                    session['splashMsg'] = splashMsg
+                    session.save()
+                    return redirect('/login')
                 c.email = email
                 session['twtEmail'] = email
                 session.save()

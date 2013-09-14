@@ -157,7 +157,12 @@ class LoginController(BaseController):
             session['twitter_oauth_token'] = final_step['oauth_token']
             session['twitter_oauth_secret'] = final_step['oauth_token_secret']
             session['twitterName'] = myCreds['name']
-            session['twitterProfilePic'] = myCreds['profile_image_url_https']
+            # myCreds['profile_image_url_https'] links to a 48x48 image. we can
+            # get 73x73 by replacing _normal with _bigger, or ask for the original.
+            # for now let's just link to the bigger version
+            profilePicLink = myCreds['profile_image_url_https']
+            profilePicLink = profilePicLink.replace('_normal', '_bigger', -1)
+            session['twitterProfilePic'] = profilePicLink
 
             c.title = c.heading = "Registration using your Twitter Account"
             c.success = False
@@ -249,7 +254,15 @@ class LoginController(BaseController):
                 # we have a person that already has an account on site, but hasn't
                 # used the facebook auth to login yet
                 # we need to activate parameters for this person's account
-                # IF they know their password
+                # IF they know their password, and only if their account was originally
+                # a normal account. If they've authenticated with twitter, for now they 
+                # have made their choice. No need to auth with facebook as well.
+                if 'twitterAuthId' in user.keys():
+                    log.info("user who auths with twitter now wants to auth with facebook. not allowed at this point.")
+                    splashMsg['content'] = ", we cannot allow you to login using facebook authentication since you do so with your twitter account already."
+                    session['splashMsg'] = splashMsg
+                    session.save()
+                    return redirect('/login')
                 c.email = email
                 return render("/derived/fbLinkAccount.bootstrap")
             else:
