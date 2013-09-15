@@ -93,9 +93,8 @@
             </div> <!--/.container-->
         </div> <!--/.navbar-inner.civ-navbar -->
     </div> <!-- /.navbar -->
-    <div id="search" class="collapse search-white">
+    <div id="search" class="collapse search_drawer">
         <% tagCategories = workshopLib.getWorkshopTagCategories() %>
-        <div class="spacer"></div>
         <div class="spacer"></div>
         <div class="row-fluid">
             <div class="span3 offset1">
@@ -117,7 +116,7 @@
                 </script>
                 <form action="/searchTags" class="form-search" method="POST">
                     <select name="categoryTag" id="categoryTag" onChange="searchTags();">
-                    <option value="0">Search by category</option>
+                    <option value="0">Search by Tag</option>
                     % for tag in tagCategories:
                         <% tagValue = tag.replace(" ", "_") %>
                         <option value="/searchTags/${tagValue}/">${tag.title()}</option>
@@ -129,31 +128,33 @@
                 <form  action="/searchGeo"  class="form-search" method="POST">
                     <div class="row-fluid"><span id="searchCountrySelect">
                         <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
-                        <option value="0" selected>Search by country</option>
+                        <option value="0" selected>Search by Region</option>
                         <option value="United States">United States</option>
                         </span><!-- searchCountrySelect -->
                         </select>
+                        <span id="searchCountryButton"></span>
                     </div><!-- row-fluid -->
-                    <div class="row-fluid"><span id="searchCountryButton"></span><span id="searchStateSelect">
-                    </span></div>
-                    <div class="row-fluid"><span id="searchStateButton"></span><span id="searchCountySelect">
-                    </span></div>
-                    <div class="row-fluid"><span id="searchCountyButton"></span><span id="searchCitySelect">
-                    </span></div>
-                    <div class="row-fluid"><span id="searchCityButton"></span><span id="searchPostalSelect">
-                    </span></div>
-                    <div class="row-fluid"><span id="searchPostalButton">
-                    </span></div>
+                    <div class="row-fluid">
+                        <span id="searchStateSelect"></span>
+                        <span id="searchStateButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchCountySelect"></span>
+                        <span id="searchCountyButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchCitySelect"></span>
+                        <span id="searchCityButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchPostalSelect"></span>
+                        <span id="searchPostalButton">
+                    </div>
                 </form>
             </div><!-- span5 -->
         </div><!-- row-fluid -->
         <div class="spacer"></div>
     </div><!-- collapse -->
-    <hr class="civ-topbar-hr" 
-        % if "corp" in session._environ['PATH_INFO']:
-            id="corpTopbar"
-        % endif/
-    >
 </%def>
 
 <%def name="splashNavbar()">

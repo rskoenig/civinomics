@@ -19,7 +19,7 @@ function geoSearchPostalChange(){
     document.getElementById("searchPostalButton").innerText = document.getElementById("searchPostalButton").textContent = "";
     if(postalSelectIndex) {
         var searchURL = '/workshops/geo/earth/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-") + "/" + cityName.replace(" ", "-") + "/" + postalName;
-        var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Search Postal Code</a>";
+        var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Go to Zip Code</a>";
         document.getElementById("searchPostalButton").innerHTML = searchButton;
     }
 }
@@ -52,7 +52,7 @@ function geoSearchCityChange(){
         var gobj = jQuery.parseJSON(postalList);
         if (gobj.result != "0") {
             var postalCodes = gobj.result.split(/\|/);
-            var postalMenu = "<select id=\"geoSearchPostal\" name=\"geoSearchPostal\" class=\"geoSearchPostal\" onChange=\"geoSearchPostalChange(); return 1;\"><option value=\"0\">Search by postal code</option>";
+            var postalMenu = "<select id=\"geoSearchPostal\" name=\"geoSearchPostal\" class=\"geoSearchPostal\" onChange=\"geoSearchPostalChange(); return 1;\"><option value=\"0\">- Select a Zip Code -</option>";
             for(var i = 0;i < postalCodes.length;i++){
                 if (postalCodes[i] !== "") {
                     postalMenu = postalMenu + "<option value=\"" + postalCodes[i] + "\">" + postalCodes[i] + "</option>";
@@ -60,7 +60,7 @@ function geoSearchCityChange(){
             }
             postalMenu = postalMenu + "</select>";
             var searchURL = '/workshops/geo/earth/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-") + "/" + cityName.replace(" ", "-");
-            var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Search City Now</a> or ";
+            var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Go to City</a>";
             document.getElementById("searchCityButton").innerHTML = searchButton;
             document.getElementById("searchPostalSelect").innerText = document.getElementById("searchPostalSelect").textContent = "";
             document.getElementById("searchPostalSelect").innerHTML = postalMenu;
@@ -94,7 +94,7 @@ function geoSearchCountyChange(){
         var gobj = jQuery.parseJSON(cityList);
         if (gobj.result != "0") {
             var cities = gobj.result.split(/\|/);
-            var cityMenu = "<select id=\"geoSearchCity\" name=\"geoSearchCity\" class=\"geoSearchCity\" onChange=\"geoSearchCityChange(); return 1;\"><option value=\"0\">Select a city</option>";
+            var cityMenu = "<select id=\"geoSearchCity\" name=\"geoSearchCity\" class=\"geoSearchCity\" onChange=\"geoSearchCityChange(); return 1;\"><option value=\"0\">- Select a City -</option>";
             for(var i = 0;i < cities.length;i++){
                 if (cities[i] !== "") {
                     cityMenu = cityMenu + "<option value=\"" + cities[i] + "\">" + cities[i] + "</option>";
@@ -102,7 +102,7 @@ function geoSearchCountyChange(){
             }
             cityMenu = cityMenu + "</select>";
             var searchURL = '/workshops/geo/earth/united-states/' + stateName.replace(" ", "-") + "/" + countyName.replace(" ", "-");
-            var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Search County Now</a> or ";
+            var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Go to County</a> ";
             document.getElementById("searchCountyButton").innerHTML = searchButton;
             document.getElementById("searchCitySelect").innerText = document.getElementById("searchCitySelect").textContent = "";
             document.getElementById("searchCitySelect").innerHTML = cityMenu; 
@@ -134,7 +134,7 @@ function geoSearchStateChange(){
         var gobj = jQuery.parseJSON(countyList);
         if (gobj.result != "0") {
             var counties = gobj.result.split(/\|/);
-            var countyMenu = "<select id=\"geoSearchCounty\" name=\"geoSearchCounty\" class=\"geoSearchCounty\" onChange=\"geoSearchCountyChange(); return 1;\"><option value=\"0\">Select a county</option>";
+            var countyMenu = "<select id=\"geoSearchCounty\" name=\"geoSearchCounty\" class=\"geoSearchCounty\" onChange=\"geoSearchCountyChange(); return 1;\"><option value=\"0\">- Select a County -</option>";
             for(var i = 0;i < counties.length;i++){
                 if (counties[i] !== "") {
                     countyMenu = countyMenu + "<option value=\"" + counties[i] + "\">" + counties[i] + "</option>";
@@ -142,7 +142,7 @@ function geoSearchStateChange(){
             }
             countyMenu = countyMenu + "</select>";
             var searchURL = '/workshops/geo/earth/united-states/' + stateName.replace(" ", "-");
-            var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Search State Now</a> or ";
+            var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Go to State</a>";
             document.getElementById("searchStateButton").innerHTML = searchButton;
             document.getElementById("searchCountySelect").innerHTML = countyMenu;  
         }
@@ -171,14 +171,14 @@ function geoSearchCountryChange(){
         var gobj = jQuery.parseJSON(stateList);
         if (gobj.result != "0") {
             var states = gobj.result.split(/\|/);
-            var stateMenu = "<select id=\"geoSearchState\" name=\"geoSearchState\" class=\"geoSearchState\" onChange=\"geoSearchStateChange(); return 1;\"><option value=\"0\">Select a state</option>";
+            var stateMenu = "<select id=\"geoSearchState\" name=\"geoSearchState\" class=\"geoSearchState\" onChange=\"geoSearchStateChange(); return 1;\"><option value=\"0\">- Select a State -</option>";
             for(var i = 0;i < states.length;i++){
                 if (states[i] !== "") {
                     stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";
                 }
             }
             var searchURL = '/workshops/geo/earth/united-states/';
-            var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Search Country Now</a> or ";
+            var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Go to Country</a>";
             stateMenu = stateMenu + "</select>";
             document.getElementById("searchStateSelect").innerText = document.getElementById("searchStateSelect").textContent = "";
             document.getElementById("searchStateSelect").innerHTML = stateMenu;            
