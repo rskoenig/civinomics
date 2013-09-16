@@ -125,6 +125,12 @@ class SearchController(BaseController):
         c.searchType = "name"
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
+        photos = photoLib.searchPhotos(['title', 'description'], [self.query, self.query])
+        if photos and len(photos) != 0:
+            photos = sort.sortBinaryByTopPop(photos)
+            p = photos[0]
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+            
         return render('/derived/6_search.bootstrap')
         
     def searchWorkshopCategoryTags(self):
@@ -144,7 +150,7 @@ class SearchController(BaseController):
         if photos and len(photos) != 0:
             photos = sort.sortBinaryByTopPop(photos)
             p = photos[0]
-            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
 
         c.searchQuery = self.query
         c.searchType = "tag"
@@ -168,7 +174,7 @@ class SearchController(BaseController):
         if photos:
             photos = sort.sortBinaryByTopPop(photos)
             p = photos[0]
-            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
 
         c.searchType = "region"
         geoScope = self.query.split('|') 
