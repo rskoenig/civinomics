@@ -1700,3 +1700,12 @@ hr.stats{
 .med-width{
   width: 150px;
 }
+
+.blur{
+  -webkit-filter: blur(10px);
+  -moz-filter: blur(10px);
+  -o-filter: blur(10px);
+  -ms-filter: blur(10px);
+  filter: blur(10px);
+  margin: 10px -15px -10px -15px;
+}

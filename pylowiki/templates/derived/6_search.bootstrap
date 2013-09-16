@@ -336,6 +336,10 @@
                 </div>
             % endif
         </div>
+        <div class="span3 well search-side-bar">
+            <span style="font-size: 16px;"><i class="icon-picture"></i> Photos</span>
+            <img class="thumbnail" style="padding: 0;" src="${c.backgroundPhoto}">
+        </div>
 
     % endif
 </div><!-- row-fluid -->
