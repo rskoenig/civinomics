@@ -52,6 +52,9 @@ class ResourceController(BaseController):
             utils.isWatching(c.authuser, c.w)
 
     def listing(self, workshopCode, workshopURL):
+        #get the scope to display jurisidction flag
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         resources = resourceLib.getResourcesByWorkshopCode(workshopCode)
         if not resources:
             c.resources = []
@@ -64,6 +67,9 @@ class ResourceController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def showResource(self, workshopCode, workshopURL, resourceCode, resourceURL):
+        #get the scope to display jurisidction flag
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
@@ -115,6 +121,9 @@ class ResourceController(BaseController):
         return render('/derived/6_item_in_listing.bootstrap')
 
     def addResource(self, workshopCode, workshopURL):
+        #get the scope to display jurisidction flag
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         if (c.privs['participant'] and c.w['allowResources'] == '1') or c.privs['facilitator'] or c.privs['admin']:
             c.listingType = 'resource'
             return render('/derived/6_add_to_listing.bootstrap')

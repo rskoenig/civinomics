@@ -932,6 +932,9 @@ class WorkshopController(BaseController):
     def info(self, workshopCode, workshopURL):
         c.title = c.w['title']
 
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
+
         c.isFollowing = False
         if 'user' in session:
             c.isFollowing = followLib.isFollowing(c.authuser, c.w)
@@ -963,6 +966,9 @@ class WorkshopController(BaseController):
         
     def activity(self, workshopCode, workshopURL):
         c.title = c.w['title']
+
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
 
         c.isFollowing = False
         if 'user' in session:
