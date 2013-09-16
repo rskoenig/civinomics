@@ -140,10 +140,10 @@ class SearchController(BaseController):
         c.numIdeas = ideaLib.searchIdeas('workshop_category_tags', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
 
-        photos = photoLib.searchPhotos('tags', self.query)
-        if photos and len(photos) != 0:
-            photos = sort.sortBinaryByTopPop(photos)
-            p = photos[0]
+        c.photos = photoLib.searchPhotos('tags', self.query)
+        if c.photos and len(photos) != 0:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
             c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
 
         c.searchQuery = self.query
@@ -164,11 +164,12 @@ class SearchController(BaseController):
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
 
-        photos = photoLib.searchPhotos('scope', self.query)
-        if photos:
-            photos = sort.sortBinaryByTopPop(photos)
-            p = photos[0]
+        c.photos = photoLib.searchPhotos('scope', self.query)
+        if c.photos:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
             c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
 
         c.searchType = "region"
         geoScope = self.query.split('|') 

@@ -1519,6 +1519,10 @@ li.thumbnail-gallery{
   margin-left: 4px;
 }
 
+.bottom-space{
+  margin-bottom: 4px;
+}
+
 .left-indent{
   margin-left: 20px;
 }
@@ -1615,6 +1619,7 @@ li.thumbnail-gallery{
   opacity: 0.9;
   padding: 10px;
   min-width: 220px;
+  margin-bottom: 8px;
 }
 
 .table.plain, tr.plain > td{
@@ -1652,6 +1657,10 @@ text-align: right;
 .thumbnail.flag{
   width: 150px;
   margin: 0 auto 10px;
+}
+
+.thumbnail.tight{
+  padding: 0;
 }
 
 .darkened-bg{
