@@ -177,7 +177,7 @@ function geoSearchCountryChange(){
                     stateMenu = stateMenu + "<option value=\"" + states[i] + "\">" + states[i] + "</option>";
                 }
             }
-            var searchURL = '/workshops/geo/earth/united-states/';
+            var searchURL = '/workshops/geo/earth/united-states';
             var searchButton = "<a href=\"" + searchURL + "\" class=\"btn btn-success btn-small\">Go to Country</a>";
             stateMenu = stateMenu + "</select>";
             document.getElementById("searchStateSelect").innerText = document.getElementById("searchStateSelect").textContent = "";

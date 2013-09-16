@@ -78,7 +78,7 @@ class SearchController(BaseController):
                 postalCode = kwargs['postalCode']
             else:
                 postalCode = '0'
-            searchString = "||%s||%s||%s||%s|%s"%(country, state, county, city, postalCode)
+            searchString = "||%s||%s||%s||%s|%s"%(utils.urlify(country), utils.urlify(state), utils.urlify(county), utils.urlify(city), utils.urlify(postalCode))
             
         if 'searchQuery' in request.params and searchString == None:
             self.query = request.params['searchQuery']
