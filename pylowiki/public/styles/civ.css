@@ -1716,5 +1716,7 @@ hr.stats{
   -o-filter: blur(10px);
   -ms-filter: blur(10px);
   filter: blur(10px);
+  filter: url(/styles/blur.svg#blur); }
+  filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='10'); }
   margin: 10px -15px -10px -15px;
 }
