@@ -1122,10 +1122,6 @@ ul.listeners > li {
     margin-left: 4px;
 }
 
-.btn.followButton.following{
-    width: 123px;
-}
-
 .inline{
     display:inline-block;
 }
@@ -1698,4 +1694,8 @@ hr.stats{
 
 .med-width{
   width: 150px;
+}
+
+i .btn-height{
+  line-height: 20px;
 }

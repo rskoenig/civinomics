@@ -27,7 +27,7 @@
          % if workshopLib.isPublished(c.w):
            <div class="span3">
                   ${helpers.watchButton()}
-                  <div class="btn-group">
+                  <div class="btn-group pull-right">
                     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                       <i class="icon-share"></i><span class="caret"> </span>
                     </a>
