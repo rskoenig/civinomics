@@ -114,7 +114,7 @@
                 </div>
                 <div id="workshops" class="tab-pane" ng-class="showingWorkshops.class" ng-show="showingWorkshops.show" ng-cloak>
                     <table class="table plain">
-                        <tr ng-repeat="w in workshops | filter:query | orderBy:orderProp" class="plain"><td>
+                        <tr ng-repeat="w in workshops | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span3">
                                     <a href = '/workshops/{{w.urlCode}}/{{w.url}}'>
@@ -135,10 +135,20 @@
                             </div>
                         </td></tr>
                     </table>
+                    <div class="centered" ng-show="workshops.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= workshops.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
                 </div>
                 <div id="users" class="tab-pane" ng-class="showingPeople.class" ng-show="showingPeople.show">
                     <table class="table plain">
-                        <tr ng-repeat = "p in people | filter:query | orderBy:orderProp" class="plain"><td>
+                        <tr ng-repeat = "p in people | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span2">
                                     <a class="pull-left" href="/profile/{{p.urlCode}}/{{p.url}}">
@@ -154,10 +164,20 @@
                             </div>
                         </td></tr>
                     </table>
+                    <div class="centered" ng-show="people.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= people.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
                 </div>
                 <div id="resources" class="tab-pane" ng-class="showingResources.class" ng-show="showingResources.show">
                     <table class="table plain">
-                        <tr ng-repeat = "resource in resources | filter: query | orderBy:orderProp" class="plain"><td>
+                        <tr ng-repeat = "resource in resources | filter: query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span1">
                                    <i class="icon-{{resource.type}} icon-3x"></i>
@@ -178,16 +198,26 @@
                                         <li><i class="icon-comment"></i> Comments ({{resource.numComments}})</li>
                                     </ul>
                                     <p class="hidden"> <small>Tags:</small>
-                                        <span ng-repeat="tag in discussion.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
+                                        <span ng-repeat="tag in resource.tags" class="label workshop-tag" ng-class="tag.colour">{{tag.title}}</span>
                                     </p>
                                 </div>
                             </div>
                         </td></tr>
                     </table>
+                    <div class="centered" ng-show="resources.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= resources.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
                 </div>
                 <div id="discussions" class="tab-pane" ng-class="showingDiscussions.class" ng-show="showingDiscussions.show">
                     <table class="table plain">                             
-                        <tr ng-repeat = "discussion in discussions | filter:query | orderBy:orderProp" class="plain"><td>
+                        <tr ng-repeat = "discussion in discussions | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="span1">
                                    <i class="icon-comments icon-3x"></i>
@@ -216,10 +246,20 @@
                             </div>
                         </td></tr>
                     </table>
+                    <div class="centered" ng-show="discussions.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= discussions.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
                 </div>
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
-                        <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp" class="plain"><td>
+                        <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
                             <div class="media well searchListing">
                                 <div class="media-body">
                                     <div class="span10"
@@ -255,10 +295,20 @@
                             </div>
                         </td></tr>
                     </table>
+                    <div class="centered" ng-show="ideas.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= ideas.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
                 </div>
                 <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
                     <table class="table table-condensed table-hover">
-                        <tr ng-repeat = "photo in photos"><td>
+                        <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
                             <div class="media">
                                 <div class="pull-left">
                                     <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
@@ -279,6 +329,16 @@
                             </div>
                         </td></tr>
                     </table>
+                    <div class="centered" ng-show="photos.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= photos.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
                 </div>
             </div><!-- tab-content -->
         </div><!-- tabbable tabs-left civ-search -->

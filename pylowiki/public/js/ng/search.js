@@ -68,9 +68,11 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.showingPhotos = {'class': '', 'show': false};
     $scope.objType = 'workshops';
     $scope.orderProp = '-date';
-    
+    $scope.orderProp = '-date';
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos'};
-    
+    $scope.currentPage = 0;
+    $scope.pageSize = 20;
+
     $http.get($scope.workshopsURL).success(function(data){
         if (data.statusCode == 1)
         {
@@ -93,6 +95,7 @@ app.controller('SearchCtrl', function($scope, $http){
     });
     
     $scope.searchWorkshops = function() {
+        $scope.currentPage = 0;
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
@@ -123,9 +126,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.workshops.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchPeople = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
@@ -156,9 +163,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.people.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchResources = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
@@ -189,9 +200,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.resources.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchDiscussions = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
@@ -222,9 +237,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.discussions.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchIdeas = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
@@ -255,9 +274,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.ideas.length/$scope.pageSize);                
+        }
     };
         
     $scope.searchPhotos = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
@@ -288,5 +311,15 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.photos.length/$scope.pageSize);                
+        }
     };
+});
+
+app.filter('startFrom', function() {
+    return function(input, start) {
+        start = +start; //parse to int
+        return input.slice(start);
+    }
 });
