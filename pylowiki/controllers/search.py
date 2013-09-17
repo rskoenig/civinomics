@@ -144,7 +144,7 @@ class SearchController(BaseController):
         if c.photos and len(c.photos) != 0:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
-            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
             c.backgroundAuthor = userLib.getUserByID(p.owner)
 
         c.searchQuery = self.query
@@ -169,7 +169,7 @@ class SearchController(BaseController):
         if c.photos:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
-            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
             c.backgroundAuthor = userLib.getUserByID(p.owner)
 
         c.searchType = "region"

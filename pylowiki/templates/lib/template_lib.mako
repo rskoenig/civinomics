@@ -110,7 +110,7 @@
                         var sIndex = document.getElementById('categoryTag').selectedIndex;
                         var sValue = document.getElementById('categoryTag').options[sIndex].value;
                         if(sValue) {
-                            var queryURL = window.location.protocol + sValue;
+                            var queryURL = sValue;
                             window.location = queryURL;
                         }
                     }
