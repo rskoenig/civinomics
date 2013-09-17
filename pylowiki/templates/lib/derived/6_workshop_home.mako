@@ -463,7 +463,12 @@
 <%def name="showFlag()">
     <%
         if c.w['public_private'] == 'public':
-            scopeFlag = c.scope['flag']
+            flagUrl = config['site_base_url'] + c.scope['flag']
+            try:
+                f = urllib2.urlopen(urllib2.Request(flagUrl))
+                scopeFlag = flagUrl
+            except:
+                scopeFlag = '/images/flags/generalFlag.gif'
         else:
             scopeFlag = '/images/flags/generalFlag.gif'
     %>
