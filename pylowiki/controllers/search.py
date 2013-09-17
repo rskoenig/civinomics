@@ -11,6 +11,7 @@ from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
@@ -21,7 +22,8 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
-import pylowiki.lib.helpers as h
+import pylowiki.lib.helpers         as h
+import pylowiki.lib.sort            as sort
 
 import simplejson as json
 from hashlib import md5
@@ -40,6 +42,7 @@ class SearchController(BaseController):
     def __before__(self, action, searchType = None, **kwargs):
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
+        c.backgroundPhoto = '/images/grey.png'
         self.query = ''
         self.noQuery = False
         self.searchType = 'name'
@@ -101,7 +104,7 @@ class SearchController(BaseController):
             self.noQuery = True
             
         c.searchQuery = self.query
-    
+
     def _noSearch(self, noRender = False):
         c.numUsers = 0
         c.numWorkshops = 0
@@ -118,6 +121,7 @@ class SearchController(BaseController):
         c.numResources = resourceLib.searchResources(['title', 'text', 'link'], [self.query, self.query, self.query], count = True)
         c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
+        c.numPhotos = photoLib.searchPhotos(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
         c.searchType = "name"
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
@@ -134,6 +138,15 @@ class SearchController(BaseController):
         c.numResources = resourceLib.searchResources(['workshop_category_tags'], [self.query], count = True)
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_category_tags'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_category_tags', self.query, count = True)
+        c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
+
+        c.photos = photoLib.searchPhotos('tags', self.query)
+        if c.photos and len(c.photos) != 0:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
+
         c.searchQuery = self.query
         c.searchType = "tag"
         c.scope = {'level':'earth', 'name':'all'}
@@ -150,6 +163,15 @@ class SearchController(BaseController):
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
+        c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
+
+        c.photos = photoLib.searchPhotos('scope', self.query)
+        if c.photos:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
+
         c.searchType = "region"
         geoScope = self.query.split('|') 
         baseUrl = config['site_base_url']
@@ -181,10 +203,11 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
-            geoInfo = getCountryInfo(geoScope[2]) 
-            c.population = geoInfo['Country_population']
-            c.medianAge = geoInfo['Country_median_age']
-            c.personsHousehold = geoInfo['Country_persons_per_household']
+            c.geoInfo = getCountryInfo(geoScope[2]) 
+            if c.geoInfo:
+                c.population = c.geoInfo['Country_population']
+                c.medianAge = c.geoInfo['Country_median_age']
+                c.personsHousehold = c.geoInfo['Country_persons_per_household']
             
         elif geoScope[6] == '0':
             level = geoScope[4]
@@ -196,10 +219,11 @@ class SearchController(BaseController):
                 c.flag = flag
             except:
                 c.flag = '/images/flags/generalFlag.gif'
-            geoInfo = getStateInfo(geoScope[4], geoScope[2]) 
-            c.population = geoInfo['Population']
-            c.medianAge = geoInfo['Population_Median']
-            c.personsHousehold = geoInfo['Average_Household_Size']
+            c.geoInfo = getStateInfo(geoScope[4], geoScope[2]) 
+            if c.geoInfo:
+                c.population = c.geoInfo['Population']
+                c.medianAge = c.geoInfo['Population_Median']
+                c.personsHousehold = c.geoInfo['Average_Household_Size']
             
         elif geoScope[8] == '0':
             level = geoScope[6]
@@ -212,10 +236,11 @@ class SearchController(BaseController):
             except:
                 c.flag = '/images/flags/generalFlag.gif'
             county = geoDeurlify(geoScope[6])
-            geoInfo = getCountyInfo(county, geoScope[4], geoScope[2])
-            c.population = geoInfo['Population']
-            c.medianAge = geoInfo['Population_Median']
-            c.personsHousehold = geoInfo['Average_Household_Size']
+            c.geoInfo = getCountyInfo(county, geoScope[4], geoScope[2])
+            if c.geoInfo:
+                c.population = c.geoInfo['Population']
+                c.medianAge = c.geoInfo['Population_Median']
+                c.personsHousehold = c.geoInfo['Average_Household_Size']
 
         elif geoScope[9] == '0':
             level = geoScope[8]
@@ -228,20 +253,25 @@ class SearchController(BaseController):
             except:
                 c.flag = '/images/flags/generalFlag.gif'
             city = geoDeurlify(geoScope[8])
-            geoInfo = getCityInfo(city, geoScope[4], geoScope[2]) 
-            c.population = geoInfo['Population']
-            c.medianAge = geoInfo['Population_Median']
-            c.personsHousehold = geoInfo['Average_Household_Size']
+            c.geoInfo = getCityInfo(city, geoScope[4], geoScope[2]) 
+            if c.geoInfo:
+                c.population = c.geoInfo['Population']
+                c.medianAge = c.geoInfo['Population_Median']
+                c.personsHousehold = c.geoInfo['Average_Household_Size']
 
         else:
             level = geoScope[9]
             name = level
-            c.searchQuery = "Postal Code of " + utils.geoDeurlify(geoScope[9])
+            c.searchQuery = "Postal Code " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
-            geoInfo = getPostalInfo(geoScope[9]) 
-            c.population = geoInfo['Population']
-            c.medianAge = geoInfo['MedianAge']
-            c.personsHousehold = geoInfo['PersonsPerHousehold']
+            c.geoInfo = getPostalInfo(geoScope[9]) 
+            if c.geoInfo:
+                c.population = c.geoInfo['Population']
+                c.medianAge = c.geoInfo['MedianAge']            
+                c.personsHousehold = c.geoInfo['PersonsPerHousehold']
+                c.incomePerHousehold = c.geoInfo['IncomePerHousehold']
+                c.avgHouseValue = c.geoInfo['AverageHouseValue']
+                c.bizAnnualPayroll = c.geoInfo['BusinessAnnualPayroll']
 
         c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')
@@ -268,6 +298,8 @@ class SearchController(BaseController):
             entry['cityTitle'] = userGeo['cityTitle']
             entry['stateURL'] = '/workshops/geo/earth/%s/%s' %(userGeo['countryURL'], userGeo['stateURL'])
             entry['stateTitle'] = userGeo['stateTitle']
+            thing = userLib.getUserByCode(p['urlCode'])
+            entry['date'] = thing.date.strftime('%Y-%m-%d at %H:%M:%S')
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -305,7 +337,7 @@ class SearchController(BaseController):
             entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
-            
+            entry['startTime'] = w['startTime']
             tagList = []
             for title in w['workshop_category_tags'].split('|'):
                 if title and title != '':
@@ -314,6 +346,8 @@ class SearchController(BaseController):
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
             entry['tags'] = tagList
+            thing = workshopLib.getWorkshopByCode(w['urlCode'])
+            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -340,6 +374,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(resources) == 0:
             return json.dumps({'statusCode':2})
+        titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for r in resources:
             w = generic.getThing(r['workshopCode'])
             if w['public_private'] != u'public':
@@ -367,6 +402,16 @@ class SearchController(BaseController):
             entry['authorURL'] = u['url']
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
+            thing = resourceLib.getResource(r['urlCode'],r['url'])
+            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            tagList = []
+            for title in r['workshop_category_tags'].split('|'):
+                if title and title != '':
+                    tagMapping = {}
+                    tagMapping['title'] = title
+                    tagMapping['colour'] = titleToColourMapping[title]
+                    tagList.append(tagMapping)
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -393,6 +438,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(discussions) == 0:
             return json.dumps({'statusCode':2})
+        titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for d in discussions:
             w = generic.getThing(d['workshopCode'])
             if w['public_private'] != u'public':
@@ -415,6 +461,16 @@ class SearchController(BaseController):
             entry['authorURL'] = u['url']
             entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
+            thing = discussionLib.getDiscussion(d['urlCode'])
+            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            tagList = []
+            for title in d['workshop_category_tags'].split('|'):
+                if title and title != '':
+                    tagMapping = {}
+                    tagMapping['title'] = title
+                    tagMapping['colour'] = titleToColourMapping[title]
+                    tagList.append(tagMapping)
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -437,6 +493,7 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         if len(ideas) == 0:
             return json.dumps({'statusCode':2})
+        titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for idea in ideas:
             w = generic.getThing(idea['workshopCode'])
             if w['public_private'] != u'public':
@@ -454,6 +511,77 @@ class SearchController(BaseController):
             entry['workshopURL'] = w['url']
             entry['workshopTitle'] = w['title']
             u = userLib.getUserByID(idea.owner)
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            thing = ideaLib.getIdea(idea['urlCode'])
+            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            tagList = []
+            for title in idea['workshop_category_tags'].split('|'):
+                if title and title != '':
+                    tagMapping = {}
+                    tagMapping['title'] = title
+                    tagMapping['colour'] = titleToColourMapping[title]
+                    tagList.append(tagMapping)
+            entry['tags'] = tagList
+            result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode':0, 'result':result})
+        
+    def searchPhotos(self):
+        log.info("in search photos")
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
+        result = []
+        if self.searchType == 'tag':
+            photos = photoLib.searchPhotos('tags', self.query)
+        elif self.searchType == 'geo':
+            photos = photoLib.searchPhotos('scope', self.query)
+        else:
+            keys = ['title', 'description', 'tags']
+            values = [self.query, self.query, self.query]
+            photos = photoLib.searchPhotos(keys, values)
+            log.info("after photo search")
+        if not photos:
+            log.info("no photos")
+            return json.dumps({'statusCode':2})
+        if len(photos) == 0:
+            log.info("len photos is 0")
+            return json.dumps({'statusCode':2})
+            
+        colors = workshopLib.getWorkshopTagColouring()
+        for photo in photos:
+            p = generic.getThing(photo['urlCode'])
+            u = generic.getThing(photo['userCode'])
+            if p['deleted'] != u'0' or p['disabled'] != u'0':
+                continue
+            log.info("after photo deleted disabled")
+            entry = {}
+            entry['title'] = p['title']
+            tagList = p['tags'].split('|')
+            tags = []
+            tagColors = []
+            for tag in tagList:
+                if tag and tag != '':
+                    tags.append(tag)
+                    c = colors[tag]
+                    tagColors.append(c)
+            entry['tags'] = tags
+            entry['colors'] = tagColors
+            entry['location'] = photoLib.getPhotoLocation(p)
+            entry['voteCount'] = int(p['ups']) - int(p['downs'])
+            entry['urlCode'] = p['urlCode']
+            entry['url'] = p['url']
+            entry['thumbnail'] = "/images/photos/" + p['directoryNum_photos'] + "/thumbnail/" + p['pictureHash_photos'] + ".png"
+            log.info(entry['thumbnail'])
+            entry['photoLink'] = "/profile/" + u['urlCode'] + "/" + u['url'] + "/photo/show/" + p['urlCode']
+            log.info(entry['photoLink'])
+            entry['numComments'] = discussionLib.getDiscussionForThing(p)['numComments']
             entry['authorCode'] = u['urlCode']
             entry['authorURL'] = u['url']
             entry['authorName'] = u['name']

@@ -12,6 +12,98 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
+<%def name="editProfile()">
+    <%namespace file="/lib/derived/6_profile_edit.mako" name="helpersEdit" />
+    <%
+        tab1active = ""
+        tab2active = ""
+        tab3active = ""
+        tab4active = ""
+        tab5active = ""
+        tab6active = ''
+        prefactive = ''
+                    
+        if c.tab == "tab1":
+            tab1active = "active"
+        elif c.tab == "tab2":
+            tab2active = "active"
+        elif c.tab == "tab3":
+            tab3active = "active"
+        elif c.tab == "tab4":
+            tab4active = "active"
+        elif c.tab == "tab5":
+            tab5active = "active"
+        elif c.tab == 'tab6':
+            tab6active = 'tab6'
+        else:
+            tab1active = "active"
+    
+        msgString = ''
+        if c.unreadMessageCount != 0:
+            msgString = ' (' + str(c.unreadMessageCount) + ')'
+    %>
+    <div class="row-fluid">
+        % if c.conf['read_only.value'] == 'true':
+            <h1> Sorry, Civinomics is in read only mode right now </h1>
+        % else:
+            <div class="tabbable">
+                <div class="span3">
+                    <div class="section-wrapper">
+                        <div class="browse">
+                            <ul class="nav nav-pills nav-stacked">
+                            <li class="${tab1active}"><a href="#tab1" data-toggle="tab">1. Info
+                            </a></li>
+                            <li class="${tab6active}"><a href="#tab6" data-toggle="tab">2. Picture
+                            </a></li>
+                            <li class="${tab4active}"><a href="#tab4" data-toggle="tab">3. Password
+                            </a></li>
+                            <li class="${prefactive}"><a href="#pref" data-toggle="tab">4. Preferences
+                            </a></li>
+                            % if c.admin:
+                            <li class="${tab5active}"><a href="#tab5" data-toggle="tab">5. Administrate
+                            Admin only - shhh!.</a></li>
+                            % endif
+                            </ul>
+                            <div>
+                                <form method="post" name="CreateWorkshop" id="CreateWorkshop" action="/workshop/display/create/form">
+                                <button type="submit" class="btn btn-warning">Create a Workshop!</button>
+                                </form>
+                            </div><!-- center -->
+                        </div><!-- browse -->
+                    </div><!-- section-wrapper -->
+                </div> <!-- /.span3 -->
+                <div class="span9">
+                    ${lib_6.fields_alert()}
+                    % if c.conf['read_only.value'] == 'true':
+                        <!-- read only -->
+                    % else:
+                        <div class="tab-content">
+                            <div class="tab-pane ${tab1active}" id="tab1">
+                                ${helpersEdit.profileInfo()}
+                            </div><!-- tab1 -->
+                            <div class="tab-pane ${tab4active}" id="tab4">
+                                ${helpersEdit.changePassword()}
+                            </div><!-- tab4 -->
+                            <div class="tab-pane ${tab6active}" id="tab6">
+                                ${helpersEdit.profilePicture()}
+                            </div><!-- tab4 -->
+                            <div class="tab-pane ${prefactive}" id="pref">
+                                ${helpersEdit.preferences()}
+                            </div><!-- preferences -->
+                            % if c.admin:
+                                <div class="tab-pane ${tab5active}" id="tab5">
+                                    ${helpersEdit.memberAdmin()}
+                                    ${helpersEdit.memberEvents()}
+                                </div><!-- tab5 -->
+                            % endif
+                        </div><!-- tab-content -->
+                    % endif
+                </div> <!-- /.span9 -->
+            </div><!-- tabbable -->
+        % endif
+    </div> <!-- /.row-fluid -->
+</%def>
+
 <%def name="profileInfo()">
     <div class="section-wrapper">
         <div class="browse">
@@ -131,10 +223,10 @@
                 <!-- Redirect browsers with JavaScript disabled to the origin page -->
                 <noscript>&lt;input type="hidden" name="redirect" value="http://blueimp.github.com/jQuery-File-Upload/"&gt;</noscript>
                 <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-                <div class="row-fluid fileupload-buttonbar">
+                <div id="fileupload-button-div" class="row-fluid fileupload-buttonbar collapse in">
                     <div class="span10 offset1">
                         <!-- The fileinput-button span is used to style the file input field as button -->
-                        <span class="btn btn-success fileinput-button span6 offset3">
+                        <span class="btn btn-success fileinput-button span6 offset3" data-toggle="collapse" data-target="#fileupload-button-div">
                             <i class="icon-plus icon-white"></i>
                             <span>Select your picture</span>
                             <input type="file" name="files[]">
@@ -157,7 +249,7 @@
                     <tbody><tr data-ng-repeat="file in queue">
                         <td data-ng-switch="" on="!!file.thumbnail_url">
                             <div class="preview" data-ng-switch-when="true">
-                                <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"></a>
+                                <a data-ng-href="{{file.url}}" title="{{file.name}}" data-gallery="gallery" download="{{file.name}}"><img data-ng-src="{{file.thumbnail_url}}"> New profile photo uploaded.</a>
                             </div>
                             <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
                         </td>
@@ -169,7 +261,7 @@
                                 <i class="icon-upload icon-white"></i>
                                 <span>Start</span>
                             </button>
-                            <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel">
+                            <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel" data-toggle="collapse" data-target="#fileupload-button-div">
                                 <i class="icon-ban-circle icon-white"></i>
                                 <span>Cancel</span>
                             </button>
@@ -179,152 +271,6 @@
             </form>
         </div><!-- browse -->
     </div><!-- section-wrapper -->
-</%def>
-
-<%def name="profileMessages()">
-    <table class="table table-condensed table-hover">
-        % if len(c.messages) == 0:
-            <div class="spacer"></div>
-            <div class="alert">
-              <button type="button" class="close" data-dismiss="alert">&times;</button>
-              <strong>Hey there!</strong> You don't have any messages yet. You'll receive messages when people reply to your posts, invite you to join a workshop, etc.
-            </div>
-        % endif
-        % for message in c.messages:
-            <%
-                rowClass = ''
-                if message['read'] == u'0':
-                    rowClass = 'warning unread-message'
-            %>
-            <tr class = "${rowClass}" data-code="${message['urlCode']}">
-                <%
-                    if message['sender'] == u'0':
-                        sender = 'Civinomics'
-                    else:
-                        sender = userLib.getUserByCode(message['sender'])
-                %>
-                <td class="message-avatar">
-                    % if sender == 'Civinomics':
-                        <img src="/images/handdove_medium.png" title="Civinomics" alt="Civinomics">
-                        <p>Civinomics</p>
-                    % else:
-                        ${lib_6.userImage(sender, className="avatar")}
-                    % endif
-                </td>
-                <td class="message-content"> 
-                    % if 'extraInfo' in message.keys():
-                        % if message['extraInfo'] in ['listenerInvite', 'facilitationInvite']:
-                            <% 
-                                workshop = workshopLib.getWorkshopByCode(message['workshopCode'])
-                                if message['extraInfo'] == 'listenerInvite':
-                                    formStr = """<form method="post" name="inviteListener" id="inviteListener" action="/profile/%s/%s/listener/response/handler/">""" %(c.user['urlCode'], c.user['url'])
-                                    action = 'be a listener for'
-                                    role = listenerLib.getListenerByCode(message['listenerCode'])
-                                else:
-                                    formStr = """<form method="post" name="inviteFacilitate" id="inviteFacilitate" action="/profile/%s/%s/facilitate/response/handler/">""" %(c.user['urlCode'], c.user['url'])
-                                    action = 'facilitate'
-                                    role = facilitatorLib.getFacilitatorByCode(message['facilitatorCode'])
-                            %>
-                            % if message['read'] == u'1':
-                                <%
-                                    # Since this is tied to the individual message, we will only have one action
-                                    # The query here should be rewritten to make use of map/reduce for a single query
-                                    event = eventLib.getEventsWithAction(message, 'accepted')
-                                    if not event:
-                                        responseAction = 'declining'
-                                    else:
-                                        responseAction = 'accepting'
-                                %>
-                                <div class="media">
-                                    ${lib_6.workshopImage(workshop, linkClass="pull-left message-workshop-image")}
-                                    <div class="media-body">
-                                        <h5 class="media-heading">${message['title']}</h5>
-                                        <p>${lib_6.userLink(sender)} invites you to facilitate <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a></p>
-                                        <p>${message['text']}</p>
-                                        <p>(You have already responded by ${responseAction})</p>
-                                        <p class="pull-right"><small>${message.date} (PST)</small></p>
-                                    </div>
-                                </div>
-                            % else:
-                                ${formStr | n}
-                                    <input type="hidden" name="workshopCode" value="${workshop['urlCode']}">
-                                    <input type="hidden" name="workshopURL" value="${workshop['url']}">
-                                    <input type="hidden" name="messageCode" value="${message['urlCode']}">
-                                    <div class="media">
-                                        ${lib_6.workshopImage(workshop, linkClass="pull-left")}
-                                        <div class="media-body">
-                                            <h5 class="media-heading">${message['title']}</h5>
-                                            <p>${lib_6.userLink(sender)} invites you to ${action} <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a></p>
-                                            <p>${message['text']}</p>
-                                            <button type="submit" name="acceptInvite" class="btn btn-mini btn-civ" title="Accept the invitation to ${action} the workshop">Accept</button>
-                                            <button type="submit" name="declineInvite" class="btn btn-mini btn-danger" title="Decline the invitation to ${action} the workshop">Decline</button>
-                                            <p class="pull-right"><small>${message.date} (PST)</small></p>
-                                        </div>
-                                    </div>
-                                </form>
-                            % endif
-                        % elif message['extraInfo'] in ['listenerSuggestion']:
-                            <% workshop = workshopLib.getWorkshopByCode(message['workshopCode']) %>
-                            <div class="media">
-                                <div class="media-body">
-                                    <h5 class="media-heading">${message['title']}</h5>
-                                    Member ${lib_6.userLink(sender)} has a listener suggestion for workshop <a ${lib_6.workshopLink(workshop)}>${workshop['title']}</a>:<br />
-                                    <p>${message['text']}</p>
-                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
-                                </div>
-                            </div>
-                        % elif message['extraInfo'] in ['commentResponse']:
-                            <%
-                                comment = commentLib.getCommentByCode(message['commentCode'])
-                                workshop = workshopLib.getWorkshopByCode(comment['workshopCode'])
-                            %>
-                            <div class="media">
-                                <div class="media-body">
-                                    <h5 class="media-heading">${lib_6.userLink(sender)} ${message['title']}</h5>
-                                    <p><a ${lib_6.thingLinkRouter(comment, workshop, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">${comment['data']}</a></p>
-                                    <p>${message['text']}</p>
-                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
-                                </div>
-                            </div>
-                        % elif message['extraInfo'] in ['disabled', 'enabled', 'deleted', 'adopted']:
-                            <%
-                                event = eventLib.getEventsWithAction(message, message['extraInfo'])
-                                if not event:
-                                    continue
-                                event = event[0]
-                                
-                                # Mako was bugging out on me when I tried to do this with sets
-                                codeTypes = ['commentCode', 'discussionCode', 'ideaCode', 'resourceCode']
-                                thing = None
-                                for codeType in codeTypes:
-                                    if codeType in message.keys():
-                                        thing = generic.getThing(message[codeType])
-                                        break
-                                if thing is None:
-                                    continue
-                                workshop = generic.getThing(thing['workshopCode'])
-                            %>
-                            <div class="media">
-                                <div class="media-body">
-                                    <h4 class="media-heading centered">${message['title']}</h4>
-                                    <p>It was ${event['action']} because: ${event['reason']}</p>
-                                    <p>You posted:
-                                    % if thing.objType == 'comment':
-                                        <a ${lib_6.thingLinkRouter(thing, workshop, embed=True, commentCode=thing['urlCode']) | n} class="green green-hover">${thing['data']}</a>
-                                    % else:
-                                        <a ${lib_6.thingLinkRouter(thing, workshop, embed=True) | n} class="green green-hover">${thing['title']}</a>
-                                    % endif
-                                    </p>
-                                    <p>${message['text']}</p>
-                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
-                                </div>
-                            </div>
-                        % endif
-                    % endif
-                </td>
-            </tr>
-        % endfor
-    </table>
 </%def>
 
 <%def name="changePassword()">

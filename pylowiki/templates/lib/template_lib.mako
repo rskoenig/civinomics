@@ -2,10 +2,12 @@
 <%! 
     import pylowiki.lib.db.user     as userLib 
     import pylowiki.lib.db.message  as messageLib
+    import pylowiki.lib.db.workshop as workshopLib
 %>
 
 !
 <%def name="mainNavbar()">
+    <% tagCategories = workshopLib.getWorkshopTagCategories() %>
     <div class="navbar civ-navbar navbar-fixed-top" style="margin-bottom: 60px;">
         <div class="navbar-inner">
             <div class="container">
@@ -19,14 +21,9 @@
                 </a>
                 <ul class="nav">
                     <li>
-                        <form class="form-search" action="/search">
-                            <div class="input-append">
-                                <input type="text" class="span2 search-query" placeholder="workshops or people" id="search-input" name="searchQuery" value="${c.searchQuery}">
-                            </div>
-                            <span class="search-icon-container">
-                                <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_027_search.png" class="search-icon" data-toggle="tooltip" title="search">
-                            </span>
-                        </form>
+                        <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#search">
+                        Search <i class="icon-white icon-search"></i>
+                        </button>
                     </li>
                 </ul>
                 <div class="nav-collapse collapse">
@@ -72,6 +69,8 @@
                                         <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
                                         <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
                                         <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                                        <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                                        <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                     </ul>
                                 </li>
                             % endif
@@ -94,11 +93,69 @@
             </div> <!--/.container-->
         </div> <!--/.navbar-inner.civ-navbar -->
     </div> <!-- /.navbar -->
-    <hr class="civ-topbar-hr" 
-        % if "corp" in session._environ['PATH_INFO']:
-            id="corpTopbar"
-        % endif/
-    >
+    <div id="search" class="collapse search_drawer">
+        <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+        <div class="spacer"></div>
+        <div class="row-fluid">
+            <div class="span3 offset1">
+                <form class="form-search" action="/search">
+                    <div class="input-append">
+                        <input type="text" class="span2 search-query" placeholder="Search by word" id="search-input" name="searchQuery">
+                    </div>
+                </form>
+            </div><!-- span3 -->
+            <div class="span3">
+                <script type="text/javascript">
+                    function searchTags() {
+                        var sIndex = document.getElementById('categoryTag').selectedIndex;
+                        var sValue = document.getElementById('categoryTag').options[sIndex].value;
+                        if(sValue) {
+                            var queryURL = sValue;
+                            window.location = queryURL;
+                        }
+                    }
+                </script>
+                <form action="/searchTags" class="form-search" method="POST">
+                    <select name="categoryTag" id="categoryTag" onChange="searchTags();">
+                    <option value="0">Search by Tag</option>
+                    % for tag in tagCategories:
+                        <% tagValue = tag.replace(" ", "_") %>
+                        <option value="/searchTags/${tagValue}/">${tag.title()}</option>
+                    % endfor
+                    </select>
+                </form>
+            </div><!-- span3 -->
+            <div class="span5">
+                <form  action="/searchGeo"  class="form-search" method="POST">
+                    <div class="row-fluid"><span id="searchCountrySelect">
+                        <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
+                        <option value="0" selected>Search by Region</option>
+                        <option value="United States">United States</option>
+                        </span><!-- searchCountrySelect -->
+                        </select>
+                        <span id="searchCountryButton"></span>
+                    </div><!-- row-fluid -->
+                    <div class="row-fluid">
+                        <span id="searchStateSelect"></span>
+                        <span id="searchStateButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchCountySelect"></span>
+                        <span id="searchCountyButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchCitySelect"></span>
+                        <span id="searchCityButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchPostalSelect"></span>
+                        <span id="searchPostalButton">
+                    </div>
+                </form>
+            </div><!-- span5 -->
+        </div><!-- row-fluid -->
+        <div class="spacer"></div>
+    </div><!-- collapse -->
 </%def>
 
 <%def name="splashNavbar()">

@@ -58,16 +58,21 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.resourcesURL = '/search/resources/' + $scope.searchType + '/' + $scope.searchString;
     $scope.discussionsURL = '/search/discussions/' + $scope.searchType + '/' + $scope.searchString;
     $scope.ideasURL = '/search/ideas/' + $scope.searchType + '/' + $scope.searchString;
+    $scope.photosURL = '/search/photos/' + $scope.searchType + '/' + $scope.searchString;
     $scope.searchQueryPretty = $("#search-input").val();
     $scope.showingWorkshops = {'class': 'active', 'show': false};
     $scope.showingPeople = {'class': '', 'show': false};
     $scope.showingResources = {'class': '', 'show': false};
     $scope.showingDiscussions = {'class': '', 'show': false};
     $scope.showingIdeas = {'class': '', 'show': false};
+    $scope.showingPhotos = {'class': '', 'show': false};
     $scope.objType = 'workshops';
-    
-    $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments'};
-    
+    $scope.orderProp = '-date';
+    $scope.orderProp = '-date';
+    $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos'};
+    $scope.currentPage = 0;
+    $scope.pageSize = 20;
+
     $http.get($scope.workshopsURL).success(function(data){
         if (data.statusCode == 1)
         {
@@ -90,10 +95,12 @@ app.controller('SearchCtrl', function($scope, $http){
     });
     
     $scope.searchWorkshops = function() {
+        $scope.currentPage = 0;
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -119,13 +126,18 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.workshops.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchPeople = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -151,13 +163,18 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.people.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchResources = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -183,13 +200,18 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.resources.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchDiscussions = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -215,13 +237,18 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.discussions.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchIdeas = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -247,5 +274,52 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.ideas.length/$scope.pageSize);                
+        }
     };
+        
+    $scope.searchPhotos = function() {
+        $scope.currentPage = 0;
+        $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingResources = {'class': '', 'show': false};
+        $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
+        $scope.loading = true;
+        $scope.objType = 'photos';
+        $http.get($scope.photosURL).success(function(data){
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingPhotos = {'class': 'active', 'show': false};
+                $scope.photos = null;
+            }
+            else if (data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingPhotos = {'class': 'active', 'show': false};
+                $scope.photos = null;
+            }
+            else if (data.statusCode === 0)
+            {
+                $scope.photos = data.result;
+                $scope.showingPhotos = {'class': 'active', 'show': true};
+            }
+            $scope.loading = false;
+        });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.photos.length/$scope.pageSize);                
+        }
+    };
+});
+
+app.filter('startFrom', function() {
+    return function(input, start) {
+        start = +start; //parse to int
+        return input.slice(start);
+    }
 });

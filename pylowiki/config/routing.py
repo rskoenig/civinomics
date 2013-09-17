@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """Routes configuration
-
 The more specific and detailed routes should be defined first so they
 may take precedent over the more generic routes. For more information
 refer to the routes manual at http://routes.groovie.org/docs/
@@ -215,13 +214,14 @@ def make_map():
     # Comments
     map.connect('/{comment:comments?}/add/{handler:handler/?}', controller = 'comment', action = 'commentAddHandler')
     map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalink')
-    # map.connect('/{workshop:workshops?}/{workshopCode}/{workshopURL}/thread/{commentCode}{end:/?}', controller = 'comment', action = 'showThread')
+    map.connect('/profile/{userCode}/{userURL}/{comment:comments?}/{revisionCode}{end:/?}', controller = 'comment', action = 'permalinkPhoto')
 
     # Ratings
     #map.connect('/rate/suggestion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateSuggestion', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rateFacilitation/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateFacilitation', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/resource/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateResource', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/discussion/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateDiscussion', code = '{code}', url = '{url}', amount = '{amount}')
+    map.connect('/rate/photo/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'ratePhoto', code = '{code}', url = '{url}', amount = '{amount}')
     map.connect('/rate/comment/{code}/{amount}{end:/?}', controller = 'rating', action = 'rateComment', code = '{code}', amount = '{amount}')
     map.connect('/rate/idea/{code}/{url}/{amount}{end:/?}', controller = 'rating', action = 'rateIdea', code = '{code}', url = '{url}', amount = '{amount}')
     
@@ -231,13 +231,15 @@ def make_map():
     map.connect('/delete/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'delete')
     map.connect('/edit/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'edit')
     map.connect('/flag/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'flag')
+    map.connect('/publish/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'publish')
+    map.connect('/unpublish/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'unpublish')
     map.connect('/immunify/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'immunify')
     map.connect('/adopt/{objType}/{thingCode}{end:/?}', controller = 'admin', action = 'adopt')
     map.connect('/demo/set/{thingCode}{end:/?}', controller = 'admin', action='setDemo')
     
     ########################################################################################################
     # 
-    # Online Survey specific routes
+    # Online Survey specific routes  map.connec
     # 
     ########################################################################################################
 
@@ -317,6 +319,9 @@ def make_map():
     map.connect('/profile/{id1}/{id2}/{discussions:discussions/?}', controller = 'profile', action = 'showUserDiscussions', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{ideas:ideas/?}', controller = 'profile', action = 'showUserIdeas', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{watching:watching/?}', controller = 'profile', action = 'showUserWatching', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/{pictures:pictures/?}', controller = 'profile', action = 'showUserPhotos', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/{listening:listening/?}', controller = 'profile', action = 'showUserListening', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/{facilitating:facilitating/?}', controller = 'profile', action = 'showUserFacilitating', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{comments:comments/?}', controller = 'profile', action = 'showUserComments', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{followers:followers/?}', controller = 'profile', action = 'showUserFollowers', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/{following:following/?}', controller = 'profile', action = 'showUserFollows', id1 = '{id1}', id2 = '{id2}')
@@ -329,11 +334,16 @@ def make_map():
     map.connect('/profile/{edit:edit/?}', controller = 'profile', action = 'edit')
     map.connect('/profile/{editSubmit:editSubmit/?}', controller = 'profile', action = 'editSubmit')
     map.connect('/profile/{id1}/{id2}/{edit:edit/?}', controller = 'profile', action = 'edit', id1 = '{id1}', id2 = '{id2}')
-    map.connect('/profile/{id1}/{id2}/info/edit/{handler:handler/?}', controller = 'profile', action = 'infoEditHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/edit/info/{handler:handler/?}', controller = 'profile', action = 'infoEditHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/picture/upload/{handler:handler/?}', controller = 'profile', action = 'pictureUploadHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/photo/upload/{handler:handler/?}', controller = 'profile', action = 'photoUploadHandler', id1 = '{id1}', id2 = '{id2}')
+    map.connect('/profile/{id1}/{id2}/photo/{id3}/update/{handler:handler/?}', controller = 'profile', action = 'photoUpdateHandler', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/profile/{id1}/{id2}/photo/show/{id3}{end:/?}', controller = 'profile', action = 'showUserPhoto', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/profile/{id1}/{id2}/photos/show{end:/?}', controller = 'profile', action = 'showUserPhotos', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/picture/set/image/source{end:/?}', controller = 'profile', action = 'setImageSource')
     map.connect('/profile/{id1}/{id2}/password/update/{handler:handler/?}', controller = 'profile', action = 'passwordUpdateHandler', id1 = '{id1}', id2 = '{id2}')
     map.connect('/profile/{id1}/{id2}/search/workshop/tag/{id3}', controller = 'profile', action = 'searchWorkshopTag', id1 = '{id1}', id2 = '{id2}', id3 = '{id3}')
+    map.connect('/profile/{id1}/{id2}/archives', controller = 'profile', action = 'showUserArchives', id1 = '{id1}', id2 = '{id2}')
     
     ################
     # Messaging    #
@@ -371,6 +381,7 @@ def make_map():
     map.connect('/search/resources/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchResources', searchType = '{searchType}', searchString = '{searchString}')
     map.connect('/search/discussions/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchDiscussions', searchType = '{searchType}', searchString = '{searchString}')
     map.connect('/search/ideas/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchIdeas', searchType = '{searchType}', searchString = '{searchString}')
+    map.connect('/search/photos/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchPhotos', searchType = '{searchType}', searchString = '{searchString}')
     map.connect('/searchTags/{id1}{end:/?}', controller='search', action='searchWorkshopCategoryTags', id1 = '{id1}')
     map.connect('/workshops/geo/{planet}/', controller = 'search', action = 'searchWorkshopGeo', country = 'united-states')
     map.connect('/workshops/geo/{planet}/{country}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')

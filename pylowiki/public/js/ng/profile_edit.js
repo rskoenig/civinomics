@@ -12,7 +12,7 @@ function ProfileEditController($scope, $http) {
         if (!$scope.infoEdit.$dirty){
             return false;
         }
-        var submitURL = location.pathname + "/info/edit/handler";
+        var submitURL = location.pathname + "/info/handler";
         var thisForm = {member_name:$scope.fullName, email:$scope.email, postalCode:$scope.postalCode, greetingMsg:$scope.greetingMsg, websiteLink:$scope.websiteLink, websiteDesc:$scope.websiteDesc};
         $http.post(submitURL, thisForm).success(function(data){
             var alertClass = 'alert-success';

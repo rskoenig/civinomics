@@ -37,7 +37,11 @@
     ## Display a button to login to add a comment
     ##
     ########################################################################
-    <% url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url'] %>
+    % if c.w:
+        url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url']
+    % else:
+        url = '/login'
+    %endif
 
 
     <fieldset>
@@ -200,6 +204,7 @@
             headerClass += " facilitator"
         elif comment['addedAs'] == 'listener':
             headerClass += " listener"
+
     %>
     <div class="${headerClass}">
         <!--<button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
@@ -217,11 +222,16 @@
         
         <span class="pull-right disabledComment-notice">
             <small>
-            <!-- <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">Link</a> -->
             % if parent:
                 % if parent.objType == 'comment':
                     % if parent['urlCode'] != comment['urlCode']:
-                        <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
+                        <% 
+                            if c.w:
+                                dparent = c.w
+                            elif c.user:
+                                dparent = c.user
+                        %>
+                        <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
                     % endif
                 % endif
             % endif
@@ -330,7 +340,12 @@
 <%def name="continueThread(comment)">
     <br />
     <%
-        continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
+        if c.w:
+            dparent = c.w
+        elif c.user:
+            dparent = c.user
+
+        continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
     %>
     ${continueStr | n}
 </%def>

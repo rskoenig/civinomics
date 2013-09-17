@@ -170,6 +170,29 @@ def generatePassword():
     pool, size = letters + digits, 20
     hash =  ''.join([choice(pool) for i in range(size)])
     return hash
+    
+def setUserPrivs():
+    c.privs = {}
+    # Civinomics administrator
+    c.privs['admin'] = False
+    # Workshop facilitator
+    c.privs['facilitator'] = False
+    # Like a facilitator, but with no special privs
+    c.privs['listener'] = False
+    # Logged in member with privs to add objects
+    c.privs['participant'] = False
+    # Not logged in, privs to visit this specific workshop
+    c.privs['guest'] = False
+    # Not logged in, visitor privs in all public workshops
+    c.privs['visitor'] = True
+    # is a demo workshop
+    c.privs['demo'] = False
+    
+    if 'user' in session:
+        c.privs['admin'] = isAdmin(c.authuser.id)
+        c.privs['participant'] = True
+        c.privs['guest'] = False
+        c.privs['visitor'] = False
 
 # Helper functions
     

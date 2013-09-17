@@ -20,7 +20,7 @@ def linkChildToParent(child, parent):
         log.error("linkChildToParent(): parent object of type %s and id %s missing 'urlCode' field." %(parent.objType, parent.id))
         return False
     
-    key = '%s%s' %(parent.objType, 'Code')
+    key = '%s%s' %(parent.objType.replace("Unpublished", ""), 'Code')
     if key in child:
         # Overwrite, give warning
         log.warning("linkChildToParent(): parent object link already exists in child.")
@@ -49,6 +49,15 @@ def getThing(code, keys = None, values = None):
             q = q.filter(Thing.data.any(wc(keys[i], values[i])))
         return q.one()
     except Exception as e:
+        return False
+
+def getChildrenOfParent(parent):
+    parentCode = parent.objType.replace("Unpublished", "")  + 'Code'
+    try:
+        return meta.Session.query(Thing)\
+            .filter(Thing.data.any(wc(parentCode, parent['urlCode'])))\
+            .all()
+    except:
         return False
         
 def getThingByID(thingID):
