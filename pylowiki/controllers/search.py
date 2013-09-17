@@ -141,10 +141,11 @@ class SearchController(BaseController):
         c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
 
         c.photos = photoLib.searchPhotos('tags', self.query)
-        if c.photos and len(photos) != 0:
+        if c.photos and len(c.photos) != 0:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
             c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
 
         c.searchQuery = self.query
         c.searchType = "tag"
