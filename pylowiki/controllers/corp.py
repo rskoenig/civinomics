@@ -621,30 +621,12 @@ class CorpController(BaseController):
         toddAnderson['bio']="Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform."
         toddAnderson['photo']='todd_anderson.jpg'
         c.team.append(toddAnderson)
-        ajBurleson={}
-        ajBurleson["name"]="AJ Burleson"
-        ajBurleson['title']='Public Outreach Manager '
-        ajBurleson['bio']="AJ grew up on the streets of Hunter's Point, one of San Francisco's most violent neighborhoods. This gave him a deep desire to see the world adhere to just principles. After leaving college the first time he helped to promote and distribute \"Straight Outta Hunters Point\" an award winning documentary about his neighborhood, which had enlightened him about the environmental and social injustices in San Francisco.  He later returned to SFSU where he received his degree in International Relations.  His voyage through academia, included a year abroad at the University of Amsterdam. For his thesis he choose to write about his experiences at home and abroad. \"The United States and The Netherlands: Two Constructions of Changing Drug Policies\", is a testimony to the perceptions and stereotypes about drug use in the United States and abroad.  AJ's untraditional journey gives him the keen sense of community building that he brings to Civinomics."
-        ajBurleson['photo']='aj_burleson.jpg'
-        c.team.append(ajBurleson)
-        noelleDaley={}
-        noelleDaley["name"]="Noelle Daley"
-        noelleDaley['title']='Social Media Intern'
-        noelleDaley['bio']="Noelle is a marketing handywoman.  With a diverse background in marketing, social media, and account management, Noelle helps maintain Civinomics' online presence.  She is passionate about bringing social justice and technology together, and believes in the collaborative, pragmatic nature of start-ups. Noelle is currently finishing her undergraduate degree at the University of California, Santa Cruz in Sociology, with emphases in urban studies and education."
-        noelleDaley['photo']='noelle_daley.jpg'
-        c.team.append(noelleDaley)
-        edolfoG={}
-        edolfoG["name"]="Edolfo Garza-Licudine"
-        edolfoG['title']='CTO & Founder'
-        edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
-        edolfoG['photo']='edolfo_garzalicudine.jpg'
-        c.team.append(edolfoG)
-        traciH={}
-        traciH["name"]="Traci Hukill"
-        traciH['title']='Director of Content'
-        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
-        traciH['photo']='traci_hukill.jpg'
-        c.team.append(traciH)
+        estherKim={}
+        estherKim["name"]="Esther Kim"
+        estherKim['title']='Marketing Manager'
+        estherKim['bio']="My name is Esther Kim, I'm a recent graduate from UCSC in Business Management & Economics. I am an avid blogger, amateur videographer, and a work hard play hard advocate. I fell in love with Santa Cruz when I started surfing and mountain biking and I don't plan on leaving anytime soon. At Civinomics, I hope to bring in a specialized skillset of what I call 'grassroots' marketing to help set a structured brand goal of being a community leader."
+        estherKim['photo']='esther_kim.jpg'
+        c.team.append(estherKim)
         manuK={}
         manuK["name"]="Manu Koenig"
         manuK['title']='CEO & Founder'
@@ -669,9 +651,27 @@ class CorpController(BaseController):
         robertS['bio']="Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics."
         robertS['photo']='robert_singleton.jpg'
         c.team.append(robertS)
+        russellSterten={}
+        russellSterten["name"]="Russell Sterten"
+        russellSterten['title']='Program Manager '
+        russellSterten['bio']="Hi, my name is Russell and it's good to be on board with Civinomics.  I am excited about the prospect of leveraging cutting edge communications and Web 2.0 technologies to dramatically increase people's engagement on issues facing their community. Before joining Civinomics I worked as a grassroots campaign organizer - most recently on a San Rafael city councilman's successful bid for the State Assembly - and have also been a substitute teacher in the East Bay and Marin.  Now I am looking forward to working with Civinomics and empowering people to help change the world."
+        russellSterten['photo']='russell_sterten.jpg'
+        c.team.append(russellSterten)
 
         c.advisors=[]
         kevinB={}
+        edolfoG={}
+        edolfoG["name"]="Edolfo Garza-Licudine"
+        edolfoG['title']='Technichal Advisor & Founder'
+        edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
+        edolfoG['photo']='edolfo_garzalicudine.jpg'
+        c.advisors.append(edolfoG)
+        traciH={}
+        traciH["name"]="Traci Hukill"
+        traciH['title']='Public Relations'
+        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
+        traciH['photo']='traci_hukill.jpg'
+        c.advisors.append(traciH)
         kevinB["name"]="Kevin Bell"
         kevinB['title']='Energy and Sustainability'
         kevinB['bio']="Kevin Bell has over thirty years experience in energy resource policy and energy-related innovation, working in a staff and consulting capacity in the public, private, and non-profit sectors as a researcher, regulator, and advocate of next-generation energy technologies. His expertise includes the design and implementation of energy and carbon models and public policies for enabling the low-carbon economy. He is the former CEO of a successful venture that developed a new generation of educational tools and technologies for teaching science. He received his Masters in Public Administration from the Harvard Kennedy School of Government."
@@ -683,6 +683,7 @@ class CorpController(BaseController):
         davidP['bio']="David was most recently President of the San Francisco Carbon Collaborative. Previously, David was the Lead Clean Technology and Green Business Advocate for the City and County of San Francisco, where his time was split between the Mayor's Office of Economic and Workforce Development and the City's Department of the Environment. In that capacity, David was responsible for attracting and retaining companies whose products and services address our greatest environmental challenges. Prior to entering the government sector, David worked as an environmental sustainability consultant, and served as the Director of Events and Entertainment for Al Gore's Alliance for Climate Protection."
         davidP['photo']='david_pascal.jpg'
         c.advisors.append(davidP)
+
 
 
         return render('/derived/corp_team.bootstrap')
