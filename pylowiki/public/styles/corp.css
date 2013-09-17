@@ -1,0 +1,129 @@
+#corpNavbar {
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #2c2c2c;
+  background-image: -moz-linear-gradient(top, #0ca900, #075D00);
+  background-image: -ms-linear-gradient(top, #0ca900, #075D00);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#0ca900), to(#075D00));
+  background-image: -webkit-linear-gradient(top, #0ca900, #075D00);
+  background-image: -o-linear-gradient(top, #0ca900, #075D00);
+  background-image: linear-gradient(top, #0ca900, #075D00);
+  background-repeat: repeat-x;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e1e1e1', endColorstr='#c8c8c8', GradientType=0);
+
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+
+}
+  #corpNavbar a{
+    color: #fff;
+    text-decoration: none;
+    text-shadow: none;
+  }
+  #corpNavbar .dropdown-menu a{
+    color: #075D00;
+    text-decoration: none;
+    text-shadow: none;
+  }
+  #corpNavbar .dropdown-menu a:hover{
+    color: #fff;
+  }
+
+  #corpTopbar{
+   border: 1px solid #fff;
+   margin-top: 0px;
+   margin-bottom: 20px;
+}
+
+#left_navigbar{
+  margin-left: 60px;
+}
+
+
+div .well.sidebar-nav{
+  padding:10px 0 20px;
+} 
+
+
+.nav-list.corp > .active > a, 
+.nav-list.corp > .active > a:hover {
+    background-color: #087600;
+    color: #FFFFFF !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+#team img{
+  margin-top: 12px;
+  width: 100px;
+  height: 100px;
+}
+
+.tab-content.corp{
+  padding-left: 20px;
+}
+
+#caseStudyImage{
+  position: relative;
+  background-image: url("/images/fluid1_images/outreach_header3.png");
+  height: 405px;
+  width: 980px;
+}
+
+.outreachText h1{
+  padding: 0 0 0 20px ;
+}
+#outreachDetails{
+  width: 300px;
+  padding: 40px 0 0 100px;
+}
+#outreachDetails{
+  width: 300px;
+  padding: 40px 0 0 100px;
+}
+
+.thumbnail.plain{
+  border: none;
+}
+
+.spacedList{
+  padding: 10px 0 10px 0;
+}
+
+.client{
+    margin-top: 5px; 
+    -webkit-transition: margin 0.5s ease-out; 
+    -moz-transition: margin 0.5s ease-out; 
+    -o-transition: margin 0.5s ease-out;
+}
+.client:hover{
+    margin-top: -8px; 
+}
+
+.civ-carousel {
+    display: inline !important;
+}
+
+.picture-well{
+  background-color: #ffffff;
+  background-image: url('/images/splash/dust.png');
+  background-repeat: repeat;
+  background-position: top left;
+
+  opacity:0.9;
+  filter:alpha(opacity=90); /* For IE8 and earlier */
+}
+
+#polling-hero{
+  position: absolute;
+  padding: 40px;
+  top: 70px;
+  left: 20px;
+  width: 400px;
+}
+
+
+
+
