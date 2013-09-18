@@ -260,7 +260,7 @@
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
                         <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
-                            <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount">
+                            <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount;objType='idea';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
                                     <div class="span10">
                                         <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
@@ -312,24 +312,36 @@
                 <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
                     <table class="table plain">
                         <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
-                            <div class="media well searchListing">
-                                <div class="pull-left">
-                                    <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="media-heading">
-                                        <a class="listed-item-title" href="{{photo.photoLink}}">{{photo.title}}</a>
-                                    </h4>
-                                    <small>
-                                        Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
-                                        Location: {{photo.location}}<br />
-                                        Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
-                                    </small>
-                                    <br />
-                                    <ul class="horizontal-list iconListing">
-                                        <li><i class="icon-check-sign"></i> Total votes ({{photo.voteCount}})</li>
-                                        <li><i class="icon-comment"></i> Comments ({{photo.numComments}})</li>
-                                    </ul>
+                            <div class="media well searchListing" ng-init="rated=photo.rated; urlCode=photo.urlCode;url=photo.url; totalVotes=photo.voteCount;netVotes=photo.netVotes;objType='photo';">
+                                <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                    <div class="span1 voteWrapper" >
+                                        <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
+                                            <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
+                                        </a>
+                                        <br>
+                                        <div class="centered chevron-score"> {{netVotes}}</div>
+                                        <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
+                                            <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
+                                        </a>
+                                        <br>
+                                    </div>
+                                    <div class="pull-left">
+                                        <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="media-heading">
+                                            <a class="listed-item-title" href="{{photo.photoLink}}">{{photo.title}}</a>
+                                        </h4>
+                                        <small>
+                                            Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
+                                            Location: {{photo.location}}<br />
+                                            Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                                        </small>
+                                        <br />
+                                        <ul class="horizontal-list iconListing">
+                                            <li><i class="icon-comment"></i> Comments ({{photo.numComments}})</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </td></tr>

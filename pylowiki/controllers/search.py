@@ -44,6 +44,7 @@ class SearchController(BaseController):
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
+        c.user = c.authuser
         self.query = ''
         self.noQuery = False
         self.searchType = 'name'
@@ -575,12 +576,18 @@ class SearchController(BaseController):
             for tag in tagList:
                 if tag and tag != '':
                     tags.append(tag)
-                    c = colors[tag]
-                    tagColors.append(c)
+                    color = colors[tag]
+                    tagColors.append(color)
             entry['tags'] = tags
             entry['colors'] = tagColors
             entry['location'] = photoLib.getPhotoLocation(p)
-            entry['voteCount'] = int(p['ups']) - int(p['downs'])
+            entry['voteCount'] = int(p['ups']) + int(p['downs'])
+            entry['netVotes'] = int(p['ups']) - int(p['downs'])
+            rated = ratingLib.getRatingForThing(c.authuser, photo) 
+            if rated:
+                entry['rated'] = rated['amount']
+            else:
+                entry['rated'] = 0
             entry['urlCode'] = p['urlCode']
             entry['url'] = p['url']
             entry['thumbnail'] = "/images/photos/" + p['directoryNum_photos'] + "/thumbnail/" + p['pictureHash_photos'] + ".png"
