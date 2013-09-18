@@ -398,13 +398,17 @@
         </div>
     % endif
     % if c.searchType == 'region' or c.searchType == 'tag':
-        % if c.photos:
-            <div class="span3 well search-side-bar grey">
-                <span>Top Rated Photo:<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i></a></span>
+        <div class="span3 well search-side-bar grey">
+            <span>Top Rated Photo:<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i></a></span>
+            % if c.photos:
                 <img class="thumbnail tight" src="${c.backgroundPhoto}">
                 Posted by ${lib_6.userLink(c.backgroundAuthor)}
-            </div>
-        % endif
+            % else:
+                <div class="alert photo-alert">
+                  <strong>No photos!</strong> Be the first to add one.
+                </div>
+            % endif
+        </div>
     % endif
 </div><!-- row-fluid -->
 
