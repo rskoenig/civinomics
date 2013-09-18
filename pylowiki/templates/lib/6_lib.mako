@@ -611,8 +611,9 @@
     <%
         # Assumes 'user' is a Thing.
         # Defaults to a gravatar source
-        # kwargs:   forceSource:   Instead of returning a source based on the user-set preference in the profile editor,
-        #                          we return a source based on the value given here (civ/gravatar)
+        # kwargs:   forceSource:   Instead of returning a source based on the user-set
+        # preference in the profile editor, we return a source based on the value
+        # given here (civ/gravatar)
         source = 'http://www.gravatar.com/avatar/%s?r=pg&d=identicon' % md5(user['email']).hexdigest()
         large = False
         gravatar = True
@@ -632,6 +633,8 @@
                     source = user['facebookProfileBig']
                 else:
                     source = user['facebookProfileSmall']
+            elif kwargs['forceSource'] == 'twitter':
+                source = user['twitterProfilePic']
 
         else:
             if 'avatarSource' in user.keys():
@@ -645,6 +648,10 @@
                         source = user['facebookProfileBig']
                     else:
                         source = user['facebookProfileSmall']
+                elif user['avatarSource'] == 'twitter':
+                    gravatar = False
+                    source = user['twitterProfilePic']
+
             elif 'extSource' in user.keys():
                 # this is needed untl we're sure all facebook connected users have properly 
                 # functioning profile pics - the logic here is now handled 

@@ -1,4 +1,4 @@
-<%inherit file="/base/base_splash.bootstrap"/>
+<%inherit file="/base/base.bootstrap"/>
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
@@ -20,30 +20,21 @@
                       </div>
                   % endif
                   <div class="login-top">
-                      <h2> Login </h2>
+                      <h2> Link your account with Twitter Login</h2>
+                      <p>Since you haven't linked your account on our site with twitter 
+                        yet, we need to ask you for your password. After this, pressing the 
+                        'Login with Twitter' button will log in in without asking for a
+                        password.</p>
                   </div>
                   <div class="login-body">
                       % if c.conf['read_only.value'] == 'true':
                           <h1> Sorry, Civinomics is in read only mode right now </h1>
                       % else:
-                          <div class="row">
-                              <div class="span3 offset2" id="fbLoginButton1">
-                                  <fb:login-button show-faces="false" size="xlarge" scope="email, user_photos"><img src="/images/fb_signin.png"></fb:login-button>
-                              </div>
-                          </div>
-                          <div class="row">
-                              <div class="span3 offset2" style="padding-top:21px;" id="twtLoginButton1">
-                                  <a href="/twitterLoginBegin"><img src="/images/twitter-sign-in-with-gray.png"></a>
-                              </div>
-                          </div>
-                          <div class="social-sign-in-separator sc-font-light sc-text-light">
-                              <span>Or sign in with your email</span>
-                          </div>
-                          <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
+                          <form id="sign_in" action="/twtLinkAccountHandler" class="form form-horizontal" method="post">
                               <div class="control-group">
                                   <label class="control-label" for="email"> Email: </label>
                                   <div class="controls">
-                                      <input type="email" name="email" id="email" required>
+                                      ${c.email}
                                   </div>
                               </div>
                               <div class="control-group">

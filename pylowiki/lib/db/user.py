@@ -65,6 +65,12 @@ def getUserByFacebookAuthId( userid ):
     except:
         return False
 
+def getUserByTwitterId( twitterid ):
+    try:
+        return meta.Session.query(Thing).filter_by(objType = 'user').filter(Thing.data.any(wc('twitterAuthId', twitterid))).one()
+    except:
+        return False
+
 def getUserByID(id):
     try:
         return meta.Session.query(Thing).filter_by(id = id).one()
@@ -204,8 +210,10 @@ class User(object):
         if email != config['app_conf']['admin.email'] and ('guestCode' not in session and 'workshopCode' not in session):
             if 'externalAuthSignup' in kwargs:
                 if kwargs['externalAuthSignup'] == False:
+                    log.info("generateActivationHash")
                     self.generateActivationHash(u)
             else:
+                log.info("generateActivationHash")
                 self.generateActivationHash(u)
         commit(u)
  
@@ -232,6 +240,7 @@ class User(object):
         hash =  ''.join([choice(pool) for i in range(size)])
         
         toEmail = u['email']
+        log.info("sending email to %s"%toEmail)
         frEmail = c.conf['activation.email']
         baseURL = c.conf['activation.url']
         url = '%s/activate/%s__%s'%(baseURL, hash, toEmail) 
