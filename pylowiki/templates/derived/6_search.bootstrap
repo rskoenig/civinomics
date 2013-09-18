@@ -281,8 +281,8 @@
                                             <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>
                                         </p>
                                     </div>
-                                    <div>
-                                        <div class="span2 voteBlock ideaListing" >
+                                    <div class="span2 voteBlock ideaListing" >
+                                        % if 'user' in session:
                                             <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
                                                 <div class="vote-icon yes-icon"></div>
                                             </a>
@@ -291,8 +291,17 @@
                                             <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
                                                 <div class="vote-icon no-icon"></div>
                                             </a>
+                                        % else:
+                                            <a href="/login" class="yesVote">
+                                                <div class="vote-icon yes-icon"></div>
+                                            </a>
                                             <br>
-                                        </div>
+                                            <br>
+                                            <a href="/login" class="noVote">
+                                                <div class="vote-icon no-icon"></div>
+                                            </a>
+                                        % endif
+                                        <br>
                                     </div>
                                 </div><!-- media-body -->
                             </div><!-- search-listing -->
@@ -315,14 +324,25 @@
                             <div class="media well searchListing" ng-init="rated=photo.rated; urlCode=photo.urlCode;url=photo.url; totalVotes=photo.voteCount;netVotes=photo.netVotes;objType='photo';">
                                 <div class="media-body" ng-controller="yesNoVoteCtrl">
                                     <div class="span1 voteWrapper" >
-                                        <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
-                                            <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
-                                        </a>
-                                        <br>
-                                        <div class="centered chevron-score"> {{netVotes}}</div>
-                                        <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
-                                            <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
-                                        </a>
+                                        % if 'user' in session:
+                                            <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
+                                                <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
+                                            </a>
+                                            <br>
+                                            <div class="centered chevron-score"> {{netVotes}}</div>
+                                            <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
+                                                <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
+                                            </a>
+                                        % else:
+                                            <a href="/login" class="upVote">
+                                                <i class="icon-chevron-sign-up icon-2x"></i>
+                                            </a>
+                                            <br>
+                                            <div class="centered chevron-score"> {{netVotes}}</div>
+                                            <a href="/login" class="downVote">
+                                                <i class="icon-chevron-sign-down icon-2x"></i>
+                                            </a>
+                                        % endif
                                         <br>
                                     </div>
                                     <div class="pull-left">
@@ -454,6 +474,6 @@
 <%def name="extraScripts2()">
     <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
     <script type="text/javascript">
-        $('.nullvote').tooltip();
+        $('.upVote.nullvote').tooltip();
     </script>
 </%def>
