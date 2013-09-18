@@ -307,24 +307,26 @@
                     </div>
                 </div>
                 <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
-                    <table class="table table-condensed table-hover">
+                    <table class="table plain">
                         <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
-                            <div class="media">
+                            <div class="media well searchListing">
                                 <div class="pull-left">
                                     <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
                                 </div>
                                 <div class="media-body">
-                                    <a href="{{photo.photoLink}}">{{photo.title}}</a><br />
-                                    Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
-                                    Location: {{photo.location}}<br />
-                                    Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                                    <h4 class="media-heading">
+                                        <a class="listed-item-title" href="{{photo.photoLink}}">{{photo.title}}</a>
+                                    </h4>
+                                    <small>
+                                        Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
+                                        Location: {{photo.location}}<br />
+                                        Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                                    </small>
                                     <br />
-                                    <p>
-                                        Net votes: {{photo.voteCount}}
-                                    </p>
-                                    <p>
-                                        Comments: {{photo.numComments}}
-                                    </p>
+                                    <ul class="horizontal-list iconListing">
+                                        <li><i class="icon-check-sign"></i> Total votes ({{photo.voteCount}})</li>
+                                        <li><i class="icon-comment"></i> Comments ({{photo.numComments}})</li>
+                                    </ul>
                                 </div>
                             </div>
                         </td></tr>
