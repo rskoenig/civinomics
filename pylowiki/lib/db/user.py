@@ -183,6 +183,7 @@ def hashPassword(password):
 
 class User(object):
     def __init__(self, email, name, password, country, memberType, postalCode = '00000', **kwargs):
+        log.info("user created")
         u = Thing('user')
         u['greetingMsg'] = ''
         u['websiteLink'] = ''

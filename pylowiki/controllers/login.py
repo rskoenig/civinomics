@@ -137,8 +137,19 @@ class LoginController(BaseController):
             user['oauth_twitter_token_secret'] = final_step['oauth_token_secret']
             user['externalAuthType'] = 'twitter'
             commit(user)
-            # log this person in
-            LoginController.logUserIn(self, user)
+            if user['activated'] == '0':
+                log.info('twitter user not activated')
+                splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                baseURL = c.conf['activation.url']
+                url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                mailLib.sendActivationMail(user['email'], url)
+            elif user['disabled'] == '1':
+                log.warning("disabled account attempting to login via twitter - " + user['email'])
+                splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
+            else:
+                log.info('logging twitter user in u[d]=%s'% user['disabled'])
+                # log this person in
+                LoginController.logUserIn(self, user)
         else:
             log.info('did not find twitter id')
             c.numAccounts = 1000
@@ -175,6 +186,10 @@ class LoginController(BaseController):
             session.save()
 
             return render("/derived/twitterSignUp.bootstrap")
+
+        session['splashMsg'] = splashMsg
+        session.save()
+        return redirect("/login")
 
     def fbAuthCheckEmail(self, id1):
         # this receives an email from the fb javascript auth checker, figures out what to do
@@ -427,9 +442,22 @@ class LoginController(BaseController):
             user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if user:
             log.info("login:fbLoggingIn found user, logging in")
-            LoginController.logUserIn(self, user)
+            if user['activated'] == '0':
+                splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                baseURL = c.conf['activation.url']
+                url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                mailLib.sendActivationMail(user['email'], url)
+            elif user['disabled'] == '1':
+                log.warning("disabled account attempting to login - " + email )
+                splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
+            else:
+                LoginController.logUserIn(self, user)
         else:
-            log.info("login:fbLoggingIn DID NOT FIND USER - DEAD END") 
+            log.info("login:fbLoggingIn DID NOT FIND USER")
+        session['splashMsg'] = splashMsg
+        session.save()
+            
+        return redirect("/login")
 
     def logUserIn(self, user, **kwargs):
         # NOTE - need to store the access token? kee in session or keep on user?

@@ -310,19 +310,19 @@ class RegisterController(BaseController):
                 pool, size = letters + digits, 11
                 hash =  ''.join([choice(pool) for i in range(size)])
                 password = hash.lower()
-                u = User(email, name, password, country, memberType, postalCode, externalAuthSignup=True)
+                # if they are a guest signing up, we will activate and log them in, externalAuthSignup=True 
+                # skips sending an activation email
+                if c.w:
+                    u = User(email, name, password, country, memberType, postalCode, externalAuthSignup=True)
+                else:
+                    u = User(email, name, password, country, memberType, postalCode)
                 message = "The user '" + username + "' was created successfully!"
                 c.success = True
                 session['registerSuccess'] = True
                 session.save()
                 
                 log.info( message )
-                splashMsg['type'] = 'success'
-                splashMsg['title'] = 'Success'
-                splashMsg['content'] = "You now have an identity to use on our site."
-                session['splashMsg'] = splashMsg
-                session.save()
-
+                
                 # if they are a guest signing up, activate and log them in
                 if c.w:
                     user = u.u
@@ -346,6 +346,10 @@ class RegisterController(BaseController):
                     loginTime = time.localtime(float(user['laston']))
                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
                     commit(user)
+                    splashMsg['type'] = 'success'
+                    splashMsg['title'] = 'Success'
+                    splashMsg['content'] = "You now have an identity to use on our site."
+                    session['splashMsg'] = splashMsg
                     session["user"] = user['name']
                     session["userCode"] = user['urlCode']
                     session["userURL"] = user['url']
@@ -361,14 +365,17 @@ class RegisterController(BaseController):
                         returnPage += "/add/" + c.listingType
                     return redirect(returnPage)
                 else:
-                    # not a guest, simply a new twitter signup. activate and login
+                    # not a guest, simply a new twitter signup,
+                    # we are sending this person an activation email - this is
+                    # because twitter does not give us the email of this user so
+                    # we have to ask for it, and confirm
                     user = u.u
                     if 'laston' in user:
                         t = time.localtime(float(user['laston']))
                         user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
 
                     # add twitter userid to user
-                    user['twitterAuthId'] = twitterId
+                    user['unactivatedTwitterAuthId'] = twitterId
                     # this will allow us to use the twitter api in their name
                     user['twitter_oauth_token'] = session['twitter_oauth_token']
                     user['twitter_oauth_secret'] = session['twitter_oauth_secret']
@@ -377,26 +384,31 @@ class RegisterController(BaseController):
                     if 'twitterProfilePic' in session:
                         user['avatarSource'] = 'twitter'
                         user['twitterProfilePic'] = session['twitterProfilePic']
-                    
-                    user['laston'] = time.time()
-                    user['activated'] = u'1'
-                    loginTime = time.localtime(float(user['laston']))
-                    loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                    #user['laston'] = time.time()
+                    user['activated'] = u'0'
+                    #loginTime = time.localtime(float(user['laston']))
+                    #loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
                     commit(user)
-                    session["user"] = user['name']
-                    session["userCode"] = user['urlCode']
-                    session["userURL"] = user['url']
+                    #session["user"] = user['name']
+                    #session["userCode"] = user['urlCode']
+                    #session["userURL"] = user['url']
+                    #session.save()
+                    splashMsg['type'] = 'success'
+                    splashMsg['title'] = 'Success'
+                    splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
+                    session['splashMsg'] = splashMsg
                     session.save()
-                    log.info('session of user: %s' % session['user'])
-                    log.info('%s logged in %s' % (user['name'], loginTime))
-                    c.authuser = user
-                    mailLib.sendWelcomeMail(user)
-                    
-                    log.info( "Successful facebook signup with email - " + email )
-                    returnPage = "/"
+                    #log.info('session of user: %s' % session['user'])
+                    #log.info('%s logged in %s' % (user['name'], loginTime))
+                    #c.authuser = user
+                    #mailLib.sendWelcomeMail(user)
+                    #log.info( "Successful twitter signup with email - " + email )
                     return redirect(returnPage)
             else:
-                # we have a person that already has an account on site, but hasn't
+                # we have a match by email. because this is a manually provided email in this signup,
+                # there are multiple cases to consider. One of the cases is that someone who doesn't own
+                # this email tried to sign up and never was able to activate the account. 
+                # person that already has an account on site, but hasn't
                 # used the twitter auth to login yet
                 # we need to activate parameters for this person's account
                 # IF they know their password, and only if their account was originally
@@ -408,10 +420,20 @@ class RegisterController(BaseController):
                     session['splashMsg'] = splashMsg
                     session.save()
                     return redirect('/login')
-                c.email = email
-                session['twtEmail'] = email
-                session.save()
-                return render("/derived/twtLinkAccount.bootstrap")
+                if user['activated'] == '1':
+                    c.email = email
+                    session['twtEmail'] = email
+                    session.save()
+                    return render("/derived/twtLinkAccount.bootstrap")
+                else:
+                    log.info("unactivated user trying to sign up with twitter")
+                    # this is an unactivated account, initated via normal signup or twitter signup
+                    splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                    session['splashMsg'] = splashMsg
+                    session.save()
+                    baseURL = c.conf['activation.url']
+                    url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                    mailLib.sendActivationMail(user['email'], url)
         else:
             log.info("register:twitterSigningUp found user, required info is missing")
             splashMsg['content'] = "Some required info is missing from the twitter data."
@@ -663,6 +685,7 @@ class RegisterController(BaseController):
         return redirect('/signup')
 
     def signupHandler( self ):
+        log.info("in signup handler")
         c.numAccounts = 1000
         c.numUsers = len(getActiveUsers())
 
@@ -775,7 +798,8 @@ class RegisterController(BaseController):
             if errorFound:
                 return redirect(returnPage)
             username = name
-            if getUserByEmail( email ) == False:
+            user = getUserByEmail( email )
+            if user == False:
                 if password == password2:
                     u = User(email, name, password, country, memberType, postalCode)
                     message = "The user '" + username + "' was created successfully!"
@@ -822,10 +846,18 @@ class RegisterController(BaseController):
                     session.save() 
             else:
                 # If they've registered using external authentication, they cannot add a password
-                # by registering in this way.
-                splashMsg['content'] = "The email '" + email + "' is already in use"
-                session['splashMsg'] = splashMsg
-                session.save() 
+                # by registering in this way - unless it is an unactivated account
+                if user['activated'] == '0':
+                    splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                    session['splashMsg'] = splashMsg
+                    session.save()
+                    baseURL = c.conf['activation.url']
+                    url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                    mailLib.sendActivationMail(user['email'], url)
+                else:
+                    splashMsg['content'] = "The email '" + email + "' is already in use"
+                    session['splashMsg'] = splashMsg
+                    session.save()
         else:
             splashMsg['content'] = "Please fill all fields"
             session['splashMsg'] = splashMsg
