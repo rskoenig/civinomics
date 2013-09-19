@@ -7,15 +7,6 @@
         <div class="spacer"></div>
         <div class="row-fluid">
             % if 'user' in session:
-                % for scope in c.scopeMapping:
-                  ${scope[1]}
-
-
-                  <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope[0]) | n}>${scope[1]}</a>
-                % endfor
-
-
-
                 <ul class="thumbnails">
                   <li class="span wrap-workshop" style="background-image:url('${c.featured['image']}'); background-size: cover; height: 200px; width: 64.5%; position: relative;">
                       <div class="darkened-text"></div> 
@@ -33,18 +24,18 @@
                           </div>
                       </a>
                     </li>
-                  % for group in c.votingGroups:
-                    <li class="span4 wrap-workshop" style="background-image:url('${group['image']}'); background-size: cover; height: 200px; position: relative;">
+                  % for scope in c.scopeMapping:
+                    <li class="span4 wrap-workshop" style="background-image:url('/images/grey.png'); background-size: cover; height: 200px; position: relative;">
                       <div class="darkened-text"></div> 
-                      <a href="${group['link']}">
+                      <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['scopeLevel']) | n}>
                         <span class="link-span"></span><!-- used to make entire div a link -->
                         <table style="margin: 10px; position: absolute; z-index: 2;">
                           <tr>
                             <td>
-                              <img class="thumbnail" style="width:40px; padding: 0px; display: inline;" src="${group['flag']}">
+                              <img class="thumbnail" style="width:40px; padding: 0px; display: inline;" src="/images/flags/generalFlag.gif">
                             </td>
                             <td style="padding-left: 5px;">
-                              <span class="lead" style="font-size:24px; color: #FFFFFF;">${group['name']}</span>
+                              <span class="lead" style="font-size:24px; color: #FFFFFF;">${scope['scopeName']}</span>
                             </td>
                           </tr>
                         </table>

@@ -48,12 +48,13 @@ class HomezController(BaseController):
 			    county = 'County of ' + county
 			    city = 'City of ' + city
 			# fetching geos and mapping them to local variables
-			c.scopeMapping = [    ('earth', 'Earth'),
-			                ('country', c.authuser_geo['countryTitle']),
-			                ('state', c.authuser_geo['stateTitle']),
-			                ('county', county),
-			                ('city', city),
-			                ('postalCode', c.authuser_geo['postalCode'])
+			c.scopeMapping = [    
+							{'scopeLevel':'earth', 'scopeName':'Earth'},
+			                {'scopeLevel':'country', 'scopeName': c.authuser_geo['countryTitle']},
+			                {'scopeLevel':'state', 'scopeName': c.authuser_geo['stateTitle']},
+			                {'scopeLevel':'county', 'scopeName': county},
+			                {'scopeLevel':'city', 'scopeName': city},
+			                {'scopeLevel':'postalCode', 'scopeName': c.authuser_geo['postalCode']}
 			                ]
 
 
