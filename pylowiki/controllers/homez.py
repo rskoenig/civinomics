@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import urllib2
 
 from pylons import request, response, session, tmpl_context as c, url, config
 from pylons.controllers.util import abort, redirect
@@ -48,15 +49,37 @@ class HomezController(BaseController):
 			    county = 'County of ' + county
 			    city = 'City of ' + city
 			# fetching geos and mapping them to local variables
-			c.scopeMapping = [    
-							{'scopeLevel':'earth', 'scopeName':'Earth'},
-			                {'scopeLevel':'country', 'scopeName': c.authuser_geo['countryTitle']},
-			                {'scopeLevel':'state', 'scopeName': c.authuser_geo['stateTitle']},
-			                {'scopeLevel':'county', 'scopeName': county},
-			                {'scopeLevel':'city', 'scopeName': city},
-			                {'scopeLevel':'postalCode', 'scopeName': c.authuser_geo['postalCode']}
+			c.scopeMap = [    
+							{'level':'earth', 'name':'Earth'},
+			                {'level':'country', 'name': c.authuser_geo['countryTitle']},
+			                {'level':'state', 'name': c.authuser_geo['stateTitle']},
+			                {'level':'county', 'name': county},
+			                {'level':'city', 'name': city},
+			                {'level':'postalCode', 'name': c.authuser_geo['postalCode']}
 			                ]
 
+			# set flag image urls for scopes in scopeMap
+			for scope in c.scopeMap:
+				scope['geoURL'] = scope['name'].replace(' ', '-')
+
+			c.scopeMap[0]['flag'] = '/images/flags/earth.gif'
+			c.scopeMap[1]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + ".gif"
+			c.scopeMap[2]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + "/states/" + c.scopeMap[2]['geoURL'] + ".gif"
+			c.scopeMap[3]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + "/states/" + c.scopeMap[2]['geoURL'] + "/counties/" + c.scopeMap[3]['geoURL'] + ".gif"
+			c.scopeMap[4]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + "/states/" + c.scopeMap[2]['geoURL'] + "/counties/" + c.scopeMap[3]['geoURL'] + "/cities/" + c.scopeMap[4]['geoURL'] + ".gif"
+			c.scopeMap[5]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + "/states/" + c.scopeMap[2]['geoURL'] + "/counties/" + c.scopeMap[3]['geoURL'] + "/cities/" + c.scopeMap[4]['geoURL'] + "/postalCodes/" + c.scopeMap[5]['geoURL'] + ".gif"
+
+			# check to see if flag has been uploaded if not switch it to the general flag
+			baseUrl = config['site_base_url']
+			if baseUrl[-1] == "/":
+				baseUrl = baseUrl[:-1]
+			for scope in c.scopeMap:
+				flag = baseUrl + scope['flag']
+				try:
+					f = urllib2.urlopen(urllib2.Request(flag))
+					scope['flag'] = flag
+				except:
+					scope['flag'] = '/images/flags/generalFlag.gif'
 
 
 		c.featured = {}
