@@ -435,7 +435,7 @@ ul.activity > li {
     border: 1px solid #005d28;
     margin-top:5px;
     position:relative;
-    min-height: 256px;
+    min-height: 265px;
 }
 
 .wrap-workshop:hover{
@@ -444,7 +444,7 @@ ul.activity > li {
 
 
 @media (min-width: 1125px){
-  .row-fluid [class*="span"]:nth-child(3n + 1).wrap-workshop{
+  .row-fluid [class*="span"]:nth-child(3n + 3).wrap-workshop{
      margin-left:0px;
   }
 }

@@ -49,6 +49,10 @@ def make_map():
     map.connect('/corp/caseStudies', controller = 'corp', action = 'caseStudies')
     map.connect('/corp/polling', controller = 'corp', action = 'polling')
 
+    # New Home Test
+    map.connect('/home', controller = 'homez', action = 'index', id='None')
+
+
     ########################################################################################################
     # 
     # Platform-specific routes
