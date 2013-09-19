@@ -347,7 +347,7 @@
     </div><!-- span9 -->
     % if c.searchType == 'region':
         <div class="span3">
-            <div class="well search-side-bar">
+            <div class="span well search-side-bar">
                 <div class="span12">
                     <img class="thumbnail flag" src="${c.flag}">
                 </div>
@@ -401,7 +401,7 @@
             </div>
         % endif
         % if c.searchType == 'region' or c.searchType == 'tag':
-            <div class="well search-side-bar grey">
+            <div class="span well search-side-bar grey">
                 <span>Top Rated Photo:<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i></a></span>
                 % if c.photos:
                     <img class="thumbnail tight" src="${c.backgroundPhoto}">
