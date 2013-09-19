@@ -346,72 +346,74 @@
         </div><!-- tabbable tabs-left civ-search -->
     </div><!-- span9 -->
     % if c.searchType == 'region':
-        <div class="span3 well search-side-bar">
-            <div class="span12">
-                <img class="thumbnail flag" src="${c.flag}">
-            </div>
-            % if c.geoInfo:
-                <form class="form-horizontal stats">
-                    <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Population:</label>
-                        <div class="controls">
-                            <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Median Age:</label>
-                        <div class="controls">
-                            <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label grey" for="inputEmail">Persons per Household:</label>
-                        <div class="controls">
-                            <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
-                        </div>
-                    </div>
-                    % if 'Postal Code' in c.searchQuery:
-                        <hr class="stats">
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Income per Household:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Avg House Value:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                    % endif
-                </form>
-            % else:
+        <div class="span3">
+            <div class="well search-side-bar">
                 <div class="span12">
-                    <em class="grey">Stats are not yet available for this region.</em>
+                    <img class="thumbnail flag" src="${c.flag}">
                 </div>
-            % endif
-        </div>
-    % endif
-    % if c.searchType == 'region' or c.searchType == 'tag':
-        <div class="span3 well search-side-bar grey">
-            <span>Top Rated Photo:<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i></a></span>
-            % if c.photos:
-                <img class="thumbnail tight" src="${c.backgroundPhoto}">
-                Posted by ${lib_6.userLink(c.backgroundAuthor)}
-            % else:
-                <div class="alert photo-alert">
-                  <strong>No photos!</strong> Be the first to add one.
-                </div>
-            % endif
-        </div>
-    % endif
+                % if c.geoInfo:
+                    <form class="form-horizontal stats">
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Population:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Median Age:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Persons per Household:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        % if 'Postal Code' in c.searchQuery:
+                            <hr class="stats">
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                                <div class="controls">
+                                    <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                                </div>
+                            </div>
+                        % endif
+                    </form>
+                % else:
+                    <div class="span12">
+                        <em class="grey">Stats are not yet available for this region.</em>
+                    </div>
+                % endif
+            </div>
+        % endif
+        % if c.searchType == 'region' or c.searchType == 'tag':
+            <div class="well search-side-bar grey">
+                <span>Top Rated Photo:<a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i></a></span>
+                % if c.photos:
+                    <img class="thumbnail tight" src="${c.backgroundPhoto}">
+                    Posted by ${lib_6.userLink(c.backgroundAuthor)}
+                % else:
+                    <div class="alert photo-alert">
+                      <strong>No photos!</strong> Be the first to add one.
+                    </div>
+                % endif
+            </div>
+        % endif
+    </div><!-- span3 -->
 </div><!-- row-fluid -->
 
 <%def name="headScripts()">
