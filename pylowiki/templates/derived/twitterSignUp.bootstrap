@@ -17,7 +17,7 @@
     </div>
 </div>
 
-<div class="container">
+<div id="fbSignUp" class="container">
     <div class="row">
         % if c.success:
             <div class="span6 offset3" style="padding-top:150px;">
@@ -40,7 +40,7 @@
                         </div>
                     % endif
                     <div class="login-top">
-                        <h2> Sign Up </h2><br />
+                        <h2> Complete Twitter Signup </h2><br />
                         % if float(c.numAccounts - c.numUsers)/float(c.numAccounts) <= .25:
                             <p> ${c.numAccounts - c.numUsers}/${c.numAccounts} accounts left </p>
                         % endif
@@ -48,51 +48,15 @@
                     % if c.conf['read_only.value'] == 'true':
                         <h1> Sorry, Civinomics is in read only mode right now </h1>
                     % else:
-                        <div class="control-group">
-                            <div class="row">
-                                <div class="span3 offset2" id="fbLoginButton2">
-                                    <fb:login-button show-faces="false" size="xlarge" scope="email, user_photos"><img src="/images/fb_signin.png"></fb:login-button>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="span3 offset2" style="padding-top:21px;" id="twtLoginButton1">
-                                    <a href="/twitterLoginBegin"><img src="/images/twitter-sign-in-with-gray.png"></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="social-sign-in-separator sc-font-light sc-text-light">
-                            <span>Or sign up with your email</span>
-                        </div>
                         <div class="login-body" style="border-bottom:none;">
-                            <form id="sign_in" action="/signup/handler" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
+                            <form id="sign_in" action="/signup/twitterSigningUp" class="form form-horizontal" ng-controller="signupController" name="signupForm" method="POST">
                                 <input type="hidden" name="country" value="United States">
                                 <input type="hidden" name="memberType" value="professional">
-
-                                <div ng-class=" {'control-group': true, 'error': signupForm.name.$error.pattern} ">
-                                    <label class="control-label" for="name"> Full name: </label>
-                                    <div class="controls">
-                                        <input type="text" name="name" id="name" ng-model="fullName" ng-pattern="fullNameRegex" required>
-                                        <span class="error help-block" ng-show="signupForm.name.$error.pattern">Use only letters, numbers, spaces, and _ (underscore)</span>
-                                    </div>
-                                </div>
                                 <div class="control-group">
                                     <label class="control-label" for="email"> Email: </label>
                                     <div class="controls">
                                         <input type="email" name="email" id="email" ng-model="email" ng-click="clearEmail()" required>
                                         <span class="error help-block" ng-show="signupForm.email.$error.email">Not a valid email!</span>
-                                    </div>
-                                </div>
-                                <div class="control-group">
-                                    <label class="control-label" for="passphrase"> Password: </label>
-                                    <div class="controls">
-                                        <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
-                                    </div>
-                                </div>
-                                <div ng-class=" {'control-group': true} ">
-                                    <label class="control-label" for="passphrase2"> Password (again): </label>
-                                    <div class="controls">
-                                        <input type="password" name="password2" id="passphrase2" ng-model= "passphrase2" required>
-                                        <span class="error help-block" ng-show="passphrase1 != passphrase2">Passwords don't match!</span>
                                     </div>
                                 </div>
                                 <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} ">
@@ -112,8 +76,9 @@
                                 </div>
                                 <div class="control-group">
                                     <div class="controls">
-                                        <button class="btn btn-success disabled" ng-show="signupForm.$invalid" onClick="event.preventDefault(); return 0;">Sign up</button>
-                                        <button type="submit" class="btn btn-success" ng-show="signupForm.$valid">Sign up</button>
+                                        <button class="btn btn-success disabled" ng-show="signupForm.$invalid">Complete sign up</button>
+                                        <button type="submit" class="btn btn-success" ng-show="signupForm.$valid">Complete sign up</button>
+                                        
                                     </div>
                                 </div>
                             </form>
