@@ -1,0 +1,27 @@
+  <div class="btn-group pull-right left-space">
+        <button class="btn dropdown-toggle" data-toggle="dropdown">
+          Search by Region
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          % for scopeLevel in c.scopeMapping:
+              <%
+                  activeClass = ''
+                      
+                  if c.scope['level'] == scopeLevel[0]:
+                      if scopeLevel[0] != 'earth':
+                          scopeKey = '%sURL' % scopeLevel[0] 
+                          userScope = c.authuser_geo[scopeKey]
+                      else:
+                          userScope = 'earth'
+                      if c.scope['name'] == userScope:
+                          activeClass = 'active'
+                      else:
+                          outOfScope = True
+              %>
+              <li class="${activeClass}">
+                  <a ${self._geoWorkshopLink(c.authuser_geo, depth = scopeLevel[0]) | n}>${scopeLevel[1]}</a>
+              </li>
+            % endfor
+        </ul>
+      </div>
