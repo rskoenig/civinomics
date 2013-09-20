@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging, formencode, time
+from formencode import validators
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -23,6 +24,14 @@ class plaintextForm(formencode.Schema):
     allow_extra_fields = True
     filter_extra_fields = True
     username = formencode.validators.PlainText(not_empty=True)
+
+NAMEREGEX = re.compile("^([A-Za-z0-9-'_\s])+$", re.IGNORECASE)
+
+class PlainWithQuotes(validators.Regex):
+    allow_extra_fields = True
+    filter_extra_fields = True
+    #regex = "^[A-Za-z\/\s\.'-]+$"
+    regex = NAMEREGEX
 
 class RegisterController(BaseController):
 
@@ -753,7 +762,8 @@ class RegisterController(BaseController):
         else:
             checkTOS = request.params['chkTOS']
 
-        schema = plaintextForm()
+        #schema = plaintextForm()
+        schema = PlainWithQuotes()
         try:
             namecheck = name.replace(' ', '')
             nameTst = schema.to_python(dict(username = namecheck))
