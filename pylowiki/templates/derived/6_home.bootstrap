@@ -25,14 +25,14 @@
                       </a>
                     </li>
                   % for scope in c.scopeMap:
-                    <li class="span4 wrap-workshop" style="background-image:url('/images/grey.png'); background-size: cover; height: 200px; position: relative;">
+                    <li class="span4 wrap-workshop" style="background-image:url(${scope['photo']}); background-size: cover; height: 200px; position: relative;">
                       <div class="darkened-text"></div> 
                       <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['level']) | n}>
                         <span class="link-span"></span><!-- used to make entire div a link -->
                         <table style="margin: 10px; position: absolute; z-index: 2;">
                           <tr>
                             <td>
-                              <img class="thumbnail" style="width:40px; padding: 0px; display: inline;" src="${scope['flag']}">
+                              <img class="thumbnail small-flag" src="${scope['flag']}">
                             </td>
                             <td style="padding-left: 5px;">
                               <span class="lead" style="font-size:24px; color: #FFFFFF;">${scope['name']}</span>

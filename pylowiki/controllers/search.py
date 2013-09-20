@@ -166,6 +166,7 @@ class SearchController(BaseController):
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
 
         c.photos = photoLib.searchPhotos('scope', self.query)
+        c.searchQuery = self.query
         if c.photos:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]

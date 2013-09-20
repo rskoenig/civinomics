@@ -1671,6 +1671,12 @@ text-align: right;
   margin: 0 auto 10px;
 }
 
+.small-flag{
+  width:40px; height: 27px;
+  padding: 0px;
+  display: inline;"
+}
+
 .thumbnail.tight{
   padding: 0;
 }

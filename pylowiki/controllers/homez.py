@@ -13,8 +13,10 @@ from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
 
-import pylowiki.lib.db.user             as userLib
-import pylowiki.lib.db.message          as messageLib
+import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.message      as messageLib
+import pylowiki.lib.db.photo        as photoLib
+import pylowiki.lib.sort            as sort
 
 from pylons import config
 import datetime
@@ -69,11 +71,13 @@ class HomezController(BaseController):
 			c.scopeMap[4]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + "/states/" + c.scopeMap[2]['geoURL'] + "/counties/" + c.scopeMap[3]['geoURL'] + "/cities/" + c.scopeMap[4]['geoURL'] + ".gif"
 			c.scopeMap[5]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + "/states/" + c.scopeMap[2]['geoURL'] + "/counties/" + c.scopeMap[3]['geoURL'] + "/cities/" + c.scopeMap[4]['geoURL'] + "/postalCodes/" + c.scopeMap[5]['geoURL'] + ".gif"
 
-			# check to see if flag has been uploaded if not switch it to the general flag
+			# get the base url for use in flag check below
 			baseUrl = config['site_base_url']
 			if baseUrl[-1] == "/":
 				baseUrl = baseUrl[:-1]
+
 			for scope in c.scopeMap:
+				# check to see if flag has been uploaded if not switch it to the general flag
 				flag = baseUrl + scope['flag']
 				try:
 					f = urllib2.urlopen(urllib2.Request(flag))
@@ -81,6 +85,14 @@ class HomezController(BaseController):
 				except:
 					scope['flag'] = '/images/flags/generalFlag.gif'
 
+				# set the photo
+				photos = photoLib.searchPhotos('scope', scope['name'])
+				if photos and len(photos) != 0:
+					photos = sort.sortBinaryByTopPop(photos)
+					p = photos[0]
+					scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+				else:
+					scope['photo'] = "/images/grey.png"
 
 		c.featured = {}
 		c.featured['image']= "/images/grey.png"
