@@ -88,13 +88,49 @@ def FollowOrUnfollow(user, thing, disabled = '0'):
         if f:
             # Ugly hack to reverse the bit when it's stored as a string
             f['disabled'] = str(int(not int(f['disabled'])))
-            commit(f)
-            return True
-        f = Thing('follow', user.id)
-        generic.linkChildToParent(f, thing)
-        f['itemAlerts'] = '0'
-        f['digest'] = '0'
-        f['disabled'] = disabled
+        else:
+            f = Thing('follow', user.id)
+            generic.linkChildToParent(f, thing)
+            f['itemAlerts'] = '0'
+            f['digest'] = '0'
+            f['disabled'] = disabled
+        
+        if thing.objType == 'user': 
+            fKey = 'follower_counter'
+            if f['disabled'] == '0':
+                if fKey in thing:
+                    fValue = int(thing[fKey])
+                    fValue += 1
+                    thing[fKey] = str(fValue)
+                else:
+                    thing[fKey] = '1'
+            else:
+                if fKey in thing:
+                    fValue = int(thing[fKey])
+                    fValue -= 1
+                    thing[fKey] = str(fValue)
+                else:
+                    thing[fKey] = '0'
+            fKey = 'follow_counter'
+        elif thing.objType == 'workshop':
+            fKey = 'bookmark_counter'
+            
+        if f['disabled'] == '0':
+            if fKey in user:
+                fValue = int(user[fKey])
+                fValue += 1
+                user[fKey] = str(fValue)
+            else:
+                user[fKey] = '1'
+        else:
+            if fKey in user:
+                fValue = int(user[fKey])
+                fValue -= 1
+                user[fKey] = str(fValue)
+            else:
+                user[fKey] = '0'
+                
+        commit(user)
         commit(f)
         return True
     except:
