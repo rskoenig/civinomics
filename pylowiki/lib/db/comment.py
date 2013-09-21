@@ -155,6 +155,8 @@ class Comment(object):
         if discussion['discType'] == 'photo':
             attachedThing = photoLib.getPhoto(discussion['photoCode'])
             
+        thisComment = generic.linkChildToParent(thisComment, owner)
+            
         thisComment = generic.linkChildToParent(thisComment, discussion)
         if attachedThing is not None:
             thisComment = generic.linkChildToParent(thisComment, attachedThing)
