@@ -14,7 +14,7 @@
                   <li class="span wrap-workshop" style="background-image:url('${c.featuredImage}'); background-size: cover; background-position: center center; height: 200px; width: 64.5%; position: relative;">
                       <div class="darkened-text"></div> 
                       <a href="${c.featured['link']}">
-                        <span class="link-span"></span><!-- used to make entire div a link -->
+                        <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
                         <div class="row-fluid" style="margin: 10px 0 20px 10px; position: absolute; z-index: 2;">
                           <span class="lead" style="font-size:28px; color: #FFFFFF;">New Workshops</span>
                         </div>
@@ -29,9 +29,8 @@
                     </li>
                   % for scope in c.scopeMap:
                     <li class="span4 wrap-workshop" style="background-image:url(${scope['photo']}); background-size: cover; height: 200px; position: relative;">
-                      <div class="darkened-text"></div> 
                       <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['level']) | n}>
-                        <span class="link-span"></span><!-- used to make entire div a link -->
+                        <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
                         <table style="margin: 10px; position: absolute; z-index: 2;">
                           <tr>
                             <td>
@@ -46,20 +45,19 @@
                     </li>
                   % endfor
                   <li class="span4 wrap-workshop" style="background-image:url('/images/grey.png'); background-size: cover; height: 200px; position: relative;">
-                      <div class="darkened-text"></div> 
-                      <a href="/">
-                        <span class="link-span"></span><!-- used to make entire div a link -->
-                        <table style="margin: 10px; position: absolute; z-index: 2;">
-                          <tr>
-                            <td>
-                              <i class="icon-plus icon-2x" style="color: #FFFFFF;"></i>
-                            </td>
-                            <td style="padding-left: 5px;">
-                              <span class="lead" style="font-size:24px; color: #FFFFFF;">Add a group</span>
-                            </td>
-                          </tr>
-                        </table>
-                      </a>
+                        <a href="/">
+                          <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+                          <table style="margin: 10px; position: absolute; z-index: 2;">
+                            <tr>
+                              <td>
+                                <i class="icon-plus icon-2x" style="color: #FFFFFF;"></i>
+                              </td>
+                              <td style="padding-left: 5px;">
+                                <span class="lead" style="font-size:24px; color: #FFFFFF;">Add a group</span>
+                              </td>
+                            </tr>
+                          </table>
+                        </a>
                     </li>
                 </ul>
             % else:
@@ -68,29 +66,31 @@
                     <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
                 </div>
             % endif
-            <span class="lead"><i class="icon-bookmark"></i> Bookmarks</span>
-            <table class="table plain">
-              % for item in c.watching:
-                <tr class="plain">
-                  <td>
-                    <div class="media well searchListing" style="padding: 5px;">
-                      <div class="span1">
-                        <a class="pull-left" ${lib_6.workshopLink(item)}>
-                          <img class="thumbnail tight media-object" src="${lib_6.workshopImage(item, raw=True) | n}">
-                        </a>
+            % if len(c.watching) != 0:
+              <span class="lead"><i class="icon-bookmark"></i> Bookmarks</span>
+              <table class="table plain">
+                % for item in c.watching:
+                  <tr>
+                    <td>
+                      <div class="media well searchListing" style="padding: 5px; border: none;">
+                        <div class="span1">
+                          <a class="pull-left" ${lib_6.workshopLink(item)}>
+                            <img class="thumbnail tight media-object" src="${lib_6.workshopImage(item, raw=True) | n}">
+                          </a>
+                        </div>
+                        <div class="span6">
+                          <a ${lib_6.workshopLink(item)} class="listed-item-title"><h5 class="media-heading">${item['title']}</h5></a>
+                        </div>
+                        <div>
+                          ${homeHelpers.watchButtonListing(item)}
+                          ${lib_6.bookmarkOptions(c.authuser, item)}
+                        </div>
                       </div>
-                      <div class="span6">
-                        <a ${lib_6.workshopLink(item)} class="listed-item-title"><h5 class="media-heading">${item['title']}</h5></a>
-                      </div>
-                      <div>
-                        ${homeHelpers.watchButtonListing(item)}
-                        ${lib_6.bookmarkOptions(c.authuser, item)}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              % endfor
-            </table>
+                    </td>
+                  </tr>
+                % endfor
+              </table>
+            % endif
 
         </div>
    </div> <!-- /main-listing-area -->
