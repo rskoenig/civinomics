@@ -230,6 +230,7 @@ def Resource(link, title, owner, workshop, privs, role = None, text = None, pare
     else:
         a['text'] = text
     a = generic.linkChildToParent(a, workshop)
+    a = generic.linkChildToParent(a, owner)
     if parent is not None:
         a = generic.linkChildToParent(a, parent)
     a['disabled'] = '0'

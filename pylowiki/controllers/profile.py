@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import math
 
 from pylons import request, response, session, config, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -13,6 +14,7 @@ from pylons import config
 import pylowiki.lib.db.activity         as activityLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
+import pylowiki.lib.db.generic          as genericLib
 import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.facilitator      as facilitatorLib
@@ -518,6 +520,13 @@ class ProfileController(BaseController):
 
         if nameChange:
             c.user['url'] = urlify(c.user['name'])
+            cList = genericLib.getChildrenOfParent(c.user)
+            for child in cList:
+                if child.objType in ['idea', 'resource', 'discussion', 'comment', 'photo']:
+                    child['user_name'] = c.user['name']
+                    child['user_url'] = c.user['url']
+                    dbHelpers.commit(child)
+                
             if c.user.id == c.authuser.id:
                 session["userURL"] = c.user['url']
                 session.save()
@@ -593,6 +602,7 @@ class ProfileController(BaseController):
             x = 0
             y = 0
             if 'width' in requestKeys:
+                log.info("width is %s"%request.params['width'])
                 width = int(float(request.params['width']))
             if 'x' in requestKeys:
                 x = int(float(request.params['x']))
@@ -686,6 +696,7 @@ class ProfileController(BaseController):
             x = 0
             y = 0
             if 'width' in requestKeys:
+                log.info("width is %s"%request.params['width'])
                 width = int(float(request.params['width']))
             if 'x' in requestKeys:
                 x = int(float(request.params['x']))

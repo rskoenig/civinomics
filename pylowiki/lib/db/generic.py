@@ -20,16 +20,46 @@ def linkChildToParent(child, parent):
         log.error("linkChildToParent(): parent object of type %s and id %s missing 'urlCode' field." %(parent.objType, parent.id))
         return False
     
+    counters = ['idea', 'resource', 'discussion', 'photo', 'listener']
     key = '%s%s' %(parent.objType.replace("Unpublished", ""), 'Code')
     if key in child:
         # Overwrite, give warning
-        log.warning("linkChildToParent(): parent object link already exists in child.")
+        log.warning("linkChildToParent(): parent object link already exists in child objType is %s."%parent.objType)
+
     if 'workshop_category_tags' in parent:
         child['workshop_category_tags'] = parent['workshop_category_tags']
     if 'workshop_public_scope' in parent:
         child['workshop_public_scope'] = parent['workshop_public_scope']
     if 'workshop_searchable' in parent:
         child['workshop_searchable'] = parent['workshop_searchable']
+    if 'workshop_title' in parent:
+        child['workshop_title'] = parent['workshop_title']
+    if 'workshop_url' in parent:
+        child['workshop_url'] = parent['workshop_url']
+    if parent.objType == 'workshop':
+        child['workshop_title'] = parent['title']
+        child['workshop_url'] = parent['url']
+    if parent.objType == 'user':
+        child['user_name'] = parent['name']
+        child['user_url'] = parent['url']
+        if child.objType in counters:
+            doit = 1
+            if 'discType' in child and child['discType'] != 'general':
+                doit = 0
+            
+            if doit:
+                kName = child.objType + "_counter"
+                if kName in parent:
+                    value = int(parent[kName])
+                    value +=1
+                    parent[kName] = str(value)
+                else:
+                    parent[kName] = '1'
+                commit(parent)
+    if child.objType == 'comment':
+        if 'title' in parent:
+            child['parent_title'] = parent['title']
+        child['parent_url'] = parent['url']
         
     child[key] = code
     return child

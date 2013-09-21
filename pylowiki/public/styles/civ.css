@@ -1626,6 +1626,10 @@ li.thumbnail-gallery{
   margin-bottom: 8px;
 }
 
+.span.well.search-side-bar{
+  margin-left: 0
+}
+
 .table.plain{
   margin-bottom: 0;
 }

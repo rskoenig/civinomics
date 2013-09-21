@@ -133,6 +133,8 @@ class Discussion(object):
             workshop = kwargs['workshop']
             d = generic.linkChildToParent(d, workshop)
             d = generic.addedItemAs(d, kwargs['privs'], role)
+        if 'owner' in kwargs.keys():
+            d = generic.linkChildToParent(d, kwargs['owner'])
         if 'text' in kwargs:
             d['text'] = kwargs['text']
         if 'attachedThing' in kwargs.keys():
