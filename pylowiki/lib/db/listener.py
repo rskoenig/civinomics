@@ -55,6 +55,16 @@ def Listener(name, title, email, workshop, pending = 1):
     listener = getListener(email, workshop)
     if listener:
         listener['disabled'] = '0'
+        if 'userCode' in listener:
+            user = userLib.getUserByCode(listener['userCode'])
+            lKey = 'listener_counter'
+            if lKey in user:
+                lValue = int(user[lKey])
+                lValue += 1
+                user[lKey] = str(lValue)
+            else:
+                user[lKey] = '1'
+            commit(user)
         listener['pending'] = pending
         commit(listener)
     else:

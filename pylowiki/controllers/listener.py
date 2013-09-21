@@ -117,6 +117,7 @@ class ListenerController(BaseController):
             return "Please enter complete information"
         # make sure not already a listener for this workshop
         listener = listenerLib.getListenerByCode(urlCode)
+
         if not listener:
             return 'No such Listener!'
         if listener['disabled'] == '1':
@@ -127,6 +128,23 @@ class ListenerController(BaseController):
             listener['disabled'] = '1';
             dbHelpers.commit(listener)
             returnMsg = "Listener Disabled!"
+            
+        if 'userCode' in listener:
+            user = userLib.getUserByCode(listener['userCode'])
+            lKey = 'listener_counter'
+            if lKey in user:
+                lValue = int(user[lKey])
+                if listener['disabled'] == '0':
+                    lValue += 1
+                else:
+                    lValue -= 1
+            else:
+                if listener['disabled'] == '0':
+                    lValue = 1
+                else:
+                    lValue = 0
+            user[lKey] = str(lValue)
+            commit(user)
             
         eventLib.Event(returnMsg, '%s by %s'%(returnMsg, c.authuser['name']), listener, user = c.authuser)
             
