@@ -112,7 +112,7 @@ color: #999;
 }
 .search_drawer{
   box-shadow: 0px -1px 1px 1px rgba(0,0,0,.6) inset;
-  background-color:grey;
+  background-color: rgba(0, 0, 0, .8);
 }
 
 .corp-sidebar{
@@ -1742,4 +1742,18 @@ hr.stats{
 .photo-alert{
   margin-top: 12px;
   margin-bottom: 0;
+}
+
+a.search.toggle :active{
+  color: #000000;
+}
+
+.nav-menu.selected{
+  color: #000000;
+  background-color: #000000
+}
+
+.nav-menu.selected a{
+  color: #000000;
+  background-color: #000000
 }

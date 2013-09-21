@@ -1,6 +1,7 @@
 <%inherit file="/base/base_wide.bootstrap"/>
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
+<%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
 
 <div class="row">
    <div class="span10"> <!-- main-listing area -->
@@ -8,17 +9,17 @@
         <div class="row-fluid">
             % if 'user' in session:
                 <ul class="thumbnails">
-                  <li class="span wrap-workshop" style="background-image:url('${c.featured['image']}'); background-size: cover; height: 200px; width: 64.5%; position: relative;">
+                  <li class="span wrap-workshop" style="background-image:url('${c.featuredImage}'); background-size: cover; background-position: center center; height: 200px; width: 64.5%; position: relative;">
                       <div class="darkened-text"></div> 
                       <a href="${c.featured['link']}">
                         <span class="link-span"></span><!-- used to make entire div a link -->
                         <div class="row-fluid" style="margin: 10px 0 20px 10px; position: absolute; z-index: 2;">
-                          <span class="lead" style="font-size:28px; color: #FFFFFF;">Leading Initatives</span>
+                          <span class="lead" style="font-size:28px; color: #FFFFFF;">New Workshops</span>
                         </div>
                           <div class="row-fluid" style="margin: 100px 0 5px 10px; position: absolute; z-index: 2;">                            
                             <span style="font-size: 19px; color:#FFFFFF;">
-                              % for i in range(len(c.featured['list'])):
-                                ${c.featured['list'][i]}<br>
+                              % for title in c.recentTitles:
+                                ${title}<br>
                               % endfor
                             </span>
                           </div>
@@ -65,8 +66,21 @@
                     <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
                 </div>
             % endif
-        </div><!--/navigation row-->
-   </div> <!-- /listings -->
+
+            <table class="table table-hover table-condensed">
+              <tbody>
+                % for item in c.watching:
+                  <tr>
+                    <td>
+                      ${profileHelpers.showWorkshop(item, role = "Bookmarked")}
+                    </td>
+                  </tr>
+                % endfor
+              </tbody>
+            </table>
+
+        </div>
+   </div> <!-- /main-listing-area -->
    <div class="span2 activity pull-right" style="margin-left: 0; padding: 10px 8px;"> <!-- Activity Stream -->
         bookmarks coming soon
    </div> <!-- /Activity Stream -->

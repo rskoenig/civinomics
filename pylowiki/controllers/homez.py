@@ -12,11 +12,15 @@ from pylowiki.lib.db.activity import getRecentActivity
 from pylowiki.lib.db.tag import searchTags
 from pylowiki.lib.db.user import searchUsers, getUserByID
 from pylowiki.lib.db.geoInfo import getGeoInfo, getUserScopes, getWorkshopScopes, getScopeTitle
+from pylowiki.lib.db.workshop import getActiveWorkshops
 
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.message      as messageLib
 import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.sort            as sort
+import pylowiki.lib.db.mainImage    as mainImageLib
+import pylowiki.lib.db.follow       as followLib
+import pylowiki.lib.db.workshop     as workshopLib
 
 from pylons import config
 import datetime
@@ -28,6 +32,7 @@ log = logging.getLogger(__name__)
 class HomezController(BaseController):
 
 	def __before__(self):
+
 	    if c.conf['public.sitemap'] != "true": 
 	        h.check_if_login_required()
 
@@ -37,6 +42,9 @@ class HomezController(BaseController):
 	        if c.authuser:
 	            c.messages = messageLib.getMessages(c.authuser)
 	            c.unreadMessageCount = messageLib.getMessages(c.authuser, read = u'0', count = True)
+
+		c.user = c.authuser
+
 
 	def index(self):
 		c.title = c.heading = c.workshopTitlebar = 'Home'
@@ -93,6 +101,32 @@ class HomezController(BaseController):
 					scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
 				else:
 					scope['photo'] = "/images/grey.png"
+
+
+		# get the most recent workshops - in the future this should be a featured workshop/initiative or most viewed workshop/initiative
+		workshops = getActiveWorkshops()
+		mainImage = mainImageLib.getMainImage(workshops[0])
+		if mainImage['pictureHash'] == 'supDawg':
+			imgSrc="/images/slide/thumbnail/supDawg.thumbnail"
+		elif 'format' in mainImage.keys():
+			imgSrc="/images/mainImage/%s/listing/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+		else:
+			imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+		c.featuredImage = imgSrc
+         
+		c.recentTitles = []
+		for i in range(0,3):
+			c.recentTitles.append(workshops[i]['title'])
+
+		# user bookmarks, listening and facilitating
+		watching = followLib.getWorkshopFollows(c.authuser)
+		bookmarked = followLib.getWorkshopFollows(c.authuser)
+		watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+		c.watching = []
+		for workshop in watchList:
+			c.watching.append(workshop)
+
+		
 
 		c.featured = {}
 		c.featured['image']= "/images/grey.png"

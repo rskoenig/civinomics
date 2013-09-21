@@ -16,20 +16,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-                <a class="brand civ-brand" href="/">
+                <a class="brand civ-brand" href="/home">
                     <img src="/images/logo_white.png" class="small-logo" id="civinomicsLogo">
                 </a>
-                <ul class="nav">
-                    <li>
-                        <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#search">
-                        Search <i class="icon-white icon-search"></i>
-                        </button>
-                    </li>
-                </ul>
                 <div class="nav-collapse collapse">
                     <ul class="nav pull-right" id="profileAvatar">
                         <%
-                            wSelected = mSelected = pSelected = aSelected = hSelected = ''
+                            wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = ''
                             if "/workshops" in session._environ['PATH_INFO'] and not 'geo' in session._environ['PATH_INFO']:
                                 wSelected = "active"
                             elif "/messages" in session._environ['PATH_INFO']:
@@ -40,6 +33,8 @@
                                 aSelected = "active"
                             elif "/help" in session._environ['PATH_INFO']:
                                 hSelected = "active"
+                            elif "/home" in session._environ['PATH_INFO']:
+                                homeSelected = "active"
                             endif
                         %>
                         % if 'user' in session:
@@ -53,11 +48,10 @@
                                 %>
                                 <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
                             </li>
-                            ${lib_6.geoDropdown('navBar')}
-                        % endif
-                            <li class="${wSelected}">
-                                <a href="/workshops">Workshops</a>
+                            <li class=${homeSelected}>
+                                <a href="home">Home</a>
                             </li>
+                        % endif
                         % if 'user' in session:
                             % if userLib.isAdmin(c.authuser.id):
                                 <li class="dropdown ${aSelected}">
@@ -88,6 +82,11 @@
                             <li><a href="/login">Login</a></li>
                             <li><a href="/signup">Signup</a></li>
                         % endif
+                        <li>
+                            <a data-toggle="collapse" data-target="#search">
+                                <i class="icon-white icon-search"></i>
+                            </a>
+                        </li>
                     </ul>
                 </div><!--/.nav-collapse -->
             </div> <!--/.container-->
@@ -104,7 +103,7 @@
                     </div>
                 </form>
             </div><!-- span3 -->
-            <div class="span3">
+            <div class="span4">
                 <script type="text/javascript">
                     function searchTags() {
                         var sIndex = document.getElementById('categoryTag').selectedIndex;
@@ -117,7 +116,7 @@
                 </script>
                 <form action="/searchTags" class="form-search" method="POST">
                     <select name="categoryTag" id="categoryTag" onChange="searchTags();">
-                    <option value="0">Search by Tag</option>
+                    <option value="0">Search by Category</option>
                     % for tag in tagCategories:
                         <% tagValue = tag.replace(" ", "_") %>
                         <option value="/searchTags/${tagValue}/">${tag.title()}</option>
@@ -125,7 +124,7 @@
                     </select>
                 </form>
             </div><!-- span3 -->
-            <div class="span5">
+            <div class="span4">
                 <form  action="/searchGeo"  class="form-search" method="POST">
                     <div class="row-fluid"><span id="searchCountrySelect">
                         <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
