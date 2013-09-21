@@ -48,7 +48,7 @@ class HomezController(BaseController):
 
 	def index(self):
 		c.title = c.heading = c.workshopTitlebar = 'Home'
-		c.activity = getRecentActivity(20)
+		c.activity = getRecentActivity(12)
 		c.rssURL = "/activity/rss"
 
 		if 'user' in session:

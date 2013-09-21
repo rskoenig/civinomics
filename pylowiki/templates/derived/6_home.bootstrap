@@ -2,6 +2,8 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
+<%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
+<%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
 
 <div class="row">
    <div class="span10"> <!-- main-listing area -->
@@ -66,23 +68,41 @@
                     <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
                 </div>
             % endif
-
-            <table class="table table-hover table-condensed">
-              <tbody>
-                % for item in c.watching:
-                  <tr>
-                    <td>
-                      ${profileHelpers.showWorkshop(item, role = "Bookmarked")}
-                    </td>
-                  </tr>
-                % endfor
-              </tbody>
+            <span class="lead"><i class="icon-bookmark"></i> Bookmarks</span>
+            <table class="table plain">
+              % for item in c.watching:
+                <tr class="plain">
+                  <td>
+                    <div class="media well searchListing" style="padding: 5px;">
+                      <div class="span1">
+                        <a class="pull-left" ${lib_6.workshopLink(item)}>
+                          <img class="thumbnail tight media-object" src="${lib_6.workshopImage(item, raw=True) | n}">
+                        </a>
+                      </div>
+                      <div class="span6">
+                        <a ${lib_6.workshopLink(item)} class="listed-item-title"><h5 class="media-heading">${item['title']}</h5></a>
+                      </div>
+                      <div>
+                        ${homeHelpers.watchButtonListing(item)}
+                        ${lib_6.bookmarkOptions(c.authuser, item)}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              % endfor
             </table>
 
         </div>
    </div> <!-- /main-listing-area -->
    <div class="span2 activity pull-right" style="margin-left: 0; padding: 10px 8px;"> <!-- Activity Stream -->
-        bookmarks coming soon
+        % if len(c.activity) != 0:
+        <% 
+           for thisActivity in c.activity:
+              listingHelpers.showActivity(thisActivity, expandable=True)
+        %>
+        % else:
+            <div class="alert alert-info centered">Oops, there doesn't seem to be any activity here...yet.</div>
+        % endif
    </div> <!-- /Activity Stream -->
 </div>
 
@@ -112,6 +132,7 @@
             });
         });
     </script>
+    <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
 </%def>
 
 

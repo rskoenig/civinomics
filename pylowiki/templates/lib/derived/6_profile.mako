@@ -112,35 +112,8 @@
                             </div><!-- row-fluid -->
                         </div><!-- margin-top -->
                     % endif
-                    % if role == 'Bookmarked':
-                        <% f = followLib.getFollow(c.user, workshop) %>
-                        % if f:
-                            <div style="margin-top: 10px;">
-                                <%
-                                    itemsChecked = ''
-                                    digestChecked = ''
-                                    if 'itemAlerts' in f and f['itemAlerts'] == '1':
-                                        itemsChecked = 'checked'
-                                    if 'digest' in f and f['digest'] == '1':
-                                        digestChecked = 'checked'
-                                %>
-                                <div class="row-fluid" ng-controller="followerController">
-                                    <div class="span3">Email when:</div>
-                                    <div class="span3">
-                                        <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                            New Items: <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}>
-                                            <span ng-show="emailOnAddedShow">{{emailOnAddedResponse}}</span>
-                                        </form>
-                                    </div><!-- span3 -->
-                                    <div class="span3">
-                                        <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${c.user['urlCode']}'" class="no-bottom form-inline">
-                                            Daily Digest: <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}>
-                                            <span ng-show="emailDigestShow">{{emailDigestResponse}}</span>
-                                        </form>
-                                    </div><!-- span3 -->
-                                </div><!-- row-fluid -->
-                            </div><!-- margin-top -->
-                        % endif
+                    % if role == 'Bookmarked': 
+                        
                     % endif
                     % if role == 'Private':
                         <div style="margin-top: 10px;">

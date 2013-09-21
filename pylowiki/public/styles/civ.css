@@ -432,15 +432,17 @@ ul.activity > li {
     -moz-box-shadow: 0 0px 4px #111;
     -webkit-box-shadow: 0 0px 4px #111;
     box-shadow: 0 0px 4px #111;
-    border: 1px solid #005d28;
+    /*border: 1px solid #005d28;*/
     margin-top:5px;
     position:relative;
     min-height: 265px;
 }
 
+/*
 .wrap-workshop:hover{
     border: 1px solid #D15D00;
 }
+*/
 
 
 @media (min-width: 1125px){
@@ -1632,6 +1634,10 @@ li.thumbnail-gallery{
 
 .table.plain{
   margin-bottom: 0;
+}
+
+.table.plain, tr.plain{
+  border-top: 0;
 }
 
 .table.plain, tr.plain > td{

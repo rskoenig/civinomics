@@ -13,6 +13,7 @@
    import pylowiki.lib.db.tag           as tagLib
    import pylowiki.lib.db.workshop      as workshopLib
    import pylowiki.lib.db.photo         as photoLib
+   import pylowiki.lib.db.follow        as followLib
    
    from hashlib import md5
    import logging, os
@@ -1316,4 +1317,37 @@
       <option value="${category}">${category}</option>
     % endfor
   </select>
+</%def>
+
+<%def name="bookmarkOptions(user, workshop)">
+  <% f = followLib.getFollow(user, workshop) %>
+    % if f:
+      <%
+          itemsChecked = ''
+          digestChecked = ''
+          if 'itemAlerts' in f and f['itemAlerts'] == '1':
+              itemsChecked = 'checked'
+          if 'digest' in f and f['digest'] == '1':
+              digestChecked = 'checked'
+      %>
+      <div class="btn-group pull-right">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+          <i class="icon-envelope"></i>
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu" style="position:absolute; z-index=10;">
+          <li>Email on:</li>
+          <li>
+              <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${user['urlCode']}'" class="no-bottom form-inline left-space">
+              <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}> New Items
+              </form>
+          </li>
+          <li>
+              <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${user['urlCode']}'" class="no-bottom form-inline left-space">
+              <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}> Daily Digest
+          </form>
+          </li>
+        </ul>
+      </div>
+    % endif
 </%def>

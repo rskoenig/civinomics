@@ -49,7 +49,7 @@
                                 <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
                             </li>
                             <li class=${homeSelected}>
-                                <a href="home">Home</a>
+                                <a href="/home">Home</a>
                             </li>
                         % endif
                         % if 'user' in session:
