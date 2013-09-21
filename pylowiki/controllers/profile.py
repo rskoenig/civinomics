@@ -60,68 +60,12 @@ class ProfileController(BaseController):
                 if c.user.id == c.authuser.id or c.isAdmin:
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
-                    
-        following = followLib.getUserFollows(c.user) # list of follow objects
-        c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
+        
 
-        followers = followLib.getUserFollowers(c.user)
-        c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
-        
-        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-        c.pendingListeners = []
-        c.listeningWorkshops = []
-        for l in listenerList:
-            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-            c.listeningWorkshops.append(lw)
-            
-        
-        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
-        c.facilitatorWorkshops = []
-        c.pendingFacilitators = []
-        for f in facilitatorList:
-           if 'pending' in f and f['pending'] == '1':
-              c.pendingFacilitators.append(f)
-           elif f['disabled'] == '0':
-              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
-                 # show to the workshop owner, show to the facilitator owner, show to admin
-                 if 'user' in session: 
-                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                         c.facilitatorWorkshops.append(myW)
-              else:
-                    c.facilitatorWorkshops.append(myW)
-                    
-        # this still needs to be optimized so we don't get the activity twice
-        c.resources = []
-        c.discussions = []
-        c.comments = []
-        c.ideas = []
-        c.photos = []
-        
-        c.rawActivity = activityLib.getMemberActivity(c.user)
-        c.unpublishedActivity = activityLib.getMemberActivity(c.user, '1')
-        
-        for itemCode in c.rawActivity['itemList']:
-            # ony active objects
-            if c.rawActivity['items'][itemCode]['deleted'] == '0' and c.rawActivity['items'][itemCode]['disabled'] == '0':
-                # only public objects unless author or admin
-                if 'workshopCode' in c.rawActivity['items'][itemCode]:
-                    workshopCode = c.rawActivity['items'][itemCode]['workshopCode']
-                    if c.rawActivity['workshops'][workshopCode]['deleted'] == '0' and c.rawActivity['workshops'][workshopCode]['published'] == '1' and c.rawActivity['workshops'][workshopCode]['public_private'] == 'public' or (c.isUser or c.isAdmin):
-                        if c.rawActivity['items'][itemCode]['objType'] == 'resource':
-                            c.resources.append(c.rawActivity['items'][itemCode])
-                        elif c.rawActivity['items'][itemCode]['objType'] == 'discussion':
-                            c.discussions.append(c.rawActivity['items'][itemCode])
-                        elif c.rawActivity['items'][itemCode]['objType'] == 'idea':
-                            c.ideas.append(c.rawActivity['items'][itemCode])
-                        elif c.rawActivity['items'][itemCode]['objType'] == 'comment':
-                            c.comments.append(c.rawActivity['items'][itemCode])
-                elif c.rawActivity['items'][itemCode]['objType'] == 'photo':
-                    c.photos.append(c.rawActivity['items'][itemCode])
+
                     
         userLib.setUserPrivs()
   
-
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
         rev = id3
@@ -169,13 +113,33 @@ class ProfileController(BaseController):
                 privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
                 if privateList:
                     c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+                    
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+        c.pendingListeners = []
+        c.listeningWorkshops = []
+        for l in listenerList:
+            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+            c.listeningWorkshops.append(lw)
+            
+        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
+        c.facilitatorWorkshops = []
+        c.pendingFacilitators = []
+        for f in facilitatorList:
+           if 'pending' in f and f['pending'] == '1':
+              c.pendingFacilitators.append(f)
+           elif f['disabled'] == '0':
+              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
+                 # show to the workshop owner, show to the facilitator owner, show to admin
+                 if 'user' in session: 
+                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+                         c.facilitatorWorkshops.append(myW)
+              else:
+                    c.facilitatorWorkshops.append(myW)
+                
+        c.rawActivity = activityLib.getMemberActivity(c.user)
+        c.unpublishedActivity = activityLib.getMemberActivity(c.user, '1')
 
-        following = followLib.getUserFollows(c.user) # list of follow objects
-        c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
-
-        followers = followLib.getUserFollowers(c.user)
-        c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
-        
         return render("/derived/6_profile.bootstrap")
 
     def showUserMessages(self, id1, id2, id3 = ''):
