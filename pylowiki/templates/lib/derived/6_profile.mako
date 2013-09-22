@@ -5,6 +5,7 @@
     import pylowiki.lib.db.follow       as followLib
     import pylowiki.lib.db.user         as userLib
     import pylowiki.lib.db.pmember      as pmemberLib
+    import pylowiki.lib.db.generic      as genericLib
     import pylowiki.lib.utils           as utils
     
     import logging, os
@@ -275,6 +276,102 @@
         % endif
         </span>
     % endif
+</%def>
+
+<%def name="showMemberPosts(activity)">
+    <%
+        actionMapping = {   'resource': 'added the resource',
+                            'discussion': 'started the conversation',
+                            'idea': 'posed the idea',
+                            'photo': 'added the picture',
+                            'comment': 'commented on a'}
+        objTypeMapping = {  'resource':'resource',
+                            'discussion':'conversation',
+                            'idea':'idea',
+                            'photo':'photo',
+                            'comment':'comment'}
+    %>
+    <table class="table table-hover table-condensed">
+        <tbody>
+        
+        % for item in activity:
+            <% 
+                objType = item.objType
+                activityStr = actionMapping[objType]
+                
+                if 'workshopCode' in item:
+                    workshopLink = "/workshop/" + item['workshopCode'] + "/" + item['workshop_url']
+                else:
+                    workshopCode = "photo"
+                    workshopLink = "/foo/photo"
+                parent = False
+                if objType == 'comment':
+                    if 'ideaCode' in item:
+                        parentCode = item['ideaCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'idea'
+                    elif 'resourceCode' in item:
+                        parentCode = item['resourceCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'resource'
+                    elif 'photoCode' in item:
+                        parentCode = item['photoCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'photo'
+                    elif 'discussionCode' in item:
+                        parentCode = item['discussionCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'discussion'
+                    if 'profileCode' in item:
+                        parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
+                    else:
+                        parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
+                    title = lib_6.ellipsisIZE(item['data'], 40)
+                    itemLink = parentLink + '?comment=' + item['urlCode']
+                else:
+                    parentCode = False
+                    title = lib_6.ellipsisIZE(item['title'], 40)
+                    itemLink = workshopLink + "/" + objType + "/" + item['urlCode'] + "/" + item['url']
+
+                
+            %>
+
+            % if objType == 'photo':
+                <% 
+                    link = "/profile/" + item['userCode'] + "/" + item['user_url'] + "/photo/show/" + item['urlCode']
+                    activityStr = "added the picture <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'comment' and 'photoCode' in item:
+                <% 
+                    activityStr = "commented on a <a href=\"" + parentLink + "\">picture</a>, saying"
+                    activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0':
+                    <tr><td>${activityStr | n} </td></tr>
+                % endif
+            % else:
+                % if item['workshop_searchable'] == '1' or (c.browser == False or c.isAdmin == True or c.isUser == True):
+                    % if item['deleted'] == '0':
+                        <% 
+                            if objType == 'comment':
+                                if parentObjType == 'idea':
+                                    activityStr += 'n'
+                                activityStr += ' <a href="' + parentLink + '">' + objTypeMapping[parentObjType] + '</a>, saying'
+                                activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                            else:
+                                activityStr += ' <a href="' + itemLink + '" class="expandable">' + title + '</a>'
+                        %>
+                        <tr><td>${activityStr | n}</td></tr>
+                    % endif
+                % endif
+            % endif
+        % endfor
+        </tbody>
+    </table>
 </%def>
 
 <%def name="showMemberActivity(activity)">

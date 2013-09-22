@@ -74,7 +74,7 @@ class ProfileController(BaseController):
         else:
             c.revision = False
 
-        c.revisions = revisionLib.getParentRevisions(c.user.id)
+        #c.revisions = revisionLib.getParentRevisions(c.user.id)
         c.title = c.user['name']
                
         c.isFollowing = False
@@ -137,8 +137,9 @@ class ProfileController(BaseController):
               else:
                     c.facilitatorWorkshops.append(myW)
                 
-        c.rawActivity = activityLib.getMemberActivity(c.user)
-        c.unpublishedActivity = activityLib.getMemberActivity(c.user, '1')
+        #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
+        c.memberPosts = activityLib.getMemberPosts(c.user)
+        c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
 
         return render("/derived/6_profile.bootstrap")
 
