@@ -25,11 +25,6 @@ def getMemberPosts(user, unpublished = '0'):
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
-            elif activity.objType == 'comment':
-                parentCode = [i for i in codes if i in activity.keys()]
-                thing = generic.getThing(activity[parentCode[0]], keys, values)
-                if thing:
-                    finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
         return finalActivityList
