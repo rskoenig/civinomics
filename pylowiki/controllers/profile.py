@@ -139,7 +139,11 @@ class ProfileController(BaseController):
                 
         #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
         c.memberPosts = activityLib.getMemberPosts(c.user)
+        if not c.memberPosts:
+            c.memberPosts = []
         c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        if not c.unpublishedActivity:
+            c.unpublishedActivity = []
 
         return render("/derived/6_profile.bootstrap")
 
