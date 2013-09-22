@@ -154,12 +154,16 @@ class Comment(object):
                 attachedThing = resourceLib.getResourceByCode(discussion['resourceCode'])
         if discussion['discType'] == 'photo':
             attachedThing = photoLib.getPhoto(discussion['photoCode'])
+            profileOwner = generic.getThingByID(attachedThing.owner)
             
         thisComment = generic.linkChildToParent(thisComment, owner)
             
         thisComment = generic.linkChildToParent(thisComment, discussion)
         if attachedThing is not None:
             thisComment = generic.linkChildToParent(thisComment, attachedThing)
+            if discussion['discType'] == 'photo':
+                thisComment['profileCode'] = profileOwner['urlCode']
+                thisComment['profile_url'] = profileOwner['url']
         thisComment['disabled'] = '0'
         thisComment['deleted'] = '0'
         thisComment['pending'] = '0'
