@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging, formencode, time
-from formencode import validators
+
+from formencode.schema import Schema
+from formencode.validators import Invalid, FancyValidator
 
 from pylons import request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
@@ -20,24 +22,79 @@ import re
 
 log = logging.getLogger(__name__)
 
-class plaintextForm(formencode.Schema):
+class SecurePassword(FancyValidator):
+
+    min = 5
+    non_letter = 1
+    letter_regex = re.compile(r'[a-zA-Z]')
+
+    messages = {
+        'too_few': 'Your password must be longer than %(min)i characters long',
+        'non_letter': 'You must include at least %(non_letter)i characters in your password',
+    }
+
+    def _convert_to_python(self, value, state):
+    # _convert_to_python gets run before _validate_python.
+    # Here we strip whitespace off the password, because leading
+    # and trailing whitespace in a password is too elite.
+        log.info("even here")
+        return value.strip()
+
+    def _validate_python(self, value, state):
+        log.info("even made it in here")
+        if len(value) < self.min:
+            raise Invalid(self.message("too_few", state, min=self.min), value, state)
+        non_letters = self.letter_regex.sub('', value)
+        if len(non_letters) < self.non_letter:
+            raise Invalid(self.message("non_letter", non_letter=self.non_letter), value, state)
+
+class plaintextForm(Schema):
     allow_extra_fields = True
     filter_extra_fields = True
     username = formencode.validators.PlainText(not_empty=True)
+    log.info("made it here")
+    #username = SecurePassword()
+    log.info("and here")
 
 NAMEREGEX = re.compile("^([A-Za-z0-9-'_\s])+$", re.IGNORECASE)
 
-class PlainWithQuotes(validators.Regex):
-    allow_extra_fields = True
-    filter_extra_fields = True
+#class PlainWithQuotes(validators.Regex):
+#    allow_extra_fields = True
+#    filter_extra_fields = True
     #regex = "^[A-Za-z\/\s\.'-]+$"
-    regex = NAMEREGEX
+#    regex = NAMEREGEX
+
 
 class RegisterController(BaseController):
 
     def __before__(self):
         if config['app_conf']['public.reg'] != "true": # set in enviroment config
             h.check_if_login_required()
+
+    def apostropheInNameOk(self, name):
+
+        #min = 5
+        not_ok_letters = 0
+        #letter_regex = re.compile(r'[a-zA-Z]')
+        nameRegex = re.compile("^([A-Za-z0-9-'_\s])+$", re.IGNORECASE)
+
+        messages = {
+            'too_few': 'Your password must be longer than %(min)i characters long',
+            'non_letter': 'You must include at least %(non_letter)i characters in your password',
+        }
+
+        log.info("even made it in here")
+        #if len(value) < self.min:
+        #    raise Error(self.message("too_few", min=self.min))
+        ok_letters = nameRegex.sub('', name)
+        #if len(ok_letters) < self.not_ok_letters:
+        log.info('regex returns %s'%len(ok_letters))
+        if len(ok_letters) == 0:
+            return True
+        else:
+            return False
+            #raise Error(self.message("non_letter", non_letter=self.non_letter))
+        #return True
 
     def signupDisplay(self):
         c.facebookAppId = config['facebook.appid']
@@ -763,15 +820,28 @@ class RegisterController(BaseController):
             checkTOS = request.params['chkTOS']
 
         #schema = plaintextForm()
-        schema = PlainWithQuotes()
-        try:
-            namecheck = name.replace(' ', '')
-            nameTst = schema.to_python(dict(username = namecheck))
-        except formencode.Invalid, error:
-            splashMsg['content'] = "Full name: Enter only letters, numbers, or _ (underscore)"
+        #try:
+        #    log.info('checking plaintextForm')
+        #    namecheck = name.replace(' ', '')
+        #    nameTst = schema.to_python(dict(username = namecheck))
+        #except Invalid, e:
+        #    splashMsg['content'] = "Full name: Enter only letters, numbers, or _ (underscore)"
+        #    session['splashMsg'] = splashMsg
+        #    session.save()
+        #    return redirect(returnPage)
+
+        #try:
+        diditwork = RegisterController.apostropheInNameOk(self, name)
+        #except:
+        if not diditwork:
+            splashMsg['content'] = "You should try harder"
             session['splashMsg'] = splashMsg
             session.save()
             return redirect(returnPage)
+
+        name = name.replace("'", "&#39;")
+
+
         username = name
         maxChars = 50;
         errorFound = False;
