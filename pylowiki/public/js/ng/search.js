@@ -323,3 +323,69 @@ app.filter('startFrom', function() {
         return input.slice(start);
     }
 });
+
+function yesNoVoteCtrl($scope) {
+    if ($scope.rated == 0) {
+        $scope.yesVoted = '';
+        $scope.noVoted = '';
+    }
+    else if ($scope.rated == 1){
+        $scope.yesVoted = 'voted';
+        $scope.noVoted = '';
+    }
+    else if ($scope.rated == -1){
+        $scope.yesVoted = '';
+        $scope.noVoted = 'voted';
+    }
+
+    $scope.updateYesVote = function(){
+
+        if ($scope.yesVoted == '')
+        {
+            if ($scope.noVoted == ''){
+                $scope.totalVotes += 1;
+                $scope.netVotes += 1;
+            }
+            // if the user had previously placed a no vote, the score goes up by two
+            else{
+                $scope.netVotes += 2;
+            }
+            $scope.yesVoted = 'voted';
+            $scope.noVoted = '';
+        }
+
+        else if ($scope.yesVoted = 'voted')
+        {
+            $scope.totalVotes -= 1;
+            $scope.netVotes -= 1;
+            $scope.yesVoted = '';
+        }
+
+        $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/1');
+    }
+    $scope.updateNoVote = function(){
+        if ($scope.noVoted == '')
+        {
+            if ($scope.yesVoted == ''){
+                $scope.totalVotes += 1
+                $scope.netVotes -= 1
+            }
+            // if the user had previously placed a yes vote, the score goes down by two
+            else{
+                $scope.netVotes -= 2
+            }
+            $scope.noVoted = 'voted';
+            $scope.yesVoted = ''
+        }
+        else if ($scope.noVoted = 'voted')
+        {
+            $scope.totalVotes -= 1
+            $scope.netVotes += 1
+            $scope.noVoted = '';
+        }
+        $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/-1');
+    }
+};
+
+
+
