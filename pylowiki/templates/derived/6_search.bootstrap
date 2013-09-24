@@ -260,14 +260,14 @@
                 <div id="ideas" class="tab-pane" ng-class="showingIdeas.class" ng-show="showingIdeas.show">
                     <table class="table plain">
                         <tr ng-repeat = "idea in ideas | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize" class="plain"><td>
-                            <div class="media well searchListing">
-                                <div class="media-body">
-                                    <div class="span10"
-                                        <p><a class=" ideaListingTitle listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
+                            <div class="media well searchListing" ng-init="rated=idea.rated; urlCode=idea.urlCode;url=idea.url; totalVotes=idea.voteCount;objType='idea';">
+                                <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                    <div class="span10">
+                                        <p class="ideaListingTitle"><a class="listed-item-title" href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}">
                                             {{idea.title}}
                                         </a></p>
                                         <ul class="horizontal-list iconListing">
-                                            <li><i class="icon-check-sign"></i> Total votes ({{idea.voteCount}})</li>
+                                            <li><i class="icon-check-sign"></i> Total votes ({{totalVotes}})</li>
                                             <li><i class="icon-comment"></i> Comments ({{idea.numComments}})</li>
                                             <li>
                                                 <i class="icon-cog"></i> From workshop: <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}">
@@ -281,18 +281,30 @@
                                             <span class="left-space"><a href="/profile/{{idea.authorCode}}/{{idea.authorURL}}"><img class="avatar topbar-avatar" ng-src="http://www.gravatar.com/avatar/{{idea.authorHash}}?r=pg&d=identicon&s=200" alt="{{idea.authorName}}" title="{{idea.authorName}}"></a><small> Posted by <a class="green green-hover" href="/profile/{{idea.authorCode}}/{{idea.authorURL}}">{{idea.authorName}}</a></small></span>
                                         </p>
                                     </div>
-                                    <div class="span2 voteBlock ideaListing">
-                                        <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}" class="yesVote">
-                                            <div class="vote-icon yes-icon detail"></div>
-                                        </a>
+                                    <div class="span2 voteBlock ideaListing" >
+                                        % if 'user' in session:
+                                            <a ng-click="updateYesVote()" class="yesVote {{yesVoted}}">
+                                                <div class="vote-icon yes-icon"></div>
+                                            </a>
+                                            <br>
+                                            <br>
+                                            <a ng-click="updateNoVote()" class="noVote {{noVoted}}">
+                                                <div class="vote-icon no-icon"></div>
+                                            </a>
+                                        % else:
+                                            <a href="/login" class="yesVote">
+                                                <div class="vote-icon yes-icon"></div>
+                                            </a>
+                                            <br>
+                                            <br>
+                                            <a href="/login" class="noVote">
+                                                <div class="vote-icon no-icon"></div>
+                                            </a>
+                                        % endif
                                         <br>
-                                        <br>
-                                        <a href="/workshop/{{idea.workshopCode}}/{{idea.workshopURL}}/idea/{{idea.urlCode}}/{{idea.url}}" class="noVote">
-                                            <div class="vote-icon no-icon detail"></div>
-                                        </a>
                                     </div>
-                                </div>
-                            </div>
+                                </div><!-- media-body -->
+                            </div><!-- search-listing -->
                         </td></tr>
                     </table>
                     <div class="centered" ng-show="ideas.length>pageSize">
@@ -309,24 +321,47 @@
                 <div id="photos" class="tab-pane" ng-class="showingPhotos.class" ng-show="showingPhotos.show">
                     <table class="table plain">
                         <tr ng-repeat = "photo in photos | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
-                            <div class="media well searchListing">
-                                <div class="pull-left">
-                                    <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
-                                </div>
-                                <div class="media-body">
-                                    <h4 class="media-heading">
-                                        <a class="listed-item-title" href="{{photo.photoLink}}">{{photo.title}}</a>
-                                    </h4>
-                                    <small>
-                                        Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
-                                        Location: {{photo.location}}<br />
-                                        Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
-                                    </small>
-                                    <br />
-                                    <ul class="horizontal-list iconListing">
-                                        <li><i class="icon-check-sign"></i> Total votes ({{photo.voteCount}})</li>
-                                        <li><i class="icon-comment"></i> Comments ({{photo.numComments}})</li>
-                                    </ul>
+                            <div class="media well searchListing" ng-init="rated=photo.rated; urlCode=photo.urlCode;url=photo.url; totalVotes=photo.voteCount;netVotes=photo.netVotes;objType='photo';">
+                                <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                    <div class="span1 voteWrapper" >
+                                        % if 'user' in session:
+                                            <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
+                                                <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
+                                            </a>
+                                            <br>
+                                            <div class="centered chevron-score"> {{netVotes}}</div>
+                                            <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
+                                                <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
+                                            </a>
+                                        % else:
+                                            <a href="/login" class="upVote">
+                                                <i class="icon-chevron-sign-up icon-2x"></i>
+                                            </a>
+                                            <br>
+                                            <div class="centered chevron-score"> {{netVotes}}</div>
+                                            <a href="/login" class="downVote">
+                                                <i class="icon-chevron-sign-down icon-2x"></i>
+                                            </a>
+                                        % endif
+                                        <br>
+                                    </div>
+                                    <div class="pull-left">
+                                        <a href="{{photo.photoLink}}"><img src="{{photo.thumbnail}}"></a>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="media-heading">
+                                            <a class="listed-item-title" href="{{photo.photoLink}}">{{photo.title}}</a>
+                                        </h4>
+                                        <small>
+                                            Posted by: <a href="/profile/{{photo.authorCode}}/{{photo.authorURL}}">{{photo.authorName}}</a><br />
+                                            Location: {{photo.location}}<br />
+                                            Tags: <span ng-repeat="tag in photo.tags" class="label workshop-tag {{tag}}">{{tag}}</span>
+                                        </small>
+                                        <br />
+                                        <ul class="horizontal-list iconListing">
+                                            <li><i class="icon-comment"></i> Comments ({{photo.numComments}})</li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </td></tr>
@@ -346,83 +381,87 @@
         </div><!-- tabbable tabs-left civ-search -->
     </div><!-- span9 -->
     % if c.searchType == 'region':
-        <div class="span3">
-            <div class="span well search-side-bar">
+        <div class="span3 well search-side-bar">
+            <div class="span12">
+                <img class="thumbnail flag" src="${c.flag}">
+            </div>
+            % if c.geoInfo:
+                <form class="form-horizontal stats">
+                    <div class="control-group">
+                        <label class="control-label grey" for="inputEmail">Population:</label>
+                        <div class="controls">
+                            <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label grey" for="inputEmail">Median Age:</label>
+                        <div class="controls">
+                            <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label grey" for="inputEmail">Persons per Household:</label>
+                        <div class="controls">
+                            <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
+                        </div>
+                    </div>
+                    % if 'Postal Code' in c.searchQuery:
+                        <hr class="stats">
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Income per Household:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Avg House Value:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
+                            <div class="controls">
+                                <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
+                            </div>
+                        </div>
+                    % endif
+                </form>
+            % else:
                 <div class="span12">
-                    <img class="thumbnail flag" src="${c.flag}">
+                    <em class="grey">Stats are not yet available for this region.</em>
                 </div>
-                % if c.geoInfo:
-                    <form class="form-horizontal stats">
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Population:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>${locale.format("%d", c.population, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Median Age:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>${locale.format("%d", c.medianAge, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <label class="control-label grey" for="inputEmail">Persons per Household:</label>
-                            <div class="controls">
-                                <span class="pull-right"><strong>${locale.format("%d", c.personsHousehold, grouping=True)}</strong></span>
-                            </div>
-                        </div>
-                        % if 'Postal Code' in c.searchQuery:
-                            <hr class="stats">
-                            <div class="control-group">
-                                <label class="control-label grey" for="inputEmail">Income per Household:</label>
-                                <div class="controls">
-                                    <span class="pull-right"><strong>$${locale.format("%d", c.incomePerHousehold, grouping=True)}</strong></span>
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label grey" for="inputEmail">Avg House Value:</label>
-                                <div class="controls">
-                                    <span class="pull-right"><strong>$${locale.format("%d", c.avgHouseValue, grouping=True)}</strong></span>
-                                </div>
-                            </div>
-                            <div class="control-group">
-                                <label class="control-label grey" for="inputEmail">Business Annual Payroll:</label>
-                                <div class="controls">
-                                    <span class="pull-right"><strong>$${locale.format("%d", c.bizAnnualPayroll, grouping=True)}</strong></span>
-                                </div>
-                            </div>
-                        % endif
-                    </form>
+            % endif
+        </div>
+    % endif
+    % if c.searchType == 'region' or c.searchType == 'tag':
+        <div class="span3 well search-side-bar grey">
+            <span>Top Rated Photo:
+                % if c.authuser:
+                    <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
+                    </a>
                 % else:
-                    <div class="span12">
-                        <em class="grey">Stats are not yet available for this region.</em>
-                    </div>
+                    <a href="/login" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i>
+                    </a>
                 % endif
-            </div>
-        % endif
-        % if c.searchType == 'region' or c.searchType == 'tag':
-            <div class="span well search-side-bar grey">
-                <span>Top Rated Photo:
-                % if 'user' in session and c.authuser:
-                    <a href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}/photos/show" class="btn btn-civ btn-small pull-right bottom-space"><i class="icon-plus"></i></a></span>
-                % endif
-                % if c.photos:
-                    <img class="thumbnail tight" src="${c.backgroundPhoto}">
-                    Posted by ${lib_6.userLink(c.backgroundAuthor)}
-                % else:
-                    <div class="alert photo-alert">
-                      <strong>No photos!</strong> Be the first to add one.
-                    </div>
-                % endif
-            </div>
-        % endif
-    </div><!-- span3 -->
+            </span>
+            % if c.photos:
+                <img class="thumbnail tight" src="${c.backgroundPhoto}">
+                Posted by ${lib_6.userLink(c.backgroundAuthor)}
+            % else:
+                <div class="alert photo-alert">
+                  <strong>No photos!</strong> Be the first to add one.
+                </div>
+            % endif
+        </div>
+    % endif
 </div><!-- row-fluid -->
 
 <%def name="headScripts()">
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/0.7.1/angular-strap.min.js"></script>
     <script type="text/javascript" src="${lib_6.fingerprintFile('/js/ng/search.js')}"></script>
 </%def>
+
 <%def name="extraScripts()">
     <script type="text/javascript" src="/js/vendor/jquery.backstretch.min.js"></script>
    <%
@@ -430,4 +469,11 @@
 
    %>
    <script>$.backstretch(${backgroundImage | n}, {centeredX: true})</script>
+</%def>
+
+<%def name="extraScripts2()">
+    <script src="/js/bootstrap/bootstrap-tooltip.js"></script>
+    <script type="text/javascript">
+        $('.upVote.nullvote').tooltip();
+    </script>
 </%def>
