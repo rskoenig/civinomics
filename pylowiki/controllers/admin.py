@@ -56,7 +56,7 @@ class AdminController(BaseController):
                 c.user = generic.getThing(parent['userCode'])
                 userLib.setUserPrivs()
             elif c.thing.objType.replace("Unpublished", "") == 'photo':
-                c.user = generic.getThing(parent['userCode'])
+                c.user = generic.getThing(c.thing['userCode'])
                 userLib.setUserPrivs()
                  
             # Check if a non-admin is attempting to mess with an admin-level item

@@ -99,5 +99,6 @@ def Idea(user, title, text, workshop, privs, role = None):
     idea['urlCode'] = toBase62(idea)
     d = Discussion(owner = user, discType = 'idea', attachedThing = idea, title = title, workshop = workshop, privs = privs, role = role)
     idea = generic.linkChildToParent(idea, workshop)
+    idea = generic.linkChildToParent(idea, user)
     commit(idea)
     return idea

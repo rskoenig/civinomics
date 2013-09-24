@@ -65,11 +65,22 @@ def disableFacilitator( facilitator ):
     """disable this facilitator"""
     facilitator['disabled'] = '1'
     commit(facilitator)
+    user = generic.getThingByID(facilitator.owner)
+    if 'facilitator_counter' in user:
+        fValue = int(user['facilitator_counter'])
+        fValue -= 1
+        user['facilitator_counter'] = str(fValue)
+        commit(user)
 
 def enableFacilitator( facilitator ):
     """enable the facilitator"""
     facilitator['disabled'] = '0'
     commit(facilitator)
+    if 'facilitator_counter' in user:
+        fValue = int(user['facilitator_counter'])
+        fValue += 1
+        user['facilitator_counter'] = str(fValue)
+        commit(user)
 
 # Object
 class Facilitator(object):
