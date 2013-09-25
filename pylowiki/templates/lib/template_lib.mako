@@ -8,87 +8,80 @@
 !
 <%def name="mainNavbar()">
     <% tagCategories = workshopLib.getWorkshopTagCategories() %>
-    <div class="navbar civ-navbar navbar-fixed-top" style="margin-bottom: 60px;">
+    <div class="navbar civ-navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
                 <a class="brand civ-brand" href="/">
-                    <img src="/images/logo_white.png" class="small-logo" id="civinomicsLogo">
+                    <div class="logo" id="civinomicsLogo"></div>
                 </a>
-                <div class="nav-collapse collapse">
-                    <ul class="nav pull-right" id="profileAvatar">
-                        <%
-                            wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = ''
-                            if "/workshops" in session._environ['PATH_INFO'] and not 'geo' in session._environ['PATH_INFO']:
-                                wSelected = "active"
-                            elif "/messages" in session._environ['PATH_INFO']:
-                                mSelected = "active"
-                            elif "/profile" in session._environ['PATH_INFO']:
-                                pSelected = "active"
-                            elif "/admin" in session._environ['PATH_INFO']:
-                                aSelected = "active"
-                            elif "/help" in session._environ['PATH_INFO']:
-                                hSelected = "active"
-                            elif "/home" in session._environ['PATH_INFO']:
-                                homeSelected = "active"
-                            endif
-                        %>
-                        % if 'user' in session:
-                            <li class="${mSelected}">
-                                <%
-                                    messageCount = ''
-                                    numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
-                                    if numMessages:
-                                        if numMessages > 0:
-                                            messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
-                                %>
-                                <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
-                            </li>
-                            <li class=${homeSelected}>
-                                <a href="/home">Home</a>
-                            </li>
-                        % endif
-                        % if 'user' in session:
-                            % if userLib.isAdmin(c.authuser.id):
-                                <li class="dropdown ${aSelected}">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                        <li><a tabindex="-1" href="/admin/users">Users</a></li>
-                                        <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
-                                        <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
-                                        <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
-                                        <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
-                                        <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
-                                        <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
-                                        <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
-                                    </ul>
-                                </li>
-                            % endif
-                            <li class="dropdown ${pSelected}">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
+                <ul class="nav pull-right" id="profileAvatar">
+                    <%
+                        wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = ''
+                        if "/workshops" in session._environ['PATH_INFO'] and not 'geo' in session._environ['PATH_INFO']:
+                            wSelected = "active"
+                        elif "/messages" in session._environ['PATH_INFO']:
+                            mSelected = "active"
+                        elif "/profile" in session._environ['PATH_INFO']:
+                            pSelected = "active"
+                        elif "/admin" in session._environ['PATH_INFO']:
+                            aSelected = "active"
+                        elif "/help" in session._environ['PATH_INFO']:
+                            hSelected = "active"
+                        elif "/home" in session._environ['PATH_INFO']:
+                            homeSelected = "active"
+                        endif
+                    %>
+                    % if 'user' in session:
+                        <li class="${mSelected}">
+                            <%
+                                messageCount = ''
+                                numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
+                                if numMessages:
+                                    if numMessages > 0:
+                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                            %>
+                            <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
+                        </li>
+                        <li class=${homeSelected}>
+                            <a href="/home">Home</a>
+                        </li>
+                    % endif
+                    % if 'user' in session:
+                        % if userLib.isAdmin(c.authuser.id):
+                            <li class="dropdown ${aSelected}">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
-                                    <li><a href="/help">Help</a></li>
-                                    <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                                    <li><a tabindex="-1" href="/admin/users">Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                                    <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                                    <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                                    <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                                    <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                                    <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                                    <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                 </ul>
                             </li>
-                        % else:
-                            <li class="${hSelected}"><a href="/help">Help</a></li>
-                            <li><a href="/login">Login</a></li>
-                            <li><a href="/signup">Signup</a></li>
                         % endif
-                        <li>
-                            <a data-toggle="collapse" data-target="#search">
-                                <i class="icon-white icon-search"></i>
-                            </a>
+                        <li class="dropdown ${pSelected}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                                <li><a href="/help">Help</a></li>
+                                <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                            </ul>
                         </li>
-                    </ul>
-                </div><!--/.nav-collapse -->
+                    % else:
+                        <li class="${hSelected}"><a href="/help">Help</a></li>
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/signup">Signup</a></li>
+                    % endif
+                    <li>
+                        <a data-toggle="collapse" data-target="#search">
+                            <i class="icon-white icon-search"></i>
+                        </a>
+                    </li>
+                </ul>
             </div> <!--/.container-->
         </div> <!--/.navbar-inner.civ-navbar -->
     </div> <!-- /.navbar -->
