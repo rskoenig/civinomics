@@ -10,23 +10,49 @@
         <div class="spacer"></div>
         <div class="row-fluid">
             % if 'user' in session:
-                <ul class="thumbnails">
-                  <li class="span wrap-workshop" style="background-image:url('${c.featuredImage}'); background-size: cover; background-position: center center; height: 200px; width: 64.5%; position: relative;">
-                      <div class="darkened-text"></div> 
-                      <a href="${c.featured['link']}">
-                        <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
-                        <div class="row-fluid" style="margin: 10px 0 20px 10px; position: absolute; z-index: 2;">
-                          <span class="lead" style="font-size:28px; color: #FFFFFF;">New Workshops</span>
+              <ul class="thumbnails">
+                <li class="span wrap-workshop" style="width: 64.5%; height: 200px;">
+                  <div id="myCarousel" class="carousel slide">
+                    <ol class="carousel-indicators">
+                        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                        <li data-target="#myCarousel" data-slide-to="1"></li>
+                        <li data-target="#myCarousel" data-slide-to="2"></li>
+                      </ol>
+                      <!-- Carousel items -->
+                      <div class="carousel-inner">
+                        <% workshop = c.newWorkshops[0] %>
+                          <div class="active item">
+                            <ul class="thumbnails carousel-thumbnails">
+                              <li class="span wrap-workshop carousel" style="background-image:url('${workshop['photo']}'); background-size: cover; background-position: center center; height: 200px; position: relative;">
+                                <a href="/">
+                                  <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+                                  <div class="row-fluid" style="margin: 10px 0 20px 10px; position: absolute; z-index: 2;">
+                                    <span class="lead" style="font-size:28px; color: #FFFFFF;">${workshop['title']}</span>
+                                  </div>
+                                </a>
+                              </li>
+                              </ul>
+                            </div>
+                          <% assclownshops = c.newWorkshops[1:] %>
+                          % if len(assclownshops)>1:
+                            % for workshop in assclownshops:
+                            <div class="item">
+                              <ul class="thumbnails carousel-thumbnails">
+                                <li class="span wrap-workshop carousel" style="background-image:url('${workshop['photo']}'); background-size: cover; background-position: center center; height: 200px; position: relative;">
+                                  <a href="/">
+                                    <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
+                                    <div class="row-fluid" style="margin: 10px 0 20px 10px; position: absolute; z-index: 2;">
+                                      <span class="lead" style="font-size:28px; color: #FFFFFF;">${workshop['title']}</span>
+                                    </div>
+                                  </a>
+                                </li>
+                                </ul>
+                              </div>
+                            % endfor  
+                          %endif
                         </div>
-                          <div class="row-fluid" style="margin: 100px 0 5px 10px; position: absolute; z-index: 2;">                            
-                            <span style="font-size: 19px; color:#FFFFFF;">
-                              % for title in c.recentTitles:
-                                ${title}<br>
-                              % endfor
-                            </span>
-                          </div>
-                      </a>
-                    </li>
+                        
+                  </li>
                   % for scope in c.scopeMap:
                     <li class="span4 wrap-workshop" style="background-image:url(${scope['photo']}); background-size: cover; height: 200px; position: relative;">
                       <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['level']) | n}>
@@ -62,7 +88,8 @@
                 </ul>
             % else:
                 <div class="alert alert-success centered">
-                    <p>Be the first to add a public workshop here!</p>
+                    <p>Enter a zipcode to get started...</p>
+                    <input type="number" class="span3">
                     <a class="btn btn-success" href="/workshop/display/create/form">Add one!</a>
                 </div>
             % endif
@@ -73,13 +100,11 @@
                   <tr>
                     <td>
                       <div class="media well searchListing" style="padding: 5px; border: none;">
-                        <div class="span1">
                           <a class="pull-left" ${lib_6.workshopLink(item)}>
                             <img class="thumbnail tight media-object" src="${lib_6.workshopImage(item, raw=True) | n}">
                           </a>
-                        </div>
                         <div class="span6">
-                          <a ${lib_6.workshopLink(item)} class="listed-item-title"><h5 class="media-heading">${item['title']}</h5></a>
+                          <a ${lib_6.workshopLink(item)} class="listed-item-title media-heading lead" style="font-size: 16px;">${item['title']}</a>
                         </div>
                         <div>
                           ${homeHelpers.watchButtonListing(item)}
@@ -133,6 +158,12 @@
         });
     </script>
     <script src="${lib_6.fingerprintFile('/js/follow.js')}" type="text/javascript"></script>
+    <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-carousel.js')}" type="text/javascript"></script>
+    <script type="text/javascript">
+      $('.carousel').carousel({
+        interval: 7000
+      })
+    </script>
 </%def>
 
 

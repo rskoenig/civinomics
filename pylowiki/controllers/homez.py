@@ -50,8 +50,50 @@ class HomezController(BaseController):
 		c.title = c.heading = c.workshopTitlebar = 'Home'
 		c.activity = getRecentActivity(12)
 		c.rssURL = "/activity/rss"
+		defaultPhoto = "/images/grey.png"
 
 		if 'user' in session:
+
+			scope = c.authuser_geo['scope']
+
+			# is there a way to get just the top photo that is less computationally intense?
+			zipPhotos = photoLib.searchPhotos('scope', scope)
+			if zipPhotos:
+				p = zipPhotos[0]
+				c.zPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+			else:
+				c.zPhoto = "/images/grey.png"
+
+			scope = scope.split('|')
+			scope[-1] = '0'
+			c.testTitle = ''.join(scope)
+
+			cityPhotos = photoLib.searchPhotos('scope', scope)
+			if cityPhotos:
+				p = zipPhotos[0]
+				c.ctyPhoto = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+			else:
+				c.ctyPhoto = "/images/grey.png"
+
+
+
+			countryPhotos = photoLib.searchPhotos('scope', '||united-states||0||0||0|0')
+			if countryPhotos:
+				countryPhotos = sort.sortBinaryByTopPop(countryPhotos)
+				z = countryPhotos[0]
+				c.cPhoto = "/images/photos/" + z['directoryNum_photos'] + "/orig/" + z['pictureHash_photos'] + ".png"
+			else:
+				c.cPhoto = "/images/grey.png"
+
+
+			# hack the last part of scope of and do it again
+			scope = scope
+			
+
+
+
+
+
 			# check to see if County and City have same name
 			county = c.authuser_geo['countyTitle']
 			city = c.authuser_geo['cityTitle']
@@ -79,6 +121,56 @@ class HomezController(BaseController):
 			c.scopeMap[4]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + "/states/" + c.scopeMap[2]['geoURL'] + "/counties/" + c.scopeMap[3]['geoURL'] + "/cities/" + c.scopeMap[4]['geoURL'] + ".gif"
 			c.scopeMap[5]['flag'] = '/images/flags/country/' + c.scopeMap[1]['geoURL'] + "/states/" + c.scopeMap[2]['geoURL'] + "/counties/" + c.scopeMap[3]['geoURL'] + "/cities/" + c.scopeMap[4]['geoURL'] + "/postalCodes/" + c.scopeMap[5]['geoURL'] + ".gif"
 
+			# set the image for scopes in scopeMap
+			earthPhotos = photoLib.searchPhotos('scope', '||0||0||0||0|0')
+			if earthPhotos and len(earthPhotos) != 0:
+				earthPhotos = sort.sortBinaryByTopPop(earthPhotos)
+				p = earthPhotos[0]
+				c.scopeMap[0]['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+			else:
+				c.scopeMap[0]['photo'] = defaultPhoto
+
+			countryPhotos = photoLib.searchPhotos('scope', '||' + c.scopeMap[1]['geoURL'] + '||0||0||0|0')
+			if countryPhotos and len(countryPhotos) != 0:
+				countryPhotos = sort.sortBinaryByTopPop(countryPhotos)
+				p = countryPhotos[0]
+				c.scopeMap[1]['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+			else:
+				c.scopeMap[1]['photo'] = defaultPhoto
+
+			statePhotos = photoLib.searchPhotos('scope', '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||0||0|0')
+			if statePhotos and len(statePhotos) != 0:
+				statePhotos = sort.sortBinaryByTopPop(statePhotos)
+				p = statePhotos[0]
+				c.scopeMap[2]['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+			else:
+				c.scopeMap[2]['photo'] = defaultPhoto
+
+			countyPhotos = photoLib.searchPhotos('scope', '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL'] + '||0|0')
+			if countyPhotos and len(countyPhotos) != 0:
+				countyPhotos = sort.sortBinaryByTopPop(countyPhotos)
+				p = countyPhotos[0]
+				c.scopeMap[3]['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+			else:
+				c.scopeMap[3]['photo'] = defaultPhoto
+
+			cityPhotos = photoLib.searchPhotos('scope', '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL'] + '||' + c.scopeMap[4]['geoURL'] + '|0')
+			if cityPhotos and len(cityPhotos) != 0:
+				cityPhotos = sort.sortBinaryByTopPop(cityPhotos)
+				p = cityPhotos[0]
+				c.scopeMap[4]['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+			else:
+				c.scopeMap[4]['photo'] = defaultPhoto
+
+			zipPhotos = photoLib.searchPhotos('scope', '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL'] + '||' + c.scopeMap[4]['geoURL'] + '|' + c.scopeMap[5]['geoURL'])
+			if zipPhotos and len(zipPhotos) != 0:
+				zipPhotos = sort.sortBinaryByTopPop(zipPhotos)
+				p = zipPhotos[0]
+				c.scopeMap[5]['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+			else:
+				c.scopeMap[5]['photo'] = defaultPhoto
+
+
 			# get the base url for use in flag check below
 			baseUrl = config['site_base_url']
 			if baseUrl[-1] == "/":
@@ -93,30 +185,23 @@ class HomezController(BaseController):
 				except:
 					scope['flag'] = '/images/flags/generalFlag.gif'
 
-				# set the photo
-				photos = photoLib.searchPhotos('scope', scope['name'])
-				if photos and len(photos) != 0:
-					photos = sort.sortBinaryByTopPop(photos)
-					p = photos[0]
-					scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
-				else:
-					scope['photo'] = "/images/grey.png"
-
 
 		# get the most recent workshops - in the future this should be a featured workshop/initiative or most viewed workshop/initiative
+		newWorkshops = range(3)
 		workshops = getActiveWorkshops()
-		mainImage = mainImageLib.getMainImage(workshops[0])
-		if mainImage['pictureHash'] == 'supDawg':
-			imgSrc="/images/slide/thumbnail/supDawg.thumbnail"
-		elif 'format' in mainImage.keys():
-			imgSrc="/images/mainImage/%s/listing/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
-		else:
-			imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
-		c.featuredImage = imgSrc
-         
-		c.recentTitles = []
-		for i in range(0,3):
-			c.recentTitles.append(workshops[i]['title'])
+		for i in range(3):
+			title = workshops[i]['title']
+			mainImage = mainImageLib.getMainImage(workshops[i])
+			if mainImage['pictureHash'] == 'supDawg':
+				imgSrc="/images/slide/thumbnail/supDawg.thumbnail"
+			elif 'format' in mainImage.keys():
+				imgSrc="/images/mainImage/%s/listing/%s.%s" %(mainImage['directoryNum'], mainImage['pictureHash'], mainImage['format'])
+			else:
+				imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
+			photo = imgSrc
+			newWorkshops[i] = { 'photo': photo, 'title': title}
+		c.newWorkshops = newWorkshops
+
 
 		# user bookmarks, listening and facilitating
 		watching = followLib.getWorkshopFollows(c.authuser)
