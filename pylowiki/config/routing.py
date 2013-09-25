@@ -49,9 +49,6 @@ def make_map():
     map.connect('/corp/caseStudies', controller = 'corp', action = 'caseStudies')
     map.connect('/corp/polling', controller = 'corp', action = 'polling')
 
-    # New Home Test
-    map.connect('/home', controller = 'homez', action = 'index', id='None')
-
 
     ########################################################################################################
     # 
@@ -397,7 +394,9 @@ def make_map():
     ################
     # Application  #
     ################
-    map.connect('/', controller = 'home', action = 'index' ) # load the homepage.
+    map.connect('/', controller = 'index', action = 'index' ) # load the index page.
+
+    map.connect('/home', controller = 'home', action = 'index', id='None') # load the home page
     
     map.connect('/{controller}', controller='{controller}', action='index') # Maps url to controller index
     map.connect('/{controller}/', controller = '{controller}', action = 'index')

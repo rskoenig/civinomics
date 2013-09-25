@@ -16,7 +16,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </a>
-                <a class="brand civ-brand" href="/home">
+                <a class="brand civ-brand" href="/">
                     <img src="/images/logo_white.png" class="small-logo" id="civinomicsLogo">
                 </a>
                 <div class="nav-collapse collapse">
