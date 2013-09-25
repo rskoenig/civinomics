@@ -65,18 +65,14 @@ class HomeController(BaseController):
 				newWorkshops[i] = { 'photo': photo, 'title': title, 'link': link}
 			c.newWorkshops = newWorkshops
 
+
 			# create mapping of the user's geoScopes
-			county = c.authuser_geo['countyTitle']
-			city = c.authuser_geo['cityTitle']
-			if county == city:
-			    county = 'County of ' + county
-			    city = 'City of ' + city
 			c.scopeMap = [    
 							{'level':'earth', 'name':'Earth'},
 			                {'level':'country', 'name': c.authuser_geo['countryTitle']},
 			                {'level':'state', 'name': c.authuser_geo['stateTitle']},
-			                {'level':'county', 'name': county},
-			                {'level':'city', 'name': city},
+			                {'level':'county', 'name': c.authuser_geo['countyTitle']},
+			                {'level':'city', 'name': c.authuser_geo['cityTitle']},
 			                {'level':'postalCode', 'name': c.authuser_geo['postalCode']}
 			                ]
 
@@ -97,6 +93,14 @@ class HomeController(BaseController):
 					scope['hash'] = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL'] + '||' + c.scopeMap[4]['geoURL'] + '|0'
 				if scope['level'] == 'postalCode':
 					scope['hash'] = '||' + c.scopeMap[1]['geoURL'] + '||' + c.scopeMap[2]['geoURL'] + '||' + c.scopeMap[3]['geoURL'] + '||' + c.scopeMap[4]['geoURL'] + '|' + c.scopeMap[5]['geoURL']
+
+			county = c.authuser_geo['countyTitle']
+			city = c.authuser_geo['cityTitle']
+			if county == city:
+			    county = county + ' County'
+			    c.scopeMap[3]['name'] = county
+			    city = 'City of ' + city
+			    c.scopeMap[4]['name'] = city
 
 
 			# set flag image urls for the geoScopes
