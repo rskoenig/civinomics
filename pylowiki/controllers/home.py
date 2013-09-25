@@ -127,7 +127,7 @@ class HomeController(BaseController):
 				if photos and len(photos) != 0:
 					photos = sort.sortBinaryByTopPop(photos)
 					p = photos[0]
-					scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/orig/" + p['pictureHash_photos'] + ".png"
+					scope['photo'] = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
 				else:
 					scope['photo'] = defaultPhoto
 
