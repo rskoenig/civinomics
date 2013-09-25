@@ -1871,3 +1871,35 @@ a.search.toggle :active{
   z-index:1;}
 
   /* end carousel fade */
+
+.wrap-workshop.featured-listing{
+  width: 64.5%;
+  height: 200px;
+}
+
+.wrap-workshop.carousel, .wrap-workshop.scope {
+  height: 200px;
+  position: relative;
+}
+
+.tile-title{
+  margin: 10px 0 20px 10px;
+  position: absolute;
+  z-index: 2;
+  font-size:24px;
+  color: #FFFFFF;
+}
+
+.searchListing.bookmarks{
+  padding: 5px; 
+  border: none;
+}
+
+.lead.bookmark-title{
+  font-size: 16px;
+}
+
+.span2.activity{
+  margin-left: 0;
+  padding: 10px 8px;
+}
