@@ -1877,7 +1877,11 @@ a.search.toggle :active{
   height: 200px;
 }
 
-.wrap-workshop.carousel, .wrap-workshop.scope {
+.wrap-workshop.slide{
+  margin-top: 0;
+}
+  
+.wrap-workshop.slide, .wrap-workshop.scope {
   height: 200px;
   position: relative;
 }

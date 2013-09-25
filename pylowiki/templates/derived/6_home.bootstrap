@@ -25,27 +25,16 @@
                 </ol>
                 <!-- Carousel items -->
                 <div class="carousel-inner">
-                  % for i in range(len(c.newWorkshops)):
-                    <%
-                      if i == 0:
-                        state = 'active'
-                      else:
-                        state = ''
-                    %>
-                    <div class="${state} item">
-                      <ul class="thumbnails carousel-thumbnails">
-                        <li class="span wrap-workshop carousel" style="background-image:url('${c.newWorkshops[i]['photo']}'); background-size: cover; background-position: center center;">
-                          <a href="${c.newWorkshops[i]['link']}">
-                            <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
-                            <div class="row-fluid tile-title lead">
-                              ${c.newWorkshops[i]['title']}
-                            </div>
-                          </a>
-                        </li>
-                      </ul>
-                    </div>
-                  % endfor
-                </div><!-- carousel-inner -->
+                  <div class="active item">
+                    ${helpers.homeSlide(c.newWorkshops[0])}
+                  </div>
+                  <div class="item">
+                    ${helpers.homeSlide(c.newWorkshops[1])}
+                  </div>
+                  <div class="item">
+                    ${helpers.homeSlide(c.newWorkshops[2])}
+                  </div>
+                </div>
               </div><!-- #myCarousel -->
             </li>
 
