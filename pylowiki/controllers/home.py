@@ -116,6 +116,7 @@ class HomeController(BaseController):
 				baseUrl = baseUrl[:-1]
 			for scope in c.scopeMap:
 				flag = baseUrl + scope['flag']
+				flag = flag.lower()
 				try:
 					f = urllib2.urlopen(urllib2.Request(flag))
 					scope['flag'] = flag
