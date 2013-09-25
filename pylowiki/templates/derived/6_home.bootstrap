@@ -167,7 +167,7 @@
     <script src="${lib_6.fingerprintFile('/js/bootstrap/bootstrap-carousel.js')}" type="text/javascript"></script>
     <script type="text/javascript">
       $('.carousel').carousel({
-        interval: 7000
+        interval: 4500
       })
     </script>
 </%def>

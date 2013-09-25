@@ -14,6 +14,16 @@
                 <a class="brand civ-brand" href="/">
                     <div class="logo" id="civinomicsLogo"></div>
                 </a>
+                <ul class="nav">
+                    <li>
+                        <form class="form-search" action="/search">
+                            <div class="input-append">
+                                <input type="text" class="span2 search-query" placeholder="Search" id="search-input" name="searchQuery">
+                                <button type="button" class="btn" data-toggle="collapse" data-target="#search">Options</button>
+                            </div>
+                        </form>
+                    </li>
+                </ul>
                 <ul class="nav pull-right" id="profileAvatar">
                     <%
                         wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = ''
@@ -32,21 +42,9 @@
                         endif
                     %>
                     % if 'user' in session:
-                        <li class="${mSelected}">
-                            <%
-                                messageCount = ''
-                                numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
-                                if numMessages:
-                                    if numMessages > 0:
-                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
-                            %>
-                            <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
-                        </li>
                         <li class=${homeSelected}>
                             <a href="/home">Home</a>
                         </li>
-                    % endif
-                    % if 'user' in session:
                         % if userLib.isAdmin(c.authuser.id):
                             <li class="dropdown ${aSelected}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
@@ -62,6 +60,16 @@
                                 </ul>
                             </li>
                         % endif
+                        <li class="${mSelected}">
+                            <%
+                                messageCount = ''
+                                numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
+                                if numMessages:
+                                    if numMessages > 0:
+                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                            %>
+                            <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
+                        </li>
                         <li class="dropdown ${pSelected}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                                 ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
@@ -76,11 +84,6 @@
                         <li><a href="/login">Login</a></li>
                         <li><a href="/signup">Signup</a></li>
                     % endif
-                    <li>
-                        <a data-toggle="collapse" data-target="#search">
-                            <i class="icon-white icon-search"></i>
-                        </a>
-                    </li>
                 </ul>
             </div> <!--/.container-->
         </div> <!--/.navbar-inner.civ-navbar -->
@@ -89,14 +92,7 @@
         <% tagCategories = workshopLib.getWorkshopTagCategories() %>
         <div class="spacer"></div>
         <div class="row-fluid">
-            <div class="span3 offset1">
-                <form class="form-search" action="/search">
-                    <div class="input-append">
-                        <input type="text" class="span2 search-query" placeholder="Search by word" id="search-input" name="searchQuery">
-                    </div>
-                </form>
-            </div><!-- span3 -->
-            <div class="span4">
+            <div class="span3 offset2">
                 <script type="text/javascript">
                     function searchTags() {
                         var sIndex = document.getElementById('categoryTag').selectedIndex;
@@ -117,7 +113,7 @@
                     </select>
                 </form>
             </div><!-- span3 -->
-            <div class="span4">
+            <div class="span3">
                 <form  action="/searchGeo"  class="form-search" method="POST">
                     <div class="row-fluid"><span id="searchCountrySelect">
                         <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
