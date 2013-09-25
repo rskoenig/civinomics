@@ -106,7 +106,7 @@
                   <td>
                     <div class="media well searchListing bookmarks">
                         <a class="pull-left" ${lib_6.workshopLink(item)}>
-                          <img class="thumbnail tight media-object" src="${lib_6.workshopImage(item, raw=True) | n}">
+                          <div class="thumbnail tight media-object" style="height: 60px; width: 90px; background-image:url(${lib_6.workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
                         </a>
                       <div class="span6">
                         <a ${lib_6.workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
