@@ -18,6 +18,8 @@ from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
+import pylowiki.lib.utils               as utils
+
 import re
 
 log = logging.getLogger(__name__)
