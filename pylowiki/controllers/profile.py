@@ -42,6 +42,10 @@ class ProfileController(BaseController):
                 c.user = userLib.getUserByCode(id1)
                 if not c.user:
                     abort(404)
+                elif 'name' in c.user.keys():
+                    c.username = utils.noApostrophe(c.user['name'])
+                    c.userApoName = utils.yesApostrophe(c.user['name'])
+
             else:
                 abort(404)
 
@@ -129,7 +133,7 @@ class ProfileController(BaseController):
             c.revision = False
 
         c.revisions = revisionLib.getParentRevisions(c.user.id)
-        c.title = c.user['name']
+        c.title = c.userApoName
                
         c.isFollowing = False
         c.isUser = False
@@ -474,6 +478,7 @@ class ProfileController(BaseController):
             websiteDesc = payload['websiteDesc']
 
         if name and name != '' and name != c.user['name']:
+            name = utils.safeApostrophe(name)
             c.user['name'] = name
             nameChange = True
             anyChange = True

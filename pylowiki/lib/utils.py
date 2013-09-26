@@ -12,6 +12,15 @@ log = logging.getLogger(__name__)
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
+def safeApostrophe(name):
+    return name.replace("'", "&#39;")
+
+def noApostrophe(name):
+    return name.replace("&#39;", "")
+
+def yesApostrophe(name):
+    return name.replace("&#39;", "'")
+
 def urlify(url):
     import re
     pattern = re.compile('[^-\w]+')
