@@ -15,7 +15,7 @@
                     <div class="logo" id="civinomicsLogo"></div>
                 </a>
                 <ul class="nav">
-                    <li>
+                    <li class="small-hidden">
                         <form class="form-search" action="/search">
                             <div class="input-append">
                                 <input type="text" class="span2 search-query" placeholder="Search" id="search-input" name="searchQuery">
@@ -42,8 +42,11 @@
                         endif
                     %>
                     % if 'user' in session:
-                        <li class=${homeSelected}>
-                            <a href="/home">Home</a>
+                        <li class="${homeSelected} small-hidden">
+                            <a href="/">Home</a>
+                        </li>
+                        <li class="${homeSelected} small-show">
+                            <a href="/"><i class="icon-home"></i></a>
                         </li>
                         % if userLib.isAdmin(c.authuser.id):
                             <li class="dropdown ${aSelected}">
@@ -84,6 +87,9 @@
                         <li><a href="/login">Login</a></li>
                         <li><a href="/signup">Signup</a></li>
                     % endif
+                    <li class="small-show">
+                        <a type="button" data-toggle="collapse" data-target="#search"><i class="icon-search"></i></a>
+                    </li>
                 </ul>
             </div> <!--/.container-->
         </div> <!--/.navbar-inner.civ-navbar -->
@@ -91,8 +97,13 @@
     <div id="search" class="collapse search_drawer">
         <% tagCategories = workshopLib.getWorkshopTagCategories() %>
         <div class="spacer"></div>
-        <div class="row-fluid">
-            <div class="span3 offset2">
+        <div class="row-fluid searches">
+            <div class="span3 offset1">
+                <form class="form-search" action="/search">
+                    <input type="text" class="search-query" placeholder="Search by Word" id="search-input" name="searchQuery">
+                </form>
+            </div>
+            <div class="span4">
                 <script type="text/javascript">
                     function searchTags() {
                         var sIndex = document.getElementById('categoryTag').selectedIndex;
@@ -104,6 +115,7 @@
                     }
                 </script>
                 <form action="/searchTags" class="form-search" method="POST">
+                    <i class="icon-tag icon-light"></i>
                     <select name="categoryTag" id="categoryTag" onChange="searchTags();">
                     <option value="0">Search by Category</option>
                     % for tag in tagCategories:
@@ -113,9 +125,10 @@
                     </select>
                 </form>
             </div><!-- span3 -->
-            <div class="span3">
+            <div class="span4">
                 <form  action="/searchGeo"  class="form-search" method="POST">
                     <div class="row-fluid"><span id="searchCountrySelect">
+                        <i class="icon-globe icon-light"></i>
                         <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
                         <option value="0" selected>Search by Region</option>
                         <option value="United States">United States</option>

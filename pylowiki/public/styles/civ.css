@@ -14,6 +14,19 @@ html,body{
   }
 }
 
+@media (max-width: 767px){
+  body {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+
+  .navbar-inner{
+    margin-right: 20px;
+    margin-left: 20px;
+  }
+}
+
+
 /* Wrapper for page content to push down footer; */
 #wrap {
   min-height: 100%;
@@ -268,13 +281,32 @@ h1.workshop-title{
   width: 165px;
 }
 
-@media (max-width: 426px){
+.small-show{
+  display: none;
+}
+
+.small-hidden{
+    display: inline;
+}
+
+
+@media (max-width: 730px){
   .logo{
     background-image: url('/images/logo_white_simple.png');
     height: 35px;
     width: 40px;
   }
 }
+
+@media (max-width: 605px){
+  .small-show{
+    display: inline;
+  }
+  .small-hidden{
+    display: none;
+  }
+}
+
 
 hr.civ-topbar-hr{
    border: 1px solid #0ca900;
@@ -1935,4 +1967,20 @@ a.search.toggle :active{
 -webkit-border-radius: 14px 0 0 14px;
 -moz-border-radius: 14px 0 0 14px;
 border-radius: 14px 0 0 14px;
+}
+
+.form-search i{
+  font-size: 1.8em;
+  margin-right: 10px;
+}
+
+.form-search select{
+  margin-top: -2px;
+}
+
+@media (max-width: 970px){
+  .row-fluid.searches .span4, .row-fluid.searches .span3{
+    width: 100%;
+    margin-left: 2.75%
+  }
 }
