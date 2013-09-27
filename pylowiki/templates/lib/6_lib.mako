@@ -1330,22 +1330,18 @@
           if 'digest' in f and f['digest'] == '1':
               digestChecked = 'checked'
       %>
-      <div class="btn-group pull-right">
+      <div class="btn-group pull-right" ng-controller="followerController" ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${user['urlCode']}'">
         <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
           <i class="icon-envelope"></i>
           <span class="caret"></span>
         </a>
-        <ul class="dropdown-menu" style="position:absolute; z-index=10;">
+        <ul class="dropdown-menu bookmark-options">
           <li>Email on:</li>
           <li>
-              <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${user['urlCode']}'" class="no-bottom form-inline left-space">
-              <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}> New Items
-              </form>
+            <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}> New Items
           </li>
           <li>
-              <form ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${user['urlCode']}'" class="no-bottom form-inline left-space">
-              <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}> Daily Digest
-          </form>
+            <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}> Daily Digest
           </li>
         </ul>
       </div>
