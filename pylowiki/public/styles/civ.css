@@ -342,7 +342,6 @@ form.addGoal{
 }
 
 .section-wrapper.slideshow{
-  background-color:#000; 
   padding-bottom: 0px; 
   padding-top: 0px;
   position: relative;
@@ -528,7 +527,6 @@ ul.activity > li {
 
 .nav-pills > .active > a, .nav-pills > .active > a:hover {
    background-color:#005d28;
-   border-radius: 20px;
    color:white;
    padding-left:10px;
    padding-right:10px;
@@ -536,7 +534,6 @@ ul.activity > li {
 
 .nav-pills > li > a, .nav-pills > li > a:hover {
    background-color:none;
-   border-radius: 20px;
    color:#005D28;
    padding-left:8px;
    padding-right:8px;
@@ -1084,6 +1081,7 @@ ul.listeners > li {
 }
 
 .btn-civ, .btn-success {
+   font-weight: 300;
    color: white;
    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
    background-color: #00aa49;
@@ -1673,6 +1671,30 @@ text-align: right;
   );
 }
 
+.darkened-workshop{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background-image: -o-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
+  background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(rgba(0,0,0,0)), color-stop(0.9, rgba(0,0,0,0.7)));
+  background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
+  background-image: -ms-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
+  background-image: linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
+  /* IE 5.5 - 7 */
+  filter: progid:DXImageTransform.Microsoft.gradient(
+    gradientType=1, startColor=#000000, endColorStr=0
+  );
+
+  /* IE8 uses -ms-filter for whatever reason... */
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(
+    gradientType=1, startColor=#000000, endColoStr=0
+  );
+}
+
 hr.stats{
   margin-top: 5px;
   margin-bottom: 5px;
@@ -1698,4 +1720,30 @@ hr.stats{
 
 i .btn-height{
   line-height: 20px;
+}
+
+p.description:first-letter { 
+  font-size:200%;
+  font-weight: bold;
+}
+
+.preferencesLink{
+  height:30px;
+}
+
+.well.workshop-panel{
+  border: 0;
+  box-shadow: none;
+}
+
+.workshop-goals li{
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.label.workshop-tag{
+  line-height: 20px;
+  font-size: 14px;
+  vertical-align: middle;
 }

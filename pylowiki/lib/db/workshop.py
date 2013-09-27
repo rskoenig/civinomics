@@ -1,3 +1,5 @@
+import urllib2
+
 from pylons import tmpl_context as c, config, session
 from pylons import request
 from pylowiki.model import Thing, meta, Data
@@ -341,6 +343,17 @@ def getPublicScope(workshop):
             scopeLevel = 'earth'
             scopeName  = 'earth'
             flag += 'earth.gif'
+
+        # make sure the flag exists
+        baseUrl = config['site_base_url']
+        if baseUrl[-1] == "/":
+            baseUrl = baseUrl[:-1]
+        flag = baseUrl + flag
+        try:
+            f = urllib2.urlopen(urllib2.Request(flag))
+            flag = flag
+        except:
+            flag = '/images/flags/generalFlag.gif'
     else:
         scopeLevel = 'earth'
         scopeName  = 'earth'

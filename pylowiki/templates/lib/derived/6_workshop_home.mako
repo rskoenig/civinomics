@@ -166,7 +166,7 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <a class="btn btn-civ pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i><strong>Admin</strong></span></a>
+   <button class="btn btn-civ pull-right preferencesLink left-space" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i></span></button>
 </%def>
 
 <%def name="previewButton()">
@@ -271,31 +271,17 @@
             spanX = "span12"
 
     %>
-    <div class="${spanX}">
-        <ul class="gallery thumbnails no-bottom" data-clearing>
-        <%
-           numSlides = len(slides)
+    <div class="span12">
 
-           for slide in slides:
-              if slide['deleted'] != '1':
-                if 'large' in args:
-                  _slideLarge(slide, slideNum)
-                  if slideNum == 0:
-                    slideCaption = slide['title']  
-                elif 'listing' in args:
-                  _slideListing(slide, slideNum, numSlides)
-                else:
-                  _slide(slide, slideNum, numSlides)
-                slideNum += 1
-        %>
-        </ul>
-    </div>
-    % if 'large' in args:
-        <div class="span4">
-            <p style="color: #FFF; padding-top: 15px;"><strong>Click Image To View Slideshow (1 of ${slideNum})</strong><br>
-            <small><br>${lib_6.ellipsisIZE(slideCaption, 214)}</small><br></p>
+
+        <div class="span12">
+            <p class="description" style="padding: 15px;">
+            ${w['description']}
+            <br>
+            <strong class="pull-right">read more...</strong>
         </div>
-    % endif
+
+    </div>
 </%def>
 
 <%def name="_slideLarge(showSlide, slideNum)">
@@ -316,10 +302,17 @@
         </a>
     % else:
         <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
-        <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
-        <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
-        <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
-        <div style="width:100%; height:240px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
+            <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+            <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+            <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+            <div style="position: relative; width:100%; height:250px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/>
+                % if slideNum == 0:
+                <% slideCaption = showSlide['title'] %>
+                <span style="color: #fff; position: absolute; bottom: 15px; left: 15px;">
+                    <i class="icon-play"></i> Slideshow 1 of ${slideNum}
+                </span>
+            % endif
+            </div>
         </a>
     % endif
     </li>
@@ -397,8 +390,7 @@
         <p>This workshop has no goals!</p>
     % else:
         <div id="workshopGoals">
-        Workshop Goals:
-        <ul>
+        <ol class="workshop-goals">
         % for goal in goals:
             % if goal['status'] == '100':
                 <li class="done-true">${goal['title']}</li>
@@ -425,12 +417,10 @@
         if tagString != '':
             tagString = "Tags: " + tagString
     %>
-    <br>
-    Tags:
-    % for tag in tagList:
-        % if tag and tag != '':
-            <% tagClass = colors[tag] %>
-            <span class="label workshop-tag ${tagClass}" >${tag}</span>
+    % for i in range(2):
+        % if tagList[i] and tagList[i] != '':
+            <% tagClass = colors[tagList[i]] %>
+            <span class="label workshop-tag ${tagClass}" >${tagList[i]}</span>
         % endif
     % endfor
 </%def>
@@ -460,17 +450,13 @@
     ${scopeString | n}
 </%def>
 
-<%def name="showFlag()">
+<%def name="displayWorkshopFlag()">
     <%
         if c.w['public_private'] == 'public':
-            flagUrl = config['site_base_url'] + c.scope['flag']
-            try:
-                f = urllib2.urlopen(urllib2.Request(flagUrl))
-                scopeFlag = flagUrl
-            except:
-                scopeFlag = '/images/flags/generalFlag.gif'
+            scope = workshopLib.getPublicScope(c.w)
+            workshopFlag = scope['flag']
         else:
-            scopeFlag = '/images/flags/generalFlag.gif'
+            workshopFlag = '/images/flags/generalFlag.gif'
     %>
-    <img class="thumbnail span" style="padding: 0px; width: 60px; margin-right: 10px;" src="${scopeFlag}">
+    <img class="thumbnail span" style="padding: 0px; width: 60px; margin-right: 10px;" src="${workshopFlag}">
 </%def>
