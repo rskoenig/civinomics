@@ -7,11 +7,9 @@
 <% numIdeas = str(len(c.ideas)) %>
 <div class="row-fluid">
    <div class="span8">
-      <div class="section-wrapper slideshow">
+      <div class="section-wrapper slideshow" style="background-color: #000;">
         <div id="workshopSlideshow">
-          <div>
-            ${helpers.slideshow(c.w, 'large')}
-          </div>
+          ${helpers.slideshow(c.w, 'large')}
         </div>
       </div> <!-- /.section-wrapper -->
 
@@ -41,9 +39,6 @@
             Goals
             </h4>
             ${helpers.showGoals(c.goals)}
-            ${helpers.showFacilitators()}
-            ${helpers.showScope()}
-            <br><br>
             ${helpers.whoListening()}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->

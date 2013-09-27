@@ -1737,9 +1737,13 @@ p.description:first-letter {
 }
 
 .workshop-goals li{
-  font-weight: 600;
   font-size: 16px;
   margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.workshop-goals li span{
+  font-weight: normal;
 }
 
 .label.workshop-tag{

@@ -271,17 +271,33 @@
             spanX = "span12"
 
     %>
-    <div class="span12">
+    <div class="${spanX}">
+        <ul class="gallery thumbnails no-bottom" data-clearing>
+        <%
+           numSlides = len(slides)
 
-
-        <div class="span12">
-            <p class="description" style="padding: 15px;">
-            ${w['description']}
-            <br>
-            <strong class="pull-right">read more...</strong>
-        </div>
-
+           for slide in slides:
+              if slide['deleted'] != '1':
+                if 'large' in args:
+                  _slideLarge(slide, slideNum)
+                  if slideNum == 0:
+                    slideCaption = slide['title']  
+                elif 'listing' in args:
+                  _slideListing(slide, slideNum, numSlides)
+                else:
+                  _slide(slide, slideNum, numSlides)
+                slideNum += 1
+        %>
+        </ul>
     </div>
+    % if 'large' in args:
+        <div class="span4">
+            <p class="description" style="color: #FFF; padding-top: 15px;">
+                ${lib_6.ellipsisIZE(c.w['description'], 300)}
+                <a href="#">read more</a>
+            </p>
+        </div>
+    % endif
 </%def>
 
 <%def name="_slideLarge(showSlide, slideNum)">
@@ -302,17 +318,14 @@
         </a>
     % else:
         <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
-            <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
-            <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
-            <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
-            <div style="position: relative; width:100%; height:250px; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/>
-                % if slideNum == 0:
-                <% slideCaption = showSlide['title'] %>
-                <span style="color: #fff; position: absolute; bottom: 15px; left: 15px;">
-                    <i class="icon-play"></i> Slideshow 1 of ${slideNum}
-                </span>
-            % endif
+        <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+        <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+        <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+        <div style="width:100%; height:240px; position: relative; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/>
+            <div class="well" style="padding: 8px; margin-bottom: 0px; position: absolute; bottom: 10px; left: 10px; font-size: 16px; color: #fff; background-color: rgba(0,0,0,.8); border: none;">
+                <i class="icon-play"></i> Slideshow
             </div>
+        </div>
         </a>
     % endif
     </li>
@@ -393,9 +406,9 @@
         <ol class="workshop-goals">
         % for goal in goals:
             % if goal['status'] == '100':
-                <li class="done-true">${goal['title']}</li>
+                <li class="done-true"><span>${goal['title']}</span></li>
             % else:
-                <li>${goal['title']}</li>
+                <li><span>${goal['title']}</span></li>
             % endif
         % endfor
         </ul>
