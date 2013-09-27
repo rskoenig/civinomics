@@ -576,23 +576,38 @@ class ProfileController(BaseController):
             width = min(image.size)
             x = 0
             y = 0
-            if 'width' in requestKeys:
-                log.info("width is %s"%request.params['width'])
-                width = int(float(request.params['width']))
-            if 'x' in requestKeys:
-                x = int(float(request.params['x']))
-            if 'y' in requestKeys:
-                y = int(float(request.params['y']))
+            if 'width' in request.params:
+                tWidth = request.params['width']
+                if not width or width == 'undefined':
+                    width = 100
+                else:
+                    width = int(float(width))
+            if 'x' in request.params:
+                x = request.params['x']
+                if not x or x == 'undefined':
+                    x = 0
+                else:
+                    x = int(float(x))
+            if 'y' in request.params:
+                y = request.params['y']
+                if not y or y == 'undefined':
+                    y = 0
+                else:
+                    y = int(float(y))
             dims = {'x': x, 
                     'y': y, 
                     'width':width,
                     'height':width}
             clientWidth = -1
             clientHeight = -1
-            if 'clientWidth' in requestKeys:
+            if 'clientWidth' in request.params:
                 clientWidth = request.params['clientWidth']
-            if 'clientHeight' in requestKeys:
+                if not clientWidth or clientWidth == 'null':
+                    clientWidth = -1
+            if 'clientHeight' in request.params:
                 clientHeight = request.params['clientHeight']
+                if not clientHeight or clientHeight == 'null':
+                    clientHeight = -1
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
             image = imageLib.resizeImage(image, imageHash, 200, 200)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'avatar')
@@ -668,29 +683,24 @@ class ProfileController(BaseController):
             image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = photo)
             
             width = min(image.size)
-            log.info("width is %s"%width)
             x = 0
             y = 0
             if 'width' in request.params:
-                log.info("width is %s"%request.params['width'])
                 tWidth = request.params['width']
                 if not width or width == 'undefined':
                     width = 100
-                    log.info("width is now %s"%int(width))
                 else:
                     width = int(float(width))
             if 'x' in request.params:
                 x = request.params['x']
                 if not x or x == 'undefined':
                     x = 0
-                    log.info("x is now %s"%int(x))
                 else:
                     x = int(float(x))
             if 'y' in request.params:
                 y = request.params['y']
                 if not y or y == 'undefined':
                     y = 0
-                    log.info("y is now %s"%int(y))
                 else:
                     y = int(float(y))
             dims = {'x': x, 
@@ -703,12 +713,10 @@ class ProfileController(BaseController):
                 clientWidth = request.params['clientWidth']
                 if not clientWidth or clientWidth == 'null':
                     clientWidth = -1
-                    log.info("clientWidth is now %s"%int(clientWidth))
             if 'clientHeight' in request.params:
                 clientHeight = request.params['clientHeight']
                 if not clientHeight or clientHeight == 'null':
                     clientHeight = -1
-                    log.info("clientHeight is now %s"%int(clientHeight))
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
             image = imageLib.resizeImage(image, imageHash, 480, 480)
             image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
