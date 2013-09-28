@@ -138,9 +138,8 @@ class HomeController(BaseController):
 
 
 			# get user's bookmarks, listening and facilitating
-			watching = followLib.getWorkshopFollows(c.authuser)
 			bookmarked = followLib.getWorkshopFollows(c.authuser)
-			watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
+			watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in bookmarked ]
 			c.bookmarks = []
 			for workshop in watchList:
 				c.bookmarks.append(workshop)

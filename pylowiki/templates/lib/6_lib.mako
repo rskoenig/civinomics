@@ -19,6 +19,7 @@
    import logging, os
    log = logging.getLogger(__name__)
 %>
+<%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 
 <%def name="facebookDialogShare(link, picture)">
     <%
@@ -1338,12 +1339,39 @@
         <ul class="dropdown-menu bookmark-options">
           <li>Email on:</li>
           <li>
-            <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}> New Items
+            <label class="checkbox">
+              <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}> New Items
+            </label>
           </li>
           <li>
-            <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}> Daily Digest
+            <label class="checkbox">
+              <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}> Daily Digest
+            </label>
           </li>
         </ul>
       </div>
     % endif
+</%def>
+
+<%def name="listBookmarks(bookmarked)">
+  <table class="table plain">
+    % for item in bookmarked:
+      <tr>
+        <td>
+          <div class="media well searchListing bookmarks" style="overflow:visible;">
+              <a class="pull-left" ${workshopLink(item)}>
+                <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
+              </a>
+            <div class="span6">
+              <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            </div>
+            <div>
+              ${homeHelpers.watchButtonListing(item)}
+              ${bookmarkOptions(c.authuser, item)}
+            </div>
+          </div>
+        </td>
+      </tr>
+    % endfor
+  </table>
 </%def>

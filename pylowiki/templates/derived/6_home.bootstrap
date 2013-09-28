@@ -2,7 +2,6 @@
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 <%namespace name="helpers" file="/lib/derived/6_home.mako" />
 <%namespace name="profileHelpers" file="/lib/derived/6_profile.mako"/>
-<%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 <%namespace name="listingHelpers" file="/lib/derived/6_main_listing.mako" />
 
 <div class="row">
@@ -89,26 +88,7 @@
 
           % if len(c.bookmarks) != 0:
             <span class="lead"><i class="icon-bookmark"></i> Bookmarks</span>
-            <table class="table plain">
-              % for item in c.bookmarks:
-                <tr>
-                  <td>
-                    <div class="media well searchListing bookmarks" style="overflow:visible;">
-                        <a class="pull-left" ${lib_6.workshopLink(item)}>
-                          <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${lib_6.workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
-                        </a>
-                      <div class="span6">
-                        <a ${lib_6.workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
-                      </div>
-                      <div>
-                        ${homeHelpers.watchButtonListing(item)}
-                        ${lib_6.bookmarkOptions(c.authuser, item)}
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              % endfor
-            </table>
+            ${lib_6.listBookmarks(c.bookmarks)}
           % endif
         </div><!-- /row-fluid -->
 

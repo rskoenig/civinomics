@@ -31,7 +31,7 @@
 <%def name="showWorkshop(workshop, **kwargs)">
     <div class="media profile-workshop">
         <a class="pull-left" ${lib_6.workshopLink(workshop)}>
-            <img class="media-object" src="${lib_6.workshopImage(workshop, raw=True) | n}">
+          <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${lib_6.workshopImage(workshop, raw=True) | n}); background-size: cover; background-position: center center;"></div>
         </a>
         <%
             if 'imageOnly' in kwargs:
@@ -43,8 +43,8 @@
                 role = ''
         %>
         <div class="media-body">
-            <a ${lib_6.workshopLink(workshop)}><h5 class="media-heading"><span class="label label-inverse">${role}</span> ${workshop['title']}</h5></a>
-            ${workshop['description']}<br />
+            <a ${lib_6.workshopLink(workshop)} class="listed-item-title media-heading lead bookmark-title">${workshop['title']}</a>
+            <span class="label label-inverse pull-right">${role}</span>
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                     % if role == 'Facilitating':
