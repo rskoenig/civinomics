@@ -15,7 +15,7 @@
           ### Carousel
           ###
 
-          <li class="span wrap-workshop featured-listing">
+          <li class="span wrap-voting-group featured-listing">
             <div id="myCarousel" class="carousel slide">
               <ol class="carousel-indicators">
                   <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -42,7 +42,7 @@
             ###
 
             % for scope in c.scopeMap:
-              <li class="span4 wrap-workshop scope" style="background-image:url(${scope['photo']}); background-size: cover;">
+              <li class="span4 wrap-voting-group scope" style="background-image:url(${scope['photo']}); background-size: cover;">
                 <a ${lib_6._geoWorkshopLink(c.authuser_geo, depth = scope['level']) | n}>
                   <span class="link-span dark-gradient"></span><!-- used to make entire div a link -->
                   <table class="lead tile-title">
@@ -63,7 +63,7 @@
             ### Add a group
             ###
             <!-- coming soon... 
-            <li class="span4 wrap-workshop scope" style="background-image:url('/images/grey.png'); background-size: cover;">
+            <li class="span4 wrap-voting-group scope" style="background-image:url('/images/grey.png'); background-size: cover;">
               <a href="/">
                 <span class="link-span dark-gradient"></span>
                 <table class="lead tile-title">

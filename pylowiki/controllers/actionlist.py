@@ -30,10 +30,7 @@ class ActionlistController(BaseController):
             h.check_if_login_required()
 
     def index( self, id ): # id is the action
-
-        # catch for any routes that redirect to the old workhsop page
-        return redirect('/home')
-
+    
         """Create a list of pages with the given action/option """
         """Valid actions: edit, revision, delete, restore, sitemap """
         c.title = c.heading = c.workshopTitlebar = 'All Workshops'
