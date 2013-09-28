@@ -1997,12 +1997,12 @@ a.search.toggle :active{
 border-radius: 14px 0 0 14px;
 }
 
-.form-search i{
+.form-search.search-type i{
   font-size: 1.8em;
   margin-right: 10px;
 }
 
-.form-search select{
+.form-search.search-type select{
   margin-top: -2px;
 }
 
@@ -2015,4 +2015,9 @@ border-radius: 14px 0 0 14px;
 
 .dropdown-menu.bookmark-options li{
   margin-left: 10px;
+}
+
+#searchStateSelect select, #searchCountySelect select, #searchCitySelect select, #searchPostalSelect select{
+  margin-left: 34px;
+  margin-top: 2px;
 }

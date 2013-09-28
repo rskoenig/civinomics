@@ -114,7 +114,7 @@
                         }
                     }
                 </script>
-                <form action="/searchTags" class="form-search" method="POST">
+                <form action="/searchTags" class="form-search search-type" method="POST">
                     <i class="icon-tag icon-light"></i>
                     <select name="categoryTag" id="categoryTag" onChange="searchTags();">
                     <option value="0">Search by Category</option>
@@ -126,7 +126,7 @@
                 </form>
             </div><!-- span3 -->
             <div class="span4">
-                <form  action="/searchGeo"  class="form-search" method="POST">
+                <form  action="/searchGeo"  class="form-search search-type" method="POST">
                     <div class="row-fluid"><span id="searchCountrySelect">
                         <i class="icon-globe icon-light"></i>
                         <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
