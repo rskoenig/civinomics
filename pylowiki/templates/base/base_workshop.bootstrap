@@ -63,19 +63,36 @@
       </div> <!-- /.row-fluid -->
       <div class="row-fluid">
             <%
-               if c.listingType != '':
-                  listingType = c.listingType
-               else:
-                  listingType = None
+              if c.listingType != '':
+                listingType = c.listingType
+              else:
+                listingType = None
+
+              linkHref = lib_6.workshopLink(c.w, embed = True, raw = True)
+              infoHref = linkHref + '/information'
+              forumHref = linkHref + '/discussion'
+              activityHref= linkHref + '/activity'
+
+    
+              summaryActive = infoActive = activityActive = forumActive = ''
+
+              if c.listingType == 'resources' or listingType == 'resource':
+                infoActive = 'active'
+              elif c.listingType == 'discussion':
+                forumActive = 'active'
+              elif c.listingType == 'ideas' or listingType == 'idea':
+                summaryActive = 'active'
+              elif c.listingType == 'activity':
+                activityActive = 'active'
             %>
 
             <ul class="nav nav-tabs" style="margin-bottom: -10px; margin-left: 10px; margin-top: 20px; border-bottom: 0px; position: aboslute; z-index: 2;">
-              <li class="active">
-                <a href="#">Summary</a>
+              <li class="${summaryActive}">
+                <a href="${linkHref | n}">Summary</a>
               </li>
-              <li><a href="#">Info</a></li>
-              <li><a href="#">Forum</a></li>
-              <li><a href="#">Activity</a></li>
+              <li class="${infoActive}"><a href="${infoHref | n}">Info</a></li>
+              <li class="${forumActive}"><a href="${forumHref | n}">Forum</a></li>
+              <li class="${activityActive}"><a href="${activityHref | n}">Activity</a></li>
             </ul>
             
          </div>
