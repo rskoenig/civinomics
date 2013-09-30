@@ -168,6 +168,7 @@ class SearchController(BaseController):
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
 
         c.photos = photoLib.searchPhotos('scope', self.query)
+        c.searchQuery = self.query
         if c.photos:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
@@ -186,6 +187,7 @@ class SearchController(BaseController):
             name = 'all'
             c.searchQuery = 'Earth'
             flag = baseUrl + "/images/flags/" + level + ".gif"
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -200,6 +202,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "" + utils.geoDeurlify(geoScope[2])
             flag = baseUrl + "/images/flags/country/" + geoScope[2] + ".gif"
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -216,6 +219,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "State of " + utils.geoDeurlify(geoScope[4])
             flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '.gif'
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -232,6 +236,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "County of " + utils.geoDeurlify(geoScope[6])
             flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '/counties/' + geoScope[6] + '.gif'
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -249,6 +254,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "City of " + utils.geoDeurlify(geoScope[8])
             flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '/counties/' + geoScope[6] + '/cities/' + geoScope[8] + '.gif'
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -266,6 +272,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "Postal Code " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
+            flag = flag.lower()
             c.geoInfo = getPostalInfo(geoScope[9]) 
             if c.geoInfo:
                 c.population = c.geoInfo['Population']
