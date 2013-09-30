@@ -13,11 +13,13 @@
    import pylowiki.lib.db.tag           as tagLib
    import pylowiki.lib.db.workshop      as workshopLib
    import pylowiki.lib.db.photo         as photoLib
+   import pylowiki.lib.db.follow        as followLib
    
    from hashlib import md5
    import logging, os
    log = logging.getLogger(__name__)
 %>
+<%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 
 <%def name="facebookDialogShare(link, picture)">
     <%
@@ -1316,4 +1318,60 @@
       <option value="${category}">${category}</option>
     % endfor
   </select>
+</%def>
+
+<%def name="bookmarkOptions(user, workshop)">
+  <% f = followLib.getFollow(user, workshop) %>
+    % if f:
+      <%
+          itemsChecked = ''
+          digestChecked = ''
+          if 'itemAlerts' in f and f['itemAlerts'] == '1':
+              itemsChecked = 'checked'
+          if 'digest' in f and f['digest'] == '1':
+              digestChecked = 'checked'
+      %>
+      <div class="btn-group pull-right" ng-controller="followerController" ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${user['urlCode']}'">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+          <i class="icon-envelope"></i>
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu bookmark-options">
+          <li>Email on:</li>
+          <li>
+            <label class="checkbox">
+              <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}> New Items
+            </label>
+          </li>
+          <li>
+            <label class="checkbox">
+              <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}> Daily Digest
+            </label>
+          </li>
+        </ul>
+      </div>
+    % endif
+</%def>
+
+<%def name="listBookmarks(bookmarked)">
+  <table class="table plain">
+    % for item in bookmarked:
+      <tr>
+        <td>
+          <div class="media well searchListing bookmarks" style="overflow:visible;">
+              <a class="pull-left" ${workshopLink(item)}>
+                <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
+              </a>
+            <div class="span6">
+              <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            </div>
+            <div>
+              ${homeHelpers.watchButtonListing(item)}
+              ${bookmarkOptions(c.authuser, item)}
+            </div>
+          </div>
+        </td>
+      </tr>
+    % endfor
+  </table>
 </%def>

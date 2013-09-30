@@ -163,6 +163,14 @@
     % endif
 </%def>
 
+<%def name="watchButtonListing(w)">
+    % if 'user' in session:
+        <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+        <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
+        </button>
+    % endif
+</%def>
+
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
    <a class="btn round btn-civ pull-right preferencesLink" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i>Admin</span></a>
