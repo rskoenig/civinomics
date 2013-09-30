@@ -19,7 +19,7 @@
    log = logging.getLogger(__name__)
 %>
 
-<%def name="facebookDialogShare(link, picture)">
+<%def name="facebookDialogShare(link, picture, iconClass)">
     <%
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
@@ -112,7 +112,7 @@
             );
         };
         </script>
-        <a href="#" target='_top' onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+        <a href="#" target='_top' onClick="shareOnWall()"><i class="${iconClass}"></i></a>
     % endif
 </%def>
 
@@ -121,7 +121,7 @@
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
-        <a href="#emailShare" role="button" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Share</a>
+        <a href="#emailShare" role="button" data-toggle="modal" class="listed-item-title"><i class="icon-envelope icon-2x"></i></a>
         <div id="emailShare" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

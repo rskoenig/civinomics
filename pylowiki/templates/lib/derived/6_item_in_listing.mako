@@ -89,7 +89,7 @@
         editID = 'edit-%s' % thing['urlCode']
         adminID = 'admin-%s' % thing['urlCode']
     %>
-    <div class="btn-group">
+    <div class="btn-group" style="margin-top: -10px;">
         % if thing['disabled'] == '0':
             <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
         % endif

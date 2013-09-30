@@ -26,38 +26,30 @@
             </div> -->
          </div>
 
-         % if workshopLib.isPublished(c.w):
-           <div class="span3">
-                  % if c.privs['admin'] or c.privs['facilitator']: 
-                    % if c.adminPanel:
+         
+            <div class="span3">
+              <div class="span12">
+                % if c.privs['admin'] or c.privs['facilitator']: 
+                  % if c.adminPanel:
+                    % if workshopLib.isPublished(c.w):
                       ${helpers.viewButton()} 
                     % else:
-                      ${helpers.configButton(c.w)}
+                      ${helpers.previewButton()}
                     % endif
+                  % else:
+                    ${helpers.configButton(c.w)}
                   % endif
-                  ${helpers.watchButton()}
-                  <div class="btn-group pull-right">
-                    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                      <i class="icon-share"></i><span class="caret"> </span>
-                    </a>
-                    <ul class="dropdown-menu">
-                      <!-- dropdown menu links -->
-                      <li><i class="icon-facebook-sign"></i></li>
-                      <li><i class="icon-twitter-sign"></i></li>
-                      <li><i class="icon-envelope"></i></li>
-                      ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage))}
-                      ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
-                    </ul>
-                  </div>
-           </div>
-         % else:
-           % if c.adminPanel:
-              ${helpers.previewButton()}
-           % else:
-              ${helpers.configButton(c.w)}
-           % endif
-
-         % endif
+                % endif
+                ${helpers.watchButton()}
+              </div>
+              <div class="span12" style="margin-top:10px; margin-left: 0px">
+                <span class = "share-icons contrast pull-right">
+                  ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), 'icon-facebook-sign icon-light icon-2x')}
+                  ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
+                </span>
+              </div>
+            </div>  
+            
 
 
       </div> <!-- /.row-fluid -->
