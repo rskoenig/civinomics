@@ -4,8 +4,6 @@
 <%namespace name="helpers" file="/lib/derived/6_detailed_listing.mako"/>
 <%namespace name="workshopHelpers" file="/lib/derived/6_workshop_home.mako" />
 
-<div class="spacer" style="height:20px;"></div>
-
 <% 
    lib.return_to()
    if c.listingType == 'discussion':

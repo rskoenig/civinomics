@@ -11,7 +11,7 @@
 <div class="spacer"></div>
 <div class="row-fluid" ng-app="civ">
       <div class="row-fluid">
-         <div class="span9">
+         <div class="span10">
             ${helpers.displayWorkshopFlag()}
             <h1 class="workshop-title"> 
               <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " style="color: #fff;" ng-cloak>
@@ -27,12 +27,12 @@
          </div>
 
          
-            <div class="span3">
+            <div class="span2">
               <div class="span12">
                 ${helpers.watchButton()}
               </div>
               <div class="span12" style="margin-top:10px; margin-left: 0px">
-                <span class = "share-icons pull-right">
+                <span class = "share-icons contrast pull-right">
                   ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), 'icon-facebook-sign icon-light icon-2x')}
                   ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
                 </span>

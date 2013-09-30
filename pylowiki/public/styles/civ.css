@@ -398,6 +398,10 @@ form.addGoal{
     margin-left:0px;
 }
 
+.thumbnails > li.slideListing{
+  margin-bottom: 0;   
+}
+
 .carousel{
   margin-bottom: 0;
 }
@@ -1759,11 +1763,11 @@ p.description:first-letter {
   color: #4c66a4;
 }
 .share-icons.contrast a i{
-  color: #00903e;
+  color: #fff;
 }
 
 .share-icons a i:hover{
-  color: #00aa9e;
+  color: #007edd;
 }
 
 .suggestListener{

@@ -288,10 +288,11 @@
         </ul>
     </div>
     % if 'large' in args:
+        <% infoHref = lib_6.workshopLink(c.w, embed = True, raw = True) + '/information' %>
         <div class="span4">
             <p class="description" style="color: #FFF; padding-top: 15px;">
                 ${lib_6.ellipsisIZE(c.w['description'], 300)}
-                <a href="#">read more</a>
+                <a href="${infoHref}">read more</a>
             </p>
         </div>
     % endif
@@ -371,13 +372,13 @@
           <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
        </a>
     % elif 'format' in slide.keys():
-       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
-          <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}" data-caption="${slide['title']}"/>
-       </a>
+      <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
+        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}'); background-size: cover; background-position: center center;"></div>
+      </a>
     % else:
-       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
-          <img src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
-       </a>
+      <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
+        <div class="thumbnail tight media-object" style="height: 60px; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg'); background-size: cover; background-position: center center;"></div>
+      </a>
     % endif
   </li>
 </%def>
