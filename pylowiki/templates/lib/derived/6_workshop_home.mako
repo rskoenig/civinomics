@@ -24,7 +24,6 @@
     %>
     <h4 class="section-header smaller section-header-inner">Listeners</h4>
     % if users:
-        <div class="green"><p>Participating</p></div>
         <ul class="media-list" id="workshopNotables">
         % for person in users:
             <%
@@ -34,7 +33,7 @@
             <li class="media notables-item">
                 ${lib_6.userImage(person, className="avatar med-avatar media-object", linkClass="pull-left")}
                 <div class="media-body">
-                    ${lib_6.userLink(person, className="orange orange-hover listener-name")}<br />
+                    ${lib_6.userLink(person, className="listener-name")}<br />
                     <small>${personTitle}</small>
                 </div>
             </li>
@@ -44,7 +43,7 @@
      % endif
     % if pending:
         <hr>
-        <div class="orange"><p>Not yet participating. Invite them to join in.</p></div>
+        <div><p><em class="grey">Not yet participating. Invite them to join in.</em></p></div>
         <ul class="media-list" id="workshopNotables">
         % for person in pending:
             <%
@@ -93,17 +92,15 @@
             </li>
         % endfor
         </ul>
+        <hr>
      % endif
      % if 'user' in session and c.authuser:
-        <hr>
-        <ul class="media-list centered">
+        <ul class="media-list">
             <li class="media pendingListener notables-item">
-            <small>Know somebody who should be listening?</small><br />
-                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline" name="suggestListenerForm">
-                <div class="pull-right">
-                <input type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
+                <em class="grey">Which public officials should participate?</em><br />
+                <form ng-controller="listenerController" ng-init="code='${c.w['urlCode']}'; url='${c.w['url']}'; user='${c.authuser['urlCode']}'; suggestListenerText='';" id="suggestListenerForm" ng-submit="suggestListener()" class="form-inline suggestListener" name="suggestListenerForm">
+                <input class="listenerInput" type="text" ng-model="suggestListenerText" name="suggestListenerText" placeholder="Suggest a Listener"  required>
                 <button type="submit" class="btn btn-success btn-small">Submit</button>
-                </div>
                 <br />
                 <span ng-show="suggestListenerShow">{{suggestListenerResponse}}</span>
                 </form>
@@ -166,7 +163,7 @@
 
 <%def name="configButton(w)">
    <% workshopLink = "%s/preferences" % lib_6.workshopLink(w, embed = True, raw = True) %>
-   <button class="btn btn-civ pull-right preferencesLink left-space" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i></span></button>
+   <a class="btn btn-civ pull-right preferencesLink left-space" href="${workshopLink | n}" rel="tooltip" data-placement="bottom" data-original-title="workshop moderation and configuration"><span><i class="icon-wrench icon-white pull-left"></i></span></a>
 </%def>
 
 <%def name="previewButton()">

@@ -29,21 +29,10 @@
          
             <div class="span3">
               <div class="span12">
-                % if c.privs['admin'] or c.privs['facilitator']: 
-                  % if c.adminPanel:
-                    % if workshopLib.isPublished(c.w):
-                      ${helpers.viewButton()} 
-                    % else:
-                      ${helpers.previewButton()}
-                    % endif
-                  % else:
-                    ${helpers.configButton(c.w)}
-                  % endif
-                % endif
                 ${helpers.watchButton()}
               </div>
               <div class="span12" style="margin-top:10px; margin-left: 0px">
-                <span class = "share-icons contrast pull-right">
+                <span class = "share-icons pull-right">
                   ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), 'icon-facebook-sign icon-light icon-2x')}
                   ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
                 </span>
@@ -64,9 +53,10 @@
               infoHref = linkHref + '/information'
               forumHref = linkHref + '/discussion'
               activityHref= linkHref + '/activity'
+              adminHref= linkHref + '/preferences'
 
     
-              summaryActive = infoActive = activityActive = forumActive = ''
+              summaryActive = infoActive = activityActive = forumActive = adminActive = ''
 
               if c.listingType == 'resources' or listingType == 'resource':
                 infoActive = 'active'
@@ -76,6 +66,8 @@
                 summaryActive = 'active'
               elif c.listingType == 'activity':
                 activityActive = 'active'
+              elif c.adminPanel == True:
+                adminActive = 'active'
             %>
 
             <ul class="nav nav-tabs" style="margin-bottom: -10px; margin-left: 10px; margin-top: 20px; border-bottom: 0px; position: aboslute; z-index: 2;">
@@ -85,6 +77,9 @@
               <li class="${infoActive}"><a href="${infoHref | n}">Info</a></li>
               <li class="${forumActive}"><a href="${forumHref | n}">Forum</a></li>
               <li class="${activityActive}"><a href="${activityHref | n}">Activity</a></li>
+              % if c.privs['admin'] or c.privs['facilitator']: 
+                <li class="pull-right ${adminActive}" style="margin-right: 10px;"><a href="${adminHref | n}">Admin</a></li>
+              % endif
             </ul>
             
          </div>
