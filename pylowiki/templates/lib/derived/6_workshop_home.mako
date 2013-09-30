@@ -468,5 +468,5 @@
         else:
             workshopFlag = '/images/flags/generalFlag.gif'
     %>
-    <img class="thumbnail span" style="padding: 0px; width: 60px; margin-right: 10px;" src="${workshopFlag}">
+    <a href="${scope['href']}"><img class="thumbnail span" style="padding: 0px; width: 60px; margin-right: 10px;" src="${workshopFlag}"></a>
 </%def>

@@ -319,26 +319,32 @@ def getPublicScope(workshop):
     if 'workshop_public_scope' in workshop and workshop['workshop_public_scope'] != '':
         scope = workshop['workshop_public_scope'].split('|')
         flag = '/images/flags/'
+        href = '/workshops/geo/earth'
         if scope[9] != '0':
             scopeLevel = 'postalCode'
             scopeName  = scope[9]
             flag += 'generalFlag.gif'
+            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6] + '/' + scope[8] + '/' + scope[9]
         elif scope[8] != '0':
             scopeLevel = 'city'
             scopeName  = scope[8]
             flag += 'country/' + scope[2] + '/states/' + scope[4] + '/counties/' + scope[6] + '/cities/' + scope[8] + '.gif'
+            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6] + '/' + scope[8]
         elif scope[6] != '0':
             scopeLevel = 'county'
             scopeName  = scope[6]
             flag += 'country/' + scope[2] + '/states/' + scope[4] + '/counties/' + scope[6] + '.gif'
+            href += '/' + scope[2] + '/' + scope[4] + '/' + scope[6]
         elif scope[4] != '0':
             scopeLevel = 'state'
             scopeName  = scope[4]
             flag += 'country/' + scope[2] + '/states/' + scope[4] + '.gif'
+            href += '/' + scope[2] + '/' + scope[4]
         elif scope[2] != '0':
             scopeLevel = 'country'
             scopeName  = scope[2]
             flag += 'country/' + scope[2] + '.gif'
+            href += '/' + scope[2]
         else:
             scopeLevel = 'earth'
             scopeName  = 'earth'
@@ -358,7 +364,7 @@ def getPublicScope(workshop):
         scopeLevel = 'earth'
         scopeName  = 'earth'
         flag += 'earth.gif'
-    return {'level':scopeLevel, 'name':scopeName, 'flag':flag}
+    return {'level':scopeLevel, 'name':scopeName, 'flag':flag, 'href':href}
 
 def setDemo(workshop): 
     workshop['demo'] = '1'
