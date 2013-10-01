@@ -323,30 +323,28 @@ class RegisterController(BaseController):
                 
                 log.info( message )
                 
-                # if they are a guest signing up, activate and log them in
-                if c.w:
-                    user = u.u
-                    if 'laston' in user:
-                        t = time.localtime(float(user['laston']))
-                        user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                user = u.u
+                if 'laston' in user:
+                    t = time.localtime(float(user['laston']))
+                    user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                # this will allow us to use the twitter api in their name
+                user['twitter_oauth_token'] = session['twitter_oauth_token']
+                user['twitter_oauth_secret'] = session['twitter_oauth_secret']
+                user['externalAuthType'] = 'twitter'
+                if 'twitterProfilePic' in session:
+                    user['avatarSource'] = 'twitter'
+                    user['twitterProfilePic'] = session['twitterProfilePic']                
+                # mark this user as one who created the account originally by twitter signup
+                user['originTwitter'] = u'1'
 
+                if c.w:
+                    # if they are a guest signing up, activate and log them in
+                    user['laston'] = time.time()
                     # add twitter userid to user
                     user['twitterAuthId'] = twitterId
-                    # this will allow us to use the twitter api in their name
-                    user['twitter_oauth_token'] = session['twitter_oauth_token']
-                    user['twitter_oauth_secret'] = session['twitter_oauth_secret']
-                    user['externalAuthType'] = 'twitter'
-                    
-                    if 'twitterProfilePic' in session:
-                        user['avatarSource'] = 'twitter'
-                        user['twitterProfilePic'] = session['twitterProfilePic']
-                    
-                    user['laston'] = time.time()
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                    # mark this user as one who created the account originally by twitter signup
-                    user['originTwitter'] = u'1'
                     commit(user)
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
@@ -360,53 +358,25 @@ class RegisterController(BaseController):
                     log.info('%s logged in %s' % (user['name'], loginTime))
                     c.authuser = user
                     mailLib.sendWelcomeMail(user)
-                    
-                    log.info( "Successful guest activation with credentials - " + email )
+
+                    log.info( "guest activation via twitter - " + email )
                     returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
                     if c.listingType:
                         returnPage += "/add/" + c.listingType
                     return redirect(returnPage)
                 else:
-                    # not a guest, simply a new twitter signup,
-                    # we are sending this person an activation email - this is
-                    # because twitter does not give us the email of this user so
-                    # we have to ask for it, and confirm
-                    user = u.u
-                    if 'laston' in user:
-                        t = time.localtime(float(user['laston']))
-                        user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
-
+                    # not a guest, just a new twitter signup.
                     # add twitter userid to user
                     user['unactivatedTwitterAuthId'] = twitterId
-                    # this will allow us to use the twitter api in their name
-                    user['twitter_oauth_token'] = session['twitter_oauth_token']
-                    user['twitter_oauth_secret'] = session['twitter_oauth_secret']
-                    user['externalAuthType'] = 'twitter'
-                    
-                    if 'twitterProfilePic' in session:
-                        user['avatarSource'] = 'twitter'
-                        user['twitterProfilePic'] = session['twitterProfilePic']
-                    #user['laston'] = time.time()
                     user['activated'] = u'0'
-                    #loginTime = time.localtime(float(user['laston']))
-                    #loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                    # mark this user as one who created the account originally by twitter signup
-                    user['originTwitter'] = u'1'
                     commit(user)
-                    #session["user"] = user['name']
-                    #session["userCode"] = user['urlCode']
-                    #session["userURL"] = user['url']
-                    #session.save()
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
                     splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
                     session['splashMsg'] = splashMsg
                     session.save()
-                    #log.info('session of user: %s' % session['user'])
-                    #log.info('%s logged in %s' % (user['name'], loginTime))
-                    #c.authuser = user
-                    #mailLib.sendWelcomeMail(user)
-                    #log.info( "Successful twitter signup with email - " + email )
+                    log.info( "twitter signup with email - " + email )
+                    returnPage = "/"
                     return redirect(returnPage)
             else:
                 # we have a match by email. because this is a manually provided email in this signup,
@@ -418,9 +388,14 @@ class RegisterController(BaseController):
                 # IF they know their password, and only if their account was originally
                 # a normal account. If they've authenticated with facebook, for now they 
                 # have made their choice. No need to auth with twitter as well.
-                if 'facebookAuthId' in user.keys():
+                if 'originFacebook' in user.keys():
+                    # this email belongs to a user who has signed up already by facebook authentication
+                    # we can allow linking of the twitter account if they verify ownership of this email
+                    # this is not a normal situation, this user is already activated, hence we need to 
+                    # create an extra authentication route in order to handle this case.
                     log.info("user who auths with facebook now wants to auth with twitter. not allowed at this point.")
                     splashMsg['content'] = ", we cannot allow you to login using twitter authentication since you do so with your facebook account already."
+                    
                     session['splashMsg'] = splashMsg
                     session.save()
                     return redirect('/login')
@@ -597,79 +572,48 @@ class RegisterController(BaseController):
                 session['splashMsg'] = splashMsg
                 session.save()
 
-                # if they are a guest signing up, activate and log them in
+                user = u.u
+                if 'laston' in user:
+                    t = time.localtime(float(user['laston']))
+                    user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                
+                # add facebook userid to user
+                user['facebookAuthId'] = facebookAuthId
+                # this will allow us to use the facebook api in their name
+                user['facebookAccessToken'] = session['fbAccessToken']
+                user['externalAuthType'] = 'facebook'
+                # a user's account email can be different from the email on their facebook account.
+                # we should keep track of this, it'll be handy
+                user['fbEmail'] = email
+                if 'fbSmallPic' in session:
+                    user['avatarSource'] = 'facebook'
+                    user['facebookProfileSmall'] = session['fbSmallPic']
+                    user['facebookProfileBig'] = session['fbBigPic']
+                
+                user['laston'] = time.time()
+                user['activated'] = u'1'
+                # mark this user as one who created the account originally by twitter signup
+                user['originFacebook'] = u'1'
+                loginTime = time.localtime(float(user['laston']))
+                loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                commit(user)
+                session["user"] = user['name']
+                session["userCode"] = user['urlCode']
+                session["userURL"] = user['url']
+                session.save()
+                log.info('session of user: %s' % session['user'])
+                log.info('%s logged in %s' % (user['name'], loginTime))
+                c.authuser = user
+                mailLib.sendWelcomeMail(user)
                 if c.w:
-                    user = u.u
-                    if 'laston' in user:
-                        t = time.localtime(float(user['laston']))
-                        user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
-                    
-                    # add facebook userid to user
-                    user['facebookAuthId'] = facebookAuthId
-                    # this will allow us to use the facebook api in their name
-                    user['facebookAccessToken'] = session['fbAccessToken']
-                    user['externalAuthType'] = 'facebook'
-                    # a user's account email can be different from the email on their facebook account.
-                    # we should keep track of this, it'll be handy
-                    user['fbEmail'] = email
-                    if 'fbSmallPic' in session:
-                        user['avatarSource'] = 'facebook'
-                        user['facebookProfileSmall'] = session['fbSmallPic']
-                        user['facebookProfileBig'] = session['fbBigPic']
-                    
-                    user['laston'] = time.time()
-                    user['activated'] = u'1'
-                    loginTime = time.localtime(float(user['laston']))
-                    loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                    commit(user)
-                    session["user"] = user['name']
-                    session["userCode"] = user['urlCode']
-                    session["userURL"] = user['url']
-                    session.save()
-                    log.info('session of user: %s' % session['user'])
-                    log.info('%s logged in %s' % (user['name'], loginTime))
-                    c.authuser = user
-                    mailLib.sendWelcomeMail(user)
-                    
-                    log.info( "Successful guest activation with credentials - " + email )
+                    # if they are a guest signing up, activate and log them in
+                    log.info( "Successful guest activation via facebook - " + email )
                     returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
                     if c.listingType:
                         returnPage += "/add/" + c.listingType
                     return redirect(returnPage)
                 else:
                     # not a guest, just a new faceboook signup. activate and login
-                    user = u.u
-                    if 'laston' in user:
-                        t = time.localtime(float(user['laston']))
-                        user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
-                        
-                    # add facebook userid to user
-                    user['facebookAuthId'] = facebookAuthId
-                    # this will allow us to use the facebook api in their name
-                    user['facebookAccessToken'] = session['fbAccessToken']
-                    user['externalAuthType'] = 'facebook'
-                    # a user's account email can be different from the email on their facebook account.
-                    # we should keep track of this, it'll be handy
-                    user['fbEmail'] = email
-                    if 'fbSmallPic' in session:
-                        user['avatarSource'] = 'facebook'
-                        user['facebookProfileSmall'] = session['fbSmallPic']
-                        user['facebookProfileBig'] = session['fbBigPic']
-                    #user['facebookProfileBig'] = session['fbBigPic']
-                    user['laston'] = time.time()
-                    user['activated'] = u'1'
-                    loginTime = time.localtime(float(user['laston']))
-                    loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                    commit(user)
-                    session["user"] = user['name']
-                    session["userCode"] = user['urlCode']
-                    session["userURL"] = user['url']
-                    session.save()
-                    log.info('session of user: %s' % session['user'])
-                    log.info('%s logged in %s' % (user['name'], loginTime))
-                    c.authuser = user
-                    mailLib.sendWelcomeMail(user)
-                    
                     log.info( "Successful facebook signup with email - " + email )
                     returnPage = "/"
                     return redirect(returnPage)
