@@ -271,13 +271,61 @@ class LoginController(BaseController):
                 # a normal account. If they've authenticated with twitter, for now they 
                 # have made their choice. No need to auth with facebook as well.
                 if 'twitterAuthId' in user.keys():
-                    log.info("user who auths with twitter now wants to auth with facebook. not allowed at this point.")
-                    splashMsg['content'] = ", we cannot allow you to login using facebook authentication since you do so with your twitter account already."
-                    session['splashMsg'] = splashMsg
-                    session.save()
-                    return redirect('/login')
-                c.email = email
-                return render("/derived/fbLinkAccount.bootstrap")
+                    log.info('twitter auth id in user keys')
+                    #log.info("user who auths with twitter now wants to auth with facebook. not allowed at this point.")
+                    #splashMsg['content'] = ", we cannot allow you to login using facebook authentication since you do so with your twitter account already."
+                    #session['splashMsg'] = splashMsg
+                    #session.save()
+                    #return redirect('/login')
+                    if user['activated'] == '0':
+                        # NOTE this case may not ever occur
+                        log.info('twitter user not activated')
+                        splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox. Otherwise, try the Sign In with Facebook button."
+                        baseURL = c.conf['activation.url']
+                        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                        mailLib.sendActivationMail(user['email'], url)
+                        
+                    elif user['disabled'] == '1':
+                        log.info('disabled account attempting to login')
+                        log.warning("disabled account attempting to login - " + email )
+                        splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
+                    else: 
+                        # link up this account with their facebook stuff
+                        log.info('link facebook data to twitter activated account')
+                        if 'avatarSource' not in user.keys():
+                            user['avatarSource'] = 'facebook'
+                        user['facebookAccessToken'] = session['fbAccessToken']
+                        user['externalAuthType'] = 'facebook'
+                        # a user's account email can be different from the email on their facebook account.
+                        # we should keep track of this, it'll be handy
+                        user['facebookAuthId'] = session['facebookAuthId']
+                        user['fbEmail'] = email
+                        commit(user)
+                        LoginController.logUserIn(self, user)
+                elif 'unactivatedTwitterAuthId' in user.keys():
+                    # ok, unactivatedTwitterAuthId IS in user.keys():
+                    # is this an account created just with twitter signup? Is this a normal account?
+                    if 'originTwitter' in user.keys():
+                        # this is an account that was attempted to be created by twitter id, but
+                        # not activated. treat this as a new signup, overwrite the account data 
+                        # with the facebook data
+                        return redirect("signup/fbSignUp/")
+                    else:
+                        # this is a normal account and this (or another) person has tried to register
+                        # using twitter, but has not completed the process. allow them to link this account 
+                        # to facebook login if they know their password
+                        log.info('link to normal account')
+                        c.email = email
+                        return render("/derived/fbLinkAccount.bootstrap")
+                else:
+                    # we have a normal account on this site, and someone with an fb account by this
+                    # email wants to log in. I can't guarantee facebook makes a new user verify their
+                    # email before being able to authenticate on other sites (created too many test accounts, I'm blocked now).
+                    # so, ask for their current account's password
+                    log.info('link to normal account')
+                    c.email = email
+                    return render("/derived/fbLinkAccount.bootstrap")
+                
             else:
                 log.info('found by fb id')
             # we have an active account. because of an earlier design flaw we need to 
@@ -308,7 +356,7 @@ class LoginController(BaseController):
                 commit(user)
                 return redirect("/fbLoggingIn")
             else:
-                return redirect("/fbSigningUp")
+                return redirect("signup/fbSigningUp")
         
     def fbLinkAccountHandler(self):
         #: handles a login when first connecting a user's account with facebook external

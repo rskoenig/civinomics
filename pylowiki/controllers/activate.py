@@ -25,6 +25,10 @@ class ActivateController(BaseController):
             if user['activated'] == '0':
                 if user['activationHash'] == hash:
                     user['activated'] = '1'
+                    if 'unactivatedTwitterAuthId' in user.keys():
+                        # this is a twitter signup, now that the email is confirmed we can
+                        # make their twitter id available
+                        user['twitterAuthId'] = user['unactivatedTwitterAuthId']
                     user['laston'] = time.time()
                     if commit(user):
                         session["user"] = user['name']

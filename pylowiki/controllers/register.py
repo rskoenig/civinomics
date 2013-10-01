@@ -345,6 +345,8 @@ class RegisterController(BaseController):
                     user['activated'] = u'1'
                     loginTime = time.localtime(float(user['laston']))
                     loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                    # mark this user as one who created the account originally by twitter signup
+                    user['originTwitter'] = u'1'
                     commit(user)
                     splashMsg['type'] = 'success'
                     splashMsg['title'] = 'Success'
@@ -388,6 +390,8 @@ class RegisterController(BaseController):
                     user['activated'] = u'0'
                     #loginTime = time.localtime(float(user['laston']))
                     #loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                    # mark this user as one who created the account originally by twitter signup
+                    user['originTwitter'] = u'1'
                     commit(user)
                     #session["user"] = user['name']
                     #session["userCode"] = user['urlCode']
@@ -670,8 +674,49 @@ class RegisterController(BaseController):
                     returnPage = "/"
                     return redirect(returnPage)
             else:
-                # NOTE this is a case where a user on site has now tried logging in with
-                # the facebook button. This should be caught in controllers/login.fbAuthCheckEmail
+                # NOTE this used to only be a case where a user on site has now tried logging in with
+                # the facebook button. Now, however, we can arrive here if an account was created with 
+                # twitter, but not activated
+                if 'unactivatedTwitterAuthId' in user.keys():
+                    if 'originTwitter' in user.keys():
+                        user['name'] = name
+                        user['email'] = email
+                        user['postalCode'] = postalCode
+                        # add facebook userid to user
+                        user['facebookAuthId'] = facebookAuthId
+                        # this will allow us to use the facebook api in their name
+                        user['facebookAccessToken'] = session['fbAccessToken']
+                        user['externalAuthType'] = 'facebook'
+                        # a user's account email can be different from the email on their facebook account.
+                        # we should keep track of this, it'll be handy
+                        user['fbEmail'] = email
+                        if 'fbSmallPic' in session:
+                            user['avatarSource'] = 'facebook'
+                            user['facebookProfileSmall'] = session['fbSmallPic']
+                            user['facebookProfileBig'] = session['fbBigPic']
+                        
+                        user['laston'] = time.time()
+                        user['activated'] = u'1'
+                        loginTime = time.localtime(float(user['laston']))
+                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                        commit(user)
+                        session["user"] = user['name']
+                        session["userCode"] = user['urlCode']
+                        session["userURL"] = user['url']
+                        session.save()
+                        log.info('session of user: %s' % session['user'])
+                        log.info('%s logged in %s' % (user['name'], loginTime))
+                        c.authuser = user
+                        if c.w:
+                            log.info( "Successful guest activation with credentials - " + email )
+                            returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
+                            if c.listingType:
+                                returnPage += "/add/" + c.listingType
+                            return redirect(returnPage)
+                        else:
+                            log.info( "Successful facebook signup with email - " + email )
+                            returnPage = "/"
+                            return redirect(returnPage)
                 log.info("register:fbSigningUp found user, should have been logged in")
                 splashMsg['content'] = "You should have been logged in already"
                 session['splashMsg'] = splashMsg
