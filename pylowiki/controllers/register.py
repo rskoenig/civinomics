@@ -331,6 +331,7 @@ class RegisterController(BaseController):
                 user['originTwitter'] = u'1'
 
                 if c.w:
+                    log.info("c.w yes")
                     # if they are a guest signing up, activate and log them in
                     user['laston'] = time.time()
                     # add twitter userid to user
@@ -358,6 +359,7 @@ class RegisterController(BaseController):
                         returnPage += "/add/" + c.listingType
                     return redirect(returnPage)
                 else:
+                    log.info("c.w no")
                     # not a guest, just a new twitter signup.
                     # add twitter userid to user
                     user['unactivatedTwitterAuthId'] = twitterId
@@ -369,7 +371,6 @@ class RegisterController(BaseController):
                     session['splashMsg'] = splashMsg
                     session.save()
                     log.info( "twitter signup with email - " + email )
-                    returnPage = "/"
                     return redirect(returnPage)
             else:
                 log.info('user == false')
@@ -398,11 +399,25 @@ class RegisterController(BaseController):
                         baseURL = c.conf['activation.url']
                         url = '%s/activate/%s__%s'%(baseURL, user['activationFacebookNotTwitterHash'], user['email'])
                         mailLib.sendActivationMail(user['email'], url)
+                        splashMsg['title'] = 'Success'
+                        splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
+                        session['splashMsg'] = splashMsg
+                        session.save()
+                        log.info( "twitter signup with email - " + email )
+                        return redirect(returnPage)
                     else:
                         log.info('else activatedFacebookNotTwitter')
                         user['unactivatedTwitterAuthId'] = twitterId
                         user['activatedFacebookNotTwitter'] = u'0'
+                        commit(user)
                         self.generateTwitterActivationHash(user)
+                        splashMsg['type'] = 'success'
+                        splashMsg['title'] = 'Success'
+                        splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
+                        session['splashMsg'] = splashMsg
+                        session.save()
+                        log.info( "twitter signup with email - " + email )
+                        return redirect(returnPage)
                 log.info('after fb no twt')
                 if user['activated'] == '1':
                     log.info('user activated')
