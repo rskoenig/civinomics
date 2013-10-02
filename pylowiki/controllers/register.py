@@ -14,6 +14,7 @@ from pylowiki.lib.db.workshop import getWorkshopByCode, setWorkshopPrivs
 from pylowiki.lib.db.geoInfo import getPostalInfo
 from pylowiki.lib.db.dbHelpers import commit
 import pylowiki.lib.db.mainImage    as mainImageLib
+from pylowiki.lib.db.revision import Revision
 import pylowiki.lib.mail            as mailLib
 import re
 
@@ -111,14 +112,6 @@ class RegisterController(BaseController):
             # page made just for signing this person up by asking facebook one more time
             # if this user is auth'd and there is no account
             return render("/derived/fbSigningUp.bootstrap")
-
-    def generatePassword(*length):
-        """Return a system generated hash for randomization of user params"""
-        from string import letters, digits
-        from random import choice
-        pool, size = letters + digits, length or 10
-        hash =  ''.join([choice(pool) for i in range(size)])
-        return hash.lower()
 
     def fbSignUpDisplay( self ):
         """ This is an intermediary page for the signup process when a facebook user first
@@ -379,6 +372,7 @@ class RegisterController(BaseController):
                     returnPage = "/"
                     return redirect(returnPage)
             else:
+                log.info('user == false')
                 # we have a match by email. because this is a manually provided email in this signup,
                 # there are multiple cases to consider. One of the cases is that someone who doesn't own
                 # this email tried to sign up and never was able to activate the account. 
@@ -389,17 +383,29 @@ class RegisterController(BaseController):
                 # a normal account. If they've authenticated with facebook, for now they 
                 # have made their choice. No need to auth with twitter as well.
                 if 'originFacebook' in user.keys():
+                    log.info('originFacebook')
                     # this email belongs to a user who has signed up already by facebook authentication
-                    # we can allow linking of the twitter account if they verify ownership of this email
+                    # we can allow linking of the twitter account if they verify ownership of this email.
                     # this is not a normal situation, this user is already activated, hence we need to 
                     # create an extra authentication route in order to handle this case.
-                    log.info("user who auths with facebook now wants to auth with twitter. not allowed at this point.")
-                    splashMsg['content'] = ", we cannot allow you to login using twitter authentication since you do so with your facebook account already."
-                    
-                    session['splashMsg'] = splashMsg
-                    session.save()
-                    return redirect('/login')
+                    if 'activatedFacebookNotTwitter' in user.keys():
+                        log.info('activatedFacebookNotTwitter')
+                        # user still needs to verify ownership of this email
+                        # this is an unactivated account, initated via normal signup or twitter signup
+                        splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                        session['splashMsg'] = splashMsg
+                        session.save()
+                        baseURL = c.conf['activation.url']
+                        url = '%s/activate/%s__%s'%(baseURL, user['activationFacebookNotTwitterHash'], user['email'])
+                        mailLib.sendActivationMail(user['email'], url)
+                    else:
+                        log.info('else activatedFacebookNotTwitter')
+                        user['unactivatedTwitterAuthId'] = twitterId
+                        user['activatedFacebookNotTwitter'] = u'0'
+                        self.generateTwitterActivationHash(user)
+                log.info('after fb no twt')
                 if user['activated'] == '1':
+                    log.info('user activated')
                     c.email = email
                     session['twtEmail'] = email
                     session.save()
@@ -420,6 +426,30 @@ class RegisterController(BaseController):
             session.save() 
    
         return redirect('/signup')
+
+    def generateTwitterActivationHash(self, u):
+        """Return a system generated hash for account activation"""
+        from string import letters, digits
+        from random import choice
+        pool, size = letters + digits, 20
+        hash =  ''.join([choice(pool) for i in range(size)])
+        
+        toEmail = u['email']
+        frEmail = c.conf['activation.email']
+        baseURL = c.conf['activation.url']
+        url = '%s/activate/%s__%s'%(baseURL, hash, toEmail) 
+        # this next line is needed for functional testing to be able to use the generated hash
+        if 'paste.testing_variables' in request.environ:
+                request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
+       
+        u['activationFacebookNotTwitterHash'] = hash
+        commit(u)
+        Revision(u, u)
+        
+        # send the activation email
+        mailLib.sendActivationMail(u['email'], url)
+        
+        log.info("Successful account creation (deactivated) for %s" %toEmail)
 
     def fbSigningUp( self ):
         log.info("register:fbSigningUp signing up with fb")
@@ -853,3 +883,11 @@ class RegisterController(BaseController):
             session.save() 
    
         return redirect('/signup')
+
+    def generateHash(self, *length):
+        """Return a system generated hash for randomization of user params"""
+        from string import letters, digits
+        from random import choice
+        pool, size = letters + digits, length or 10
+        hash =  ''.join([choice(pool) for i in range(size)])
+        return hash.lower()
