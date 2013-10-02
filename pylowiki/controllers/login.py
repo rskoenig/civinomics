@@ -387,8 +387,9 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ): 
                         # if pass is True, link up this account with their facebook stuff
-                        if 'avatarSource' not in user.keys():
-                            user['avatarSource'] = 'facebook'
+                        # don't set their pic to be from facebook, allow them to do that
+                        # if 'avatarSource' not in user.keys():
+                        #    user['avatarSource'] = 'facebook'
                         user['facebookAccessToken'] = session['fbAccessToken']
                         user['externalAuthType'] = 'facebook'
                         # a user's account email can be different from the email on their facebook account.
@@ -451,7 +452,8 @@ class LoginController(BaseController):
                         user['externalAuthType'] = 'twitter'
                         
                         if 'twitterProfilePic' in session:
-                            user['avatarSource'] = 'twitter'
+                            # don't set their pic to be from twitter, allow them to do that
+                            #user['avatarSource'] = 'twitter'
                             user['twitterProfilePic'] = session['twitterProfilePic']
                         
                         commit(user)
