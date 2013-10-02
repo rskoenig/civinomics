@@ -227,12 +227,13 @@
                             </div>
                             <div class="accordion-body collapse" id="item-body-${item['urlCode']}">
                                 <div class="row-fluid list-item border-bottom">
-                                    <div class="span10 list-item-text ideaListing" id="content_${itemCounter}">
+                                    <div class="span9 offset1 list-item-text ideaListing" style="position:relative;" id="content_${itemCounter}">
                                         <% itemTitle = '<p class="ideaListingTitle"><a %s class="listed-item-title">%s</a></p>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                                         ${itemTitle | n}
                                         % if item['adopted'] == '1':
                                             <small><i class="icon-star"></i> This idea adopted!</small>
                                         % endif
+                                        <p style="margin-top: 10px;">${lib_6.ellipsisIZE(item['text'], 250)}</p>
                                             <% 
                                                 comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments')
                                                 fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text') 
@@ -241,6 +242,7 @@
                                                 totalVotes = int(item['ups']) + int(item['downs'])
                                             %>
                                             <ul class="horizontal-list iconListing">
+                                                <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs}</li>
                                                 <li>${fullText | n}</li>
                                                 % if c.demo:
                                                     <li>${comments | n}</li>
@@ -248,11 +250,8 @@
                                                     <li>${comments | n} (${numComments})</li>
                                                 % endif
                                             </ul>
-                                            <p class="no-bottom">
-                                                <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}</small>
-                                            </p>
                                     </div><!--/.span9-->
-                                    <div class="span2 voteBlock ideaListing" id="vote_${itemCounter}">
+                                    <div class="span3 voteBlock ideaListing" id="vote_${itemCounter}">
                                         ${lib_6.yesNoVote(item)}
                                     </div>
                                 </div><!--/.row-fluid-->
@@ -262,12 +261,13 @@
                 </div><!-- accordion --> 
             % else:
                 <div class="row-fluid list-item border-bottom">
-                    <div class="span10 list-item-text ideaListing" id="content_${itemCounter}">
+                    <div class="span9 list-item-text ideaListing" id="content_${itemCounter}">
                         <% itemTitle = '<p class="ideaListingTitle"><a %s class="listed-item-title">%s</a></p>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                         ${itemTitle | n}
                         % if item['adopted'] == '1':
                             <small><i class="icon-star"></i> This idea adopted!</small>
                         % endif
+                        <p style="margin-top: 10px;">${lib_6.ellipsisIZE(item['text'], 250)}</p>
                             <% 
                                 comments = '<a %s class="listed-item-title"><i class="icon-comment"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Comments')
                                 fullText = '<a %s class="listed-item-title"><i class="icon-file-text"></i> %s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), 'Read full text') 
@@ -276,6 +276,7 @@
                                 totalVotes = int(item['ups']) + int(item['downs'])
                             %>
                             <ul class="horizontal-list iconListing">
+                                <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs}</li>
                                 <li>${fullText | n}</li>
                                 % if c.demo:
                                     <li>${comments | n}</li>
@@ -283,11 +284,8 @@
                                     <li>${comments | n} (${numComments})</li>
                                 % endif
                             </ul>
-                            <p class="no-bottom">
-                                <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}</small>
-                            </p>
                     </div><!--/.span9-->
-                    <div class="span2 voteBlock ideaListing" id="vote_${itemCounter}">
+                    <div class="span3 voteBlock ideaListing well" style="background-color: whiteSmoke;" id="vote_${itemCounter}">
                         ${lib_6.yesNoVote(item)}
                     </div>
                 </div><!--/.row-fluid-->
