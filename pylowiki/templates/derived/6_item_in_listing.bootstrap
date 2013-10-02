@@ -44,7 +44,7 @@
                     <div class="span1">
                     </div>
                     <div class="span11">
-                        <div class="well yesNoWell" style="background-color:whitesmoke;">
+                        <div class="well yesNoWell">
                             ${lib_6.yesNoVote(c.thing, 'detail')}
                         </div>
                         ${helpers.showItemTitle(c.thing)}

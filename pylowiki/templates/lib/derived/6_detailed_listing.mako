@@ -241,7 +241,7 @@
 
                                                 totalVotes = int(item['ups']) + int(item['downs'])
                                             %>
-                                            <ul class="horizontal-list iconListing" style="margin-top:15px;">
+                                            <ul class="horizontal-list iconListing">
                                                 <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs}</li>
                                                 <li>${fullText | n}</li>
                                                 % if c.demo:
@@ -275,7 +275,7 @@
 
                                 totalVotes = int(item['ups']) + int(item['downs'])
                             %>
-                            <ul class="horizontal-list iconListing" style="margin-top:15px;">
+                            <ul class="horizontal-list iconListing">
                                 <li>${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span> Posted by ${lib_6.userLink(item.owner)} ${addedAs}</li>
                                 <li>${fullText | n}</li>
                                 % if c.demo:

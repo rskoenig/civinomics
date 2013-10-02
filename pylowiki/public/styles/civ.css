@@ -251,6 +251,7 @@ padding: 0;
   margin-left: 0px;
   margin-bottom: 0px;
   font-size: .85em;
+  margin-top:15px;
 }
 
 img.workshop-listing{
@@ -962,11 +963,12 @@ a.yesVote, a.noVote{
    position: absolute;
 }
 
-.yesNoWell{
+.well.yesNoWell{
   float: right;
   margin-left: 20px;
   padding-left: 40px;
   width: 165px;
+  background-color:whitesmoke;
 }
 
 .oddComment{
