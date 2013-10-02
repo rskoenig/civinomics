@@ -251,6 +251,7 @@ padding: 0;
   margin-left: 0px;
   margin-bottom: 0px;
   font-size: .85em;
+  margin-top:15px;
 }
 
 img.workshop-listing{
@@ -887,9 +888,8 @@ img.watch{
   width: 100%;
   float: left;
 }
-
 .vote-icon.detail{
-  width: 50%;
+  margin-right: 10px;
 }
 
 .vote-icon.yes-icon{
@@ -923,7 +923,7 @@ img.watch{
 }
 
 .voteBlock.ideaListing{
-  padding:6px;
+  padding:10px;
 }
 
 .chevron-score{
@@ -933,8 +933,8 @@ img.watch{
   color: grey;
 }
 
-.yesScore, .noScore{
-  margin-left: 100px;
+.ynScoreWrapper{
+  margin-left: 85px;
   padding-top: 5px;
   font-size: 0.85em;
   color: grey;
@@ -959,15 +959,16 @@ img.watch{
 }
 
 a.yesVote, a.noVote{
-   width: 165px;
+   width: 85px;
    position: absolute;
 }
 
-.yesNoWell{
+.well.yesNoWell{
   float: right;
   margin-left: 20px;
   padding-left: 40px;
   width: 165px;
+  background-color:whitesmoke;
 }
 
 .oddComment{
@@ -2020,4 +2021,9 @@ border-radius: 14px 0 0 14px;
 #searchStateSelect select, #searchCountySelect select, #searchCitySelect select, #searchPostalSelect select{
   margin-left: 34px;
   margin-top: 2px;
+}
+
+hr.list-header{
+  margin-bottom: 20px;
+  border-bottom: none;
 }

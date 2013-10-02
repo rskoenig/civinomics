@@ -235,6 +235,10 @@
         totalYes = int(thing['ups'])
         totalNo = int(thing['downs'])
         totalVotes = int(thing['ups']) + int(thing['downs'])
+        percentYes = percentNo = 0
+        if totalVotes > 0:
+          percentYes = int(float(totalYes)/float(totalVotes) * 100)
+          percentNo = int(float(totalNo)/float(totalVotes) * 100)
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          <% 
@@ -243,23 +247,23 @@
                if rated['amount'] == '1':
                   commentClass = 'voted yesVote'
                   displayTally = ''
+                  displayPrompt = 'hidden'
                else:
                   commentClass = 'yesVote'
                   displayTally = ''
+                  displayPrompt = 'hidden'
                   if rated['amount'] == '0' :
                     displayTally = 'hidden'
+                    displayPrompt = ''
 
             else:
                commentClass = 'yesVote'
                displayTally = 'hidden'
+               displayPrompt = ''
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
-           % if 'detail' in args:
               <div class="vote-icon yes-icon detail"></div>
-              <div class="yesScore ${displayTally}">${locale.format("%d", totalYes, grouping=True)}</div>
-           % else:
-              <div class="vote-icon yes-icon detail"></div>
-           % endif
+              <div class="ynScoreWrapper ${displayTally}"><span class="yesScore">${percentYes}</span>%</div>
          </a>
          <br>
          <br>
@@ -273,15 +277,16 @@
                commentClass = 'noVote'
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
-           % if 'detail' in args:
               <div class="vote-icon no-icon detail"></div>
-              <div class="noScore ${displayTally}">${locale.format("%d", totalNo, grouping=True)}</div> 
-           % else:
-              <div class="vote-icon no-icon"></div>
-           % endif
+              <div class="ynScoreWrapper ${displayTally}"><span class="noScore">${percentNo}</span>%</div> 
          </a>
          <br>
-         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
+         <div class="totalVotesWrapper">
+          % if 'detail' in args:
+            <span class="orange ${displayPrompt}"><strong>Vote to display rating</strong></span><br>
+          % endif
+          Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
+        </div>
       % else:
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
           <div class="vote-icon yes-icon"></div>
@@ -292,7 +297,11 @@
           <div class="vote-icon no-icon"></div>
          </a>
          <br>
-         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
+         <div class="totalVotesWrapper">
+          % if 'detail' in args:
+            <span class="orange"><strong>Vote to display rating</strong></span><br>
+          % endif
+          Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
          <% log.info("vote") %>
       % endif
    </div>
