@@ -1682,12 +1682,12 @@ text-align: right;
   height: 100%;
   width: 100%;
   z-index: -1;
-  background-image: -o-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
-  background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(rgba(0,0,0,0)), color-stop(0.9, rgba(0,0,0,0.7)));
-  background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
-  background-image: -ms-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
-  background-image: linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.7) 90%);
+  background-image: -o-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
+  background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
+  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(rgba(0,0,0,0)), color-stop(0.9, rgba(0,0,0,0.8)));
+  background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
+  background-image: -ms-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
+  background-image: linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.8) 90%);
   /* IE 5.5 - 7 */
   filter: progid:DXImageTransform.Microsoft.gradient(
     gradientType=1, startColor=#000000, endColorStr=0
@@ -1738,6 +1738,7 @@ p.description:first-letter {
 .well.workshop-panel{
   border: 0;
   box-shadow: none;
+  padding-top: 9px;
 }
 
 .workshop-goals li{
