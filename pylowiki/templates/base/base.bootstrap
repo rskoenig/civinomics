@@ -1,0 +1,217 @@
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace name="helpers" file="/lib/template_lib.mako" />
+<%! import pylowiki.lib.db.user as userLib %>
+<% lib_6.validateSession() %>
+<!DOCTYPE HTML>
+<html lang="en-US" ng-app='civ'>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="description" content="Civinomics is an online citizen collaboration platform. You can use Civinomics to join the movement towards improving social decision-making through the collective creativity of communities.">
+      <title>${c.title}</title>
+      <!-- Third-party assets -->
+      <link rel="stylesheet" href="/styles/vendor/bootstrap.css">
+      <link rel="stylesheet" href="/styles/vendor/bootstrap-responsive.min.css">
+      <link rel="stylesheet" href="/styles/vendor/font-awesome/css/font-awesome.min.css">
+      <link rel="stylesheet" href="${lib_6.fingerprintFile('/styles/civ.css')}">
+      <link rel="shortcut icon" href="${lib_6.fingerprintFile('/images/logo_tab.ico')}">
+      <link href='http://fonts.googleapis.com/css?family=Roboto:400,300,400italic,300italic,700' rel='stylesheet' type='text/css'>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js"></script>
+      <script src="/js/geoSearch.js"></script>
+      <script>
+        var dummyApp = angular.module('civ', []);
+      </script>
+      <script src="/js/extauth.js" type="text/javascript"></script>
+      ${self.extraStyles()}
+      ${self.headScripts()}
+      ${self.headScripts2()}
+      ${self.google_analytics()}
+      <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+      <!--[if lt IE 9]>
+         <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+      <![endif]-->
+   </head>
+   <body ${self.bodyTag_extras()}>
+
+    ${next.body()}
+    
+
+   <!-- scripts go at the bottom so they don't keep the user waiting -->
+   <script type="text/javascript" src="/js/vendor/bootstrap.min.js"></script>
+   <script type="text/javascript" src="${lib_6.fingerprintFile('/js/searchBox.js')}"></script>
+   ${self.extraScripts()}
+   ${self.extraScripts2()}
+   ${self.atlassian_issueCollector()}
+   % if 'user' not in session:
+       <%
+           facebookAppId = c.facebookAppId
+           channelUrl = c.channelUrl
+       %>
+       <div id="fb-root"></div>
+       <script>
+         // activate facebook javascript sdk
+         window.fbAsyncInit = function() {
+            FB.init({
+              appId      : "${facebookAppId}",
+              channelUrl : "${channelUrl}", // Channel File
+              status     : true, // check login status
+              cookie     : false, // enable cookies to allow the server to access the session
+              xfbml      : true  // parse XFBML
+            });
+            // this is needed to prevent a hangup with one of the login flows
+            FB.Event.subscribe('auth.login', function(response1) {
+              authSignal();
+            });
+            // check facebook login status
+            FB.Event.subscribe('auth.authResponseChange', function(response) {
+              if (response.status === 'connected') {
+                // this person is logged into facebook and our app has auth
+                fbConnected(response.authResponse);
+              } else if (response.status === 'not_authorized') {
+                // this person is logged into facebook but our app does not have auth
+                FB.login();
+              } else {
+                // user not logged into facebook
+                FB.login();
+              }
+            });
+         };
+
+         // Load the SDK asynchronously
+         (function(d){
+          var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+          if (d.getElementById(id)) {return;}
+          js = d.createElement('script'); js.id = id; js.async = true;
+          js.src = "//connect.facebook.net/en_US/all.js";
+          ref.parentNode.insertBefore(js, ref);
+         }(document));
+
+         function authSignal() {
+           var authSignal = '<div id="authSignal"></div>'
+           $('#fbLoginButton1').append(authSignal);
+           $('#fbLoginButton2').append(authSignal);
+         }
+
+         function fbConnected(authResponse) {
+           FB.api('/me', function(response) {
+             // grab the url to a 200x200 photo of this user
+             var bigPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0} AND width=200 AND height=200', response.id);
+             var bigPic = '';
+             bigPicFql.wait(function (rows) {
+               // the big pic link
+               bigPic = rows[0].url;
+             });
+             // grab the url to a 50x50 photo of this user
+             var smallPicFql = FB.Data.query('SELECT url FROM profile_pic WHERE id = {0}', response.id);
+             var smallPic = '';
+             var holder = 0;
+             smallPicFql.wait(function (rows) {
+               //the small pic link
+               smallPic = rows[0].url;
+               holder = 1;
+             });
+             var result = ''
+             setTimeout(function(){
+               // check account status on our site for this user
+               result = fbCheckAccount(response, authResponse, smallPic, bigPic);
+               if (result == "not found") {
+                 // no account on site yet.
+                 // this is a unique situation where the person has authorized us to use their
+                 // fb identity, but hasn't created an account yet. This assumes that's what they
+                 // want to do and redirects once this situation is recognized.
+                 if ($('#fbSignUp').length) {
+                   console.log('facebook signup')
+                 } else {
+                   window.location = '/signup/fbSignUp/';
+                 }
+               } else {
+                 // found a matching account on our site
+                 if ($('#authSignal').length) {
+                   // this triggers when a person has arrived but was not yet logged into facebook,
+                   // or had not yet given auth to our app
+                   var newButton = 'Logging In'
+                   $('#fbLoginButton1').html(newButton);
+                   $('#fbLoginButton2').html(newButton);
+                   window.location = '/fbLoggingIn/';
+                 } else if ($('#fbLoggingIn').length) {
+                   // this element is only found on a page meant to be used as a redirect when
+                   // the 'login with facebook' link has been clicked.
+                   window.location = '/fbLoggingIn/';
+                 } else {
+                   // this code is used when a person arrives and it is seen that they have 
+                   // auth'd our app and are logged into facebook 
+                   // replace current button with returned result
+                   var newButton = '<a href="/fbLogin"><img src="/images/fb_signin.png"></a>'
+                   $('#fbLoginButton1').html(newButton);
+                   $('#fbLoginButton2').html(newButton);
+                 }
+               }
+             },1000);
+           });
+         }
+       </script>
+   % endif  ## if 'user' in session
+   </body>
+</html>
+
+<%def name="bodyTag_extras()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
+
+<%def name="extraStyles()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
+
+<%def name="headScripts()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
+
+<%def name="headScripts2()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
+
+<%def name="extraScripts()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
+
+<%def name="extraScripts2()">
+   ## do nothing by default.  Overwritten if the function is defined
+   ## in a child template
+</%def>
+
+<%def name="google_analytics()">
+   % if c.conf['google.analytics']:
+      <script type="text/javascript">
+         var _gaq = _gaq || [];
+         _gaq.push(['_setAccount', "${c.conf['google.analytics']}"]);
+         _gaq.push(['_trackPageview']);
+         
+         (function() {
+         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+         ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+         })();
+      </script>
+   % endif
+</%def>
+
+<%def name="atlassian_issueCollector()">
+   <script type="text/javascript" src="https://civinomics.atlassian.net/s/en_US-pdztjm-418945332/6030/29/1.3.4/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?collectorId=610d78ad"></script>
+
+   <script type="text/javascript">window.ATL_JQ_PAGE_PROPS =  {
+    "triggerFunction": function(showCollectorDialog) {
+      $("#footerFeedbackButton").on( 'click', function(e) {
+        e.preventDefault();
+        showCollectorDialog();
+      });
+      $("#helpCenter_bugReporter").on( 'click', function(e) {
+        e.preventDefault();
+        showCollectorDialog();
+      });
+    }};</script>
+</%def>
