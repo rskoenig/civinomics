@@ -1748,7 +1748,7 @@ p.description:first-letter {
 .well.workshop-panel{
   border: 0;
   box-shadow: none;
-  padding-top: 9px;
+  padding-top: 4px;
 }
 
 .workshop-goals li{
@@ -1780,6 +1780,13 @@ p.description:first-letter {
 .share-icons a i:hover{
   color: #007edd;
 }
+.share-icons a i.icon-rss:hover{
+  color: #ffea00;
+}
+.share-icons a i.icon-envelope:hover{
+  color: #ff3333;
+}
+
 
 .suggestListener{
   margin-top: 10px;
