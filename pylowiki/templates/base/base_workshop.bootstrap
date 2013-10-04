@@ -22,9 +22,11 @@
           </h1>
         </div>
         <div class="span2">
-          <div class="span12">
-            ${helpers.watchButton()}
-          </div>
+          % if 'user' in session:
+            <div class="span12">
+              ${helpers.watchButton()}
+            </div>
+          % endif
           <div class="span12" style="margin-top:10px; margin-left: 0px">
             <span class = "share-icons contrast pull-right">
               ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage), 'icon-facebook-sign icon-light icon-2x')}
