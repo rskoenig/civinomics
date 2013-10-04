@@ -170,7 +170,7 @@
                         tagList = getWorkshopTagCategories()
                     %>
                     <br />
-                    Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />
+                    <strong>Pick 1 or 2</strong> <span class="help-inline"><span class="label label-important">Required</span></span><br />
                     <fieldset>
                     % for tag in tagList:
                         % if tag in c.categories:
@@ -194,6 +194,18 @@
             </form>
         </div><!-- browse -->
     </div><!-- section-header -->
+
+    <script>
+        $(function(){
+            var max = 2;
+            var checkboxes = $('input[type="checkbox"]');
+
+            checkboxes.change(function(){
+                var current = checkboxes.filter(':checked').length;
+                checkboxes.filter(':not(:checked)').prop('disabled', current >= max);
+                });
+        });
+    </script>
 </%def>
 
 
