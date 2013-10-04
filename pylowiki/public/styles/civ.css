@@ -1656,9 +1656,19 @@ text-align: right;
   padding-top: 5px;
 }
 
-.thumbnail.flag{
+.thumbnail.flag, .thumbnail.large-flag{
   width: 150px;
   margin: 0 auto 10px;
+}
+
+.thumbnail.med-flag{
+  padding: 0px; 
+  width: 64px; 
+  margin-right: 10px;
+  border: none;
+}
+.thumbnail.med-flag:hover{
+  box-shadow: -1px 1px 1px #dff0d8;
 }
 
 .darkened-bg{
