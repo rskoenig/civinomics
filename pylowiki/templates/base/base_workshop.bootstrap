@@ -12,8 +12,9 @@
 <div class="row-fluid" ng-app="civ">
       <div class="row-fluid">
         <div class="span10">
-          ${helpers.displayWorkshopFlag()}
+          
           <h1 class="workshop-title"> 
+            ${helpers.displayWorkshopFlag()}
             <a href="${lib_6.workshopLink(c.w, embed=True, raw=True)}" id="workshopTitle" class="workshop-title" ng-init=" workshopTitle='${c.w['title'].replace("'", "\\'")}' " style="color: #fff;" ng-cloak>
               {{workshopTitle}}
             </a>

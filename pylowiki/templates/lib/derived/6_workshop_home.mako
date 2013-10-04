@@ -415,21 +415,12 @@
 <%def name="showTags()">
     <% 
         colors = workshopLib.getWorkshopTagColouring()
-        tagString = ''
         tagList = c.w['workshop_category_tags'].split('|')
-        for tag in tagList:
-            if tag and tag != '':
-                if tagString != '':
-                    tagString = tagString + ", " + tag
-                else:
-                    tagString = tag
-        if tagString != '':
-            tagString = "Tags: " + tagString
     %>
-    % for i in range(2):
-        % if tagList[i] and tagList[i] != '':
-            <% tagClass = colors[tagList[i]] %>
-            <span class="label workshop-tag ${tagClass}" >${tagList[i]}</span>
+    % for tag in tagList[0:3]:
+        % if tag and tag != '':
+            <% tagClass = colors[tag] %>
+            <span class="label workshop-tag ${tagClass}" >${tag}</span>
         % endif
     % endfor
 </%def>
