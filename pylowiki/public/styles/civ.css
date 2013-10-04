@@ -1819,3 +1819,12 @@ h1 .label.workshop-tag{
   font-weight: bold;
 }
 
+.nav.nav-tabs.workshop-tabs{
+  margin-bottom: 0px;
+  margin-left: 10px;
+  margin-top: 20px;
+  border-bottom: 0px;
+  position: aboslute;
+  z-index: 2;
+}
+

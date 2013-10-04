@@ -64,7 +64,7 @@
                 adminActive = 'active'
             %>
 
-            <ul class="nav nav-tabs" style="margin-bottom: -10px; margin-left: 10px; margin-top: 20px; border-bottom: 0px; position: aboslute; z-index: 2;">
+            <ul class="nav nav-tabs workshop-tabs">
               <li class="${summaryActive}">
                 <a href="${linkHref | n}">Summary</a>
               </li>
