@@ -457,9 +457,12 @@
     <%
         if c.w['public_private'] == 'public':
             scope = workshopLib.getPublicScope(c.w)
+            href = scope['href']
             workshopFlag = scope['flag']
         else:
             workshopFlag = '/images/flags/generalFlag.gif'
+            href = '#'
+
     %>
-    <a href="${scope['href']}"><img class="thumbnail span med-flag" src="${workshopFlag}"></a>
+    <a href="${href}"><img class="thumbnail span med-flag" src="${workshopFlag}"></a>
 </%def>
