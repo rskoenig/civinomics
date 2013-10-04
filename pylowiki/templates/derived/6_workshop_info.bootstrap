@@ -27,11 +27,6 @@
                                 Images
                             </a>
                             </h4>
-                            % if numResources == '0' and c.w['allowResources'] == '1':
-                                <div class="alert alert-info">
-                                There are no images yet!
-                                </div>
-                            % endif
                             <div class="photo-listing">
                                 ${helpers.slideshow(c.w, 'listing')}
                             </div>
@@ -95,9 +90,17 @@
             <h4 class="section-header smaller"> 
             <a class="listed-item-title" href="#moreresources" data-toggle="tab" ng-click="switchResources()">
                 <i class="icon-chevron-left pull-left"></i>
-                <span>Resources</span>
+                Resources
+                <span class="pull-right">
+                    ${lib_6.createNew("resources", 'tiny')}
+                </span>
             </a>
             </h4> 
+            % if numResources == '0' and c.w['allowResources'] == '1':
+                <div class="alert alert-info">
+                    There are no resources yet! Be the first to add one.
+                </div>
+            % endif
             ${listingHelpers.showListing('resources', 'condensed')}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->

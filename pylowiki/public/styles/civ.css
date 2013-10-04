@@ -284,7 +284,8 @@ hr.civ-topbar-hr{
 }
 
 .counter{
-   font-size:20px;
+   font-size:16px;
+   margin-right: 2px;
 }
 
 form.addGoal{
@@ -1808,5 +1809,9 @@ p.description:first-letter {
 
 .photo-listing{
   margin-left: 2%;
+}
+
+.add-a-thing-forms label,.add-a-thing-forms form fieldset label{
+  font-weight: bold;
 }
 

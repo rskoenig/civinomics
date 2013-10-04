@@ -317,7 +317,7 @@
 
         printStr = ''
         btnX = "large"
-        if 'small' in args:
+        if 'small' in args or 'tiny' in args:
             btnX = "small"
       
         if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
@@ -334,16 +334,20 @@
                 
         printStr += ' class="pull-right btn btn-' + btnX + ' btn-civ right-space" type="button"><i class="icon-white icon-plus"></i>'
 
-        if thing == 'discussion':
-            printStr += ' Topic'
-        elif thing == 'ideas':
-            printStr += ' Idea'
-        elif thing == 'resources':
-            printStr += ' Resource'
+        if not 'tiny' in args:
+          if thing == 'discussion':
+              printStr += ' Topic'
+          elif thing == 'ideas':
+              printStr += ' Idea'
+          elif thing == 'resources':
+              printStr += ' Resource'
+
         printStr += '</a>'
 
     %>
-    ${printStr | n}
+
+    ${printStr | n} 
+
 </%def>
 
 <%def name="readOnlyMessage(thing)">
