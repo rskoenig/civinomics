@@ -1776,7 +1776,7 @@ p.description:first-letter {
   font-weight: normal;
 }
 
-.label.workshop-tag{
+h1 .label.workshop-tag{
   line-height: 20px;
   font-size: 14px;
   vertical-align: middle;
