@@ -53,6 +53,8 @@ class SearchController(BaseController):
         else:
             searchString = None
             
+        log.info("search string is %s"%searchString)
+            
         if 'id1' in kwargs:
             id1 = kwargs['id1']
         else:
@@ -169,6 +171,7 @@ class SearchController(BaseController):
 
         c.photos = photoLib.searchPhotos('scope', self.query)
         c.searchQuery = self.query
+        log.info("search is %s"%c.searchQuery)
         if c.photos:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
@@ -327,6 +330,7 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
+            log.info("self.query is %s"%self.query)
         else:    
             keys = ['title', 'description', 'workshop_category_tags']
             values = [self.query, self.query, self.query]
@@ -342,8 +346,8 @@ class SearchController(BaseController):
             entry['description'] = w['description']
             entry['urlCode'] = w['urlCode']
             entry['url'] = w['url']
-            entry['activity'] = len(activityLib.getActivityForWorkshop(w['urlCode']))
-            entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
+            entry['activity'] = w['numPosts']
+            entry['bookmarks'] = w['numBookmarks']
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             entry['startTime'] = w['startTime']
