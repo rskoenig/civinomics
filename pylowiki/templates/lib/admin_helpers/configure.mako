@@ -50,6 +50,7 @@
                             <label>Workshop Name</label>
                             <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="editWorkshopName"/>
                             <label>Introduction</label>
+                            <span class="muted">A one paragraph description why this matters.
                             <textarea rows="8" id = "inputDescription" name="description" size="50" value = "${c.w['description']}" class="editWorkshopDescription"></textarea>
                             <%
                                 if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
@@ -213,7 +214,8 @@
 <%def name="edit_background()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller">Background <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></h4>
+            <h4 class="section-header smaller">Background</h4>
+            <a href="#" class="btn btn-mini btn-info pull-left bottom-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-picture"></i> View Formatting Guide</a>
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
                <textarea rows="10" id="data" name="data" class="span12">${c.page['data']}</textarea>
                <div class="background-edit-wrapper">
