@@ -327,7 +327,7 @@ class SearchController(BaseController):
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
-            entry['tags'] = tagList
+            entry['tags'] = tagList[0:2]
             thing = workshopLib.getWorkshopByCode(w['urlCode'])
             entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             result.append(entry)
@@ -393,7 +393,7 @@ class SearchController(BaseController):
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
-            entry['tags'] = tagList
+            entry['tags'] = tagList[0:2]
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -452,7 +452,7 @@ class SearchController(BaseController):
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
-            entry['tags'] = tagList
+            entry['tags'] = tagList[0:2]
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -506,7 +506,7 @@ class SearchController(BaseController):
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
-            entry['tags'] = tagList
+            entry['tags'] = tagList[0:2]
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -553,7 +553,7 @@ class SearchController(BaseController):
                     tags.append(tag)
                     c = colors[tag]
                     tagColors.append(c)
-            entry['tags'] = tags
+            entry['tags'] = tags[0:2]
             entry['colors'] = tagColors
             entry['location'] = photoLib.getPhotoLocation(p)
             entry['voteCount'] = int(p['ups']) - int(p['downs'])
