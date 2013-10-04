@@ -334,6 +334,16 @@ form.addGoal{
 .section-header.smaller.section-header-inner{
     margin-top:15px;
 }
+
+.section-header.smaller .listed-item-title i{
+  margin-top: 4px;
+  margin-left: 8px;
+}
+
+.section-header.smaller .listed-item-title span{
+  margin-left: -20px;
+}
+
 .section-wrapper .section-header.smaller{
     min-height:30px;
 }
@@ -1778,3 +1788,8 @@ p.description:first-letter {
 .suggestListener input{
   width: 65%;
 }
+
+.photo-listing{
+  margin-left: 2%;
+}
+

@@ -265,7 +265,7 @@
         if 'large' in args:
             spanX = "span8"
         else:
-            spanX = "span12"
+            spanX = ""
 
     %>
     <div class="${spanX}">
@@ -373,7 +373,7 @@
        </a>
     % elif 'format' in slide.keys():
       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
-        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}'); background-size: cover; background-position: center center;"></div>
+        <div class="thumbnail tight media-object" style="box-sizing: border-box; padding: 35%; width: 100%; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}'); background-size: cover; background-position: center center;"></div>
       </a>
     % else:
       <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
@@ -385,12 +385,10 @@
 
 <%def name="showInfo(workshop)">
     <div>
+    ${c.w['description']}
+    <br><br>
     % if c.information and 'data' in c.information: 
-        <p>This introduction was written and is maintained by the workshop facilitator.
-        % if c.w['allowResources'] == '1':
-            You are encouraged to add links to additional information resources.
-        % endif
-        </p>
+        <hr class="list-header">
         ${m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML) | n}
     % endif
     </div>

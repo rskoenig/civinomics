@@ -42,6 +42,14 @@
             ${helpers.whoListening()}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Top Forum Topics
+            </h4>
+            ${listingHelpers.showListing('discussion', 'condensed')}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
 </div> <!-- /.row -->
 
