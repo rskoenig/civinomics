@@ -13,7 +13,7 @@
   <div class="span12">
      <div class="section-wrapper">
         <div class="browse">
-            <h3 class="section-header"> ${d[c.listingType]} </h3>
+            <h4 class="section-header smaller"> ${d[c.listingType]} </h4>
             % if 'alert' in session:
                 <% alert = session['alert'] %> 
                 <div class="alert alert-${alert['type']} workshop-admin">

@@ -171,6 +171,10 @@
 
                             <ul class="horizontal-list iconListing">
                                 <li>
+                                    % if 'condensed' in args and item.objType == 'discussion':
+                                        <i class="icon-comments"></i>
+                                    % endif
+
                                     % if c.demo:
                                         ${comments | n}
                                     % else:

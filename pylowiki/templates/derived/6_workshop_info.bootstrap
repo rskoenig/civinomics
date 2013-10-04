@@ -66,7 +66,7 @@
                 <i class="icon-chevron-left pull-left"></i>
                 <span>Background Info</span>
             </a>
-            </h4> 
+            </h4>
             ${lib_6.ellipsisIZE(c.w['description'], 150)}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->

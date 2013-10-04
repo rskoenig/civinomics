@@ -121,30 +121,31 @@
         shownItems = 0
     %>
     
-    <ul class="activity"  id="workshopActivity">
-        % for item in activity:
-            <%
-                if c.demo:
-                    author = getUserByID(item.owner)
-                    if not c.privs['admin']:
-                        if 'user' in session:
-                            if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
-                                continue
-                        else:
-                            if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
-                                continue
-                if shownItems >= numItems:
-                    break
-            %>
-            <li>
-                <%
-                    lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")
-                    lib_6.userLink(item.owner, className = "green green-hover")
-                    lib_6.showItemInActivity(item, c.w, expandable = True)
-                %>
-            </li>
-        % endfor
-    </ul>
+    % for item in activity:
+      <div class="media"  id="workshopActivity">
+        <%
+          if c.demo:
+              author = getUserByID(item.owner)
+              if not c.privs['admin']:
+                  if 'user' in session:
+                      if ((author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w)) and author.id != c.authuser.id):
+                          continue
+                  else:
+                      if author['accessLevel'] != '300' and not facilitatorLib.isFacilitator(author, c.w):
+                          continue
+          if shownItems >= numItems:
+              break
+        %>
+        <div class="pull-left">
+          ${lib_6.userImage(getUserByID(item.owner), className="avatar small-avatar inline")}
+        </div>
+        <div class="media-body">
+          ${lib_6.userLink(item.owner, className = "green green-hover", maxChars = 25)}
+          ${lib_6.showItemInActivity(item, c.w, expandable = True)}
+        </div>
+      </div>
+    % endfor
+    
 </%def>
 
 <%def name="watchButton()">
@@ -385,7 +386,9 @@
 
 <%def name="showInfo(workshop)">
     <div>
-    ${c.w['description']}
+    <p class="description" >
+      ${c.w['description']}
+    </p>
     <br><br>
     % if c.information and 'data' in c.information: 
         <hr class="list-header">
