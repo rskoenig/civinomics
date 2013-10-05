@@ -1860,14 +1860,19 @@ hr.stats{
 }
 
 .blur{
-  -webkit-filter: blur(10px);
-  -moz-filter: blur(10px);
-  -o-filter: blur(10px);
-  -ms-filter: blur(10px);
-  filter: blur(10px);
+  -webkit-filter: blur(6px);
+  -moz-filter: blur(6px);
+  -o-filter: blur(6px);
+  -ms-filter: blur(6px);
+  filter: blur(6px);
   filter: url(/styles/blur.svg#blur);
-  filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='10');
+  filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='6');
   margin: 10px -15px -10px -15px;
+}
+
+/* prevents the background blur from affecting text area */
+textarea::-webkit-scrollbar {
+    width: auto;
 }
 
 .photo-alert{
