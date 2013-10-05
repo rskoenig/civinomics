@@ -373,12 +373,12 @@
           <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
        </a>
     % elif 'format' in slide.keys():
-      <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
+      <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}" style="width:100%;">
         <div class="thumbnail tight media-object" style="box-sizing: border-box; padding: 35%; width: 100%; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}'); background-size: cover; background-position: center center;"></div>
       </a>
     % else:
-      <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg">
-        <div class="thumbnail tight media-object" style="height: 60px; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg'); background-size: cover; background-position: center center;"></div>
+      <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" style="width:100%;">
+        <div class="thumbnail tight media-object" style="box-sizing: border-box; padding: 35%; width: 100%; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg'); background-size: cover; background-position: center center;"></div>
       </a>
     % endif
   </li>
