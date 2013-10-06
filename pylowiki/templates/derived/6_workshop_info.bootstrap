@@ -67,7 +67,9 @@
                 <span>Background Info</span>
             </a>
             </h4>
-            ${lib_6.ellipsisIZE(c.w['description'], 150)}
+            <p class="description" >
+                ${lib_6.ellipsisIZE(c.w['description'], 150)}
+             </p>
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
 
@@ -80,7 +82,7 @@
             </a>
             </h4> 
             <div class="photo-listing">
-                ${helpers.slideshow(c.w, 'listing')}
+                ${helpers.imagePreviewer(c.w)}
             </div>
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
@@ -118,20 +120,6 @@
       $(document).ready(function() {
          $.fn.foundationClearing         ? $doc.foundationClearing() : null;
       });
-    </script>
-    <script src="${lib_6.fingerprintFile('/js/vendor/jquery.expander.min.js')}" type="text/javascript"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('.expandable').expander({
-                slicePoint: 35,
-                widow: 2,
-                expandText: '... (more)',
-                expandPrefix: '',
-                userCollapseText: ' (less)',
-                userCollapsePrefix: '',
-                preserveWords: true
-            });
-        });
     </script>
     <script src="${lib_6.fingerprintFile('/js/upDown.js')}" type="text/javascript"></script>
         <script type="text/javascript">

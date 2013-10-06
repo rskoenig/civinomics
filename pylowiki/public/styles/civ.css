@@ -356,6 +356,8 @@ form.addGoal{
   padding-bottom: 0px; 
   padding-top: 0px;
   position: relative;
+  height:240px;
+  background-color: #000;
 }
 
 .trashbasket {
@@ -403,6 +405,46 @@ form.addGoal{
     background-position:center left;
     display: inline-block;
     background-image: url('/images/glyphicons_pro/glyphicons/png/glyphicons_036_file.png');
+}
+
+.slide-hero{
+  width:100%;
+  height:240px;
+  background-repeat:no-repeat; 
+  background-size:cover; 
+  background-position:center;
+  position: relative;
+}
+
+.clearing-container .carousel .slide-hero{
+  height: 0;
+  padding: 35%;
+}
+
+.clearing-container .carousel .slide-hero .well.slide-hero-caption{
+  display:none;
+}
+
+.well.slide-hero-caption{
+  padding: 8px;
+  margin-bottom: 0px;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 16px;
+  color: #fff; 
+  background-color: rgba(0,0,0,.8); 
+  border: none;
+}
+
+.slide-preview{
+  box-sizing: border-box;
+  padding: 35%; 
+  width: 100%; 
+  margin-bottom: 8%; 
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position: center;
 }
 
 .row-fluid [class*="span"]:nth-child(3n+1).slideListing{

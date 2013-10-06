@@ -258,80 +258,126 @@
    </div>
 </%def>
 
+<%def name="imagePreviewer(w)">
+  <!-- using the data-clearing twice on a page leads to slide skipping this function allows a preview but will not launch slideshow -->
+  <% 
+    images = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w))
+    count = 0
+  %>
+  <ul class="gallery thumbnails no-bottom">
+    % for image in images:
+      <% 
+        imageFormat = 'jpg'
+        if 'format' in image.keys():
+          imageFormat = image['format']
+
+        spanX = 'noShow'
+        if count <= 5:
+          spanX = 'span4'
+      %>
+      % if image['deleted'] != '1':
+        <li class="${spanX} slideListing">
+          % if image['pictureHash'] == 'supDawg':
+             <a href="#moreimages" data-toggle="tab" ng-click="switchImages()">
+                <img src="/images/slide/slideshow/${image['pictureHash']}.slideshow"/>
+             </a>
+          % else:
+            <a href="#moreimages" data-toggle="tab" ng-click="switchImages()">
+              <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+              <div class="slide-preview" style="background-image:url('/images/slide/${image['directoryNum']}/slideshow/${image['pictureHash']}.${imageFormat}');"/>
+              </div>
+            </a>
+          % endif
+        </li>
+      % endif
+      <% count += 1 %>
+    % endfor
+  </ul>
+</%def>
+
+
 <%def name="slideshow(w, *args)">
     <% 
         slides = slideshowLib.getSlidesInOrder(slideshowLib.getSlideshow(w)) 
         slideNum = 0
-      
-        if 'large' in args:
-            spanX = "span8"
-        else:
-            spanX = ""
-
+        spanX = ""
+        if 'hero' in args:
+          spanX = "span8"
     %>
     <div class="${spanX}">
         <ul class="gallery thumbnails no-bottom" data-clearing>
         <%
-           numSlides = len(slides)
-
-           for slide in slides:
-              if slide['deleted'] != '1':
-                if 'large' in args:
-                  _slideLarge(slide, slideNum)
-                  if slideNum == 0:
-                    slideCaption = slide['title']  
-                elif 'listing' in args:
-                  _slideListing(slide, slideNum, numSlides)
-                else:
-                  _slide(slide, slideNum, numSlides)
-                slideNum += 1
+          for slide in slides:
+            if slide['deleted'] != '1':
+              if 'hero' in args:
+                _slideListing(slide, slideNum, 'hero')
+              else:
+                _slideListing(slide, slideNum)
+              slideNum += 1
         %>
         </ul>
     </div>
-    % if 'large' in args:
+    % if 'hero' in args:
         <% infoHref = lib_6.workshopLink(c.w, embed = True, raw = True) + '/information' %>
         <div class="span4">
-            <p class="description" style="color: #FFF; padding-top: 15px;">
-                ${lib_6.ellipsisIZE(c.w['description'], 300)}
-                <a href="${infoHref}">read more</a>
-            </p>
+          <p class="description" style="color: #FFF; padding-top: 15px;">
+            ${lib_6.ellipsisIZE(c.w['description'], 285)}
+            <a href="${infoHref}">read more</a>
+          </p>
         </div>
     % endif
 </%def>
 
-<%def name="_slideLarge(showSlide, slideNum)">
+<%def name="_slideListing(showSlide, slideNum, *args)">
     <%
-        if slideNum == 0:
-            spanX = "span12"
-        else:
-            spanX = "noShow"
-        slideFormat = 'jpg'
-        if 'format' in showSlide.keys():
-            slideFormat = showSlide['format']
+      if slideNum == 0:
+          spanX = "span12"
+      else:
+          spanX = "noShow"
+      slideFormat = 'jpg'
+      if 'format' in showSlide.keys():
+          slideFormat = showSlide['format']
     %>
-
-    <li class="${spanX} no-bottom">
-    % if showSlide['pictureHash'] == 'supDawg':
-        <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
-        <div style="width:100%; height:240px; background-image:url('/images/slide/slideshow/${showSlide['pictureHash']}.slideshow'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/></div>
-        </a>
+    % if slideNum == 0 and 'hero' in args:
+      <li class="${spanX} no-bottom">
+      % if showSlide['pictureHash'] == 'supDawg':
+          <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
+          <div class="slide-hero" style="background-image:url('/images/slide/slideshow/${showSlide['pictureHash']}.slideshow');" data-caption="${showSlide['title']}"/></div>
+          </a>
+      % else:
+          <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
+          <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+          <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+          <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+          <div class="slide-hero" style=" background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}');" data-caption="${showSlide['title']}"/>
+              <div class="well slide-hero-caption">
+                  <i class="icon-play"></i> Slideshow
+              </div>
+          </div>
+          </a>
+      % endif
+      </li>
     % else:
-        <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
-        <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
-        <img class="noShow"src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
-        <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
-        <div style="width:100%; height:240px; position: relative; background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}'); background-repeat:no-repeat; background-size:cover; background-position:center;" data-caption="${showSlide['title']}"/>
-            <div class="well" style="padding: 8px; margin-bottom: 0px; position: absolute; bottom: 10px; left: 10px; font-size: 16px; color: #fff; background-color: rgba(0,0,0,.8); border: none;">
-                <i class="icon-play"></i> Slideshow
-            </div>
-        </div>
-        </a>
+      <li class="span4 slideListing">
+        % if showSlide['pictureHash'] == 'supDawg':
+           <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
+              <img src="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
+           </a>
+        % else:
+            <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
+              <!-- img class is needed by data-clearing to assemble the slideshow carousel-->
+              <img class="noShow" src="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}" data-caption="${showSlide['title']}"/>
+              <!-- div with background-image needed to appropirately size and scale image in workshop_home template -->
+              <div class="slide-preview" style="background-image:url('/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}');" data-caption="${showSlide['title']}"/>
+              </div>
+            </a>
+        % endif
+      </li>
     % endif
-    </li>
 </%def>
-
 
 <%def name="_slide(slide, slideNum, numSlides)">
+  <!-- original code -->
    <% 
       if slideNum == 0:
          spanX = "span12"
@@ -364,28 +410,6 @@
          <small class="centered">${slide['title']}</small>
       % endif
    </li>
-</%def>
-
-<%def name="_slideListing(slide, slideNum, numSlides)">
-  <li class="span4 slideListing">
-    % if slide['pictureHash'] == 'supDawg':
-       <a href="/images/slide/slideshow/${slide['pictureHash']}.slideshow">
-          <img src="/images/slide/slideshow/${slide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
-       </a>
-    % elif 'format' in slide.keys():
-      <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}">
-        <div class="thumbnail tight media-object" style="box-sizing: border-box; padding: 35%; width: 100%; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}'); background-size: cover; background-position: center center;">
-          <img class="hidden" style="width: 0;" src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.${slide['format']}" data-caption="${slide['title']}"/>
-        </div>
-      </a>
-    % else:
-      <a href="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" style="width:100%;">
-        <div class="thumbnail tight media-object" style="box-sizing: border-box; padding: 35%; width: 100%; margin-bottom: 5px; background-image:url('/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg'); background-size: cover; background-position: center center;">
-          <img class="hidden" style="width: 0;" src="/images/slide/${slide['directoryNum']}/slideshow/${slide['pictureHash']}.jpg" data-caption="${slide['title']}"/>
-        </div>
-      </a>
-    % endif
-  </li>
 </%def>
 
 <%def name="showInfo(workshop)">

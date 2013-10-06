@@ -51,7 +51,7 @@
                             <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="editWorkshopName"/>
                             <label>Introduction</label>
                             <span class="muted">A one paragraph description why this matters.
-                            <textarea rows="8" id = "inputDescription" name="description" size="50" value = "${c.w['description']}" class="editWorkshopDescription"></textarea>
+                            <textarea rows="8" id = "inputDescription" name="description" size="50" class="editWorkshopDescription">${c.w['description']}</textarea>
                             <%
                                 if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
                                     yesChecked = 'checked'
