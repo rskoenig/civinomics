@@ -5,7 +5,7 @@
 
 <div class="row-fluid">
     <div class="span8">
-        ${ihelpers.showBackground()}
+        ${ihelpers.showInfo()}
         <%
             if c.rootComment != '':
                 comments(c.thing, c.rootComment)
