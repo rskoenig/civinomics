@@ -1,0 +1,23 @@
+<%inherit file="/base/base_initiative.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_initiative.mako" name="ihelpers" />
+<%namespace file="/lib/6_comments.mako" import="comments" />
+
+<div class="row-fluid">
+    <div class="span8">
+        ${ihelpers.showBackground()}
+        <%
+            if c.rootComment != '':
+                comments(c.thing, c.rootComment)
+            else:
+                comments(c.thing, c.discussion)
+        %>
+    </div><!-- span8 -->
+    <div class="span4">
+        ${ihelpers.upDownVote()}
+        ${ihelpers.iResources()}
+    </div><!-- span4 -->
+</div><!-- row-fluid -->
+
+            
+

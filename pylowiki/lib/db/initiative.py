@@ -16,7 +16,13 @@ def getInitiative(initiativeCode):
     try:
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter(Thing.data.any(wc('urlCode', initiativeCode))).one()
     except:
-        return False 
+        return False
+        
+def isPublished(initiative):
+    if initiative['published'] == '1':
+        return True
+    else:
+        return False
 
 # Object
 def Initiative(owner, title, description, cost, tags, scope, workshop = None):
@@ -30,10 +36,12 @@ def Initiative(owner, title, description, cost, tags, scope, workshop = None):
     i['title'] = title
     i['url'] = utils.urlify(title[:20])
     i['description'] = description
+    i['background'] = ""
     i['tags'] = tags
     i['scope'] = scope
     i['deleted'] = u'0'
     i['disabled'] = u'0'
+    i['published'] = u'0'
     i['ups'] = '0'
     i['downs'] = '0'
     commit(i)
