@@ -1262,7 +1262,7 @@ that IE7/8 do not support :nth-child.
 
 .clearing-main-left, .clearing-main-right { position: absolute; top: 50%; margin-top: -16px; }
 
-.clearing-main-left.disabled, .clearing-main-right.disabled { opacity: 0.5; }
+.clearing-main-left.disabled, .clearing-main-right.disabled { opacity: 0.0; }
 
 .clearing-main-left:active, .clearing-main-right:active { margin-top: -15px; }
 
