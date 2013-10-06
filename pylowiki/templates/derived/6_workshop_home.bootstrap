@@ -7,7 +7,7 @@
 <% numIdeas = str(len(c.ideas)) %>
 <div class="row-fluid">
    <div class="span8">
-      <div class="section-wrapper slideshow" style="background-color: #000;">
+      <div class="section-wrapper slideshow" style="height:240px; background-color: #000;">
         <div id="workshopSlideshow">
           ${helpers.slideshow(c.w, 'large')}
         </div>
