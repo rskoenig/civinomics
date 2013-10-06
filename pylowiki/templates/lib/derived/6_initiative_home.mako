@@ -32,3 +32,7 @@
         % endif
     % endif
 </%def>
+
+<%def name="newInitiative()">
+    <h2>New Initiative</h2>
+</%def>

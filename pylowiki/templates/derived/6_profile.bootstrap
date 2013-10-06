@@ -33,6 +33,7 @@
                         ${helpers.showMemberPosts(c.memberPosts)}
                     </div><!-- tab-pane -->
                     <div class="tab-pane" id="tab-workshops">
+                        <a class="btn btn-success" href="/profile/${c.user['urlCode']}/${c.user['url']}/newInitiative">Start an Initiative!</a>
                         ${helpers.inviteCoFacilitate()}
                         <table class="table table-hover table-condensed">
                         <tbody>

@@ -1,0 +1,18 @@
+<%inherit file="/base/base_indented.bootstrap"/>
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+<%namespace file="/lib/derived/6_profile_dashboard.mako" name="dashboard" />
+<%namespace file="/lib/derived/6_initiative_home.mako" name="ihelpers" />
+<div class="spacer"></div>
+<div class="row-fluid">
+    <div class="span8">
+        ${ihelpers.newInitiative()}
+    </div><!-- span8 -->
+    <div class="span4">
+        ${dashboard.profileDashboard()}
+    </div><!--/.span4-->
+</div>
+
+<%def name="headScripts()">
+    <script src="${lib_6.fingerprintFile('/js/ng/profile_edit.js')}" type="text/javascript"></script>
+</%def>
+

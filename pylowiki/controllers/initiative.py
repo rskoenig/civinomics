@@ -34,3 +34,6 @@ class InitiativeController(BaseController):
         else:
             abort(404)
 
+    def initiativeNewHandler(self):
+
+        return render('/derived/6_initiative_new.bootstrap') 
