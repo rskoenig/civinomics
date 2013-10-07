@@ -80,6 +80,7 @@ class LoginController(BaseController):
         return data
 
     def twythonLogin(self):
+        log.info("twythonLogin")
         #: https://github.com/ryanmcgrath/twython
         # create a Twython instance with Consumer Key and Consumer Secret
         twitter = Twython(config['twitter.consumerKey'], config['twitter.consumerSecret'])
@@ -96,6 +97,7 @@ class LoginController(BaseController):
         return redirect(auth['auth_url'])
 
     def twythonLogin2(self):
+        log.info("twythonLogin2")
         # The callback from twitter will include a verifier as a parameter in the URL.
         # The final step is exchanging the request token for an access token. The access 
         # token is the “key” for opening the Twitter API
@@ -124,7 +126,7 @@ class LoginController(BaseController):
 
         # grab the user's creds
         myCreds = twitter.verify_credentials()
-        
+        log.info("grabbed verify_credentials")
         user = userLib.getUserByTwitterId( myCreds['id'] )
         if user:
             log.info('found twitter id')
@@ -146,6 +148,7 @@ class LoginController(BaseController):
                 log.warning("disabled account attempting to login via twitter - " + user['email'])
                 splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
             else:
+                log.info("logging twt user in")
                 # log this person in
                 LoginController.logUserIn(self, user)
         else:
@@ -182,9 +185,10 @@ class LoginController(BaseController):
             
             session['splashMsg'] = splashMsg
             session.save()
-
+            log.info("rendering twitterSignUp")
             return render("/derived/twitterSignUp.bootstrap")
 
+        log.info("redirect to login")
         session['splashMsg'] = splashMsg
         session.save()
         return redirect("/login")
@@ -419,6 +423,7 @@ class LoginController(BaseController):
     def twtLinkAccountHandler(self):
         #: handles a login when first connecting a user's account with twitter external
         #: authentication
+        log.info('twtLinkAccountHandler')
         c.title = c.heading = "Linking account with Twitter Login"  
         c.splashMsg = False
         splashMsg = {}
@@ -428,21 +433,25 @@ class LoginController(BaseController):
             email = session['twtEmail']
             password = request.params["password"]
                 
-            log.info('user %s attempting to log in with twitter auth for first time' % email)
+            log.info('user attempting to log in with twitter auth for first time')
             if email and password:
                 user = userLib.getUserByEmail( email )
          
                 if user: # not none or false
+                    log.info('found user')
                     if user['activated'] == '0':
+                        log.info('not activated')
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
                         baseURL = c.conf['activation.url']
                         url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
                         mailLib.sendActivationMail(user['email'], url)
                         
                     elif user['disabled'] == '1':
+                        log.info('disabled')
                         log.warning("disabled account attempting to login - " + email )
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ): 
+                        log.info('password valid')
                         # if pass is True, link up this account with their twitter stuff
                         # add twitter userid to user
                         user['twitterAuthId'] = session['twitterId']
@@ -457,14 +466,15 @@ class LoginController(BaseController):
                             user['twitterProfilePic'] = session['twitterProfilePic']
                         
                         commit(user)
-                        log.info( "Successful twitter link via email - " + email )
+                        log.info( "Successful twitter link")
                         LoginController.logUserIn(self, user)
 
                     else:
-                        log.warning("incorrect username or password - " + email )
+                        log.warning("incorrect username or password")
                         splashMsg['content'] = 'incorrect username or password'
                 else:
-                    log.warning("incorrect username or password - " + email )
+                    log.info('did not find user')
+                    log.warning("incorrect username or password" )
                     splashMsg['content'] = 'incorrect username or password'
             else:
                 splashMsg['content'] = 'missing username or password'

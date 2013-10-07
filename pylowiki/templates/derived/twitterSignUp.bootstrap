@@ -40,7 +40,8 @@
                         </div>
                     % endif
                     <div class="login-top">
-                        <h2> Complete Twitter Signup </h2><br />
+                        <h2> Complete Twitter Signup </h2>
+                        <p>Please enter the email you use when signing onto twitter.</p>
                         % if float(c.numAccounts - c.numUsers)/float(c.numAccounts) <= .25:
                             <p> ${c.numAccounts - c.numUsers}/${c.numAccounts} accounts left </p>
                         % endif

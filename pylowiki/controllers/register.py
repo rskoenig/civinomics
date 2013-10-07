@@ -373,7 +373,7 @@ class RegisterController(BaseController):
                     log.info( "twitter signup with email - " + email )
                     return redirect(returnPage)
             else:
-                #log.info('user == true')
+                log.info('user == true')
                 # we have a match by email. because this is a manually provided email in this signup,
                 # there are multiple cases to consider. One of the cases is that someone who doesn't own
                 # this email tried to sign up and never was able to activate the account. 
@@ -384,13 +384,13 @@ class RegisterController(BaseController):
                 # a normal account. If they've authenticated with facebook, for now they 
                 # have made their choice. No need to auth with twitter as well.
                 if 'originFacebook' in user.keys():
-                    #log.info('originFacebook')
+                    log.info('originFacebook')
                     # this email belongs to a user who has signed up already by facebook authentication
                     # we can allow linking of the twitter account if they verify ownership of this email.
                     # this is not a normal situation, this user is already activated, hence we need to 
                     # create an extra authentication route in order to handle this case.
                     if 'activatedFacebookNotTwitter' in user.keys():
-                        #log.info('activatedFacebookNotTwitter')
+                        log.info('activatedFacebookNotTwitter')
                         # user still needs to verify ownership of this email
                         # this is an unactivated account, initated via normal signup or twitter signup
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
@@ -406,7 +406,7 @@ class RegisterController(BaseController):
                         #log.info( "twitter signup with email - " + email )
                         return redirect(returnPage)
                     else:
-                        #log.info('else activatedFacebookNotTwitter')
+                        log.info('else activatedFacebookNotTwitter')
                         user['unactivatedTwitterAuthId'] = twitterId
                         user['activatedFacebookNotTwitter'] = u'0'
                         commit(user)
@@ -418,15 +418,15 @@ class RegisterController(BaseController):
                         session.save()
                         #log.info( "twitter signup with email - " + email )
                         return redirect(returnPage)
-                #log.info('after fb no twt')
+                log.info('after fb no twt')
                 if user['activated'] == '1':
-                    #log.info('user activated')
+                    log.info('user activated')
                     c.email = email
                     session['twtEmail'] = email
                     session.save()
                     return render("/derived/twtLinkAccount.bootstrap")
                 else:
-                    #log.info("unactivated user trying to sign up with twitter")
+                    log.info("unactivated user trying to sign up with twitter")
                     # this is an unactivated account, initated via normal signup or twitter signup
                     splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
                     session['splashMsg'] = splashMsg
@@ -444,6 +444,7 @@ class RegisterController(BaseController):
 
     def generateTwitterActivationHash(self, u):
         """Return a system generated hash for account activation"""
+        log.info("generateTwitterActivationHash")
         from string import letters, digits
         from random import choice
         pool, size = letters + digits, 20
@@ -456,7 +457,7 @@ class RegisterController(BaseController):
         # this next line is needed for functional testing to be able to use the generated hash
         if 'paste.testing_variables' in request.environ:
                 request.environ['paste.testing_variables']['hash_and_email'] = '%s__%s'%(hash, toEmail)
-       
+        
         u['activationFacebookNotTwitterHash'] = hash
         commit(u)
         Revision(u, u)
@@ -591,6 +592,7 @@ class RegisterController(BaseController):
             
             user = getUserByFacebookAuthId( facebookAuthId )
             if not user:
+                log.info("did not find by fb id")
                 user = getUserByEmail( email )
 
 
@@ -663,11 +665,14 @@ class RegisterController(BaseController):
                     returnPage = "/"
                     return redirect(returnPage)
             else:
+                log.info("found user")
                 # NOTE this used to only be a case where a user on site has now tried logging in with
                 # the facebook button. Now, however, we can arrive here if an account was created with 
                 # twitter, but not activated
                 if 'unactivatedTwitterAuthId' in user.keys():
+                    log.info("unactivatedTwitterAuthId")
                     if 'originTwitter' in user.keys():
+                        log.info("originTwitter")
                         user['name'] = name
                         user['email'] = email
                         user['postalCode'] = postalCode
@@ -697,12 +702,14 @@ class RegisterController(BaseController):
                         log.info('%s logged in %s' % (user['name'], loginTime))
                         c.authuser = user
                         if c.w:
+                            log.info("c.w")
                             log.info( "Successful guest activation with credentials - " + email )
                             returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
                             if c.listingType:
                                 returnPage += "/add/" + c.listingType
                             return redirect(returnPage)
                         else:
+                            log.info("no c.w")
                             log.info( "Successful facebook signup with email - " + email )
                             returnPage = "/"
                             return redirect(returnPage)

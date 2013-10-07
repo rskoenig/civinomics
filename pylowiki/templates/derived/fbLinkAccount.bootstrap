@@ -21,10 +21,8 @@
                   % endif
                   <div class="login-top">
                       <h2> Link your account with Facebook Login</h2>
-                      <p>Since you haven't linked your account on our site with facebook 
-                        yet, we need to ask you for your password. After this pressing the 
-                        'Login with Facebook' button will log in in without asking for a
-                        password.</p>
+                      <p>Since you haven't used Facebook to log in on Civinomics 
+                        yet, we need you to verify your identity by asking you enter the password you use on our site. After this, pressing the 'Sign in with Facebook' button will log you in directly.</p>
                   </div>
                   <div class="login-body">
                       % if c.conf['read_only.value'] == 'true':
