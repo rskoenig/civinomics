@@ -12,10 +12,11 @@
          <div class="section-wrapper">
             <div class="browse">
                % if listingType.startswith(('a', 'e', 'i', 'o', 'u')):
-                  <h3 class="section-header"> Add an ${listingType} </h3>
+                  <h4 class="section-header smaller"> Add an ${listingType} </h3>
                % else:
-                  <h3 class="section-header"> Add a ${listingType} </h3>
+                  <h4 class="section-header smaller"> Add a ${listingType} </h3>
                % endif
+               <div class="add-a-thing-forms">
                <%
                   if listingType == 'discussion':
                      self.addDiscussion()
@@ -24,6 +25,7 @@
                   elif listingType == 'idea':
                      self.addIdea()
                %>
+              </div>
             </div><!--/.browse-->
          </div><!--/.section-wrapper-->
       </div><!--/.span12-->
@@ -33,7 +35,7 @@
 <%def name="addDiscussion()">
    <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/discussion/handler" id="addDiscussion" method="post">
       <fieldset>
-         <label>Conversation title</label>
+         <label>Title</label>
          <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120">
          <span class="help-block"> (Try to keep your title informative, but concise.) </span>
       </fieldset>
@@ -46,18 +48,15 @@
 <%def name="addResource()">
     <form ng-controller="resourceController" ng-init="workshopCode = '${c.w['urlCode']}'; workshopURL = '${c.w['url']}'; addResourceURLResponse=''; addResourceResponse='';"  id="addResourceForm" name="addResourceForm" ng-submit="submitResourceForm(addResourceForm)">
         <fieldset>
-            <label>Resource title</label>
+            <label>Resource title</label><span class="help-block"> (Try to keep your title informative, but concise.) </span>
             <input type="text" class="input-block-level" name="title" ng-model="title" maxlength = "120" required>
-            <span class="help-block"> (Try to keep your title informative, but concise.) </span>
-            <span ng-show="addResourceTitleShow"><div class="alert alert-danger">{{addResourceTitleResponse}}</div></span>
+            <span ng-show="addResourceTitleShow"><div class="alert alert-danger" ng-cloak>{{addResourceTitleResponse}}</div></span>
         </fieldset>
-        <hr/>
         <fieldset>
             <label>Resource URL</label>
             <input type="url" class="input-block-level" name="link" ng-model="link" placeholder="http://" required>
-            <span ng-show="addResourceURLShow"><div class="alert alert-danger">{{addResourceURLResponse}}</div></span>
+            <span ng-show="addResourceURLShow"><div class="alert alert-danger" ng-cloak>{{addResourceURLResponse}}</div></span>
         </fieldset>
-        <hr/>
         ${self.additionalInfo(name="text")}
         <span ng-show="addResourceShow">{{addResourceResponse}}</span>
         ${self.submitButton()}
@@ -67,15 +66,9 @@
 <%def name="addIdea()">
    <form action="/workshop/${c.w['urlCode']}/${c.w['url']}/add/idea/handler" id="addIdea" method="post">
       <fieldset ng-controller="GoalsCtrl">
-         <label>Idea</label>
-         <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120">
-         <span class="help-block"> (Try to have your idea address one or more of the workshop goals below) </span>
-         <label>Workshop goals</label>
-         <ul ng-cloak>
-            <li ng-repeat="goal in goals">
-               <span class="goal-title done-{{goal.done}}">{{goal.title}}</span>
-            </li>
-         </ul>
+         <label>Idea Title</label>
+         <input type="text" class="input-block-level" name="title" id = "title" maxlength = "120"><span class="grey"> characters remaining</span>
+         <span class="help-block">
       </fieldset>
       ${self.additionalInfo(name="text")}
       ${self.submitButton()}
@@ -90,7 +83,8 @@
 
 <%def name="additionalInfo(name='text')">
    <fieldset>
-      <label>Additional information <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+      <label><strong>Additional information</strong><br>
+      <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-photo"></i> View Formatting Guide</a></label>
       <textarea name="${name}" rows="3" class="input-block-level" ng-model="${name}"></textarea>
       <span class="help-block"> (Any additional information you want to include.  This is optional.) </span>
    </fieldset>
@@ -102,8 +96,8 @@
       $("#title").charCount({
          allowed:120,
          warning:20,
-         css: 'counter green pull-right',
-         counterElement: 'strong'
+         css: 'counter med-green',
+         counterElement: 'span'
       });
     </script>
     <script type="text/javascript">

@@ -7,7 +7,7 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="showListing(thing)">
+<%def name="showListing(thing, *args)">
    <%
       target = "_self"
       if c.paginator != '':
@@ -16,7 +16,10 @@
          if thing == 'discussion':
             renderList = c.discussions
          elif thing == 'resources':
-            renderList = c.resources
+            if 'condensed' in args:
+                renderList = c.resources[0:5]
+            else:
+                renderList = c.resources
             target = "_blank"
          elif thing == 'ideas':
             renderList = c.ideas
@@ -110,9 +113,17 @@
                 </div>
             % else:
                 <div class="row-fluid list-item border-bottom">
-                    <div class="span1 voteBlock" id="vote_${itemCounter}">
-                        ${lib_6.upDownVote(item)}
-                    </div>
+                    % if not 'condensed' in args:
+                        <div class="span1 voteBlock" id="vote_${itemCounter}">
+                            ${lib_6.upDownVote(item)}
+                        </div>
+                    % endif
+                    <%
+                        if 'condensed' in args:
+                            spanX = "span2"
+                        else:
+                            spanX = "span1"
+                    %>
                     % if thing == 'resources':
                         <% 
                             iconClass = ""
@@ -126,12 +137,12 @@
                                 iconClass="icon-file"
                             endif
                         %>
-                        <div class="span1">
+                        <div class="${spanX}">
                             <div class="spacer"></div>
                             <i class="${iconClass} icon-3x"></i>
                         </div>
-                    % else:
-                        <div class="span1">
+                    % elif not 'condensed' in args:
+                        <div class="${spanX}">
                             <div class="spacer"></div>
                             <i class="icon-comments icon-3x"></i>
                         </div> <!--/.span2-->
@@ -143,7 +154,13 @@
                         </h4>
 
                         % if item.objType == 'resource':
-                            <% itemLink = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], 60)) %>
+                            <% 
+                                if 'condensed' in args:
+                                    chars = 35
+                                else:
+                                    chars = 70
+                                itemLink = '<a %s>%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=True), lib_6.ellipsisIZE(item['link'], chars)) %>
+
                             ${itemLink | n}
                         % endif
 
@@ -154,6 +171,10 @@
 
                             <ul class="horizontal-list iconListing">
                                 <li>
+                                    % if 'condensed' in args and item.objType == 'discussion':
+                                        <i class="icon-comments"></i>
+                                    % endif
+
                                     % if c.demo:
                                         ${comments | n}
                                     % else:
@@ -163,9 +184,11 @@
                             </ul>
 
                         % if item.objType != 'resource':
-                            <p class="no-bottom">
-                                <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs}from ${lib_6.userGeoLink(item.owner)}</small>
-                            </p>
+                            % if not 'condensed' in args:
+                                <p class="no-bottom">
+                                    <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs} from ${lib_6.userGeoLink(item.owner)}</small>
+                                </p>
+                            % endif
                         % endif
                     </div><!--/.span9-->
                 </div><!--/.row-fluid-->

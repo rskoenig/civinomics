@@ -9,9 +9,7 @@
    <div class="span8">
       <div class="section-wrapper slideshow">
         <div id="workshopSlideshow">
-          <div>
-            ${helpers.slideshow(c.w, 'large')}
-          </div>
+          ${helpers.slideshow(c.w, 'hero')}
         </div>
       </div> <!-- /.section-wrapper -->
 
@@ -39,19 +37,32 @@
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 
-            Summary
+            Goals
             </h4>
             ${helpers.showGoals(c.goals)}
-            ${helpers.showFacilitators()}
-            ${helpers.showTags()}
-            ${helpers.showScope()}
             ${helpers.whoListening()}
-            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage))}
-            ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Forum Topics
+            </h4>
+            ${listingHelpers.showListing('discussion', 'condensed')}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Recent Activity
+            </h4>
+            ${helpers.showActivity(c.activity[0:5])}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
 </div> <!-- /.row -->
+
+
 
 <%def name="extraScripts2()">
     % if c.demo:
