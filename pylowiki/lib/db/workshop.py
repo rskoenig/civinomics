@@ -172,7 +172,11 @@ def updateWorkshopChildren(workshop, workshopKey):
                 .all()
                 
         for item in itemList:
-            item[workshopKey] = workshop[workshopKey]
+            if workshopKey == "workshop_title":
+                item[workshopKey] = workshop["title"]
+                item['workshop_url'] = workshop['url']
+            else:
+                item[workshopKey] = workshop[workshopKey]
             commit(item)
             if item.objType == 'discussion':
                 discussionCode = item['urlCode']
@@ -181,7 +185,11 @@ def updateWorkshopChildren(workshop, workshopKey):
                     .filter(Thing.data.any(wc('discussionCode', discussionCode)))\
                     .all()
                 for comment in commentList:
-                    comment[workshopKey] = workshop[workshopKey]
+                    if workshopKey == "workshop_title":
+                        comment[workshopKey] = workshop["title"]
+                        comment['workshop_url'] = workshop['url']
+                    else:
+                        comment[workshopKey] = workshop[workshopKey]
                     commit(comment)                            
     except Exception as e:
         return False

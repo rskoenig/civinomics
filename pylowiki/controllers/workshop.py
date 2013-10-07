@@ -174,6 +174,7 @@ class WorkshopController(BaseController):
                 c.w['title'] = wTitle
                 oldTitle = c.w['url']
                 c.w['url'] = utils.urlify(wTitle)
+                workshopLib.updateWorkshopChildren(c.w, 'workshop_title')
                 wchanges = 1
                 weventMsg += "Updated name. "
         else:

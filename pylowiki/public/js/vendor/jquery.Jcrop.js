@@ -348,7 +348,10 @@
         }),
 
         $hdl_holder = $('<div />') 
-        .width('100%').height('100%').css('zIndex', 320), 
+        .width('100%').height('100%').css({
+            zIndex: 320,
+            position: 'absolute'
+        }), 
 
         $sel = $('<div />') 
         .css({
@@ -1095,7 +1098,7 @@
         $track.bind('touchstart.jcrop', Touch.createDragger('move'));
       }
 
-      $img_holder.append($track);
+      $hdl_holder.append($track);
       disableHandles();
 
       return {

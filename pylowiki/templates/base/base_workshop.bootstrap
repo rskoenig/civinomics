@@ -101,7 +101,12 @@
       $(".preferencesLink").tooltip();
       $(".publishButton").tooltip();
    </script>
-
+   <script type="text/javascript" src="/js/vendor/jquery.autosize.js"></script>
+   <script>
+      $(document).ready(function(){
+        $('textarea').autosize();   
+      });
+   </script>
 </%def>
 
 <%def name="headScripts2()">

@@ -68,9 +68,11 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.showingPhotos = {'class': '', 'show': false};
     $scope.objType = 'workshops';
     $scope.orderProp = '-date';
-    
+    $scope.orderProp = '-date';
     $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos'};
-    
+    $scope.currentPage = 0;
+    $scope.pageSize = 20;
+
     $http.get($scope.workshopsURL).success(function(data){
         if (data.statusCode == 1)
         {
@@ -93,6 +95,7 @@ app.controller('SearchCtrl', function($scope, $http){
     });
     
     $scope.searchWorkshops = function() {
+        $scope.currentPage = 0;
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
@@ -123,9 +126,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.workshops.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchPeople = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
@@ -156,9 +163,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.people.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchResources = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
@@ -189,9 +200,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.resources.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchDiscussions = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
@@ -222,9 +237,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.discussions.length/$scope.pageSize);                
+        }
     };
     
     $scope.searchIdeas = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
@@ -255,9 +274,13 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.ideas.length/$scope.pageSize);                
+        }
     };
         
     $scope.searchPhotos = function() {
+        $scope.currentPage = 0;
         $scope.showingWorkshops = {'class': '', 'show': false};
         $scope.showingPeople = {'class': '', 'show': false};
         $scope.showingResources = {'class': '', 'show': false};
@@ -288,5 +311,85 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             $scope.loading = false;
         });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.photos.length/$scope.pageSize);                
+        }
     };
 });
+
+app.filter('startFrom', function() {
+    return function(input, start) {
+        if(start) {
+            start = +start; //parse to int
+            return input.slice(start);
+        } else {
+            return input;
+        }
+    }
+});
+
+function yesNoVoteCtrl($scope) {
+    if ($scope.rated == 0) {
+        $scope.yesVoted = '';
+        $scope.noVoted = '';
+    }
+    else if ($scope.rated == 1){
+        $scope.yesVoted = 'voted';
+        $scope.noVoted = '';
+    }
+    else if ($scope.rated == -1){
+        $scope.yesVoted = '';
+        $scope.noVoted = 'voted';
+    }
+
+    $scope.updateYesVote = function(){
+
+        if ($scope.yesVoted == '')
+        {
+            if ($scope.noVoted == ''){
+                $scope.totalVotes += 1;
+                $scope.netVotes += 1;
+            }
+            // if the user had previously placed a no vote, the score goes up by two
+            else{
+                $scope.netVotes += 2;
+            }
+            $scope.yesVoted = 'voted';
+            $scope.noVoted = '';
+        }
+
+        else if ($scope.yesVoted = 'voted')
+        {
+            $scope.totalVotes -= 1;
+            $scope.netVotes -= 1;
+            $scope.yesVoted = '';
+        }
+
+        $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/1');
+    }
+    $scope.updateNoVote = function(){
+        if ($scope.noVoted == '')
+        {
+            if ($scope.yesVoted == ''){
+                $scope.totalVotes += 1
+                $scope.netVotes -= 1
+            }
+            // if the user had previously placed a yes vote, the score goes down by two
+            else{
+                $scope.netVotes -= 2
+            }
+            $scope.noVoted = 'voted';
+            $scope.yesVoted = ''
+        }
+        else if ($scope.noVoted = 'voted')
+        {
+            $scope.totalVotes -= 1
+            $scope.netVotes += 1
+            $scope.noVoted = '';
+        }
+        $.post('/rate/' + $scope.objType + '/' + $scope.urlCode + '/' + $scope.url + '/-1');
+    }
+};
+
+
+

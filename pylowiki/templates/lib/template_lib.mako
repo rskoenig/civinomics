@@ -7,160 +7,156 @@
 
 !
 <%def name="mainNavbar()">
-    <div class="navbar civ-navbar navbar-fixed-top" style="margin-bottom: 60px;">
+    <% tagCategories = workshopLib.getWorkshopTagCategories() %>
+    <div class="navbar civ-navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </a>
                 <a class="brand civ-brand" href="/">
-                    <img src="/images/logo_white.png" class="small-logo" id="civinomicsLogo">
+                    <div class="logo" id="civinomicsLogo"></div>
                 </a>
                 <ul class="nav">
-                    <li>
-                        <button class="btn btn-warning" data-toggle="collapse" data-target="#search">
-                        Search <i class="icon-white icon-search"></i>
-                        </button>
+                    <li class="small-hidden">
+                        <form class="form-search" action="/search">
+                            <div class="input-append">
+                                <input type="text" class="span2 search-query" placeholder="Search" id="search-input" name="searchQuery">
+                                <button type="button" class="btn" data-toggle="collapse" data-target="#search">Options</button>
+                            </div>
+                        </form>
                     </li>
                 </ul>
-                <div class="nav-collapse collapse">
-                    <ul class="nav pull-right" id="profileAvatar">
-                        <%
-                            wSelected = mSelected = pSelected = aSelected = hSelected = ''
-                            if "/workshops" in session._environ['PATH_INFO'] and not 'geo' in session._environ['PATH_INFO']:
-                                wSelected = "active"
-                            elif "/messages" in session._environ['PATH_INFO']:
-                                mSelected = "active"
-                            elif "/profile" in session._environ['PATH_INFO']:
-                                pSelected = "active"
-                            elif "/admin" in session._environ['PATH_INFO']:
-                                aSelected = "active"
-                            elif "/help" in session._environ['PATH_INFO']:
-                                hSelected = "active"
-                            endif
-                        %>
-                        % if 'user' in session:
-                            <li class="${mSelected}">
-                                <%
-                                    messageCount = ''
-                                    numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
-                                    if numMessages:
-                                        if numMessages > 0:
-                                            messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
-                                %>
-                                <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
-                            </li>
-                            ${lib_6.geoDropdown('navBar')}
-                        % endif
-                            <li class="${wSelected}">
-                                <a href="/workshops">Workshops</a>
-                            </li>
-                        % if 'user' in session:
-                            % if userLib.isAdmin(c.authuser.id):
-                                <li class="dropdown ${aSelected}">
-                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
-                                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                        <li><a tabindex="-1" href="/admin/users">Users</a></li>
-                                        <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
-                                        <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
-                                        <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
-                                        <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
-                                        <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
-                                        <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
-                                        <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
-                                    </ul>
-                                </li>
-                            % endif
-                            <li class="dropdown ${pSelected}">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
+                <ul class="nav pull-right" id="profileAvatar">
+                    <%
+                        wSelected = mSelected = pSelected = aSelected = hSelected = homeSelected = ''
+                        if "/workshops" in session._environ['PATH_INFO'] and not 'geo' in session._environ['PATH_INFO']:
+                            wSelected = "active"
+                        elif "/messages" in session._environ['PATH_INFO']:
+                            mSelected = "active"
+                        elif "/profile" in session._environ['PATH_INFO']:
+                            pSelected = "active"
+                        elif "/admin" in session._environ['PATH_INFO']:
+                            aSelected = "active"
+                        elif "/help" in session._environ['PATH_INFO']:
+                            hSelected = "active"
+                        elif "/home" in session._environ['PATH_INFO']:
+                            homeSelected = "active"
+                        endif
+                    %>
+                    % if 'user' in session:
+                        <li class="${homeSelected} small-hidden">
+                            <a href="/">Home</a>
+                        </li>
+                        <li class="${homeSelected} small-show">
+                            <a href="/"><i class="icon-home"></i></a>
+                        </li>
+                        % if userLib.isAdmin(c.authuser.id):
+                            <li class="dropdown ${aSelected}">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Objects<b class="caret"></b></a>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                                    <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
-                                    <li><a href="/help">Help</a></li>
-                                    <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                                    <li><a tabindex="-1" href="/admin/users">Users</a></li>
+                                    <li><a tabindex="-1" href="/admin/workshops">Workshops</a></li>
+                                    <li><a tabindex="-1" href="/admin/ideas">Ideas</a></li>
+                                    <li><a tabindex="-1" href="/admin/resources">Resources</a></li>
+                                    <li><a tabindex="-1" href="/admin/discussions">Discussions</a></li>
+                                    <li><a tabindex="-1" href="/admin/comments">Comments</a></li>
+                                    <li><a tabindex="-1" href="/admin/photos">Photos</a></li>
+                                    <li><a tabindex="-1" href="/admin/flaggedPhotos">Flagged Photos</a></li>
                                 </ul>
                             </li>
-                        % else:
-                            <li class="${hSelected}"><a href="/help">Help</a></li>
-                            <li><a href="/login">Login</a></li>
-                            <li><a href="/signup">Signup</a></li>
                         % endif
-                    </ul>
-                </div><!--/.nav-collapse -->
+                        <li class="${mSelected}">
+                            <%
+                                messageCount = ''
+                                numMessages = messageLib.getMessages(c.authuser, read = '0', count = True)
+                                if numMessages:
+                                    if numMessages > 0:
+                                        messageCount += '<span class="badge badge-warning left-space"> %s</span>' % numMessages
+                            %>
+                            <a href="/messages/${c.authuser['urlCode']}/${c.authuser['url']}"><i class="icon-envelope icon-white"></i>${messageCount | n}</a>
+                        </li>
+                        <li class="dropdown ${pSelected}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                ${lib_6.userImage(c.authuser, className="avatar topbar-avatar", noLink=True)} Me<b class="caret"></b></a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                <li><a tabindex="-1" href="/profile/${c.authuser['urlCode']}/${c.authuser['url']}">My Profile</a>
+                                <li><a href="/help">Help</a></li>
+                                <li><a tabindex="-1" href="/login/logout">Logout</a></li>
+                            </ul>
+                        </li>
+                    % else:
+                        <li class="${hSelected}"><a href="/help">Help</a></li>
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/signup">Signup</a></li>
+                    % endif
+                    <li class="small-show">
+                        <a type="button" data-toggle="collapse" data-target="#search"><i class="icon-search"></i></a>
+                    </li>
+                </ul>
             </div> <!--/.container-->
         </div> <!--/.navbar-inner.civ-navbar -->
     </div> <!-- /.navbar -->
-    <div id="search" class="collapse search-white">
+    <div id="search" class="collapse search_drawer">
         <% tagCategories = workshopLib.getWorkshopTagCategories() %>
         <div class="spacer"></div>
-        <div class="spacer"></div>
-        <div class="row-fluid">
+        <div class="row-fluid searches">
             <div class="span3 offset1">
-                Search by word: 
                 <form class="form-search" action="/search">
-                    <div class="input-append">
-                        <input type="text" class="span2 search-query" placeholder="workshops or people" id="search-input" name="searchQuery" value="${c.searchQuery}">
-                    </div>
+                    <input type="text" class="search-query" placeholder="Search by Word" id="search-input" name="searchQuery">
                 </form>
-            </div><!-- span3 -->
-            <div class="span3">
+            </div>
+            <div class="span4">
                 <script type="text/javascript">
                     function searchTags() {
-                        var tagIndex = document.getElementById('categoryTag').selectedIndex;
-                        var searchTag = document.getElementById('categoryTag').options[tagIndex].value;
-                        if(searchTag != 'nosearch') {
-                            var searchPath = "/searchTags/" + searchTag;
-                            window.location.pathname = searchPath;
+                        var sIndex = document.getElementById('categoryTag').selectedIndex;
+                        var sValue = document.getElementById('categoryTag').options[sIndex].value;
+                        if(sValue) {
+                            var queryURL = sValue;
+                            window.location = queryURL;
                         }
                     }
                 </script>
-                Search by tag:
-                <form  action="/searchTags"  method="POST">
-                    <select id="categoryTag" name="categoryTag" onChange="searchTags();">
-                        <option value="nosearch">Choose a category</option>
+                <form action="/searchTags" class="form-search search-type" method="POST">
+                    <i class="icon-tag icon-light"></i>
+                    <select name="categoryTag" id="categoryTag" onChange="searchTags();">
+                    <option value="0">Search by Category</option>
                     % for tag in tagCategories:
                         <% tagValue = tag.replace(" ", "_") %>
-                        <option value="${tagValue}">${tag.title()}</option>
+                        <option value="/searchTags/${tagValue}/">${tag.title()}</option>
                     % endfor
                     </select>
                 </form>
             </div><!-- span3 -->
             <div class="span4">
-                Search by region:
-                <form  action="/searchTags"  method="POST">
+                <form  action="/searchGeo"  class="form-search search-type" method="POST">
                     <div class="row-fluid"><span id="searchCountrySelect">
-                        <div class="span1"></div>
-                        <div class="span2">Country:</div>
-                        <div class="span9">
-                            <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
-                            <option value="0" selected>Select a country</option>
-                            <option value="United States">United States</option>
-                            </select>
-                        </div><!-- span9 -->
+                        <i class="icon-globe icon-light"></i>
+                        <select name="geoSearchCountry" id="geoSearchCountry" class="geoSearchCountry" onChange="geoSearchCountryChange(); return 1;">
+                        <option value="0" selected>Search by Region</option>
+                        <option value="United States">United States</option>
                         </span><!-- searchCountrySelect -->
+                        </select>
+                        <span id="searchCountryButton"></span>
                     </div><!-- row-fluid -->
-                    <div class="row-fluid"><span id="searchStateSelect">
-                    </span></div>
-                    <div class="row-fluid"><span id="searchCountySelect">
-                    </span></div>
-                    <div class="row-fluid"><span id="searchCitySelect">
-                    </span></div>
-                    <div class="row-fluid"><span id="searchPostalSelect">
-                    </span></div>
-                    <div class="row-fluid"><span id="searchUnderPostal">
-                    </span></div>
+                    <div class="row-fluid">
+                        <span id="searchStateSelect"></span>
+                        <span id="searchStateButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchCountySelect"></span>
+                        <span id="searchCountyButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchCitySelect"></span>
+                        <span id="searchCityButton"></span>
+                    </div>
+                    <div class="row-fluid">
+                        <span id="searchPostalSelect"></span>
+                        <span id="searchPostalButton">
+                    </div>
                 </form>
-            </div><!-- span4 -->
+            </div><!-- span5 -->
         </div><!-- row-fluid -->
         <div class="spacer"></div>
     </div><!-- collapse -->
-    <hr class="civ-topbar-hr" 
-        % if "corp" in session._environ['PATH_INFO']:
-            id="corpTopbar"
-        % endif/
-    >
 </%def>
 
 <%def name="splashNavbar()">
