@@ -15,6 +15,7 @@ import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
+import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.activity     as activityLib
@@ -22,7 +23,8 @@ import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.utils           as utils
-import pylowiki.lib.helpers as h
+import pylowiki.lib.helpers         as h
+import pylowiki.lib.sort            as sort
 
 import simplejson as json
 from hashlib import md5
@@ -41,6 +43,8 @@ class SearchController(BaseController):
     def __before__(self, action, searchType = None, **kwargs):
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
+        c.backgroundPhoto = '/images/grey.png'
+        c.user = c.authuser
         self.query = ''
         self.noQuery = False
         self.searchType = 'name'
@@ -48,6 +52,8 @@ class SearchController(BaseController):
             searchString = kwargs['searchString']
         else:
             searchString = None
+            
+        log.info("search string is %s"%searchString)
             
         if 'id1' in kwargs:
             id1 = kwargs['id1']
@@ -137,6 +143,14 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_category_tags'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_category_tags', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
+
+        c.photos = photoLib.searchPhotos('tags', self.query)
+        if c.photos and len(c.photos) != 0:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
+
         c.searchQuery = self.query
         c.searchType = "tag"
         c.scope = {'level':'earth', 'name':'all'}
@@ -154,6 +168,16 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
+
+        c.photos = photoLib.searchPhotos('scope', self.query)
+        c.searchQuery = self.query
+        log.info("search is %s"%c.searchQuery)
+        if c.photos:
+            c.photos = sort.sortBinaryByTopPop(c.photos)
+            p = c.photos[0]
+            c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
+            c.backgroundAuthor = userLib.getUserByID(p.owner)
+
         c.searchType = "region"
         geoScope = self.query.split('|') 
         baseUrl = config['site_base_url']
@@ -166,6 +190,7 @@ class SearchController(BaseController):
             name = 'all'
             c.searchQuery = 'Earth'
             flag = baseUrl + "/images/flags/" + level + ".gif"
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -180,6 +205,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "" + utils.geoDeurlify(geoScope[2])
             flag = baseUrl + "/images/flags/country/" + geoScope[2] + ".gif"
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -196,6 +222,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "State of " + utils.geoDeurlify(geoScope[4])
             flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '.gif'
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -212,6 +239,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "County of " + utils.geoDeurlify(geoScope[6])
             flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '/counties/' + geoScope[6] + '.gif'
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -229,6 +257,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "City of " + utils.geoDeurlify(geoScope[8])
             flag = baseUrl + '/images/flags/country/' + geoScope[2] + '/states/' + geoScope[4] + '/counties/' + geoScope[6] + '/cities/' + geoScope[8] + '.gif'
+            flag = flag.lower()
             try:
                 f = urllib2.urlopen(urllib2.Request(flag))
                 c.flag = flag
@@ -246,6 +275,7 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "Postal Code " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
+            c.flag = c.flag.lower()
             c.geoInfo = getPostalInfo(geoScope[9]) 
             if c.geoInfo:
                 c.population = c.geoInfo['Population']
@@ -300,6 +330,7 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
+            log.info("self.query is %s"%self.query)
         else:    
             keys = ['title', 'description', 'workshop_category_tags']
             values = [self.query, self.query, self.query]
@@ -315,8 +346,8 @@ class SearchController(BaseController):
             entry['description'] = w['description']
             entry['urlCode'] = w['urlCode']
             entry['url'] = w['url']
-            entry['activity'] = len(activityLib.getActivityForWorkshop(w['urlCode']))
-            entry['bookmarks'] = len(followLib.getWorkshopFollowers(w))
+            entry['activity'] = w['numPosts']
+            entry['bookmarks'] = w['numBookmarks']
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             entry['startTime'] = w['startTime']
@@ -327,7 +358,7 @@ class SearchController(BaseController):
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
-            entry['tags'] = tagList[0:2]
+            entry['tags'] = tagList
             thing = workshopLib.getWorkshopByCode(w['urlCode'])
             entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             result.append(entry)
@@ -393,7 +424,7 @@ class SearchController(BaseController):
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
-            entry['tags'] = tagList[0:2]
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -452,7 +483,7 @@ class SearchController(BaseController):
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
-            entry['tags'] = tagList[0:2]
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -485,6 +516,11 @@ class SearchController(BaseController):
             entry = {}
             entry['title'] = idea['title']
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
+            rated = ratingLib.getRatingForThing(c.authuser, idea) 
+            if rated:
+                entry['rated'] = rated['amount']
+            else:
+                entry['rated'] = 0
             entry['urlCode'] = idea['urlCode']
             entry['url'] = idea['url']
             entry['addedAs'] = idea['addedAs']
@@ -506,7 +542,7 @@ class SearchController(BaseController):
                     tagMapping['title'] = title
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
-            entry['tags'] = tagList[0:2]
+            entry['tags'] = tagList
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})
@@ -551,12 +587,18 @@ class SearchController(BaseController):
             for tag in tagList:
                 if tag and tag != '':
                     tags.append(tag)
-                    c = colors[tag]
-                    tagColors.append(c)
-            entry['tags'] = tags[0:2]
+                    color = colors[tag]
+                    tagColors.append(color)
+            entry['tags'] = tags
             entry['colors'] = tagColors
             entry['location'] = photoLib.getPhotoLocation(p)
-            entry['voteCount'] = int(p['ups']) - int(p['downs'])
+            entry['voteCount'] = int(p['ups']) + int(p['downs'])
+            entry['netVotes'] = int(p['ups']) - int(p['downs'])
+            rated = ratingLib.getRatingForThing(c.authuser, photo) 
+            if rated:
+                entry['rated'] = rated['amount']
+            else:
+                entry['rated'] = 0
             entry['urlCode'] = p['urlCode']
             entry['url'] = p['url']
             entry['thumbnail'] = "/images/photos/" + p['directoryNum_photos'] + "/thumbnail/" + p['pictureHash_photos'] + ".png"
