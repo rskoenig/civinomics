@@ -223,8 +223,17 @@ class User(object):
         u['totalPoints'] = 1
         u['commentAlerts'] = '1'
         u['url'] = urlify('%s' %name)
-        u['numSuggestions'] = 0
-        u['numReadResources'] = 0
+        u['numSuggestions'] = '0'
+        u['numReadResources'] = '0'
+        u['idea_counter'] = '0'
+        u['discussion_counter'] = '0'
+        u['resource_counter'] = '0'
+        u['follow_counter'] = '0'
+        u['facilitator_counter'] = '0'
+        u['listener_counter'] = '0'
+        u['follower_counter'] = '0'
+        u['bookmark_counter'] = '0'
+        u['photo_counter'] = '0'
         u['accessLevel'] = 0
         commit(u)
         u['urlCode'] = toBase62(u)

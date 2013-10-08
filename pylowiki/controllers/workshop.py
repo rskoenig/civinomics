@@ -174,6 +174,7 @@ class WorkshopController(BaseController):
                 c.w['title'] = wTitle
                 oldTitle = c.w['url']
                 c.w['url'] = utils.urlify(wTitle)
+                workshopLib.updateWorkshopChildren(c.w, 'workshop_title')
                 wchanges = 1
                 weventMsg += "Updated name. "
         else:
@@ -730,7 +731,7 @@ class WorkshopController(BaseController):
                 c.stripeKey = config['app_conf']['stripePublicKey'].strip()
                 return render('/derived/6_workshop_payment.bootstrap')
                 
-        w = workshopLib.Workshop('replace with a real workshop name!', c.authuser, 'private', wType)
+        w = workshopLib.Workshop('New Workshop', c.authuser, 'private', wType)
         c.workshop_id = w.id # TEST
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.id, w.id)
@@ -917,6 +918,13 @@ class WorkshopController(BaseController):
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = False
         
+        discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
+        if not discussions:
+            c.discussions = []
+        else:
+            discussions = sort.sortBinaryByTopPop(discussions)
+            c.discussions = discussions[0:3]
+
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
         if not ideas:
             c.ideas = []
@@ -931,6 +939,9 @@ class WorkshopController(BaseController):
         
     def info(self, workshopCode, workshopURL):
         c.title = c.w['title']
+
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
 
         c.isFollowing = False
         if 'user' in session:
@@ -963,6 +974,9 @@ class WorkshopController(BaseController):
         
     def activity(self, workshopCode, workshopURL):
         c.title = c.w['title']
+
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
 
         c.isFollowing = False
         if 'user' in session:

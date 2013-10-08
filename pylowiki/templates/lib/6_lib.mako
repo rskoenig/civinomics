@@ -13,13 +13,15 @@
    import pylowiki.lib.db.tag           as tagLib
    import pylowiki.lib.db.workshop      as workshopLib
    import pylowiki.lib.db.photo         as photoLib
+   import pylowiki.lib.db.follow        as followLib
    
    from hashlib import md5
    import logging, os
    log = logging.getLogger(__name__)
 %>
+<%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 
-<%def name="facebookDialogShare(link, picture)">
+<%def name="facebookDialogShare(link, picture, iconClass)">
     <%
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
@@ -112,7 +114,7 @@
             );
         };
         </script>
-        <a href="#" target='_top' onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+        <a href="#" target='_top' onClick="shareOnWall()"><i class="${iconClass}"></i></a>
     % endif
 </%def>
 
@@ -121,7 +123,7 @@
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
-        <a href="#emailShare" role="button" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Share</a>
+        <a href="#emailShare" role="button" data-toggle="modal" class="listed-item-title"><i class="icon-envelope icon-2x"></i></a>
         <div id="emailShare" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -233,6 +235,10 @@
         totalYes = int(thing['ups'])
         totalNo = int(thing['downs'])
         totalVotes = int(thing['ups']) + int(thing['downs'])
+        percentYes = percentNo = 0
+        if totalVotes > 0:
+          percentYes = int(float(totalYes)/float(totalVotes) * 100)
+          percentNo = int(float(totalNo)/float(totalVotes) * 100)
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          <% 
@@ -241,23 +247,23 @@
                if rated['amount'] == '1':
                   commentClass = 'voted yesVote'
                   displayTally = ''
+                  displayPrompt = 'hidden'
                else:
                   commentClass = 'yesVote'
                   displayTally = ''
+                  displayPrompt = 'hidden'
                   if rated['amount'] == '0' :
                     displayTally = 'hidden'
+                    displayPrompt = ''
 
             else:
                commentClass = 'yesVote'
                displayTally = 'hidden'
+               displayPrompt = ''
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
-           % if 'detail' in args:
               <div class="vote-icon yes-icon detail"></div>
-              <div class="yesScore ${displayTally}">${locale.format("%d", totalYes, grouping=True)}</div>
-           % else:
-              <div class="vote-icon yes-icon detail"></div>
-           % endif
+              <div class="ynScoreWrapper ${displayTally}"><span class="yesScore">${percentYes}</span>%</div>
          </a>
          <br>
          <br>
@@ -271,15 +277,16 @@
                commentClass = 'noVote'
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
-           % if 'detail' in args:
               <div class="vote-icon no-icon detail"></div>
-              <div class="noScore ${displayTally}">${locale.format("%d", totalNo, grouping=True)}</div> 
-           % else:
-              <div class="vote-icon no-icon"></div>
-           % endif
+              <div class="ynScoreWrapper ${displayTally}"><span class="noScore">${percentNo}</span>%</div> 
          </a>
          <br>
-         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
+         <div class="totalVotesWrapper">
+          % if 'detail' in args:
+            <span class="orange ${displayPrompt}"><strong>Vote to display rating</strong></span><br>
+          % endif
+          Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
+        </div>
       % else:
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
           <div class="vote-icon yes-icon"></div>
@@ -290,7 +297,11 @@
           <div class="vote-icon no-icon"></div>
          </a>
          <br>
-         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
+         <div class="totalVotesWrapper">
+          % if 'detail' in args:
+            <span class="orange"><strong>Vote to display rating</strong></span><br>
+          % endif
+          Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
          <% log.info("vote") %>
       % endif
    </div>
@@ -317,7 +328,7 @@
 
         printStr = ''
         btnX = "large"
-        if 'small' in args:
+        if 'small' in args or 'tiny' in args:
             btnX = "small"
       
         if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
@@ -334,16 +345,20 @@
                 
         printStr += ' class="pull-right btn btn-' + btnX + ' btn-civ right-space" type="button"><i class="icon-white icon-plus"></i>'
 
-        if thing == 'discussion':
-            printStr += ' Topic'
-        elif thing == 'ideas':
-            printStr += ' Idea'
-        elif thing == 'resources':
-            printStr += ' Resource'
+        if not 'tiny' in args:
+          if thing == 'discussion':
+              printStr += ' Topic'
+          elif thing == 'ideas':
+              printStr += ' Idea'
+          elif thing == 'resources':
+              printStr += ' Resource'
+
         printStr += '</a>'
 
     %>
-    ${printStr | n}
+
+    ${printStr | n} 
+
 </%def>
 
 <%def name="readOnlyMessage(thing)">
@@ -1322,4 +1337,60 @@
       <option value="${category}">${category}</option>
     % endfor
   </select>
+</%def>
+
+<%def name="bookmarkOptions(user, workshop)">
+  <% f = followLib.getFollow(user, workshop) %>
+    % if f:
+      <%
+          itemsChecked = ''
+          digestChecked = ''
+          if 'itemAlerts' in f and f['itemAlerts'] == '1':
+              itemsChecked = 'checked'
+          if 'digest' in f and f['digest'] == '1':
+              digestChecked = 'checked'
+      %>
+      <div class="btn-group pull-right" ng-controller="followerController" ng-init="code='${workshop['urlCode']}'; url='${workshop['url']}'; user='${user['urlCode']}'">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+          <i class="icon-envelope"></i>
+          <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu bookmark-options">
+          <li>Email on:</li>
+          <li>
+            <label class="checkbox">
+              <input type="checkbox" name="itemAlerts" value="items" ng-click="emailOnAdded()" ${itemsChecked}> New Items
+            </label>
+          </li>
+          <li>
+            <label class="checkbox">
+              <input type="checkbox" name="digest" value="items" ng-click="emailDigest()" ${digestChecked}> Daily Digest
+            </label>
+          </li>
+        </ul>
+      </div>
+    % endif
+</%def>
+
+<%def name="listBookmarks(bookmarked)">
+  <table class="table plain">
+    % for item in bookmarked:
+      <tr>
+        <td>
+          <div class="media well searchListing bookmarks" style="overflow:visible;">
+              <a class="pull-left" ${workshopLink(item)}>
+                <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${workshopImage(item, raw=True) | n}); background-size: cover; background-position: center center;"></div>
+              </a>
+            <div class="span6">
+              <a ${workshopLink(item)} class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            </div>
+            <div>
+              ${homeHelpers.watchButtonListing(item)}
+              ${bookmarkOptions(c.authuser, item)}
+            </div>
+          </div>
+        </td>
+      </tr>
+    % endfor
+  </table>
 </%def>

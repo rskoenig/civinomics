@@ -7,27 +7,24 @@ from pylowiki.lib.utils import urlify
 import logging
 log = logging.getLogger(__name__)
 
-def getMemberPosts(user, disabled = '0', deleted = '0'):
-    activityTypes = ['resource', 'comment', 'discussion', 'idea']
-    codes = ['resourceCode', 'ideaCode', 'discussionCode']
-    keys = ['deleted', 'disabled']
-    values = [deleted, disabled]
+def getMemberPosts(user, unpublished = '0'):
+    if unpublished == '1':
+        activityTypes = ['resourceUnpublished', 'commentUnpublished', 'discussionUnpublished', 'ideaUnpublished', 'photoUnpublished']
+    else:
+        activityTypes = ['resource', 'comment', 'discussion', 'idea', 'photo']
+    codes = ['resourceCode', 'ideaCode', 'photoCode', 'discussionCode']
+    keys = ['deleted']
+    values = ['0']
     finalActivityList = []
     try:
         initialActivityList = meta.Session.query(Thing).filter(Thing.objType.in_(activityTypes))\
             .filter_by(owner = user.id)\
-            .filter(Thing.data.any(wc('deleted', deleted)))\
-            .filter(Thing.data.any(wc('disabled', disabled)))\
+            .filter(Thing.data.any(wc('deleted', '0')))\
             .order_by('-date').all()
         # Messy
         for activity in initialActivityList:
             if activity.objType == 'discussion' and activity['discType'] != 'general':
                 continue
-            elif activity.objType == 'comment':
-                parentCode = [i for i in codes if i in activity.keys()]
-                thing = generic.getThing(activity[parentCode[0]], keys, values)
-                if thing:
-                    finalActivityList.append(activity)
             else:                
                 finalActivityList.append(activity)
         return finalActivityList

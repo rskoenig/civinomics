@@ -59,6 +59,8 @@ class IdeaController(BaseController):
 
     def addIdea(self, workshopCode, workshopURL):
         c.title = c.w['title']
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         if c.privs['participant'] or c.privs['admin'] or c.privs['facilitator']:
             c.listingType = 'idea'
             c.title = c.w['title']

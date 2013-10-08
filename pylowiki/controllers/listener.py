@@ -26,7 +26,7 @@ class ListenerController(BaseController):
     def __before__(self, action, userCode = None, workshopCode = None):
         wList = ['listenerResignHandler', 'listenerTitleHandler']
         uList = ['listenerInviteHandler', 'listenerResponseHandler']
-        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler', 'listenerSuggestHandler']
+        adminList = ['listenerNotificationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler', 'listenerSuggestHandler']
         if action in wList and workshopCode is not None and 'userCode' in request.params:
                 userCode = request.params['userCode']
                 c.user = userLib.getUserByCode(userCode)                
@@ -35,7 +35,7 @@ class ListenerController(BaseController):
                 c.user = userLib.getUserByCode(userCode)
                 workshopCode = request.params['workshopCode']
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
-        elif action in adminList and userCode is not None and workshopCode is not None:
+        elif (action in adminList) and userCode is not None and workshopCode is not None:
                 c.user = userLib.getUserByCode(userCode)
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
         else:
@@ -117,6 +117,7 @@ class ListenerController(BaseController):
             return "Please enter complete information"
         # make sure not already a listener for this workshop
         listener = listenerLib.getListenerByCode(urlCode)
+
         if not listener:
             return 'No such Listener!'
         if listener['disabled'] == '1':
@@ -127,6 +128,23 @@ class ListenerController(BaseController):
             listener['disabled'] = '1';
             dbHelpers.commit(listener)
             returnMsg = "Listener Disabled!"
+            
+        if 'userCode' in listener:
+            user = userLib.getUserByCode(listener['userCode'])
+            lKey = 'listener_counter'
+            if lKey in user:
+                lValue = int(user[lKey])
+                if listener['disabled'] == '0':
+                    lValue += 1
+                else:
+                    lValue -= 1
+            else:
+                if listener['disabled'] == '0':
+                    lValue = 1
+                else:
+                    lValue = 0
+            user[lKey] = str(lValue)
+            commit(user)
             
         eventLib.Event(returnMsg, '%s by %s'%(returnMsg, c.authuser['name']), listener, user = c.authuser)
             
@@ -325,7 +343,7 @@ class ListenerController(BaseController):
     @h.login_required
     def listenerNotificationHandler(self, workshopCode, url, userCode):
         user = userLib.getUserByCode(userCode)
-        listener = listenerLib.getListener(user, c.w)
+        listener = listenerLib.getListener(user['email'], c.w)
         # initialize to current value if any, '0' if not set in object
         iAlerts = '0'
         eAction = ''

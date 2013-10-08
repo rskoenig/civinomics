@@ -37,11 +37,12 @@
     ## Display a button to login to add a comment
     ##
     ########################################################################
-    % if c.w:
-        url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url']
-    % else:
-        url = '/login'
-    %endif
+    <% 
+        if c.w:
+            url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url']
+        else:
+            url = '/login'
+    %>
 
 
     <fieldset>
