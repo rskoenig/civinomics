@@ -298,12 +298,21 @@ def make_map():
     map.connect('/{forgotPasswordHandler:forgotPasswordHandler/?}', controller = 'login', action = 'forgot_handler')
 
     # external authentication routes
+    map.connect('/fbLinkAccountHandler{end:/?}', controller = 'login', action = 'fbLinkAccountHandler')
+    map.connect('/twtLinkAccountHandler{end:/?}', controller = 'login', action = 'twtLinkAccountHandler')
     map.connect('/fbLogin{end:/?}', controller = 'login', action = 'fbLoginHandler')
     map.connect('/fbLoggingIn{end:/?}', controller = 'login', action = 'fbLoggingIn')
     map.connect('/fbNewAccount{end:/?}', controller = 'register', action = 'fbNewAccount')
     map.connect('/signup/fbSignUp{end:/?}', controller = 'register', action = 'fbSignUpDisplay')
     map.connect('/signup/fbSigningUp{end:/?}', controller = 'register', action = 'fbSigningUp')
     map.connect('/{flogin:flogin/?}', controller = 'flogin', action = 'login')
+
+    # twitter auth routes
+    map.connect('/{twitterLoginBegin:twitterLoginBegin/?}', controller = 'login', action = 'twythonLogin')
+    map.connect('/{twitterRequestHandler:twitterRequestHandler/?}', controller = 'login', action = 'twtRequestHandler')
+    map.connect('/{twitterAuth:twitterAuth/?}', controller = 'login', action = 'twythonLogin2')
+    map.connect('/signup/twitterSignUp{end:/?}', controller = 'register', action = 'twitterSignUpDisplay')
+    map.connect('/signup/twitterSigningUp{end:/?}', controller = 'register', action = 'twitterSigningUp')
     
     # for ajax request from page after pinging fb for auth info
     map.connect('/extauth/fbEmail/{id1}{end:/?}', controller = 'login', action = 'fbAuthCheckEmail', id1 = '{id1}')
