@@ -236,6 +236,7 @@ class LoginController(BaseController):
         if 'afterLoginURL' in session:
             # look for accelerator cases: workshop home, item listing, item home
             loginURL = session['afterLoginURL']
+            log.info("loginURL %s"%loginURL)
             session.pop('afterLoginURL')
             session.save()
         else:
@@ -245,6 +246,103 @@ class LoginController(BaseController):
         #    if kwargs['fbLogin'] is True:
         #        return loginURL
         return redirect(loginURL)
+
+    def loginHandlerJson(self):
+        """ Handle login request from iphone app """
+        """
+        JSON responses:
+            statusCode == 0:    Same as unix exit code (OK)
+            statusCode == 1:    No query was submitted
+            statusCode == 2:    Query submitted, no results found
+            result:             user's email and password are valid, session data returned?
+        """
+        response.headers['Content-type'] = 'application/json'
+        c.title = c.heading = "Login"  
+        c.splashMsg = False
+        splashMsg = {}
+        splashMsg['type'] = 'error'
+        splashMsg['title'] = 'Error'
+
+        try:
+            email = request.params["email"].lower()
+            password = request.params["password"]
+            
+            #return json.dumps({'email':email, 'password':password})
+
+            log.info('iphone app: user %s attempting to log in' % email)
+            if email and password:
+                user = userLib.getUserByEmail( email )
+         
+                if user: # not none or false
+                    if user['activated'] == '0':
+                        splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                        baseURL = c.conf['activation.url']
+                        url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                        mailLib.sendActivationMail(user['email'], url)
+                        
+                    elif user['disabled'] == '1':
+                        log.warning("disabled account attempting to login - " + email )
+                        splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
+                    elif userLib.checkPassword( user, password ): 
+                        # if pass is True
+                        # NOTE - need to store the access token? kee in session or keep on user?
+                        # keeping it on the user will allow interaction with user's facebook after they've logged off
+                        # and by other people
+                        session["user"] = user['name']
+                        session["userCode"] = user['urlCode']
+                        session["userURL"] = user['url']
+                        session.save()
+                        log.info("login:logUserIn session save")
+
+                        c.authuser = user
+
+                        log.info("login:logUserIn")
+                        if 'externalAuthType' in user.keys():
+                            log.info("login:logUserIn externalAuthType in user keys")
+                            if user['externalAuthType'] == 'facebook':
+                                log.info("login:logUserIn externalAuthType facebook")
+                                user['facebookAccessToken'] = session['fbAccessToken']
+                                if 'fbSmallPic' in session:
+                                    user['facebookProfileSmall'] = session['fbSmallPic']
+                                    user['facebookProfileBig'] = session['fbBigPic']
+                            else:
+                                user['externalAuthType'] = ''
+                        user['laston'] = time.time()
+                        loginTime = time.localtime(float(user['laston']))
+                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                        commit(user)
+                        log.info("login:logUserIn commit user")
+                        
+                        
+                        if 'afterLoginURL' in session:
+                            # look for accelerator cases: workshop home, item listing, item home
+                            loginURL = session['afterLoginURL']
+                            session.pop('afterLoginURL')
+                            session.save()
+                        else:
+                            loginURL = "/"
+                        
+                        return json.dumps({'statusCode':0, 'user':dict(user)})
+
+                    else:
+                        log.warning("incorrect username or password - " + email )
+                        splashMsg['content'] = 'incorrect username or password'
+                        return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
+                else:
+                    log.warning("incorrect username or password - " + email )
+                    splashMsg['content'] = 'incorrect username or password'
+                    return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
+            else:
+                splashMsg['content'] = 'missing username or password'
+                return json.dumps({'statusCode':1, 'message':'missing username or password'})
+            session['splashMsg'] = splashMsg
+            session.save()
+            
+            #return redirect("/login")
+            #return json bad query
+
+        except KeyError:
+            return redirect('/')
 
     def loginHandler(self):
         """ Display and Handle Login """

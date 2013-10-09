@@ -17,6 +17,8 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.mail            as mailLib
 import re
 
+import simplejson as json
+
 log = logging.getLogger(__name__)
 
 class plaintextForm(formencode.Schema):
@@ -387,6 +389,199 @@ class RegisterController(BaseController):
             session.save() 
    
         return redirect('/signup')
+
+    def signupHandlerJson( self ):
+        """
+            JSON responses:
+            statusCode == 0:    Same as unix exit code (OK)
+            statusCode == 1:    No query was submitted
+            statusCode == 2:    Query submitted, no results found
+            result:             The search result, given there was at least one
+        """
+        log.info("in json signup handler")
+        response.headers['Content-type'] = 'application/json'
+        c.numAccounts = 1000
+        c.numUsers = len(getActiveUsers())
+
+        if c.numUsers >= c.numAccounts:
+            splashMsg = {}
+            splashMsg['type'] = 'error'
+            splashMsg['title'] = 'Error:'
+            splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
+            session['splashMsg'] = splashMsg
+            session.save()
+            return redirect('/signup')
+
+        """ Handler for registration, validates """
+        returnPage = "/signup"
+        name = False
+        password = False
+        password2 = False
+        postalCode = False
+        checkTOS = False
+        c.title = c.heading = "Registration"
+        splashMsg = {}
+        splashMsg['type'] = 'error'
+        splashMsg['title'] = 'Error'
+        if  'password' not in request.params:
+            log.info('password missing')
+        else:
+            password = request.params['password']
+        if  'password2' not in request.params:
+            log.info('password2 missing')
+        else:
+            password2 = request.params['password2']
+        if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
+            workshopCode = request.params['workshopCode']
+            pmember = getPrivateMemberByCode(session['guestCode'])
+            if pmember and pmember['workshopCode'] == workshopCode:
+                email = pmember['email']
+                log.info('got pmember email %s '%email)
+                returnPage = "/derived/6_guest_signup.bootstrap"
+                c.w = getWorkshopByCode(workshopCode)
+                if 'addItem' in request.params:
+                    c.listingType = request.params['addItem']
+        else:
+            if  'email' not in request.params:
+                log.info('email missing')
+            else:
+                email = request.params['email']
+        if  'postalCode' not in request.params:
+            log.info('postalCode missing')
+        else:
+            postalCode = request.params['postalCode']
+        if  'country' not in request.params:
+            log.info('country missing')
+        else:
+            country = request.params['country']
+        if  'memberType' not in request.params:
+            log.info('memberType missing')
+        else:
+            memberType = request.params['memberType']
+        if  'name' not in request.params:
+            log.info('name missing')
+        else:
+            name = request.params['name']
+        if  'chkTOS' not in request.params:
+            log.info('chkTOS missing')
+        else:
+            checkTOS = request.params['chkTOS']
+
+        schema = plaintextForm()
+        try:
+            namecheck = name.replace(' ', '')
+            nameTst = schema.to_python(dict(username = namecheck))
+        except formencode.Invalid, error:
+            splashMsg['content'] = "Full name: Enter only letters, numbers, or _ (underscore)"
+            session['splashMsg'] = splashMsg
+            session.save()
+            return redirect(returnPage)
+        username = name
+        maxChars = 50;
+        errorFound = False;
+        # These warnings should all be collected onto the stack, then at the end we should render the page
+        if name and password and password2 and email and checkTOS:
+            if len(name) > maxChars:
+                name = name[:50]
+            if len(email) > maxChars:
+                log.info("Error: Long email")
+                errorFound = True
+                splashMsg['content'] = "Email can be " + unicode(maxChars) + " characters at most"
+                session['splashMsg'] = splashMsg
+                session.save()
+            if len(password) > maxChars:
+                log.info("Error: Long password")
+                errorFound = True
+                splashMsg['content'] = "Password can be " + unicode(maxChars) + " characters at most"
+                session['splashMsg'] = splashMsg
+                session.save() 
+            if postalCode:
+                pInfo = getPostalInfo(postalCode)
+                if pInfo == None:
+                    log.info("Error: Bad Postal Code")
+                    errorFound = True
+                    splashMsg['content'] = "Invalid postal code"
+                    session['splashMsg'] = splashMsg
+                    session.save() 
+            else:
+                log.info("Error: Bad Postal Code")
+                errorFound = True
+                splashMsg['content'] = "Invalid postal code"
+                session['splashMsg'] = splashMsg
+                session.save()
+            if errorFound:
+                return json.dumps({'statusCode':2, 'message':'error found'})
+            username = name
+            user = getUserByEmail( email )
+            if user == False:
+                if password == password2:
+                    u = User(email, name, password, country, memberType, postalCode)
+                    message = "The user '" + username + "' was created successfully!"
+                    c.success = True
+                    session['registerSuccess'] = True
+                    session.save()
+
+                    log.info( message )
+                    splashMsg['type'] = 'success'
+                    splashMsg['title'] = 'Success'
+                    splashMsg['content'] = "Check your email to finish setting up your account. If you don't see an email from us in your inbox, try checking your junk mail folder."
+                    session['splashMsg'] = splashMsg
+                    session.save()
+                    # if they are a guest signing up, activate and log them in
+                    if c.w:
+                        user = u.u
+                        if 'laston' in user:
+                            t = time.localtime(float(user['laston']))
+                            user['previous'] = time.strftime("%Y-%m-%d %H:%M:%S", t)
+
+                        user['laston'] = time.time()
+                        user['activated'] = u'1'
+                        loginTime = time.localtime(float(user['laston']))
+                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
+                        commit(user)
+                        session["user"] = user['name']
+                        session["userCode"] = user['urlCode']
+                        session["userURL"] = user['url']
+                        session.save()
+                        log.info('session of user: %s' % session['user'])
+                        log.info('%s logged in %s' % (user['name'], loginTime))
+                        c.authuser = user
+
+                        log.info( "Successful guest activation with credentials - " + email )
+                        returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
+                        if c.listingType:
+                            returnPage += "/add/" + c.listingType
+                        return json.dumps({'statusCode':0, 'user':user['email']})
+                    else:
+                        return json.dumps({'statusCode':0, 'user':u.u['email']})
+                else:
+                    splashMsg['content'] = "The password and confirmation do not match"
+                    session['splashMsg'] = splashMsg
+                    session.save()
+                    return json.dumps({'statusCode':2, 'message':'The password and confirmation do not match'})
+            else:
+                # If they've registered using external authentication, they cannot add a password
+                # by registering in this way - unless it is an unactivated account
+                if user['activated'] == '0':
+                    splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
+                    session['splashMsg'] = splashMsg
+                    session.save()
+                    baseURL = c.conf['activation.url']
+                    url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
+                    mailLib.sendActivationMail(user['email'], url)
+                    return json.dumps({'statusCode':2, 'message':"This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."})
+                else:
+                    splashMsg['content'] = "The email '" + email + "' is already in use"
+                    session['splashMsg'] = splashMsg
+                    session.save()
+                    return json.dumps({'statusCode':2, 'message':'This email is already in use.'})
+        else:
+            splashMsg['content'] = "Please fill all fields"
+            session['splashMsg'] = splashMsg
+            session.save() 
+            return json.dumps({'statusCode':2, 'message':'Please fill all fields'})
+
+        
 
     def signupHandler( self ):
         c.numAccounts = 1000

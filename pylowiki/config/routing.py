@@ -291,9 +291,11 @@ def make_map():
     map.connect('/workshop/{workshopCode}/{workshopURL}/login/{thing}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/clogin/{thing}/{thingCode}/{thingURL}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = '{thingCode}', thingURL = '{thingURL}')
     map.connect('/{loginHandler:loginHandler/?}', controller = 'login', action = 'loginHandler')
+    map.connect('/j/{loginHandler:loginHandler/?}', controller = 'login', action = 'loginHandlerJson')
     map.connect('/{signup:signup/?}', controller = 'register', action = 'signupDisplay')
     map.connect('/{signupNoExtAuth:signupNoExtAuth/?}', controller = 'register', action = 'signupNoExtAuthDisplay')
     map.connect('/signup/handler{end:/?}', controller = 'register', action= 'signupHandler')
+    map.connect('/j/signupHandler{end:/?}', controller = 'register', action= 'signupHandlerJson')
     map.connect('/{forgotPassword:forgotPassword/?}', controller = 'login', action = 'forgotPassword')
     map.connect('/{forgotPasswordHandler:forgotPasswordHandler/?}', controller = 'login', action = 'forgot_handler')
 
