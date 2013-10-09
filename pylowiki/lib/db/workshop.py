@@ -164,7 +164,7 @@ def getWorkshopPostsSince(code, url, memberDatetime):
 def updateWorkshopChildren(workshop, workshopKey):
     code = workshop['urlCode']        
     key = '%s%s' %(workshop.objType, 'Code')
-    log.info("key is %s, code is %s"%(key, code))
+
     try:
         itemList = meta.Session.query(Thing)\
                 .filter(Thing.objType.in_(['idea', 'resource', 'discussion']))\
