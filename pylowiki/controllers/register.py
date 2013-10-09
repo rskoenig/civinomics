@@ -726,7 +726,24 @@ class RegisterController(BaseController):
         return redirect('/signup')
 
     def signupHandler( self ):
+        """ Handler for registration, validates 
+        JSON responses:
+            statusCode == 0:    Same as unix exit code (OK)
+            statusCode == 1:    No query was submitted
+            statusCode == 2:    Query submitted, no results found
+            result:             user's email and password are valid, session data returned?
+        """
         log.info("in signup handler")
+
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                returnJson = True
+            else:
+                returnJson = False
+        except KeyError:
+            returnJson = False
+
         c.numAccounts = 1000
         c.numUsers = len(getActiveUsers())
 
@@ -737,9 +754,12 @@ class RegisterController(BaseController):
             splashMsg['content'] = 'Site at capacity!  We will be increasing the capacity in the coming weeks.'
             session['splashMsg'] = splashMsg
             session.save()
-            return redirect('/signup')
+            if returnJson:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':2, 'message':'Site at capacity!  We will be increasing the capacity in the coming weeks.'})
+            else:
+                return redirect('/signup')
 
-        """ Handler for registration, validates """
         returnPage = "/signup"
         name = False
         password = False
@@ -802,7 +822,11 @@ class RegisterController(BaseController):
             splashMsg['content'] = "Full name: Enter only letters, numbers, or _ (underscore)"
             session['splashMsg'] = splashMsg
             session.save()
-            return redirect(returnPage)
+            if returnJson:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':2, 'message':'Full name: Enter only letters, numbers, or _ (underscore)'})
+            else:
+                return redirect(returnPage)
         username = name
         maxChars = 50;
         errorFound = False;
@@ -837,7 +861,11 @@ class RegisterController(BaseController):
                 session['splashMsg'] = splashMsg
                 session.save()
             if errorFound:
-                return redirect(returnPage)
+                if returnJson:
+                    response.headers['Content-type'] = 'application/json'
+                    return json.dumps({'statusCode':2, 'message':splashMsg['content']})
+                else:
+                    return redirect(returnPage)
             username = name
             user = getUserByEmail( email )
             if user == False:
@@ -878,9 +906,16 @@ class RegisterController(BaseController):
                         returnPage = "/workshop/" + c.w['urlCode'] + "/" + c.w['url']
                         if c.listingType:
                             returnPage += "/add/" + c.listingType
+                        if returnJson:
+                            response.headers['Content-type'] = 'application/json'
+                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':returnPage})
+                        else:
+                            return redirect(returnPage)
+                    if returnJson:
+                        response.headers['Content-type'] = 'application/json'
+                        return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':returnPage})
+                    else:
                         return redirect(returnPage)
-                        
-                    return redirect(returnPage)
                 else:
                     splashMsg['content'] = "The password and confirmation do not match"
                     session['splashMsg'] = splashMsg
@@ -895,16 +930,28 @@ class RegisterController(BaseController):
                     baseURL = c.conf['activation.url']
                     url = '%s/activate/%s__%s'%(baseURL, user['activationHash'], user['email'])
                     mailLib.sendActivationMail(user['email'], url)
+                    if returnJson:
+                        response.headers['Content-type'] = 'application/json'
+                        return json.dumps({'statusCode':2, 'message':"This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."})
                 else:
                     splashMsg['content'] = "The email '" + email + "' is already in use"
                     session['splashMsg'] = splashMsg
                     session.save()
+                    if returnJson:
+                        response.headers['Content-type'] = 'application/json'
+                        return json.dumps({'statusCode':2, 'message':'This email is already in use.'})
         else:
             splashMsg['content'] = "Please fill all fields"
             session['splashMsg'] = splashMsg
-            session.save() 
-   
-        return redirect('/signup')
+            session.save()
+            if returnJson:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':2, 'message':'Please fill all fields'})
+        if returnJson:
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':2, 'message':splashMsg['content']})
+        else:
+            return redirect('/signup')
 
     def generateHash(self, *length):
         """Return a system generated hash for randomization of user params"""

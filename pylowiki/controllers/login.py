@@ -558,15 +558,30 @@ class LoginController(BaseController):
         #if 'fbLogin' in kwargs:
         #    if kwargs['fbLogin'] is True:
         #        return loginURL
-        return redirect(loginURL)
+        return loginURL
 
     def loginHandler(self):
-        """ Display and Handle Login """
+        """ Display and Handle Login. 
+        JSON responses:
+            statusCode == 0:    Same as unix exit code (OK)
+            statusCode == 1:    No query was submitted
+            statusCode == 2:    Query submitted, no results found
+            result:             user's email and password are valid, session data returned?
+        """
         c.title = c.heading = "Login"  
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
+
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                returnJson = True
+            else:
+                returnJson = False
+        except KeyError:
+            returnJson = False
 
         try:
             email = request.params["email"].lower()
@@ -588,16 +603,30 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ): 
                         # if pass is True
-                        LoginController.logUserIn(self, user)
+                        loginURL = LoginController.logUserIn(self, user)
+                        if returnJson:
+                            response.headers['Content-type'] = 'application/json'
+                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
+                        else:
+                            return redirect(loginURL)
 
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
+                        if returnJson:
+                            response.headers['Content-type'] = 'application/json'
+                            return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
                 else:
                     log.warning("incorrect username or password - " + email )
                     splashMsg['content'] = 'incorrect username or password'
+                    if returnJson:
+                        response.headers['Content-type'] = 'application/json'
+                        return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
             else:
                 splashMsg['content'] = 'missing username or password'
+                if returnJson:
+                    response.headers['Content-type'] = 'application/json'
+                    return json.dumps({'statusCode':1, 'message':'missing username or password'})
             
             session['splashMsg'] = splashMsg
             session.save()
@@ -605,6 +634,9 @@ class LoginController(BaseController):
             return redirect("/login")
 
         except KeyError:
+            if returnJson:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':1, 'message':'keyerror'})
             return redirect('/')
 
     @login_required
