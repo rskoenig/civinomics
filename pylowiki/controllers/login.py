@@ -199,7 +199,8 @@ class LoginController(BaseController):
             user = userLib.getUserByFacebookAuthId( facebookAuthId )
         if user:
             log.info("login:fbLoggingIn found user, logging in")
-            LoginController.logUserIn(self, user)
+            loginURL = LoginController.logUserIn(self, user)
+            redirect(loginURL)
         else:
             log.info("login:fbLoggingIn DID NOT FIND USER - DEAD END")
 
@@ -245,7 +246,7 @@ class LoginController(BaseController):
         #if 'fbLogin' in kwargs:
         #    if kwargs['fbLogin'] is True:
         #        return loginURL
-        return redirect(loginURL)
+        return loginURL
 
     def loginHandlerJson(self):
         """ Handle login request from iphone app """
@@ -256,18 +257,23 @@ class LoginController(BaseController):
             statusCode == 2:    Query submitted, no results found
             result:             user's email and password are valid, session data returned?
         """
-        response.headers['Content-type'] = 'application/json'
         c.title = c.heading = "Login"  
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                returnJson = True
+            else:
+                returnJson = False
+        except KeyError:
+            returnJson = False
 
         try:
             email = request.params["email"].lower()
             password = request.params["password"]
-            
-            #return json.dumps({'email':email, 'password':password})
 
             log.info('iphone app: user %s attempting to log in' % email)
             if email and password:
@@ -285,56 +291,29 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ): 
                         # if pass is True
-                        # NOTE - need to store the access token? kee in session or keep on user?
-                        # keeping it on the user will allow interaction with user's facebook after they've logged off
-                        # and by other people
-                        session["user"] = user['name']
-                        session["userCode"] = user['urlCode']
-                        session["userURL"] = user['url']
-                        session.save()
-                        log.info("login:logUserIn session save")
-
-                        c.authuser = user
-
-                        log.info("login:logUserIn")
-                        if 'externalAuthType' in user.keys():
-                            log.info("login:logUserIn externalAuthType in user keys")
-                            if user['externalAuthType'] == 'facebook':
-                                log.info("login:logUserIn externalAuthType facebook")
-                                user['facebookAccessToken'] = session['fbAccessToken']
-                                if 'fbSmallPic' in session:
-                                    user['facebookProfileSmall'] = session['fbSmallPic']
-                                    user['facebookProfileBig'] = session['fbBigPic']
-                            else:
-                                user['externalAuthType'] = ''
-                        user['laston'] = time.time()
-                        loginTime = time.localtime(float(user['laston']))
-                        loginTime = time.strftime("%Y-%m-%d %H:%M:%S", loginTime)
-                        commit(user)
-                        log.info("login:logUserIn commit user")
-                        
-                        
-                        if 'afterLoginURL' in session:
-                            # look for accelerator cases: workshop home, item listing, item home
-                            loginURL = session['afterLoginURL']
-                            session.pop('afterLoginURL')
-                            session.save()
+                        loginURL = LoginController.logUserIn(self, user)
+                        if returnJson:
+                            response.headers['Content-type'] = 'application/json'
+                            return json.dumps({'statusCode':0, 'user':dict(user)})
                         else:
-                            loginURL = "/"
-                        
-                        return json.dumps({'statusCode':0, 'user':dict(user)})
-
+                            return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
-                        return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
+                        if returnJson:
+                            response.headers['Content-type'] = 'application/json'
+                            return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
                 else:
                     log.warning("incorrect username or password - " + email )
                     splashMsg['content'] = 'incorrect username or password'
-                    return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
+                    if returnJson:
+                        response.headers['Content-type'] = 'application/json'
+                        return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
             else:
                 splashMsg['content'] = 'missing username or password'
-                return json.dumps({'statusCode':1, 'message':'missing username or password'})
+                if returnJson:
+                    response.headers['Content-type'] = 'application/json'
+                    return json.dumps({'statusCode':1, 'message':'missing username or password'})
             session['splashMsg'] = splashMsg
             session.save()
             
@@ -345,12 +324,27 @@ class LoginController(BaseController):
             return redirect('/')
 
     def loginHandler(self):
-        """ Display and Handle Login """
+        """ Display and Handle Login. 
+        JSON responses:
+            statusCode == 0:    Same as unix exit code (OK)
+            statusCode == 1:    No query was submitted
+            statusCode == 2:    Query submitted, no results found
+            result:             user's email and password are valid, session data returned?
+        """
         c.title = c.heading = "Login"  
         c.splashMsg = False
         splashMsg = {}
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
+
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                returnJson = True
+            else:
+                returnJson = False
+        except KeyError:
+            returnJson = False
 
         try:
             email = request.params["email"].lower()
@@ -372,16 +366,30 @@ class LoginController(BaseController):
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
                     elif userLib.checkPassword( user, password ): 
                         # if pass is True
-                        LoginController.logUserIn(self, user)
+                        loginURL = LoginController.logUserIn(self, user)
+                        if returnJson:
+                            response.headers['Content-type'] = 'application/json'
+                            return json.dumps({'statusCode':0, 'user':dict(user)})
+                        else:
+                            return redirect(loginURL)
 
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
+                        if returnJson:
+                            response.headers['Content-type'] = 'application/json'
+                            return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
                 else:
                     log.warning("incorrect username or password - " + email )
                     splashMsg['content'] = 'incorrect username or password'
+                    if returnJson:
+                        response.headers['Content-type'] = 'application/json'
+                        return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
             else:
                 splashMsg['content'] = 'missing username or password'
+                if returnJson:
+                    response.headers['Content-type'] = 'application/json'
+                    return json.dumps({'statusCode':1, 'message':'missing username or password'})
             
             session['splashMsg'] = splashMsg
             session.save()
@@ -389,6 +397,9 @@ class LoginController(BaseController):
             return redirect("/login")
 
         except KeyError:
+            if returnJson:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':1, 'message':'keyerror'})
             return redirect('/')
 
     @login_required
