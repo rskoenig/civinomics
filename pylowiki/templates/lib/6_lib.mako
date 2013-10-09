@@ -305,7 +305,6 @@
             <span class="orange"><strong>Vote to display rating</strong></span><br>
           % endif
           Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
-         <% log.info("vote") %>
       % endif
    </div>
 </%def>

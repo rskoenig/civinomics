@@ -49,11 +49,11 @@ class SearchController(BaseController):
         self.noQuery = False
         self.searchType = 'name'
         if 'searchString' in kwargs:
-            searchString = kwargs['searchString']
+            searchString = kwargs['searchString'].replace("+", " ")
         else:
             searchString = None
             
-        log.info("search string is %s"%searchString)
+        log.info("****SEARCH STRING**** %s"%searchString)
             
         if 'id1' in kwargs:
             id1 = kwargs['id1']
@@ -86,6 +86,7 @@ class SearchController(BaseController):
             
         if 'searchQuery' in request.params and searchString == None:
             self.query = request.params['searchQuery']
+            self.query.replace("+", " ")
             if self.query.strip() == '':
                 self.noQuery = True
         else:
@@ -171,7 +172,7 @@ class SearchController(BaseController):
 
         c.photos = photoLib.searchPhotos('scope', self.query)
         c.searchQuery = self.query
-        log.info("search is %s"%c.searchQuery)
+        #log.info("search is %s"%c.searchQuery)
         if c.photos:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
@@ -330,7 +331,7 @@ class SearchController(BaseController):
         elif self.searchType == 'geo':
             keys = ['workshop_public_scope']
             values = [self.query]
-            log.info("self.query is %s"%self.query)
+            #log.info("self.query is %s"%self.query)
         else:    
             keys = ['title', 'description', 'workshop_category_tags']
             values = [self.query, self.query, self.query]
@@ -549,7 +550,6 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
         
     def searchPhotos(self):
-        log.info("in search photos")
         if self.noQuery:
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
@@ -564,12 +564,9 @@ class SearchController(BaseController):
             keys = ['title', 'description', 'tags']
             values = [self.query, self.query, self.query]
             photos = photoLib.searchPhotos(keys, values)
-            log.info("after photo search")
         if not photos:
-            log.info("no photos")
             return json.dumps({'statusCode':2})
         if len(photos) == 0:
-            log.info("len photos is 0")
             return json.dumps({'statusCode':2})
             
         colors = workshopLib.getWorkshopTagColouring()
@@ -578,7 +575,6 @@ class SearchController(BaseController):
             u = generic.getThing(photo['userCode'])
             if p['deleted'] != u'0' or p['disabled'] != u'0':
                 continue
-            log.info("after photo deleted disabled")
             entry = {}
             entry['title'] = p['title']
             tagList = p['tags'].split('|')
@@ -602,9 +598,7 @@ class SearchController(BaseController):
             entry['urlCode'] = p['urlCode']
             entry['url'] = p['url']
             entry['thumbnail'] = "/images/photos/" + p['directoryNum_photos'] + "/thumbnail/" + p['pictureHash_photos'] + ".png"
-            log.info(entry['thumbnail'])
             entry['photoLink'] = "/profile/" + u['urlCode'] + "/" + u['url'] + "/photo/show/" + p['urlCode']
-            log.info(entry['photoLink'])
             entry['numComments'] = discussionLib.getDiscussionForThing(p)['numComments']
             entry['authorCode'] = u['urlCode']
             entry['authorURL'] = u['url']
