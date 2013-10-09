@@ -33,7 +33,40 @@
                         ${helpers.showMemberPosts(c.memberPosts)}
                     </div><!-- tab-pane -->
                     <div class="tab-pane" id="tab-workshops">
-                        <a class="btn btn-success" href="/profile/${c.user['urlCode']}/${c.user['url']}/newInitiative">Start an Initiative!</a>
+                        % if 'user' in session:
+                            % if c.user['email'] == c.authuser['email']:
+                                <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#newinitiative">
+                                    Start an Initiative!
+                                </button>
+                                <div id="newinitiative" class="collapse">
+                                    <div class="spacer"></div>
+                                    <script type="text/javascript">
+                                        function checkForm() {
+                                            var title = document.getElementById("initiativeTitle").value;
+                                            var description = document.getElementById("initiativeDescription").value;
+                                            var scope = document.getElementById("initiativeScope");
+                                            if(title != '' && description != '' && scope.selectedIndex != 0) {
+                                                return true;
+                                            } else {
+                                                return false;
+                                            }
+                                        };
+                                    </script>
+                                    <form id="newinitiative" class="form-inline" method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/newInitiative" onSubmit="return checkForm();">
+                                        <input type="text" name="initiativeTitle" id="initiativeTitle" value="" placeholder="Initiative Title" required>
+                                        <input type="text" name="initiativeDescription" id="initiativeDescription" value="" placeholder="Short description" required>
+                                        <select name="initiativeScope" id="initiativeScope">
+                                        <option value="0" selected> Initiative Scope</option>
+                                        <option value="zipcode"> My Zip Code</option>
+                                        <option value="city"> My City</option>
+                                        <option value="county"> My County</option>
+                                        </select>
+                                        <button class="btn btn-success btn-mini">Next</button>
+                                    </form>
+                                    <div class="spacer"></div>
+                                </div><!-- new-initiative -->
+                            % endif
+                        % endif
                         ${helpers.inviteCoFacilitate()}
                         <table class="table table-hover table-condensed">
                         <tbody>

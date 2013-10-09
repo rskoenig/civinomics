@@ -7,6 +7,7 @@ from pylowiki.lib.base import BaseController, render
 
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.db.initiative   as initiativeLib
+import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.utils           as utils
@@ -22,9 +23,9 @@ class InitiativeController(BaseController):
         c.user = None
         c.initiative = None
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
-                c.user = userLib.getUserByCode(id1)
-                if not c.user:
-                    abort(404)
+            c.user = userLib.getUserByCode(id1)
+            if not c.user:
+                abort(404)
         elif (action == 'initiativeEditHandler' or action == 'initiativeShowHandler') and id1 is not None and id2 is not None:
                 c.initiative = initiativeLib.getInitiative(id1)
                 if c.initiative:
@@ -33,7 +34,11 @@ class InitiativeController(BaseController):
                   abort(404)  
         else:
             abort(404)
+            
+        userLib.setUserPrivs()
+
 
     def initiativeNewHandler(self):
 
-        return render('/derived/6_initiative_new.bootstrap') 
+        return render('/derived/6_initiative_new.bootstrap')
+ 

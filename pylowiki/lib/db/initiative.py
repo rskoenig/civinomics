@@ -25,7 +25,7 @@ def isPublished(initiative):
         return False
 
 # Object
-def Initiative(owner, title, description, cost, tags, scope, workshop = None):
+def Initiative(owner, title, description, scope, workshop = None):
     i = Thing('initiative', owner.id)
     generic.linkChildToParent(i, owner)
     if workshop is not None:
@@ -37,7 +37,7 @@ def Initiative(owner, title, description, cost, tags, scope, workshop = None):
     i['url'] = utils.urlify(title[:20])
     i['description'] = description
     i['background'] = ""
-    i['tags'] = tags
+    i['tags'] = ""
     i['scope'] = scope
     i['deleted'] = u'0'
     i['disabled'] = u'0'
