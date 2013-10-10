@@ -41,6 +41,17 @@ html,body{
   height:40px;
 }
 
+.footer-civ.condensed{
+    position: absolute;
+    z-index: 1030;
+    height: 90px;
+    padding-top: 45px;
+    background-color: #ffffff;
+    background-image: url('/images/splash/extra_clean_paper.png');
+    background-repeat: repeat;
+    background-position: top left;
+}
+
 .container.main{
   margin-bottom: 60px;
 }
@@ -241,6 +252,10 @@ padding: 0;
     max-width:650px;
 }
 .fullWidth{ width:100%; }
+
+.horizontal-list{
+  display: inline;
+}
 
 .horizontal-list> li {
   display: inline;
@@ -2294,6 +2309,7 @@ button.signup, button.login{
   height: 135px;
   color: #fff;
   background: rgba(0,0,0,0.8);
+  padding-bottom: 20px;
 }
 
 .how-it-works .row-fluid{
