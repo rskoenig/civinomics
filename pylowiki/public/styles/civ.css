@@ -2238,24 +2238,24 @@ hr.list-header{
   margin-left: 130px;
 }
 
-.main-well.signup input{
+.main-well input{
   height: 25px;
 }
-.main-well.signup button{
+.main-well button{
   height: 35px;
 }
 
-.main-well.signup .control-group{
+.main-well .control-group{
   margin-bottom: 10px;
 }
 
-.main-well.signup h2{
+.main-well h2{
   font-weight: 500;
   margin-top: 0px;
   margin-bottom: 15px;
 }
 
-button.signup{
+button.signup, button.login{
   width: 112px;
 }
 
@@ -2263,4 +2263,37 @@ button.signup{
   margin-top: 5px;
   margin-left: 10px;
   margin-right: 20px;
+}
+
+.container .splash{
+  position: relative;
+}
+
+.slogan{
+  position: absolute;
+  top: 38%;
+  color: #fff;
+  margin-left: 10%;
+  background: rgba(0,0,0,.8);
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.social-login{
+  height:35px;
+}
+
+.how-it-works{
+  position:absolute;
+  bottom: 0;
+  left:0;
+  width: 100%;
+  height: 135px;
+  color: #fff;
+  background: rgba(0,0,0,0.8);
+}
+
+.how-it-works .row-fluid{
+  margin-left: 3%;
+  margin-right: 3%;
 }

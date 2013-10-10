@@ -17,7 +17,7 @@
     </div>
 </div>
 
-<div class="container">
+<div class="container splash">
     <div class="row">
         % if c.success:
             <div class="span6 offset3" style="padding-top:150px;">
@@ -30,6 +30,9 @@
                 </div>
             </div>
         % else: 
+            <div class="slogan">
+                <h1>Democracy starts at home</h1>
+            </div>
             <div class="well main-well signup">
                 % if c.splashMsg:
                     <% message = c.splashMsg %>
@@ -106,6 +109,28 @@
                         </form>
                     </div>
                 % endif
+            </div>
+            <div class="row-fluid how-it-works">
+                <div class="row-fluid">
+                    <div class="span3 centered">
+                        <h3><i class="icon-group"></i> Build a Community</h3>
+                        <p>Grow a new movement of civic participation online. This global community shares ideas on better legislation for our cities, states and countries.</p>
+                    </div> 
+                    <div class="span1 centered" style="margin-top: 30px;">
+                        <i class="icon-arrow-right icon-3x"></i>
+                    </div>
+                    <div class="span3 centered">
+                        <h3><i class="icon-building"></i> Vote in our Hometowns</h3>
+                        <p>Transition to online voting for local policy decisions, moving from centralized to more distributed government organization.</p>
+                    </div>  
+                    <div class="span1 centered" style="margin-top: 30px;">
+                        <i class="icon-arrow-right icon-3x"></i>
+                    </div> 
+                    <div class="span3 centered">
+                        <h3><i class="icon-flag"></i> Reclaim our Country</h2>
+                        <p>Directly vote on vital reforms for our country. In every country. Government of By and For the People is reborn.</p>
+                    </div>                 
+                </div>
             </div>
         % endif
     </div>
