@@ -168,14 +168,15 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/"> <img src="/images/logo_white_myriad.png"> </a>
+          <a class="brand" href="/"> <img src="/images/logo_white_myriad_lg.png"> </a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-left">
                <li class="nav-item"></li> 
             </ul>
             <ul class="nav pull-right">
-                <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
                 <li class="nav-item"><a href="/workshops" class="nav-item">Browse</a></li>
+                <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="http://civinomics.wordpress.com/" target="_blank" class="nav-item">Blog</a></li>
                 <li class="nav-item"><a href="/login" class="nav-item">Log In</a></li>
             </ul>
           </div><!--/.nav-collapse -->

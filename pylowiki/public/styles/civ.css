@@ -277,9 +277,10 @@ h1.workshop-title{
 }
 
 .logo{
-  background-image: url('/images/logo_white_myriad.png');
+  background-image: url('/images/logo_white_myriad_med.png');
   height: 35px;
-  width: 216px;
+  width: 185px;
+  background-repeat: none;
 }
 
 .small-show{
@@ -2131,6 +2132,7 @@ h1 .label.workshop-tag{
   position: absolute;
   z-index: 2;
   font-size:24px;
+  font-weight: 300;
   color: #FFFFFF;
 }
 
@@ -2142,6 +2144,7 @@ h1 .label.workshop-tag{
 
 .lead.bookmark-title{
   font-size: 16px;
+  font-weight: 300;
 }
 
 .span2.activity{
@@ -2201,12 +2204,12 @@ hr.list-header{
 }
 
 .navbar-inner.civinomics-splash .brand img{
-  margin-bottom: 8px;
-  padding-top: 2px;
+  margin-bottom: 4px;
+  height: 40px;
 }
 
 .navbar .nav > li > a{
-  font-weight: 100;
+  font-weight: 300;
 }
 
 .main-well{
@@ -2296,4 +2299,9 @@ button.signup, button.login{
 .how-it-works .row-fluid{
   margin-left: 3%;
   margin-right: 3%;
+}
+
+.success-well{
+    font-size:24px;
+    line-height:36px;
 }

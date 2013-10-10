@@ -11,9 +11,13 @@
 </%def>
 
 <div id="bg">
-    <img src='/images/splash/occupy_splash.png' alt="">
+    % if not c.success:
+        <img src='/images/splash/occupy_splash.png' alt="">
+    % else:
+        <img src='/images/splash/liberty.jpg' alt="">
+    % endif
     <div class="span8">
-        <p class="photoCredits">iStockphoto</p>
+        <p class="photoCredits">wikimedia commons</p>
     </div>
 </div>
 
@@ -21,7 +25,7 @@
     <div class="row">
         % if c.success:
             <div class="span6 offset3" style="padding-top:150px;">
-                <div class="success-well">
+                <div class="well main-well success-well green">
                     <div class="login-top">
                         <h2>Success!</h2>
                     <div>
@@ -128,7 +132,7 @@
                     </div> 
                     <div class="span3 centered">
                         <h3><i class="icon-flag"></i> Reclaim our Country</h2>
-                        <p>Directly vote on vital reforms for our country. In every country. Government of By and For the People is reborn.</p>
+                        <p>Directly vote on vital reforms for our country. In every country. Government Of, By and For the People is reborn.</p>
                     </div>                 
                 </div>
             </div>

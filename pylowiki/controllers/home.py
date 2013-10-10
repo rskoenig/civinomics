@@ -42,7 +42,7 @@ class HomeController(BaseController):
 
 	def index(self):
 		if not 'user' in session:
-			return render('/derived/splash.bootstrap')
+			return redirect('/')
 		else:
 			c.title = c.heading = c.workshopTitlebar = 'Home'
 			c.activity = getRecentActivity(12)
