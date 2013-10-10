@@ -80,7 +80,7 @@
                             <div class="control-group">
                                 <label class="control-label" for="email"> Email: </label>
                                 <div class="controls">
-                                    <input type="email" name="email" id="email" ng-model="email" ng-click="clearEmail()" required>
+                                    <input type="email" name="email" id="email" ng-model="email" required>
                                     <span class="error help-block" ng-show="signupForm.email.$error.email">Not a valid email!</span>
                                 </div>
                             </div>
@@ -90,19 +90,12 @@
                                     <input type="password" name="password" id="passphrase" ng-model= "passphrase1" required>
                                 </div>
                             </div>
-                            <div ng-class=" {'control-group': true} ">
-                                <label class="control-label" for="passphrase2"> Password (again): </label>
-                                <div class="controls">
-                                    <input type="password" name="password2" id="passphrase2" ng-model= "passphrase2" required>
-                                    <span class="error help-block" ng-show="passphrase1 != passphrase2">Passwords don't match!</span>
-                                </div>
-                            </div>
                             <div ng-class=" {'control-group': true, 'error': signupForm.postalCode.$error.pattern} ">
                                 <label class="control-label" for="postalCode"> <i class="icon-question-sign" rel="tooltip" data-placement="left" data-original-title="To help you find relevant topics in your region. Never displayed or shared."></i> Zip Code: </label>
                                 <div class="controls">
                                     <input class="input-small" type="text" name="postalCode" id="postalCode" ng-model="postalCode" ng-pattern="postalCodeRegex" ng-minlength="5" ng-maxlength="5" onBlur="geoCheckPostalCode()" required>
                                     <button type="submit" class="btn btn-success signup">Sign up</button>
-                                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern">Invalid zip code!</span>
+                                    <span class="error help-block" ng-show="signupForm.postalCode.$error.pattern" ng-cloak>Invalid zip code!</span>
                                     <div id="postalCodeResult"></div>
                                 </div>
                             </div>
