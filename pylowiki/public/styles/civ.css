@@ -277,9 +277,9 @@ h1.workshop-title{
 }
 
 .logo{
-  background-image: url('/images/logo_white1.png');
+  background-image: url('/images/logo_white_myriad.png');
   height: 35px;
-  width: 165px;
+  width: 216px;
 }
 
 .small-show{
@@ -2184,4 +2184,83 @@ border-radius: 14px 0 0 14px;
 hr.list-header{
   margin-bottom: 20px;
   border-bottom: none;
+}
+
+.navbar-inner.civinomics-splash{
+  
+  background: #00903e;
+  
+  /*
+  background-color: #fafafa;
+  background-image: -moz-linear-gradient(top, #00903e, #007733);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#00903e), to(#007733));
+  background-image: -webkit-linear-gradient(top, #00903e, #007733);
+  background-image: -o-linear-gradient(top, #00903e, #007733);
+  background-image: linear-gradient(to bottom, #00903e, #007733);
+  */
+}
+
+.navbar-inner.civinomics-splash .brand img{
+  margin-bottom: 8px;
+  padding-top: 2px;
+}
+
+.navbar .nav > li > a{
+  font-weight: 100;
+}
+
+.main-well{
+    background-color: #ffffff;
+    background-image: url('/images/splash/dust.png');
+    background-repeat: repeat;
+    background-position: top left;
+    
+    opacity:0.95;
+    filter:alpha(opacity=95); /* For IE8 and earlier */
+}
+
+.main-well.signup{
+  width: 370px;
+  position: absolute; 
+  top: 15%;
+  right: 2%; 
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  padding-top: 12px;
+}
+
+.main-well.signup .control-label{
+  width: 120px;
+  padding-top: 7px;
+}
+
+.main-well.signup .controls{
+  margin-left: 130px;
+}
+
+.main-well.signup input{
+  height: 25px;
+}
+.main-well.signup button{
+  height: 35px;
+}
+
+.main-well.signup .control-group{
+  margin-bottom: 10px;
+}
+
+.main-well.signup h2{
+  font-weight: 500;
+  margin-top: 0px;
+  margin-bottom: 15px;
+}
+
+button.signup{
+  width: 112px;
+}
+
+.tcs{
+  margin-top: 5px;
+  margin-left: 10px;
+  margin-right: 20px;
 }

@@ -160,22 +160,23 @@
 </%def>
 
 <%def name="splashNavbar()">
-    <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
-      <div class="navbar-inner" style="background-image: none; background-color: #FFFFFF;">
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner civinomics-splash">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/"> <img src="/images/logo.png"> </a>
+          <a class="brand" href="/"> <img src="/images/logo_white_myriad.png"> </a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-left">
                <li class="nav-item"></li> 
             </ul>
             <ul class="nav pull-right">
-              <li class="nav-item"><a href="/signup" class="nav-item green green-hover">Sign Up</a></li>
-              <li class="nav-item"><a href="/login" class="nav-item green green-hover">Log In</a></li>
+                <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="/workshops" class="nav-item">Browse</a></li>
+                <li class="nav-item"><a href="/login" class="nav-item">Log In</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>

@@ -69,16 +69,6 @@ div.hidden{
     background-image: url('/images/splash/schoolTransit.jpg');
 }
 
-.main-well{
-    background-color: #ffffff;
-    background-image: url('/images/splash/dust.png');
-    background-repeat: repeat;
-    background-position: top left;
-    
-    opacity:0.9;
-    filter:alpha(opacity=90); /* For IE8 and earlier */
-}
-
 #splash-well{
     width: 270px;
 }
