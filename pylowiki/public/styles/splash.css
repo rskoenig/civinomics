@@ -10,6 +10,13 @@ html, body {
     background-position: top left;
 }
 
+@media (max-width: 767px){
+  body {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+}
+
 #bg {
     position:fixed; 
     top:-50%; 

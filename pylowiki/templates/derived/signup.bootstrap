@@ -55,11 +55,11 @@
                 % if c.conf['read_only.value'] == 'true':
                     <h1> Sorry, Civinomics is in read only mode right now </h1>
                 % else:
-                    <div class="row-fluid">
-                            <div class="span6" id="fbLoginButton2">
+                    <div class="row-fluid social-login">
+                            <div id="fbLoginButton2">
                                 <a onclick="FB.login()"><img src="/images/f-login.png"></a>
                             </div>
-                            <div class="span6" id="twtLoginButton1">
+                            <div id="twtLoginButton1">
                                 <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
                             </div>
                     </div>
@@ -112,7 +112,7 @@
                 <div class="row-fluid">
                     <div class="span3 centered">
                         <h3><i class="icon-group"></i> Build a Community</h3>
-                        <p>Grow a new movement of civic participation online. This global community shares ideas on legislation for our cities, states and countries.</p>
+                        <p>Grow a movement of civic participation online. This global community shares ideas on policy for our cities, states and countries.</p>
                     </div> 
                     <div class="span1 centered" style="margin-top: 30px;">
                         <i class="icon-arrow-right icon-3x"></i>

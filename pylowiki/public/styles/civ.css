@@ -46,7 +46,7 @@ html,body{
     z-index: 1030;
     height: 90px;
     margin-top: 15px;
-    padding-top: 45px;
+    padding-top: 40px;
     background-color: #ffffff;
     background-image: url('/images/splash/extra_clean_paper.png');
     background-repeat: repeat;
@@ -299,14 +299,12 @@ h1.workshop-title{
   background-repeat: none;
 }
 
-.small-show{
-  display: none;
+.logo.logo-lg{
+  background-image: url('/images/logo_white_myriad_medlg.png');
+  height: 40px;
+  width: 212px;
+  background-repeat: none;
 }
-
-.small-hidden{
-    display: inline;
-}
-
 
 @media (max-width: 730px){
   .logo{
@@ -314,6 +312,23 @@ h1.workshop-title{
     height: 35px;
     width: 40px;
   }
+}
+
+@media (max-width: 600px){
+  .logo.logo-lg{
+    background-image: url('/images/logo_simple_medlg.png');
+    height: 40px;
+    width: 44px;
+    background-repeat: none;
+  }
+}
+
+.small-show{
+  display: none;
+}
+
+.small-hidden{
+    display: inline;
 }
 
 @media (max-width: 605px){
@@ -2238,22 +2253,31 @@ hr.list-header{
     filter:alpha(opacity=95); /* For IE8 and earlier */
 }
 
-.main-well.signup{
-  width: 370px;
-  position: absolute; 
-  top: 15%;
-  right: 2%; 
-  margin-bottom: 0px;
-  padding-bottom: 0px;
+.main-well{
   padding-top: 12px;
+  position: absolute; 
 }
 
-.main-well.signup .control-label{
+.main-well.signup{
+  width: 370px;
+  margin-bottom: 0px;
+  padding-bottom: 0px;
+  top: 15%;
+  right: 2%; 
+}
+.main-well.login{
+  width: 390px;
+  top: 20%;
+  left: 50%;
+  margin-left: -185px; 
+}
+
+.main-well .control-label{
   width: 120px;
   padding-top: 7px;
 }
 
-.main-well.signup .controls{
+.main-well .controls{
   margin-left: 130px;
 }
 
@@ -2294,9 +2318,32 @@ button.signup, button.login{
   padding-right: 10px;
 }
 
-.social-login{
+@media (max-width: 1200px){
+  .slogan{
+    left: 50px;
+    margin-left: 0px;
+  }
+}
+
+@media (max-width: 979px){
+  .slogan{
+    top:28%;
+    width:320px;
+    text-align: center;
+  }
+}
+
+.social-login img{
   height:35px;
 }
+
+.social-login div{
+    width:48.6%;
+    margin-left: 3px;
+    margin-right: 3px;
+    display: inline;
+}
+
 
 .how-it-works{
   position:absolute;
@@ -2313,7 +2360,47 @@ button.signup, button.login{
 margin-left: 4.2%;
 }
 
+@media (max-width: 1250px){
+  .how-it-works{
+    padding-bottom: 30px;
+  } 
+  .how-it-works h3{
+    font-size: 18px;
+    line-height: 24px;
+  } 
+}
+
 .success-well{
     font-size:24px;
     line-height:36px;
 }
+
+.photo-cred{
+  color: grey;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  margin-left: -245px;
+}
+
+.splash-nav{
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+  margin-bottom: 0;
+}
+.splash-nav .navbar-inner{
+  border: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+}
+
+@media (max-width: 680px){
+  .splash-nav .nav-item{
+    font-size: 16px
+  }  
+}
+

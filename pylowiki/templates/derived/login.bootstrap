@@ -10,8 +10,8 @@
 <div class="login">
   <div class="container">
       <div class="row">
-          <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well">
+          <div>
+              <div class="well main-well login">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">
@@ -26,12 +26,12 @@
                       % if c.conf['read_only.value'] == 'true':
                           <h1> Sorry, Civinomics is in read only mode right now </h1>
                       % else:
-                          <div class="row-fluid">
-                            <div class="span6" id="fbLoginButton2">
-                                <a onclick="FB.login()"><img class="social-login pull-right" src="/images/f-login.png"></a>
+                          <div class="row-fluid social-login centered">
+                            <div id="fbLoginButton2">
+                                <a onclick="FB.login()"><img src="/images/f-login.png"></a>
                             </div>
-                            <div class="span6" id="twtLoginButton1">
-                                <a href="/twitterLoginBegin"><img class="social-login" src="/images/t-login.png"></a>
+                            <div id="twtLoginButton1">
+                                <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
                             </div>
                           </div>
                           <div class="social-sign-in-separator sc-font-light sc-text-light">

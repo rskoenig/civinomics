@@ -160,26 +160,16 @@
 </%def>
 
 <%def name="splashNavbar()">
-    <div class="navbar navbar-fixed-top" >
+    <div class="navbar splash-nav">
       <div class="navbar-inner civinomics-splash">
         <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/"> <img src="/images/logo_white_myriad_lg.png"> </a>
-          <div class="nav-collapse collapse">
-            <ul class="nav pull-left">
-               <li class="nav-item"></li> 
-            </ul>
+            <a class="brand" href="/"><div class="logo logo-lg" id="civinomicsLogo"></div></a>
             <ul class="nav pull-right">
                 <li class="nav-item"><a href="/workshops" class="nav-item">Browse</a></li>
                 <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
                 <li class="nav-item"><a href="http://civinomics.wordpress.com/" target="_blank" class="nav-item">Blog</a></li>
                 <li class="nav-item"><a href="/login" class="nav-item">Log In</a></li>
             </ul>
-          </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
@@ -268,6 +258,6 @@
                 </div>
             </div>
         </div>
-        <em class="grey" style="position: absolute; bottom: 5px; left: 5px;">Cover photo: Occupy Wallstreet, November 11th, 2011. Source: Wikimedia Commons</em>
+        <em class="photo-cred">Cover photo: Occupy Wallstreet, November 11th, 2011. Source: Wikimedia Commons</em>
     </div>
 </%def>
