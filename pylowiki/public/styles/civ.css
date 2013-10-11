@@ -45,6 +45,7 @@ html,body{
     position: absolute;
     z-index: 1030;
     height: 90px;
+    margin-top: 15px;
     padding-top: 45px;
     background-color: #ffffff;
     background-image: url('/images/splash/extra_clean_paper.png');
@@ -2283,10 +2284,6 @@ button.signup, button.login{
   margin-right: 20px;
 }
 
-.container .splash{
-  position: relative;
-}
-
 .slogan{
   position: absolute;
   top: 38%;
@@ -2312,9 +2309,8 @@ button.signup, button.login{
   padding-bottom: 20px;
 }
 
-.how-it-works .row-fluid{
-  margin-left: 3%;
-  margin-right: 3%;
+.how-it-works .row-fluid [class*="span"]:first-child {
+margin-left: 4.2%;
 }
 
 .success-well{
