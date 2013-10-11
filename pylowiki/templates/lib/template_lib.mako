@@ -240,8 +240,8 @@
 </%def>
 
 <%def name="condensedFooter()">
-    <div class="footer-civ condensed">
-        <div class="container-fluid">
+    <div class="footer-civ condensed" style="position: relative;">
+        <div class="container-fluid" >
             <div class="row-fluid">
                 <div class="span5">
                     <div class="pull-right">
@@ -268,5 +268,6 @@
                 </div>
             </div>
         </div>
+        <em class="grey" style="position: absolute; bottom: 5px; left: 5px;">Cover photo: Occupy Wallstreet, November 11th, 2011. Source: Wikimedia Commons</em>
     </div>
 </%def>
