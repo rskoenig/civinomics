@@ -34,8 +34,34 @@
     % endif
 </%def>
 
-<%def name="newInitiative()">
-    <% tagList = workshopLib.getWorkshopTagCategories() %>
+<%def name="listInitiative(item)">
+    <div class="media profile-workshop">
+        <a class="pull-left" href="/initiative/${item['urlCode']}/${item['url']}/show">
+        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url("/images/slide/thumbnail/supDawg.thumbnail"); background-size: cover; background-position: center center;"></div>
+        </a>
+        <div class="media-body">
+            <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
+            % if 'user' in session:
+                % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
+                    <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a>
+                % endif
+            % endif
+        </div><!-- media-body -->
+    </div><!-- media -->
+</%def>
+
+<%def name="editInitiative()">
+    <% 
+        tagList = workshopLib.getWorkshopTagCategories()
+        iTitle = ""
+        iDescription = ""
+        iScope = ""
+        if c.initiative:
+            if 'title' in c.initiative:
+                iTitle = c.initiative['title']
+            if 'description' in c.initiative:
+                iDescription = c.initiative['description']
+    %>
     <h4 class="section-header smaller">New Initiative</h4>
     <form method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/saveInitiativeHandler">
         <div class="row-fluid">

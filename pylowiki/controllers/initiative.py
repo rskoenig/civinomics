@@ -39,6 +39,48 @@ class InitiativeController(BaseController):
 
 
     def initiativeNewHandler(self):
-
-        return render('/derived/6_initiative_new.bootstrap')
+        title = ""
+        description = ""
+        scope = ""
+        
+        if 'initiativeTitle' in request.params:
+            title = request.params['initiativeTitle']
+        else:
+            log.init("no initiative title")
+            
+        if 'initiativeDescription' in request.params:
+            description = request.params['initiativeDescription']
+        else:
+            log.init("no initiative description")
+        
+        if 'initiativeScope' in request.params:
+            level = request.params['initiativeScope']
+            userScope = geoInfoLib.getGeoScope(c.user['postalCode'], c.user['country'])
+            scopeList = userScope.split('|')
+            index = 0
+            for scope in scopeList:
+                if scope == '':
+                    scopeList[index] = '0'
+                index += 1
+                
+            if level == 'city':
+                scopeList[9] = '0'
+            elif level == 'county':
+                scopeList[9] = '0'
+                scopeList[8] = '0'
+                
+            scope = '|'.join(scopeList)
+            log.info('userScope is %s'%userScope)
+                
+        else:
+            log.init("no initiative scope")
+            
+        if title != '' and description != '' and scope != '':
+            c.initiative = initiativeLib.Initiative(c.user, title, description, scope)
+            c.level = level
+        else:
+            log.info("missing initiaitve info: title is %s description is %s and scope is %s"%(title, description, scope))
+            abort(404)
+            
+        return render('/derived/6_initiative_edit.bootstrap')
  

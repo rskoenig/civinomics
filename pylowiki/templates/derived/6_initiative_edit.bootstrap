@@ -5,7 +5,7 @@
 <div class="spacer"></div>
 <div class="row-fluid" ng-controller="ProfileEditController">
     <div class="span8">
-        ${ihelpers.newInitiative()}
+        ${ihelpers.editInitiative()}
     </div><!-- span8 -->
     <div class="span4">
         ${dashboard.profileDashboard()}

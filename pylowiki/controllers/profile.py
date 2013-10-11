@@ -19,6 +19,7 @@ import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
+import pylowiki.lib.db.initiative       as initiativeLib
 import pylowiki.lib.db.workshop         as workshopLib
 import pylowiki.lib.db.pmember          as pMemberLib
 import pylowiki.lib.db.follow           as followLib
@@ -136,6 +137,22 @@ class ProfileController(BaseController):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
+                    
+        # initiatives
+        c.initiatives = []
+        initiativeList = initiativeLib.getInitiativesForUser(c.user)
+        for i in initiativeList:
+            if i.objType == 'initiative':
+                log.info("got an initiative")
+                if i['public'] == '1':
+                    if i['deleted'] != '1':
+                        c.initiatives.append(i)
+                        log.info("appending public initiative")
+                else:
+                    if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
+                        c.initiatives.append(i)
+                        log.info("appending not public initiative")
+            
                 
         #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
         c.memberPosts = activityLib.getMemberPosts(c.user)
