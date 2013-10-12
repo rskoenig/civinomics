@@ -10,6 +10,7 @@ import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.event        as eventLib
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
@@ -22,19 +23,24 @@ class InitiativeController(BaseController):
     def __before__(self, action, id1 = None, id2 = None):
         c.user = None
         c.initiative = None
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit']
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             if not c.user:
                 abort(404)
-        elif (action == 'initiativeEditHandler' or action == 'initiativeShowHandler') and id1 is not None and id2 is not None:
+        elif action in existingList and id1 is not None and id2 is not None:
                 c.initiative = initiativeLib.getInitiative(id1)
                 if c.initiative:
-                    c.user = userLib.getUserByCode(initiative['userCode'])
+                    c.user = userLib.getUserByCode(c.initiative['userCode'])
                 else:
                   abort(404)  
         else:
             abort(404)
             
+        c.resources = []
+        # for compatibility with comments
+        c.thing = c.initiative
+        c.discussion = discussionLib.getDiscussionForThing(c.initiative)
         userLib.setUserPrivs()
 
 
@@ -83,4 +89,12 @@ class InitiativeController(BaseController):
             abort(404)
             
         return render('/derived/6_initiative_edit.bootstrap')
+        
+    def initiativeEdit(self):
+        
+        return render('/derived/6_initiative_edit.bootstrap')
+ 
+    def initiativeShowHandler(self):
+            
+        return render('/derived/6_initiative_home.bootstrap')
  

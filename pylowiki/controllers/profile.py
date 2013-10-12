@@ -143,15 +143,12 @@ class ProfileController(BaseController):
         initiativeList = initiativeLib.getInitiativesForUser(c.user)
         for i in initiativeList:
             if i.objType == 'initiative':
-                log.info("got an initiative")
                 if i['public'] == '1':
                     if i['deleted'] != '1':
                         c.initiatives.append(i)
-                        log.info("appending public initiative")
                 else:
                     if 'user' in session and ((c.user['email'] == c.authuser['email']) or c.isAdmin):
                         c.initiatives.append(i)
-                        log.info("appending not public initiative")
             
                 
         #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
