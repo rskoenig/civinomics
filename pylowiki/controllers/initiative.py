@@ -14,6 +14,7 @@ import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.revision     as revisionLib
 
 log = logging.getLogger(__name__)
 
@@ -24,6 +25,7 @@ class InitiativeController(BaseController):
         c.user = None
         c.initiative = None
         existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit']
+        adminList = ['initiativeShowHandler', 'initiativeEdit']
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             if not c.user:
@@ -36,6 +38,13 @@ class InitiativeController(BaseController):
                   abort(404)  
         else:
             abort(404)
+        
+        # only the author or an admin can edit  
+        if action in adminList:
+            if 'user' not in session:
+                abort(404)
+            if c.user['email'] != c.authuser['email'] and not userLib.isAdmin(c.authuser.id):
+                abort(404)
             
         c.resources = []
         # for compatibility with comments
@@ -91,6 +100,40 @@ class InitiativeController(BaseController):
         return render('/derived/6_initiative_edit.bootstrap')
         
     def initiativeEdit(self):
+        
+        return render('/derived/6_initiative_edit.bootstrap')
+        
+    def initiativeEditHandler(self):
+        if 'title' in request.params:
+            c.initiative['title'] = request.params['title']
+
+        if 'description' in request.params:
+            c.initiative['description'] = request.params['description']
+        if 'cost' in request.params:
+            c.initiative['cost'] = request.params['cost']
+        if 'level' in request.params:
+            level = request.params['level']
+            userScope = geoInfoLib.getGeoScope(c.user['postalCode'], c.user['country'])
+            scopeList = userScope.split('|')
+            index = 0
+            for scope in scopeList:
+                if scope == '':
+                    scopeList[index] = '0'
+                index += 1
+
+            if level == 'city':
+                scopeList[9] = '0'
+            elif level == 'county':
+                scopeList[9] = '0'
+                scopeList[8] = '0'
+            c.initiative['scope'] = '|'.join(scopeList)
+        if 'tag' in request.params:
+            c.initiative['tags'] = request.params['tag']
+        if 'background' in request.params:
+            c.initiative['background'] = request.params['background']
+            
+        dbHelpers.commit(c.initiative)
+        revisionLib.Revision(c.authuser, c.initiative)
         
         return render('/derived/6_initiative_edit.bootstrap')
  

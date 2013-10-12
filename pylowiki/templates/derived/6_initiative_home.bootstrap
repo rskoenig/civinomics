@@ -17,6 +17,9 @@
             <h4 class="text-centered">Vote on This</h4>
             ${lib_6.yesNoVote(c.initiative)}
         % endif
+        % if 'user' in session and (c.authuser['email'] == c.user['email'] or c.privs['admin']):
+            <a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/edit">Edit Initiative</a>
+        % endif
     </div><!-- span2 -->
 </div><!-- row-fluid -->
 <div class="row-fluid">

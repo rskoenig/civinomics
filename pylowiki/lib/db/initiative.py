@@ -39,6 +39,7 @@ def Initiative(owner, title, description, scope, workshop = None):
     i['background'] = ""
     i['tags'] = ""
     i['scope'] = scope
+    i['cost'] = u'0'
     i['deleted'] = u'0'
     i['disabled'] = u'0'
     i['public'] = u'0'

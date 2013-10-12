@@ -77,7 +77,7 @@
     </div><!-- row-fluid -->
     <div class="spacer"></div>
     
-    <form method="POST" action="/profile/${c.user['urlCode']}/${c.user['url']}/saveInitiativeHandler">
+    <form method="POST" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
         <div class="row-fluid">
             <div class="span8">
                 <fieldset>
@@ -85,8 +85,10 @@
                 <input type="text" name="title" value="${c.initiative['title']}">
                 <label for="description" class="control-label" required>Short Description:</label>
                 <input type="text" name="description" value="${c.initiative['description']}">
-                <label for="scope" class="control-label" required>This initiative is for:</label>
-                <select name="scope" id="scope">
+                <label for="description" class="control-label" required>Estimated cost to complete this initiative:</label>
+                <input type="text" name="cost" value="${c.initiative['cost']}">
+                <label for="level" class="control-label" required>This initiative is for:</label>
+                <select name="level" id="level">
                 <option value="postalCode" ${postalCodeSelected}> My Zip Code</option>
                 <option value="city" ${citySelected}> My City</option>
                 <option value="county" ${countySelected}> My County</option>
@@ -105,7 +107,7 @@
                 % endfor
                 </select>
                 <label for="background" class="control-label" required>Background Info: <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                <textarea rows="10" id="data" name="data" class="span12"></textarea>
+                <textarea rows="10" id="background" name="background" class="span12">${c.initiative['background']}</textarea>
                 <div class="background-edit-wrapper">
                 </div><!-- background-edit-wrapper -->
                 <div class="preview-information-wrapper" id="live_preview">
