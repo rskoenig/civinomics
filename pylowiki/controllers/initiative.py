@@ -15,6 +15,9 @@ import pylowiki.lib.utils           as utils
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.db.generic      as generic
 import pylowiki.lib.db.revision     as revisionLib
+import pylowiki.lib.images          as imageLib
+
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -24,8 +27,8 @@ class InitiativeController(BaseController):
     def __before__(self, action, id1 = None, id2 = None):
         c.user = None
         c.initiative = None
-        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit']
-        adminList = ['initiativeShowHandler', 'initiativeEdit']
+        existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler']
+        adminList = ['initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler']
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             if not c.user:
@@ -129,13 +132,115 @@ class InitiativeController(BaseController):
             c.initiative['scope'] = '|'.join(scopeList)
         if 'tag' in request.params:
             c.initiative['tags'] = request.params['tag']
-        if 'background' in request.params:
-            c.initiative['background'] = request.params['background']
+        if 'data' in request.params:
+            c.initiative['background'] = request.params['data']
             
         dbHelpers.commit(c.initiative)
         revisionLib.Revision(c.authuser, c.initiative)
         
         return render('/derived/6_initiative_edit.bootstrap')
+        
+    @h.login_required
+    def photoUploadHandler(self, id1, id2):
+        """
+            Ideally:  
+            1) User selects image, gets presented with aspect-ratio constrained selection.
+            2) User adjusts centering and dimensions, hits 'start'
+            3) Process image - detailed below
+        
+            Grab the uploaded file.  Hash and save the original first.  Then process.
+            Processing means:
+            1) Check to ensure it is an image (should be done in the hash + save step)
+            2) Check for square dimensions.  If not square, crop.  Do not save the image here, just pass on the image object.
+            3) If necessary, resize the dimensions of the image to 1200px x 1200px.  Save the final image here.
+            
+            The client expects a json-encoded string with the following format:
+            
+            {"files": [
+              {
+                "name": "picture1.jpg",
+                "size": 902604,
+                "url": "http:\/\/example.org\/files\/picture1.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture1.jpg",
+                "delete_type": "DELETE"
+              },
+              {
+                "name": "picture2.jpg",
+                "size": 841946,
+                "url": "http:\/\/example.org\/files\/picture2.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture2.jpg",
+                "delete_type": "DELETE"
+              }
+            ]}
+        """
+        if c.authuser.id != c.user.id:
+            abort(404)
+
+        if 'files[]' in request.params:
+            file = request.params['files[]']
+            filename = file.filename
+            file = file.file
+            image = imageLib.openImage(file)
+            if not image:
+                abort(404) # Maybe make this a json response instead
+            imageHash = imageLib.generateHash(filename, c.authuser)
+            
+            image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = c.initiative)
+            
+            width = min(image.size)
+            x = 0
+            y = 0
+            if 'width' in request.params:
+                tWidth = request.params['width']
+                if not width or width == 'undefined':
+                    width = 100
+                else:
+                    width = int(float(width))
+            if 'x' in request.params:
+                x = request.params['x']
+                if not x or x == 'undefined':
+                    x = 0
+                else:
+                    x = int(float(x))
+            if 'y' in request.params:
+                y = request.params['y']
+                if not y or y == 'undefined':
+                    y = 0
+                else:
+                    y = int(float(y))
+            dims = {'x': x, 
+                    'y': y, 
+                    'width':width,
+                    'height':width}
+            clientWidth = -1
+            clientHeight = -1
+            if 'clientWidth' in request.params:
+                clientWidth = request.params['clientWidth']
+                if not clientWidth or clientWidth == 'null':
+                    clientWidth = -1
+            if 'clientHeight' in request.params:
+                clientHeight = request.params['clientHeight']
+                if not clientHeight or clientHeight == 'null':
+                    clientHeight = -1
+            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
+            image = imageLib.resizeImage(image, imageHash, 480, 480)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
+            image = imageLib.resizeImage(image, imageHash, 160, 160)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
+            
+            jsonResponse =  {'files': [
+                                {
+                                    'name':filename,
+                                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(c.initiative['directoryNum_photos'], imageHash),
+                                    'image_hash':imageHash
+                                }
+                            ]}
+            return json.dumps(jsonResponse)
+        else:
+            abort(404)
+            
  
     def initiativeShowHandler(self):
             

@@ -76,47 +76,110 @@
         <span class="pull-right"><a href="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/show">View Initiative</a></span>
     </div><!-- row-fluid -->
     <div class="spacer"></div>
-    
-    <form method="POST" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
-        <div class="row-fluid">
-            <div class="span8">
-                <fieldset>
-                <label for="title" class="control-label" required>Initiative Title:</label>
-                <input type="text" name="title" value="${c.initiative['title']}">
-                <label for="description" class="control-label" required>Short Description:</label>
-                <input type="text" name="description" value="${c.initiative['description']}">
-                <label for="description" class="control-label" required>Estimated cost to complete this initiative:</label>
-                <input type="text" name="cost" value="${c.initiative['cost']}">
-                <label for="level" class="control-label" required>This initiative is for:</label>
-                <select name="level" id="level">
-                <option value="postalCode" ${postalCodeSelected}> My Zip Code</option>
-                <option value="city" ${citySelected}> My City</option>
-                <option value="county" ${countySelected}> My County</option>
-                </select>
-                </fieldset>
-                <label for="tag" class="control-label" required>Initiative category:</label>
-                <select name="tag" id="tag">
-                <option value="choose">Choose one</option>
-                % for tag in tagList:
-                    <% 
-                        selected = ""
-                        if tag in initiativeTags:
-                            selected = "selected"
-                    %>
-                    <option value="${tag}" ${selected}/> ${tag}</option>
-                % endfor
-                </select>
-                <label for="background" class="control-label" required>Background Info: <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
-                <textarea rows="10" id="background" name="background" class="span12">${c.initiative['background']}</textarea>
-                <div class="background-edit-wrapper">
-                </div><!-- background-edit-wrapper -->
-                <div class="preview-information-wrapper" id="live_preview">
-                </div><!-- preview-information-wrapper -->
-            </div><!-- span8 -->
-            <div class="span4">
-            picture goes here
-            </div><!-- span4 -->
+    <div class="row-fluid">
+        <div class="span6">
+        <form method="POST" name="workshop_background" id="workshop_background" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
+            <fieldset>
+            <label for="title" class="control-label" required>Initiative Title:</label>
+            <input type="text" name="title" value="${c.initiative['title']}">
+            <label for="description" class="control-label" required>Short Description:</label>
+            <input type="text" name="description" value="${c.initiative['description']}">
+            <label for="description" class="control-label" required>Estimated cost to complete this initiative:</label>
+            <input type="text" name="cost" value="${c.initiative['cost']}">
+            <label for="level" class="control-label" required>This initiative is for:</label>
+            <select name="level" id="level">
+            <option value="postalCode" ${postalCodeSelected}> My Zip Code</option>
+            <option value="city" ${citySelected}> My City</option>
+            <option value="county" ${countySelected}> My County</option>
+            </select>
+            </fieldset>
+            <label for="tag" class="control-label" required>Initiative category:</label>
+            <select name="tag" id="tag">
+            <option value="choose">Choose one</option>
+            % for tag in tagList:
+                <% 
+                    selected = ""
+                    if tag in initiativeTags:
+                        selected = "selected"
+                %>
+                <option value="${tag}" ${selected}/> ${tag}</option>
+            % endfor
+            </select>
+            <label for="data" class="control-label" required>Background Info: <a href="#" class="btn btn-mini btn-info" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');">View Formatting Guide</a></label>
+            <textarea rows="10" id="data" name="data" class="span12">${c.initiative['background']}</textarea>
+            <div class="background-edit-wrapper">
+            </div><!-- background-edit-wrapper -->
+            <div class="preview-information-wrapper" id="live_preview">
+            hi
+            </div><!-- preview-information-wrapper -->
+            <button type="submit" class="btn btn-warning pull-left" name="submit">Save Changes</button>
+            </form>
+        </div><!-- span6 -->
+        <div class="span6">
+            <form id="fileupload" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/photo/upload/handler" method="POST" enctype="multipart/form-data" data-ng-app="demo" data-fileupload="options" ng-class="{true: 'fileupload-processing'}[!!processing() || loadingFiles]" class = "civAvatarUploadForm" ng-show="true">
+                <div id="fileinput-button-div" class="row-fluid fileupload-buttonbar collapse in">
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    %if 'directoryNum_photos' in c.initiative and 'pictureHash_photos' in c.initiative:
+                        <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(c.initiative['directoryNum_photos'], c.initiative['pictureHash_photos']) %>
+                        <span class="pull-left">Current Initiative Picture
+                        <div class="spacer"></div>
+                        <img src="${thumbnail_url}">
+                        </span>
+                    % else:
+                        <span class="pull-left">Upload a Picture (Required)</span>
+                    % endif
+                    <span class="btn btn-success fileinput-button pull-right"  data-toggle="collapse" data-target="#fileinput-button-div">
+                    <i class="icon-plus icon-white"></i>
+                    <span>Picture</span>
+                    <input type="file" name="files[]">
+                    </span>
+                    <!-- The loading indicator is shown during file processing -->
+                    <div class="fileupload-loading"></div>
+                    <!-- The global progress information -->
+                </div><!-- row-fluid -->
+                <div class="row-fluid">
+                    <div class="span10 offset1 fade" data-ng-class="{true: 'in'}[!!active()]">
+                        <!-- The global progress bar -->
+                        <div class="progress progress-success progress-striped active" data-progress="progress()"><div class="bar" ng-style="{width: num + '%'}"></div></div>
+                        <!-- The extended global progress information -->
+                        <div class="progress-extended">&nbsp;</div>
+                    </div><!- span10 -->
+                </div><!-- row-fluid -->
+                <!-- The table listing the files available for upload/download -->
+                <table class="table table-striped files ng-cloak" data-toggle="modal-gallery" data-target="#modal-gallery">
+                    <tbody><tr data-ng-repeat="file in queue">
+                        <td data-ng-switch="" on="!!file.thumbnail_url">
+                            <div class="preview" data-ng-switch-when="true">
+                                <script type="text/javascript">
+                                    function setAction(imageHash) {
+                                        actionURL = "/profile/${c.user['urlCode']}/${c.user['url']}/photo/" + imageHash + "/update/handler";
+                                        document.getElementById('fileupload').action = actionURL;
+                                    }
+                                </script>
+                                <div class="row-fluid">
+                                    <img src="{{file.thumbnail_url}}">
+                                    New Picture Uploaded and Saved
+                                </div><!-- row-fluid -->
+                                </form>
+                            </div><!-- preview -->
+                            <div class="preview" data-ng-switch-default="" data-preview="file" id="preview"></div>
+                                </td>
+                                <td>
+                                    <div ng-show="file.error"><span class="label label-important">Error</span> {{file.error}}</div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-primary start" data-ng-click="file.$submit()" data-ng-hide="!file.$submit">
+                                    <i class="icon-upload icon-white"></i>
+                                    <span>Save</span>
+                                    </button>
+                                    <button type="button" class="btn btn-warning cancel" data-ng-click="file.$cancel()" data-ng-hide="!file.$cancel"  data-toggle="collapse" data-target="#fileinput-button-div">
+                                    <i class="icon-ban-circle icon-white"></i>
+                                    <span>Cancel</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody></table>
+                        </form>
+            </div><!-- span6 -->
         </div><!-- row-fluid -->
-        <button type="submit" class="btn btn-warning pull-left" name="submit">Save Changes</button>
-    </form>
 </%def>
