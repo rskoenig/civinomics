@@ -63,7 +63,12 @@
 <%def name="listInitiative(item)">
     <div class="media profile-workshop">
         <a class="pull-left" href="/initiative/${item['urlCode']}/${item['url']}/show">
-        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url("/images/slide/thumbnail/supDawg.thumbnail"); background-size: cover; background-position: center center;"></div>
+        % if 'directoryNum_photos' in item and 'pictureHash_photos' in item:
+            <% thumbnail_url = "/images/photos/%s/thumbnail/%s.png"%(item['directoryNum_photos'], item['pictureHash_photos']) %>
+        % else:
+            <% thumbnail_url = "/images/slide/thumbnail/supDawg.thumbnail" %>
+        % endif
+        <div class="thumbnail tight media-object" style="height: 60px; width: 90px; margin-bottom: 5px; background-image:url(${thumbnail_url}); background-size: cover; background-position: center center;"></div>
         </a>
         <div class="media-body">
             <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
