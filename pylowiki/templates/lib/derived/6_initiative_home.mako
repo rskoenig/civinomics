@@ -9,13 +9,35 @@
     log = logging.getLogger(__name__)
 %>
 
+<%namespace name="lib_6" file="/lib/6_lib.mako" />
+
 <%def name="showInfo()">
     <div>
+    <h4>Initiative Author</h4>
+    ${lib_6.userImage(c.initiative.owner, className="avatar med-avatar")} ${lib_6.userLink(c.initiative.owner)}<span class="grey">${lib_6.userGreetingMsg(c.initiative.owner)}</span> from ${lib_6.userGeoLink(c.initiative.owner)}
+    <h4>Initiative Scope</h4>
+    <% 
+        scopeList = c.initiative['scope'].split('|')
+        country = scopeList[2].replace("-", " ")
+        state = scopeList[4].replace("-", " ")
+        county = scopeList[6].replace("-", " ")
+        city = scopeList[8].replace("-", " ")
+        postalCode = scopeList[9]
+        scopeString = "%s, State of %s"%(country.title(), state.title())
+        if city == '0':
+            scopeString += ', <span class="badge badge-info">County of %s</span>'%county.title()
+        else:
+            scopeString += ', County of %s'%county.title()
+        if postalCode == '0':
+            scopeString += ', <span class="badge badge-info">City of %s</span>'%city.title()
+        else:
+            scopeString += ", City of %s"%city.title()
+        if postalCode != '0':
+            scopeString += ', <span class="badge badge-info">Zip code of %s</span>'%postalCode
+    %>
+    ${scopeString | n}
+    <div class="spacer"></div>
     <h4>Introduction</h4>
-    <p>
-    This introduction was written and is maintained by the initiative author.
-    You are encouraged to add links to additional information resources.
-    </p>
     ${m.html(c.initiative['background'], render_flags=m.HTML_SKIP_HTML) | n}
     </div>
 </%def>

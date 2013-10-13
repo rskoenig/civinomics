@@ -17,6 +17,8 @@
     <div class="span8">
         <h2>Initiative: ${c.initiative['title']}</h2><br />
         ${c.initiative['description']}
+        <div class="spacer"></div>
+        Estimated Cost: ${c.initiative['cost']}
     </div><!-- span8 -->
     <div class="span2">
         % if c.initiative['public'] == '1':
