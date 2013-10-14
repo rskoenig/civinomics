@@ -67,9 +67,13 @@ def thingURL(thingParent, thing):
         parentBase = "workshop"
     elif thingParent.objType.replace("Unpublished", "") == 'user':
         parentBase = "profile"
+    elif thingParent.objType.replace("Unpublished", "") == 'initiative':
+        parentBase = "initiative"
     baseURL = '/%s/%s/%s' % (parentBase, thingParent['urlCode'], thingParent['url'])
     if thing.objType.replace("Unpublished", "") == 'photo':
         return baseURL + "/photo/show" + thing['urlCode']
+    if thing.objType.replace("Unpublished", "") == 'initiative':
+        return baseURL + "/show"
     if thing.objType.replace("Unpublished", "") == 'comment':
         if 'ideaCode' in thing.keys():
             thing = generic.getThing(thing['ideaCode'])
@@ -77,6 +81,9 @@ def thingURL(thingParent, thing):
             thing = generic.getThing(thing['resourceCode'])
         elif 'photoCode' in thing.keys():
             thing = generic.getThing(thing['photoCode'])
+            return baseURL + "/photo/show/" + thing['urlCode'] 
+        elif 'initiativeCode' in thing.keys():
+            thing = generic.getThing(thing['initiativeCode'])
             return baseURL + "/photo/show/" + thing['urlCode'] 
         elif 'discussionCode' in thing.keys():
             thing = generic.getThing(thing['discussionCode'])
@@ -88,6 +95,11 @@ def profilePhotoURL(thing):
     owner = generic.getThing(thing['userCode'])
 
     return "/profile/%s/%s/photo/show/%s" %(owner['urlCode'], owner['url'], thing['urlCode'])
+    
+def initiativeURL(thing):
+    owner = generic.getThing(thing['userCode'])
+
+    return "/initiative/%s/%s/show" %(thing['urlCode'], thing['url'])
     
 def workshopImageURL(workshop, mainImage, thumbnail = False):
     if thumbnail:

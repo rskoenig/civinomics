@@ -10,6 +10,7 @@ from pylowiki.lib.db.workshop import getWorkshopByCode
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.resource     as resourceLib
 import pylowiki.lib.db.photo        as photoLib
+import pylowiki.lib.db.initiative   as initiativeLib
 import sqlalchemy as sa
 from time import time
 from dbHelpers import commit, with_characteristic as wc
@@ -155,13 +156,16 @@ class Comment(object):
         if discussion['discType'] == 'photo':
             attachedThing = photoLib.getPhoto(discussion['photoCode'])
             profileOwner = generic.getThingByID(attachedThing.owner)
+        if discussion['discType'] == 'initiative':
+            attachedThing = initiativeLib.getInitiative(discussion['initiativeCode'])
+            profileOwner = generic.getThingByID(attachedThing.owner)
             
         thisComment = generic.linkChildToParent(thisComment, owner)
             
         thisComment = generic.linkChildToParent(thisComment, discussion)
         if attachedThing is not None:
             thisComment = generic.linkChildToParent(thisComment, attachedThing)
-            if discussion['discType'] == 'photo':
+            if discussion['discType'] == 'photo' or discussion['discType'] == 'initiative':
                 thisComment['profileCode'] = profileOwner['urlCode']
                 thisComment['profile_url'] = profileOwner['url']
         thisComment['disabled'] = '0'

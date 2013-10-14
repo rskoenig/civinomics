@@ -54,7 +54,7 @@ class CommentController(BaseController):
                     return False
                 else:
                     workshopLib.setWorkshopPrivs(workshop)
-            elif thing.objType == 'photo':
+            elif thing.objType == 'photo' or thing.objType == 'initiative':
                 userLib.setUserPrivs()
             data = request.params['comment-textarea']
             data = data.strip()
@@ -88,6 +88,9 @@ class CommentController(BaseController):
             elif thing.objType.replace("Unpublished", "") == 'photo':
                 title = ' commented on one of your pictures'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
+            elif thing.objType.replace("Unpublished", "") == 'initiative':
+                title = ' commented on one of your initiative'
+                message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
             message = genericLib.linkChildToParent(message, comment.c)
             dbHelpers.commit(message)
             alertsLib.emailAlerts(comment)
@@ -96,11 +99,15 @@ class CommentController(BaseController):
                     mailLib.sendCommentMail(parentAuthor['email'], thing, workshop, data)
                 elif thing.objType.replace("Unpublished", "") == 'photo' or 'photoCode' in thing:
                     mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
+                elif thing.objType.replace("Unpublished", "") == 'initiative' or 'initiativeCode' in thing:
+                    mailLib.sendCommentMail(parentAuthor['email'], thing, thing, data)
             
             if 'workshopCode' in thing:   
                 return redirect(utils.thingURL(workshop, thing))
             elif thing.objType == 'photo' or 'photoCode' in thing:
                 return redirect(utils.profilePhotoURL(thing))
+            elif thing.objType == 'initiative' or 'initiativeCode' in thing:
+                return redirect(utils.initiativeURL(thing))
         except KeyError:
             # Check if the 'submit' variable is in the posted variables.
             return redirect(utils.thingURL(workshop, thing))
@@ -116,6 +123,11 @@ class CommentController(BaseController):
         c.revision = revisionLib.getRevisionByCode(revisionCode)
         c.user = userLib.getUserByCode(userCode)
         return render('/derived/6_permaPhotoComment.bootstrap')
+        
+    def permalinkInitiative(self, urlCode, url, revisionCode):
+        c.revision = revisionLib.getRevisionByCode(revisionCode)
+        c.initiative = genericLib.getThing(urlCode)
+        return render('/derived/6_permaInitiativeComment.bootstrap')
         
     ####################################################
     # 
