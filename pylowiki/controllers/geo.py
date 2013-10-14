@@ -118,24 +118,78 @@ class GeoController(BaseController):
     def geoStateHandler(self, id1):
         country = id1
 
-        states = geoInfoLib.getStateList(country)
-        sList = ""
-        for state in states:
-            if state['StateFullName'] != 'District of Columbia':
-                sList = sList + state['StateFullName'] + '|'
-        return json.dumps({'result':sList})
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                iPhoneApp = True
+            else:
+                iPhoneApp = False
+        except KeyError:
+            iPhoneApp = False
+        try:
+            states = geoInfoLib.getStateList(country)
+            sList = ""
+            if states:
+                result = states
+                statusCode = 0
+            else:
+                statusCode = 2
+                result = "No states"
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                for state in states:
+                    if state['StateFullName'] != 'District of Columbia':
+                        sList = sList + state['StateFullName'] + '|'
+                return json.dumps({'result':sList})
+        except:
+            if iPhoneApp:
+                statusCode = 2
+                result = "No states."
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                return json.dumps({'result':"No states."})
 
     def geoCountyHandler(self, id1, id2):
         country = id1
         state = geoInfoLib.geoDeurlify(id2)
         state = state.title()
 
-        counties = geoInfoLib.getCountyList(country, state)
-        cList = ""
-        for county in counties:
-            cList = cList + county['County'].title() + '|'
-        return json.dumps({'result':cList})
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                iPhoneApp = True
+            else:
+                iPhoneApp = False
+        except KeyError:
+            iPhoneApp = False
 
+        try:
+            counties = geoInfoLib.getCountyList(country, state)
+            cList = ""
+            if counties:
+                result = counties
+                statusCode = 0
+            else:
+                statusCode = 2
+                result = "No counties"
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                for county in counties:
+                    cList = cList + county['County'].title() + '|'
+                return json.dumps({'result':cList})
+        except:
+            if iPhoneApp:
+                statusCode = 2
+                result = "No counties"
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                return json.dumps({'result':"No counties"})
 
     def geoCityHandler(self, id1, id2, id3):
         country = id1
@@ -144,11 +198,39 @@ class GeoController(BaseController):
         county = geoInfoLib.geoDeurlify(id3)
         county = county.upper()
 
-        cities = geoInfoLib.getCityList(country, state, county)
-        cList = ""
-        for city in cities:
-            cList = cList + city['City'].title() + '|'
-        return json.dumps({'result':cList})
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                iPhoneApp = True
+            else:
+                iPhoneApp = False
+        except KeyError:
+            iPhoneApp = False
+
+        try:
+            cities = geoInfoLib.getCityList(country, state, county)
+            cList = ""
+            if cities:
+                result = cities
+                statusCode = 0
+            else:
+                statusCode = 2
+                result = "No cities"
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                for city in cities:
+                    cList = cList + city['City'].title() + '|'
+                return json.dumps({'result':cList})
+        except:
+            if iPhoneApp:
+                statusCode = 2
+                result = "No cities"
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                return json.dumps({'result':"No cities"})
 
     def geoPostalHandler(self, id1, id2, id3, id4):
         country = id1
@@ -159,13 +241,50 @@ class GeoController(BaseController):
         city = geoInfoLib.geoDeurlify(id4)
         city = city.upper()
 
-        postalCodes = geoInfoLib.getPostalList(country, state, county, city)
-        pList = ""
-        for postal in postalCodes:
-            pList = pList + str(postal['ZipCode']) + '|'
-        return json.dumps({'result':pList})
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                iPhoneApp = True
+            else:
+                iPhoneApp = False
+        except KeyError:
+            iPhoneApp = False
+
+        try:
+            postalCodes = geoInfoLib.getPostalList(country, state, county, city)
+            pList = ""
+            if postalCodes:
+                result = postalCodes
+                statusCode = 0
+            else:
+                statusCode = 2
+                result = "No zipcodes"
+            if iPhoneApp:
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                for postal in postalCodes:
+                    pList = pList + str(postal['ZipCode']) + '|'
+                return json.dumps({'result':pList})
+        except:
+            if iPhoneApp:
+                statusCode = 2
+                result = "No zipcodes"
+                response.headers['Content-type'] = 'application/json'
+                return json.dumps({'statusCode':statusCode, 'result':result})
+            else:
+                return json.dumps({'result':"No zipcodes"})
 
     def geoCityStateCountryHandler(self, id1):
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                iPhoneApp = True
+            else:
+                iPhoneApp = False
+        except KeyError:
+            iPhoneApp = False
+
         postalInfo = geoInfoLib.getPostalInfo(id1)
         if postalInfo:
             city = postalInfo['City'].title()
@@ -175,7 +294,17 @@ class GeoController(BaseController):
         else:
             statusCode = 2
             result = "No such zipcode."
-        return json.dumps({'statusCode':statusCode, 'result':result})
+        if iPhoneApp:
+            response.headers['Content-type'] = 'application/json'
+            result = {
+                'CityMixedCase': postalInfo['CityMixedCase'], 
+                'County': postalInfo['County'], 
+                'State': postalInfo['State'],
+                'StateFullName': postalInfo['StateFullName']
+            }
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return json.dumps({'statusCode':statusCode, 'result':result})
         
     def geoCityStateCountryLinkHandler(self, id1):
         postalInfo = geoInfoLib.getPostalInfo(id1)

@@ -150,7 +150,8 @@ class LoginController(BaseController):
             else:
                 log.info("logging twt user in")
                 # log this person in
-                LoginController.logUserIn(self, user)
+                loginURL = LoginController.logUserIn(self, user)
+                return redirect(loginURL)
         else:
             log.info('did not find twitter id')
             c.numAccounts = 1000
@@ -305,7 +306,8 @@ class LoginController(BaseController):
                         user['facebookAuthId'] = session['facebookAuthId']
                         user['fbEmail'] = email
                         commit(user)
-                        LoginController.logUserIn(self, user)
+                        loginURL = LoginController.logUserIn(self, user)
+                        return redirect(loginURL)
                 elif 'unactivatedTwitterAuthId' in user.keys():
                     # ok, unactivatedTwitterAuthId IS in user.keys():
                     # is this an account created just with twitter signup? Is this a normal account?
@@ -401,8 +403,8 @@ class LoginController(BaseController):
                         user['facebookAuthId'] = session['facebookAuthId']
                         user['fbEmail'] = email
                         commit(user)
-                        LoginController.logUserIn(self, user)
-
+                        loginURL = LoginController.logUserIn(self, user)
+                        return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
@@ -467,8 +469,8 @@ class LoginController(BaseController):
                         
                         commit(user)
                         log.info( "Successful twitter link")
-                        LoginController.logUserIn(self, user)
-
+                        loginURL = LoginController.logUserIn(self, user)
+                        return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password")
                         splashMsg['content'] = 'incorrect username or password'
@@ -509,7 +511,8 @@ class LoginController(BaseController):
                 log.warning("disabled account attempting to login - " + email )
                 splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
             else:
-                LoginController.logUserIn(self, user)
+                loginURL = LoginController.logUserIn(self, user)
+                return redirect(loginURL)
         else:
             log.info("login:fbLoggingIn DID NOT FIND USER")
         session['splashMsg'] = splashMsg
@@ -590,7 +593,6 @@ class LoginController(BaseController):
             log.info('user %s attempting to log in' % email)
             if email and password:
                 user = userLib.getUserByEmail( email )
-         
                 if user: # not none or false
                     if user['activated'] == '0':
                         splashMsg['content'] = "This account has not yet been activated. An email with information about activating your account has been sent. Check your junk mail folder if you don't see it in your inbox."
@@ -601,7 +603,7 @@ class LoginController(BaseController):
                     elif user['disabled'] == '1':
                         log.warning("disabled account attempting to login - " + email )
                         splashMsg['content'] = 'This account has been disabled by the Civinomics administrators.'
-                    elif userLib.checkPassword( user, password ): 
+                    elif userLib.checkPassword( user, password ):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user)
                         if returnJson:
@@ -609,7 +611,6 @@ class LoginController(BaseController):
                             return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
                         else:
                             return redirect(loginURL)
-
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'

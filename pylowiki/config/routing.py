@@ -393,6 +393,7 @@ def make_map():
     map.connect('/search/ideas/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchIdeas', searchType = '{searchType}', searchString = '{searchString}')
     map.connect('/search/photos/{searchType}/{searchString}{end:/?}', controller = 'search', action = 'searchPhotos', searchType = '{searchType}', searchString = '{searchString}')
     map.connect('/searchTags/{id1}{end:/?}', controller='search', action='searchWorkshopCategoryTags', id1 = '{id1}')
+    map.connect('/getTags{end:/?}', controller='search', action='getWorkshopCategoryTags')
     map.connect('/workshops/geo/{planet}/', controller = 'search', action = 'searchWorkshopGeo', country = 'united-states')
     map.connect('/workshops/geo/{planet}/{country}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')
     map.connect('/workshops/geo/{planet}/{country}/{state}{end:/?}', controller = 'search', action = 'searchWorkshopGeo')

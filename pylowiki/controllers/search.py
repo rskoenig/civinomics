@@ -22,6 +22,7 @@ import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.geoInfo      as geoInfoLib
 import pylowiki.lib.db.generic      as generic
+import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.utils           as utils
 import pylowiki.lib.helpers         as h
 import pylowiki.lib.sort            as sort
@@ -41,6 +42,7 @@ class SearchController(BaseController):
     """
 
     def __before__(self, action, searchType = None, **kwargs):
+        log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
@@ -86,6 +88,7 @@ class SearchController(BaseController):
             
         if 'searchQuery' in request.params and searchString == None:
             self.query = request.params['searchQuery']
+            #log.info("S E A R C H + Q U E R Y 0:  %s %s"%(self.query, self.noQuery))
             self.query.replace("+", " ")
             if self.query.strip() == '':
                 self.noQuery = True
@@ -94,20 +97,26 @@ class SearchController(BaseController):
             
         if id1 != None:
             self.query = id1
+            #log.info("S E A R C H + Q U E R Y 1:  %s %s"%(self.query, self.noQuery))
             self.noQuery = False
             
         if searchType != None:
             self.searchType = searchType
+            #log.info("S E A R C H + Q U E R Y 2:  %s %s"%(self.query, self.noQuery))
             self.noQuery = False
             
         if searchString != None:
             self.query = searchString
+            #log.info("S E A R C H + Q U E R Y 3:  %s %s"%(self.query, self.noQuery))
             self.noQuery = False
             
         if self.query == '':
+            #log.info("S E A R C H + Q U E R Y 4:  %s %s"%(self.query, self.noQuery))
             return self._noSearch()
             self.noQuery = True
-            
+        
+        #log.info("S E A R C H + Q U E R Y 5:  %s %s"%(self.query, self.noQuery))
+        log.info("****SEARCH QUERY**** %s"%self.query)
         c.searchQuery = self.query
 
     def _noSearch(self, noRender = False):
@@ -132,6 +141,31 @@ class SearchController(BaseController):
         c.scope = {'level':'earth', 'name':'all'}
         return render('/derived/6_search.bootstrap')
         
+    def getWorkshopCategoryTags(self):
+        """ return a list of the categories available for search """
+        categories = workshopLib.getWorkshopTagCategories()
+        try:
+            useJson = request.params['json']
+            if useJson == '1':
+                iPhoneApp = True
+            else:
+                iPhoneApp = False
+        except KeyError:
+            iPhoneApp = False
+
+        if categories:
+            result = categories
+            statusCode = 0
+        else:
+            statusCode = 2
+            result = "No categories."
+        if iPhoneApp:
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode, 'result':result})
+
     def searchWorkshopCategoryTags(self):
         if self.noQuery:
             return self._noSearch()
@@ -163,6 +197,7 @@ class SearchController(BaseController):
         elif self.query.count('%') == len(self.query):
             # Prevent wildcard searches
             return self._noSearch()
+        log.info("searchWorkshopGeo YO CHECK THIS OUT %s %s"%(self.query, self.noQuery))
         c.numUsers = 0
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)

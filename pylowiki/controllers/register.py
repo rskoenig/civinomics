@@ -17,6 +17,7 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 from pylowiki.lib.db.revision import Revision
 import pylowiki.lib.mail            as mailLib
 import re
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -908,12 +909,12 @@ class RegisterController(BaseController):
                             returnPage += "/add/" + c.listingType
                         if returnJson:
                             response.headers['Content-type'] = 'application/json'
-                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':returnPage})
+                            return json.dumps({'statusCode':0, 'user':dict(user)})
                         else:
                             return redirect(returnPage)
                     if returnJson:
                         response.headers['Content-type'] = 'application/json'
-                        return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':returnPage})
+                        return json.dumps({'statusCode':0, 'user':dict(u.u)})
                     else:
                         return redirect(returnPage)
                 else:
