@@ -32,6 +32,13 @@
 </div><!-- row-fluid -->
 <div class="row-fluid">
     <div class="span8">
+        <h4>Initiative Author</h4>
+        ${ihelpers.showAuthor(c.initiative)}
+        
+        <h4>Initiative Scope</h4>
+        ${ihelpers.showScope(c.initiative)}
+        
+        <div class="spacer"></div>
         ${ihelpers.showInfo()}
         <%
             comments(c.thing, c.discussion)

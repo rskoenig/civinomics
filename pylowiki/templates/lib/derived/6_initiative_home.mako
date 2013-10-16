@@ -11,13 +11,13 @@
 
 <%namespace name="lib_6" file="/lib/6_lib.mako" />
 
-<%def name="showInfo()">
-    <div>
-    <h4>Initiative Author</h4>
-    ${lib_6.userImage(c.initiative.owner, className="avatar med-avatar")} ${lib_6.userLink(c.initiative.owner)}<span class="grey">${lib_6.userGreetingMsg(c.initiative.owner)}</span> from ${lib_6.userGeoLink(c.initiative.owner)}
-    <h4>Initiative Scope</h4>
+<%def name="showAuthor(item)">
+    ${lib_6.userImage(item.owner, className="avatar med-avatar")} ${lib_6.userLink(item.owner)}<span class="grey">${lib_6.userGreetingMsg(item.owner)}</span> from ${lib_6.userGeoLink(item.owner)}
+</%def>
+
+<%def name="showScope(item)">
     <% 
-        scopeList = c.initiative['scope'].split('|')
+        scopeList = item['scope'].split('|')
         country = scopeList[2].replace("-", " ")
         state = scopeList[4].replace("-", " ")
         county = scopeList[6].replace("-", " ")
@@ -36,7 +36,9 @@
             scopeString += ', <span class="badge badge-info">Zip code of %s</span>'%postalCode
     %>
     ${scopeString | n}
-    <div class="spacer"></div>
+</%def>
+
+<%def name="showInfo()">
     <h4>Introduction</h4>
     ${m.html(c.initiative['background'], render_flags=m.HTML_SKIP_HTML) | n}
     </div>
@@ -74,9 +76,16 @@
             <a href="/initiative/${item['urlCode']}/${item['url']}/show" class="listed-item-title media-heading lead bookmark-title">${item['title']}</a>
             % if 'user' in session:
                 % if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
-                    <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a>
+                    <a href="/initiative/${item['urlCode']}/${item['url']}/edit">Edit</a> &nbsp;
+                    % if item['public'] == '0':
+                        Not yet public
+                    % else:
+                        Public
+                    % endif
                 % endif
             % endif
+            <br />
+            ${showScope(item) | n}
         </div><!-- media-body -->
     </div><!-- media -->
 </%def>
@@ -97,6 +106,14 @@
             postalCodeSelected = "selected"
 
     %>
+    % if c.saveMessage and c.saveMessage != '':
+        <div class="spacer"></div>
+        <div class="alert alert-success">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        ${c.saveMessage}
+        </div>
+    % endif
+
     <div class="spacer"></div>
     <div class="row-fluid">
         <span class="pull-left"><h4>Edit Initiative</h4></span>
@@ -107,6 +124,16 @@
         <div class="span6">
         <form method="POST" name="workshop_background" id="workshop_background" action="/initiative/${c.initiative['urlCode']}/${c.initiative['url']}/editHandler">
             <fieldset>
+            % if c.complete and c.initiative['public'] == '0':
+                <label for="public" class="control-label">
+                All of the required information has been added to your initiative. When you are satisfied that it is ready, 
+                click on this checkbox to make your initiative public.</label>
+                Make Public: <input type="checkbox" name="public" value="yes"><div class="spacer"></div>
+            % elif c.initiative['public'] == '0':
+                You will be to make this initiative public when all of the required information has been filled out and a 
+                picture uploaded.
+            % endif
+
             <label for="title" class="control-label" required>Initiative Title:</label>
             <input type="text" name="title" value="${c.initiative['title']}">
             <label for="description" class="control-label" required>Short Description:</label>
@@ -122,7 +149,9 @@
             </fieldset>
             <label for="tag" class="control-label" required>Initiative category:</label>
             <select name="tag" id="tag">
-            <option value="choose">Choose one</option>
+            % if c.initiative['public'] == '0':
+                <option value="choose">Choose one</option>
+            % endif
             % for tag in tagList:
                 <% 
                     selected = ""
@@ -137,7 +166,7 @@
             <div class="background-edit-wrapper">
             </div><!-- background-edit-wrapper -->
             <div class="preview-information-wrapper" id="live_preview">
-            hi
+
             </div><!-- preview-information-wrapper -->
             <button type="submit" class="btn btn-warning pull-left" name="submit">Save Changes</button>
             </form>

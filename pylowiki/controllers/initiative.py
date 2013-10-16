@@ -28,7 +28,7 @@ class InitiativeController(BaseController):
         c.user = None
         c.initiative = None
         existingList = ['initiativeEditHandler', 'initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler']
-        adminList = ['initiativeShowHandler', 'initiativeEdit', 'photoUploadHandler']
+        adminList = ['initiativeEditHandler', 'initiativeEdit', 'photoUploadHandler']
         if action == 'initiativeNewHandler' and id1 is not None and id2 is not None:
             c.user = userLib.getUserByCode(id1)
             if not c.user:
@@ -48,6 +48,8 @@ class InitiativeController(BaseController):
                 abort(404)
             if c.user['email'] != c.authuser['email'] and not userLib.isAdmin(c.authuser.id):
                 abort(404)
+                
+            c.complete = self.initiativeCheck()
             
         c.resources = []
         # for compatibility with comments
@@ -100,7 +102,20 @@ class InitiativeController(BaseController):
             log.info("missing initiaitve info: title is %s description is %s and scope is %s"%(title, description, scope))
             abort(404)
             
+        c.saveMessage = "Changes saved."
+            
         return render('/derived/6_initiative_edit.bootstrap')
+    
+    def initiativeCheck(self):
+        atrList = ['title', 'description', 'cost', 'scope', 'tag', 'background', 'directoryNum_photos', 'pictureHash_photos']
+        for atr in atrList:
+            complete = 1
+            if atr not in c.initiative:
+                complete = 0
+            elif c.initiative[atr] == '':
+                complete = 0
+                
+        return complete
         
     def initiativeEdit(self):
         
@@ -134,9 +149,17 @@ class InitiativeController(BaseController):
             c.initiative['tags'] = request.params['tag']
         if 'data' in request.params:
             c.initiative['background'] = request.params['data']
-            
+        
+        if 'public' in request.params:
+            log.info("got %s"%request.params['public'])
+        if 'public' in request.params and request.params['public'] == 'yes':
+            if c.complete and c.initiative['public'] == '0':
+                c.initiative['public'] = '1'
+                
         dbHelpers.commit(c.initiative)
         revisionLib.Revision(c.authuser, c.initiative)
+
+        c.saveMessage = "Changes saved."
         
         return render('/derived/6_initiative_edit.bootstrap')
         

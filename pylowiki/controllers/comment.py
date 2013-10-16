@@ -89,7 +89,7 @@ class CommentController(BaseController):
                 title = ' commented on one of your pictures'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnPhoto")
             elif thing.objType.replace("Unpublished", "") == 'initiative':
-                title = ' commented on one of your initiative'
+                title = ' commented on one of your initiatives'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
             message = genericLib.linkChildToParent(message, comment.c)
             dbHelpers.commit(message)

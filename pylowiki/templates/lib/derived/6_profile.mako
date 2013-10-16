@@ -318,11 +318,17 @@
                         parentCode = item['photoCode']
                         parentURL = item['parent_url']
                         parentObjType = 'photo'
+                    elif 'initiativeCode' in item:
+                        parentCode = item['initiativeCode']
+                        parentURL = item['parent_url']
+                        parentObjType = 'initiative'
                     elif 'discussionCode' in item:
                         parentCode = item['discussionCode']
                         parentURL = item['parent_url']
                         parentObjType = 'discussion'
-                    if 'profileCode' in item:
+                    if 'initiativeCode' in item:
+                        parentLink = "/initiative/" + parentCode + "/" + parentURL + "/show/"
+                    elif 'profileCode' in item:
                         parentLink = "/profile/" + item['profileCode'] + "/" + item['profile_url'] + "/photo/show/" + parentCode
                     else:
                         parentLink = workshopLink + "/" + parentObjType + "/" + parentCode + "/" + parentURL
@@ -344,6 +350,23 @@
                 %>
                 % if item['deleted'] == '0':
                     <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'initiative':
+                <% 
+                    link = "/initiative/" + item['userCode'] + "/" + item['user_url'] + "/show"
+                    activityStr = "added the initiative <a href=\"" + link + "\">" + title + "</a>"
+                
+                %>
+                % if item['deleted'] == '0' and item['public'] == '1':
+                    <tr><td>${activityStr | n}</td></tr>
+                % endif
+            % elif objType == 'comment' and 'initiativeCode' in item:
+                <% 
+                        activityStr = "commented on an <a href=\"" + parentLink + "\">initiative</a>, saying"
+                        activityStr += " <a href=\"" + itemLink + "\" class=\"expandable\">" + title + "</a>"
+                %>
+                % if item['deleted'] == '0' and item['public'] == '1':
+                    <tr><td>${activityStr | n} </td></tr>
                 % endif
             % elif objType == 'comment' and 'photoCode' in item:
                 <% 

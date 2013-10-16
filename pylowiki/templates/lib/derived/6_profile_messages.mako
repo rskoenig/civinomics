@@ -115,7 +115,7 @@
                                     <p class="pull-right"><small>${message.date} (PST)</small></p>
                                 </div>
                             </div>
-                        % elif message['extraInfo'] in ['commentOnPhoto']:
+                        % elif message['extraInfo'] in ['commentOnPhoto', 'commentOnInitiative']:
                             <%
                                 comment = commentLib.getCommentByCode(message['commentCode'])
                             %>
@@ -149,7 +149,34 @@
                                     <p>Your photo:
                                         <a href="/profile/${c.user['urlCode']}/${c.user['url']}/photo/show/${photoCode}" class="green green-hover">${title}</a>
                                     </p>
-                                    <% log.info("message photo") %>
+                                    % if 'text' in message:
+                                        <p>${message['text']}</p>
+                                    % endif
+                                    <p class="pull-right"><small>${message.date} (PST)</small></p>
+                                </div>
+                            </div>
+                        % elif message['extraInfo'] in ['disabledInitiative', 'enabledInitiative', 'deletedInitiative']:
+                            <%
+                                initiativeCode = message['initiativeCode']
+                                thing = generic.getThing(initiativeCode)
+                                title = thing['title']
+                                if message['extraInfo'] in ['disabledInitiative']:
+                                    event = eventLib.getEventsWithAction(message, 'disabled')
+                                elif message['extraInfo'] in ['enabledInitiative']:
+                                    event = eventLib.getEventsWithAction(message, 'enabled')
+                                elif message['extraInfo'] in ['deletedInitiative']:
+                                    event = eventLib.getEventsWithAction(message, 'deleted')
+                                
+                                action = event[0]['action']
+                                reason = event[0]['reason']
+                            %>
+                            <div class="media">
+                                <div class="media-body">
+                                    <h4 class="media-heading centered">${message['title']}</h4>
+                                    <p>It was ${action} because: ${reason}</p>
+                                    <p>Your initiative:
+                                        <a href="/initiative/${thing['urlCode']}/${thing['url']}/show" class="green green-hover">${title}</a>
+                                    </p>
                                     % if 'text' in message:
                                         <p>${message['text']}</p>
                                     % endif
