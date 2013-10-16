@@ -141,7 +141,7 @@
                    // this code is used when a person arrives and it is seen that they have 
                    // auth'd our app and are logged into facebook 
                    // replace current button with returned result
-                   var newButton = '<a href="/fbLogin"><img src="/images/fb_signin.png"></a>'
+                   var newButton = '<div><a href="/fbLogin"><img src="/images/fb_signin.png"></a></div>'
                    $('#fbLoginButton1').html(newButton);
                    $('#fbLoginButton2').html(newButton);
                  }
