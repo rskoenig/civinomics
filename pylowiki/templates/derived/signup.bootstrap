@@ -25,14 +25,12 @@
 <div class="container splash">
     <div class="row">
         % if c.success:
-            <div class="span6 offset3" style="padding-top:150px;">
-                <div class="well main-well success-well green">
-                    <div class="login-top">
-                        <h2>Success!</h2>
-                    <div>
-                    Check your email to finish setting up your account.
-                    If you don't see an email from us in your inbox, try checking your junk mail folder.
-                </div>
+            <div class="well main-well success-well green">
+                <div class="login-top">
+                    <h2>Success!</h2>
+                <div>
+                Check your email to finish setting up your account.
+                If you don't see an email from us in your inbox, try checking your junk mail folder.
             </div>
         % else: 
             <div class="slogan">
@@ -126,7 +124,7 @@
                     </div> 
                     <div class="span3 centered">
                         <h3><i class="icon-flag"></i> Reclaim our Country</h2>
-                        <p>Directly vote on vital reforms for our country. In every country. Government Of, By and For the People is reborn.</p>
+                        <p>Directly vote on vital reforms for our country. In every country. Government of, by and for the People is reborn.</p>
                     </div>                 
                 </div>
             </div>

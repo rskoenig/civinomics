@@ -2264,7 +2264,16 @@ hr.list-header{
   width: 390px;
   top: 20%;
   left: 50%;
-  margin-left: -185px; 
+  margin-left: -195px; 
+}
+
+.main-well.success-well{
+  font-size:24px;
+  line-height:32px;
+  width: 420px;
+  top: 25%;
+  left: 50%;
+  margin-left: -210px;
 }
 
 .main-well .control-label{
@@ -2362,11 +2371,6 @@ margin-left: 4.2%;
     font-size: 18px;
     line-height: 24px;
   } 
-}
-
-.success-well{
-    font-size:24px;
-    line-height:36px;
 }
 
 .photo-cred{
