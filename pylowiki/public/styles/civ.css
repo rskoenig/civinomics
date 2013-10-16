@@ -2257,7 +2257,7 @@ hr.list-header{
   width: 370px;
   margin-bottom: 0px;
   padding-bottom: 0px;
-  top: 15%;
+  top: 85px;
   right: 2%; 
 }
 .main-well.login{
@@ -2314,9 +2314,9 @@ button.signup, button.login{
 
 .slogan{
   position: absolute;
-  top: 38%;
+  top: 250px;
   color: #fff;
-  margin-left: 10%;
+  margin-left: 200px;
   background: rgba(0,0,0,.8);
   padding-left: 10px;
   padding-right: 10px;
@@ -2353,7 +2353,7 @@ button.signup, button.login{
   bottom: 0;
   left:0;
   width: 100%;
-  height: 135px;
+  height: 155px;
   color: #fff;
   background: rgba(0,0,0,0.8);
   padding-bottom: 20px;
@@ -2404,5 +2404,38 @@ margin-left: 4.2%;
 
 button.close{
   height: 20px;
+}
+
+.row.welcome{
+  position: relative;
+  height: 740px;
+}
+
+#bg {
+    position:fixed; 
+    top:-50%; 
+    left:-50%; 
+    width:200%; 
+    height:200%;
+}
+
+#bg img {
+    position:absolute; 
+    top:0; 
+    left:0; 
+    right:0; 
+    bottom:0; 
+    margin:auto; 
+    min-width:50%;
+    min-height:50%;
+}
+
+#splash-bg{
+    margin-top: -60px;
+    position:fixed; 
+    width:100%; 
+    height:800px; 
+    background-image: url('/images/splash/occupy_splash.png');
+    background-size:cover;
 }
 
