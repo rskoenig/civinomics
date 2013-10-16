@@ -50,5 +50,9 @@
     </div><!-- span4 -->
 </div><!-- row-fluid -->
 
-            
-
+<%def name="extraScripts2()">
+    <script src="${lib_6.fingerprintFile('/js/yesNo.js')}" type="text/javascript"></script>
+    % if 'user' in session:
+        <script src="${lib_6.fingerprintFile('/js/flag.js')}" type="text/javascript"></script>
+    % endif
+</%def>
