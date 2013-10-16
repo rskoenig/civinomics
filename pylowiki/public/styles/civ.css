@@ -2402,3 +2402,7 @@ margin-left: 4.2%;
   }  
 }
 
+button.close{
+  height: 20px;
+}
+
