@@ -2227,6 +2227,8 @@ hr.list-header{
   background-image: -webkit-linear-gradient(top, #00903e, #007733);
   background-image: -o-linear-gradient(top, #00903e, #007733);
   background-image: linear-gradient(to bottom, #00903e, #007733);
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .navbar-inner.civinomics-splash .brand img{
