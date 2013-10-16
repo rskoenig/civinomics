@@ -45,12 +45,19 @@ html,body{
     position: absolute;
     z-index: 1030;
     height: 90px;
-    margin-top: 15px;
     padding-top: 40px;
+    margin-top: 15px;
     background-color: #ffffff;
     background-image: url('/images/splash/extra_clean_paper.png');
     background-repeat: repeat;
     background-position: top left;
+}
+
+.footer-civ.condensed .simple{
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 90%;
+  display: none;
 }
 
 .container.main{
@@ -2366,7 +2373,31 @@ button.signup, button.login{
   .how-it-works .span3{
     width: 91.6%;
     margin-left: 4.2%;
-
+  }
+  .footer-civ.condensed{
+    position: relative !important;
+    margin-top: 270px;
+  }
+}
+@media (max-width: 1000px){
+  .footer-civ.condensed{
+    height: 70px;
+    padding-top: 0px;
+  }
+  .footer-civ.condensed .pretty{
+    display: none;
+  }
+  .footer-civ.condensed .simple{
+    display: inline;
+  }
+  .footer-civ.condensed .photo-cred{
+    left: 45px;
+    margin-left: 0;
+  }
+}
+@media (max-width: 700px){
+  .footer-civ.condensed{
+    height: 110px;
   }
 }
 
