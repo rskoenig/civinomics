@@ -35,6 +35,11 @@ class InitiativeController(BaseController):
                 abort(404)
         elif action in existingList and id1 is not None and id2 is not None:
                 c.initiative = initiativeLib.getInitiative(id1)
+                if not c.initiative:
+                    c.initiative = revisionLib.getRevisionByCode(id1)
+                    if not c.initiative:
+                        abort(404)
+                            
                 if c.initiative:
                     c.user = userLib.getUserByCode(c.initiative['userCode'])
                 else:
@@ -266,6 +271,8 @@ class InitiativeController(BaseController):
             
  
     def initiativeShowHandler(self):
+        
+        c.revisions = revisionLib.getRevisionsForThing(c.initiative)
             
         return render('/derived/6_initiative_home.bootstrap')
  

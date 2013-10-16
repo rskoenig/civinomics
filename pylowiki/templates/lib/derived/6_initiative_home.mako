@@ -41,7 +41,6 @@
 <%def name="showInfo()">
     <h4>Introduction</h4>
     ${m.html(c.initiative['background'], render_flags=m.HTML_SKIP_HTML) | n}
-    </div>
 </%def>
 
 <%def name="watchButton()">
@@ -238,4 +237,52 @@
                         </form>
             </div><!-- span6 -->
         </div><!-- row-fluid -->
+</%def>
+
+<%def name="initiativeModerationPanel(thing)">
+    <%
+        if 'user' not in session or thing.objType == 'revision':
+            return
+        flagID = 'flag-%s' % thing['urlCode']
+        adminID = 'admin-%s' % thing['urlCode']
+        publishID = 'publish-%s' % thing['urlCode']
+        unpublishID = 'unpublish-%s' % thing['urlCode']
+    %>
+    <div class="btn-group">
+        % if thing['disabled'] == '0' and thing.objType != 'initiativeUnpublished':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${flagID}">flag</a>
+        % endif
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)) and thing.objType != 'initiativeUnpublished':
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${unpublishID}">unpublish</a>
+        % elif thing.objType == 'initiativeUnpublished' and thing['unpublished_by'] != 'parent':
+            % if thing['unpublished_by'] == 'admin' and userLib.isAdmin(c.authuser.id):
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+            % elif thing['unpublished_by'] == 'owner' and c.authuser.id == thing.owner:
+                <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${publishID}">publish</a>
+            % endif
+        % endif
+        % if userLib.isAdmin(c.authuser.id):
+            <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
+        % endif
+    </div>
+    
+    % if thing['disabled'] == '0':
+        % if thing.objType != 'initiativeUnpublished':
+            ${lib_6.flagThing(thing)}
+        % endif
+        % if (c.authuser.id == thing.owner or userLib.isAdmin(c.authuser.id)):
+            % if thing.objType == 'initiativeUnpublished':
+                ${lib_6.publishThing(thing)}
+            % else:
+                ${lib_6.unpublishThing(thing)}
+            % endif
+            % if userLib.isAdmin(c.authuser.id):
+                ${lib_6.adminThing(thing)}
+            % endif
+        % endif
+    % else:
+        % if userLib.isAdmin(c.authuser.id):
+            ${lib_6.adminThing(thing)}
+        % endif
+    % endif
 </%def>

@@ -40,9 +40,22 @@
         
         <div class="spacer"></div>
         ${ihelpers.showInfo()}
-        <%
-            comments(c.thing, c.discussion)
-        %>
+        % if c.revisions:
+            <div class="spacer"></div>
+            <ul class="unstyled">
+            % for revision in c.revisions:
+                <li>Revision: <a href="/initiative/${revision['urlCode']}/${revision['url']}/show">${revision.date}</a></li>
+            % endfor
+            </ul>
+        % endif
+        % if c.initiative.objType == 'revision':
+            This is a revision dated ${c.initiative.date}<br />
+        % else:
+            ${ihelpers.initiativeModerationPanel(c.initiative)}
+            % if c.initiative.objType != 'initiativeUnpublished':
+                ${comments(c.initiative, c.discussion)}
+            % endif
+        % endif
     </div><!-- span8 -->
     <div class="span4">
         <h4>Information Resources</h4>
