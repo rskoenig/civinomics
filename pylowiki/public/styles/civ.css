@@ -2503,7 +2503,7 @@ button.close{
     background-size:cover;
 }
 
-.signup .form-horizontal .control-label {
+.signup .form-horizontal .control-label,.login .form-horizontal .control-label {
   text-align: right;
   float: left;
 }
