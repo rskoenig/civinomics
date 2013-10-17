@@ -12,6 +12,7 @@ import pylowiki.lib.db.activity     as activityLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.photo        as photoLib
+import pylowiki.lib.db.initiative   as initiativeLib
 import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.discussion   as discussionLib
@@ -124,6 +125,7 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['title', 'text'], [self.query, self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('title', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos(['title', 'description', 'tags'], [self.query, self.query, self.query], count = True)
+        c.numInitiatives = initiativeLib.searchInitiatives(['title', 'description', 'tag'], [self.query, self.query, self.query], count = True)
         c.searchType = "name"
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
@@ -141,6 +143,7 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_category_tags'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_category_tags', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
+        c.numInitiatives = initiativeLib.searchInitiatives('tag', self.query, count = True)
 
         c.photos = photoLib.searchPhotos('tags', self.query)
         if c.photos and len(c.photos) != 0:
@@ -166,6 +169,8 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
+        c.numInitiatives = initiativeLib.searchInitiatives('scope', self.query, count = True)
+        log.info("after search initiatives")
 
         c.photos = photoLib.searchPhotos('scope', self.query)
         c.searchQuery = self.query
@@ -272,7 +277,6 @@ class SearchController(BaseController):
             name = level
             c.searchQuery = "Postal Code " + utils.geoDeurlify(geoScope[9])
             c.flag = '/images/flags/generalFlag.gif'
-            flag = flag.lower()
             c.geoInfo = getPostalInfo(geoScope[9]) 
             if c.geoInfo:
                 c.population = c.geoInfo['Population']
@@ -602,6 +606,77 @@ class SearchController(BaseController):
             entry['photoLink'] = "/profile/" + u['urlCode'] + "/" + u['url'] + "/photo/show/" + p['urlCode']
             log.info(entry['photoLink'])
             entry['numComments'] = discussionLib.getDiscussionForThing(p)['numComments']
+            entry['authorCode'] = u['urlCode']
+            entry['authorURL'] = u['url']
+            entry['authorName'] = u['name']
+            entry['authorHash'] = md5(u['email']).hexdigest()
+            result.append(entry)
+        if len(result) == 0:
+            return json.dumps({'statusCode':2})
+        return json.dumps({'statusCode':0, 'result':result})
+        
+    def searchInitiatives(self):
+        log.info("in search initiatives")
+        if self.noQuery:
+            return json.dumps({'statusCode': 1})
+        elif self.query.count('%') == len(self.query):
+            # Prevent wildcard searches
+            return json.dumps({'statusCode':2})
+        result = []
+        if self.searchType == 'tag':
+            initiatives = initiativeLib.searchInitiatives('tag', self.query)
+        elif self.searchType == 'geo':
+            initiatives = initiativeLib.searchInitiatives('scope', self.query)
+        else:
+            keys = ['title', 'description', 'tags']
+            values = [self.query, self.query, self.query]
+            initiatives = initiativeLib.searchInitiatives(keys, values)
+        if not initiatives:
+            log.info("no initiatives")
+            return json.dumps({'statusCode':2})
+        if len(initiatives) == 0:
+            log.info("len initiatives is 0")
+            return json.dumps({'statusCode':2})
+
+        for initiative in initiatives:
+            i = generic.getThing(initiative['urlCode'])
+            u = generic.getThing(initiative['userCode'])
+            if i['deleted'] != u'0' or i['disabled'] != u'0':
+                continue
+            log.info("after initiative deleted disabled")
+            entry = {}
+            entry['title'] = i['title']
+            entry['tag'] = i['tag']
+            scopeList = i['scope'].split('|')
+            country = scopeList[2].replace("-", " ")
+            state = scopeList[4].replace("-", " ")
+            county = scopeList[6].replace("-", " ")
+            city = scopeList[8].replace("-", " ")
+            postalCode = scopeList[9]
+            scopeString = "%s, State of %s"%(country.title(), state.title())
+            if city == '0':
+                scopeString += ', <span class="badge badge-info">County of %s</span>'%county.title()
+            else:
+                scopeString += ', County of %s'%county.title()
+            if postalCode == '0':
+                scopeString += ', <span class="badge badge-info">City of %s</span>'%city.title()
+            else:
+                scopeString += ", City of %s"%city.title()
+            if postalCode != '0':
+                scopeString += ', <span class="badge badge-info">Zip code of %s</span>'%postalCode
+            entry['location'] = scopeString
+            entry['voteCount'] = int(i['ups']) + int(i['downs'])
+            entry['netVotes'] = int(i['ups']) - int(i['downs'])
+            rated = ratingLib.getRatingForThing(c.authuser, i) 
+            if rated:
+                entry['rated'] = rated['amount']
+            else:
+                entry['rated'] = 0
+            entry['urlCode'] = i['urlCode']
+            entry['url'] = i['url']
+            entry['thumbnail'] = "/images/photos/" + i['directoryNum_photos'] + "/thumbnail/" + i['pictureHash_photos'] + ".png"
+            entry['initiativeLink'] = "/initiative/" + i['urlCode'] + "/" + i['url'] + "/show"
+            entry['numComments'] = discussionLib.getDiscussionForThing(i)['numComments']
             entry['authorCode'] = u['urlCode']
             entry['authorURL'] = u['url']
             entry['authorName'] = u['name']

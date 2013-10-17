@@ -3,6 +3,7 @@ import logging
 
 from pylowiki.model import Thing, Data, meta
 import sqlalchemy as sa
+from sqlalchemy import and_, not_, or_
 from dbHelpers import commit, with_characteristic as wc, with_characteristic_like as wcl
 from pylons import config
 import pylowiki.lib.db.generic      as generic
@@ -22,6 +23,27 @@ def getInitiativesForUser(user):
     try:
         return meta.Session.query(Thing).filter(Thing.objType.in_(['initiative', 'initiativeUnpublished'])).filter_by(owner = user.id).all()
     except:
+        return False
+        
+def searchInitiatives( keys, values, deleted = u'0', count = False):
+    log.info("search initiatives %s %s"%(keys, values))
+    try:
+        if type(keys) != type([]):
+            p_keys = [keys]
+            p_values = [values]
+        else:
+            p_keys = keys
+            p_values = values
+        map_initiatives = map(wcl, p_keys, p_values)
+        q = meta.Session.query(Thing)\
+                .filter_by(objType = 'initiative')\
+                .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(reduce(or_, map_initiatives)))
+        if count:
+            return q.count()
+        return q.all()
+    except Exception as e:
+        log.error(e)
         return False
 
 # Object

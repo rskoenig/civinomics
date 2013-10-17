@@ -59,6 +59,7 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.discussionsURL = '/search/discussions/' + $scope.searchType + '/' + $scope.searchString;
     $scope.ideasURL = '/search/ideas/' + $scope.searchType + '/' + $scope.searchString;
     $scope.photosURL = '/search/photos/' + $scope.searchType + '/' + $scope.searchString;
+    $scope.initiativesURL = '/search/initiatives/' + $scope.searchType + '/' + $scope.searchString;
     $scope.searchQueryPretty = $("#search-input").val();
     $scope.showingWorkshops = {'class': 'active', 'show': false};
     $scope.showingPeople = {'class': '', 'show': false};
@@ -66,10 +67,11 @@ app.controller('SearchCtrl', function($scope, $http){
     $scope.showingDiscussions = {'class': '', 'show': false};
     $scope.showingIdeas = {'class': '', 'show': false};
     $scope.showingPhotos = {'class': '', 'show': false};
+    $scope.showingInitiatives = {'class': '', 'show': false};
     $scope.objType = 'workshops';
     $scope.orderProp = '-date';
     $scope.orderProp = '-date';
-    $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos'};
+    $scope.tooltip = {bookmark: 'Bookmarks', activity: 'Ideas, conversations, resources, comments, photos, initiatives'};
     $scope.currentPage = 0;
     $scope.pageSize = 20;
 
@@ -101,6 +103,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
         $scope.showingPhotos = {'class': '', 'show': false};
+        $scope.showingInitiatives = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -138,6 +141,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
         $scope.showingPhotos = {'class': '', 'show': false};
+        $scope.showingInitiatives = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -175,6 +179,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
         $scope.showingPhotos = {'class': '', 'show': false};
+        $scope.showingInitiatives = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -212,6 +217,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
         $scope.showingPhotos = {'class': '', 'show': false};
+        $scope.showingInitiatives = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -249,6 +255,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingPhotos = {'class': '', 'show': false};
+        $scope.showingInitiatives = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -286,6 +293,7 @@ app.controller('SearchCtrl', function($scope, $http){
         $scope.showingResources = {'class': '', 'show': false};
         $scope.showingDiscussions = {'class': '', 'show': false};
         $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingInitiatives = {'class': '', 'show': false};
         $scope.noResult = false;
         $scope.noQuery = false;
         $scope.loading = true;
@@ -315,7 +323,46 @@ app.controller('SearchCtrl', function($scope, $http){
             return Math.ceil($scope.photos.length/$scope.pageSize);                
         }
     };
+    
+    $scope.searchInitiatives = function() {
+        $scope.currentPage = 0;
+        $scope.showingWorkshops = {'class': '', 'show': false};
+        $scope.showingPeople = {'class': '', 'show': false};
+        $scope.showingResources = {'class': '', 'show': false};
+        $scope.showingDiscussions = {'class': '', 'show': false};
+        $scope.showingIdeas = {'class': '', 'show': false};
+        $scope.showingPhotos = {'class': '', 'show': false};
+        $scope.noResult = false;
+        $scope.noQuery = false;
+        $scope.loading = true;
+        $scope.objType = 'initiatives';
+        $http.get($scope.initiativesURL).success(function(data){
+            if (data.statusCode == 1)
+            {
+                $scope.noQuery = true;
+                $scope.noResult = true;
+                $scope.showingPhotos = {'class': 'active', 'show': false};
+                $scope.photos = null;
+            }
+            else if (data.statusCode == 2)
+            {
+                $scope.noResult = true;
+                $scope.showingInitiatives = {'class': 'active', 'show': false};
+                $scope.photos = null;
+            }
+            else if (data.statusCode === 0)
+            {
+                $scope.photos = data.result;
+                $scope.showingInitiatives = {'class': 'active', 'show': true};
+            }
+            $scope.loading = false;
+        });
+        $scope.numberOfPages=function(){
+            return Math.ceil($scope.initiatives.length/$scope.pageSize);                
+        }
+    };
 });
+
 
 app.filter('startFrom', function() {
     return function(input, start) {

@@ -30,6 +30,12 @@
                         <span class="pull-right">(${c.numWorkshops})</span>
                     </a>
                 </li>
+                <li ng-class="showingInitiative.class">
+                    <a href="#initiatives" data-toggle="tab" class="green green-hover" ng-click="searchInitiatives()">
+                        <span class="pull-left"><i class="icon-bullhorn"></i> Initiatives </span>
+                        <span class="pull-right">(${c.numInitiatives})</span>
+                    </a>
+                </li>
                 <li ng-class="showingIdeas.class">
                     <a href="#ideas" class = "green green-hover" ng-click="searchIdeas()">
                         <span class="pull-left"><i class="icon-file-text"></i> Ideas </span>
@@ -367,6 +373,65 @@
                         </td></tr>
                     </table>
                     <div class="centered" ng-show="photos.length>pageSize">
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                            Prev
+                        </button>
+                        <span style="color: #ffffff;"> <strong>{{currentPage+1}}</strong> of <strong>{{numberOfPages()}}</strong> </span>
+                        <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage >= photos.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                            Next
+                        </button>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="initiatives" class="tab-pane" ng-class="showingInitiatives.class" ng-show="showingInitiatives.show">
+                    <table class="table plain">
+                        <tr ng-repeat = "initiative in initiatives | filter:query | orderBy:orderProp | startFrom:currentPage*pageSize | limitTo:pageSize"><td>
+                            <div class="media well searchListing" ng-init="rated=initiative.rated; urlCode=initiative.urlCode;url=initiative.url; totalVotes=initiative.voteCount;netVotes=initiative.netVotes;objType='initiative';">
+                                <div class="media-body" ng-controller="yesNoVoteCtrl">
+                                    <div class="span1 voteWrapper" >
+                                        % if 'user' in session:
+                                            <a ng-click="updateYesVote()" class="upVote {{yesVoted}}">
+                                                <i class="icon-chevron-sign-up icon-2x {{yesVoted}}"></i>
+                                            </a>
+                                            <br>
+                                            <div class="centered chevron-score"> {{netVotes}}</div>
+                                            <a ng-click="updateNoVote()" class="downVote {{noVoted}}">
+                                                <i class="icon-chevron-sign-down icon-2x {{noVoted}}"></i>
+                                            </a>
+                                        % else:
+                                            <a href="/login" class="upVote">
+                                                <i class="icon-chevron-sign-up icon-2x"></i>
+                                            </a>
+                                            <br>
+                                            <div class="centered chevron-score"> {{netVotes}}</div>
+                                            <a href="/login" class="downVote">
+                                                <i class="icon-chevron-sign-down icon-2x"></i>
+                                            </a>
+                                        % endif
+                                        <br>
+                                    </div>
+                                    <div class="pull-left">
+                                        <a href="{{initiative.initiativeLink}}"><img src="{{initiative.thumbnail}}"></a>
+                                    </div>
+                                    <div class="media-body">
+                                        <h4 class="media-heading">
+                                            <a class="listed-item-title" href="{{initiative.initiativeLink}}">{{initiative.title}}</a>
+                                        </h4>
+                                        <small>
+                                            Posted by: <a href="/profile/{{initiative.authorCode}}/{{initiative.authorURL}}">{{initiative.authorName}}</a><br />
+                                            For: {{initiative.location}}<br />
+                                            Tag: <span  class="label workshop-tag {{initiative.tag}}">{{initiative.tag}}</span>
+                                        </small>
+                                        <br />
+                                        <ul class="horizontal-list iconListing">
+                                            <li><i class="icon-comment"></i> Comments ({{initiative.numComments}})</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </td></tr>
+                    </table>
+                    <div class="centered" ng-show="initiative.length>pageSize">
                         <button class="btn" onclick="$('html,body').scrollTop(0);" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
                             Prev
                         </button>
