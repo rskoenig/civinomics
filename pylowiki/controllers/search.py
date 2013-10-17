@@ -85,7 +85,8 @@ class SearchController(BaseController):
             else:
                 postalCode = '0'
             searchString = "||%s||%s||%s||%s|%s"%(country, state, county, city, postalCode)
-            
+            log.info("searchString after searchWorkshopGeo: %s"%searchString)
+
         if 'searchQuery' in request.params and searchString == None:
             self.query = request.params['searchQuery']
             #log.info("S E A R C H + Q U E R Y 0:  %s %s"%(self.query, self.noQuery))
@@ -116,15 +117,24 @@ class SearchController(BaseController):
             self.noQuery = True
         
         #log.info("S E A R C H + Q U E R Y 5:  %s %s"%(self.query, self.noQuery))
-        log.info("****SEARCH QUERY**** %s"%self.query)
+        #log.info("****SEARCH QUERY**** %s"%self.query)
         c.searchQuery = self.query
 
     def _noSearch(self, noRender = False):
-        c.numUsers = 0
-        c.numWorkshops = 0
-        return render('/derived/6_search.bootstrap')
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
+        if iPhoneApp:
+            statusCode = 2
+            result = "No search terms were entered."
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            c.numUsers = 0
+            c.numWorkshops = 0
+            return render('/derived/6_search.bootstrap')
     
     def search(self):
+        iPhoneApp = utils.iPhoneRequestTest(request)
         if self.noQuery:
             return self._noSearch()
         elif self.query.count('%') == len(self.query):
@@ -139,34 +149,44 @@ class SearchController(BaseController):
         c.searchType = "name"
         c.searchQuery = self.query 
         c.scope = {'level':'earth', 'name':'all'}
-        return render('/derived/6_search.bootstrap')
+        if iPhoneApp:
+            entry = {}
+            entry['numUsers'] = c.numUsers
+            entry['numWorkshops'] = c.numWorkshops
+            entry['numResources'] = c.numResources
+            entry['numDiscussions'] = c.numDiscussions
+            entry['numIdeas'] = c.numIdeas
+            entry['numPhotos'] = c.numPhotos
+            entry['searchType'] = c.searchType
+            entry['searchQuery'] = c.searchQuery
+            entry['scope'] = c.scope
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return render('/derived/6_search.bootstrap')
         
     def getWorkshopCategoryTags(self):
         """ return a list of the categories available for search """
         categories = workshopLib.getWorkshopTagCategories()
-        try:
-            useJson = request.params['json']
-            if useJson == '1':
-                iPhoneApp = True
-            else:
-                iPhoneApp = False
-        except KeyError:
-            iPhoneApp = False
-
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        response.headers['Content-type'] = 'application/json'
         if categories:
             result = categories
             statusCode = 0
         else:
             statusCode = 2
             result = "No categories."
+        
         if iPhoneApp:
-            response.headers['Content-type'] = 'application/json'
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:
-            response.headers['Content-type'] = 'application/json'
             return json.dumps({'statusCode':statusCode, 'result':result})
 
     def searchWorkshopCategoryTags(self):
+        iPhoneApp = utils.iPhoneRequestTest(request)
         if self.noQuery:
             return self._noSearch()
         elif self.query.count('%') == len(self.query):
@@ -180,18 +200,42 @@ class SearchController(BaseController):
         c.numPhotos = photoLib.searchPhotos('tags', self.query, count = True)
 
         c.photos = photoLib.searchPhotos('tags', self.query)
+        entry = {}
         if c.photos and len(c.photos) != 0:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
             c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
             c.backgroundAuthor = userLib.getUserByID(p.owner)
+            if iPhoneApp:
+                # cant figure out how to make these json serializable yet:
+                # entry['photos'] = c.photos
+                # entry['p'] = p
+                entry['backgroundPhoto'] = c.backgroundPhoto
+                entry['backgroundAuthor'] = dict(c.backgroundAuthor)
 
         c.searchQuery = self.query
         c.searchType = "tag"
         c.scope = {'level':'earth', 'name':'all'}
-        return render('/derived/6_search.bootstrap')
+        if iPhoneApp:
+            entry['numUsers'] = c.numUsers
+            entry['numWorkshops'] = c.numWorkshops
+            entry['numResources'] = c.numResources
+            entry['numDiscussions'] = c.numDiscussions
+            entry['numIdeas'] = c.numIdeas
+            entry['numPhotos'] = c.numPhotos
+            entry['searchType'] = c.searchType
+            entry['searchQuery'] = c.searchQuery
+            entry['scope'] = c.scope
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return render('/derived/6_search.bootstrap')
         
     def searchWorkshopGeo(self):
+        iPhoneApp = utils.iPhoneRequestTest(request)
         if self.noQuery:
             return self._noSearch()
         elif self.query.count('%') == len(self.query):
@@ -208,11 +252,15 @@ class SearchController(BaseController):
         c.photos = photoLib.searchPhotos('scope', self.query)
         c.searchQuery = self.query
         #log.info("search is %s"%c.searchQuery)
+        entry = {}
         if c.photos:
             c.photos = sort.sortBinaryByTopPop(c.photos)
             p = c.photos[0]
             c.backgroundPhoto = "/images/photos/" + p['directoryNum_photos'] + "/photo/" + p['pictureHash_photos'] + ".png"
             c.backgroundAuthor = userLib.getUserByID(p.owner)
+            if iPhoneApp:
+                entry['backgroundPhoto'] = c.backgroundPhoto
+                entry['backgroundAuthor'] = dict(c.backgroundAuthor)
 
         c.searchType = "region"
         geoScope = self.query.split('|') 
@@ -322,9 +370,39 @@ class SearchController(BaseController):
                 c.bizAnnualPayroll = c.geoInfo['BusinessAnnualPayroll']
 
         c.scope = {'level':'earth', 'name':'all'}
-        return render('/derived/6_search.bootstrap')
+        if iPhoneApp:
+            entry['numUsers'] = c.numUsers
+            entry['numWorkshops'] = c.numWorkshops
+            entry['numResources'] = c.numResources
+            entry['numDiscussions'] = c.numDiscussions
+            entry['numIdeas'] = c.numIdeas
+            entry['numPhotos'] = c.numPhotos
+            entry['searchType'] = c.searchType
+            entry['searchQuery'] = c.searchQuery
+            entry['scope'] = c.scope
+            if c.flag:
+                entry['flag'] = c.flag
+            entry['population'] = c.population
+            entry['medianAge'] = c.medianAge
+            entry['personsHousehold'] = c.personsHousehold
+            if c.incomePerHousehold:
+                entry['incomePerHousehold'] = c.incomePerHousehold
+            if c.avgHouseValue:
+                entry['avgHouseValue'] = c.avgHouseValue
+            if c.bizAnnualPayroll:
+                entry['bizAnnualPayroll'] = c.bizAnnualPayroll
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            log.info("results geo: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return render('/derived/6_search.bootstrap')
     
     def searchPeople(self):
+        #: this function returns json data so we set the headers appropriately
+        response.headers['Content-type'] = 'application/json'
         if self.noQuery:
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
@@ -354,12 +432,15 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchWorkshops(self):
+        #: this function returns json data so we set the headers appropriately
+        response.headers['Content-type'] = 'application/json'
         if self.noQuery:
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
+        log.info("searchWorkshops: self.searchType: %s"%self.searchType)
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]
@@ -382,8 +463,10 @@ class SearchController(BaseController):
             entry['description'] = w['description']
             entry['urlCode'] = w['urlCode']
             entry['url'] = w['url']
-            entry['activity'] = w['numPosts']
-            entry['bookmarks'] = w['numBookmarks']
+            #entry['activity'] = w['numPosts']
+            #entry['bookmarks'] = w['numBookmarks']
+            entry['activity'] = '555'
+            entry['bookmarks'] = '3000'
             mainImage = mainImageLib.getMainImage(w)
             entry['imageURL'] = utils.workshopImageURL(w, mainImage, thumbnail = True)
             entry['startTime'] = w['startTime']
@@ -403,6 +486,8 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchResources(self):
+        #: this function returns json data so we set the headers appropriately
+        response.headers['Content-type'] = 'application/json'
         if self.noQuery:
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
@@ -467,6 +552,8 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchDiscussions(self):
+        #: this function returns json data so we set the headers appropriately
+        response.headers['Content-type'] = 'application/json'
         if self.noQuery:
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
@@ -526,6 +613,8 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
     
     def searchIdeas(self):
+        #: this function returns json data so we set the headers appropriately
+        response.headers['Content-type'] = 'application/json'
         if self.noQuery:
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):
@@ -585,6 +674,8 @@ class SearchController(BaseController):
         return json.dumps({'statusCode':0, 'result':result})
         
     def searchPhotos(self):
+        #: this function returns json data so we set the headers appropriately
+        response.headers['Content-type'] = 'application/json'
         if self.noQuery:
             return json.dumps({'statusCode': 1})
         elif self.query.count('%') == len(self.query):

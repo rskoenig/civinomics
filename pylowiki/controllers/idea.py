@@ -16,6 +16,8 @@ import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.helpers as h
 
+import simplejson as json
+
 from pylowiki.lib.base import BaseController, render
 
 log = logging.getLogger(__name__)
@@ -87,6 +89,8 @@ class IdeaController(BaseController):
         return redirect(utils.thingURL(c.w, newIdea))
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
@@ -126,5 +130,19 @@ class IdeaController(BaseController):
             c.rootComment = commentLib.getCommentByCode(request.params['comment'])
             if not c.rootComment:
                 abort(404)
-                
-        return render('/derived/6_item_in_listing.bootstrap')
+        if iPhoneApp:
+            entry = {}
+            entry['thingCode'] = c.thingCode
+            entry['backgroundImage'] = c.backgroundImage
+            entry['thing'] = dict(c.thing)
+            entry['discussion'] = dict(c.discussion)
+            entry['revisions'] = c.revisions
+            entry['rootComment'] = c.rootComment
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:    
+            return render('/derived/6_item_in_listing.bootstrap')

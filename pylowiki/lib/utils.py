@@ -12,6 +12,18 @@ log = logging.getLogger(__name__)
 BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
+def iPhoneRequestTest(req):
+    try:
+        useJson = req.params['json']
+        if useJson == '1':
+            iPhoneApp = True
+        else:
+            iPhoneApp = False
+    except KeyError:
+        iPhoneApp = False
+
+    return iPhoneApp
+
 def urlify(url):
     import re
     pattern = re.compile('[^-\w]+')

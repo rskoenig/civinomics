@@ -43,11 +43,24 @@ import pylowiki.lib.db.dbHelpers as dbHelpers
 import pylowiki.lib.utils as utils
 import pylowiki.lib.sort as sort
 import simplejson as json
+import misaka as m
+
+from HTMLParser import HTMLParser
 
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
 
 log = logging.getLogger(__name__)
+
+
+class MLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.fed = []
+    def handle_data(self, d):
+        self.fed.append(d)
+    def get_data(self):
+        return ''.join(self.fed)
 
 class CommaSepList(validators.FancyValidator):
     cannot_be_empty=True
@@ -857,6 +870,8 @@ class WorkshopController(BaseController):
         return feed.writeString('utf-8')
         
     def display(self, workshopCode, workshopURL):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
@@ -908,9 +923,17 @@ class WorkshopController(BaseController):
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         if c.w['public_private'] == 'public':
             c.scope = workshopLib.getPublicScope(c.w)
+        # iphone app json data structure:
+        entry = {}
         c.goals = goalLib.getGoalsForWorkshop(c.w)
         if not c.goals:
             c.goals = []
+        elif iPhoneApp:
+            i = 0
+            for goal in c.goals:
+                goalEntry = "goal" + str(i)
+                entry[goalEntry] = dict(goal)
+                i = i + 1
         
         # Demo workshop status
         c.demo = workshopLib.isDemo(c.w)
@@ -930,12 +953,44 @@ class WorkshopController(BaseController):
             c.ideas = []
         else:
             c.ideas = sort.sortBinaryByTopPop(ideas)
+            if iPhoneApp:
+                i = 0
+                for idea in c.ideas:
+                    ideaEntry = "idea" + str(i)
+                    formatIdea = idea
+                    ideaHtml = m.html(idea['text'], render_flags=m.HTML_SKIP_HTML)
+                    s = MLStripper()
+                    s.feed(ideaHtml)
+                    formatIdea['text'] = s.get_data()
+                    entry[ideaEntry] = dict(formatIdea)
+                    i = i + 1
+
         disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
         if disabled:
             c.ideas = c.ideas + disabled
         c.listingType = 'ideas'
-        
-        return render('/derived/6_workshop_home.bootstrap')
+        if iPhoneApp:
+            entry['mainImage'] = dict(c.mainImage)
+            entry['baseUrl'] = c.baseUrl
+            entry['thingCode'] = c.thingCode
+            entry['backgroundImage'] = c.backgroundImage
+            entry['title'] = c.w['title']
+            entry['isFollowing'] = c.isFollowing
+            #entry['facilitators'] = dict(c.facilitators)
+            #entry['listeners'] = c.listeners
+            if c.information and 'data' in c.information:         
+                entry['information'] = m.html(c.information['data'], render_flags=m.HTML_SKIP_HTML)
+            #entry['information'] = dict(c.information)
+            #entry['goals'] = dict(c.goals)
+            #entry['ideas'] = dict(c.ideas)
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return render('/derived/6_workshop_home.bootstrap')
         
     def info(self, workshopCode, workshopURL):
         c.title = c.w['title']
