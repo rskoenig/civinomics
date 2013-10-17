@@ -369,7 +369,7 @@
       <li class="span4 slideListing">
         % if showSlide['pictureHash'] == 'supDawg':
            <a href="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow">
-              <img src="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow" data-caption="${slide['title']}"/>
+              <img src="/images/slide/slideshow/${showSlide['pictureHash']}.slideshow" data-caption="${showSlide['title']}"/>
            </a>
         % else:
             <a href="/images/slide/${showSlide['directoryNum']}/slideshow/${showSlide['pictureHash']}.${slideFormat}">
@@ -488,16 +488,20 @@
     ${scopeString | n}
 </%def>
 
-<%def name="displayWorkshopFlag()">
+<%def name="displayWorkshopFlag(w, *args)">
     <%
-        if c.w['public_private'] == 'public':
-            scope = workshopLib.getPublicScope(c.w)
+        if w['public_private'] == 'public':
+            scope = workshopLib.getPublicScope(w)
             href = scope['href']
             workshopFlag = scope['flag']
         else:
             workshopFlag = '/images/flags/generalFlag.gif'
             href = '#'
 
+        flagSize = 'med-flag'
+        if 'small' in args:
+          flagSize = 'small-flag'
+
     %>
-    <a href="${href}"><img class="thumbnail span med-flag" src="${workshopFlag}"></a>
+    <a href="${href}"><img class="thumbnail span ${flagSize}" src="${workshopFlag}"></a>
 </%def>

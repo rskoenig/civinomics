@@ -62,7 +62,13 @@ class HomeController(BaseController):
 					imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
 				photo = imgSrc
 				link = "/workshops/" + workshops[i]['urlCode'] + "/" + workshops[i]['url']
-				newWorkshops[i] = { 'photo': photo, 'title': title, 'link': link}
+				item = workshops[i]
+				scope = workshopLib.getPublicScope(workshops[i])
+				level = scope['level'].title()
+				fix = scope['name'].replace('-',' ')
+				name = fix.title()
+				scopeTitle = level + ' of ' + name
+				newWorkshops[i] = { 'photo': photo, 'title': title, 'link': link, 'item': item, 'scopeTitle':scopeTitle}
 			c.newWorkshops = newWorkshops
 
 
