@@ -7,6 +7,3 @@
       ${next.body()}
    </div>
 </div><!-- close wrap -->
-% if session._environ['PATH_INFO'] == ("/signup") and not c.success:
-   ${helpers.condensedFooter()}
-% endif

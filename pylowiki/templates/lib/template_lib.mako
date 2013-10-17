@@ -258,20 +258,27 @@
                 </div>
             </div>
             <div class="row-fluid simple">
-                <ul class="horizontal-list">
-                    <li><a href="/corp/terms">Terms</a></li>
-                    <li><a href="/corp/privacy">Privacy</a></li>
-                    <li><a href="/corp/news">News</a></li>
-                    <li><a href="/corp/contact">Contact</a></li>
-                    <li><a target="_blank" href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement">Fund Us</a></li>
-                    <li><a href="/corp/careers">Careers</a></li>
-                    <li><a href="/corp/team">Team</a></li>
-                    <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
-                    <li><a href="/corp/caseStudies">Case Studies</a></li>
-                    <li>© 2013 Civinomics, Inc. </li>
-                </ul>
+                <div class="span10">
+                    <ul class="horizontal-list">
+                        <li><a href="/corp/terms">Terms</a></li>
+                        <li><a href="/corp/privacy">Privacy</a></li>
+                        <li><a href="/corp/news">News</a></li>
+                        <li><a href="/corp/contact">Contact</a></li>
+                        <li><a target="_blank" href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement">Fund Us</a></li>
+                        <li><a href="/corp/careers">Careers</a></li>
+                        <li><a href="/corp/team">Team</a></li>
+                        <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a href="/corp/caseStudies">Case Studies</a></li>
+                        <li>© 2013 Civinomics, Inc. </li>
+                    </ul>
+                </div>
+                <div class="span2 centered">
+                    <img src="/images/logo_grey_simple.png">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <em class="photo-cred">Cover photo: Occupy Wallstreet, November 11th, 2011. Source: Wikimedia Commons</em>
             </div>
         </div>
-        <em class="photo-cred">Cover photo: Occupy Wallstreet, November 11th, 2011. Source: Wikimedia Commons</em>
     </div>
 </%def>

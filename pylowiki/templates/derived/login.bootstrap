@@ -4,9 +4,7 @@
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/liberty.jpg' alt="">
-</div>
+<div id="login-bg"></div>
 <div class="login">
   <div class="container">
       <div class="row">
