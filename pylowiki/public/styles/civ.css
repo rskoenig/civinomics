@@ -2182,3 +2182,7 @@ hr.list-header{
   margin-bottom: 20px;
   border-bottom: none;
 }
+
+h4.forum-topic{
+  font-weight: 500;
+}
