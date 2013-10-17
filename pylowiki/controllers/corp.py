@@ -696,6 +696,18 @@ class CorpController(BaseController):
        
 
         article={}
+        article['title']="KSCO Presents Ethan Bearman October 3, 2013. In-studio with Robert Singleton, Founder and CMO of Civinomics"
+        article['link']='http://podcast.ethanbearman.com/ksco-presents-ethan-bearman-october-3-2013/'
+        article['date']='10.03.2013'
+        article['source']='KSCO'
+        c.articles.append(article)
+        article={}
+        article['title']="(Video) KSCO Presents Ethan Bearman October 3, 2013. In-studio with Robert Singleton, Founder and CMO of Civinomics"
+        article['link']='http://www.youtube.com/watch?v=VfXiMWpUBZ8&feature=youtu.be'
+        article['date']='10.03.2013'
+        article['source']='YouTube'
+        c.articles.append(article)
+        article={}
         article['title']="Lack of eatery, entertainment options top downtown Watsonville survey"
         article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&page=72&story_id=15248'
         article['date']='10.03.2013'
