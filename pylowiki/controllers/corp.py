@@ -693,6 +693,74 @@ class CorpController(BaseController):
         c.pagetype="news" 
 
         c.articles=[]
+       
+
+        article={}
+        article['title']="Lack of eatery, entertainment options top downtown Watsonville survey"
+        article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&page=72&story_id=15248'
+        article['date']='10.03.2013'
+        article['source']='Register Pajaronian'
+        c.articles.append(article)
+        article={}
+        article['title']="Survey: Watsonville downtown needs more restaurants, shops, entertainment: Downtown vision project seeks to engage public"
+        article['link']='http://www.santacruzsentinel.com/watsonville/ci_24226760/survey-watsonville-downtown-needs-more-restaurants-shops-entertainment'
+        article['date']='10.02.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Get Stoked on Social. Santa Cruzs Best Twitter Accounts"
+        article['link']='http://santacruzlife.com/get-stoked-social-santa-cruzs-best-twitter-accounts/'
+        article['date']='9.30.2013'
+        article['source']='SantaCruzLife.com'
+        c.articles.append(article)
+        article={}
+        article['title']="The Civinomics blog on civic discourse"
+        article['link']='http://santacruznews.org/people/the-civinomics-blog-on-civic-discourse/'
+        article['date']='9.30.2013'
+        article['source']='SantaCruzNews.org'
+        c.articles.append(article)
+        article={}
+        article['title']="Civinomics tackles Shakespeare, downtown Watsonville, plastic bags"
+        article['link']='http://www.santacruzsentinel.com/santacruz/ci_24008994/civinomics-tackles-shakespeare-downtown-watsonville-plastic-bags?source=rss&utm_source=dlvr.it&utm_medium=twitter'
+        article['date']='9.03.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Building an Entrepreneurial Pipeline in Santa Cruz (Part 3)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/08/01/building-an-entrepreneurial-pipeline-in-santa-cruz/'
+        article['date']='8.1.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Seeding a New Generation of Startups in Santa Cruz (Part 2)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/07/31/seeding-a-new-generation-of-startups-in-santa-cruz/'
+        article['date']='7.31.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Santa Cruz, the City Over the Hill, Works to Build Its Own Startup Culture (Part 1)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/07/30/santa-cruz-the-city-over-the-hill-builds-its-own-startup-culture/'
+        article['date']='7.30.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="BUSINESS DIGEST, JULY 20, 2013: CIVINOMICS INVITES ELECTED OFFICIALS"
+        article['link']='http://www.contentboost.com/news/2013/07/19/7289426.htm'
+        article['date']='7.19.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Monterey County Herald publisher, advertising director add Santa Cruz Sentinel to duties Omernick, Powell fill roles at Santa Cruz Sentinel"
+        article['link']='http://robertpowelldigitalfirst.wordpress.com/2013/06/29/monterey-county-herald-publisher-advertising-director-add-santa-cruz-sentinel-to-duties-omernick-powell-fill-roles-at-santa-cruz-sentinel/'
+        article['date']='6.20.2013'
+        article['source']='Robert Powell Blog'
+        c.articles.append(article)
+        article={}
+        article['title']="Bring Your Own Bag"
+        article['link']='http://www.gtweekly.com/index.php/santa-cruz-news/santa-cruz-environmental-news/4771-bring-your-own-bag.html'
+        article['date']='5.07.2013'
+        article['source']='Good Times'
+        c.articles.append(article)
         article={}
         article['title']="Civinomics: A new kind of civic participation for the social media world"
         article['link']='http://santacruznews.org/people/civinomics-a-new-kind-of-civic-participation-for-the-social-media-world/'
