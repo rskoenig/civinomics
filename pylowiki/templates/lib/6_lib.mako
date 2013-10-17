@@ -21,7 +21,7 @@
 %>
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 
-<%def name="facebookDialogShare(link, picture)">
+<%def name="facebookDialogShare(link, picture, iconClass)">
     <%
         # link: direct url to item being shared
         # picture: url of the parent workshop's background image
@@ -114,7 +114,7 @@
             );
         };
         </script>
-        <a href="#" target='_top' onClick="shareOnWall()"><img src="/images/fb_share2.png"></a>
+        <a href="#" target='_top' onClick="shareOnWall()"><i class="${iconClass}"></i></a>
     % endif
 </%def>
 
@@ -123,7 +123,7 @@
         <% 
             memberMessage = "You might be interested in this online Civinomics workshop."
         %>
-        <a href="#emailShare" role="button" class="btn btn-primary btn-mini" data-toggle="modal"><i class="icon-envelope icon-white"></i> Share</a>
+        <a href="#emailShare" role="button" data-toggle="modal" class="listed-item-title"><i class="icon-envelope icon-2x"></i></a>
         <div id="emailShare" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -207,16 +207,19 @@
          </a>
       % else:
         % if thing.objType == 'photo':
-            <% loginURL = "/login" %>
+            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
         % else:
-            <% loginURL = "/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" %>
+            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
         % endif
-         <a href="${loginURL}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
          <i class="icon-chevron-sign-up icon-2x"></i>
          </a>
          <br />
          <div class="centered chevron-score"> ${rating}</div>
-         <a href="${loginURL}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nulvote" class="nullvote">
+        % if thing.objType == 'photo':
+            <a href="/login" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
+        % else:
+            <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="right" data-trigger="hover" title="Login to make your vote count" id="nullvote" class="nullvote">
+        % endif
          <i class="icon-chevron-sign-down icon-2x"></i>
          </a>
          <br />
@@ -235,6 +238,10 @@
         totalYes = int(thing['ups'])
         totalNo = int(thing['downs'])
         totalVotes = int(thing['ups']) + int(thing['downs'])
+        percentYes = percentNo = 0
+        if totalVotes > 0:
+          percentYes = int(float(totalYes)/float(totalVotes) * 100)
+          percentNo = int(float(totalNo)/float(totalVotes) * 100)
       %>
       % if 'user' in session and (c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'])  and not self.isReadOnly():
          <% 
@@ -243,23 +250,23 @@
                if rated['amount'] == '1':
                   commentClass = 'voted yesVote'
                   displayTally = ''
+                  displayPrompt = 'hidden'
                else:
                   commentClass = 'yesVote'
                   displayTally = ''
+                  displayPrompt = 'hidden'
                   if rated['amount'] == '0' :
                     displayTally = 'hidden'
+                    displayPrompt = ''
 
             else:
                commentClass = 'yesVote'
                displayTally = 'hidden'
+               displayPrompt = ''
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/1" class="${commentClass}">
-           % if 'detail' in args:
               <div class="vote-icon yes-icon detail"></div>
-              <div class="yesScore ${displayTally}">${locale.format("%d", totalYes, grouping=True)}</div>
-           % else:
-              <div class="vote-icon yes-icon detail"></div>
-           % endif
+              <div class="ynScoreWrapper ${displayTally}"><span class="yesScore">${percentYes}</span>%</div>
          </a>
          <br>
          <br>
@@ -273,15 +280,16 @@
                commentClass = 'noVote'
          %>
          <a href="/rate/${thing.objType}/${thing['urlCode']}/${thing['url']}/-1" class="${commentClass}">
-           % if 'detail' in args:
               <div class="vote-icon no-icon detail"></div>
-              <div class="noScore ${displayTally}">${locale.format("%d", totalNo, grouping=True)}</div> 
-           % else:
-              <div class="vote-icon no-icon"></div>
-           % endif
+              <div class="ynScoreWrapper ${displayTally}"><span class="noScore">${percentNo}</span>%</div> 
          </a>
          <br>
-         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
+         <div class="totalVotesWrapper">
+          % if 'detail' in args:
+            <span class="orange ${displayPrompt}"><strong>Vote to display rating</strong></span><br>
+          % endif
+          Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span>
+        </div>
       % else:
          <a href="/workshop/${c.w['urlCode']}/${c.w['url']}/login/${thing.objType}" rel="tooltip" data-placement="top" data-trigger="hover" title="Login to vote" id="nulvote" class="nullvote">
           <div class="vote-icon yes-icon"></div>
@@ -292,8 +300,11 @@
           <div class="vote-icon no-icon"></div>
          </a>
          <br>
-         <div class="totalVotesWrapper">Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
-         <% log.info("vote") %>
+         <div class="totalVotesWrapper">
+          % if 'detail' in args:
+            <span class="orange"><strong>Vote to display rating</strong></span><br>
+          % endif
+          Total Votes: <span class="totalVotes">${locale.format("%d", totalVotes, grouping=True)}</span></div>
       % endif
    </div>
 </%def>
@@ -319,7 +330,7 @@
 
         printStr = ''
         btnX = "large"
-        if 'small' in args:
+        if 'small' in args or 'tiny' in args:
             btnX = "small"
       
         if c.privs['participant'] or c.privs['facilitator'] or c.privs['admin'] or c.privs['guest']:     
@@ -336,16 +347,20 @@
                 
         printStr += ' class="pull-right btn btn-' + btnX + ' btn-civ right-space" type="button"><i class="icon-white icon-plus"></i>'
 
-        if thing == 'discussion':
-            printStr += ' Topic'
-        elif thing == 'ideas':
-            printStr += ' Idea'
-        elif thing == 'resources':
-            printStr += ' Resource'
+        if not 'tiny' in args:
+          if thing == 'discussion':
+              printStr += ' Topic'
+          elif thing == 'ideas':
+              printStr += ' Idea'
+          elif thing == 'resources':
+              printStr += ' Resource'
+
         printStr += '</a>'
 
     %>
-    ${printStr | n}
+
+    ${printStr | n} 
+
 </%def>
 
 <%def name="readOnlyMessage(thing)">
@@ -660,6 +675,8 @@
                     source = user['facebookProfileBig']
                 else:
                     source = user['facebookProfileSmall']
+            elif kwargs['forceSource'] == 'twitter':
+                source = user['twitterProfilePic']
 
         else:
             if 'avatarSource' in user.keys():
@@ -673,6 +690,10 @@
                         source = user['facebookProfileBig']
                     else:
                         source = user['facebookProfileSmall']
+                elif user['avatarSource'] == 'twitter':
+                    gravatar = False
+                    source = user['twitterProfilePic']
+
             elif 'extSource' in user.keys():
                 # this is needed untl we're sure all facebook connected users have properly 
                 # functioning profile pics - the logic here is now handled 

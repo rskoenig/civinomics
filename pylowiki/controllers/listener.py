@@ -26,7 +26,7 @@ class ListenerController(BaseController):
     def __before__(self, action, userCode = None, workshopCode = None):
         wList = ['listenerResignHandler', 'listenerTitleHandler']
         uList = ['listenerInviteHandler', 'listenerResponseHandler']
-        adminList = ['listenerNotifcationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler', 'listenerSuggestHandler']
+        adminList = ['listenerNotificationHandler', 'listenerAddHandler', 'listenerDisableHandler', 'listenerEmailHandler', 'listenerListHandler', 'listenerEditHandler', 'listenerSuggestHandler']
         if action in wList and workshopCode is not None and 'userCode' in request.params:
                 userCode = request.params['userCode']
                 c.user = userLib.getUserByCode(userCode)                
@@ -35,7 +35,7 @@ class ListenerController(BaseController):
                 c.user = userLib.getUserByCode(userCode)
                 workshopCode = request.params['workshopCode']
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
-        elif action in adminList and userCode is not None and workshopCode is not None:
+        elif (action in adminList) and userCode is not None and workshopCode is not None:
                 c.user = userLib.getUserByCode(userCode)
                 c.w = workshopLib.getWorkshopByCode(workshopCode)
         else:
@@ -343,7 +343,7 @@ class ListenerController(BaseController):
     @h.login_required
     def listenerNotificationHandler(self, workshopCode, url, userCode):
         user = userLib.getUserByCode(userCode)
-        listener = listenerLib.getListener(user, c.w)
+        listener = listenerLib.getListener(user['email'], c.w)
         # initialize to current value if any, '0' if not set in object
         iAlerts = '0'
         eAction = ''

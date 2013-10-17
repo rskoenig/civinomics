@@ -9,9 +9,7 @@
    <div class="span8">
       <div class="section-wrapper slideshow">
         <div id="workshopSlideshow">
-          <div>
-            ${helpers.slideshow(c.w, 'large')}
-          </div>
+          ${helpers.slideshow(c.w, 'hero')}
         </div>
       </div> <!-- /.section-wrapper -->
 
@@ -24,7 +22,8 @@
                 There are no ideas here yet. Be the first to add one!
                 </div>
              % else:  
-                <p><strong class="orange">Vote</strong> listed ideas <img style="height: 16px;" alt="yes vote" src="/images/yes_selected.png"> or <img style="height: 16px;" alt="no vote" src="/images/no_selected.png"> for how they address the workshop goals.</p>
+                <p><strong class="orange">Vote</strong> listed ideas <img style="height: 16px;" alt="yes vote" src="/images/yes_selected.png"> or <img style="height: 16px;" alt="no vote" src="/images/no_selected.png"> for how they address the workshop goals.<strong class="orange"> Vote to display ratings.</strong></p>
+                <hr class="list-header">
              % endif
              <% 
                 lib.return_to() 
@@ -38,19 +37,32 @@
       <div class="section-wrapper overview">
          <div class="browse">
             <h4 class="section-header smaller"> 
-            Summary
+            Goals
             </h4>
             ${helpers.showGoals(c.goals)}
-            ${helpers.showFacilitators()}
-            ${helpers.showTags()}
-            ${helpers.showScope()}
             ${helpers.whoListening()}
-            ${lib_6.facebookDialogShare( "%s%s"%(c.baseUrl, lib_6.workshopLink(c.w, embed=True, raw=True)), "%s%s"%(c.baseUrl, c.backgroundImage))}
-            ${lib_6.emailShare(c.requestUrl, c.w['urlCode'])}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Forum Topics
+            </h4>
+            ${listingHelpers.showListing('discussion', 'condensed')}
+         </div> <!--/.browse-->
+      </div> <!-- /.section-wrapper -->
+      <div class="section-wrapper overview">
+         <div class="browse">
+            <h4 class="section-header smaller"> 
+            Recent Activity
+            </h4>
+            ${helpers.showActivity(c.activity[0:5])}
          </div> <!--/.browse-->
       </div> <!-- /.section-wrapper -->
    </div> <!-- /.span4 -->
 </div> <!-- /.row -->
+
+
 
 <%def name="extraScripts2()">
     % if c.demo:

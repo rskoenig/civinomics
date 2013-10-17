@@ -56,6 +56,9 @@ class DiscussionController(BaseController):
 
     def index(self, workshopCode, workshopURL):
         c.title = c.w['title']
+        #get the scope to display jurisidction flag
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         c.discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
         if not c.discussions:
             c.discussions = []
@@ -68,6 +71,9 @@ class DiscussionController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def topic(self, workshopCode, workshopURL, discussionCode, discussionURL):
+        #get the scope to display jurisidction flag
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
@@ -122,6 +128,9 @@ class DiscussionController(BaseController):
     def addDiscussion(self, workshopCode, workshopURL):
         if c.privs['participant'] or c.privs['admin'] or c.privs['facilitator']:
             c.title = c.w['title']
+            #get the scope to display jurisidction flag
+            if c.w['public_private'] == 'public':
+                c.scope = workshopLib.getPublicScope(c.w)
             c.listingType = 'discussion'
             return render('/derived/6_add_to_listing.bootstrap')
         elif c.privs['guest']:
