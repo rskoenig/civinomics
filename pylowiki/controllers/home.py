@@ -65,6 +65,8 @@ class HomeController(BaseController):
 				item = workshops[i]
 				scope = workshopLib.getPublicScope(workshops[i])
 				level = scope['level'].title()
+				if level == 'Postalcode':
+					level = 'Zip Code'
 				fix = scope['name'].replace('-',' ')
 				name = fix.title()
 				scopeTitle = level + ' of ' + name
