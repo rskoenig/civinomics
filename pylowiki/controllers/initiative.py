@@ -57,9 +57,11 @@ class InitiativeController(BaseController):
             c.complete = self.initiativeCheck()
             
         c.resources = []
-        # for compatibility with comments
-        c.thing = c.initiative
-        c.discussion = discussionLib.getDiscussionForThing(c.initiative)
+        if c.initiative:
+            # for compatibility with comments
+            c.thing = c.initiative
+            c.discussion = discussionLib.getDiscussionForThing(c.initiative)
+            
         userLib.setUserPrivs()
 
 

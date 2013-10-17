@@ -92,7 +92,6 @@
 <%def name="editInitiative()">
     <% 
         tagList = workshopLib.getWorkshopTagCategories()
-        initiativeTags = c.initiative['tags'].split('|')
         postalCodeSelected = ""
         citySelected = ""
         countySelected = ""
@@ -154,7 +153,7 @@
             % for tag in tagList:
                 <% 
                     selected = ""
-                    if tag in initiativeTags:
+                    if c.initiative['tags'] == tag:
                         selected = "selected"
                 %>
                 <option value="${tag}" ${selected}/> ${tag}</option>
