@@ -21,6 +21,74 @@
 %>
 <%namespace name="homeHelpers" file="/lib/derived/6_workshop_home.mako"/>
 
+<%def name="facebookDialogShare2(link, picture, **kwargs)">
+    <%  
+        # link: direct url to item being shared
+        # picture: url of the parent workshop's background image
+        facebookAppId = c.facebookAppId
+        channelUrl = c.channelUrl
+        thingCode = c.thingCode
+        userCode = ''
+        if c.w:
+            if 'urlCode' in c.w.keys():
+                workshopCode = c.w['urlCode']
+            else:
+                workshopCode = ''
+        else:
+            workshopCode = ''
+
+        # in order to prevent the javascript for these buttons from being included multiple
+        # times, these kwargs are now used to activate either or both of the buttons
+        if 'shareOnWall' in kwargs:
+            if kwargs['shareOnWall'] is True:
+                shareOnWall = True
+            else:
+                shareOnWall = False
+        else:
+            shareOnWall = False
+
+        if 'sendMessage' in kwargs:
+            if kwargs['sendMessage'] is True:
+                sendMessage = True
+            else:
+                sendMessage = False
+        else:
+            sendMessage = False
+
+        # name: the workshop's name or the item's title. This ends up as the name of the object being shared on facebook.
+        name = c.name
+        # this is an elaborate way to get the item or workshop's description loaded as the caption
+        if c.thing:
+            if 'text' in c.thing.keys():
+                caption = c.thing['text']
+            else:
+                if c.w:
+                    if 'description' in c.w.keys():
+                        caption = c.w['description'].replace("'", "\\'")
+                    else:
+                        caption = ''
+                else:
+                    caption = ''
+        else:
+            if c.w:
+                if 'description' in c.w.keys():
+                    caption = c.w['description'].replace("'", "\\'")
+                else:
+                    caption = ''
+            else:
+                caption = ''
+    %>
+    
+    % if shareOnWall:
+        shareOnWall<a href="${link}" class="${picture}" id1="${facebookAppId}" id2="${channelUrl}" id3="${thingCode}" id4="${workshopCode}" target='_top' ><i class="icon-facebook-sign icon-2x"></i></a>
+    % endif
+    % if sendMessage:
+        sendMessage<a href="${link}" class="${picture}" id1="${facebookAppId}" id2="${channelUrl}" id3="${thingCode}" id4="${workshopCode}" target='_top' ><i class="icon-facebook icon-2x"></i></a>
+    % endif:
+    
+
+</%def>
+
 <%def name="facebookDialogShare(link, picture, **kwargs)">
     <%
         # link: direct url to item being shared
@@ -29,7 +97,13 @@
         channelUrl = c.channelUrl
         thingCode = c.thingCode
         userCode = ''
-        workshopCode = c.w['urlCode']
+        if c.w:
+            if 'urlCode' in c.w.keys():
+                workshopCode = c.w['urlCode']
+            else:
+                workshopCode = ''
+        else:
+            workshopCode = ''
         # in order to prevent the javascript for these buttons from being included multiple
         # times, these kwargs are now used to activate either or both of the buttons
         if 'shareOnWall' in kwargs:
@@ -68,9 +142,16 @@
                 caption = c.w['description'].replace("'", "\\'")
             else:
                 caption = ''
-        
+
+        shareOk = False
+        if 'photoShare' in kwargs:
+            if kwargs['photoShare'] == True:
+                shareOk = True
+        if c.w:
+            if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
+                shareOk = True
     %>
-    % if workshopLib.isPublished(c.w) and workshopLib.isPublic(c.w):
+    % if shareOk:
         <div id="fb-root"></div>
         <script src="/js/extauth.js" type="text/javascript"></script>
         <script>
@@ -140,7 +221,7 @@
                 var link = "${link}"
                 var userCode = fbAuthId;
                 var workshopCode = "${workshopCode}"
-                result = postShared(response, thingCode, link, '0', userCode, workshopCode, 'facebook-message');
+                result = postShared("no response", thingCode, link, '0', userCode, workshopCode, 'facebook-message');
                 FB.ui(
                     {
                       method: 'send',

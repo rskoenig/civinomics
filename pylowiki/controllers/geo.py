@@ -10,6 +10,7 @@ import pylowiki.lib.db.workshop     as workshopLib
 import pylowiki.lib.db.activity     as activityLib
 import webhelpers.feedgenerator     as feedgenerator
 import pylowiki.lib.db.user         as userLib
+import pylowiki.lib.utils           as utils
 
 from string import capwords
 import simplejson as json
@@ -118,14 +119,9 @@ class GeoController(BaseController):
     def geoStateHandler(self, id1):
         country = id1
 
-        try:
-            useJson = request.params['json']
-            if useJson == '1':
-                iPhoneApp = True
-            else:
-                iPhoneApp = False
-        except KeyError:
-            iPhoneApp = False
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
         try:
             states = geoInfoLib.getStateList(country)
             sList = ""
@@ -157,14 +153,8 @@ class GeoController(BaseController):
         state = geoInfoLib.geoDeurlify(id2)
         state = state.title()
 
-        try:
-            useJson = request.params['json']
-            if useJson == '1':
-                iPhoneApp = True
-            else:
-                iPhoneApp = False
-        except KeyError:
-            iPhoneApp = False
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
 
         try:
             counties = geoInfoLib.getCountyList(country, state)
@@ -198,14 +188,8 @@ class GeoController(BaseController):
         county = geoInfoLib.geoDeurlify(id3)
         county = county.upper()
 
-        try:
-            useJson = request.params['json']
-            if useJson == '1':
-                iPhoneApp = True
-            else:
-                iPhoneApp = False
-        except KeyError:
-            iPhoneApp = False
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
 
         try:
             cities = geoInfoLib.getCityList(country, state, county)
@@ -241,14 +225,8 @@ class GeoController(BaseController):
         city = geoInfoLib.geoDeurlify(id4)
         city = city.upper()
 
-        try:
-            useJson = request.params['json']
-            if useJson == '1':
-                iPhoneApp = True
-            else:
-                iPhoneApp = False
-        except KeyError:
-            iPhoneApp = False
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
 
         try:
             postalCodes = geoInfoLib.getPostalList(country, state, county, city)
@@ -276,14 +254,8 @@ class GeoController(BaseController):
                 return json.dumps({'result':"No zipcodes"})
 
     def geoCityStateCountryHandler(self, id1):
-        try:
-            useJson = request.params['json']
-            if useJson == '1':
-                iPhoneApp = True
-            else:
-                iPhoneApp = False
-        except KeyError:
-            iPhoneApp = False
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
 
         postalInfo = geoInfoLib.getPostalInfo(id1)
         if postalInfo:
@@ -307,6 +279,7 @@ class GeoController(BaseController):
             return json.dumps({'statusCode':statusCode, 'result':result})
         
     def geoCityStateCountryLinkHandler(self, id1):
+        response.headers['Content-type'] = 'application/json'
         postalInfo = geoInfoLib.getPostalInfo(id1)
         if postalInfo:
             countryTitle = "United States"

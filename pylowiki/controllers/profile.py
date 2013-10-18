@@ -67,6 +67,10 @@ class ProfileController(BaseController):
         userLib.setUserPrivs()
   
     def showUserPage(self, id1, id2, id3 = ''):
+        # check to see if this is a request from the iphone app
+        # entry is used for packing a json object for the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        entry = {}
         # Called when visiting /profile/urlCode/url
         rev = id3
         if id3 != '':
@@ -96,7 +100,13 @@ class ProfileController(BaseController):
         for workshop in watchList:
             if workshop['public_private'] == 'public' or (c.isUser or c.isAdmin):
                 c.watching.append(workshop)
-                
+        if iPhoneApp:
+            i = 0
+            for wWorkshop in c.watching:
+                watchingWorkshopEntry = "watchingWorkshop" + str(i)
+                entry[watchingWorkshopEntry] = dict(wWorkshop)
+                i = i + 1
+
         c.bookmarkedWorkshops = []
         for workshop in c.watching:
             if workshop['public_private'] == 'public':
@@ -104,7 +114,14 @@ class ProfileController(BaseController):
             if workshop['public_private'] == 'private' and 'user' in session and c.authuser:
                 if c.isUser or c.isAdmin:
                     c.bookmarkedWorkshops.append(workshop)
- 
+        if iPhoneApp:
+            i = 0
+            for bWorkshop in c.bookmarkedWorkshops:
+                bookmarkedWorkshopEntry = "bookmarkedWorkshop" + str(i)
+                entry[bookmarkedWorkshopEntry] = dict(bWorkshop)
+                i = i + 1
+
+        # NOTE this looks unused:
         interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
         
         c.privateWorkshops = []
@@ -113,13 +130,25 @@ class ProfileController(BaseController):
                 privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
                 if privateList:
                     c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
-                    
+        if iPhoneApp:
+            i = 0
+            for privateWorkshop in c.privateWorkshops:
+                privateWorkshopEntry = "privateWorkshop" + str(i)
+                entry[privateWorkshopEntry] = dict(privateWorkshop)
+                i = i + 1
+
         listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
         c.pendingListeners = []
         c.listeningWorkshops = []
         for l in listenerList:
             lw = workshopLib.getWorkshopByCode(l['workshopCode'])
             c.listeningWorkshops.append(lw)
+        if iPhoneApp:
+            i = 0
+            for lWorkshop in c.listeningWorkshops:
+                listeningWorkshopEntry = "listeningWorkshop" + str(i)
+                entry[listeningWorkshopEntry] = dict(lWorkshop)
+                i = i + 1
             
         facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
         c.facilitatorWorkshops = []
@@ -136,16 +165,63 @@ class ProfileController(BaseController):
                          c.facilitatorWorkshops.append(myW)
               else:
                     c.facilitatorWorkshops.append(myW)
+        if iPhoneApp:
+            i = 0
+            for pendingFacilitator in c.pendingFacilitators:
+                pendingFacilitatorEntry = "pendingFacilitator" + str(i)
+                entry[pendingFacilitatorEntry] = dict(pendingFacilitator)
+                i = i + 1
+            i = 0
+            for facilitatorWorkshop in c.facilitatorWorkshops:
+                facilitatorWorkshopEntry = "facilitatorWorkshop" + str(i)
+                entry[facilitatorWorkshopEntry] = dict(facilitatorWorkshop)
+                i = i + 1
+
                 
         #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
         c.memberPosts = activityLib.getMemberPosts(c.user)
         if not c.memberPosts:
             c.memberPosts = []
+        if iPhoneApp:
+            i = 0
+            for mPost in c.memberPosts:
+                mPostEntry = "memberPost" + str(i)
+                entry[mPostEntry] = dict(mPost)
+                i = i + 1
+
         c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
         if not c.unpublishedActivity:
             c.unpublishedActivity = []
+        if iPhoneApp:
+            i = 0
+            for umPost in c.unpublishedActivity:
+                umPostEntry = "unpublishedActivity" + str(i)
+                entry[umPostEntry] = dict(umPost)
+                i = i + 1
 
-        return render("/derived/6_profile.bootstrap")
+        if iPhoneApp:
+            entry['title'] = c.title
+            entry['isFollowing'] = c.isFollowing
+            entry['isUser'] = c.isUser
+            entry['browse'] = c.browse
+            # next entries represented as __workshop/facilitator/post0..len(c.__-1)
+            #entry['watching'] = c.watching
+            #entry['bookmarkedWorkshops'] = c.bookmarkedWorkshops
+            #entry['privateWorkshops'] = c.privateWorkshops
+            #entry['listeningWorkshops'] = c.listeningWorkshops
+            #entry['pendingFacilitators'] = c.pendingFacilitators
+            #entry['facilitatorWorkshops'] = c.facilitatorWorkshops
+            #entry['memberPosts'] = c.memberPosts
+            #entry['unpublishedActivity'] = c.unpublishedActivity
+            
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:    
+            return render("/derived/6_profile.bootstrap")
 
     def showUserMessages(self, id1, id2, id3 = ''):
         return render("/derived/6_messages.bootstrap")
@@ -185,6 +261,20 @@ class ProfileController(BaseController):
         if not c.photo:
             log.info("no photo, no revision with %s"%id3)
             abort(404)
+
+        # the next area of fields is needed for sharing functions
+        c.imgSrc = "/images/photos/" + c.photo['directoryNum_photos'] + "/orig/" + c.photo['pictureHash_photos'] + ".png"
+        c.photoLink = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photo/show/" + c.photo['urlCode']
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = config['site_base_url']
+        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+        if c.baseUrl[-1:] == "/":
+            c.baseUrl = c.baseUrl[:-1]
+        c.requestUrl = request.url
+        c.thingCode = id3
+
         if 'views' not in c.photo:
             c.photo['views'] = u'0'
             
@@ -200,6 +290,8 @@ class ProfileController(BaseController):
         else:
             c.revisions = revisionLib.getRevisionsForThing(c.photo)
         c.photoTitle = c.photo['title']
+        # this value is needed for sharing
+        c.name = c.photo['title']
         c.description = c.photo['description']
         # for the 6_lib item functions we leverage
         c.thing = c.photo

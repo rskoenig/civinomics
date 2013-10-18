@@ -44,6 +44,7 @@ import pylowiki.lib.utils as utils
 import pylowiki.lib.sort as sort
 import simplejson as json
 import misaka as m
+import copy as copy
 
 from HTMLParser import HTMLParser
 
@@ -957,8 +958,10 @@ class WorkshopController(BaseController):
                 i = 0
                 for idea in c.ideas:
                     ideaEntry = "idea" + str(i)
-                    formatIdea = idea
-                    ideaHtml = m.html(idea['text'], render_flags=m.HTML_SKIP_HTML)
+                    # so that we don't modify the original, we place this idea in a temporary variable
+                    formatIdea = []
+                    formatIdea = copy.copy(idea)
+                    ideaHtml = m.html(formatIdea['text'], render_flags=m.HTML_SKIP_HTML)
                     s = MLStripper()
                     s.feed(ideaHtml)
                     formatIdea['text'] = s.get_data()

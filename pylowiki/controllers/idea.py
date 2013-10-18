@@ -17,6 +17,7 @@ import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.helpers as h
 
 import simplejson as json
+import misaka as m
 
 from pylowiki.lib.base import BaseController, render
 
@@ -131,12 +132,20 @@ class IdeaController(BaseController):
             if not c.rootComment:
                 abort(404)
         if iPhoneApp:
+            # if this person is the owner of this idea, we need to pack their vote data in
+            #if c.authuser:
+                #if idea['userCode'] == c.authuser
+            # rated = ratingLib.getRatingForThing(c.authuser, thing) 
             entry = {}
             entry['thingCode'] = c.thingCode
             entry['backgroundImage'] = c.backgroundImage
+            #entry['title'] = c.thing['title']
+            #entry['text'] = c.thing['text']
+            ideaTextHtml = m.html(c.thing['text'], render_flags=m.HTML_SKIP_HTML)
+            entry['ideaText'] = ideaTextHtml
             entry['thing'] = dict(c.thing)
             entry['discussion'] = dict(c.discussion)
-            entry['revisions'] = c.revisions
+            #entry['revisions'] = c.revisions
             entry['rootComment'] = c.rootComment
             result = []
             result.append(entry)

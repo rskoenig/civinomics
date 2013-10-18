@@ -11,6 +11,10 @@
 <div class="row-fluid">
     <div class="span8">
         ${photo.showPhoto()}
+        <!-- recreate this function, in doing so I'll find the bug point -->
+        <span class="share-icons right-space">
+            ${lib_6.facebookDialogShare("%s%s"%(c.baseUrl, c.photoLink), "%s%s"%(c.baseUrl, c.imgSrc), shareOnWall=True, sendMessage=True, photoShare=True)}
+        </span>
         % if c.photo['deleted'] == '0':
             % if c.revisions:
                 <ul class="unstyled">

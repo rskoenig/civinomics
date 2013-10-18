@@ -42,7 +42,7 @@ class SearchController(BaseController):
     """
 
     def __before__(self, action, searchType = None, **kwargs):
-        log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
+        #log.info(" action, searchType = None, **kwargs): %s %s %s"%(action, searchType, dict(**kwargs)))
         c.title = c.heading = "Civinomics Search"
         c.scope = {'level':'earth', 'name':'all'}
         c.backgroundPhoto = '/images/grey.png'
@@ -85,7 +85,7 @@ class SearchController(BaseController):
             else:
                 postalCode = '0'
             searchString = "||%s||%s||%s||%s|%s"%(country, state, county, city, postalCode)
-            log.info("searchString after searchWorkshopGeo: %s"%searchString)
+            #log.info("searchString after searchWorkshopGeo: %s"%searchString)
 
         if 'searchQuery' in request.params and searchString == None:
             self.query = request.params['searchQuery']
@@ -241,7 +241,7 @@ class SearchController(BaseController):
         elif self.query.count('%') == len(self.query):
             # Prevent wildcard searches
             return self._noSearch()
-        log.info("searchWorkshopGeo YO CHECK THIS OUT %s %s"%(self.query, self.noQuery))
+        #log.info("searchWorkshopGeo YO CHECK THIS OUT %s %s"%(self.query, self.noQuery))
         c.numUsers = 0
         c.numWorkshops = workshopLib.searchWorkshops(['workshop_public_scope'], [self.query], count = True)
         c.numResources = resourceLib.searchResources(['workshop_public_scope'], [self.query], count = True)
@@ -395,7 +395,7 @@ class SearchController(BaseController):
             result.append(entry)
             statusCode = 0
             response.headers['Content-type'] = 'application/json'
-            log.info("results geo: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+            #log.info("results geo: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
             return json.dumps({'statusCode':statusCode, 'result':result})
         else:
             return render('/derived/6_search.bootstrap')
@@ -440,7 +440,7 @@ class SearchController(BaseController):
             # Prevent wildcard searches
             return json.dumps({'statusCode':2})
         result = []
-        log.info("searchWorkshops: self.searchType: %s"%self.searchType)
+        #log.info("searchWorkshops: self.searchType: %s"%self.searchType)
         if self.searchType == 'tag':
             keys = ['workshop_category_tags']
             values = [self.query]
