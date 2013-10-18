@@ -245,7 +245,7 @@
                     </div>
                 </div>
                 <div class="span2 centered">
-                    <img src="/images/logo_grey_simple.png">
+                    <img src="/images/logo_white_simple.png">
                 </div>
                 <div class="span5">
                     <ul class="horizontal-list">
@@ -273,7 +273,7 @@
                     </ul>
                 </div>
                 <div class="span2 centered">
-                    <img src="/images/logo_grey_simple.png">
+                    <img src="/images/logo_white_simple.png">
                 </div>
             </div>
             <div class="row-fluid">
