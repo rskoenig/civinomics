@@ -42,7 +42,7 @@ class HomeController(BaseController):
 
 	def index(self):
 		if not 'user' in session:
-			return render('/derived/splash.bootstrap')
+			return redirect('/')
 		else:
 			c.title = c.heading = c.workshopTitlebar = 'Home'
 			c.activity = getRecentActivity(12)
@@ -62,7 +62,15 @@ class HomeController(BaseController):
 					imgSrc="/images/mainImage/%s/listing/%s.jpg" %(mainImage['directoryNum'], mainImage['pictureHash'])
 				photo = imgSrc
 				link = "/workshops/" + workshops[i]['urlCode'] + "/" + workshops[i]['url']
-				newWorkshops[i] = { 'photo': photo, 'title': title, 'link': link}
+				item = workshops[i]
+				scope = workshopLib.getPublicScope(workshops[i])
+				level = scope['level'].title()
+				if level == 'Postalcode':
+					level = 'Zip Code'
+				fix = scope['name'].replace('-',' ')
+				name = fix.title()
+				scopeTitle = level + ' of ' + name
+				newWorkshops[i] = { 'photo': photo, 'title': title, 'link': link, 'item': item, 'scopeTitle':scopeTitle}
 			c.newWorkshops = newWorkshops
 
 

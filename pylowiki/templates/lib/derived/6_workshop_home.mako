@@ -164,8 +164,8 @@
 
 <%def name="watchButtonListing(w)">
     % if 'user' in session:
-        <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-        <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
+        <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+        <span><i class="icon-bookmark btn-height icon-light"></i> Bookmarked </span>
         </button>
     % endif
 </%def>
@@ -488,16 +488,20 @@
     ${scopeString | n}
 </%def>
 
-<%def name="displayWorkshopFlag()">
+<%def name="displayWorkshopFlag(w, *args)">
     <%
-        if c.w['public_private'] == 'public':
-            scope = workshopLib.getPublicScope(c.w)
+        if w['public_private'] == 'public':
+            scope = workshopLib.getPublicScope(w)
             href = scope['href']
             workshopFlag = scope['flag']
         else:
             workshopFlag = '/images/flags/generalFlag.gif'
             href = '#'
 
+        flagSize = 'med-flag'
+        if 'small' in args:
+          flagSize = 'small-flag'
+
     %>
-    <a href="${href}"><img class="thumbnail span med-flag" src="${workshopFlag}"></a>
+    <a href="${href}"><img class="thumbnail span ${flagSize}" src="${workshopFlag}"></a>
 </%def>
