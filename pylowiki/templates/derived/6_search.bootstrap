@@ -42,12 +42,14 @@
                         <span class="pull-right">(${c.numIdeas})</span>
                     </a>
                 </li>
-                <li ng-class="showingPeople.class">
-                    <a href="#users" class="green green-hover" ng-click="searchPeople()">
-                        <span class="pull-left"><i class="icon-user"></i> People </span>
-                        <span class="pull-right">(${c.numUsers})</span>
-                    </a>
-                </li>
+                % if c.numUsers != 0 or c.searchType == "name":
+                    <li ng-class="showingPeople.class">
+                        <a href="#users" class="green green-hover" ng-click="searchPeople()">
+                            <span class="pull-left"><i class="icon-user"></i> People </span>
+                            <span class="pull-right">(${c.numUsers})</span>
+                        </a>
+                    </li>
+                % endif
                 <li ng-class="showingResources.class">
                     <a href="#ideas" class = "green green-hover" ng-click="searchResources()">
                         <span class="pull-left"><i class="icon-link"></i> Resources </span>

@@ -743,7 +743,6 @@ class RegisterController(BaseController):
         returnPage = "/signup"
         name = False
         password = False
-        password2 = False
         postalCode = False
         checkTOS = False
         c.title = c.heading = "Registration"
@@ -754,10 +753,6 @@ class RegisterController(BaseController):
             log.info('password missing')
         else:
             password = request.params['password']
-        if  'password2' not in request.params:
-            log.info('password2 missing')
-        else:
-            password2 = request.params['password2']
         if 'guestCode' in session and 'workshopCode' in session and 'workshopCode' in request.params:
             workshopCode = request.params['workshopCode']
             pmember = getPrivateMemberByCode(session['guestCode'])
@@ -807,7 +802,7 @@ class RegisterController(BaseController):
         maxChars = 50;
         errorFound = False;
         # These warnings should all be collected onto the stack, then at the end we should render the page
-        if name and password and password2 and email and checkTOS:
+        if name and password and email and checkTOS:
             if len(name) > maxChars:
                 name = name[:50]
             if len(email) > maxChars:
@@ -841,7 +836,7 @@ class RegisterController(BaseController):
             username = name
             user = getUserByEmail( email )
             if user == False:
-                if password == password2:
+                if password:
                     u = User(email, name, password, country, memberType, postalCode)
                     message = "The user '" + username + "' was created successfully!"
                     c.success = True
@@ -882,7 +877,7 @@ class RegisterController(BaseController):
                         
                     return redirect(returnPage)
                 else:
-                    splashMsg['content'] = "The password and confirmation do not match"
+                    splashMsg['content'] = "You need a password"
                     session['splashMsg'] = splashMsg
                     session.save() 
             else:

@@ -164,8 +164,8 @@
 
 <%def name="watchButtonListing(w)">
     % if 'user' in session:
-        <button class="btn round btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
-        <span><i class="icon-bookmark icon-white pull-left"></i> Bookmarked </span>
+        <button class="btn btn-civ pull-right followButton following" data-URL-list="workshop_${w['urlCode']}_${w['url']}" rel="tooltip" data-placement="bottom" data-original-title="this workshop" id="workshopBookmark"> 
+        <span><i class="icon-bookmark btn-height icon-light"></i> Bookmarked </span>
         </button>
     % endif
 </%def>
