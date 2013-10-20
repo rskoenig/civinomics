@@ -160,24 +160,16 @@
 </%def>
 
 <%def name="splashNavbar()">
-    <div class="navbar navbar-fixed-top" style="border-bottom:1px solid #DDDDDD;">
-      <div class="navbar-inner" style="background-image: none; background-color: #FFFFFF;">
+    <div class="navbar splash-nav">
+      <div class="navbar-inner civinomics-splash">
         <div class="container-fluid">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/"> <img src="/images/logo.png"> </a>
-          <div class="nav-collapse collapse">
-            <ul class="nav pull-left">
-               <li class="nav-item"></li> 
-            </ul>
+            <a class="brand" href="/"><div class="logo logo-lg" id="civinomicsLogo"></div></a>
             <ul class="nav pull-right">
-              <li class="nav-item"><a href="/signup" class="nav-item green green-hover">Sign Up</a></li>
-              <li class="nav-item"><a href="/login" class="nav-item green green-hover">Log In</a></li>
+                <li class="nav-item"><a href="/workshops" class="nav-item">Browse</a></li>
+                <li class="nav-item"><a href="/corp/about" class="nav-item">About</a></li>
+                <li class="nav-item"><a href="http://civinomics.wordpress.com/" target="_blank" class="nav-item">Blog</a></li>
+                <li class="nav-item"><a href="/login" class="nav-item">Log In</a></li>
             </ul>
-          </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
@@ -237,61 +229,55 @@
     </div><!-- baseTemplate_footer -->
 </%def>
 
-<%def name="tallFooter()">
-    <div class="footer-separator"></div>
-
-    <div class="footer-civ">
-        <div class="container-fluid">
-            <div class="row-fluid">
-                <div class="span10 offset1">
-                    <div class="span2">
-                        <ul class="unstyled footer-list">
-                            <li>
-                                <h4>
-                                    ORGANIZATION
-                                </h4>
-                            </li>
-                            <li><a href="/corp/about"> About</a></li>
-                            <li><a href="/corp/team">Team</a></li>
-                            <li><a href="/corp/careers">Careers</a></li>
+<%def name="condensedFooter()">
+    <div class="footer-civ condensed">
+        <div class="container-fluid" >
+            <div class="row-fluid pretty">
+                <div class="span5">
+                    <div class="pull-right">
+                        © 2013 Civinomics, Inc. 
+                        <ul class="horizontal-list">
                             <li><a href="/corp/terms">Terms</a></li>
                             <li><a href="/corp/privacy">Privacy</a></li>
-                            <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
                             <li><a href="/corp/news">News</a></li>
                             <li><a href="/corp/contact">Contact</a></li>
                         </ul>
                     </div>
-                    
-                    <div class="span3">
-                        <ul class="unstyled footer-list">
-                            <li>
-                                <h4>
-                                    SERVICES
-                                </h4>
-                            </li>
-                            <li><a href="/corp/polling">Polling</a></li>
-                            <li><a href="#">Online</a><span class="label label-warning">Coming Soon</span></li>
-                            <li><a href="/corp/caseStudies">Case Studies</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="span3" style="padding-top:20px;">
-                        <ul class="unstyled" style="color:#818180;">
-                        <li><div class="fb-like" data-href="http://www.facebook.com/civinomics" data-send="true" data-width="395" data-show-faces="true"></div> 
-                        </li>
-                        <li><a href="https://twitter.com/civinomics" class="twitter-follow-button" data-show-count="true" data-size="large">Follow @civinomics</a></li>
-                        <li><g:plusone annotation="inline"></g:plusone></li>
-                        </ul>
-                    </div>
-
+                </div>
+                <div class="span2 centered">
+                    <img src="/images/logo_white_simple.png">
+                </div>
+                <div class="span5">
+                    <ul class="horizontal-list">
+                        <li><a target="_blank" href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement">Fund Us</a></li>
+                        <li><a href="/corp/careers">Careers</a></li>
+                        <li><a href="/corp/team">Team</a></li>
+                        <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a href="/corp/caseStudies">Case Studies</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row-fluid simple">
+                <div class="span10">
+                    <ul class="horizontal-list">
+                        <li><a href="/corp/terms">Terms</a></li>
+                        <li><a href="/corp/privacy">Privacy</a></li>
+                        <li><a href="/corp/news">News</a></li>
+                        <li><a href="/corp/contact">Contact</a></li>
+                        <li><a target="_blank" href="http://www.indiegogo.com/projects/civinomicon-help-us-create-a-paradigm-shift-in-civic-engagement">Fund Us</a></li>
+                        <li><a href="/corp/careers">Careers</a></li>
+                        <li><a href="/corp/team">Team</a></li>
+                        <li><a href="http://www.civinomics.wordpress.com" target="_blank">Blog</a></li>
+                        <li><a href="/corp/caseStudies">Case Studies</a></li>
+                        <li>© 2013 Civinomics, Inc. </li>
+                    </ul>
+                </div>
+                <div class="span2 centered">
+                    <img src="/images/logo_white_simple.png">
                 </div>
             </div>
             <div class="row-fluid">
-                <div class="span10 offset1" style="color:#e4e4e4;">
-                    <p class="pull-right">
-                        © 2012 Civinomics Inc. All rights reserved.
-                    </p>
-                </div>
+                <em class="photo-cred">Cover photo: Occupy Wallstreet, November 11th, 2011. Source: Wikimedia Commons</em>
             </div>
         </div>
     </div>

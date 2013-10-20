@@ -147,8 +147,16 @@
                             <i class="icon-comments icon-3x"></i>
                         </div> <!--/.span2-->
                     % endif
-                    <div class="span10 list-item-text" id="content_${itemCounter}">
-                        <h4 class="media-heading">
+                    <%
+                        spanY = "span10"
+                        discStyle = ''
+                        if thing == 'discussion':
+                            discStyle = "forum-topic"
+                            if 'condensed' in args:
+                                spanY = "span12"
+                    %>
+                    <div class="${spanY} list-item-text" id="content_${itemCounter}">
+                        <h4 class="media-heading ${discStyle}">
                             <% itemTitle = '<a %s class="listed-item-title">%s</a>' %(lib_6.thingLinkRouter(item, c.w, embed=True, directLink=False), lib_6.ellipsisIZE(item['title'], 150)) %>
                             ${itemTitle | n}
                         </h4>
@@ -181,15 +189,13 @@
                                         ${comments | n} (${numComments})
                                     % endif
                                 </li>
-                            </ul>
 
-                        % if item.objType != 'resource':
-                            % if not 'condensed' in args:
-                                <p class="no-bottom">
-                                    <span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs} from ${lib_6.userGeoLink(item.owner)}</small>
-                                </p>
+                            % if item.objType != 'resource':
+                                % if not 'condensed' in args:
+                                    <li><span id="author_${itemCounter}" class="left-space">${lib_6.userImage(author, className = 'avatar topbar-avatar')}</span><small> Posted by ${lib_6.userLink(item.owner)} ${addedAs} from ${lib_6.userGeoLink(item.owner)}</small></li>
+                                % endif
                             % endif
-                        % endif
+                            </ul>
                     </div><!--/.span9-->
                 </div><!--/.row-fluid-->
             % endif
