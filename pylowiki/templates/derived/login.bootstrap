@@ -4,14 +4,12 @@
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/Large_CityHall.jpg' alt="">
-</div>
+<div id="login-bg"></div>
 <div class="login">
   <div class="container">
       <div class="row">
-          <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well">
+          <div>
+              <div class="well main-well login">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">
@@ -26,15 +24,13 @@
                       % if c.conf['read_only.value'] == 'true':
                           <h1> Sorry, Civinomics is in read only mode right now </h1>
                       % else:
-                          <div class="row">
-                              <div class="span3 offset2" id="fbLoginButton1">
-                                  <fb:login-button show-faces="false" size="xlarge" scope="email, user_photos"><img src="/images/fb_signin.png"></fb:login-button>
-                              </div>
-                          </div>
-                          <div class="row">
-                              <div class="span3 offset2" style="padding-top:21px;" id="twtLoginButton1">
-                                  <a href="/twitterLoginBegin"><img src="/images/twitter-sign-in-with-gray.png"></a>
-                              </div>
+                          <div class="row-fluid social-login centered">
+                            <div id="fbLoginButton2">
+                                <a href="#" onclick="FB.login()"><img src="/images/f-login.png"></a>
+                            </div>
+                            <div id="twtLoginButton1">
+                                <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
+                            </div>
                           </div>
                           <div class="social-sign-in-separator sc-font-light sc-text-light">
                               <span>Or sign in with your email</span>
@@ -54,7 +50,7 @@
                               </div>
                               <div class="control-group">
                                   <div class="controls">
-                                      <button type="submit" class="btn btn-primary"> Log in </button>
+                                      <button type="submit" class="btn btn-civ login"> Log in </button>
                                       
                                   </div>
                               </div>
