@@ -25,8 +25,8 @@ def getInitiativesForUser(user):
     except:
         return False
         
-def searchInitiatives( keys, values, deleted = u'0', count = False):
-    log.info("search initiatives %s %s"%(keys, values))
+def searchInitiatives( keys, values, deleted = u'0', public = '1', count = False):
+    log.info("searchInititives got %s and %s and count is %s"%(keys, values, count))
     try:
         if type(keys) != type([]):
             p_keys = [keys]
@@ -34,10 +34,12 @@ def searchInitiatives( keys, values, deleted = u'0', count = False):
         else:
             p_keys = keys
             p_values = values
+        log.info("search initiatives %s %s"%(keys, values))
         map_initiatives = map(wcl, p_keys, p_values)
         q = meta.Session.query(Thing)\
                 .filter_by(objType = 'initiative')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
+                .filter(Thing.data.any(wc('public', public)))\
                 .filter(Thing.data.any(reduce(or_, map_initiatives)))
         if count:
             return q.count()

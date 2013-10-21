@@ -352,7 +352,7 @@ app.controller('SearchCtrl', function($scope, $http){
             }
             else if (data.statusCode === 0)
             {
-                $scope.photos = data.result;
+                $scope.initiatives = data.result;
                 $scope.showingInitiatives = {'class': 'active', 'show': true};
             }
             $scope.loading = false;
