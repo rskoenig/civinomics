@@ -1,17 +1,15 @@
-<%inherit file="/base/base.bootstrap"/>
+<%inherit file="/base/base_splash.bootstrap"/>
 
 <%def name="extraStyles()">
    <link href="/styles/splash.css" rel="stylesheet">
 </%def>
 
-<div id="bg">
-    <img src='/images/splash/Large_CityHall.jpg' alt="">
-</div>
+<div id="login-bg"></div>
 <div class="login">
   <div class="container">
       <div class="row">
-          <div class="span6 offset3" style="padding-top:100px;">
-              <div class="well main-well">
+          <div>
+              <div class="well main-well login">
                   % if c.splashMsg:
                       <% message = c.splashMsg %>
                       <div class="alert alert-${message['type']}">
@@ -26,6 +24,17 @@
                       % if c.conf['read_only.value'] == 'true':
                           <h1> Sorry, Civinomics is in read only mode right now </h1>
                       % else:
+                          <div class="row-fluid social-login centered">
+                            <div id="fbLoginButton2">
+                                <a href="#" onclick="FB.login()"><img src="/images/f-login.png"></a>
+                            </div>
+                            <div id="twtLoginButton1">
+                                <a href="/twitterLoginBegin"><img src="/images/t-login.png"></a>
+                            </div>
+                          </div>
+                          <div class="social-sign-in-separator sc-font-light sc-text-light">
+                              <span>Or sign in with your email</span>
+                          </div>
                           <form id="sign_in" action="/loginHandler" class="form form-horizontal" method="post">
                               <div class="control-group">
                                   <label class="control-label" for="email"> Email: </label>
@@ -41,7 +50,8 @@
                               </div>
                               <div class="control-group">
                                   <div class="controls">
-                                      <button type="submit" class="btn btn-primary"> Log in </button>
+                                      <button type="submit" class="btn btn-civ login"> Log in </button>
+                                      
                                   </div>
                               </div>
                           </form>

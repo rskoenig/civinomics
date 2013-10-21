@@ -1,6 +1,6 @@
 import logging
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.user             as  userLib
@@ -16,11 +16,12 @@ import pylowiki.lib.db.geoInfo          as  geoInfoLib
 import pylowiki.lib.alerts              as  alertsLib
 import pylowiki.lib.utils               as  utils
 import pylowiki.lib.sort                as  sort
-import pylowiki.lib.db.mainImage        as mainImageLib
-
+import pylowiki.lib.db.mainImage        as  mainImageLib
+import webbrowser
 from tldextract import extract
 from pylowiki.lib.base import BaseController, render
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -51,6 +52,9 @@ class ResourceController(BaseController):
             utils.isWatching(c.authuser, c.w)
 
     def listing(self, workshopCode, workshopURL):
+        #get the scope to display jurisidction flag
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         resources = resourceLib.getResourcesByWorkshopCode(workshopCode)
         if not resources:
             c.resources = []
@@ -63,6 +67,26 @@ class ResourceController(BaseController):
         return render('/derived/6_detailed_listing.bootstrap')
 
     def showResource(self, workshopCode, workshopURL, resourceCode, resourceURL):
+        #get the scope to display jurisidction flag
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = config['site_base_url']
+        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+        if c.baseUrl[-1:] == "/":
+            c.baseUrl = c.baseUrl[:-1]
+        c.requestUrl = request.url
+        c.thingCode = resourceCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+
         c.thing = resourceLib.getResourceByCode(resourceCode)
         if not c.thing:
             c.thing = resourceLib.getResourceByCode(resourceCode, disabled = '1')
@@ -70,6 +94,15 @@ class ResourceController(BaseController):
                 c.thing = revisionLib.getRevisionByCode(resourceCode)
                 if not c.thing:
                     abort(404)
+        # name/title for facebook sharing
+        c.name = c.thing['title']
+        if 'views' not in c.thing:
+            c.thing['views'] = u'0'
+            
+        views = int(c.thing['views']) + 1
+        c.thing['views'] = str(views)
+        dbHelpers.commit(c.thing)
+
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'resource'
         c.revisions = revisionLib.getRevisionsForThing(c.thing)
@@ -77,8 +110,7 @@ class ResourceController(BaseController):
         if 'comment' in request.params:
             c.rootComment = commentLib.getCommentByCode(request.params['comment'])
             if not c.rootComment:
-                abort(404)
-                
+                abort(404) 
         return render('/derived/6_item_in_listing.bootstrap')
 
     def thread(self, workshopCode, workshopURL, resourceCode, resourceURL, commentCode = ''):
@@ -89,6 +121,9 @@ class ResourceController(BaseController):
         return render('/derived/6_item_in_listing.bootstrap')
 
     def addResource(self, workshopCode, workshopURL):
+        #get the scope to display jurisidction flag
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         if (c.privs['participant'] and c.w['allowResources'] == '1') or c.privs['facilitator'] or c.privs['admin']:
             c.listingType = 'resource'
             return render('/derived/6_add_to_listing.bootstrap')
@@ -101,18 +136,27 @@ class ResourceController(BaseController):
 
     @h.login_required
     def addResourceHandler(self, workshopCode, workshopURL):
-        if 'submit' not in request.params or 'title' not in request.params or 'link' not in request.params:
+        payload = json.loads(request.body)
+        if 'title' not in payload:
             return redirect(session['return_to'])
-        title = request.params['title'].strip()
+        title = payload['title'].strip()
         if title == '':
             return redirect(session['return_to'])
-        if resourceLib.getResourceByLink(request.params['link'], c.w):
+        if 'link' not in payload:
+            return redirect(session['return_to'])
+        if resourceLib.getResourceByLink(payload['link'], c.w):
             return redirect(session['return_to']) # Link already submitted
+        link = payload['link']
         text = ''
-        if 'text' in request.params:
-            text = request.params['text'] # Optional
+        if 'text' in payload:
+            text = payload['text'] # Optional
         if len(title) > 120:
             title = title[:120]
-        newResource = resourceLib.Resource(request.params['link'], title, c.authuser, c.w, c.privs, text = text)
-        alertsLib.emailAlerts(newResource)
-        return redirect(utils.thingURL(c.w, newResource))
+        newResource = resourceLib.Resource(link, title, c.authuser, c.w, c.privs, text = text)
+        if newResource:
+            alertsLib.emailAlerts(newResource)
+            jsonReturn = '{"state":"Success", "resourceCode":"' + newResource['urlCode'] + '","resourceURL":"' + newResource['url'] + '"}'
+            return jsonReturn
+        else:
+            return '{"state":"Error", "errorMessage":"Resource not added!"}'
+

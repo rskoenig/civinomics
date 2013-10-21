@@ -9,7 +9,7 @@ function adminController($scope, $http, $location) {
         $scope.showResponse = true;
     });
   };
-};
+}
 
 function facilitatorController($scope, $http, $location) {
   $scope.emailOnFlaggedShow   = false;
@@ -21,15 +21,14 @@ function facilitatorController($scope, $http, $location) {
     $http.post(flaggedURL, postData).success(function(data){
       $scope.emailOnFlaggedShow = true;
       $scope.emailOnFlaggedResponse = data;
-    })
-  }
-  
+    });
+  };
   $scope.emailOnAdded = function() {
     var addedURL = '/workshop/' + $scope.code + '/' + $scope.url + '/facilitate/' + $scope.user+ '/notifications/handler';
     var postData = {'user':$scope.user, 'alert':'items'};
     $http.post(addedURL, postData).success(function(data){
       $scope.emailOnAddedShow = true;
       $scope.emailOnAddedResponse = data;
-    })
-  }
+    });
+  };
 }

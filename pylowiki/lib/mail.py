@@ -69,7 +69,7 @@ def sendPMemberInvite(workshopName, senderName, recipient, message, browseURL):
     textMessage = textMessage.replace('${c.workshopName}', workshopName)
     textMessage = textMessage.replace('${c.inviteMessage}', message)
     textMessage = textMessage.replace('${c.browseLink}', browseURL)
-
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
     fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
     toEmail = recipient
     subject = 'An invitation from ' + senderName
@@ -109,3 +109,100 @@ def sendAccountMail(recipient):
 
     send(recipient, fromEmail, subject, textMessage)
 
+def sendCommentMail(recipient, parent, dparent, text):
+           
+    subject = 'Civinomics Alert: A new comment has been added to one of your items'
+    fromEmail = 'Civinomics Alerts <alerts@civinomics.com>'
+    
+    textMessage = "A new comment has been added to your " + parent.objType.replace("Unpublished", "") 
+    if parent.objType != 'comment':
+        textMessage += ' titled "' + parent['title'] + '"'
+    else:
+        textMessage += '"' + parent['data'] + '"'
+        
+    if 'workshopCode' in parent:
+        parentBase = "workshop"
+        textMessage += ' in the ' + parentBase + ' titled "' + dparent['title'] + '" \n\n"' + text + '"'
+
+    textMessage += "\n\nThis is an automated message. Your Civinomics profile preferences are set to email \nnotifications when someone comments on one of your items.\nTo change this, login to your Civinomics account, and go to the Preferences menu\nof your Edit Profile tab." 
+
+    send(recipient, fromEmail, subject, textMessage)
+    
+def sendListenerInviteMail(recipient, user, workshop, memberMessage, numInvites):
+           
+    subject = 'You are invited to listen in on a Civinomics workshop'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/invitelistener.txt"
+    browseURL = config['app_conf']['site_base_url'] + "/workshop" + "/" + workshop['urlCode'] + "/" + workshop['url']
+    if numInvites == '0':
+        numInvitesMessage = ''
+    else:
+        numInvitesMessage = "\nThere are now %s members who've asked you to join in!\n"%numInvites
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    textMessage = textMessage.replace('${c.sender}', user['name'])
+    textMessage = textMessage.replace('${c.workshop}', workshop['title'])
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
+    textMessage = textMessage.replace('${c.memberMessage}', memberMessage)
+    textMessage = textMessage.replace('${c.numInvitesMessage}', numInvitesMessage)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+
+    send(recipient, fromEmail, subject, textMessage)
+    
+def sendListenerAddMail(recipient, user, workshop):
+           
+    subject = 'You are invited to listen in on a Civinomics workshop'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/addlistener.txt"
+    browseURL = config['app_conf']['site_base_url'] + "/workshop" + "/" + workshop['urlCode'] + "/" + workshop['url']
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    textMessage = textMessage.replace('${c.sender}', user['name'])
+    textMessage = textMessage.replace('${c.workshop}', workshop['title'])
+    textMessage = textMessage.replace('${c.browseLink}', browseURL)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+
+    send(recipient, fromEmail, subject, textMessage)
+    
+def sendShareMail(recipientName, recipientEmail, memberMessage, user, workshop, item, itemURL):
+           
+    subject = 'Sharing a link to a Civinomics workshop with you'
+    
+    emailDir = config['app_conf']['emailDirectory']
+    txtFile = emailDir + "/shareemail.txt"
+    
+    introduction = ""
+    itemDet = 'a'
+    if item.objType == 'idea':
+        itemDet = 'an'
+        
+    introduction = "Dear %s,\n\n%s is sharing a link to %s %s item hosted at Civinomics:\n%s\n\n"%(recipientName, user['name'], itemDet, item.objType, itemURL)
+    if item.objType == 'workshop':
+        introduction += 'The workshop is titled "%s".'%item['title']
+    else:
+        introduction += 'The %s is titled "%s" and is in a workshop titled "%s".'%(item.objType, item['title'], workshop['title'])
+
+    # open and read the text file
+    fp = open(txtFile, 'r')
+    textMessage = fp.read()
+    fp.close()
+    
+    textMessage = textMessage.replace('${c.sender}', user['name'])
+    textMessage = textMessage.replace('${c.intro}', introduction)
+    textMessage = textMessage.replace('${c.memberMessage}', memberMessage)
+
+    fromEmail = 'Civinomics Invitations <invitations@civinomics.com>'
+
+    send(recipientEmail, fromEmail, subject, textMessage)

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import math
 
 from pylons import request, response, session, config, tmpl_context as c, url
 from pylons.controllers.util import abort, redirect
@@ -13,6 +14,8 @@ from pylons import config
 import pylowiki.lib.db.activity         as activityLib
 import pylowiki.lib.db.geoInfo          as geoInfoLib
 import pylowiki.lib.db.user             as userLib
+import pylowiki.lib.db.generic          as genericLib
+import pylowiki.lib.db.discussion       as discussionLib
 import pylowiki.lib.db.dbHelpers        as dbHelpers
 import pylowiki.lib.db.facilitator      as facilitatorLib
 import pylowiki.lib.db.listener         as listenerLib
@@ -23,7 +26,7 @@ import pylowiki.lib.db.event            as eventLib
 import pylowiki.lib.db.flag             as flagLib
 import pylowiki.lib.db.revision         as revisionLib
 import pylowiki.lib.db.message          as messageLib
-import pylowiki.lib.db.tag              as tagLib
+import pylowiki.lib.db.photo            as photoLib
 import pylowiki.lib.utils               as utils
 import pylowiki.lib.images              as imageLib
 
@@ -57,7 +60,12 @@ class ProfileController(BaseController):
                 if c.user.id == c.authuser.id or c.isAdmin:
                     c.messages = messageLib.getMessages(c.user)
                     c.unreadMessageCount = messageLib.getMessages(c.user, read = u'0', count = True)
-    
+        
+
+
+                    
+        userLib.setUserPrivs()
+  
     def showUserPage(self, id1, id2, id3 = ''):
         # Called when visiting /profile/urlCode/url
         rev = id3
@@ -66,7 +74,7 @@ class ProfileController(BaseController):
         else:
             c.revision = False
 
-        c.revisions = revisionLib.getParentRevisions(c.user.id)
+        #c.revisions = revisionLib.getParentRevisions(c.user.id)
         c.title = c.user['name']
                
         c.isFollowing = False
@@ -81,23 +89,6 @@ class ProfileController(BaseController):
                 c.isAdmin = True
         else:
             c.browse = True
-            
-
-        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
-        c.facilitatorWorkshops = []
-        c.pendingFacilitators = []
-        for f in facilitatorList:
-           if 'pending' in f and f['pending'] == '1':
-              c.pendingFacilitators.append(f)
-           elif f['disabled'] == '0':
-              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
-              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
-                 # show to the workshop owner, show to the facilitator owner, show to admin
-                 if 'user' in session: 
-                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
-                         c.facilitatorWorkshops.append(myW)
-              else:
-                    c.facilitatorWorkshops.append(myW)
 
         watching = followLib.getWorkshopFollows(c.user)
         watchList = [ workshopLib.getWorkshopByCode(followObj['workshopCode']) for followObj in watching ]
@@ -116,55 +107,129 @@ class ProfileController(BaseController):
  
         interestedList = [workshop['urlCode'] for workshop in c.interestedWorkshops]
         
-        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-        c.pendingListeners = []
-        c.listeningWorkshops = []
-        for l in listenerList:
-            if 'pending' in l and l['pending'] == '1':
-                c.pendingListeners.append(l)
-            else:
-                lw = workshopLib.getWorkshopByCode(l['workshopCode'])
-                c.listeningWorkshops.append(lw)
-        
         c.privateWorkshops = []
         if 'user' in session and c.authuser:
             if c.user.id == c.authuser.id or userLib.isAdmin(c.authuser.id):
                 privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
                 if privateList:
                     c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+                    
+        listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
+        c.pendingListeners = []
+        c.listeningWorkshops = []
+        for l in listenerList:
+            lw = workshopLib.getWorkshopByCode(l['workshopCode'])
+            c.listeningWorkshops.append(lw)
+            
+        facilitatorList = facilitatorLib.getFacilitatorsByUser(c.user)
+        c.facilitatorWorkshops = []
+        c.pendingFacilitators = []
+        for f in facilitatorList:
+           if 'pending' in f and f['pending'] == '1':
+              c.pendingFacilitators.append(f)
+           elif f['disabled'] == '0':
+              myW = workshopLib.getWorkshopByCode(f['workshopCode'])
+              if not workshopLib.isPublished(myW) or myW['public_private'] != 'public':
+                 # show to the workshop owner, show to the facilitator owner, show to admin
+                 if 'user' in session: 
+                     if c.authuser.id == f.owner or userLib.isAdmin(c.authuser.id):
+                         c.facilitatorWorkshops.append(myW)
+              else:
+                    c.facilitatorWorkshops.append(myW)
+                
+        #c.rawActivity = activityLib.getMemberActivity(c.user, '0')
+        c.memberPosts = activityLib.getMemberPosts(c.user)
+        if not c.memberPosts:
+            c.memberPosts = []
+        c.unpublishedActivity = activityLib.getMemberPosts(c.user, '1')
+        if not c.unpublishedActivity:
+            c.unpublishedActivity = []
 
-        following = followLib.getUserFollows(c.user) # list of follow objects
-        c.following = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
-
-        followers = followLib.getUserFollowers(c.user)
-        c.followers = [ userLib.getUserByID(followObj.owner) for followObj in followers ]
-          
-        c.activity = activityLib.getMemberPosts(c.user)
-        c.suggestions = []
-        c.resources = []
-        c.discussions = []
-        c.comments = []
-        c.ideas = []
-        
-        posts = activityLib.getMemberPosts(c.user)
-        for p in posts:
-            # ony active objects
-            if p['deleted'] == '0' and p['disabled'] == '0' and 'workshopCode' in p:
-                # only public objects unless author or admin
-                w = workshopLib.getWorkshopByCode(p['workshopCode'])
-                if workshopLib.isPublished(w) and w['public_private'] == 'public' or (c.isUser or c.isAdmin):
-                    if p.objType == 'suggestion':
-                        c.suggestions.append(p)
-                    elif p.objType == 'resource':
-                        c.resources.append(p)
-                    elif p.objType == 'discussion':
-                        c.discussions.append(p)
-                    elif p.objType == 'idea':
-                        c.ideas.append(p)
-                    elif p.objType == 'comment':
-                        c.comments.append(p)
-        
         return render("/derived/6_profile.bootstrap")
+
+    def showUserMessages(self, id1, id2, id3 = ''):
+        return render("/derived/6_messages.bootstrap")
+        
+    def showUserPhotos(self, id1, id2):
+        # defaults for photo editor
+        c.photo = False
+        c.photoTitle = "Sample Title"
+        c.description = "Sample Description"
+        c.categories = []
+        c.country = '0'
+        c.state = '0'
+        c.county = '0'
+        c.city = '0'
+        c.postal = '0'
+        
+        
+        c.photos = []
+        photos = photoLib.getUserPhotos(c.user)
+        if photos:
+            c.photos = photos
+            c.photos.reverse()
+
+        return render("/derived/6_profile_photos.bootstrap")
+ 
+    def showUserArchives(self, id1, id2):
+
+        return render("/derived/6_profile_archives.bootstrap")
+        
+    def showUserPhoto(self, id1, id2, id3):
+        if not id3 or id3 == '':
+            abort(404)
+        c.photo = photoLib.getPhoto(id3)
+        if not c.photo:
+            # see if it is a revision
+            c.photo = revisionLib.getRevisionByCode(id3)
+        if not c.photo:
+            log.info("no photo, no revision with %s"%id3)
+            abort(404)
+        if 'views' not in c.photo:
+            c.photo['views'] = u'0'
+            
+        views = int(c.photo['views']) + 1
+        c.photo['views'] = str(views)
+        dbHelpers.commit(c.photo)
+            
+        if not c.photo:
+            c.photo = revisionLib.getRevisionByCode(id3)
+            if not c.photo:
+                abort(404)
+            c.revisions = []
+        else:
+            c.revisions = revisionLib.getRevisionsForThing(c.photo)
+        c.photoTitle = c.photo['title']
+        c.description = c.photo['description']
+        # for the 6_lib item functions we leverage
+        c.thing = c.photo
+        c.discussion = discussionLib.getDiscussionForThing(c.photo)
+        
+        # defaults for photo editor
+        tagString = c.photo['tags']
+        tempList = tagString.split('|')
+        c.categories = []
+        for tag in tempList:
+            if tag and tag != '':
+                c.categories.append(tag)
+        c.country = '0'
+        c.state = '0'
+        c.county = '0'
+        c.city = '0'
+        c.postal = '0'
+        scope = c.photo['scope'].split('|')
+        if scope[2] != '' and scope[2] != '0':
+            c.country = geoInfoLib.geoDeurlify(scope[2].title())
+            if scope[4] != '' and scope[4] != '0':
+                c.state = geoInfoLib.geoDeurlify(scope[4].title())
+                if scope[6] != '' and scope[6] != '0':
+                    c.county = geoInfoLib.geoDeurlify(scope[6].title())
+                    if scope[8] != '' and scope[8] != '0':
+                        c.city = geoInfoLib.geoDeurlify(scope[8].title())
+                        if scope[9] != '' and scope[9] != '0':
+                            c.postal = scope[9]
+                            
+        return render("/derived/6_profile_photo.bootstrap")
     
     def showUserResources(self, id1, id2):
         # Called when visiting /profile/urlCode/url
@@ -195,23 +260,16 @@ class ProfileController(BaseController):
         # Called when visiting /profile/urlCode/url/watching
         self._basicSetup(id1, id2, 'watching')
         return render("/derived/6_profile_list.bootstrap")
+    
+    def showUserListening(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/listening
+        self._basicSetup(id1, id2, 'listening')
+        return render("/derived/6_profile_list.bootstrap")
         
-
-    def searchWorkshopTag(self, id1, id2, id3):
-        tag = utils.geoDeurlify(id3)
-        tags = tagLib.searchTags(tag)
-        self._basicSetup(id1, id2, 'searchWorkshops')
-        c.things = []
-        for tag in tags:
-            workshop = workshopLib.getWorkshopByCode(tag['workshopCode'])
-            if workshopLib.isPublished(workshop) and workshopLib.isPublic(workshop):
-                c.things.append(workshop)
-
-        c.thingsTitle = 'Workshops with tag "' + tag['title'] + '"'
-        c.listingType = 'searchWorkshops'
-        
-        return render('/derived/6_profile_list.bootstrap')
-        
+    def showUserFacilitating(self, id1, id2):
+        # Called when visiting /profile/urlCode/url/facilitating
+        self._basicSetup(id1, id2, 'facilitating')
+        return render("/derived/6_profile_list.bootstrap")
     
     def _basicSetup(self, code, url, page):
         # code and url are now unused here, now that __before__ is defined
@@ -236,6 +294,7 @@ class ProfileController(BaseController):
         c.followers = items['followers']
         c.following = items['following']
         c.watching = items['watching']
+
     
     def _userItems(self, user):
         isUser = False
@@ -250,7 +309,8 @@ class ProfileController(BaseController):
         # or user-interested (e.g. followers, following, watching) objects
         items = {}
         
-        following = followLib.getUserFollows(c.user) # list of follow objects
+        following = followLib.getUserFollows(c.user) 
+        # list of follow objects 
         items['following'] = [userLib.getUserByCode(followObj['userCode']) for followObj in following] # list of user objects
 
         followers = followLib.getUserFollowers(c.user)
@@ -262,6 +322,18 @@ class ProfileController(BaseController):
         for workshop in watchList:
             if workshop['public_private'] == 'public' or (isUser or isAdmin):
                 items['watching'].append(workshop)
+                
+        items['listening'] = []
+        for workshop in c.listeningWorkshops:
+            if workshop['public_private'] == 'public' or (isUser or isAdmin):
+                items['listening'].append(workshop)
+                log.info("listening workshop")
+                
+        items['facilitating'] = []
+        for workshop in c.facilitatorWorkshops:
+            if workshop['public_private'] == 'public' or (isUser or isAdmin):
+                items['facilitating'].append(workshop)
+            
         
         # Already checks for disabled/deleted by default
         # The following section feels like a good candidate for map/reduce
@@ -298,19 +370,8 @@ class ProfileController(BaseController):
                 c.admin = True
             else:
                 c.admin = False
-            c.pendingFacilitators = []
-            fList = facilitatorLib.getFacilitatorsByUser(c.user)
-            for f in fList:
-                if 'pending' in f and f['pending'] == '1':
-                    c.pendingFacilitators.append(f)
-
-            listenerList = listenerLib.getListenersForUser(c.user, disabled = '0')
-            c.pendingListeners = []
-            for l in listenerList:
-                if 'pending' in l and l['pending'] == '1':
-                    c.pendingListeners.append(l)
-                    
-            return render('/derived/6_profile.bootstrap')
+                
+            return render('/derived/6_profile_edit.bootstrap')
         else:
             abort(404)
 
@@ -434,6 +495,13 @@ class ProfileController(BaseController):
 
         if nameChange:
             c.user['url'] = urlify(c.user['name'])
+            cList = genericLib.getChildrenOfParent(c.user)
+            for child in cList:
+                if child.objType in ['idea', 'resource', 'discussion', 'comment', 'photo']:
+                    child['user_name'] = c.user['name']
+                    child['user_url'] = c.user['url']
+                    dbHelpers.commit(child)
+                
             if c.user.id == c.authuser.id:
                 session["userURL"] = c.user['url']
                 session.save()
@@ -508,22 +576,38 @@ class ProfileController(BaseController):
             width = min(image.size)
             x = 0
             y = 0
-            if 'width' in requestKeys:
-                width = int(request.params['width'])
-            if 'x' in requestKeys:
-                x = int(request.params['x'])
-            if 'y' in requestKeys:
-                y = int(request.params['y'])
+            if 'width' in request.params:
+                tWidth = request.params['width']
+                if not width or width == 'undefined':
+                    width = 100
+                else:
+                    width = int(float(width))
+            if 'x' in request.params:
+                x = request.params['x']
+                if not x or x == 'undefined':
+                    x = 0
+                else:
+                    x = int(float(x))
+            if 'y' in request.params:
+                y = request.params['y']
+                if not y or y == 'undefined':
+                    y = 0
+                else:
+                    y = int(float(y))
             dims = {'x': x, 
                     'y': y, 
                     'width':width,
                     'height':width}
             clientWidth = -1
             clientHeight = -1
-            if 'clientWidth' in requestKeys:
+            if 'clientWidth' in request.params:
                 clientWidth = request.params['clientWidth']
-            if 'clientHeight' in requestKeys:
+                if not clientWidth or clientWidth == 'null':
+                    clientWidth = -1
+            if 'clientHeight' in request.params:
                 clientHeight = request.params['clientHeight']
+                if not clientHeight or clientHeight == 'null':
+                    clientHeight = -1
             image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
             image = imageLib.resizeImage(image, imageHash, 200, 200)
             image = imageLib.saveImage(image, imageHash, 'avatar', 'avatar')
@@ -539,6 +623,181 @@ class ProfileController(BaseController):
             return json.dumps(jsonResponse)
         else:
             abort(404)
+            
+    @h.login_required
+    def photoUploadHandler(self, id1, id2):
+        """
+            Ideally:  
+            1) User selects image, gets presented with aspect-ratio constrained selection.
+            2) User adjusts centering and dimensions, hits 'start'
+            3) Process image - detailed below
+        
+            Grab the uploaded file.  Hash and save the original first.  Then process.
+            Processing means:
+            1) Check to ensure it is an image (should be done in the hash + save step)
+            2) Check for square dimensions.  If not square, crop.  Do not save the image here, just pass on the image object.
+            3) If necessary, resize the dimensions of the image to 1200px x 1200px.  Save the final image here.
+            
+            The client expects a json-encoded string with the following format:
+            
+            {"files": [
+              {
+                "name": "picture1.jpg",
+                "size": 902604,
+                "url": "http:\/\/example.org\/files\/picture1.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture1.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture1.jpg",
+                "delete_type": "DELETE"
+              },
+              {
+                "name": "picture2.jpg",
+                "size": 841946,
+                "url": "http:\/\/example.org\/files\/picture2.jpg",
+                "thumbnail_url": "http:\/\/example.org\/files\/thumbnail\/picture2.jpg",
+                "delete_url": "http:\/\/example.org\/files\/picture2.jpg",
+                "delete_type": "DELETE"
+              }
+            ]}
+        """
+        if c.authuser.id != c.user.id:
+            abort(404)
+        
+        requestKeys = request.params.keys()
+        title = "Sample Title"
+        description = "Sample Description"
+        tags = "|"
+        scope = "||0||0||0||0|0"
+        
+        # first make sure the title, description, tag and location are set
+        if 'files[]' in requestKeys:
+            file = request.params['files[]']
+            filename = file.filename
+            file = file.file
+            image = imageLib.openImage(file)
+            if not image:
+                abort(404) # Maybe make this a json response instead
+            imageHash = imageLib.generateHash(filename, c.authuser)
+            
+            # make the photo object
+            photo = photoLib.Photo(c.authuser, title, description, tags, scope)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'orig', thing = photo)
+            
+            width = min(image.size)
+            x = 0
+            y = 0
+            if 'width' in request.params:
+                tWidth = request.params['width']
+                if not width or width == 'undefined':
+                    width = 100
+                else:
+                    width = int(float(width))
+            if 'x' in request.params:
+                x = request.params['x']
+                if not x or x == 'undefined':
+                    x = 0
+                else:
+                    x = int(float(x))
+            if 'y' in request.params:
+                y = request.params['y']
+                if not y or y == 'undefined':
+                    y = 0
+                else:
+                    y = int(float(y))
+            dims = {'x': x, 
+                    'y': y, 
+                    'width':width,
+                    'height':width}
+            clientWidth = -1
+            clientHeight = -1
+            if 'clientWidth' in request.params:
+                clientWidth = request.params['clientWidth']
+                if not clientWidth or clientWidth == 'null':
+                    clientWidth = -1
+            if 'clientHeight' in request.params:
+                clientHeight = request.params['clientHeight']
+                if not clientHeight or clientHeight == 'null':
+                    clientHeight = -1
+            image = imageLib.cropImage(image, imageHash, dims, clientWidth = clientWidth, clientHeight = clientHeight)
+            image = imageLib.resizeImage(image, imageHash, 480, 480)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'photo')
+            image = imageLib.resizeImage(image, imageHash, 160, 160)
+            image = imageLib.saveImage(image, imageHash, 'photos', 'thumbnail')
+            
+            jsonResponse =  {'files': [
+                                {
+                                    'name':filename,
+                                    'thumbnail_url':'/images/photos/%s/thumbnail/%s.png' %(photo['directoryNum_photos'], imageHash),
+                                    'image_hash':imageHash
+                                }
+                            ]}
+            return json.dumps(jsonResponse)
+        else:
+            abort(404)
+            
+    @h.login_required
+    def photoUpdateHandler(self, id1, id2, id3):
+        photo = photoLib.getPhotoByHash(id3)
+        if not photo:
+            log.info("photo hash is %s"%id3)
+            abort(404)
+        
+        if 'title' in request.params:
+            title = request.params['title']
+        else:
+            log.info('no title')
+            abort(404)
+            
+        if 'description' in request.params:
+            description = request.params['description']
+        else:
+            log.info('no description')
+            abort(404)
+            
+        newTagStr = '|'    
+        if 'categoryTags' in request.params:
+            categoryTags = request.params.getall('categoryTags')
+            for tag in categoryTags:
+                newTagStr = newTagStr + tag + '|'
+
+        if 'geoTagCountry' in request.params:
+            country = request.params['geoTagCountry']
+        else:
+            country = '0'
+            
+        if 'geoTagState' in request.params:
+            state = request.params['geoTagState']
+        else:
+            state = '0'
+            
+        if 'geoTagCounty' in request.params:
+            county = request.params['geoTagCounty']
+        else:
+            county = '0'
+            
+        if 'geoTagCity' in request.params:
+            city = request.params['geoTagCity']
+        else:
+            city = '0'
+
+        if 'geoTagPostal' in request.params:
+            postal = request.params['geoTagPostal']
+        else:
+            postal = '0'
+            
+        scope = '||' + urlify(country) + '||' + urlify(state) + '||' + urlify(county) + '||' + urlify(city) + '|' + urlify(postal)
+            
+        photo['title'] = title
+        photo['url'] = urlify(title)
+        photo['description'] = description
+        photo['tags'] = newTagStr
+        photo['scope'] = scope
+        dbHelpers.commit(photo)
+        revisionLib.Revision(c.authuser, photo)
+        
+        returnURL = "/profile/" + c.user['urlCode'] + "/" + c.user['url'] + "/photos/show"
+                
+        return redirect(returnURL)
+        
         
     @h.login_required
     def setImageSource(self, id1, id2):
@@ -551,7 +810,37 @@ class ProfileController(BaseController):
         c.user['avatarSource'] = source
         dbHelpers.commit(c.user)
         return json.dumps({"statusCode": 0})
-    
+        
+    @h.login_required
+    def preferencesCommentsHandler(self, id1, id2):
+        # initialize to current value if any, '0' if not set in object
+        cAlerts = '0'
+        eAction = ''
+        if 'itemAlerts' in c.user:
+            cAlerts = c.user['commentAlerts']
+        
+        payload = json.loads(request.body)
+        if 'alert' not in payload:
+            return "Error"
+        alert = payload['alert']
+        if alert == 'comments':
+            if 'commentAlerts' in c.user.keys():
+                if c.user['commentAlerts'] == u'1':
+                    c.user['commentAlerts'] = u'0'
+                    eAction = 'Turned off'
+                else:
+                    c.user['commentAlerts'] = u'1'
+                    eAction = 'Turned on'
+            else:
+                c.user['commentAlerts'] = u'1'
+                eAction = 'Turned on'
+        else:
+            return "Error"   
+        dbHelpers.commit(c.user)
+        if eAction != '':
+            eventLib.Event('Member comment notifications set', eAction, c.user, c.authuser)
+        return eAction      
+  
     @h.login_required
     def passwordUpdateHandler(self, id1, id2):
         perror = 0

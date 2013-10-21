@@ -62,8 +62,9 @@
                             <legend>Settings</legend>
                             <label>Workshop Name</label>
                             <input id = "inputTitle" type="text" name="title" size="50" maxlength="70" value = "{{workshopTitle}}" ng-model = "workshopTitle" class="editWorkshopName"/>
-                            <label>Workshop Prompt <span class="help-block">What is the main question participants should consider?</span></label>
-                            <textarea rows="4" id = "inputDescription" type="text" name="description" size="50" maxlength="200" value = "${c.w['description']}" class="editWorkshopDescription"></textarea>
+                            <label>Introduction</label>
+                            <span class="muted">A one paragraph description why this matters.
+                            <textarea rows="8" id = "inputDescription" name="description" size="50" class="editWorkshopDescription">${c.w['description']}</textarea>
                             <%
                                 if 'allowIdeas' in c.w and c.w['allowIdeas'] == '1':
                                     yesChecked = 'checked'
@@ -184,7 +185,7 @@
                         tagList = getWorkshopTagCategories()
                     %>
                     <br />
-                    Choose at least one category: <span class="help-inline"><span class="label label-important">Required</span></span><br />
+                    <strong>Pick 1 or 2</strong> <span class="help-inline"><span class="label label-important">Required</span></span><br />
                     <fieldset>
                     % for tag in tagList:
                         % if tag in c.categories:
@@ -208,6 +209,18 @@
             </form>
         </div><!-- browse -->
     </div><!-- section-header -->
+
+    <script>
+        $(function(){
+            var max = 2;
+            var checkboxes = $('input[type="checkbox"]');
+
+            checkboxes.change(function(){
+                var current = checkboxes.filter(':checked').length;
+                checkboxes.filter(':not(:checked)').prop('disabled', current >= max);
+                });
+        });
+    </script>
 </%def>
 
 
@@ -215,8 +228,8 @@
 <%def name="edit_background()">
     <div class="section-wrapper">
         <div class="browse">
-            <h4 class="section-header smaller"><span style="margin-left: 185px;">Information </span><a class="btn btn-small btn-primary pull-right right-space" href="/help/markdownGuide" target="_blank"><i class="icon icon-th-list icon-white"></i> Markdown Syntax Guide</a></h4>
-            
+            <h4 class="section-header smaller">Background</h4>
+            <a href="#" class="btn btn-mini btn-info pull-left bottom-space" onclick="window.open('/help/markdown.html','popUpWindow','height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');"><i class="icon-list"></i> <i class="icon-picture"></i> View Formatting Guide</a>
             <form name="workshop_background" id="workshop_background" class="left form-inline" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/update/background/handler" enctype="multipart/form-data" method="post" >
                <textarea rows="10" id="data" name="data" class="span12">${c.page['data']}</textarea>
                <div class="background-edit-wrapper">
@@ -560,5 +573,3 @@
         <br /><button type="submit" class="btn btn-primary" name="addMember"><i class="icon-envelope icon-white"></i> Send Invites</button>
     </form>
 </%def>
-
-

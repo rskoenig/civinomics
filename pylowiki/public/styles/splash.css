@@ -2,9 +2,6 @@
     font-size:24px;
     padding-top:10px;
 }
-body {
-    padding-top: 60px;
-}
 html, body {
     margin:0px;
     background-color: #ffffff;
@@ -13,23 +10,11 @@ html, body {
     background-position: top left;
 }
 
-#bg {
-    position:fixed; 
-    top:-50%; 
-    left:-50%; 
-    width:200%; 
-    height:200%;
-}
-
-#bg img {
-    position:absolute; 
-    top:0; 
-    left:0; 
-    right:0; 
-    bottom:0; 
-    margin:auto; 
-    min-width:50%;
-    min-height:50%;
+@media (max-width: 767px){
+  body {
+    padding-right: 0px;
+    padding-left: 0px;
+  }
 }
 
 .textChanger{
@@ -48,7 +33,7 @@ div.hidden{
     display:block;
     position: absolute;
     width: 100%;
-    margin-top:5px;
+    margin-top:-5px;
     background-size:cover;
 }
 
@@ -72,46 +57,12 @@ div.hidden{
     background-image: url('/images/splash/schoolTransit.jpg');
 }
 
-.main-well{
-    background-color: #ffffff;
-    background-image: url('/images/splash/dust.png');
-    background-repeat: repeat;
-    background-position: top left;
-    
-    opacity:0.9;
-    filter:alpha(opacity=90); /* For IE8 and earlier */
-}
-
 #splash-well{
     width: 270px;
 }
     #splash-well p{
         margin: 40px 0 5px;
     }
-
-.success-well{
-    background-color:#DFF0D8;
-    border-color:#D6E9C6;
-    color:#468847;
-    background-repeat: repeat;
-    background-position: top left;
-    font-size:24px;
-    line-height:36px;
-
-    opacity:0.9;
-    filter:alpha(opacity=90);  /* For IE8 and earlier */
-
-    -webkit-box-shadow:rgba(0, 0, 0, 0.0470588) 0 1px 1px inset;
-    border:1px solid rgba(0, 0, 0, 0.0470588);
-    border-bottom-left-radius:4px;
-    border-bottom-right-radius:4px;
-    border-top-left-radius:4px;
-    border-top-right-radius:4px;
-    box-shadow:rgba(0, 0, 0, 0.0470588) 0 1px 1px inset;
-    margin-bottom:20px;
-    min-height:20px;
-    padding:19px;
-}
 
 .photoCredits{
     margin-top: 475px;
@@ -210,10 +161,9 @@ div.hidden{
 }
 
 .footer-civ{
-    //background-color:#D9DAD9;
-    background: url("/images/splash/footer_separator_reflect-x.png") repeat-x scroll center bottom transparent;
+    /*background-color:#D9DAD9;
+    background: url("/images/splash/footer_separator_reflect-x.png") repeat-x scroll center bottom transparent;*/
     width: 100%;
-    height:137px;
 }
 
 .footer-list > li > a{

@@ -52,4 +52,4 @@ class WikiController(BaseController):
         if c.w['startTime'] == '0000-00-00':
             session['confTab'] = "participants"
         session.save()
-        return redirect(session['return_to'])
+        return redirect('/workshop/%s/%s/preferences' %(c.w['urlCode'], c.w['url']))

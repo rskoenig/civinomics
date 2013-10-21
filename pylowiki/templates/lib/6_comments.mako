@@ -37,13 +37,25 @@
     ## Display a button to login to add a comment
     ##
     ########################################################################
-    <% url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url'] %>
-    <div class="row-fluid">
-        <div class="span12">
-            <a href="${url}" title="Login to comment." class="pull-right btn btn-success" type="button">Login to Comment</a>
-            <br /><br />
-        </div><!- span12 -->
-    </div><!-- row-fluid -->
+    <% 
+        if c.w:
+            url = '/workshop/' + c.w['urlCode'] + '/' + c.w['url'] + '/clogin/' + thing.objType + '/' + thing['urlCode'] + '/' + thing['url']
+        else:
+            url = '/login'
+    %>
+
+
+    <fieldset>
+        <legend></legend>
+        <div class="span1">
+            <img src="/images/hamilton.png" class="avatar med-avatar">
+        </div>
+        <a href="${url}"><textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea></a>
+        <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+        <a href="${url}" title="Login to comment." class="btn btn-civ" type="button">Submit</a>
+    </fieldset>
+
+
 </%def>
 
 <%def name="addCommentToDiscussion(thing, discussion)">
@@ -60,10 +72,13 @@
                 <input type="hidden" name="parentCode" value="0" />
                 <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
                 <fieldset>
-                    <legend>Add comment</legend>
-                    <textarea rows="4" class="span12" name="comment-textarea"></textarea>
-                    <span class="help-block">${commentClubRule()}</span>
-                    <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
+                    <legend></legend>
+                    <div class="span1">
+                        ${lib_6.userImage(c.authuser, className="avatar med-avatar", linkClass="topbar-avatar-link")}
+                    </div>
+                    <textarea rows="2" class="span11" name="comment-textarea" placeholder="Add a comment..."></textarea>
+                    <span class="help-block pull-right right-space">Please keep comments civil and on-topic.
+                    <button type="submit" class="btn btn-civ" name = "submit" value = "reply">Submit</button></span>
                 </fieldset>
             </form>
         </div>
@@ -190,11 +205,12 @@
             headerClass += " facilitator"
         elif comment['addedAs'] == 'listener':
             headerClass += " listener"
+
     %>
     <div class="${headerClass}">
-        <button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
+        <!--<button class="accordion-toggle inline btn btn-mini" data-toggle="collapse" data-parent="#${accordionID}" href="#${collapseID}">
             Hide
-        </button>
+        </button> -->
         <%
             lib_6.userImage(author, className="inline avatar small-avatar comment-avatar", linkClass="inline")
             lib_6.userLink(author, className="inline")
@@ -203,15 +219,20 @@
             if comment['addedAs'] in roles:
                 role = '(%s)' % comment['addedAs']
         %>
-        ${role} from ${lib_6.userGeoLink(author, comment=True)}
+        ${role}<span class="grey">${lib_6.userGreetingMsg(author)}</span> from ${lib_6.userGeoLink(author, comment=True)}
         
         <span class="pull-right disabledComment-notice">
             <small>
-            <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']) | n} class="green green-hover">Link</a>
             % if parent:
                 % if parent.objType == 'comment':
                     % if parent['urlCode'] != comment['urlCode']:
-                        | <a ${lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
+                        <% 
+                            if c.w:
+                                dparent = c.w
+                            elif c.user:
+                                dparent = c.user
+                        %>
+                        <a ${lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=parent['urlCode']) | n} class="green green-hover">Parent</a>
                     % endif
                 % endif
             % endif
@@ -239,15 +260,13 @@
                     %>
                 </div> <!--/.span1-->
                 <div class="span11 comment-data">
-                    ${misaka.html(comment['data'], extensions=misaka.EXT_AUTOLINK) | n}
+                    ${misaka.html(comment['data'], extensions=misaka.EXT_AUTOLINK, render_flags = misaka.HTML_SKIP_IMAGES) | n}
                     % if curDepth + 1 == maxDepth and comment['children'] != '0':
                         ${continueThread(comment)}
                     % endif
                 </div> <!--/.span11-->
             </div> <!--/.row-fluid-->
             <%
-                revisions = revisionLib.getRevisionsForThing(comment)
-                lib_6.revisionHistory(revisions, comment)
                 if 'user' in session:
                     if c.thing['disabled'] == '0':
                         commentFooter(comment, author)
@@ -284,6 +303,10 @@
                     <a class="btn btn-mini accordion-toggle" data-toggle="collapse" data-target="#${adminID}">admin</a>
                 % endif
             </div>
+            <%
+                revisions = revisionLib.getRevisionsForThing(comment)
+                lib_6.revisionHistory(revisions, comment)
+            %>
         </div><!--/.span11.offset1-->
     </div><!--/.row-fluid-->
     
@@ -292,10 +315,10 @@
         <div class="span11 offset1">
             <form action="/comment/add/handler" method="post" id="commentAddHandler_reply">
                 <label>reply</label>
-                <textarea name="comment-textarea" class="comment-reply span12"></textarea>
+                <textarea name="comment-textarea" class="comment-reply span12" placeholder="Add a reply..."></textarea>
                 <input type="hidden" name="parentCode" value="${comment['urlCode']}" />
                 <input type="hidden" name="thingCode" value = "${c.thing['urlCode']}" />
-                <button type="submit" class="btn" name = "submit" value = "reply">Submit</button>
+                <button type="submit" class="btn btn-civ pull-right" name = "submit" value = "reply">Submit</button>
             </form>
         </div>
     </div>
@@ -318,7 +341,12 @@
 <%def name="continueThread(comment)">
     <br />
     <%
-        continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, c.w, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
+        if c.w:
+            dparent = c.w
+        elif c.user:
+            dparent = c.user
+
+        continueStr = '<a %s>%s</a>' %(lib_6.thingLinkRouter(comment, dparent, embed=True, commentCode=comment['urlCode']), "Continue this thread -->")
     %>
     ${continueStr | n}
 </%def>

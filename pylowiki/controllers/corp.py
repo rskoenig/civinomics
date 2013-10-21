@@ -621,30 +621,12 @@ class CorpController(BaseController):
         toddAnderson['bio']="Todd Anderson has experience working in the crowd-sourced web-app sphere. His interests include game theory, radical UI, mobile integration and empowering communities. An avid surfer, Todd is excited to empower the global surf community with Civinomics' platform."
         toddAnderson['photo']='todd_anderson.jpg'
         c.team.append(toddAnderson)
-        ajBurleson={}
-        ajBurleson["name"]="AJ Burleson"
-        ajBurleson['title']='Public Outreach Manager '
-        ajBurleson['bio']="AJ grew up on the streets of Hunter's Point, one of San Francisco's most violent neighborhoods. This gave him a deep desire to see the world adhere to just principles. After leaving college the first time he helped to promote and distribute \"Straight Outta Hunters Point\" an award winning documentary about his neighborhood, which had enlightened him about the environmental and social injustices in San Francisco.  He later returned to SFSU where he received his degree in International Relations.  His voyage through academia, included a year abroad at the University of Amsterdam. For his thesis he choose to write about his experiences at home and abroad. \"The United States and The Netherlands: Two Constructions of Changing Drug Policies\", is a testimony to the perceptions and stereotypes about drug use in the United States and abroad.  AJ's untraditional journey gives him the keen sense of community building that he brings to Civinomics."
-        ajBurleson['photo']='aj_burleson.jpg'
-        c.team.append(ajBurleson)
-        noelleDaley={}
-        noelleDaley["name"]="Noelle Daley"
-        noelleDaley['title']='Social Media Intern'
-        noelleDaley['bio']="Noelle is a marketing handywoman.  With a diverse background in marketing, social media, and account management, Noelle helps maintain Civinomics' online presence.  She is passionate about bringing social justice and technology together, and believes in the collaborative, pragmatic nature of start-ups. Noelle is currently finishing her undergraduate degree at the University of California, Santa Cruz in Sociology, with emphases in urban studies and education."
-        noelleDaley['photo']='noelle_daley.jpg'
-        c.team.append(noelleDaley)
-        edolfoG={}
-        edolfoG["name"]="Edolfo Garza-Licudine"
-        edolfoG['title']='CTO & Founder'
-        edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
-        edolfoG['photo']='edolfo_garzalicudine.jpg'
-        c.team.append(edolfoG)
-        traciH={}
-        traciH["name"]="Traci Hukill"
-        traciH['title']='Director of Content'
-        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
-        traciH['photo']='traci_hukill.jpg'
-        c.team.append(traciH)
+        estherKim={}
+        estherKim["name"]="Esther Kim"
+        estherKim['title']='Marketing Manager'
+        estherKim['bio']="My name is Esther Kim, I'm a recent graduate from UCSC in Business Management & Economics. I am an avid blogger, amateur videographer, and a work hard play hard advocate. I fell in love with Santa Cruz when I started surfing and mountain biking and I don't plan on leaving anytime soon. At Civinomics, I hope to bring in a specialized skillset of what I call 'grassroots' marketing to help set a structured brand goal of being a community leader."
+        estherKim['photo']='esther_kim.jpg'
+        c.team.append(estherKim)
         manuK={}
         manuK["name"]="Manu Koenig"
         manuK['title']='CEO & Founder'
@@ -669,9 +651,27 @@ class CorpController(BaseController):
         robertS['bio']="Robert is the political domain expert and charismatic brand manager for Civinomics. He has extensive experience as a community organizer and in public relations, having worked on over a dozen political campaigns in Sonoma and Santa Cruz Counties, including the SMART commuter train, urban sprawl and growth boundary ordinances, candidates for state assembly, and key city positions. He recently graduated from UCSC with a degree in Politics."
         robertS['photo']='robert_singleton.jpg'
         c.team.append(robertS)
+        russellSterten={}
+        russellSterten["name"]="Russell Sterten"
+        russellSterten['title']='Program Manager '
+        russellSterten['bio']="Hi, my name is Russell and it's good to be on board with Civinomics.  I am excited about the prospect of leveraging cutting edge communications and Web 2.0 technologies to dramatically increase people's engagement on issues facing their community. Before joining Civinomics I worked as a grassroots campaign organizer - most recently on a San Rafael city councilman's successful bid for the State Assembly - and have also been a substitute teacher in the East Bay and Marin.  Now I am looking forward to working with Civinomics and empowering people to help change the world."
+        russellSterten['photo']='russell_sterten.jpg'
+        c.team.append(russellSterten)
 
         c.advisors=[]
         kevinB={}
+        edolfoG={}
+        edolfoG["name"]="Edolfo Garza-Licudine"
+        edolfoG['title']='Technichal Advisor & Founder'
+        edolfoG['bio']="Edolfo has 10 years experience programming and 2 years experience managing databases and working in a biophysics research team. He graduated from UCSC with degrees in Applied Physics and Computational Mathematics in 2010."
+        edolfoG['photo']='edolfo_garzalicudine.jpg'
+        c.advisors.append(edolfoG)
+        traciH={}
+        traciH["name"]="Traci Hukill"
+        traciH['title']='Public Relations'
+        traciH['bio']="Traci Hukill has been a reporter and editor in Silicon Valley, Washington, D.C. and the Monterey Bay area. Before Civinomics she was Editor in Chief of the Santa Cruz Weekly. She lives in the Santa Cruz Mountains with her husband and their cat."
+        traciH['photo']='traci_hukill.jpg'
+        c.advisors.append(traciH)
         kevinB["name"]="Kevin Bell"
         kevinB['title']='Energy and Sustainability'
         kevinB['bio']="Kevin Bell has over thirty years experience in energy resource policy and energy-related innovation, working in a staff and consulting capacity in the public, private, and non-profit sectors as a researcher, regulator, and advocate of next-generation energy technologies. His expertise includes the design and implementation of energy and carbon models and public policies for enabling the low-carbon economy. He is the former CEO of a successful venture that developed a new generation of educational tools and technologies for teaching science. He received his Masters in Public Administration from the Harvard Kennedy School of Government."
@@ -685,6 +685,7 @@ class CorpController(BaseController):
         c.advisors.append(davidP)
 
 
+
         return render('/derived/corp_team.bootstrap')
 
     def news(self):
@@ -692,6 +693,86 @@ class CorpController(BaseController):
         c.pagetype="news" 
 
         c.articles=[]
+       
+
+        article={}
+        article['title']="KSCO Presents Ethan Bearman October 3, 2013. In-studio with Robert Singleton, Founder and CMO of Civinomics"
+        article['link']='http://podcast.ethanbearman.com/ksco-presents-ethan-bearman-october-3-2013/'
+        article['date']='10.03.2013'
+        article['source']='KSCO'
+        c.articles.append(article)
+        article={}
+        article['title']="(Video) KSCO Presents Ethan Bearman October 3, 2013. In-studio with Robert Singleton, Founder and CMO of Civinomics"
+        article['link']='http://www.youtube.com/watch?v=VfXiMWpUBZ8&feature=youtu.be'
+        article['date']='10.03.2013'
+        article['source']='YouTube'
+        c.articles.append(article)
+        article={}
+        article['title']="Lack of eatery, entertainment options top downtown Watsonville survey"
+        article['link']='http://www.register-pajaronian.com/v2_news_articles.php?heading=0&page=72&story_id=15248'
+        article['date']='10.03.2013'
+        article['source']='Register Pajaronian'
+        c.articles.append(article)
+        article={}
+        article['title']="Survey: Watsonville downtown needs more restaurants, shops, entertainment: Downtown vision project seeks to engage public"
+        article['link']='http://www.santacruzsentinel.com/watsonville/ci_24226760/survey-watsonville-downtown-needs-more-restaurants-shops-entertainment'
+        article['date']='10.02.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Get Stoked on Social. Santa Cruzs Best Twitter Accounts"
+        article['link']='http://santacruzlife.com/get-stoked-social-santa-cruzs-best-twitter-accounts/'
+        article['date']='9.30.2013'
+        article['source']='SantaCruzLife.com'
+        c.articles.append(article)
+        article={}
+        article['title']="The Civinomics blog on civic discourse"
+        article['link']='http://santacruznews.org/people/the-civinomics-blog-on-civic-discourse/'
+        article['date']='9.30.2013'
+        article['source']='SantaCruzNews.org'
+        c.articles.append(article)
+        article={}
+        article['title']="Civinomics tackles Shakespeare, downtown Watsonville, plastic bags"
+        article['link']='http://www.santacruzsentinel.com/santacruz/ci_24008994/civinomics-tackles-shakespeare-downtown-watsonville-plastic-bags?source=rss&utm_source=dlvr.it&utm_medium=twitter'
+        article['date']='9.03.2013'
+        article['source']='Santa Cruz Sentinel'
+        c.articles.append(article)
+        article={}
+        article['title']="Building an Entrepreneurial Pipeline in Santa Cruz (Part 3)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/08/01/building-an-entrepreneurial-pipeline-in-santa-cruz/'
+        article['date']='8.1.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Seeding a New Generation of Startups in Santa Cruz (Part 2)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/07/31/seeding-a-new-generation-of-startups-in-santa-cruz/'
+        article['date']='7.31.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Santa Cruz, the City Over the Hill, Works to Build Its Own Startup Culture (Part 1)"
+        article['link']='http://www.xconomy.com/san-francisco/2013/07/30/santa-cruz-the-city-over-the-hill-builds-its-own-startup-culture/'
+        article['date']='7.30.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="BUSINESS DIGEST, JULY 20, 2013: CIVINOMICS INVITES ELECTED OFFICIALS"
+        article['link']='http://www.contentboost.com/news/2013/07/19/7289426.htm'
+        article['date']='7.19.2013'
+        article['source']='xconomy.com'
+        c.articles.append(article)
+        article={}
+        article['title']="Monterey County Herald publisher, advertising director add Santa Cruz Sentinel to duties Omernick, Powell fill roles at Santa Cruz Sentinel"
+        article['link']='http://robertpowelldigitalfirst.wordpress.com/2013/06/29/monterey-county-herald-publisher-advertising-director-add-santa-cruz-sentinel-to-duties-omernick-powell-fill-roles-at-santa-cruz-sentinel/'
+        article['date']='6.20.2013'
+        article['source']='Robert Powell Blog'
+        c.articles.append(article)
+        article={}
+        article['title']="Bring Your Own Bag"
+        article['link']='http://www.gtweekly.com/index.php/santa-cruz-news/santa-cruz-environmental-news/4771-bring-your-own-bag.html'
+        article['date']='5.07.2013'
+        article['source']='Good Times'
+        c.articles.append(article)
         article={}
         article['title']="Civinomics: A new kind of civic participation for the social media world"
         article['link']='http://santacruznews.org/people/civinomics-a-new-kind-of-civic-participation-for-the-social-media-world/'

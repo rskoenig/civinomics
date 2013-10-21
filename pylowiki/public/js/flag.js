@@ -78,3 +78,17 @@ $('.immunifyButton').click(function(e){
     var data = jQuery.parseJSON(data);
     $('#immunifyResponse-' + data.code).empty().append(data.result);
 });
+
+$('.adoptButton').click(function(e){
+    e.preventDefault();
+    var urlString = $(this).attr('href');
+    var formData = $(this).parents('form').serializeArray();
+    var data = $.ajax({
+       type : 'POST',
+       async : false,
+       url  : urlString,
+       data : formData
+    }).responseText;
+    var data = jQuery.parseJSON(data);
+    $('#adoptResponse-' + data.code).empty().append(data.result);
+});

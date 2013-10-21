@@ -1,6 +1,6 @@
 import logging
 
-from pylons import request, response, session, tmpl_context as c
+from pylons import config, request, response, session, tmpl_context as c
 from pylons.controllers.util import abort, redirect
 
 import pylowiki.lib.db.workshop     as workshopLib
@@ -13,6 +13,7 @@ import pylowiki.lib.db.revision     as revisionLib
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.alerts          as alertsLib
 import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.db.dbHelpers    as dbHelpers
 import pylowiki.lib.helpers as h
 
 from pylowiki.lib.base import BaseController, render
@@ -58,6 +59,8 @@ class IdeaController(BaseController):
 
     def addIdea(self, workshopCode, workshopURL):
         c.title = c.w['title']
+        if c.w['public_private'] == 'public':
+            c.scope = workshopLib.getPublicScope(c.w)
         if c.privs['participant'] or c.privs['admin'] or c.privs['facilitator']:
             c.listingType = 'idea'
             c.title = c.w['title']
@@ -74,20 +77,47 @@ class IdeaController(BaseController):
         if 'submit' not in request.params or 'title' not in request.params:
             return redirect(session['return_to'])
         title = request.params['title'].strip()
+        text = request.params['text']
         if title == '':
             return redirect(session['return_to'])
         if len(title) > 120:
             title = title[:120]
-        newIdea = ideaLib.Idea(c.authuser, title, c.w, c.privs)
+        newIdea = ideaLib.Idea(c.authuser, title, text, c.w, c.privs)
         alertsLib.emailAlerts(newIdea)
         return redirect(utils.thingURL(c.w, newIdea))
     
     def showIdea(self, workshopCode, workshopURL, ideaCode, ideaURL):
+        # these values are needed for facebook sharing
+        c.facebookAppId = config['facebook.appid']
+        c.channelUrl = config['facebook.channelUrl']
+        c.baseUrl = config['site_base_url']
+        # for creating a link, we need to make sure baseUrl doesn't have an '/' on the end
+        if c.baseUrl[-1:] == "/":
+            c.baseUrl = c.baseUrl[:-1]
+        c.requestUrl = request.url
+        c.thingCode = ideaCode
+        # standard thumbnail image for facebook shares
+        if c.mainImage['pictureHash'] == 'supDawg':
+            c.backgroundImage = '/images/slide/slideshow/supDawg.slideshow'
+        elif 'format' in c.mainImage.keys():
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.%s' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'], c.mainImage['format'])
+        else:
+            c.backgroundImage = '/images/mainImage/%s/orig/%s.jpg' %(c.mainImage['directoryNum'], c.mainImage['pictureHash'])
+
         c.thing = ideaLib.getIdea(ideaCode)
         if not c.thing:
             c.thing = revisionLib.getRevisionByCode(ideaCode)
             if not c.thing:
                 abort(404)
+        # name/title for facebook sharing
+        c.name = c.thing['title']
+        if 'views' not in c.thing:
+            c.thing['views'] = u'0'
+            
+        views = int(c.thing['views']) + 1
+        c.thing['views'] = str(views)
+        dbHelpers.commit(c.thing)
+
         c.discussion = discussionLib.getDiscussionForThing(c.thing)
         c.listingType = 'idea'
         c.revisions = revisionLib.getRevisionsForThing(c.thing)

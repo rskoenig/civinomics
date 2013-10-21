@@ -39,11 +39,11 @@ def getDiscussions(disabled = '0', deleted = '0', discType = 'general'):
         return False
     
 def getDiscussionForThing(parent):
-    if parent.objType == 'discussion':
+    if parent.objType.replace("Unpublished", "") == 'discussion':
         return parent
-    thisKey = '%sCode' % parent.objType
+    thisKey = '%sCode' % parent.objType.replace("Unpublished", "")
     try:
-        return meta.Session.query(Thing).filter_by(objType = 'discussion').filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
+        return meta.Session.query(Thing).filter(Thing.objType.in_(['discussion', 'discussionUnpublished'])).filter(Thing.data.any(wc(thisKey, parent['urlCode']))).one()
     except:
         return False
 
@@ -80,23 +80,13 @@ def searchDiscussions(keys, values, deleted = u'0', disabled = u'0', count = Fal
                 .filter_by(objType = 'discussion')\
                 .filter(Thing.data.any(wc('deleted', deleted)))\
                 .filter(Thing.data.any(wc('disabled', disabled)))\
+                .filter(Thing.data.any(wc('workshop_searchable', '1')))\
                 .filter(Thing.data.any(reduce(sa.or_, m)))
         if rootDiscussions:
             q = q.filter(Thing.data.any(wc('discType', 'general')))
-        # Because of the vertical model, it doesn't look like we can look at the linked workshop's status
-        # and apply that as an additional filter within the database level.
-        rows = q.all()
-        keys = ['deleted', 'disabled', 'published', 'public_private']
-        values = [u'0', u'0', u'1', u'public']
-        discussions = []
-        for row in rows:
-            w = generic.getThing(row['workshopCode'], keys = keys, values = values)
-            if not w:
-                continue
-            discussions.append(row)
         if count:
-            return len(discussions)
-        return discussions
+            return q.count()
+        return q.all()
     except Exception as e:
         print e
         return False
@@ -106,16 +96,16 @@ class Discussion(object):
     # If the owner is not None, then the discussion was actively created by some user.
     def __init__(self, **kwargs):
         """
-            Discussions can only be attached to a workshop's feedback, background, workshop resources, suggestions and suggestion resources
+            Discussions can be attached to anything, basically
             kwargs: dict of arguments, keyed as follows:
                     owner                ->    The owner Thing that created the discussion
                     title                ->    The title of the discussion, in string format
                     attachedThing        ->    The Thing to which we are attaching this discussion
                     discType             ->    Used to determine special properties, like a background discussion or a feedback discussion in a workshop
+                    (optional)
                     workshop             ->    Links the discussion to the workshop.  The discussion type is used to differentiate between a discussion 
                                                linked to, say, an idea, and a discussion linked directly to the workshop.
                     privs                ->    The c.privs object describing what the authuser's role is
-                    (optional)
                     text                 ->    Some extra description, if provided
                     role                 ->    The role used to indicate how the discussion was added (admin, facilitator, listener, etc...)  If not provided,
                                                this is automatically set from the privs dict.
@@ -130,7 +120,6 @@ class Discussion(object):
             role = kwargs['role']
         title = kwargs['title']
         discType = kwargs['discType']
-        workshop = kwargs['workshop']
         d['discType'] = discType
         d['disabled'] = '0'
         d['deleted'] = '0'
@@ -139,9 +128,13 @@ class Discussion(object):
         d['title'] = title
         d['url'] = urlify(title)
         d['numComments'] = '0' # should instead do a count query on number of comments with parent code of this discussion
-        d = generic.linkChildToParent(d, workshop)
-        d = generic.addedItemAs(d, kwargs['privs'], role)
         # Optional arguments
+        if 'workshop' in kwargs:
+            workshop = kwargs['workshop']
+            d = generic.linkChildToParent(d, workshop)
+            d = generic.addedItemAs(d, kwargs['privs'], role)
+        if 'owner' in kwargs.keys():
+            d = generic.linkChildToParent(d, kwargs['owner'])
         if 'text' in kwargs:
             d['text'] = kwargs['text']
         if 'attachedThing' in kwargs.keys():

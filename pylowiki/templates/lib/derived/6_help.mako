@@ -3,21 +3,21 @@
         <li class="span4 well help">
             <a href="${c.tutorialURL}">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_071_book.png">  Tutorial 101</h3>
-                <p>Where to begin if you are entirely new to Civinomics and just don't get it.</p>
+                <h3><i class="icon-book"></i> Tutorial 101</h3>
+                <p>Takes you through a guided tour of the workhsop layout. A good place to begin if you are entirely new to Civinomics.</p>
             </a>
         </li>
          <li class="span4 well help">
-            <a href="help/facilitatorGuide">
+            <a href="/help/facilitatorGuide">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_043_group.png">  How to start a workshop</h3>
+                <h3><i class="icon-gear"></i>  How to start a workshop</h3>
                 <p>Ready to start a workshop of your own? Here are some things you'll need to keep in mind as a facilitator.</p>
             </a>
          </li>
         <li class="span4 well help"> 
             <a href="/help/faq">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_194_circle_question_mark.png">  FAQ</h3>   
+                <h3><i class="icon-question-sign"></i>  FAQ</h3>   
                 <p>Answers to such questions as...</p>    
                 <ul>
                     <li>How do I vote?</li>
@@ -29,22 +29,22 @@
         <li class="span4 well help">
             <a id="helpCenter_bugReporter">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_360_bug.png">  Something's not working</h3>
+                <h3><i class="icon-bug"></i>  Something's not working</h3>
                 <p>Can't login, missing objects, load failures, can't edit your workshop...</p>
             </a>
         </li>
         <li class="span4 well help">
             <a href="/help/reportAbuse">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_266_flag.png">  Report abuse or policy violations</h3>
+                <h3><i class="icon-flag"></i>  Report abuse or policy violations</h3>
                 <p>Is someone misbehaving? Here's what you can do.</p>
             </a>
         </li>
         <li class="span4 well help">
-            <a href="help/feedbackWorkshop">
+            <a href="/help/feedbackWorkshop">
                 <span class="link-span"></span><!-- used to make entire div a link -->
-                <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_374_claw_hammer.png">  Suggest new features</h3>
-                <p>Help make Civinomics more effective.</p>
+                <h3><i class="icon-lightbulb"></i>  Suggest new features</h3>
+                <p>Yup, we're in beta. So help us get the Civinomics engine purring.</p>
             </a>
         </li>
         <li class="span4 well help">
