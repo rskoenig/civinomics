@@ -1926,7 +1926,7 @@ text-align: right;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
-  backgroung: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.3);
 }
 
 .dark-gradient:hover{
