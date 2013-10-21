@@ -108,33 +108,33 @@ def workshopImageURL(workshop, mainImage, thumbnail = False):
 
 workshopInfo = \
 """
-The following is a suggested list of sections to include. This background wiki uses Markdown for styling. See the [Markdown Syntax Guide](civinomics.com/help/markdownGuide) for help.
+The following is a suggested list of sections to include. This background wiki uses Markdown for styling. See the Formatting Guide above for help.
+
 
 Overview
 -----
 _A summary of the key ideas associated with your workshop topic._
 
-Stats, Figures and Trends
+
+Stats and Trends
 -----
 _What are the key indicators by which this workshop topic is measured? What do history and trends suggest about this topic?
 
-Taxes and/or Revenues
+
+Existing Taxes and/or Revenues
 -----
 _Are there any public taxes associated with your workshop topic? Are there other current funding sources?_
 
-Spending
+
+Current Spending
 -----
 _What money is currently spent on your workshop topic? What might it look like in the future?_
 
 
-Current Government Programs and Legislation
+Current Legislation
 -----
 _What publicly funded programs related to your workshop topic currently exist?_
 
-
-Ecosystem - Suppliers, Consumers, Competitors and Collaborators
------
-_List a other relevant groups, companies and organizations in this section. Include links where possible._
 
 Case Studies
 -----

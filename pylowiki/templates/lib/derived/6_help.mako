@@ -47,13 +47,15 @@
                 <p>Yup, we're in beta. So help us get the Civinomics engine purring.</p>
             </a>
         </li>
+        <!--
         <li class="span4 well help">
             <a href="help/markdownGuide">
-                <span class="link-span"></span><!-- used to make entire div a link -->
+                <span class="link-span"></span>
                 <h3><img src="images/glyphicons_pro/glyphicons/png/glyphicons_114_list.png">  Markdown Syntax Guide</h3>
                 <p>For text throughout the site.</p>
             </a>
         </li>
+        -->
     </ul><!-- thumbnails -->
 </%def>
 

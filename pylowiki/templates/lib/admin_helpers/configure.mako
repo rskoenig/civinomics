@@ -57,7 +57,7 @@
             <h4 class="section-header smaller">Basic Info</h4>
             <div class="row-fluid">
                 <div class="span6 offset1">
-                    <form name="edit_issue" id="edit_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" >
+                    <form name="edit_issue" id="edit_issue" action = "/workshop/${c.w['urlCode']}/${c.w['url']}/configureBasicWorkshopHandler" enctype="multipart/form-data" method="post" ng-cloak>
                         <fieldset>
                             <legend>Settings</legend>
                             <label>Workshop Name</label>
@@ -116,18 +116,18 @@
                                     <input type="checkbox" ng-model="goal.done" ng-click="goalStatus(goal)" class="goal-checkbox">
                                     <span class="goal-title done-{{goal.done}}" ng-dblclick="goalEditState(goal)" ng-hide="goal.editing">{{goal.title}}</span>
                                     <form ng-submit="goalEditDone(goal)" class="inline">
-                                        <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="60" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
+                                        <input type="text" ng-show="goal.editing" value="{{goal.title}}" ng-model="editTitle" maxlength="100" civ-focus="goal.editing" civ-blur="goalEditState(goal)">
                                     </form>
                                     <a ng-click="deleteGoal(goal)" class="inline pull-right"><img src="/images/glyphicons_pro/glyphicons/png/glyphicons_192_circle_remove.png" class="deleteGoal"></a></span>
                                 </li>
                             </ul>
                             <form ng-submit="addGoal()" class="addGoal">
                                 <div class="input-append">
-                                    <input type="text" ng-model="goalTitle" size="60" maxlength = "60" placeholder="New goal here" class="addGoal" id="addGoal">
+                                    <input type="text" ng-model="goalTitle" size="100" maxlength = "100" placeholder="New goal here" class="addGoal" id="addGoal">
                                     <button class="btn btn-primary" type="submit" value="add">add</button>
                                 </div>
                             </form>
-                            <p class = "green">{{60 - goalTitle.length}}</p>
+                            <p class = "green">{{100 - goalTitle.length}}</p>
                         </div>
 
                         % if not c.published:

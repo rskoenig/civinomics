@@ -324,10 +324,10 @@ def getWorkshopsByScope(searchScope, scopeLevel):
         return False
     
 def getPublicScope(workshop):
+    flag = '/images/flags/'
+    href = '/workshops/geo/earth'
     if 'workshop_public_scope' in workshop and workshop['workshop_public_scope'] != '':
         scope = workshop['workshop_public_scope'].split('|')
-        flag = '/images/flags/'
-        href = '/workshops/geo/earth'
         if scope[9] != '0':
             scopeLevel = 'postalCode'
             scopeName  = scope[9]

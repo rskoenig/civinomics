@@ -751,6 +751,23 @@ class WorkshopController(BaseController):
     def createWorkshopHandler(self):
         if 'createPersonal' in request.params:
             wType = 'personal'
+            scope = 'private'
+        # added to make workshops free
+        elif 'createPublic' in request.params:
+            wType = 'professional'
+            scope = 'public'
+            c.stripeToken = "ADMINCOMP"
+            c.billingName = c.authuser['name']
+            c.billingEmail = "billing@civinomics.com"
+            c.coupon = ''
+        elif 'createPrivate' in request.params:
+            wType = 'professional'
+            scope = 'private'
+            c.stripeToken = "ADMINCOMP"
+            c.billingName = c.authuser['name']
+            c.billingEmail = "billing@civinomics.com"
+            c.coupon = ''
+        # end addition
         else:
             if self.validatePaymentForm():
                 wType = 'professional'
@@ -758,14 +775,14 @@ class WorkshopController(BaseController):
                 c.stripeKey = config['app_conf']['stripePublicKey'].strip()
                 return render('/derived/6_workshop_payment.bootstrap')
                 
-        w = workshopLib.Workshop('New Workshop', c.authuser, 'private', wType)
+        w = workshopLib.Workshop('New Workshop', c.authuser, scope, wType)
         c.workshop_id = w.id # TEST
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.id, w.id)
         if wType == 'professional':
             account = accountLib.Account(c.billingName, c.billingEmail, c.stripeToken, w, 'PRO', c.coupon)
         alert = {'type':'success'}
-        alert['title'] = 'Your new ' + wType + ' workshop is ready to be set up. Have fun!'
+        alert['title'] = 'Your new ' + scope + ' workshop is ready to be set up. Have fun!'
         session['alert'] = alert
         session.save()
 

@@ -118,19 +118,11 @@
                 </div><!-- tab-pane template participants -->
                 <div class="tab-pane ${tags_active}" id="tags">
                     ${helpers.tags()}
-<<<<<<< local
-                </div><!-- tab-pane template tab3 -->
-                <div class="tab-pane ${tab4active}" id="tab4">
-                    ${slide_helpers.workshop_admin_slideshow()}
-                </div><!-- tab-pane template tab4 -->
-                <div class="tab-pane ${tab5active}" id="tab5">
-=======
                 </div><!-- tab-pane template tags -->
                 <div class="tab-pane ${slideshow_active}" id="slideshow">
-                    ${slide_helpers.admin_slideshow()}
+                    ${slide_helpers.workshop_admin_slideshow()}
                 </div><!-- tab-pane template slideshow -->
                 <div class="tab-pane ${background_active}" id="background">
->>>>>>> other
                     ${helpers.edit_background()}
                 </div><!-- tab-pane template background -->
                 <div class="tab-pane ${notables_active}" id="notables">
