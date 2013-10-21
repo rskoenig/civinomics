@@ -2582,3 +2582,7 @@ h4.forum-topic{
   line-height: 20px;
   font-weight: 500;
 }
+
+form.inline{
+  display: inline;
+}

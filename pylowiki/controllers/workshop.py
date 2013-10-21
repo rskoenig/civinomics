@@ -776,6 +776,8 @@ class WorkshopController(BaseController):
                 return render('/derived/6_workshop_payment.bootstrap')
                 
         w = workshopLib.Workshop('New Workshop', c.authuser, scope, wType)
+        if 'createPublic' in request.params and 'geoString' in request.params:
+            w['workshop_public_scope'] =  request.params['geoString']
         c.workshop_id = w.id # TEST
         c.title = 'Configure Workshop'
         c.motd = motdLib.MOTD('Welcome to the workshop!', w.id, w.id)

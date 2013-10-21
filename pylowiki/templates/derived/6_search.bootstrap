@@ -65,7 +65,7 @@
             </ul>
             <div class="tab-content">
                 <div class="row-fluid" style="color: #ffffff; padding-bottom: 10px;" ng-cloak>
-                    <form class="form-search">
+                    <form class="form-search inline">
                         Filter: <input type="text" class="input-small search-query" ng-model="query">
                         Sort by: 
                         <select class="med-width" ng-model="orderProp" ng-hide="showingWorkshops.show || showingPeople.show" ng-cloak>
@@ -87,12 +87,19 @@
                         <span ng-hide="showingPeople.show" ng-cloak>
                             ${lib_6.public_tag_filter()}
                         </span>
-                        <span>
-                            <a class="btn btn-success" style="margin-top: 7px;" href="/workshop/display/create/form" ng-model="orderProp" ng-show="objType = 'workshops'" ng-cloak>
+                    </form>
+                    <span ng-model="orderProp" ng-show="objType = 'workshops'" ng-cloak>
+                        % if c.searchType != 'region':
+                            <a class="btn btn-success" style="margin-top: 7px;" href="/workshop/display/create/form" >
                                 <i class="icon-plus"></i> New Workshop
                             </a>
-                        </span>
-                    </form>
+                        % else:
+                            <form id="CreateWorkshop" action = "/workshop/create/handler" method = "post" class="inline">
+                                <input type="hidden" name="geoString" value="${c.geoString}">
+                                 <button type="submit" name="createPublic" class="btn btn-civ"><i class="icon-plus"></i> New Workshop</button>
+                            </form>
+                        % endif
+                    </span>
                 </div>
                 <div class="loading-civ" ng-show="loading" ng-cloak>
                     <i class="icon-spinner icon-spin icon-4x"></i>

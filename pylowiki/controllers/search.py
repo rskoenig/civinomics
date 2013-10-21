@@ -169,9 +169,8 @@ class SearchController(BaseController):
         c.numDiscussions = discussionLib.searchDiscussions(['workshop_public_scope'], [self.query], count = True)
         c.numIdeas = ideaLib.searchIdeas('workshop_public_scope', self.query, count = True)
         c.numPhotos = photoLib.searchPhotos('scope', self.query, count = True)
-
+        c.geoString = self.query
         c.photos = photoLib.searchPhotos('scope', self.query)
-        c.searchQuery = self.query
         #log.info("search is %s"%c.searchQuery)
         if c.photos:
             c.photos = sort.sortBinaryByTopPop(c.photos)
