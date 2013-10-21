@@ -87,9 +87,11 @@
                         <span ng-hide="showingPeople.show" ng-cloak>
                             ${lib_6.public_tag_filter()}
                         </span>
-                        <a class="btn btn-success" href="/workshop/display/create/form" ng-model="orderProp" ng-show="showingWorkshops.show" ng-cloak>
-                            <i class="icon-plus"></i> New Workshop
-                        </a>
+                        <span>
+                            <a class="btn btn-success" style="margin-top: 7px;" href="/workshop/display/create/form" ng-model="orderProp" ng-show="objType = 'workshops'" ng-cloak>
+                                <i class="icon-plus"></i> New Workshop
+                            </a>
+                        </span>
                     </form>
                 </div>
                 <div class="loading-civ" ng-show="loading" ng-cloak>

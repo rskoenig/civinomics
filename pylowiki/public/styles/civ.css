@@ -1307,9 +1307,6 @@ button.transparent{
 
 .btn-civ, .btn-success {
    font-weight: 300;
-}
-
-.btn-civ {
    color: white;
    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
    background-color: #00aa49;
@@ -1757,7 +1754,11 @@ li.thumbnail-gallery{
 }
 
 .top-space{
-  padding-top: 20px;
+  margin-top: 4px;
+}
+
+.top-indent{
+  margin-top: 20px;
 }
 
 .strong{
