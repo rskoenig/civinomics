@@ -1912,9 +1912,11 @@ text-align: right;
 }
 
 .small-flag{
-  width:40px; height: 27px;
+  width:40px; 
+  height: 27px;
   padding: 0px;
-  display: inline;"
+  display: inline;
+  border: none;
 }
 
 .thumbnail.tight{
@@ -1964,39 +1966,11 @@ text-align: right;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
-  background-image: -o-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.4) 80%);
-  background-image: -moz-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.4) 80%);
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(rgba(0,0,0,0)), color-stop(0.8, rgba(0,0,0,0.4)));
-  background-image: -webkit-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.4) 80%);
-  background-image: -ms-linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.4) 80%);
-  background-image: linear-gradient(bottom, rgba(0,0,0,0), rgba(0,0,0,0.4) 80%);
-  /* IE 5.5 - 7 */
-  filter: progid:DXImageTransform.Microsoft.gradient(
-    gradientType=1, startColor=#000000, endColorStr=0
-  );
-
-  /* IE8 uses -ms-filter for whatever reason... */
-  -ms-filter: progid:DXImageTransform.Microsoft.gradient(
-    gradientType=1, startColor=#000000, endColoStr=0
-  );
+  background: rgba(0,0,0,0.3);
 }
 
 .dark-gradient:hover{
-  background-image: -o-linear-gradient(bottom, rgba(231,108,86,0), rgba(231,108,86,0.4) 80%);
-  background-image: -moz-linear-gradient(bottom, rgba(231,108,86,0), rgba(231,108,86,0.4) 80%);
-  background-image: -webkit-gradient(linear, left bottom, left top, color-stop(rgba(231,108,86,0)), color-stop(0.8, rgba(0,0,0,0.4)));
-  background-image: -webkit-linear-gradient(bottom, rgba(231,108,86,0), rgba(231,108,86,0.4) 80%);
-  background-image: -ms-linear-gradient(bottom, rgba(231,108,86,0), rgba(231,108,86,0.4) 80%);
-  background-image: linear-gradient(bottom, rgba(231,108,86,0), rgba(231,108,86,0.4) 80%);
-  /* IE 5.5 - 7 */
-  filter: progid:DXImageTransform.Microsoft.gradient(
-    gradientType=1, startColor=#000000, endColorStr=0
-  );
-
-  /* IE8 uses -ms-filter for whatever reason... */
-  -ms-filter: progid:DXImageTransform.Microsoft.gradient(
-    gradientType=1, startColor=#000000, endColoStr=0
-  );
+  background: rgba(255,22,0,0.4);
 }
 
 hr.stats{
@@ -2121,7 +2095,7 @@ h1 .label.workshop-tag{
 
 .carousel-indicators {
   position: absolute;
-  bottom: 15px;
+  top: 15px;
   right: 15px;
   z-index: 5;
   margin: 0;
@@ -2579,4 +2553,31 @@ button.close{
 .splash-text p{
   text-align: left;
   font-weight: 300;
+}
+
+h4.forum-topic{
+  font-weight: 500;
+}
+
+.featured{
+  position: absolute;
+  z-index: 2;
+  color: #fff;
+  top: 135px;
+  left: 10px;
+}
+
+.featured .small-flag.span{
+  width: 40px;
+}
+
+.featured-title{
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.featured-scope-title{
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
 }
