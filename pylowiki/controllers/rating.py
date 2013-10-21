@@ -14,8 +14,10 @@ import pylowiki.lib.db.idea         as ideaLib
 import pylowiki.lib.db.photo        as photoLib
 import pylowiki.lib.db.discussion   as discussionLib
 import pylowiki.lib.db.comment      as commentLib
+import pylowiki.lib.utils           as utils
 
 import pylowiki.lib.helpers as h
+import simplejson as json
 
 log = logging.getLogger(__name__)
 
@@ -76,7 +78,18 @@ class RatingController(BaseController):
 
     @h.login_required
     def rateIdea(self, code, amount):
-        return redirect(session['return_to'])
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+        if iPhoneApp:
+            entry = {}
+            entry['voted'] = amount
+            result = []
+            result.append(entry)
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return redirect(session['return_to'])
         
     @h.login_required
     def ratePhoto(self, code, amount):

@@ -873,6 +873,8 @@ class WorkshopController(BaseController):
     def display(self, workshopCode, workshopURL):
         # check to see if this is a request from the iphone app
         iPhoneApp = utils.iPhoneRequestTest(request)
+        # iphone app json data structure:
+        entry = {}
         # these values are needed for facebook sharing
         c.facebookAppId = config['facebook.appid']
         c.channelUrl = config['facebook.channelUrl']
@@ -924,8 +926,6 @@ class WorkshopController(BaseController):
         c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
         if c.w['public_private'] == 'public':
             c.scope = workshopLib.getPublicScope(c.w)
-        # iphone app json data structure:
-        entry = {}
         c.goals = goalLib.getGoalsForWorkshop(c.w)
         if not c.goals:
             c.goals = []
@@ -965,6 +965,20 @@ class WorkshopController(BaseController):
                     s = MLStripper()
                     s.feed(ideaHtml)
                     formatIdea['text'] = s.get_data()
+                    # if this person has voted on the idea, we need to pack their vote data in
+                    if 'user' in session:
+                        rated = ratingLib.getRatingForThing(c.authuser, idea)
+                        if rated:
+                            if rated['amount'] == '1':
+                                formatIdea['rated'] = "1"
+                            elif rated['amount'] == '-1':
+                                formatIdea['rated'] = "-1"
+                            elif rated['amount'] == '0' :
+                                formatIdea['rated'] = "0"
+                            else:
+                                formatIdea['rated'] = "0"
+                        else:
+                            formatIdea['rated'] = "0"
                     entry[ideaEntry] = dict(formatIdea)
                     i = i + 1
 

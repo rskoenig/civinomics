@@ -14,6 +14,7 @@ import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.alerts          as alertsLib
 import pylowiki.lib.db.comment      as commentLib
 import pylowiki.lib.db.dbHelpers    as dbHelpers
+import pylowiki.lib.db.rating       as ratingLib
 import pylowiki.lib.helpers as h
 
 import simplejson as json
@@ -132,11 +133,28 @@ class IdeaController(BaseController):
             if not c.rootComment:
                 abort(404)
         if iPhoneApp:
-            # if this person is the owner of this idea, we need to pack their vote data in
-            #if c.authuser:
-                #if idea['userCode'] == c.authuser
-            # rated = ratingLib.getRatingForThing(c.authuser, thing) 
+            log.info("iphone idea")
             entry = {}
+            # if this person has voted on the idea, we need to pack their vote data in
+            if 'user' in session:
+                log.info("iphone idea: user in session")
+                rated = ratingLib.getRatingForThing(c.authuser, c.thing)
+                if rated:
+                    if rated['amount'] == '1':
+                        entry['rated'] = "1"
+                    elif rated['amount'] == '-1':
+                        entry['rated'] = "-1"
+                    elif rated['amount'] == '0' :
+                        entry['rated'] = "0"
+                    else:
+                        entry['rated'] = "0"
+                else:
+                    entry['rated'] = "0"
+            #    utils.isWatching(c.authuser, c.w)
+            #if c.authuser:
+                #
+            # rated = ratingLib.getRatingForThing(c.authuser, thing) 
+            
             entry['thingCode'] = c.thingCode
             entry['backgroundImage'] = c.backgroundImage
             #entry['title'] = c.thing['title']

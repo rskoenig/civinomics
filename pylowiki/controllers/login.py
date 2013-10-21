@@ -15,6 +15,7 @@ import pylowiki.lib.mail        as mailLib
 from pylowiki.lib.auth          import login_required
 from pylowiki.lib.db.dbHelpers  import commit
 import pylowiki.lib.db.share    as shareLib
+import pylowiki.lib.utils       as utils
 
 # twython imports
 from twython import Twython
@@ -577,14 +578,7 @@ class LoginController(BaseController):
         splashMsg['type'] = 'error'
         splashMsg['title'] = 'Error'
 
-        try:
-            useJson = request.params['json']
-            if useJson == '1':
-                returnJson = True
-            else:
-                returnJson = False
-        except KeyError:
-            returnJson = False
+        iPhoneApp = utils.iPhoneRequestTest(request)
 
         try:
             email = request.params["email"].lower()
@@ -606,26 +600,29 @@ class LoginController(BaseController):
                     elif userLib.checkPassword( user, password ):
                         # if pass is True
                         loginURL = LoginController.logUserIn(self, user)
-                        if returnJson:
+                        if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
-                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
+                            # iphone app is having problems with the case where a user logs in after 
+                            # browsing the site first, so for now we'll just return a login url of /
+                            #return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':loginURL})
+                            return json.dumps({'statusCode':0, 'user':dict(user), 'returnPage':'/'})
                         else:
                             return redirect(loginURL)
                     else:
                         log.warning("incorrect username or password - " + email )
                         splashMsg['content'] = 'incorrect username or password'
-                        if returnJson:
+                        if iPhoneApp:
                             response.headers['Content-type'] = 'application/json'
                             return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
                 else:
                     log.warning("incorrect username or password - " + email )
                     splashMsg['content'] = 'incorrect username or password'
-                    if returnJson:
+                    if iPhoneApp:
                         response.headers['Content-type'] = 'application/json'
                         return json.dumps({'statusCode':2, 'message':'incorrect username or password'})
             else:
                 splashMsg['content'] = 'missing username or password'
-                if returnJson:
+                if iPhoneApp:
                     response.headers['Content-type'] = 'application/json'
                     return json.dumps({'statusCode':1, 'message':'missing username or password'})
             
@@ -635,7 +632,7 @@ class LoginController(BaseController):
             return redirect("/login")
 
         except KeyError:
-            if returnJson:
+            if iPhoneApp:
                 response.headers['Content-type'] = 'application/json'
                 return json.dumps({'statusCode':1, 'message':'keyerror'})
             return redirect('/')
