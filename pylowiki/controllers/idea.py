@@ -124,14 +124,20 @@ class IdeaController(BaseController):
         c.thing['views'] = str(views)
         dbHelpers.commit(c.thing)
 
-        c.discussion = discussionLib.getDiscussionForThing(c.thing)
-        c.listingType = 'idea'
-        c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        if not iPhoneApp:
+            c.discussion = discussionLib.getDiscussionForThing(c.thing)
         
-        if 'comment' in request.params:
-            c.rootComment = commentLib.getCommentByCode(request.params['comment'])
-            if not c.rootComment:
-                abort(404)
+        c.listingType = 'idea'
+        
+        if not iPhoneApp:
+            c.revisions = revisionLib.getRevisionsForThing(c.thing)
+        
+        if not iPhoneApp:
+            if 'comment' in request.params:
+                c.rootComment = commentLib.getCommentByCode(request.params['comment'])
+                if not c.rootComment:
+                    abort(404)
+
         if iPhoneApp:
             log.info("iphone idea")
             entry = {}

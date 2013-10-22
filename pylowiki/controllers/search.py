@@ -461,8 +461,14 @@ class SearchController(BaseController):
             entry = {}
             entry['title'] = w['title']
             entry['description'] = w['description']
+            # is this the format it needs to be in the search template?
             entry['urlCode'] = w['urlCode']
+            # for consitency, this is the entry that should hold the workshop's url code
+            entry['workshopCode'] = w['urlCode']
+            # is this the format it needs to be in the search template?
             entry['url'] = w['url']
+            # for consitency, this is the entry that should hold the workshop's url
+            entry['workshopURL'] = w['url']
             #entry['activity'] = w['numPosts']
             #entry['bookmarks'] = w['numBookmarks']
             entry['activity'] = '555'

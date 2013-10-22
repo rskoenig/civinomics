@@ -904,28 +904,38 @@ class WorkshopController(BaseController):
                 c.facilitators.append(f)
               
         c.listeners = []
-        for l in (listenerLib.getListenersForWorkshop(c.w)):
-            if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
-                c.listeners.append(l)
+        if not iPhoneApp:
+            for l in (listenerLib.getListenersForWorkshop(c.w)):
+                if 'pending' in l and l['pending'] == '0' and l['disabled'] == '0':
+                    c.listeners.append(l)
               
         c.slides = []
-        c.slideshow = slideshowLib.getSlideshow(c.w)
-        slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
-        for id in slide_ids:
-            s = slideLib.getSlide(id) # Don't grab deleted slides
-            if s:
-                c.slides.append(s)
+        if not iPhoneApp:
+            c.slideshow = slideshowLib.getSlideshow(c.w)
+            slide_ids = [int(item) for item in c.slideshow['slideshow_order'].split(',')]
+            for id in slide_ids:
+                s = slideLib.getSlide(id) # Don't grab deleted slides
+                if s:
+                    c.slides.append(s)
 
-        c.motd = motdLib.getMessage(c.w.id)
-        # kludge for now
-        if c.motd == False:
-           c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
+        if not iPhoneApp:
+            c.motd = motdLib.getMessage(c.w.id)
+            # kludge for now
+            if c.motd == False:
+               c.motd = motdLib.MOTD('Welcome to the workshop!', c.w.id, c.w.id)
 
-        c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+        if not iPhoneApp:
+            c.motd['messageSummary'] = h.literal(h.reST2HTML(c.motd['data']))
+        
         c.information = pageLib.getInformation(c.w)
-        c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
-        if c.w['public_private'] == 'public':
-            c.scope = workshopLib.getPublicScope(c.w)
+        
+        if not iPhoneApp:
+            c.activity = activityLib.getActivityForWorkshop(c.w['urlCode'])
+        
+        if not iPhoneApp:
+            if c.w['public_private'] == 'public':
+                c.scope = workshopLib.getPublicScope(c.w)
+
         c.goals = goalLib.getGoalsForWorkshop(c.w)
         if not c.goals:
             c.goals = []
@@ -936,18 +946,20 @@ class WorkshopController(BaseController):
                 entry[goalEntry] = dict(goal)
                 i = i + 1
         
-        # Demo workshop status
-        c.demo = workshopLib.isDemo(c.w)
+        if not iPhoneApp:
+            # Demo workshop status
+            c.demo = workshopLib.isDemo(c.w)
 
         # determines whether to display 'admin' or 'preview' button. Privs are checked in the template. 
         c.adminPanel = False
-        
-        discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
-        if not discussions:
-            c.discussions = []
-        else:
-            discussions = sort.sortBinaryByTopPop(discussions)
-            c.discussions = discussions[0:3]
+
+        if not iPhoneApp:        
+            discussions = discussionLib.getDiscussionsForWorkshop(workshopCode)
+            if not discussions:
+                c.discussions = []
+            else:
+                discussions = sort.sortBinaryByTopPop(discussions)
+                c.discussions = discussions[0:3]
 
         ideas = ideaLib.getIdeasInWorkshop(workshopCode)
         if not ideas:
@@ -982,9 +994,11 @@ class WorkshopController(BaseController):
                     entry[ideaEntry] = dict(formatIdea)
                     i = i + 1
 
-        disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
-        if disabled:
-            c.ideas = c.ideas + disabled
+        if not iPhoneApp:
+            disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
+            if disabled:
+                c.ideas = c.ideas + disabled
+                
         c.listingType = 'ideas'
         if iPhoneApp:
             entry['mainImage'] = dict(c.mainImage)
