@@ -28,9 +28,9 @@
             scopeString += ', <span class="badge badge-info">County of %s</span>'%county.title()
         else:
             scopeString += ', County of %s'%county.title()
-        if postalCode == '0':
+        if postalCode == '0' and city != '0':
             scopeString += ', <span class="badge badge-info">City of %s</span>'%city.title()
-        else:
+        elif postalCode != '0':
             scopeString += ", City of %s"%city.title()
         if postalCode != '0':
             scopeString += ', <span class="badge badge-info">Zip code of %s</span>'%postalCode

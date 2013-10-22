@@ -13,6 +13,7 @@
    import pylowiki.lib.db.tag           as tagLib
    import pylowiki.lib.db.workshop      as workshopLib
    import pylowiki.lib.db.photo         as photoLib
+   import pylowiki.lib.db.initiative    as initiativeLib
    import pylowiki.lib.db.follow        as followLib
    
    from hashlib import md5
@@ -517,6 +518,23 @@
    ${photoStr | n}
 </%def>
 
+<%def name="initiativeLink(initiative, dparent, **kwargs)">
+   <%
+        initiativeStr = 'href="/initiative/%s/%s/show' %(initiative["urlCode"], initiative["url"])
+        
+        initiativeStr += commentLinkAppender(**kwargs)
+        if 'noHref' in kwargs:
+            initiativeStr += ''
+        else:
+            initiativeStr += '"'
+
+        if 'embed' in kwargs:
+            if kwargs['embed'] == True:
+                return initiativeStr
+   %>
+   ${initiativeStr | n}
+</%def>
+
 <%def name="ideaLink(i, w, **kwargs)">
    <%
         if 'noHref' in kwargs:
@@ -603,6 +621,11 @@
                 if not photo:
                     return False
                 return photoLink(photo, dparent, **kwargs)
+            elif 'initiativeCode' in thing.keys():
+                initiative = initiativeLib.getInitiative(thing['initiativeCode'])
+                if not initiative:
+                    return False
+                return initiativeLink(initiative, dparent, **kwargs)
             else:
                 discussion = discussionLib.getDiscussion(thing['discussionCode'])
                 if not discussion:
