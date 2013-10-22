@@ -290,7 +290,7 @@ def make_map():
     map.connect('/workshop/{workshopCode}/{workshopURL}/login{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = 'None', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/login/{thing}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = 'None', thingURL = 'None')
     map.connect('/workshop/{workshopCode}/{workshopURL}/clogin/{thing}/{thingCode}/{thingURL}{end:/?}', controller = 'login', action = 'loginDisplay', workshopCode = '{workshopCode}', workshopURL = '{workshopURL}', thing = '{thing}', thingCode = '{thingCode}', thingURL = '{thingURL}')
-    map.connect('/login/{page}{end:/?}', controller = 'login', action = 'loginRedirects', page = '{page}')
+    map.connect('/{page}/login{end:/?}', controller = 'login', action = 'loginRedirects', page = '{page}')
     map.connect('/{loginHandler:loginHandler/?}', controller = 'login', action = 'loginHandler')
     map.connect('/{signup:signup/?}', controller = 'register', action = 'signupDisplay')
     map.connect('/{signupNoExtAuth:signupNoExtAuth/?}', controller = 'register', action = 'signupNoExtAuthDisplay')

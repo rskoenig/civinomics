@@ -143,7 +143,7 @@
         <div class="span12 centered">
             <h1 style="margin-top: 40px; margin-bottom: 40px;">Use Civinomics in your City or Organization</h1>
         </div>
-        <a class="btn btn-success btn-large" href="/login/newWorkshop"><i class="icon-plus"></i> New Workshop</a>
+        <a class="btn btn-success btn-large" href="/newWorkshop/login"><i class="icon-plus"></i> New Workshop</a>
     </div>
     ${templateHelpers.condensedFooter()}
 % endif
