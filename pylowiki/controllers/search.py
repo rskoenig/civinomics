@@ -516,11 +516,16 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for r in resources:
-            w = generic.getThing(r['workshopCode'])
-            if w['public_private'] != u'public':
+            # We don't need to look up this discussion's workshop anymore.
+            # w = generic.getThing(r['workshopCode'])
+            # Therefore this line,
+            if r['workshop_searchable'] != u'1':
                 continue
-            elif w['published'] != u'1':
-                continue
+            # replaces these two:
+            #if w['public_private'] != u'public':
+            #    continue
+            #elif w['published'] != u'1':
+            #    continue
             entry = {}
             #entry['link'] = r['link']
             entry['title'] = r['title']
@@ -534,16 +539,23 @@ class SearchController(BaseController):
             #entry['tld'] = r['tld']
             entry['voteCount'] = int(r['ups']) - int(r['downs'])
             entry['numComments'] = discussionLib.getDiscussionForThing(r)['numComments']
-            entry['workshopCode'] = w['urlCode']
-            entry['workshopURL'] = w['url']
-            entry['workshopTitle'] = w['title']
+            #: Note in the cases here where there are multiple tags assigned to one value,
+            #: I'm adding the standard tags to the json object here as a start for us to 
+            #: migrate the whole system over to using the same definitions everywhere.
+            entry['workshopCode'] = r['workshopCode']
+            entry['workshopURL'] = entry['workshop_url'] = r['workshop_url']
+            entry['workshopTitle'] = entry['workshop_title'] = r['workshop_title']
+            #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
             u = userLib.getUserByID(r.owner)
-            entry['authorCode'] = u['urlCode']
-            entry['authorURL'] = u['url']
-            entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
-            thing = resourceLib.getResource(r['urlCode'],r['url'])
-            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+
+            entry['authorCode'] = entry['userCode'] = r['userCode']
+            entry['authorURL'] = entry['user_url'] = r['user_url']
+            entry['authorName'] = entry['user_name'] = r['user_name']
+            # We dont need to look up the discussion here            
+            #thing = resourceLib.getResource(r['urlCode'],r['url'])
+            #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['date'] = r.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
             for title in r['workshop_category_tags'].split('|'):
                 if title and title != '':
@@ -582,11 +594,16 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for d in discussions:
-            w = generic.getThing(d['workshopCode'])
-            if w['public_private'] != u'public':
+            # We don't need to look up this discussion's workshop anymore.
+            # w = generic.getThing(d['workshopCode'])
+            # Therefore this line,
+            if d['workshop_searchable'] != u'1':
                 continue
-            elif w['published'] != u'1':
-                continue
+            # replaces these two:
+            #if w['public_private'] != u'public':
+            #    continue
+            #elif w['published'] != u'1':
+            #    continue
             entry = {}
             entry['title'] = d['title']
             entry['text'] = d['text']
@@ -595,16 +612,23 @@ class SearchController(BaseController):
             entry['addedAs'] = d['addedAs']
             entry['voteCount'] = int(d['ups']) - int(d['downs'])
             entry['numComments'] = d['numComments']
-            entry['workshopCode'] = w['urlCode']
-            entry['workshopURL'] = w['url']
-            entry['workshopTitle'] = w['title']
+            #: Note in the cases here where there are multiple tags assigned to one value,
+            #: I'm adding the standard tags to the json object here as a start for us to 
+            #: migrate the whole system over to using the same definitions everywhere.
+            entry['workshopCode'] = d['workshopCode']
+            entry['workshopURL'] = entry['workshop_url'] = d['workshop_url']
+            entry['workshopTitle'] = entry['workshop_title'] = d['workshop_title']
+            #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
             u = userLib.getUserByID(d.owner)
-            entry['authorCode'] = u['urlCode']
-            entry['authorURL'] = u['url']
-            entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
-            thing = discussionLib.getDiscussion(d['urlCode'])
-            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+
+            entry['authorCode'] = entry['userCode'] = d['userCode']
+            entry['authorURL'] = entry['user_url'] = d['user_url']
+            entry['authorName'] = entry['user_name'] = d['user_name']
+            # We dont need to look up the discussion here
+            #thing = discussionLib.getDiscussion(d['urlCode'])
+            #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['date'] = d.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
             for title in d['workshop_category_tags'].split('|'):
                 if title and title != '':
@@ -639,11 +663,16 @@ class SearchController(BaseController):
             return json.dumps({'statusCode':2})
         titleToColourMapping = workshopLib.getWorkshopTagColouring()
         for idea in ideas:
-            w = generic.getThing(idea['workshopCode'])
-            if w['public_private'] != u'public':
+            # We don't need to look up this idea's workshop anymore.
+            # w = generic.getThing(idea['workshopCode'])
+            # Therefore this line,
+            if idea['workshop_searchable'] != u'1':
                 continue
-            elif w['published'] != u'1':
-                continue
+            # replaces these two:
+            #if w['public_private'] != u'public':
+            #    continue
+            #elif w['published'] != u'1':
+            #    continue
             entry = {}
             entry['title'] = idea['title']
             entry['voteCount'] = int(idea['ups']) + int(idea['downs'])
@@ -656,16 +685,23 @@ class SearchController(BaseController):
             entry['url'] = idea['url']
             entry['addedAs'] = idea['addedAs']
             entry['numComments'] = discussionLib.getDiscussionForThing(idea)['numComments']
-            entry['workshopCode'] = w['urlCode']
-            entry['workshopURL'] = w['url']
-            entry['workshopTitle'] = w['title']
+            #: Note in the cases here where there are multiple tags assigned to one value,
+            #: I'm adding the standard tags to the json object here as a start for us to 
+            #: migrate the whole system over to using the same definitions everywhere.
+            entry['workshopCode'] = idea['workshopCode']
+            entry['workshopURL'] = entry['workshop_url'] = idea['workshop_url']
+            entry['workshopTitle'] = entry['workshop_title'] = idea['workshop_title']
+            #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
             u = userLib.getUserByID(idea.owner)
-            entry['authorCode'] = u['urlCode']
-            entry['authorURL'] = u['url']
-            entry['authorName'] = u['name']
             entry['authorHash'] = md5(u['email']).hexdigest()
-            thing = ideaLib.getIdea(idea['urlCode'])
-            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+
+            entry['authorCode'] = entry['userCode'] = idea['userCode']
+            entry['authorURL'] = entry['user_url'] = idea['user_url']
+            entry['authorName'] = entry['user_name'] = idea['user_name']
+            # dont need to look up the idea here
+            #thing = ideaLib.getIdea(idea['urlCode'])
+            #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            entry['date'] = idea.date.strftime('%Y-%m-%dT%H:%M:%S')
             tagList = []
             for title in idea['workshop_category_tags'].split('|'):
                 if title and title != '':
@@ -704,10 +740,12 @@ class SearchController(BaseController):
         colors = workshopLib.getWorkshopTagColouring()
         for photo in photos:
             p = generic.getThing(photo['urlCode'])
-            u = generic.getThing(photo['userCode'])
             if p['deleted'] != u'0' or p['disabled'] != u'0':
                 continue
             entry = {}
+            #: NOTE We won't need to look up this idea's author anymore if we can stick this gravatar hash into the object as well.
+            u = generic.getThing(photo['userCode'])
+            entry['authorHash'] = md5(u['email']).hexdigest()
             entry['title'] = p['title']
             tagList = p['tags'].split('|')
             tags = []
@@ -732,10 +770,9 @@ class SearchController(BaseController):
             entry['thumbnail'] = "/images/photos/" + p['directoryNum_photos'] + "/thumbnail/" + p['pictureHash_photos'] + ".png"
             entry['photoLink'] = "/profile/" + u['urlCode'] + "/" + u['url'] + "/photo/show/" + p['urlCode']
             entry['numComments'] = discussionLib.getDiscussionForThing(p)['numComments']
-            entry['authorCode'] = u['urlCode']
-            entry['authorURL'] = u['url']
-            entry['authorName'] = u['name']
-            entry['authorHash'] = md5(u['email']).hexdigest()
+            entry['authorCode'] = entry['userCode'] = p['userCode']
+            entry['authorURL'] = entry['user_url'] = p['user_url']
+            entry['authorName'] = entry['user_name'] = p['user_name']
             result.append(entry)
         if len(result) == 0:
             return json.dumps({'statusCode':2})

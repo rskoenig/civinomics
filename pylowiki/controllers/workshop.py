@@ -998,7 +998,7 @@ class WorkshopController(BaseController):
             disabled = ideaLib.getIdeasInWorkshop(workshopCode, disabled = '1')
             if disabled:
                 c.ideas = c.ideas + disabled
-                
+
         c.listingType = 'ideas'
         if iPhoneApp:
             entry['mainImage'] = dict(c.mainImage)
