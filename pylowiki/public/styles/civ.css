@@ -2556,6 +2556,14 @@ button.close{
   font-weight: 300;
 }
 
+.splash-text.lead{
+  font-weight: 300;
+}
+
+img.splash-product{
+  width: 980px;
+}
+
 h4.forum-topic{
   font-weight: 500;
 }

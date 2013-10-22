@@ -139,11 +139,16 @@
             <a href="http://civinomicon2013.eventbrite.com/" target="_blank" class="btn btn-warning btn-large">Register <i class="icon-signin"></i></a>
         </div>
     </div>
+    <hr>
     <div class="row-fluid">
         <div class="span12 centered">
-            <h1 style="margin-top: 40px; margin-bottom: 40px;">Use Civinomics in your City or Organization</h1>
+            <h1>Bring a paradigm shift in collaboration to your community. Free.</h1>
+            <p class="lead splash-text">Collect ideas, vote for the best, implement them - make things better.</p>
+            <a class="btn btn-primary btn-large" style="margin-bottom:40px;" href="/newWorkshop/login"><i class="icon-cog"></i> Start a Workshop</a>
         </div>
-        <a class="btn btn-success btn-large" href="/newWorkshop/login"><i class="icon-plus"></i> New Workshop</a>
+    </div>
+    <div class="row-fluid centered">
+        <img class="splash-product" src="/images/splash/sampleWorkshop.png">
     </div>
     ${templateHelpers.condensedFooter()}
 % endif
