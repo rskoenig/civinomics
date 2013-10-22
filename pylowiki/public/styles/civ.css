@@ -2541,6 +2541,7 @@ button.close{
   bottom:0; 
   background-image: url('/images/splash/liberty.jpg');
   background-size:cover;
+  margin-bottom: -40px;
 }
 
 .signup .form-horizontal .control-label,.login .form-horizontal .control-label {
