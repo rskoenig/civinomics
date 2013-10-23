@@ -265,7 +265,7 @@
                         % if currentScope == 'Private':
                             checked
                         % endif
-                        disabled>
+                        >
                         Private  <i class="icon-group set-scope-icon"></i>
                     </label>
                 </div>
