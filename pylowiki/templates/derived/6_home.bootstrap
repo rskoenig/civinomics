@@ -85,7 +85,11 @@
           ###
           ### Bookmarks
           ###
-
+          % if len(c.privateWorkshops) != 0:
+            <span class="lead"><i class="icon-group"></i> Private Workshops</span>
+            ${lib_6.listPrivateWorkshops(c.privateWorkshops)}
+            <br>
+          % endif
           % if len(c.bookmarks) != 0:
             <span class="lead"><i class="icon-bookmark"></i> Bookmarks</span>
             ${lib_6.listBookmarks(c.bookmarks)}

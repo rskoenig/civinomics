@@ -18,10 +18,12 @@ from pylowiki.lib.db.workshop import getActiveWorkshops
 import pylowiki.lib.db.user         as userLib
 import pylowiki.lib.db.message      as messageLib
 import pylowiki.lib.db.photo        as photoLib
+import pylowiki.lib.db.pmember      as pMemberLib
 import pylowiki.lib.sort            as sort
 import pylowiki.lib.db.mainImage    as mainImageLib
 import pylowiki.lib.db.follow       as followLib
 import pylowiki.lib.db.workshop     as workshopLib
+
 
 
 log = logging.getLogger(__name__)
@@ -151,6 +153,13 @@ class HomeController(BaseController):
 			c.bookmarks = []
 			for workshop in watchList:
 				c.bookmarks.append(workshop)
+
+			c.privateWorkshops = []
+			privateList = pMemberLib.getPrivateMemberWorkshops(c.user, deleted = '0')
+			if privateList:
+				c.privateWorkshops = [workshopLib.getWorkshopByCode(pMemberObj['workshopCode']) for pMemberObj in privateList]
+
+
 		
 
 		return render('/derived/6_home.bootstrap')
