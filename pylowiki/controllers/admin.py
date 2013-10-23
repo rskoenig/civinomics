@@ -363,7 +363,7 @@ class AdminController(BaseController):
         return redirect(returnURL)
         
     def flag(self, thingCode):
-        if c.thing.objType != 'photo' and 'photoCode' not in c.thing:
+        if 'workshopCode' in c.thing:
             if not workshopLib.isScoped(c.authuser, c.w):
                 return json.dumps({'code':thingCode, 'result':'Error: Unable to flag.'})
         if c.error:
@@ -383,10 +383,10 @@ class AdminController(BaseController):
                 return json.dumps({'code':thingCode, 'result':result})
             else:
                 result += ' Warning: %s has marked this as immune because %s.' % (author['email'], immunifyEvent['reason'])
-        if c.thing.objType == 'photo' or 'photoCode' in c.thing:
-            newFlag = flagLib.Flag(c.thing, c.authuser)
-        else:
+        if 'workshopCode' in c.thing:
             newFlag = flagLib.Flag(c.thing, c.authuser, workshop = c.w)
+        else:
+            newFlag = flagLib.Flag(c.thing, c.authuser)
         alertsLib.emailAlerts(newFlag)
         return json.dumps({'code':thingCode, 'result':result})
         
