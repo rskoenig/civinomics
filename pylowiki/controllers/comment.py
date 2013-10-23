@@ -43,7 +43,6 @@ class CommentController(BaseController):
             parentCommentCode = request.params['parentCode']
             thingCode = request.params['thingCode']
             thing = genericLib.getThing(thingCode)
-            log.info('thingCode is %s'%thingCode)
             if not thing:
                 return False
             if thing['disabled'] == '1':
@@ -78,6 +77,11 @@ class CommentController(BaseController):
                 parentAuthor = userLib.getUserByID(discussion.owner)
             log.info('before comment')
             comment = commentLib.Comment(data, c.authuser, discussion, c.privs, role = None, parent = parentCommentID)
+            if thing.objType == 'idea' or thing.objType == 'initiative':
+                if 'commentRole' in request.params:
+                    commentRole = request.params['commentRole']
+                    comment['commentRole'] = commentRole
+                    dbHelpers.commit(comment)
             title = ' replied to a post you made'
             text = '(This is an automated message)'
             extraInfo = 'commentResponse'
@@ -91,7 +95,7 @@ class CommentController(BaseController):
             elif thing.objType.replace("Unpublished", "") == 'initiative':
                 title = ' commented on one of your initiatives'
                 message = messageLib.Message(owner = parentAuthor, title = title, text = text, privs = c.privs, sender = c.authuser, extraInfo = "commentOnInitiative")
-            message = genericLib.linkChildToParent(message, comment.c)
+            message = genericLib.linkChildToParent(message, comment)
             dbHelpers.commit(message)
             alertsLib.emailAlerts(comment)
             if 'commentAlerts' in parentAuthor and parentAuthor['commentAlerts'] == '1' and (parentAuthor['email'] != c.authuser['email']):

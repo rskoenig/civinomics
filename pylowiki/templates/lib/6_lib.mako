@@ -1090,11 +1090,36 @@
 </%def>
 
 <%def name="editThing(thing, **kwargs)">
-    <% editID = 'edit-%s' % thing['urlCode'] %>
     <% 
+        editID = 'edit-%s'%thing['urlCode']
         text = ''
+        
         if 'text' in thing.keys():
             text = thing['text']
+
+        ctype = ""
+        if thing.objType == 'comment':
+            if 'initiativeCode' in thing:
+                ctype = "initiative"
+            elif 'ideaCode' in thing:
+                ctype = "idea"
+            else:
+                ctype = "reguar"
+
+            yesChecked = ""
+            noChecked = ""
+            neutralChecked = ""
+
+            if ctype != "regular":
+                if 'commentRole' in thing:
+                    if thing['commentRole'] == 'yes':
+                        yesChecked = 'checked'
+                    elif thing['commentRole'] == 'no':
+                        noChecked = 'checked'
+                    else:
+                        neutralChecked = 'checked'
+                else:
+                    neutralChecked = 'checked'
     %>
     <div class="row-fluid collapse" id="${editID}">
         <div class="span11 offset1">
@@ -1106,6 +1131,19 @@
                 % if thing.objType == 'comment':
                     <label>Comment text</label>
                     <textarea class="comment-reply span12" name="textarea${thing['urlCode']}" required>${thing['data']}</textarea>
+                    % if ctype != 'regular':
+                        <div class="row-fluid">
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="yes" ${yesChecked}> I support this ${ctype}
+                                </label>
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="neutral" ${neutralChecked}> Neutral
+                                </label>
+                                <label class="radio inline">
+                                    <input type=radio name="commentRole${thing['urlCode']}" value="no" ${noChecked}> I am against this ${ctype}
+                                </label>
+                        </div><!-- row-fluid -->
+                    % endif
                 % elif thing.objType == 'idea':
                     <label>Idea title</label>
                     <input type="text" class="input-block-level" name="title" value = "${thing['title']}" maxlength="120" id = "title" required>

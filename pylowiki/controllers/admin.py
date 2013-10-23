@@ -168,7 +168,12 @@ class AdminController(BaseController):
             data = request.params['textarea' + thingCode]
             data = data.strip()
             
-            c.thing = commentLib.editComment(c.thing, data)
+            commentRole = 'neutral'
+            if 'initiativeCode' in c.thing or 'ideaCode' in c.thing:
+                if 'commentRole' + thingCode in request.params:
+                    commentRole = request.params['commentRole' + thingCode]
+            
+            c.thing = commentLib.editComment(c.thing, data, commentRole)
             if not c.thing:
                 alert = {'type':'error'}
                 alert['title'] = 'Comment edit failed.'
