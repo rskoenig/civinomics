@@ -484,9 +484,16 @@ class SearchController(BaseController):
                     tagMapping['colour'] = titleToColourMapping[title]
                     tagList.append(tagMapping)
             entry['tags'] = tagList
-            thing = workshopLib.getWorkshopByCode(w['urlCode'])
-            entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
+            # We dont need to look up the object here            
+            #thing = workshopLib.getWorkshopByCode(w['urlCode'])
+            entry['bookmarked'] = '0'
+            if c.authuser:
+                bookmarked = followLib.isFollowing(c.authuser, w)
+                if bookmarked:
+                    entry['bookmarked'] = '1'
+            entry['date'] = w.date.strftime('%Y-%m-%dT%H:%M:%S')
             result.append(entry)
+
         if len(result) == 0:
             return json.dumps({'statusCode':2})
         return json.dumps({'statusCode':0, 'result':result})
@@ -552,7 +559,7 @@ class SearchController(BaseController):
             entry['authorCode'] = entry['userCode'] = r['userCode']
             entry['authorURL'] = entry['user_url'] = r['user_url']
             entry['authorName'] = entry['user_name'] = r['user_name']
-            # We dont need to look up the discussion here            
+            # We dont need to look up the object here            
             #thing = resourceLib.getResource(r['urlCode'],r['url'])
             #entry['date'] = thing.date.strftime('%Y-%m-%dT%H:%M:%S')
             entry['date'] = r.date.strftime('%Y-%m-%dT%H:%M:%S')

@@ -1199,6 +1199,9 @@ class WorkshopController(BaseController):
         
     @h.login_required
     def pmemberNotificationHandler(self, workshopCode, workshopURL, userCode):
+        # check to see if this is a request from the iphone app
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
         user = userLib.getUserByCode(userCode)
         pmember = pMemberLib.getPrivateMember(workshopCode, user['email'])
         # initialize to current value if any, '0' if not set in object
@@ -1207,10 +1210,19 @@ class WorkshopController(BaseController):
         if 'itemAlerts' in pmember:
             iAlerts = pmember['itemAlerts']
         
-        payload = json.loads(request.body)
-        if 'alert' not in payload:
-            return "Error"
-        alert = payload['alert']
+        if iPhoneApp:
+            try:
+                alert = request.params['alert']
+            except:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+        else:
+            payload = json.loads(request.body)
+            if 'alert' not in payload:
+                return "Error"
+            alert = payload['alert']
         if alert == 'items':
             if 'itemAlerts' in pmember.keys(): # Not needed after DB reset
                 if pmember['itemAlerts'] == u'1':
@@ -1234,10 +1246,24 @@ class WorkshopController(BaseController):
                 pmember['digest'] = u'1'
                 eAction = 'Turned on'
         else:
-            return "Error"   
+            if iPhoneApp:
+                statusCode = 2
+                response.headers['Content-type'] = 'application/json'
+                #log.info("results workshop: %s"%json.dumps({'statusCode':statusCode, 'result':result}))
+                return json.dumps({'statusCode':statusCode, 'result':'error'})
+            else:
+                return "Error"
+
         dbHelpers.commit(pmember)
         if eAction != '':
             eventLib.Event('Private member item notifications set', eAction, pmember, c.authuser)
-        return eAction
+        
+        if iPhoneApp:
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            result = eAction
+            return json.dumps({'statusCode':statusCode, 'result':result})
+        else:
+            return eAction
 
     

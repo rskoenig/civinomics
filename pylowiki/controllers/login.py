@@ -640,11 +640,18 @@ class LoginController(BaseController):
     @login_required
     def logout(self):
         """ Action will logout the user. """
+        iPhoneApp = utils.iPhoneRequestTest(request)
+
         return_url = '/'
         username = session['user']
         log.info( "Successful logout by - " + username )
         session.delete()
-        return redirect( return_url )
+        if iPhoneApp:
+            statusCode = 0
+            response.headers['Content-type'] = 'application/json'
+            return json.dumps({'statusCode':statusCode})
+        else:
+            return redirect( return_url )
 
     def forgot_handler(self):
         c.title = c.heading = "Forgot Password"

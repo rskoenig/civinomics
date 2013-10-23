@@ -13,16 +13,26 @@ BASE_LIST = string.digits + string.letters
 BASE_DICT = dict((c, i) for i, c in enumerate(BASE_LIST))
 
 def iPhoneRequestTest(req):
+    """ check for json=1 in the request parameters, if so this is a request from our iphone app """
     try:
         useJson = req.params['json']
         if useJson == '1':
-            iPhoneApp = True
+            return True
         else:
-            iPhoneApp = False
-    except KeyError:
-        iPhoneApp = False
+            return False
+    except:
+        return False
 
-    return iPhoneApp
+def profileDisplayWorkshops(req):
+    """ check for type=ws in the request parameters, if so this is a request to display workshops """
+    try:
+        displayType = req.params['type']
+        if displayType == 'ws':
+            return True
+        else:
+            return False
+    except:
+        return False
 
 def urlify(url):
     import re
