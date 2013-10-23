@@ -490,14 +490,14 @@
 
 <%def name="displayWorkshopFlag(w, *args)">
     <%
+        workshopFlag = '/images/flags/generalFlag.gif'
+        href = '#'
         if w['public_private'] == 'public':
             scope = workshopLib.getPublicScope(w)
             href = scope['href']
             workshopFlag = scope['flag']
         else:
-            workshopFlag = '/images/flags/generalFlag.gif'
-            href = '#'
-
+            workshopFlag = '/images/flags/generalGroup.gif'
         flagSize = 'med-flag'
         if 'small' in args:
           flagSize = 'small-flag'
