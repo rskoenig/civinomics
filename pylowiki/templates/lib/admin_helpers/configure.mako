@@ -266,7 +266,7 @@
                             checked
                         % endif
                         disabled>
-                        Private  <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_024_parents.png">
+                        Private  <i class="icon-group set-scope-icon"></i>
                     </label>
                 </div>
                 <div class="span2">
@@ -277,12 +277,12 @@
                             checked
                         % endif
                         >
-                        Public  <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png">
+                        Public  <i class="icon-globe set-scope-icon"></i>
                     % else:
                     <button class="transparent">
                         <input type="radio" name="optionsRadios" id="optionsRadios2" value="Public" disabled>
                     </button>
-                        Public  <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe.png">
+                        Public  <i class="icon-globe set-scope-icon"></i>
                     % endif
                     </label>
                 </div>
@@ -304,7 +304,7 @@
             <table class="boxOffsetParent">
                 <tr>
                     <td rowspan="2" class="scope-icon">
-                        <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_024_parents@2x.png">
+                        <i class="icon-group icon-4x"></i>
                     </td>
                     <td>
                         <h4><lead>Private</lead></h4>
@@ -318,7 +318,6 @@
                             % if c.w['type'] == 'personal':
                                 <li>Free workshops are limited to 20 participants.</li>
                             % endif
-                            <li>Professional workshops can have unlimited members.</li>
                         </ul>
                     </td>
                 </tr>
@@ -365,7 +364,7 @@
         <table class="boxOffsetParent">
             <tr>
                 <td rowspan="2" class="scope-icon">
-                    <img src="/images/glyphicons_pro/glyphicons/png/glyphicons_340_globe@2x.png">
+                    <i class="icon-globe icon-4x"></i>
                 </td>
                 <td>
                     <h4><lead>Public</lead></h4>

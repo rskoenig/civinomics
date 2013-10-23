@@ -2595,3 +2595,7 @@ h4.forum-topic{
 form.inline{
   display: inline;
 }
+
+.set-scope-icon{
+  font-size: 20px;
+}
